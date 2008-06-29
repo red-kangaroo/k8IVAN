@@ -21,6 +21,7 @@ class festring;
 class terrain
 {
  public:
+  virtual ~terrain() {}
   virtual void StepOn(character*) { }
   virtual cchar* SurviveMessage() const;
   virtual cchar* MonsterSurviveMessage() const;

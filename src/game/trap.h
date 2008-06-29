@@ -54,6 +54,7 @@ class itemtrapbase
   void Search(ccharacter*, int);
   void FinalProcessForBone();
   void TeleportRandomly();
+  virtual ~itemtrapbase () { }
   virtual void SendNewDrawAndMemorizedUpdateRequest() const = 0;
   virtual festring GetName(int) const = 0;
   virtual void UpdatePictures() = 0;

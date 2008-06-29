@@ -168,49 +168,49 @@ cbitmap* game::EnterImage;
 v2 game::EnterTextDisplacement;
 
 void game::AddCharacterID(character* Char, ulong ID) {
-  if(CharacterIDMap.find(ID) != CharacterIDMap.end())
-    int esko = esko = 2;
+/*k8:???  if(CharacterIDMap.find(ID) != CharacterIDMap.end())
+    int esko = esko = 2;*/
   CharacterIDMap.insert(std::make_pair(ID, Char));
 }
 void game::RemoveCharacterID(ulong ID) {
-  if(CharacterIDMap.find(ID) == CharacterIDMap.end())
-    int esko = esko = 2;
+/*k8:???  if(CharacterIDMap.find(ID) == CharacterIDMap.end())
+    int esko = esko = 2;*/
   CharacterIDMap.erase(CharacterIDMap.find(ID));
 }
 void game::AddItemID(item* Item, ulong ID) {
-  if(ItemIDMap.find(ID) != ItemIDMap.end())
-    int esko = esko = 2;
+/*k8:???  if(ItemIDMap.find(ID) != ItemIDMap.end())
+    int esko = esko = 2;*/
   ItemIDMap.insert(std::make_pair(ID, Item));
 }
 void game::RemoveItemID(ulong ID)
 {
-  if(ID && ItemIDMap.find(ID) == ItemIDMap.end())
-    int esko = esko = 2;
+/*k8:???  if(ID && ItemIDMap.find(ID) == ItemIDMap.end())
+    int esko = esko = 2;*/
 
   if(ID) ItemIDMap.erase(ItemIDMap.find(ID));
 }
 void game::UpdateItemID(item* Item, ulong ID) {
-  if(ItemIDMap.find(ID) == ItemIDMap.end())
-    int esko = esko = 2;
+/*k8:???  if(ItemIDMap.find(ID) == ItemIDMap.end())
+    int esko = esko = 2;*/
   ItemIDMap.find(ID)->second = Item;
 }
 void game::AddTrapID(entity* Trap, ulong ID) {
-  if(TrapIDMap.find(ID) != TrapIDMap.end())
-    int esko = esko = 2;
+/*k8:???  if(TrapIDMap.find(ID) != TrapIDMap.end())
+    int esko = esko = 2;*/
 
   if(ID)
     TrapIDMap.insert(std::make_pair(ID, Trap));
 }
 void game::RemoveTrapID(ulong ID)
 {
-  if(ID && TrapIDMap.find(ID) == TrapIDMap.end())
-    int esko = esko = 2;
+/*k8:???  if(ID && TrapIDMap.find(ID) == TrapIDMap.end())
+    int esko = esko = 2;*/
 
   if(ID) TrapIDMap.erase(TrapIDMap.find(ID));
 }
 void game::UpdateTrapID(entity* Trap, ulong ID) {
-  if(TrapIDMap.find(ID) == TrapIDMap.end())
-    int esko = esko = 2;
+/*k8:???  if(TrapIDMap.find(ID) == TrapIDMap.end())
+    int esko = esko = 2;*/
   TrapIDMap.find(ID)->second = Trap;
 }
 const dangermap& game::GetDangerMap() { return DangerMap; }
@@ -369,7 +369,8 @@ truth game::Init(cfestring& Name)
       GameBegan = time(0);
       LastLoad = time(0);
       TimePlayedBeforeLastLoad = time::GetZeroTime();
-      bool PlayerHasReceivedAllGodsKnownBonus = false;
+      /*k8: damn! seems that this is field, not local! bool PlayerHasReceivedAllGodsKnownBonus = false; */
+      PlayerHasReceivedAllGodsKnownBonus = false;
       ADD_MESSAGE("You commence your journey to Attnam. Use direction keys to move, '>' to enter an area and '?' to view other commands.");
 
       if(IsXMas())
@@ -720,7 +721,7 @@ void game::DrawEverythingNoBlit(truth AnimationDraw)
     else
       DOUBLE_BUFFER->Fill(CalculateScreenCoordinates(CursorPos), TILE_V2, 0);
 
-  int c;
+  unsigned int c;
 
   for(c = 0; c < SpecialCursorPos.size(); ++c)
     if(OnScreen(SpecialCursorPos[c]))
@@ -777,15 +778,12 @@ void game::DrawEverythingNoBlit(truth AnimationDraw)
     }
     else
     {
-      for(c = 0; c < Player->GetSquaresUnder(); ++c)
-      {
-  v2 Pos = Player->GetPos(c);
-
-  if(OnScreen(Pos))
-  {
-    v2 ScreenCoord = CalculateScreenCoordinates(Pos);
-    igraph::DrawCursor(ScreenCoord, Player->GetCursorData()|CURSOR_BIG, c);
-  }
+      for (int f = 0; f < Player->GetSquaresUnder(); ++f) {
+        v2 Pos = Player->GetPos(f);
+        if (OnScreen(Pos)) {
+          v2 ScreenCoord = CalculateScreenCoordinates(Pos);
+          igraph::DrawCursor(ScreenCoord, Player->GetCursorData()|CURSOR_BIG, f);
+        }
       }
     }
 
@@ -2176,8 +2174,8 @@ ulong game::CreateNewCharacterID(character* NewChar)
 {
   ulong ID = NextCharacterID++;
 
-  if(CharacterIDMap.find(ID) != CharacterIDMap.end())
-    int esko = esko = 2;
+/*k8:???  if(CharacterIDMap.find(ID) != CharacterIDMap.end())
+    int esko = esko = 2;*/
 
   CharacterIDMap.insert(std::make_pair(ID, NewChar));
   return ID;
@@ -2187,8 +2185,8 @@ ulong game::CreateNewItemID(item* NewItem)
 {
   ulong ID = NextItemID++;
 
-  if(ItemIDMap.find(ID) != ItemIDMap.end())
-    int esko = esko = 2;
+/*k8:???  if(ItemIDMap.find(ID) != ItemIDMap.end())
+    int esko = esko = 2;*/
 
   if(NewItem)
     ItemIDMap.insert(std::make_pair(ID, NewItem));
@@ -2200,8 +2198,8 @@ ulong game::CreateNewTrapID(entity* NewTrap)
 {
   ulong ID = NextTrapID++;
 
-  if(TrapIDMap.find(ID) != TrapIDMap.end())
-    int esko = esko = 2;
+/*k8:???  if(TrapIDMap.find(ID) != TrapIDMap.end())
+    int esko = esko = 2;*/
 
   if(NewTrap)
     TrapIDMap.insert(std::make_pair(ID, NewTrap));

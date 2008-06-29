@@ -27,6 +27,7 @@ class weaponskill
   truth Tick();
   truth AddHit(int);
   truth SubHit(int);
+  virtual ~weaponskill () { }
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual int GetLevelMap(int) const = 0;

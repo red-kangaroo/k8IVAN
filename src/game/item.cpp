@@ -1009,11 +1009,12 @@ void item::PostProcessForBone()
   }
   else
   {
-    if(game::SearchItem(BI->second))
-      int esko = esko = 2;
-
+/*k8:???
+    if (game::SearchItem(BI->second)) int esko = esko = 2;
+  */ if (game::SearchItem(BI->second)) {
     ID = BI->second;
     game::AddItemID(this, ID);
+    }
   }
 
   for(idholder* I = CloneMotherID; I; I = I->Next)

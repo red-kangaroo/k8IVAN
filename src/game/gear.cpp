@@ -1007,7 +1007,7 @@ truth weepblade::HitEffect(character* Enemy, character* Hitter, v2 HitPos, int B
 
 void acidshield::BlockEffect(character* Blocker, character* Attacker, item* Weapon, int Type)
 {
-   int CheckAttackType = 0;
+   /*k8 int CheckAttackType = 0;*/
    if(!IsBroken())
    {
       if(!RAND_N(400))
@@ -1044,7 +1044,7 @@ void acidshield::BlockEffect(character* Blocker, character* Attacker, item* Weap
 
 void wondersmellstaff::Break(character* Who, int Much)
 {
-    material* GasMaterial = GetSecondaryMaterial();
+    /*k8: material* GasMaterial = GetSecondaryMaterial(); */
     GetLevel()->GasExplosion(gas::Spawn(GOOD_WONDER_STAFF_VAPOUR, 100), GetLSquareUnder());
 
     if(CanBeSeenByPlayer())

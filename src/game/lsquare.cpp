@@ -2088,9 +2088,10 @@ void lsquare::CalculateOverBorderPartners()
   }
 
   OverBorderPartnerInfo |= Index << 24;
-
+/*k8
   if(OverBorderPartnerInfo & BORDER_PARTNER_ANIMATED)
     int esko = esko = 2;
+*/
 }
 
 void lsquare::RequestForGroundBorderPartnerUpdates()

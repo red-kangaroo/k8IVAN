@@ -61,7 +61,7 @@ class square
   void DecStaticAnimatedEntities()
   {
     if(!StaticAnimatedEntities)
-      int esko = esko = 2;
+      /*k8: int esko = esko = 2;*/ abort();
 
     --StaticAnimatedEntities;
     --AnimatedEntities;

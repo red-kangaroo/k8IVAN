@@ -250,10 +250,11 @@ void stack::BeKicked(character* Kicker, int KickDamage, int Direction)
 
       if(Item2)
       {
+/*k8:
   if(!Item2->Exists() || Item2->GetPos() != GetPos())
     int esko = esko = 2;
-
-  Item2->Fly(Kicker, Direction, KickDamage * 3);
+*/ if (!(!Item2->Exists() || Item2->GetPos() != GetPos()))
+    Item2->Fly(Kicker, Direction, KickDamage * 3);
       }
     }
   }

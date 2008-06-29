@@ -44,7 +44,6 @@ char command::GetKey() const { return !ivanconfig::GetUseAlternativeKeys() ? Key
 /* SLOOOOWWW! */
 void KTrim (char *buf) {
   char *p = buf, *t;
-  int len;
 
   while (*p && *((unsigned char *)(p)) <= ' ') p++;
   if (!p[0]) { buf[0] = '\0'; return; } /* empty line */

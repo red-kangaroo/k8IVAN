@@ -5158,7 +5158,7 @@ void petrusswife::BeTalkedTo()
   int Accepted = 0;
   truth RefusedSomething = false;
 
-  for(int c = 0; c < Item.size(); ++c)
+  for(unsigned int c = 0; c < Item.size(); ++c)
     if(!MakesBurdened(GetCarriedWeight() + Item[c]->GetWeight()))
     {
       ++Accepted;
@@ -5187,7 +5187,7 @@ void guard::BeTalkedTo()
      || Item.empty())
     humanoid::BeTalkedTo();
 
-  for(int c = 0; c < Item.size(); ++c)
+  for(unsigned int c = 0; c < Item.size(); ++c)
   {
     Item[c]->RemoveFromSlot();
     GetStack()->AddItem(Item[c]);

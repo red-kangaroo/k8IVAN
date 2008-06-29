@@ -65,6 +65,7 @@ class itemlock
   itemlock() : Locked(false) { }
   void Save(outputfile&) const;
   void Load(inputfile&);
+  virtual ~itemlock () { }
   virtual truth TryKey(item*, character*);
   virtual int GetVirtualConfig() const = 0;
   virtual void SetVirtualConfig(int, int = 0) = 0;

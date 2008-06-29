@@ -23,6 +23,7 @@ class festring;
 class id
 {
  public:
+  virtual ~id () { }
   virtual void AddName(festring&, int, int) const;
   virtual festring GetName(int, int) const;
   virtual void AddName(festring&, int) const;

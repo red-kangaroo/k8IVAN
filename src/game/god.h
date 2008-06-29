@@ -40,9 +40,16 @@ class godprototype
 
 class god
 {
+ protected:
+  virtual void PrayGoodEffect() = 0;
+  virtual void PrayBadEffect() = 0;
+  int Relation, LastPray;
+  long Timer;
+  truth Known;
  public:
   typedef godprototype prototype;
   god();
+  virtual ~god () { }
   virtual void Pray();
   virtual cchar* GetName() const = 0;
   virtual cchar* GetDescription() const = 0;
@@ -81,12 +88,6 @@ class god
   virtual int GetSex() const = 0;
   void SignalRandomAltarGeneration(const std::vector<v2>&);
   virtual truth LikesVomit() const { return false; }
- protected:
-  virtual void PrayGoodEffect() = 0;
-  virtual void PrayBadEffect() = 0;
-  int Relation, LastPray;
-  long Timer;
-  truth Known;
 };
 
 #ifdef __FILE_OF_STATIC_GOD_PROTOTYPE_DEFINITIONS__

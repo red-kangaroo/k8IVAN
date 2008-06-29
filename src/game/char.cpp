@@ -2968,9 +2968,10 @@ void character::GoOn(go* Go, truth FirstStep)
 
 void character::SetTeam(team* What)
 {
+/*k8
   if(Team)
     int esko = esko = 2;
-
+*/
   Team = What;
   SetTeamIterator(What->Add(this));
 }
@@ -9250,9 +9251,10 @@ truth character::TryToUnStickTraps(v2 Dir)
     {
       entity* Trap = game::SearchTrap(TrapVector[c].TrapID);
 
+/*k8:???
       if(!Trap->Exists())
   int esko = esko = 2;
-
+*/ if(!Trap->Exists()) continue; /*k8: ??? added by me; what this means? */
       if(Trap->GetVictimID() == GetID() && Trap->TryToUnStick(this, Dir))
   break;
     }
@@ -9408,14 +9410,16 @@ int character::RandomizeHurtBodyPart(ulong BodyParts) const
   for(int c = 0; c < GetBodyParts(); ++c)
     if(1 << c & BodyParts)
     {
-      if(!GetBodyPart(c))
-  int esko = esko = 2;
+/*k8: ??? if(!GetBodyPart(c)) int esko = esko = 2; */
+      if(!GetBodyPart(c)) continue;
 
       BodyPartIndex[Index++] = c;
     }
 
+/*k8: ???
   if(!Index)
-    int esko = esko = 2;
+    int esko = esko = 2;*/
+  if (!Index) abort();
 
   return BodyPartIndex[RAND_N(Index)];
 }
@@ -9790,9 +9794,10 @@ void character::ReceiveSirenSong(character* Siren)
   {
     if(IsPlayer())
       ADD_MESSAGE("The beautiful melody of %s makes you feel sleepy.",
-      Siren->CHAR_NAME(DEFINITE));
+        Siren->CHAR_NAME(DEFINITE));
     else if(CanBeSeenByPlayer())
-      ADD_MESSAGE("The beautiful melody of %s makes %s look sleepy.");
+      ADD_MESSAGE("The beautiful melody of %s makes %s look sleepy.",
+        Siren->CHAR_NAME(DEFINITE), CHAR_NAME(DEFINITE)); /*k8*/
 
     Stamina -= (1 + RAND_N(4)) * 10000;
     return;
@@ -9802,7 +9807,7 @@ void character::ReceiveSirenSong(character* Siren)
   {
     ChangeTeam(Siren->GetTeam());
     ADD_MESSAGE("%s seems to be totally brainwashed by %s melodies.", CHAR_NAME(DEFINITE),
-    Siren->CHAR_NAME(DEFINITE));
+      Siren->CHAR_NAME(DEFINITE));
     return;
   }
 
