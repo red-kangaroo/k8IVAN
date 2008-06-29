@@ -66,6 +66,8 @@ truthoption ivanconfig::FullScreenMode(   "FullScreenMode",
 #endif
 /*k8*/
 truthoption ivanconfig::KickDownDoors("KickDownDoors", "Kick down doors by default", false );
+truthoption ivanconfig::AutoCenterMap("AutoCenterMap", "Automatically center map when player moves", true );
+truthoption ivanconfig::AutoCenterMapOnLook("AutoCenterMapOnLook", "Automatically center map when player looks", true );
 /*k8*/
 col24 ivanconfig::ContrastLuminance = NORMAL_LUMINANCE;
 
@@ -208,6 +210,8 @@ void ivanconfig::Initialize()
 #endif
 /*k8*/
   configsystem::AddOption(&KickDownDoors);
+  configsystem::AddOption(&AutoCenterMap);
+  configsystem::AddOption(&AutoCenterMapOnLook);
 /*k8*/
 #if defined(WIN32) || defined(__DJGPP__)
   configsystem::SetConfigFileName("ivan.cfg");

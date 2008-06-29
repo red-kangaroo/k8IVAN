@@ -2775,11 +2775,13 @@ void character::ShowNewPosInfo() const
   msgsystem::EnterBigMessageMode();
   v2 Pos = GetPos();
 
-  if(Pos.X < game::GetCamera().X + 3 || Pos.X >= game::GetCamera().X + game::GetScreenXSize() - 3)
+  if (ivanconfig::GetAutoCenterMap()) {
     game::UpdateCameraX();
-
-  if(Pos.Y < game::GetCamera().Y + 3 || Pos.Y >= game::GetCamera().Y + game::GetScreenYSize() - 3)
     game::UpdateCameraY();
+  } else {
+    if (Pos.X < game::GetCamera().X+3 || Pos.X >= game::GetCamera().X+game::GetScreenXSize()-3) game::UpdateCameraX();
+    if (Pos.Y < game::GetCamera().Y+3 || Pos.Y >= game::GetCamera().Y+game::GetScreenYSize()-3) game::UpdateCameraY();
+  }
 
   game::SendLOSUpdateRequest();
   game::DrawEverythingNoBlit();

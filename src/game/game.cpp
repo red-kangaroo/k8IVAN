@@ -651,6 +651,7 @@ void game::UpdateCameraCoordinate(int& Coordinate, int Center, int Size, int Scr
   else
     Coordinate = Center - (ScreenSize >> 1);
 
+  printf("old: %i, center: %i, new: %i\n", OldCoordinate, Center, Coordinate);
   if(Coordinate != OldCoordinate)
     GetCurrentArea()->SendNewDrawRequest();
 }
@@ -1433,67 +1434,47 @@ int game::AskForKeyPress(cfestring& Topic)
  * KeyHandler is called when the key has NOT been identified as a movement key
  * Both can be deactivated by passing 0 as parameter */
 
-v2 game::PositionQuestion(cfestring& Topic, v2 CursorPos, void (*Handler)(v2), positionkeyhandler KeyHandler, truth Zoom)
-{
+v2 game::PositionQuestion (cfestring& Topic, v2 CursorPos, void (*Handler)(v2), positionkeyhandler KeyHandler, truth Zoom) {
   int Key = 0;
   SetDoZoom(Zoom);
   v2 Return;
   CursorData = RED_CURSOR;
 
-  if(Handler)
-    Handler(CursorPos);
+  if (Handler) Handler(CursorPos);
 
-  for(;;)
-  {
+  for (;;) {
     square* Square = GetCurrentArea()->GetSquare(CursorPos);
+    if (!Square->HasBeenSeen() &&
+        (!Square->GetCharacter() || !Square->GetCharacter()->CanBeSeenByPlayer()) &&
+        !GetSeeWholeMapCheatMode()) DOUBLE_BUFFER->Fill(CalculateScreenCoordinates(CursorPos), TILE_V2, BLACK);
+    else GetCurrentArea()->GetSquare(CursorPos)->SendStrongNewDrawRequest();
 
-    if(!Square->HasBeenSeen() && (!Square->GetCharacter() || !Square->GetCharacter()->CanBeSeenByPlayer()) && !GetSeeWholeMapCheatMode())
-      DOUBLE_BUFFER->Fill(CalculateScreenCoordinates(CursorPos), TILE_V2, BLACK);
-    else
-      GetCurrentArea()->GetSquare(CursorPos)->SendStrongNewDrawRequest();
-
-    if(Key == ' ' || Key == '.')
-    {
-      Return = CursorPos;
-      break;
-    }
-
-    if(Key == KEY_ESC)
-    {
-      Return = ERROR_V2;
-      break;
-    }
+    if (Key == ' ' || Key == '.') { Return = CursorPos; break; }
+    if (Key == KEY_ESC) { Return = ERROR_V2; break; }
 
     v2 DirectionVector = GetDirectionVectorForKey(Key);
-
-    if(DirectionVector != ERROR_V2)
-    {
+    if (DirectionVector != ERROR_V2) {
       CursorPos += DirectionVector;
-
-      if(CursorPos.X > GetCurrentArea()->GetXSize() - 1) CursorPos.X = 0;
-      if(CursorPos.X < 0) CursorPos.X = GetCurrentArea()->GetXSize() - 1;
-      if(CursorPos.Y > GetCurrentArea()->GetYSize() - 1) CursorPos.Y = 0;
-      if(CursorPos.Y < 0) CursorPos.Y = GetCurrentArea()->GetYSize() - 1;
-
-      if(Handler)
-  Handler(CursorPos);
-    }
-    else if(KeyHandler)
-    {
+      if (CursorPos.X > GetCurrentArea()->GetXSize()-1) CursorPos.X = 0;
+      if (CursorPos.X < 0) CursorPos.X = GetCurrentArea()->GetXSize()-1;
+      if (CursorPos.Y > GetCurrentArea()->GetYSize()-1) CursorPos.Y = 0;
+      if (CursorPos.Y < 0) CursorPos.Y = GetCurrentArea()->GetYSize()-1;
+      if (Handler) Handler(CursorPos);
+    } else if (KeyHandler) {
       CursorPos = KeyHandler(CursorPos, Key);
-
-      if(CursorPos == ERROR_V2 || CursorPos == ABORT_V2)
-      {
-  Return = CursorPos;
-  break;
+      if (CursorPos == ERROR_V2 || CursorPos == ABORT_V2) {
+        Return = CursorPos;
+        break;
       }
     }
 
-    if(CursorPos.X < GetCamera().X + 3 || CursorPos.X >= GetCamera().X + GetScreenXSize() - 3)
+    if (ivanconfig::GetAutoCenterMapOnLook()) {
       UpdateCameraX(CursorPos.X);
-
-    if(CursorPos.Y < GetCamera().Y + 3 || CursorPos.Y >= GetCamera().Y + GetScreenYSize() - 3)
       UpdateCameraY(CursorPos.Y);
+    } else {
+      if (CursorPos.X < GetCamera().X+3 || CursorPos.X >= GetCamera().X+GetScreenXSize()-3) UpdateCameraX(CursorPos.X);
+      if (CursorPos.Y < GetCamera().Y+3 || CursorPos.Y >= GetCamera().Y+GetScreenYSize()-3) UpdateCameraY(CursorPos.Y);
+    }
 
     FONT->Printf(DOUBLE_BUFFER, v2(16, 8), WHITE, "%s", Topic.CStr());
     SetCursorPos(CursorPos);
