@@ -53,14 +53,16 @@ void globalwindowhandler::Init () {
 }
 
 
-void globalwindowhandler::KSDLProcessEvents (void) {
+void globalwindowhandler::KSDLProcessEvents (truth dodelay) {
   SDL_Event Event;
 
   memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
-  while (SDL_PollEvent(&Event)) {
-    ProcessMessage(&Event);
-    memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
-  }
+  if (SDL_PollEvent(&Event)) {
+    while (SDL_PollEvent(&Event)) {
+      ProcessMessage(&Event);
+      memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
+    }
+  } else if (dodelay) SDL_Delay(20);
 }
 
 
@@ -90,14 +92,14 @@ int globalwindowhandler::GetKey (truth EmptyBuffer) {
       if (Key && Key < 0x81) return Key; // if it's an ASCII symbol
     } else {
       if (SDL_GetAppState() & SDL_APPACTIVE && Controls && ControlLoopsEnabled) {
-        KSDLProcessEvents();
+        KSDLProcessEvents(true);
         UpdateTick();
         if (LastTick != Tick) {
           LastTick = Tick;
           truth Draw = false;
           for (int c = 0; c < Controls; ++c) if (ControlLoop[c]()) Draw = true;
           if (Draw) graphics::BlitDBToScreen();
-        } else SDL_Delay(20);
+        }
       } else KSDLWaitEvent();
     }
   }
