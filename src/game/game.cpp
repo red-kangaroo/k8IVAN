@@ -651,7 +651,6 @@ void game::UpdateCameraCoordinate(int& Coordinate, int Center, int Size, int Scr
   else
     Coordinate = Center - (ScreenSize >> 1);
 
-  printf("old: %i, center: %i, new: %i\n", OldCoordinate, Center, Coordinate);
   if(Coordinate != OldCoordinate)
     GetCurrentArea()->SendNewDrawRequest();
 }
