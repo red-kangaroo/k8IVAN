@@ -58,10 +58,10 @@ void globalwindowhandler::KSDLProcessEvents (truth dodelay) {
 
   memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
   if (SDL_PollEvent(&Event)) {
-    while (SDL_PollEvent(&Event)) {
+    do {
       ProcessMessage(&Event);
       memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
-    }
+    } while (SDL_PollEvent(&Event));
   } else if (dodelay) SDL_Delay(20);
 }
 
