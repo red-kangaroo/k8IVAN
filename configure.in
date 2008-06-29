@@ -16,10 +16,10 @@ AM_PATH_SDL($SDL_VERSION,
 
 CFLAGS="$CFLAGS $SDL_CFLAGS "
 LIBS="$LIBS $SDL_LIBS"
-CPPFLAGS="$SDL_CFLAGS -DLINUX -DLOCAL_STATE_DIR=\\\".\\\" -DDATADIR=\\\".\\\" -DUSE_SDL -DGCC"
+CPPFLAGS="$CXXFLAGS $SDL_CFLAGS -DLINUX -DLOCAL_STATE_DIR=\\\".\\\" -DDATADIR=\\\".\\\" -DUSE_SDL -DGCC"
 
 AC_PROG_INSTALL
 
 AC_PROG_RANLIB
 
-AC_OUTPUT(Makefile src/felib/Makefile Script/Makefile Graphics/Makefile src/game/Makefile)
+AC_OUTPUT(Makefile src/Makefile src/felib/Makefile src/game/Makefile Script/Makefile Graphics/Makefile)
