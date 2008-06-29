@@ -1,5 +1,6 @@
 bin_PROGRAMS = ivan
-INCLUDES=-I@top_srcdir@/FeLib/Include -I@top_srcdir@/Main/Include
+INCLUDES=-I@top_srcdir@/src/felib -I@top_srcdir@/src/game
+noinst_HEADERS = action.h actions.h area.h balance.h bodypart.h char.h command.h confdef.h cont.h database.h dungeon.h entity.h fluid.h game.h gear.h god.h gods.h human.h iconf.h id.h igraph.h item.h ivandef.h level.h lock.h iloops.h lsquare.h lterra.h lterras.h materia.h materias.h message.h miscitem.h nonhuman.h object.h pool.h proto.h rain.h room.h rooms.h script.h slot.h smoke.h square.h stack.h team.h terra.h trap.h traps.h worldmap.h wskill.h wsquare.h wterra.h wterras.h
 ivan_SOURCES = actset.cpp areaset.cpp charset.cpp charsset.cpp command.cpp coreset.cpp dataset.cpp dungeon.cpp game.cpp godset.cpp iconf.cpp id.cpp igraph.cpp itemset.cpp levelset.cpp main.cpp materset.cpp message.cpp object.cpp roomset.cpp script.cpp slotset.cpp trapset.cpp wmapset.cpp wskill.cpp
-ivan_LDADD = @top_builddir@/FeLib/Source/libFeLib.a
+ivan_LDADD = @top_builddir@/src/felib/libfelib.a
 EXTRA_DIST = action.cpp actions.cpp area.cpp bodypart.cpp char.cpp cont.cpp database.cpp entity.cpp fluid.cpp gear.cpp god.cpp gods.cpp human.cpp item.cpp level.cpp lsquare.cpp lterra.cpp lterras.cpp materia.cpp materias.cpp miscitem.cpp nonhuman.cpp pool.cpp proto.cpp rain.cpp room.cpp rooms.cpp slot.cpp smoke.cpp square.cpp stack.cpp team.cpp terra.cpp trap.cpp traps.cpp worldmap.cpp wsquare.cpp wterra.cpp wterras.cpp

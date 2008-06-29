@@ -21,6 +21,7 @@ int globalwindowhandler::Controls = 0;
 ulong globalwindowhandler::Tick;
 truth globalwindowhandler::ControlLoopsEnabled = true;
 
+
 void globalwindowhandler::InstallControlLoop (truth (*What)()) {
   if (Controls == MAX_CONTROLS) ABORT("Animation control frenzy!");
   ControlLoop[Controls++] = What;
@@ -63,9 +64,17 @@ void globalwindowhandler::KSDLProcessEvents (void) {
 }
 
 
+void globalwindowhandler::KSDLWaitEvent (void) {
+  SDL_Event Event;
+
+  memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
+  SDL_WaitEvent(&Event);
+  ProcessMessage(&Event);
+}
+
+
 int globalwindowhandler::GetKey (truth EmptyBuffer) {
   static ulong LastTick = 0;
-  SDL_Event Event;
 
   // Flush the buffer
   if (EmptyBuffer) {
@@ -88,12 +97,8 @@ int globalwindowhandler::GetKey (truth EmptyBuffer) {
           truth Draw = false;
           for (int c = 0; c < Controls; ++c) if (ControlLoop[c]()) Draw = true;
           if (Draw) graphics::BlitDBToScreen();
-        } else SDL_Delay(40);
-      } else {
-        memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
-        SDL_WaitEvent(&Event);
-        ProcessMessage(&Event);
-      }
+        } else SDL_Delay(20);
+      } else KSDLWaitEvent();
     }
   }
   // doesn't return here
@@ -101,17 +106,8 @@ int globalwindowhandler::GetKey (truth EmptyBuffer) {
 
 
 int globalwindowhandler::ReadKey () {
-  SDL_Event Event;
-
-  memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
-  if (SDL_GetAppState() & SDL_APPACTIVE) {
-    while (SDL_PollEvent(&Event)) {
-      ProcessMessage(&Event);
-    }
-  } else {
-    SDL_WaitEvent(&Event);
-    ProcessMessage(&Event);
-  }
+  if (SDL_GetAppState() & SDL_APPACTIVE) KSDLProcessEvents();
+  else KSDLWaitEvent();
 
   return KeyBuffer.size() ? GetKey(false) : 0;
 }

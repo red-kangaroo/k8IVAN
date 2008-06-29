@@ -1,0 +1,1 @@
+SUBDIRS = felib game

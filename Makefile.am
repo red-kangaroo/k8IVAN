@@ -1,4 +1,4 @@
-SUBDIRS = FeLib Main Script Graphics
+SUBDIRS = src Script Graphics
 
 EXTRA_DIST = LICENSING
 

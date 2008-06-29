@@ -1,8 +1,8 @@
-AC_INIT(Main/Source/main.cpp)
+AC_INIT(src/game/main.cpp)
 
 AM_PROG_AS 
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE(ivan,0.50)
+AM_INIT_AUTOMAKE(ivan,0.50.1)
 AC_PROG_CC
 
 AC_PROG_CXX
@@ -22,4 +22,4 @@ AC_PROG_INSTALL
 
 AC_PROG_RANLIB
 
-AC_OUTPUT(Makefile FeLib/Makefile FeLib/Include/Makefile FeLib/Source/Makefile Script/Makefile Graphics/Makefile Main/Makefile Main/Include/Makefile Main/Resource/Makefile Main/Source/Makefile)
+AC_OUTPUT(Makefile src/felib/Makefile Script/Makefile Graphics/Makefile src/game/Makefile)

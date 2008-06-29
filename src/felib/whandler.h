@@ -32,6 +32,7 @@ class globalwindowhandler
 {
  public:
   static void KSDLProcessEvents (void);
+  static void KSDLWaitEvent (void);
   static int GetKey(truth = true);
   static int ReadKey();
   static void InstallControlLoop(truth (*)());
