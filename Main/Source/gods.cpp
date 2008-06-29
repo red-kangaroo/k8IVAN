@@ -190,22 +190,22 @@ void dulcis::PrayGoodEffect()
       character* Char = Square->GetCharacter();
 
       if(Char)
-	if(Char->CanHear())
-	  if(Char->CanTameWithDulcis(PLAYER))
-	  {
-	    if(Char->GetTeam() == PLAYER->GetTeam())
-	      ADD_MESSAGE("%s seems to be very happy.", Char->CHAR_DESCRIPTION(DEFINITE));
-	    else if(Char->GetRelation(PLAYER) == HOSTILE)
-	      ADD_MESSAGE("%s stops fighting.", Char->CHAR_DESCRIPTION(DEFINITE));
-	    else
-	      ADD_MESSAGE("%s seems to be very friendly towards you.", Char->CHAR_DESCRIPTION(DEFINITE));
+  if(Char->CanHear())
+    if(Char->CanTameWithDulcis(PLAYER))
+    {
+      if(Char->GetTeam() == PLAYER->GetTeam())
+        ADD_MESSAGE("%s seems to be very happy.", Char->CHAR_DESCRIPTION(DEFINITE));
+      else if(Char->GetRelation(PLAYER) == HOSTILE)
+        ADD_MESSAGE("%s stops fighting.", Char->CHAR_DESCRIPTION(DEFINITE));
+      else
+        ADD_MESSAGE("%s seems to be very friendly towards you.", Char->CHAR_DESCRIPTION(DEFINITE));
 
-	    Char->ChangeTeam(PLAYER->GetTeam());
-	  }
-	  else
-	    ADD_MESSAGE("%s resists its charming call.", Char->CHAR_DESCRIPTION(DEFINITE));
-	else
-	  ADD_MESSAGE("%s seems not affected.", Char->CHAR_DESCRIPTION(DEFINITE));
+      Char->ChangeTeam(PLAYER->GetTeam());
+    }
+    else
+      ADD_MESSAGE("%s resists its charming call.", Char->CHAR_DESCRIPTION(DEFINITE));
+  else
+    ADD_MESSAGE("%s seems not affected.", Char->CHAR_DESCRIPTION(DEFINITE));
     }
   }
 }
@@ -337,25 +337,25 @@ void silva::PrayGoodEffect()
     for(c = 0; c < ToEmpty; ++c)
       for(int i = 0; i < 50; ++i)
       {
-	v2 Pos = game::GetCurrentLevel()->GetRandomSquare(0, NOT_WALKABLE);
-	truth Correct = false;
+  v2 Pos = game::GetCurrentLevel()->GetRandomSquare(0, NOT_WALKABLE);
+  truth Correct = false;
 
-	for(int d = 0; d < 8; ++d)
-	{
-	  lsquare* Square = game::GetCurrentLevel()->GetLSquare(Pos)->GetNeighbourLSquare(d);
+  for(int d = 0; d < 8; ++d)
+  {
+    lsquare* Square = game::GetCurrentLevel()->GetLSquare(Pos)->GetNeighbourLSquare(d);
 
-	  if(Square && Square->IsFlyable())
-	  {
-	    Correct = true;
-	    break;
-	  }
-	}
+    if(Square && Square->IsFlyable())
+    {
+      Correct = true;
+      break;
+    }
+  }
 
-	if(Correct)
-	{
-	  game::GetCurrentLevel()->GetLSquare(Pos)->ChangeOLTerrainAndUpdateLights(0);
-	  break;
-	}
+  if(Correct)
+  {
+    game::GetCurrentLevel()->GetLSquare(Pos)->ChangeOLTerrainAndUpdateLights(0);
+    break;
+  }
       }
 
     int ToGround = 20 + RAND() % 21;
@@ -363,44 +363,44 @@ void silva::PrayGoodEffect()
     for(c = 0; c < ToGround; ++c)
       for(int i = 0; i < 50; ++i)
       {
-	v2 Pos = game::GetCurrentLevel()->GetRandomSquare(0, RAND() & 1 ? 0 : HAS_CHARACTER);
+  v2 Pos = game::GetCurrentLevel()->GetRandomSquare(0, RAND() & 1 ? 0 : HAS_CHARACTER);
 
-	if(Pos == ERROR_V2)
-	  continue;
+  if(Pos == ERROR_V2)
+    continue;
 
-	lsquare* Square = game::GetCurrentLevel()->GetLSquare(Pos);
-	character* Char = Square->GetCharacter();
+  lsquare* Square = game::GetCurrentLevel()->GetLSquare(Pos);
+  character* Char = Square->GetCharacter();
 
-	if(Square->GetOLTerrain() || (Char && (Char->IsPlayer() || PLAYER->GetRelation(Char) != HOSTILE)))
-	  continue;
+  if(Square->GetOLTerrain() || (Char && (Char->IsPlayer() || PLAYER->GetRelation(Char) != HOSTILE)))
+    continue;
 
-	int Walkables = 0;
+  int Walkables = 0;
 
-	for(int d = 0; d < 8; ++d)
-	{
-	  lsquare* NearSquare = game::GetCurrentLevel()->GetLSquare(Pos)->GetNeighbourLSquare(d);
+  for(int d = 0; d < 8; ++d)
+  {
+    lsquare* NearSquare = game::GetCurrentLevel()->GetLSquare(Pos)->GetNeighbourLSquare(d);
 
-	  if(NearSquare && NearSquare->IsFlyable())
-	    ++Walkables;
-	}
+    if(NearSquare && NearSquare->IsFlyable())
+      ++Walkables;
+  }
 
-	if(Walkables > 6)
-	{
-	  Square->ChangeOLTerrainAndUpdateLights(earth::Spawn());
+  if(Walkables > 6)
+  {
+    Square->ChangeOLTerrainAndUpdateLights(earth::Spawn());
 
-	  if(Char)
-	  {
-	    if(Char->CanBeSeenByPlayer())
-	      ADD_MESSAGE("%s is hit by a brick of earth falling from the roof!", Char->CHAR_NAME(DEFINITE));
+    if(Char)
+    {
+      if(Char->CanBeSeenByPlayer())
+        ADD_MESSAGE("%s is hit by a brick of earth falling from the roof!", Char->CHAR_NAME(DEFINITE));
 
-	    Char->ReceiveDamage(0, 20 + RAND() % 21, PHYSICAL_DAMAGE, HEAD|TORSO, 8, true);
-	    Char->CheckDeath(CONST_S("killed by an earthquake"), 0);
-	  }
+      Char->ReceiveDamage(0, 20 + RAND() % 21, PHYSICAL_DAMAGE, HEAD|TORSO, 8, true);
+      Char->CheckDeath(CONST_S("killed by an earthquake"), 0);
+    }
 
-	  Square->KickAnyoneStandingHereAway();
-	  Square->GetStack()->ReceiveDamage(0, 10 + RAND() % 41, PHYSICAL_DAMAGE);
-	  break;
-	}
+    Square->KickAnyoneStandingHereAway();
+    Square->GetStack()->ReceiveDamage(0, 10 + RAND() % 41, PHYSICAL_DAMAGE);
+    break;
+  }
       }
 
     // Generate a few boulders in the level
@@ -415,12 +415,12 @@ void silva::PrayGoodEffect()
 
       if(!Square->GetOLTerrain() && (!MonsterHere || MonsterHere->GetRelation(PLAYER) == HOSTILE))
       {
-	Square->ChangeOLTerrainAndUpdateLights(boulder::Spawn(1 + (RAND() & 1)));
+  Square->ChangeOLTerrainAndUpdateLights(boulder::Spawn(1 + (RAND() & 1)));
 
-	if(MonsterHere)
-	  MonsterHere->ReceiveDamage(0, 10 + RAND() % 10, PHYSICAL_DAMAGE, HEAD|TORSO, 8, true);
+  if(MonsterHere)
+    MonsterHere->ReceiveDamage(0, 10 + RAND() % 10, PHYSICAL_DAMAGE, HEAD|TORSO, 8, true);
 
-	Square->GetStack()->ReceiveDamage(0, 10 + RAND() % 10, PHYSICAL_DAMAGE);
+  Square->GetStack()->ReceiveDamage(0, 10 + RAND() % 10, PHYSICAL_DAMAGE);
       }
     }
 
@@ -428,7 +428,7 @@ void silva::PrayGoodEffect()
 
     for(int x = 0; x < game::GetCurrentLevel()->GetXSize(); ++x)
       for(int y = 0; y < game::GetCurrentLevel()->GetYSize(); ++y)
-	game::GetCurrentLevel()->GetLSquare(x, y)->ReceiveEarthQuakeDamage();
+  game::GetCurrentLevel()->GetLSquare(x, y)->ReceiveEarthQuakeDamage();
   }
   else
   {
@@ -442,8 +442,8 @@ void silva::PrayGoodEffect()
 
       if(Pos == ERROR_V2)
       {
-	delete Wolf;
-	break;
+  delete Wolf;
+  break;
       }
 
       Wolf->SetTeam(PLAYER->GetTeam());
@@ -489,47 +489,47 @@ void loricatus::PrayGoodEffect()
 
       if(Config)
       {
-	int IR = material::GetDataBase(Config)->IntelligenceRequirement - GetRelation() / 50;
+  int IR = material::GetDataBase(Config)->IntelligenceRequirement - GetRelation() / 50;
 
-	if(IR <= 1 || !RAND_N(IR))
-	{
-	  festring Desc;
-	  item* SecondaryWielded;
+  if(IR <= 1 || !RAND_N(IR))
+  {
+    festring Desc;
+    item* SecondaryWielded;
 
-	  if(MainWielded->HandleInPairs() && (SecondaryWielded = PLAYER->GetSecondaryWielded()) && SecondaryWielded->CanBePiledWith(MainWielded, PLAYER))
-	  {
-	    MainWielded->AddName(Desc, PLURAL);
-	    Desc << " glow and sparkle like they were";
+    if(MainWielded->HandleInPairs() && (SecondaryWielded = PLAYER->GetSecondaryWielded()) && SecondaryWielded->CanBePiledWith(MainWielded, PLAYER))
+    {
+      MainWielded->AddName(Desc, PLURAL);
+      Desc << " glow and sparkle like they were";
 
-	    if(SecondaryWielded->GetSecondaryMaterial() && SecondaryWielded->GetSecondaryMaterial()->IsSameAs(MainWielded->GetMainMaterial()))
-	      SecondaryWielded->ChangeSecondaryMaterial(MAKE_MATERIAL(Config));
+      if(SecondaryWielded->GetSecondaryMaterial() && SecondaryWielded->GetSecondaryMaterial()->IsSameAs(MainWielded->GetMainMaterial()))
+        SecondaryWielded->ChangeSecondaryMaterial(MAKE_MATERIAL(Config));
 
-	    SecondaryWielded->ChangeMainMaterial(MAKE_MATERIAL(Config));
-	  }
-	  else
-	  {
-	    MainWielded->AddName(Desc, UNARTICLED);
-	    Desc << " glows and sparkles like it was";
-	  }
+      SecondaryWielded->ChangeMainMaterial(MAKE_MATERIAL(Config));
+    }
+    else
+    {
+      MainWielded->AddName(Desc, UNARTICLED);
+      Desc << " glows and sparkles like it was";
+    }
 
-	  if(MainWielded->GetSecondaryMaterial() && MainWielded->GetSecondaryMaterial()->IsSameAs(MainWielded->GetMainMaterial()))
-	    MainWielded->ChangeSecondaryMaterial(MAKE_MATERIAL(Config));
+    if(MainWielded->GetSecondaryMaterial() && MainWielded->GetSecondaryMaterial()->IsSameAs(MainWielded->GetMainMaterial()))
+      MainWielded->ChangeSecondaryMaterial(MAKE_MATERIAL(Config));
 
-	  MainWielded->ChangeMainMaterial(MAKE_MATERIAL(Config));
-	  ADD_MESSAGE("Your %s reforged by invisible hands.", Desc.CStr());
-	  return;
-	}
+    MainWielded->ChangeMainMaterial(MAKE_MATERIAL(Config));
+    ADD_MESSAGE("Your %s reforged by invisible hands.", Desc.CStr());
+    return;
+  }
       }
 
       if(!(RAND() % 10))
       {
-	item* Scroll = scrollofrepair::Spawn();
-	ADD_MESSAGE("%s gives you %s.", GetName(), Scroll->CHAR_NAME(INDEFINITE));
-	PLAYER->GetGiftStack()->AddItem(Scroll);
-	return;
+  item* Scroll = scrollofrepair::Spawn();
+  ADD_MESSAGE("%s gives you %s.", GetName(), Scroll->CHAR_NAME(INDEFINITE));
+  PLAYER->GetGiftStack()->AddItem(Scroll);
+  return;
       }
       else
-	ADD_MESSAGE("\"Mortal, thou art always my valiant knight!\"");
+  ADD_MESSAGE("\"Mortal, thou art always my valiant knight!\"");
     }
   }
 
@@ -563,14 +563,14 @@ void loricatus::PrayBadEffect()
 
       if(MainWielded->HandleInPairs() && (SecondaryWielded = PLAYER->GetSecondaryWielded()) && SecondaryWielded->CanBePiledWith(MainWielded, PLAYER))
       {
-	MainWielded->AddName(Desc, PLURAL);
-	Desc << " vibrate and soften";
-	SecondaryWielded->ChangeMainMaterial(MAKE_MATERIAL(BANANA_FLESH));
+  MainWielded->AddName(Desc, PLURAL);
+  Desc << " vibrate and soften";
+  SecondaryWielded->ChangeMainMaterial(MAKE_MATERIAL(BANANA_FLESH));
       }
       else
       {
-	MainWielded->AddName(Desc, UNARTICLED);
-	Desc << " vibrates and softens";
+  MainWielded->AddName(Desc, UNARTICLED);
+  Desc << " vibrates and softens";
       }
 
       MainWielded->ChangeMainMaterial(MAKE_MATERIAL(BANANA_FLESH));
@@ -666,7 +666,7 @@ void mellis::PrayGoodEffect()
 
     for(int c = 1; c <= GODS; ++c)
       if(!game::GetGod(c)->IsKnown())
-	Possible[PossibleSize++] = c;
+  Possible[PossibleSize++] = c;
 
     if(PossibleSize)
     {
@@ -706,7 +706,7 @@ void valpurus::Pray()
       character* Angel = CreateAngel(PLAYER->GetTeam());
 
       if(Angel)
-	ADD_MESSAGE("%s seems to be very friendly towards you.", Angel->CHAR_DESCRIPTION(DEFINITE));
+  ADD_MESSAGE("%s seems to be very friendly towards you.", Angel->CHAR_DESCRIPTION(DEFINITE));
     }
   }
   else if(Relation < 0 || (!TryToAttachBodyPart(PLAYER) && !TryToHardenBodyPart(PLAYER)))
@@ -723,7 +723,7 @@ void valpurus::Pray()
       character* Angel = CreateAngel(game::GetTeam(4), 10000);
 
       if(Angel)
-	ADD_MESSAGE("%s seems to be hostile.", Angel->CHAR_DESCRIPTION(DEFINITE));
+  ADD_MESSAGE("%s seems to be hostile.", Angel->CHAR_DESCRIPTION(DEFINITE));
     }
   }
 }
@@ -744,7 +744,7 @@ void mortifer::Pray()
       character* Angel = CreateAngel(PLAYER->GetTeam());
 
       if(Angel)
-	ADD_MESSAGE("%s seems to be very friendly towards you.", Angel->CHAR_DESCRIPTION(DEFINITE));
+  ADD_MESSAGE("%s seems to be very friendly towards you.", Angel->CHAR_DESCRIPTION(DEFINITE));
     }
   }
   else
@@ -761,7 +761,7 @@ void mortifer::Pray()
       character* Angel = CreateAngel(game::GetTeam(4), 10000);
 
       if(Angel)
-	ADD_MESSAGE("%s seems to be hostile.", Angel->CHAR_DESCRIPTION(DEFINITE));
+  ADD_MESSAGE("%s seems to be hostile.", Angel->CHAR_DESCRIPTION(DEFINITE));
     }
   }
 }
@@ -786,8 +786,8 @@ void nefas::PrayGoodEffect()
 
       if(Audience && Audience->CanBeSeenByPlayer() && !Audience->TemporaryStateIsActivated(CONFUSED) && Audience->CanBeConfused() && PLAYER->GetRelation(Audience) == HOSTILE)
       {
-	AudiencePresent = true;
-	break;
+  AudiencePresent = true;
+  break;
       }
     }
 
@@ -800,15 +800,15 @@ void nefas::PrayGoodEffect()
     for(int x = Rect.X1; x <= Rect.X2; ++x)
       for(int y = Rect.Y1; y <= Rect.Y2; ++y)
       {
-	character* Audience = game::GetCurrentLevel()->GetSquare(x, y)->GetCharacter();
+  character* Audience = game::GetCurrentLevel()->GetSquare(x, y)->GetCharacter();
 
-	if(Audience && !Audience->TemporaryStateIsActivated(CONFUSED) && Audience->CanBeConfused() && PLAYER->GetRelation(Audience) == HOSTILE)
-	{
-	  if(Audience->CanBeSeenByPlayer())
-	    ADD_MESSAGE("%s confuses %s with her sweet lies.", GetName(), Audience->CHAR_NAME(DEFINITE));
+  if(Audience && !Audience->TemporaryStateIsActivated(CONFUSED) && Audience->CanBeConfused() && PLAYER->GetRelation(Audience) == HOSTILE)
+  {
+    if(Audience->CanBeSeenByPlayer())
+      ADD_MESSAGE("%s confuses %s with her sweet lies.", GetName(), Audience->CHAR_NAME(DEFINITE));
 
-	  Audience->BeginTemporaryState(CONFUSED, 500 + RAND() % 500);
-	}
+    Audience->BeginTemporaryState(CONFUSED, 500 + RAND() % 500);
+  }
       }
   }
 
@@ -846,13 +846,13 @@ void scabies::PrayGoodEffect()
   {
     for(int c = 0; c < game::GetTeams(); ++c)
       if(PLAYER->GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE)
-	for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-	{
-	  character* Char = *i;
+  for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
+  {
+    character* Char = *i;
 
-	  if((*i)->IsEnabled() && !Char->IsImmuneToLeprosy())
-	    Char->GainIntrinsic(LEPROSY);
-	}
+    if((*i)->IsEnabled() && !Char->IsImmuneToLeprosy())
+      Char->GainIntrinsic(LEPROSY);
+  }
 
     ADD_MESSAGE("You feel a a horrible disease spreading.");
     return;
@@ -956,8 +956,8 @@ void cruentus::PrayGoodEffect()
 
       if(Audience && Audience->CanBeSeenByPlayer() && !Audience->TemporaryStateIsActivated(PANIC) && PLAYER->GetRelation(Audience) == HOSTILE)
       {
-	AudiencePresent = true;
-	break;
+  AudiencePresent = true;
+  break;
       }
     }
 
@@ -972,13 +972,13 @@ void cruentus::PrayGoodEffect()
     for(int x = Rect.X1; x <= Rect.X2; ++x)
       for(int y = Rect.Y1; y <= Rect.Y2; ++y)
       {
-	character* Audience = game::GetCurrentLevel()->GetSquare(x, y)->GetCharacter();
+  character* Audience = game::GetCurrentLevel()->GetSquare(x, y)->GetCharacter();
 
-	if(Audience
-	   && !Audience->TemporaryStateIsActivated(PANIC)
-	   && PLAYER->GetRelation(Audience) == HOSTILE
-	   && Audience->GetPanicLevel() > RAND() % 33)
-	  Audience->BeginTemporaryState(PANIC, 500 + RAND() % 500);
+  if(Audience
+     && !Audience->TemporaryStateIsActivated(PANIC)
+     && PLAYER->GetRelation(Audience) == HOSTILE
+     && Audience->GetPanicLevel() > RAND() % 33)
+    Audience->BeginTemporaryState(PANIC, 500 + RAND() % 500);
       }
 
     return;
@@ -1020,7 +1020,7 @@ void cruentus::PrayBadEffect()
       ToBe = PLAYER->GetSecondaryWielded();
 
       if(!ToBe || !ToBe->IsDestroyable(0))
-	ADD_MESSAGE("%s tries to destroy your %s, but fails.", GetName(), PLAYER->GetMainWielded()->CHAR_NAME(UNARTICLED));
+  ADD_MESSAGE("%s tries to destroy your %s, but fails.", GetName(), PLAYER->GetMainWielded()->CHAR_NAME(UNARTICLED));
     }
   }
   else

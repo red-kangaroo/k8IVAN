@@ -1068,7 +1068,7 @@ class character : public entity, public id
   void ReceiveMustardGasLiquid(int, long);
   truth IsBadPath(v2) const;
   double& GetExpModifierRef(expid);
-  truth ForgetRandomThing(); 
+  truth ForgetRandomThing();
   void ApplyAllGodsKnownBonus();
   item* GiveMostExpensiveItem(character*);
   void ReceiveItemAsPresent(item*);
@@ -1201,8 +1201,8 @@ class character : public entity, public id
 #define CHARACTER_PROTO(name, base)\
 template<> const characterprototype\
   name##sysbase::ProtoType(&base::ProtoType,\
-			   (characterspawner)(&name##sysbase::Spawn),\
-			   (charactercloner)(&name##sysbase::Clone), #name);
+         (characterspawner)(&name##sysbase::Spawn),\
+         (charactercloner)(&name##sysbase::Clone), #name);
 #else
 #define CHARACTER_PROTO(name, base)
 #endif

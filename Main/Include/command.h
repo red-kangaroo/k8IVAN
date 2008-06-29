@@ -24,6 +24,7 @@ class command
   truth (*GetLinkedFunction() const)(character*) { return LinkedFunction; }
   cchar* GetDescription() const { return Description; }
   char GetKey() const;
+  void SetKeys (char k1, char k2) { Key1 = k1; Key2 = k2; }
   truth IsUsableInWilderness() const { return UsableInWilderness; }
   truth IsWizardModeFunction() const { return WizardModeFunction; }
  private:
@@ -39,7 +40,8 @@ class commandsystem
 {
  public:
   static command* GetCommand(int I) { return Command[I]; }
- private:
+ /*k8 private:*/
+  static void ConfigureKeys();
   static truth Apply(character*);
   static truth Close(character*);
   static truth Eat(character*);

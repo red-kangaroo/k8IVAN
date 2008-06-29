@@ -27,29 +27,29 @@ void organic::Be(ulong Flags)
     if(MotherEntity->AllowSpoil())
     {
       if(Flags & HASTE)
-	SpoilCounter += 125;
+  SpoilCounter += 125;
       else if(Flags & SLOW)
-	SpoilCounter += 5;
+  SpoilCounter += 5;
       else
-	SpoilCounter += 25;
+  SpoilCounter += 25;
 
       if(SpoilCounter < GetSpoilModifier())
       {
-	if(SpoilCounter << 1 >= GetSpoilModifier())
-	{
-	  int NewSpoilLevel = ((SpoilCounter << 4) / GetSpoilModifier()) - 7;
+  if(SpoilCounter << 1 >= GetSpoilModifier())
+  {
+    int NewSpoilLevel = ((SpoilCounter << 4) / GetSpoilModifier()) - 7;
 
-	  if(NewSpoilLevel != SpoilLevel)
-	  {
-	    SpoilLevel = NewSpoilLevel;
-	    MotherEntity->SignalSpoilLevelChange(this);
-	  }
-	}
+    if(NewSpoilLevel != SpoilLevel)
+    {
+      SpoilLevel = NewSpoilLevel;
+      MotherEntity->SignalSpoilLevelChange(this);
+    }
+  }
       }
       else
       {
-	SpoilLevel = 8;
-	MotherEntity->SignalSpoil(this);
+  SpoilLevel = 8;
+  MotherEntity->SignalSpoil(this);
       }
     }
 
@@ -168,8 +168,8 @@ void organic::SetSpoilCounter(int What)
 
       if(NewSpoilLevel != SpoilLevel)
       {
-	SpoilLevel = NewSpoilLevel;
-	MotherEntity->SignalSpoilLevelChange(this);
+  SpoilLevel = NewSpoilLevel;
+  MotherEntity->SignalSpoilLevelChange(this);
       }
     }
   }

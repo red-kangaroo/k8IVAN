@@ -356,7 +356,7 @@ ITEM(acidshield, shield)
 {
  public:
   virtual void BlockEffect(character*, character*, item*, int Type);
-}; 
+};
 
 ITEM(chastitybelt, lockablebelt)
 {

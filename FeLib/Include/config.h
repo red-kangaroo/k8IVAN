@@ -66,12 +66,12 @@ struct configoption
 struct stringoption : public configoption
 {
   stringoption(cchar*, cchar*, cfestring&,
-	       void (*)(const stringoption*, festring&)
-	       = &configsystem::NormalStringDisplayer,
-	       truth (*)(stringoption*)
-	       = &configsystem::NormalStringChangeInterface,
-	       void (*)(stringoption*, cfestring&)
-	       = &configsystem::NormalStringChanger);
+         void (*)(const stringoption*, festring&)
+         = &configsystem::NormalStringDisplayer,
+         truth (*)(stringoption*)
+         = &configsystem::NormalStringChangeInterface,
+         void (*)(stringoption*, cfestring&)
+         = &configsystem::NormalStringChanger);
   virtual void SaveValue(std::ofstream&) const;
   virtual void LoadValue(inputfile&);
   virtual void DisplayeValue(festring& Entry) const
@@ -87,12 +87,12 @@ struct stringoption : public configoption
 struct numberoption : public configoption
 {
   numberoption(cchar*, cchar*, long,
-	       void (*)(const numberoption*, festring&)
-	       = &configsystem::NormalNumberDisplayer,
-	       truth (*)(numberoption*)
-	       = &configsystem::NormalNumberChangeInterface,
-	       void (*)(numberoption*, long)
-	       = &configsystem::NormalNumberChanger);
+         void (*)(const numberoption*, festring&)
+         = &configsystem::NormalNumberDisplayer,
+         truth (*)(numberoption*)
+         = &configsystem::NormalNumberChangeInterface,
+         void (*)(numberoption*, long)
+         = &configsystem::NormalNumberChanger);
   virtual void SaveValue(std::ofstream&) const;
   virtual void LoadValue(inputfile&);
   virtual void DisplayeValue(festring& Entry) const
@@ -108,23 +108,23 @@ struct numberoption : public configoption
 struct scrollbaroption : public numberoption
 {
   scrollbaroption(cchar*, cchar*, long,
-		  void (*)(const numberoption*, festring&),
-		  truth (*)(numberoption*),
-		  void (*)(numberoption*, long)
-		  = &configsystem::NormalNumberChanger,
-		  void (*)(long) = 0);
+      void (*)(const numberoption*, festring&),
+      truth (*)(numberoption*),
+      void (*)(numberoption*, long)
+      = &configsystem::NormalNumberChanger,
+      void (*)(long) = 0);
   void (*BarHandler)(long);
 };
 
 struct truthoption : public configoption
 {
   truthoption(cchar*, cchar*, truth,
-	      void (*)(const truthoption*, festring&)
-	      = &configsystem::NormalTruthDisplayer,
-	      truth (*)(truthoption*)
-	      = &configsystem::NormalTruthChangeInterface,
-	      void (*)(truthoption*, truth)
-	      = &configsystem::NormalTruthChanger);
+        void (*)(const truthoption*, festring&)
+        = &configsystem::NormalTruthDisplayer,
+        truth (*)(truthoption*)
+        = &configsystem::NormalTruthChangeInterface,
+        void (*)(truthoption*, truth)
+        = &configsystem::NormalTruthChanger);
   virtual void SaveValue(std::ofstream&) const;
   virtual void LoadValue(inputfile&);
   virtual void DisplayeValue(festring& Entry) const

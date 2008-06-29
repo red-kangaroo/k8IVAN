@@ -231,7 +231,7 @@ OLTERRAIN(coffin, olterraincontainer)
 {
  public:
   virtual truth Open(character*);
-  virtual void coffin::Break();
+  virtual void /*coffin::*/Break();
  protected:
   virtual void GenerateGhost(lsquare*);
 };

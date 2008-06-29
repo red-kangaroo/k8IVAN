@@ -18,52 +18,55 @@
 #include "bitmap.h"
 #include "igraph.h"
 
-stringoption ivanconfig::DefaultName(	  "DefaultName",
-					  "player's default name",
-					  "",
-					  &configsystem::NormalStringDisplayer,
-					  &DefaultNameChangeInterface);
+stringoption ivanconfig::DefaultName(   "DefaultName",
+            "player's default name",
+            "",
+            &configsystem::NormalStringDisplayer,
+            &DefaultNameChangeInterface);
 stringoption ivanconfig::DefaultPetName(  "DefaultPetName",
-					  "starting pet's default name",
-					  CONST_S("Kenny"),
-					  &configsystem::NormalStringDisplayer,
-					  &DefaultPetNameChangeInterface);
+            "starting pet's default name",
+            CONST_S("Kenny"),
+            &configsystem::NormalStringDisplayer,
+            &DefaultPetNameChangeInterface);
 numberoption ivanconfig::AutoSaveInterval("AutoSaveInterval",
-					  "autosave interval",
-					  100,
-					  &AutoSaveIntervalDisplayer,
-					  &AutoSaveIntervalChangeInterface,
-					  &AutoSaveIntervalChanger);
-scrollbaroption ivanconfig::Contrast(	  "Contrast",
-					  "contrast",
-					  100,
-					  &ContrastDisplayer,
-					  &ContrastChangeInterface,
-					  &ContrastChanger,
-					  &ContrastHandler);
-truthoption ivanconfig::WarnAboutDanger(	  "WarnAboutVeryDangerousMonsters",
-						  "Warn about very dangerous monsters",
-						  true);
+            "autosave interval",
+            100,
+            &AutoSaveIntervalDisplayer,
+            &AutoSaveIntervalChangeInterface,
+            &AutoSaveIntervalChanger);
+scrollbaroption ivanconfig::Contrast(   "Contrast",
+            "contrast",
+            100,
+            &ContrastDisplayer,
+            &ContrastChangeInterface,
+            &ContrastChanger,
+            &ContrastHandler);
+truthoption ivanconfig::WarnAboutDanger(    "WarnAboutVeryDangerousMonsters",
+              "Warn about very dangerous monsters",
+              true);
 truthoption ivanconfig::AutoDropLeftOvers( "AutoDropLeftOvers",
-					   "drop food leftovers automatically",
-					   true);
-truthoption ivanconfig::LookZoom(	  "LookZoom",
-					  "zoom feature in look mode",
-					  false);
+             "drop food leftovers automatically",
+             true);
+truthoption ivanconfig::LookZoom(   "LookZoom",
+            "zoom feature in look mode",
+            false);
 truthoption ivanconfig::UseAlternativeKeys("UseAlternativeKeys",
-					   "use alternative direction keys",
-					   false);
-truthoption ivanconfig::BeNice(		  "BeNice",
-					  "be nice to pets",
-					  true);
+             "use alternative direction keys",
+             false);
+truthoption ivanconfig::BeNice(     "BeNice",
+            "be nice to pets",
+            true);
 #ifndef __DJGPP__
-truthoption ivanconfig::FullScreenMode(	  "FullScreenMode",
-					  "run the game in full screen mode",
-					  false,
-					  &configsystem::NormalTruthDisplayer,
-					  &configsystem::NormalTruthChangeInterface,
-					  &FullScreenModeChanger);
+truthoption ivanconfig::FullScreenMode(   "FullScreenMode",
+            "run the game in full screen mode",
+            false,
+            &configsystem::NormalTruthDisplayer,
+            &configsystem::NormalTruthChangeInterface,
+            &FullScreenModeChanger);
 #endif
+/*k8*/
+truthoption ivanconfig::KickDownDoors("KickDownDoors", "Kick down doors by default", false );
+/*k8*/
 col24 ivanconfig::ContrastLuminance = NORMAL_LUMINANCE;
 
 v2 ivanconfig::GetQuestionPos() { return game::IsRunning() ? v2(16, 6) : v2(30, 30); }
@@ -203,6 +206,9 @@ void ivanconfig::Initialize()
 #ifndef __DJGPP__
   configsystem::AddOption(&FullScreenMode);
 #endif
+/*k8*/
+  configsystem::AddOption(&KickDownDoors);
+/*k8*/
 #if defined(WIN32) || defined(__DJGPP__)
   configsystem::SetConfigFileName("ivan.cfg");
 #else

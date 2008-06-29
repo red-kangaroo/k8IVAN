@@ -34,6 +34,7 @@ class ivanconfig
 #else
   static truth GetFullScreenMode() { return true; }
 #endif
+  static truth GetKickDownDoors() { return KickDownDoors.Value; }
   static long ApplyContrastTo(long);
   static void Save() { configsystem::Save(); }
   static void Load() { configsystem::Load(); }
@@ -68,6 +69,9 @@ class ivanconfig
 #ifndef __DJGPP__
   static truthoption FullScreenMode;
 #endif
+  /*k8*/
+  static truthoption KickDownDoors;
+  /*k8*/
   static col24 ContrastLuminance;
 };
 
@@ -79,8 +83,8 @@ inline long ivanconfig::ApplyContrastTo(long L)
     return L;
   else
     return MakeRGB24(41 * GetRed24(L) * C >> 12,
-		     41 * GetGreen24(L) * C >> 12,
-		     41 * GetBlue24(L) * C >> 12);
+         41 * GetGreen24(L) * C >> 12,
+         41 * GetBlue24(L) * C >> 12);
 }
 
 #endif

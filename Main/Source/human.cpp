@@ -75,23 +75,23 @@ truth ennerbeast::Hit(character* Enemy, v2, int, int)
 
       if(ScreamStrength)
       {
-	character* Char = GetNearSquare(x, y)->GetCharacter();
+  character* Char = GetNearSquare(x, y)->GetCharacter();
 
-	if(Char && Char != this)
-	{
-	  msgsystem::EnterBigMessageMode();
+  if(Char && Char != this)
+  {
+    msgsystem::EnterBigMessageMode();
 
-	  if(Char->IsPlayer())
-	    ADD_MESSAGE("You are hit by the horrible waves of high sound.");
-	  else if(Char->CanBeSeenByPlayer())
-	    ADD_MESSAGE("%s is hit by the horrible waves of high sound.", Char->CHAR_NAME(DEFINITE));
+    if(Char->IsPlayer())
+      ADD_MESSAGE("You are hit by the horrible waves of high sound.");
+    else if(Char->CanBeSeenByPlayer())
+      ADD_MESSAGE("%s is hit by the horrible waves of high sound.", Char->CHAR_NAME(DEFINITE));
 
-	  Char->ReceiveDamage(this, ScreamStrength, SOUND, ALL, YOURSELF, true);
-	  Char->CheckDeath(CONST_S("killed @bkp scream"), this);
-	  msgsystem::LeaveBigMessageMode();
-	}
+    Char->ReceiveDamage(this, ScreamStrength, SOUND, ALL, YOURSELF, true);
+    Char->CheckDeath(CONST_S("killed @bkp scream"), this);
+    msgsystem::LeaveBigMessageMode();
+  }
 
-	GetNearLSquare(x, y)->GetStack()->ReceiveDamage(this, ScreamStrength, SOUND);
+  GetNearLSquare(x, y)->GetStack()->ReceiveDamage(this, ScreamStrength, SOUND);
       }
     }
 
@@ -141,16 +141,16 @@ void humanoid::Load(inputfile& SaveFile)
     for(std::list<sweaponskill*>::iterator i = SWeaponSkill.begin(); i != SWeaponSkill.end(); ++i)
       if((*i)->IsSkillOf(GetRightWielded()))
       {
-	SetCurrentRightSWeaponSkill(*i);
-	break;
+  SetCurrentRightSWeaponSkill(*i);
+  break;
       }
 
   if(GetLeftWielded())
     for(std::list<sweaponskill*>::iterator i = SWeaponSkill.begin(); i != SWeaponSkill.end(); ++i)
       if((*i)->IsSkillOf(GetLeftWielded()))
       {
-	SetCurrentLeftSWeaponSkill(*i);
-	break;
+  SetCurrentLeftSWeaponSkill(*i);
+  break;
       }
 }
 
@@ -233,10 +233,10 @@ void petrus::GetAICommand()
 
       if(Square)
       {
-	character* Char = Square->GetCharacter();
+  character* Char = Square->GetCharacter();
 
-	if(Char && GetRelation(Char) == FRIEND && HealFully(Char))
-	  return;
+  if(Char && GetRelation(Char) == FRIEND && HealFully(Char))
+    return;
       }
     }
 
@@ -254,14 +254,14 @@ truth petrus::HealFully(character* ToBeHealed)
 
       for(std::list<ulong>::const_iterator i = ToBeHealed->GetOriginalBodyPartID(c).begin(); i != ToBeHealed->GetOriginalBodyPartID(c).end(); ++i)
       {
-	BodyPart = static_cast<bodypart*>(ToBeHealed->SearchForItem(*i));
+  BodyPart = static_cast<bodypart*>(ToBeHealed->SearchForItem(*i));
 
-	if(BodyPart)
-	  break;
+  if(BodyPart)
+    break;
       }
 
       if(!BodyPart || !BodyPart->CanRegenerate())
-	continue;
+  continue;
 
       BodyPart->RemoveFromSlot();
       ToBeHealed->AttachBodyPart(BodyPart);
@@ -269,9 +269,9 @@ truth petrus::HealFully(character* ToBeHealed)
       DidSomething = true;
 
       if(ToBeHealed->IsPlayer())
-	ADD_MESSAGE("%s attaches your old %s back and heals it.", CHAR_NAME(DEFINITE), BodyPart->GetBodyPartName().CStr());
+  ADD_MESSAGE("%s attaches your old %s back and heals it.", CHAR_NAME(DEFINITE), BodyPart->GetBodyPartName().CStr());
       else if(CanBeSeenByPlayer())
-	ADD_MESSAGE("%s attaches the old %s of %s back and heals it.", CHAR_NAME(DEFINITE), BodyPart->GetBodyPartName().CStr(), ToBeHealed->CHAR_DESCRIPTION(DEFINITE));
+  ADD_MESSAGE("%s attaches the old %s of %s back and heals it.", CHAR_NAME(DEFINITE), BodyPart->GetBodyPartName().CStr(), ToBeHealed->CHAR_DESCRIPTION(DEFINITE));
     }
 
   if(ToBeHealed->IsInBadCondition())
@@ -326,9 +326,9 @@ item* humanoid::GetMainWielded() const
       return GetMainArm()->GetWielded();
     else
       if(GetSecondaryArm())
-	return GetSecondaryArm()->GetWielded();
+  return GetSecondaryArm()->GetWielded();
       else
-	return 0;
+  return 0;
   else
     if(GetSecondaryArm())
       return GetSecondaryArm()->GetWielded();
@@ -392,33 +392,33 @@ truth humanoid::Hit(character* Enemy, v2 HitPos, int Direction, int Flags)
 
       if(RAND() & 1)
       {
-	FirstArm = GetRightArm();
-	SecondArm = GetLeftArm();
+  FirstArm = GetRightArm();
+  SecondArm = GetLeftArm();
       }
       else
       {
-	FirstArm = GetLeftArm();
-	SecondArm = GetRightArm();
+  FirstArm = GetLeftArm();
+  SecondArm = GetRightArm();
       }
 
       int Strength = Max(GetAttribute(ARM_STRENGTH), 1);
 
       if(FirstArm && FirstArm->GetDamage() && (!(Flags & SADIST_HIT) || FirstArm->HasSadistWeapon()))
       {
-	FirstAPCost = FirstArm->GetAPCost();
-	FirstArm->Hit(Enemy, HitPos, Direction, Flags);
+  FirstAPCost = FirstArm->GetAPCost();
+  FirstArm->Hit(Enemy, HitPos, Direction, Flags);
 
-	if(StateIsActivated(LEPROSY) && !RAND_N(25 * GetAttribute(ENDURANCE)))
-	  DropBodyPart(FirstArm->GetBodyPartIndex());
+  if(StateIsActivated(LEPROSY) && !RAND_N(25 * GetAttribute(ENDURANCE)))
+    DropBodyPart(FirstArm->GetBodyPartIndex());
       }
 
       if(!GetAction() && IsEnabled() && Enemy->IsEnabled() && SecondArm && SecondArm->GetDamage() && (!(Flags & SADIST_HIT) || SecondArm->HasSadistWeapon()))
       {
-	SecondAPCost = SecondArm->GetAPCost();
-	SecondArm->Hit(Enemy, HitPos, Direction, Flags);
+  SecondAPCost = SecondArm->GetAPCost();
+  SecondArm->Hit(Enemy, HitPos, Direction, Flags);
 
-	if(StateIsActivated(LEPROSY) && !RAND_N(25 * GetAttribute(ENDURANCE)))
-	  DropBodyPart(SecondArm->GetBodyPartIndex());
+  if(StateIsActivated(LEPROSY) && !RAND_N(25 * GetAttribute(ENDURANCE)))
+    DropBodyPart(SecondArm->GetBodyPartIndex());
       }
 
       EditNP(-50);
@@ -435,7 +435,7 @@ truth humanoid::Hit(character* Enemy, v2 HitPos, int Direction, int Flags)
       Kick(GetNearLSquare(HitPos), Direction, Flags & SADIST_HIT);
 
       if(StateIsActivated(LEPROSY) && !RAND_N(25 * GetAttribute(ENDURANCE)))
-	DropBodyPart(RAND_2 ? RIGHT_LEG_INDEX : LEFT_LEG_INDEX);
+  DropBodyPart(RAND_2 ? RIGHT_LEG_INDEX : LEFT_LEG_INDEX);
 
       msgsystem::LeaveBigMessageMode();
       return true;
@@ -535,9 +535,9 @@ void petrus::BeTalkedTo()
     if(game::TruthQuestion(CONST_S("Will you give the Shirt of the Golden Eagle to Petrus? [y/n]"), REQUIRES_ANSWER))
     {
       game::TextScreen(CONST_S( "The Holy Shirt is returned to its old owner and you kneel down to receive your reward.\n"
-				"Petrus taps your shoulder with the Justifier and raises you to nobility. Later you\n"
-				"receive a small dukedom in the middle of tundra where you rule with justice till\n"
-				"the end of your content life.\n\nYou are victorious!"));
+        "Petrus taps your shoulder with the Justifier and raises you to nobility. Later you\n"
+        "receive a small dukedom in the middle of tundra where you rule with justice till\n"
+        "the end of your content life.\n\nYou are victorious!"));
 
       game::GetCurrentArea()->SendNewDrawRequest();
       game::DrawEverything();
@@ -565,10 +565,10 @@ void petrus::BeTalkedTo()
 
   if(PLAYER->HasHeadOfElpuri())
   {
-    game::TextScreen(CONST_S(	"You have slain Elpuri, and Petrus grants you the freedom you desire.\n"
-				"You spend the next months in Attnam as an honored hero and when the\n"
-				"sea finally melts, you board the first ship, leaving your past forever\n"
-				"behind.\n\nYou are victorious!"));
+    game::TextScreen(CONST_S( "You have slain Elpuri, and Petrus grants you the freedom you desire.\n"
+        "You spend the next months in Attnam as an honored hero and when the\n"
+        "sea finally melts, you board the first ship, leaving your past forever\n"
+        "behind.\n\nYou are victorious!"));
 
     game::GetCurrentArea()->SendNewDrawRequest();
     game::DrawEverything();
@@ -583,59 +583,59 @@ void petrus::BeTalkedTo()
     {
       if(PLAYER->RemoveEncryptedScroll())
       {
-	game::TextScreen(CONST_S(	"You kneel down and bow before the high priest and hand him the encrypted scroll.\n"
-					"Petrus raises his arm, the scroll glows yellow, and lo! The letters are clear and\n"
-					"readable. Petrus asks you to voice them aloud. The first two thousand words praise\n"
-					"Valpurus the Creator and all His manifestations and are followed by a canticle of\n"
-					"Saint Petrus the Lion-Hearted lasting roughly three thousand words. Finally there\n"
-					"are some sentences actually concerning your mission:\n\n"
-					"\"Alas, I fear dirty tongues have spread lies to my Lord's ears. I assure all tales\n"
-					"of treasures here in New Attnam are but mythic legends. There is nothing of value here.\n"
-					"The taxes are already an unbearable burden and I can't possibly pay more. However I do\n"
-					"not question the wisdom of the government's decisions. I will contribute what I can:\n"
-					"the ostriches will deliver an extra 10000 bananas to the capital and additionally the\n"
-					"slave that brought the message will henceforth be at Your disposal. I am certain this\n"
-					"satisfies the crown's needs.\"\n\n"
-					"\"Yours sincerely,\n"
-					"Richel Decos, the viceroy of New Attnam\""));
+  game::TextScreen(CONST_S( "You kneel down and bow before the high priest and hand him the encrypted scroll.\n"
+          "Petrus raises his arm, the scroll glows yellow, and lo! The letters are clear and\n"
+          "readable. Petrus asks you to voice them aloud. The first two thousand words praise\n"
+          "Valpurus the Creator and all His manifestations and are followed by a canticle of\n"
+          "Saint Petrus the Lion-Hearted lasting roughly three thousand words. Finally there\n"
+          "are some sentences actually concerning your mission:\n\n"
+          "\"Alas, I fear dirty tongues have spread lies to my Lord's ears. I assure all tales\n"
+          "of treasures here in New Attnam are but mythic legends. There is nothing of value here.\n"
+          "The taxes are already an unbearable burden and I can't possibly pay more. However I do\n"
+          "not question the wisdom of the government's decisions. I will contribute what I can:\n"
+          "the ostriches will deliver an extra 10000 bananas to the capital and additionally the\n"
+          "slave that brought the message will henceforth be at Your disposal. I am certain this\n"
+          "satisfies the crown's needs.\"\n\n"
+          "\"Yours sincerely,\n"
+          "Richel Decos, the viceroy of New Attnam\""));
 
-	game::TextScreen(CONST_S(	"You almost expected the last bit. Petrus seems to be deep in his thoughts and you\n"
-					"wonder what shape your destiny is taking in his mind. Suddenly he seems to return\n"
-					"to this reality and talks to you.\n\n"
-					"\"Oh, thou art still here. We were just discussing telepathically with Sir Galladon.\n"
-					"We started doubting Decos's alleged poverty a while back when he bought a couple of\n"
-					"medium-sized castles nearby. Thy brethren from New Attnam have also told Us about\n"
-					"vast riches seized from them. Our law says all such stolen valuables belong to \n"
-					"the Cathedral's treasury, so this is a severe claim. However, proof is needed,\n"
-					"and even if such was provided, We couldn't send soldiers over the snow fields\n"
-					"ere spring.\""));
+  game::TextScreen(CONST_S( "You almost expected the last bit. Petrus seems to be deep in his thoughts and you\n"
+          "wonder what shape your destiny is taking in his mind. Suddenly he seems to return\n"
+          "to this reality and talks to you.\n\n"
+          "\"Oh, thou art still here. We were just discussing telepathically with Sir Galladon.\n"
+          "We started doubting Decos's alleged poverty a while back when he bought a couple of\n"
+          "medium-sized castles nearby. Thy brethren from New Attnam have also told Us about\n"
+          "vast riches seized from them. Our law says all such stolen valuables belong to \n"
+          "the Cathedral's treasury, so this is a severe claim. However, proof is needed,\n"
+          "and even if such was provided, We couldn't send soldiers over the snow fields\n"
+          "ere spring.\""));
 
-	game::TextScreen(CONST_S(	"\"However, since thou now servest Us, We ought to find thee something to do. Sir\n"
-					"Galladon hath told Us his agents witnessed thou leaving the dreaded underwater tunnel.\n"
-					"This means thou most likely hast defeated genetrix vesana and art a talented warrior.\n"
-					"We happen to have a task perfect for such a person. An evil dark frog named Elpuri who\n"
-					"hates Valpurus and Attnam more than anything hath taken control over an abandoned mine\n"
-					"nearby. It is pestering our fine city in many ways and reconnaissance has reported an\n"
-					"army of monsters gathering in the cave. Our guards are not trained to fight underground\n"
-					"and We dare not send them. To make things worse, someone hath recently stolen Us the\n"
-					"greatest armor in existence - the Shirt of the Golden Eagle. Elpuri cannot wear\n"
-					"it but he who can is now nearly immortal.\"\n\n"
-					"\"We have marked the location of the gloomy cave on thy world map. We want you to dive\n"
-					"into it and slay the vile frog. Bring Us its head and We reward thee with freedom.\n"
-					"Shouldst thou also find the Shirt, We'll knight thee. Good luck, and return when\n"
-					"thou hast succeeded.\""));
+  game::TextScreen(CONST_S( "\"However, since thou now servest Us, We ought to find thee something to do. Sir\n"
+          "Galladon hath told Us his agents witnessed thou leaving the dreaded underwater tunnel.\n"
+          "This means thou most likely hast defeated genetrix vesana and art a talented warrior.\n"
+          "We happen to have a task perfect for such a person. An evil dark frog named Elpuri who\n"
+          "hates Valpurus and Attnam more than anything hath taken control over an abandoned mine\n"
+          "nearby. It is pestering our fine city in many ways and reconnaissance has reported an\n"
+          "army of monsters gathering in the cave. Our guards are not trained to fight underground\n"
+          "and We dare not send them. To make things worse, someone hath recently stolen Us the\n"
+          "greatest armor in existence - the Shirt of the Golden Eagle. Elpuri cannot wear\n"
+          "it but he who can is now nearly immortal.\"\n\n"
+          "\"We have marked the location of the gloomy cave on thy world map. We want you to dive\n"
+          "into it and slay the vile frog. Bring Us its head and We reward thee with freedom.\n"
+          "Shouldst thou also find the Shirt, We'll knight thee. Good luck, and return when\n"
+          "thou hast succeeded.\""));
 
-	game::LoadWorldMap();
-	v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
-	game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
-	game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
-	game::SaveWorldMap();
-	GetArea()->SendNewDrawRequest();
-	ADD_MESSAGE("\"And by the way, visit the librarian. He might have advice for thee.\"");
-	game::SetStoryState(1);
+  game::LoadWorldMap();
+  v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
+  game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
+  game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
+  game::SaveWorldMap();
+  GetArea()->SendNewDrawRequest();
+  ADD_MESSAGE("\"And by the way, visit the librarian. He might have advice for thee.\"");
+  game::SetStoryState(1);
       }
       else
-	ADD_MESSAGE("\"Yes, citizen? We are quite busy now, thou shalt not disturb Us without proper cause.\"");
+  ADD_MESSAGE("\"Yes, citizen? We are quite busy now, thou shalt not disturb Us without proper cause.\"");
     }
     else /* StoryState == 1 */
       ADD_MESSAGE("Petrus says: \"Bring me the head of Elpuri and we'll talk.\"");
@@ -657,57 +657,57 @@ void priest::BeTalkedTo()
 
       for(std::list<ulong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i)
       {
-	bodypart* OldBodyPart = static_cast<bodypart*>(PLAYER->SearchForItem(*i));
+  bodypart* OldBodyPart = static_cast<bodypart*>(PLAYER->SearchForItem(*i));
 
-	if(OldBodyPart)
-	{
-	  HasOld = true;
-	  long Price = GetConfig() == VALPURUS ? 50 : 10;
+  if(OldBodyPart)
+  {
+    HasOld = true;
+    long Price = GetConfig() == VALPURUS ? 50 : 10;
 
-	  if(PLAYER->GetMoney() >= Price)
-	  {
-	    if(!OldBodyPart->CanRegenerate())
-	      ADD_MESSAGE("\"Sorry, I cannot put back bodyparts made of %s, not even your severed %s.\"", OldBodyPart->GetMainMaterial()->GetName(false, false).CStr(), PLAYER->GetBodyPartName(c).CStr());
-	    else
-	    {
-	      ADD_MESSAGE("\"I could put your old %s back in exchange for %ld gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+    if(PLAYER->GetMoney() >= Price)
+    {
+      if(!OldBodyPart->CanRegenerate())
+        ADD_MESSAGE("\"Sorry, I cannot put back bodyparts made of %s, not even your severed %s.\"", OldBodyPart->GetMainMaterial()->GetName(false, false).CStr(), PLAYER->GetBodyPartName(c).CStr());
+      else
+      {
+        ADD_MESSAGE("\"I could put your old %s back in exchange for %ld gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
 
-	      if(game::TruthQuestion(CONST_S("Do you agree? [y/N]")))
-	      {
-		OldBodyPart->SetHP(1);
-		PLAYER->SetMoney(PLAYER->GetMoney() - Price);
-		SetMoney(GetMoney() + Price);
-		OldBodyPart->RemoveFromSlot();
-		PLAYER->AttachBodyPart(OldBodyPart);
-		return;
-	      }
-	    }
-	  }
-	  else
-	    ADD_MESSAGE("\"Your %s is severed. Help yourself and get %ldgp and I'll help you too.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
-	}
+        if(game::TruthQuestion(CONST_S("Do you agree? [y/N]")))
+        {
+    OldBodyPart->SetHP(1);
+    PLAYER->SetMoney(PLAYER->GetMoney() - Price);
+    SetMoney(GetMoney() + Price);
+    OldBodyPart->RemoveFromSlot();
+    PLAYER->AttachBodyPart(OldBodyPart);
+    return;
+        }
+      }
+    }
+    else
+      ADD_MESSAGE("\"Your %s is severed. Help yourself and get %ldgp and I'll help you too.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+  }
       }
 
       long Price = GetConfig() == VALPURUS ? 100 : 20;
 
       if(PLAYER->GetMoney() >= Price)
       {
-	if(HasOld)
-	  ADD_MESSAGE("\"I could still summon up a new one for %ld gold.\"", Price);
-	else
-	  ADD_MESSAGE("\"Since you don't seem to have your original %s with you, I could summon up a new one for %ld gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+  if(HasOld)
+    ADD_MESSAGE("\"I could still summon up a new one for %ld gold.\"", Price);
+  else
+    ADD_MESSAGE("\"Since you don't seem to have your original %s with you, I could summon up a new one for %ld gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
 
-	if(game::TruthQuestion(CONST_S("Agreed? [y/N]")))
-	{
-	  PLAYER->SetMoney(PLAYER->GetMoney() - Price);
-	  SetMoney(GetMoney() + Price);
-	  PLAYER->CreateBodyPart(c);
-	  PLAYER->GetBodyPart(c)->SetHP(1);
-	  return;
-	}
+  if(game::TruthQuestion(CONST_S("Agreed? [y/N]")))
+  {
+    PLAYER->SetMoney(PLAYER->GetMoney() - Price);
+    SetMoney(GetMoney() + Price);
+    PLAYER->CreateBodyPart(c);
+    PLAYER->GetBodyPart(c)->SetHP(1);
+    return;
+  }
       }
       else if(!HasOld)
-	ADD_MESSAGE("\"You don't have your original %s with you. I could create you a new one, but my Divine Employer is not a communist and you need %ldgp first.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+  ADD_MESSAGE("\"You don't have your original %s with you. I could create you a new one, but my Divine Employer is not a communist and you need %ldgp first.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
     }
 
   if(PLAYER->TemporaryStateIsActivated(POISONED))
@@ -720,11 +720,11 @@ void priest::BeTalkedTo()
 
       if(game::TruthQuestion(CONST_S("Do you agree? [y/N]")))
       {
-	ADD_MESSAGE("You feel better.");
-	PLAYER->DeActivateTemporaryState(POISONED);
-	PLAYER->SetMoney(PLAYER->GetMoney() - Price);
-	SetMoney(GetMoney() + Price);
-	return;
+  ADD_MESSAGE("You feel better.");
+  PLAYER->DeActivateTemporaryState(POISONED);
+  PLAYER->SetMoney(PLAYER->GetMoney() - Price);
+  SetMoney(GetMoney() + Price);
+  return;
       }
     }
     else
@@ -741,11 +741,11 @@ void priest::BeTalkedTo()
 
       if(game::TruthQuestion(CONST_S("Do you agree? [y/N]")))
       {
-	ADD_MESSAGE("You feel better.");
-	PLAYER->DeActivateTemporaryState(LEPROSY);
-	PLAYER->SetMoney(PLAYER->GetMoney() - Price);
-	SetMoney(GetMoney() + Price);
-	return;
+  ADD_MESSAGE("You feel better.");
+  PLAYER->DeActivateTemporaryState(LEPROSY);
+  PLAYER->SetMoney(PLAYER->GetMoney() - Price);
+  SetMoney(GetMoney() + Price);
+  return;
       }
     }
     else
@@ -762,11 +762,11 @@ void priest::BeTalkedTo()
 
       if(game::TruthQuestion(CONST_S("Do you agree? [y/N]")))
       {
-	ADD_MESSAGE("You feel better.");
-	PLAYER->DeActivateTemporaryState(LYCANTHROPY);
-	PLAYER->SetMoney(PLAYER->GetMoney() - Price);
-	SetMoney(GetMoney() + Price);
-	return;
+  ADD_MESSAGE("You feel better.");
+  PLAYER->DeActivateTemporaryState(LYCANTHROPY);
+  PLAYER->SetMoney(PLAYER->GetMoney() - Price);
+  SetMoney(GetMoney() + Price);
+  return;
       }
     }
     else
@@ -795,11 +795,11 @@ void communist::BeTalkedTo()
     for(std::list<character*>::const_iterator i = GetTeam()->GetMember().begin(); i != GetTeam()->GetMember().end();)
       if(*i != this)
       {
-	character* Char = *i++;
-	Char->ChangeTeam(PLAYER->GetTeam());
+  character* Char = *i++;
+  Char->ChangeTeam(PLAYER->GetTeam());
       }
       else
-	++i;
+  ++i;
 
     ChangeTeam(PLAYER->GetTeam());
   }
@@ -837,10 +837,10 @@ void slave::BeTalkedTo()
 
       if(game::TruthQuestion(CONST_S("Do you want to buy him? [y/N]")))
       {
-	PLAYER->SetMoney(PLAYER->GetMoney() - 50);
-	Master->SetMoney(Master->GetMoney() + 50);
-	ChangeTeam(PLAYER->GetTeam());
-	RemoveHomeData();
+  PLAYER->SetMoney(PLAYER->GetMoney() - 50);
+  Master->SetMoney(Master->GetMoney() + 50);
+  ChangeTeam(PLAYER->GetTeam());
+  RemoveHomeData();
       }
     }
     else
@@ -998,9 +998,9 @@ void zombie::BeTalkedTo()
     if(RAND() % 5)
     {
       if(GetHead())
-	ADD_MESSAGE("\"Need brain!!\"");
+  ADD_MESSAGE("\"Need brain!!\"");
       else
-	ADD_MESSAGE("\"Need head with brain!!\"");
+  ADD_MESSAGE("\"Need head with brain!!\"");
     }
     else
       ADD_MESSAGE("\"Redrum! Redrum! Redrum!\"");
@@ -1107,14 +1107,14 @@ truth kamikazedwarf::Hit(character* Enemy, v2 HitPos, int Direction, int Flags)
     if(!KamikazeWeapon.empty())
     {
       if(IsElite() && RAND() & 1)
-	ADD_MESSAGE("%s shouts: \"This time I won't fail, O Great %s!\"", CHAR_DESCRIPTION(DEFINITE), GetMasterGod()->GetName());
+  ADD_MESSAGE("%s shouts: \"This time I won't fail, O Great %s!\"", CHAR_DESCRIPTION(DEFINITE), GetMasterGod()->GetName());
       else if(RAND() & 1)
-	ADD_MESSAGE("%s shouts: \"For %s!\"", CHAR_DESCRIPTION(DEFINITE), GetMasterGod()->GetName());
+  ADD_MESSAGE("%s shouts: \"For %s!\"", CHAR_DESCRIPTION(DEFINITE), GetMasterGod()->GetName());
       else
-	ADD_MESSAGE("%s screams: \"%s, here I come!\"", CHAR_DESCRIPTION(DEFINITE), GetMasterGod()->GetName());
+  ADD_MESSAGE("%s screams: \"%s, here I come!\"", CHAR_DESCRIPTION(DEFINITE), GetMasterGod()->GetName());
 
       if(KamikazeWeapon[RAND_N(KamikazeWeapon.size())]->Apply(this))
-	return true;
+  return true;
     }
   }
 
@@ -1125,9 +1125,9 @@ void kamikazedwarf::GetAICommand()
 {
   if(GetHomeRoom())
     StandIdleAI();
-  else 
+  else
   {
-    if(!RAND_N(50)) 
+    if(!RAND_N(50))
     {
       SingRandomSong();
       return;
@@ -1251,7 +1251,7 @@ truth humanoid::ReceiveDamage(character* Damager, int Damage, int Type, int Targ
 
     for(c = 0; c < BodyParts; ++c)
       if(ReceiveBodyPartDamage(Damager, long(Damage) * GetBodyPart(ChooseFrom[c])->GetBodyPartVolume() / TotalVolume, Type, ChooseFrom[c], Direction, PenetrateArmor, Critical, false))
-	Affected = true;
+  Affected = true;
   }
   else
   {
@@ -1280,7 +1280,7 @@ truth humanoid::ReceiveDamage(character* Damager, int Damage, int Type, int Targ
       item* Equipment = GetEquipment(c);
 
       if(Equipment)
-	Equipment->ReceiveDamage(Damager, Damage, Type);
+  Equipment->ReceiveDamage(Damager, Damage, Type);
     }
 
     GetStack()->ReceiveDamage(Damager, Damage, Type);
@@ -1554,12 +1554,12 @@ void humanoid::DrawSilhouette(truth AnimationDraw) const
 {
   int c;
   blitdata B1 = { DOUBLE_BUFFER,
-		  { 0, 0 },
-		  { 0, 0 },
-		  { TILE_SIZE, TILE_SIZE },
-		  { ivanconfig::GetContrastLuminance() },
-		  TRANSPARENT_COLOR,
-		  ALLOW_ANIMATE };
+      { 0, 0 },
+      { 0, 0 },
+      { TILE_SIZE, TILE_SIZE },
+      { ivanconfig::GetContrastLuminance() },
+      TRANSPARENT_COLOR,
+      ALLOW_ANIMATE };
 
   v2 Where(RES.X - SILHOUETTE_SIZE.X - 39, 53);
   cint Equipments = GetEquipments();
@@ -1568,35 +1568,35 @@ void humanoid::DrawSilhouette(truth AnimationDraw) const
     for(c = 0; c < Equipments; ++c)
       if(GetBodyPartOfEquipment(c) && EquipmentIsAllowed(c))
       {
-	v2 Pos = Where + GetEquipmentPanelPos(c);
+  v2 Pos = Where + GetEquipmentPanelPos(c);
 
-	if(!AnimationDraw)
-	  DOUBLE_BUFFER->DrawRectangle(Pos + v2(-1, -1), Pos + TILE_V2, DARK_GRAY);
+  if(!AnimationDraw)
+    DOUBLE_BUFFER->DrawRectangle(Pos + v2(-1, -1), Pos + TILE_V2, DARK_GRAY);
 
-	item* Equipment = GetEquipment(c);
+  item* Equipment = GetEquipment(c);
 
-	if(Equipment && (!AnimationDraw || Equipment->IsAnimated()))
-	{
-	  igraph::BlitBackGround(Pos, TILE_V2);
-	  B1.Dest = Pos;
+  if(Equipment && (!AnimationDraw || Equipment->IsAnimated()))
+  {
+    igraph::BlitBackGround(Pos, TILE_V2);
+    B1.Dest = Pos;
 
-	  if(Equipment->AllowAlphaEverywhere())
-	    B1.CustomData |= ALLOW_ALPHA;
+    if(Equipment->AllowAlphaEverywhere())
+      B1.CustomData |= ALLOW_ALPHA;
 
-	  Equipment->Draw(B1);
-	  B1.CustomData &= ~ALLOW_ALPHA;
-	}
+    Equipment->Draw(B1);
+    B1.CustomData &= ~ALLOW_ALPHA;
+  }
       }
 
   if(!AnimationDraw)
   {
     blitdata B2 = { DOUBLE_BUFFER,
-		    { 0, 0 },
-		    { Where.X + 8, Where.Y },
-		    { SILHOUETTE_SIZE.X, SILHOUETTE_SIZE.Y },
-		    { 0 },
-		    0,
-		    0 };
+        { 0, 0 },
+        { Where.X + 8, Where.Y },
+        { SILHOUETTE_SIZE.X, SILHOUETTE_SIZE.Y },
+        { 0 },
+        0,
+        0 };
 
     for(int c = 0; c < BodyParts; ++c)
     {
@@ -1604,10 +1604,10 @@ void humanoid::DrawSilhouette(truth AnimationDraw) const
 
       if(BodyPart)
       {
-	int Type = BodyPart->IsUsable() ? SILHOUETTE_NORMAL : SILHOUETTE_INTER_LACED;
-	bitmap* Cache = igraph::GetSilhouetteCache(c, BodyPart->GetConditionColorIndex(), Type);
-	Cache->NormalMaskedBlit(B2);
-	BodyPart->DrawScars(B2);
+  int Type = BodyPart->IsUsable() ? SILHOUETTE_NORMAL : SILHOUETTE_INTER_LACED;
+  bitmap* Cache = igraph::GetSilhouetteCache(c, BodyPart->GetConditionColorIndex(), Type);
+  Cache->NormalMaskedBlit(B2);
+  BodyPart->DrawScars(B2);
       }
     }
   }
@@ -1646,9 +1646,9 @@ truth humanoid::TryToRiseFromTheDead()
 
       if(BodyPart)
       {
-	BodyPart->RemoveFromSlot();
-	AttachBodyPart(BodyPart);
-	BodyPart->SetHP(1);
+  BodyPart->RemoveFromSlot();
+  AttachBodyPart(BodyPart);
+  BodyPart->SetHP(1);
       }
     }
 
@@ -1658,14 +1658,14 @@ truth humanoid::TryToRiseFromTheDead()
 
     if(BodyPartIsVital(c) && !BodyPart)
       if(!HandleNoBodyPart(c))
-	return false;
+  return false;
 
     if(BodyPart)
     {
       BodyPart->ResetSpoiling();
 
       if(BodyPart->CanRegenerate() || BodyPart->GetHP() < 1)
-	BodyPart->SetHP(1);
+  BodyPart->SetHP(1);
     }
   }
 
@@ -1866,7 +1866,7 @@ double humanoid::GetTimeToKill(ccharacter* Enemy, truth UseMaxHP) const
       double Damage = RightArm->GetDamage();
 
       if(Damage)
-	Effectivity += 1 / (Enemy->GetTimeToDie(this, int(Damage) + 1, RightArm->GetToHitValue(), AttackIsBlockable(GetRightWielded() ? WEAPON_ATTACK : UNARMED_ATTACK), UseMaxHP) * RightArm->GetAPCost());
+  Effectivity += 1 / (Enemy->GetTimeToDie(this, int(Damage) + 1, RightArm->GetToHitValue(), AttackIsBlockable(GetRightWielded() ? WEAPON_ATTACK : UNARMED_ATTACK), UseMaxHP) * RightArm->GetAPCost());
     }
 
     arm* LeftArm = GetLeftArm();
@@ -1876,7 +1876,7 @@ double humanoid::GetTimeToKill(ccharacter* Enemy, truth UseMaxHP) const
       double Damage = LeftArm->GetDamage();
 
       if(Damage)
-	Effectivity += 1 / (Enemy->GetTimeToDie(this, int(Damage) + 1, LeftArm->GetToHitValue(), AttackIsBlockable(GetLeftWielded() ? WEAPON_ATTACK : UNARMED_ATTACK), UseMaxHP) * LeftArm->GetAPCost());
+  Effectivity += 1 / (Enemy->GetTimeToDie(this, int(Damage) + 1, LeftArm->GetToHitValue(), AttackIsBlockable(GetLeftWielded() ? WEAPON_ATTACK : UNARMED_ATTACK), UseMaxHP) * LeftArm->GetAPCost());
     }
 
     ++AttackStyles;
@@ -1887,7 +1887,7 @@ double humanoid::GetTimeToKill(ccharacter* Enemy, truth UseMaxHP) const
     leg* RightLeg = GetRightLeg();
     leg* LeftLeg = GetLeftLeg();
     double TimeToDie = Enemy->GetTimeToDie(this, int(RightLeg->GetKickDamage()) + 1, RightLeg->GetKickToHitValue(), AttackIsBlockable(KICK_ATTACK), UseMaxHP) * RightLeg->GetKickAPCost()
-		       + Enemy->GetTimeToDie(this, int(LeftLeg->GetKickDamage()) + 1, LeftLeg->GetKickToHitValue(), AttackIsBlockable(KICK_ATTACK), UseMaxHP) * LeftLeg->GetKickAPCost();
+           + Enemy->GetTimeToDie(this, int(LeftLeg->GetKickDamage()) + 1, LeftLeg->GetKickToHitValue(), AttackIsBlockable(KICK_ATTACK), UseMaxHP) * LeftLeg->GetKickAPCost();
     Effectivity += 2 / TimeToDie;
     ++AttackStyles;
   }
@@ -1921,24 +1921,24 @@ int humanoid::GetAttribute(int Identifier, truth AllowBonus) const
       arm* RightArm = GetRightArm();
 
       if(RightArm)
-	Attrib += RightArm->GetAttribute(Identifier, AllowBonus);
+  Attrib += RightArm->GetAttribute(Identifier, AllowBonus);
 
       arm* LeftArm = GetLeftArm();
 
       if(LeftArm)
-	Attrib += LeftArm->GetAttribute(Identifier, AllowBonus);
+  Attrib += LeftArm->GetAttribute(Identifier, AllowBonus);
     }
     else if(Identifier == LEG_STRENGTH || Identifier == AGILITY)
     {
       leg* RightLeg = GetRightLeg();
 
       if(RightLeg)
-	Attrib += RightLeg->GetAttribute(Identifier, AllowBonus);
+  Attrib += RightLeg->GetAttribute(Identifier, AllowBonus);
 
       leg* LeftLeg = GetLeftLeg();
 
       if(LeftLeg)
-	Attrib += LeftLeg->GetAttribute(Identifier, AllowBonus);
+  Attrib += LeftLeg->GetAttribute(Identifier, AllowBonus);
     }
     else
     {
@@ -2086,8 +2086,8 @@ truth humanoid::CheckBalance(double KickDamage)
     || IsStuck()
     || !KickDamage
     || (GetUsableLegs() != 1
-	&& !IsFlying()
-	&& KickDamage * 5 < RAND() % GetSize());
+  && !IsFlying()
+  && KickDamage * 5 < RAND() % GetSize());
 }
 
 long humanoid::GetMoveAPRequirement(int Difficulty) const
@@ -2170,7 +2170,7 @@ void humanoid::SWeaponSkillTick()
       item* Item = SearchForItem(*i);
 
       if(Item)
-	(*i)->AddLevelDownMessage(Item->CHAR_NAME(UNARTICLED));
+  (*i)->AddLevelDownMessage(Item->CHAR_NAME(UNARTICLED));
     }
 
     if(!(*i)->GetHits() && *i != GetCurrentRightSWeaponSkill() && *i != GetCurrentLeftSWeaponSkill())
@@ -2208,13 +2208,13 @@ truth angel::AttachBodyPartsOfFriendsNear()
 
       if(Char && (!HurtOne || Char->IsPlayer()) && GetRelation(Char) == FRIEND && !Char->HasAllBodyParts())
       {
-	bodypart* BodyPart = Char->FindRandomOwnBodyPart(false);
+  bodypart* BodyPart = Char->FindRandomOwnBodyPart(false);
 
-	if(BodyPart)
-	{
-	  HurtOne = Char;
-	  SeveredOne = BodyPart;
-	}
+  if(BodyPart)
+  {
+    HurtOne = Char;
+    SeveredOne = BodyPart;
+  }
       }
     }
   }
@@ -2242,12 +2242,12 @@ void humanoid::DrawBodyParts(blitdata& BlitData) const
   bitmap* TileBuffer = igraph::GetTileBuffer();
   bitmap* RealBitmap = BlitData.Bitmap;
   blitdata B = { TileBuffer,
-		 { BlitData.Dest.X, BlitData.Dest.Y },
-		 { 0, 0 },
-		 { TILE_SIZE, TILE_SIZE },
-		 { 0 },
-		 TRANSPARENT_COLOR,
-		 BlitData.CustomData };
+     { BlitData.Dest.X, BlitData.Dest.Y },
+     { 0, 0 },
+     { TILE_SIZE, TILE_SIZE },
+     { 0 },
+     TRANSPARENT_COLOR,
+     BlitData.CustomData };
 
   RealBitmap->NormalBlit(B);
   TileBuffer->FillPriority(0);
@@ -2365,16 +2365,16 @@ truth humanoid::IsUsingArms() const
 truth humanoid::IsUsingLegs() const
 {
   return (GetAttackStyle() & USE_LEGS
-	  || (GetAttackStyle() & USE_ARMS && !CanAttackWithAnArm()))
+    || (GetAttackStyle() & USE_ARMS && !CanAttackWithAnArm()))
     && HasTwoUsableLegs();
 }
 
 truth humanoid::IsUsingHead() const
 {
   return (GetAttackStyle() & USE_HEAD
-	  || ((GetAttackStyle() & USE_LEGS
-	       || (GetAttackStyle() & USE_ARMS && !CanAttackWithAnArm()))
-	      && !HasTwoUsableLegs()))
+    || ((GetAttackStyle() & USE_LEGS
+         || (GetAttackStyle() & USE_ARMS && !CanAttackWithAnArm()))
+        && !HasTwoUsableLegs()))
     && GetHead();
 }
 
@@ -2426,7 +2426,7 @@ void zombie::CreateBodyParts(int SpecialFlags)
   if(GetConfig() == ZOMBIE_OF_KHAZ_ZADM)
   {
     Anyway = true;
-  } // Khaz-Zadm needs his hands... 
+  } // Khaz-Zadm needs his hands...
 
   for(int c = 0; c < BodyParts; ++c)
     if(Anyway || BodyPartIsVital(c) || RAND_N(3) || (c == HEAD_INDEX && !RAND_N(3)))
@@ -2568,7 +2568,7 @@ int humanoid::GetSWeaponSkillLevel(citem* Item) const
   for(idholder* I = Item->GetCloneMotherID(); I; I = I->Next)
     for(i = SWeaponSkill.begin(); i != SWeaponSkill.end(); ++i)
       if((*i)->IsSkillOfCloneMother(Item, I->ID))
-	return (*i)->GetLevel();
+  return (*i)->GetLevel();
 
   return 0;
 }
@@ -2771,14 +2771,14 @@ void bananagrower::GetAICommand()
     for(c = 0; c < ItemVector.size(); ++c)
       if(ItemVector[c]->IsBanana())
       {
-	ItemVector[c]->MoveTo(GetStackUnder());
-	++BananasDropped;
+  ItemVector[c]->MoveTo(GetStackUnder());
+  ++BananasDropped;
       }
 
     if(BananasDropped)
     {
       if(CanBeSeenByPlayer())
-	ADD_MESSAGE("%s drops %s.", CHAR_NAME(DEFINITE), BananasDropped == 1 ? "a banana" : "some bananas");
+  ADD_MESSAGE("%s drops %s.", CHAR_NAME(DEFINITE), BananasDropped == 1 ? "a banana" : "some bananas");
 
       return;
     }
@@ -2790,14 +2790,14 @@ void bananagrower::GetAICommand()
     for(c = 0; c < ItemVector.size(); ++c)
       if(ItemVector[c]->IsBananaPeel())
       {
-	ItemVector[c]->MoveTo(GetStack());
-	++PeelsPickedUp;
+  ItemVector[c]->MoveTo(GetStack());
+  ++PeelsPickedUp;
       }
 
     if(PeelsPickedUp)
     {
       if(CanBeSeenByPlayer())
-	ADD_MESSAGE("%s picks up %s.", CHAR_NAME(DEFINITE), PeelsPickedUp == 1 ? "a banana peel" : "some banana peels");
+  ADD_MESSAGE("%s picks up %s.", CHAR_NAME(DEFINITE), PeelsPickedUp == 1 ? "a banana peel" : "some banana peels");
 
       return;
     }
@@ -2921,14 +2921,14 @@ void elder::CreateBodyParts(int SpecialFlags)
 
       if(Square)
       {
-	character* Char = Square->GetCharacter();
+  character* Char = Square->GetCharacter();
 
-	if(Char && Char->IsBananaGrower() && Hit(Char, Square->GetPos(), NotDiagonal[d], true))
-	{
-	  LastHit = game::GetTick();
-	  TerminateGoingTo();
-	  return;
-	}
+  if(Char && Char->IsBananaGrower() && Hit(Char, Square->GetPos(), NotDiagonal[d], true))
+  {
+    LastHit = game::GetTick();
+    TerminateGoingTo();
+    return;
+  }
       }
     }
   }
@@ -2971,9 +2971,9 @@ long skeleton::GetBodyPartVolume(int I) const
 truth humanoid::CheckIfEquipmentIsNotUsable(int I) const
 {
   return (I == RIGHT_WIELDED_INDEX && GetRightArm()->CheckIfWeaponTooHeavy("this item"))
-	     || (I == LEFT_WIELDED_INDEX && GetLeftArm()->CheckIfWeaponTooHeavy("this item"))
-	     || (I == RIGHT_WIELDED_INDEX && GetLeftWielded() && GetLeftWielded()->IsTwoHanded() && GetLeftArm()->CheckIfWeaponTooHeavy(festring(GetPossessivePronoun() + " other wielded item").CStr()))
-	     || (I == LEFT_WIELDED_INDEX && GetRightWielded() && GetRightWielded()->IsTwoHanded() && GetRightArm()->CheckIfWeaponTooHeavy(festring(GetPossessivePronoun() + " other wielded item").CStr()));
+       || (I == LEFT_WIELDED_INDEX && GetLeftArm()->CheckIfWeaponTooHeavy("this item"))
+       || (I == RIGHT_WIELDED_INDEX && GetLeftWielded() && GetLeftWielded()->IsTwoHanded() && GetLeftArm()->CheckIfWeaponTooHeavy(festring(GetPossessivePronoun() + " other wielded item").CStr()))
+       || (I == LEFT_WIELDED_INDEX && GetRightWielded() && GetRightWielded()->IsTwoHanded() && GetRightArm()->CheckIfWeaponTooHeavy(festring(GetPossessivePronoun() + " other wielded item").CStr()));
 }
 
 int mistress::TakeHit(character* Enemy, item* Weapon, bodypart* EnemyBodyPart, v2 HitPos, double Damage, double ToHitValue, int Success, int Type, int Direction, truth Critical, truth ForceHit)
@@ -3042,9 +3042,9 @@ void guard::GetAICommand()
   {
     if(GetPos() == WayPoints[NextWayPoint])
       if(NextWayPoint < WayPoints.size() - 1)
-	++NextWayPoint;
+  ++NextWayPoint;
       else
-	NextWayPoint = 0;
+  NextWayPoint = 0;
 
     GoingTo = WayPoints[NextWayPoint];
   }
@@ -3151,22 +3151,22 @@ void darkmage::GetAICommand()
     if(GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE)
     {
       for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-	if((*i)->IsEnabled())
-	{
-	  long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
+  if((*i)->IsEnabled())
+  {
+    long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
 
-	  if((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND() % 3))) && (*i)->CanBeSeenBy(this))
-	  {
-	    NearestEnemy = *i;
-	    NearestEnemyDistance = ThisDistance;
-	  }
-	}
+    if((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND() % 3))) && (*i)->CanBeSeenBy(this))
+    {
+      NearestEnemy = *i;
+      NearestEnemyDistance = ThisDistance;
+    }
+  }
     }
     else if(GetTeam()->GetRelation(game::GetTeam(c)) == FRIEND)
     {
       for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-	if((*i)->IsEnabled() && (*i)->CanBeSeenBy(this))
-	  Friend.push_back(*i);
+  if((*i)->IsEnabled() && (*i)->CanBeSeenBy(this))
+    Friend.push_back(*i);
     }
   }
 
@@ -3178,10 +3178,10 @@ void darkmage::GetAICommand()
        && Hit(NearestEnemy, NearestEnemy->GetPos(), game::GetDirectionForVector(NearestEnemy->GetPos() - GetPos())))
       return;
     else if((GetConfig() == ARCH_MAGE && RAND() & 1)
-	    || (GetConfig() == ELDER && !(RAND() & 3)))
+      || (GetConfig() == ELDER && !(RAND() & 3)))
     {
       if(CanBeSeenByPlayer())
-	ADD_MESSAGE("%s invokes a spell and disappears.", CHAR_NAME(DEFINITE));
+  ADD_MESSAGE("%s invokes a spell and disappears.", CHAR_NAME(DEFINITE));
 
       TeleportRandomly(true);
       EditAP(-GetSpellAPCost());
@@ -3228,13 +3228,13 @@ void darkmage::GetAICommand()
      case BATTLE_MAGE:
       if(RAND() % 20)
       {
-	Square->DrawLightning(v2(8, 8), WHITE, YOURSELF);
-	Square->Lightning(Beam);
+  Square->DrawLightning(v2(8, 8), WHITE, YOURSELF);
+  Square->Lightning(Beam);
       }
       else
       {
-	Square->DrawParticles(RED);
-	Square->LowerEnchantment(Beam);
+  Square->DrawParticles(RED);
+  Square->LowerEnchantment(Beam);
       }
 
       break;
@@ -3263,17 +3263,17 @@ void darkmage::GetAICommand()
        case 1:
        case 2: Square->DrawParticles(RED); Square->FireBall(Beam); break;
        case 3:
-	{
-	  character* Char = NearestEnemy->DuplicateToNearestSquare(this, CHANGE_TEAM|MIRROR|(1000 << LE_BASE_SHIFT)|(1000 << LE_RAND_SHIFT));
+  {
+    character* Char = NearestEnemy->DuplicateToNearestSquare(this, CHANGE_TEAM|MIRROR|(1000 << LE_BASE_SHIFT)|(1000 << LE_RAND_SHIFT));
 
-	  if(Char)
-	  {
-	    if(Char->CanBeSeenByPlayer())
-	      ADD_MESSAGE("%s materializes!", Char->CHAR_NAME(INDEFINITE));
+    if(Char)
+    {
+      if(Char->CanBeSeenByPlayer())
+        ADD_MESSAGE("%s materializes!", Char->CHAR_NAME(INDEFINITE));
 
-	    break;
-	  }
-	}
+      break;
+    }
+  }
        case 4:
        case 5: Square->DrawParticles(RED); Square->Slow(Beam); break;
        case 6: Square->DrawParticles(RED); Square->Teleport(Beam); break;
@@ -3281,31 +3281,31 @@ void darkmage::GetAICommand()
        case 8:
        case 9: Square->DrawParticles(RED); Square->LowerEnchantment(Beam); break;
        case 10:
-	{
-	  golem* Golem = golem::Spawn(RAND() % 3 ? ARCANITE : OCTIRON);
-	  v2 Where = GetLevel()->GetNearestFreeSquare(Golem, Square->GetPos());
+  {
+    golem* Golem = golem::Spawn(RAND() % 3 ? ARCANITE : OCTIRON);
+    v2 Where = GetLevel()->GetNearestFreeSquare(Golem, Square->GetPos());
 
-	  if(Where == ERROR_V2)
-	  {
-	    if(CanBeSeenByPlayer())
-	      ADD_MESSAGE("Nothing happens.");
+    if(Where == ERROR_V2)
+    {
+      if(CanBeSeenByPlayer())
+        ADD_MESSAGE("Nothing happens.");
 
-	    delete Golem;
-	  }
-	  else
-	  {
-	    Golem->SetGenerationDanger(GetGenerationDanger());
-	    Golem->SetTeam(GetTeam());
-	    Golem->PutTo(Where);
+      delete Golem;
+    }
+    else
+    {
+      Golem->SetGenerationDanger(GetGenerationDanger());
+      Golem->SetTeam(GetTeam());
+      Golem->PutTo(Where);
 
-	    if(Golem->CanBeSeenByPlayer())
-	      ADD_MESSAGE("Suddenly %s materializes!", Golem->CHAR_NAME(INDEFINITE));
+      if(Golem->CanBeSeenByPlayer())
+        ADD_MESSAGE("Suddenly %s materializes!", Golem->CHAR_NAME(INDEFINITE));
 
-	    Golem->GetLSquareUnder()->DrawParticles(RED);
-	  }
+      Golem->GetLSquareUnder()->DrawParticles(RED);
+    }
 
-	  break;
-	}
+    break;
+  }
        default: Square->DrawParticles(RED); Square->Strike(Beam); break;
       }
 
@@ -3335,14 +3335,14 @@ void darkmage::GetAICommand()
      case ARCH_MAGE:
       if(!(RAND() & 31))
       {
-	RandomFriend->DuplicateToNearestSquare(this, CHANGE_TEAM);
-	return;
+  RandomFriend->DuplicateToNearestSquare(this, CHANGE_TEAM);
+  return;
       }
      case ELDER:
       if(RAND() & 1)
-	Square->Invisibility(Beam);
+  Square->Invisibility(Beam);
       else
-	Square->Haste(Beam);
+  Square->Haste(Beam);
 
       break;
     }
@@ -3372,14 +3372,14 @@ void zombie::GetAICommand()
 
       if(Head)
       {
-	if(CanBeSeenByPlayer())
-	  ADD_MESSAGE("%s takes %s and attaches it to its torso.", CHAR_NAME(DEFINITE), Head->CHAR_NAME(INDEFINITE));
+  if(CanBeSeenByPlayer())
+    ADD_MESSAGE("%s takes %s and attaches it to its torso.", CHAR_NAME(DEFINITE), Head->CHAR_NAME(INDEFINITE));
 
-	Head->RemoveFromSlot();
-	AttachBodyPart(Head);
-	Head->SetHP(1);
-	DexterityAction(10);
-	return;
+  Head->RemoveFromSlot();
+  AttachBodyPart(Head);
+  Head->SetHP(1);
+  DexterityAction(10);
+  return;
       }
     }
   }
@@ -3765,26 +3765,26 @@ void humanoid::EnsureCurrentSWeaponSkillIsCorrect(sweaponskill*& Skill, citem* W
     if(!Skill || !Skill->IsSkillOf(Wielded))
     {
       if(Skill)
-	EnsureCurrentSWeaponSkillIsCorrect(Skill, 0);
+  EnsureCurrentSWeaponSkillIsCorrect(Skill, 0);
 
       std::list<sweaponskill*>::iterator i;
 
       for(i = SWeaponSkill.begin(); i != SWeaponSkill.end(); ++i)
-	if((*i)->IsSkillOf(Wielded))
-	{
-	  Skill = *i;
-	  return;
-	}
+  if((*i)->IsSkillOf(Wielded))
+  {
+    Skill = *i;
+    return;
+  }
 
       for(idholder* I = Wielded->GetCloneMotherID(); I; I = I->Next)
-	for(i = SWeaponSkill.begin(); i != SWeaponSkill.end(); ++i)
-	  if((*i)->IsSkillOfCloneMother(Wielded, I->ID))
-	  {
-	    Skill = new sweaponskill(**i);
-	    Skill->SetID(Wielded->GetID());
-	    SWeaponSkill.push_back(Skill);
-	    return;
-	  }
+  for(i = SWeaponSkill.begin(); i != SWeaponSkill.end(); ++i)
+    if((*i)->IsSkillOfCloneMother(Wielded, I->ID))
+    {
+      Skill = new sweaponskill(**i);
+      Skill->SetID(Wielded->GetID());
+      SWeaponSkill.push_back(Skill);
+      return;
+    }
 
       Skill = new sweaponskill(Wielded);
       SWeaponSkill.push_back(Skill);
@@ -3794,12 +3794,12 @@ void humanoid::EnsureCurrentSWeaponSkillIsCorrect(sweaponskill*& Skill, citem* W
   {
     if(!Skill->GetHits() && (CurrentRightSWeaponSkill != Skill || CurrentLeftSWeaponSkill != Skill))
       for(std::list<sweaponskill*>::iterator i = SWeaponSkill.begin(); i != SWeaponSkill.end(); ++i)
-	if(*i == Skill)
-	{
-	  delete *i;
-	  SWeaponSkill.erase(i);
-	  break;
-	}
+  if(*i == Skill)
+  {
+    delete *i;
+    SWeaponSkill.erase(i);
+    break;
+  }
 
     Skill = 0;
   }
@@ -3909,16 +3909,16 @@ void necromancer::GetAICommand()
     if(GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE)
     {
       for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-	if((*i)->IsEnabled())
-	{
-	  long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
+  if((*i)->IsEnabled())
+  {
+    long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
 
-	  if((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND() % 3))) && (*i)->CanBeSeenBy(this))
-	  {
-	    NearestEnemy = *i;
-	    NearestEnemyDistance = ThisDistance;
-	  }
-	}
+    if((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND() % 3))) && (*i)->CanBeSeenBy(this))
+    {
+      NearestEnemy = *i;
+      NearestEnemyDistance = ThisDistance;
+    }
+  }
     }
 
   if(NearestEnemy && NearestEnemy->GetPos().IsAdjacent(Pos))
@@ -3926,16 +3926,16 @@ void necromancer::GetAICommand()
     if(GetConfig() == MASTER_NECROMANCER && !(RAND() & 3))
     {
       if(CanBeSeenByPlayer())
-	ADD_MESSAGE("%s invokes a spell and disappears.", CHAR_NAME(DEFINITE));
+  ADD_MESSAGE("%s invokes a spell and disappears.", CHAR_NAME(DEFINITE));
 
       TeleportRandomly(true);
       EditAP(-GetSpellAPCost());
       return;
     }
     else if(NearestEnemy->IsSmall()
-	    && GetAttribute(WISDOM) < NearestEnemy->GetAttackWisdomLimit()
-	    && !(RAND() & 3)
-	    && Hit(NearestEnemy, NearestEnemy->GetPos(), game::GetDirectionForVector(NearestEnemy->GetPos() - GetPos())))
+      && GetAttribute(WISDOM) < NearestEnemy->GetAttackWisdomLimit()
+      && !(RAND() & 3)
+      && Hit(NearestEnemy, NearestEnemy->GetPos(), game::GetDirectionForVector(NearestEnemy->GetPos() - GetPos())))
       return;
   }
 
@@ -3967,21 +3967,21 @@ void necromancer::GetAICommand()
       break;
      case MASTER_NECROMANCER:
       if(RAND() % 5)
-	RaiseSkeleton();
+  RaiseSkeleton();
       else
       {
-	Square->DrawLightning(v2(8, 8), WHITE, YOURSELF);
+  Square->DrawLightning(v2(8, 8), WHITE, YOURSELF);
 
-	beamdata Beam
-	  (
-	    this,
-	    CONST_S("killed by the spells of ") + GetName(INDEFINITE),
-	    YOURSELF,
-	    0
-	  );
+  beamdata Beam
+    (
+      this,
+      CONST_S("killed by the spells of ") + GetName(INDEFINITE),
+      YOURSELF,
+      0
+    );
 
-	Square->Lightning(Beam);
-	Interrupt = true;
+  Square->Lightning(Beam);
+  Interrupt = true;
       }
 
       break;
@@ -3989,9 +3989,9 @@ void necromancer::GetAICommand()
 
     if(Interrupt)
       if(CanBeSeenByPlayer())
-	NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell of ") + GetName(DEFINITE) + CONST_S(" interrupts you."));
+  NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell of ") + GetName(DEFINITE) + CONST_S(" interrupts you."));
       else
-	NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell interrupts you."));
+  NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell interrupts you."));
 
     return;
   }
@@ -4020,24 +4020,24 @@ truth necromancer::TryToRaiseZombie()
 {
   for(int c = 0; c < game::GetTeams(); ++c)
     for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin();
-	i != game::GetTeam(c)->GetMember().end(); ++i)
+  i != game::GetTeam(c)->GetMember().end(); ++i)
       if(!(*i)->IsEnabled() && (*i)->GetMotherEntity()
-	 && (*i)->GetMotherEntity()->Exists()
-	 && (GetConfig() == MASTER_NECROMANCER
-	     || (*i)->GetMotherEntity()->GetSquareUnderEntity()->CanBeSeenBy(this)))
+   && (*i)->GetMotherEntity()->Exists()
+   && (GetConfig() == MASTER_NECROMANCER
+       || (*i)->GetMotherEntity()->GetSquareUnderEntity()->CanBeSeenBy(this)))
       {
-	character* Zombie = (*i)->GetMotherEntity()->TryNecromancy(this);
+  character* Zombie = (*i)->GetMotherEntity()->TryNecromancy(this);
 
-	if(Zombie)
-	{
-	  if(Zombie->CanBeSeenByPlayer())
-	    ADD_MESSAGE("%s calls %s back to cursed undead life.", CHAR_DESCRIPTION(DEFINITE), Zombie->CHAR_NAME(INDEFINITE));
-	  else if(CanBeSeenByPlayer())
-	    ADD_MESSAGE("%s casts a spell, but you notice no effect.", CHAR_NAME(DEFINITE));
+  if(Zombie)
+  {
+    if(Zombie->CanBeSeenByPlayer())
+      ADD_MESSAGE("%s calls %s back to cursed undead life.", CHAR_DESCRIPTION(DEFINITE), Zombie->CHAR_NAME(INDEFINITE));
+    else if(CanBeSeenByPlayer())
+      ADD_MESSAGE("%s casts a spell, but you notice no effect.", CHAR_NAME(DEFINITE));
 
-	  EditAP(-GetSpellAPCost());
-	  return true;
-	}
+    EditAP(-GetSpellAPCost());
+    return true;
+  }
       }
 
   return false;
@@ -4107,7 +4107,7 @@ void humanoid::StayOn(liquid* Liquid)
 
     for(int c = 0; c < BodyParts; ++c)
       if(GetBodyPart(c))
-	BodyPart[Index++] = GetBodyPart(c);
+  BodyPart[Index++] = GetBodyPart(c);
 
     BodyPart[RAND() % Index]->StayOn(Liquid);
   }
@@ -4225,23 +4225,23 @@ void tourist::GetAICommand()
     if(GetConfig() == HUSBAND)
     {
       if(RAND() & 1)
-	ADD_MESSAGE("%s shouts: \"Show that skinny wimp what you've got, Huang!\"", CHAR_DESCRIPTION(DEFINITE));
+  ADD_MESSAGE("%s shouts: \"Show that skinny wimp what you've got, Huang!\"", CHAR_DESCRIPTION(DEFINITE));
       else
-	ADD_MESSAGE("%s screams: \"Go for it, Huang!\"", CHAR_DESCRIPTION(DEFINITE));
+  ADD_MESSAGE("%s screams: \"Go for it, Huang!\"", CHAR_DESCRIPTION(DEFINITE));
     }
     else if(GetConfig() == WIFE)
     {
       if(RAND() & 1)
-	ADD_MESSAGE("%s encourages you: \"Knock him out, %s!\"", CHAR_DESCRIPTION(DEFINITE), game::GetPlayerName().CStr());
+  ADD_MESSAGE("%s encourages you: \"Knock him out, %s!\"", CHAR_DESCRIPTION(DEFINITE), game::GetPlayerName().CStr());
       else
-	ADD_MESSAGE("%s cheers you: \"A handsome guy like you can't lose to that banana ball!\"", CHAR_DESCRIPTION(DEFINITE));
+  ADD_MESSAGE("%s cheers you: \"A handsome guy like you can't lose to that banana ball!\"", CHAR_DESCRIPTION(DEFINITE));
     }
     else if(GetConfig() == CHILD)
     {
       if(RAND() & 1)
-	ADD_MESSAGE("%s yells: \"More blood on the ring!!!\"", CHAR_DESCRIPTION(DEFINITE));
+  ADD_MESSAGE("%s yells: \"More blood on the ring!!!\"", CHAR_DESCRIPTION(DEFINITE));
       else
-	ADD_MESSAGE("%s cries: \"Kill him, Pong!!!\"", CHAR_DESCRIPTION(DEFINITE));
+  ADD_MESSAGE("%s cries: \"Kill him, Pong!!!\"", CHAR_DESCRIPTION(DEFINITE));
     }
   }
 
@@ -4298,8 +4298,8 @@ character* humanoid::CreateZombie() const
 
       if(BodyPart)
       {
-	BodyPart->RemoveFromSlot();
-	BodyPart->SendToHell();
+  BodyPart->RemoveFromSlot();
+  BodyPart->SendToHell();
       }
     }
 
@@ -4308,7 +4308,7 @@ character* humanoid::CreateZombie() const
       bodypart* ZombieBodyPart = Zombie->GetBodyPart(c);
 
       if(!ZombieBodyPart)
-	ZombieBodyPart = Zombie->CreateBodyPart(c);
+  ZombieBodyPart = Zombie->CreateBodyPart(c);
 
       material* M = BodyPart->GetMainMaterial()->Duplicate();
       M->SetSpoilCounter(2000 + RAND() % 1000);
@@ -4322,8 +4322,8 @@ character* humanoid::CreateZombie() const
 
       if(ZombieBodyPart)
       {
-	ZombieBodyPart->RemoveFromSlot();
-	ZombieBodyPart->SendToHell();
+  ZombieBodyPart->RemoveFromSlot();
+  ZombieBodyPart->SendToHell();
       }
     }
   }
@@ -4339,8 +4339,8 @@ character* humanoid::CreateZombie() const
     *i1 = new sweaponskill(**i2);
 
   memcpy(Zombie->BaseExperience,
-	 BaseExperience,
-	 BASE_ATTRIBUTES * sizeof(*BaseExperience));
+   BaseExperience,
+   BASE_ATTRIBUTES * sizeof(*BaseExperience));
   Zombie->CalculateAll();
   Zombie->RestoreHP();
   Zombie->RestoreStamina();
@@ -4389,11 +4389,11 @@ void darkknight::SpecialBodyPartSeverReaction()
       switch(RAND() % 3)
       {
        case 0:
-	ADD_MESSAGE("%s states calmly: \"'Tis but a scratch.\"", CHAR_DESCRIPTION(DEFINITE)); break;
+  ADD_MESSAGE("%s states calmly: \"'Tis but a scratch.\"", CHAR_DESCRIPTION(DEFINITE)); break;
        case 1:
-	ADD_MESSAGE("%s states calmly: \"Just a flesh wound.\"", CHAR_DESCRIPTION(DEFINITE)); break;
+  ADD_MESSAGE("%s states calmly: \"Just a flesh wound.\"", CHAR_DESCRIPTION(DEFINITE)); break;
        case 2:
-	ADD_MESSAGE("%s shouts: \"I'm invincible!\"", CHAR_DESCRIPTION(DEFINITE)); break;
+  ADD_MESSAGE("%s shouts: \"I'm invincible!\"", CHAR_DESCRIPTION(DEFINITE)); break;
       }
   }
 }
@@ -4415,7 +4415,7 @@ void humanoid::LeprosyHandler()
       lsquare* Square = GetNeighbourLSquare(d);
 
       if(Square && Square->GetCharacter())
-	Square->GetCharacter()->TryToInfectWithLeprosy(this);
+  Square->GetCharacter()->TryToInfectWithLeprosy(this);
     }
   }
 
@@ -4563,8 +4563,8 @@ void orc::PostConstruct()
 truth mistress::AllowEquipment(citem* Item, int EquipmentIndex) const
 {
   return ((EquipmentIndex != RIGHT_WIELDED_INDEX
-	   && EquipmentIndex != LEFT_WIELDED_INDEX)
-	  || Item->IsWhip());
+     && EquipmentIndex != LEFT_WIELDED_INDEX)
+    || Item->IsWhip());
 }
 
 int humanoid::GetAttributeAverage() const
@@ -4698,7 +4698,7 @@ void veterankamikazedwarf::PostConstruct()
 
   if(Time.Day >= KAMIKAZE_INVISIBILITY_DAY_MAX
      || (Modifier > 0
-	 && RAND_N(KAMIKAZE_INVISIBILITY_DAY_MAX - KAMIKAZE_INVISIBILITY_DAY_MIN) < Modifier))
+   && RAND_N(KAMIKAZE_INVISIBILITY_DAY_MAX - KAMIKAZE_INVISIBILITY_DAY_MIN) < Modifier))
     GainIntrinsic(INVISIBLE);
 }
 
@@ -4868,7 +4868,7 @@ truth humanoid::LeftLegIsUsable() const
 truth humanoid::AllowUnconsciousness() const
 {
   return (DataBase->AllowUnconsciousness && TorsoIsAlive()
-	  && BodyPartIsVital(HEAD_INDEX));
+    && BodyPartIsVital(HEAD_INDEX));
 }
 
 truth humanoid::CanChokeOnWeb(web* Web) const
@@ -4999,7 +4999,7 @@ cchar* humanoid::GetNormalDeathMessage() const
     return "killed @k";
 }
 
-void kamikazedwarf::SingRandomSong()  
+void kamikazedwarf::SingRandomSong()
 {
   festring Song;
   festring God = GetMasterGod()->GetName();
@@ -5011,11 +5011,11 @@ void kamikazedwarf::SingRandomSong()
 
     switch(RAND_N(3))
     {
-     case 0: 
+     case 0:
       Bodypart = "palm";
       break;
 
-     case 1: 
+     case 1:
       Bodypart = "forehead";
       break;
 
@@ -5029,24 +5029,24 @@ void kamikazedwarf::SingRandomSong()
     {
       festring Title = GetMasterGod()->GetSex() == MALE ? "King" : "Queen";
       Song = festring("Joy to the world, ") + God
-	     + " is come! Let all above Valpurus receive her " + Title;
+       + " is come! Let all above Valpurus receive her " + Title;
       break;
     }
    case 2:
     Song = festring("Hark the herald angels sing. Glory to ") + God + "!";
     break;
    case 3:
-    Song = festring("O ") + God 
-	   + ", You are so big, So absolutely huge, Gosh, "
-	   "we're all really impressed down here, I can tell You.";
+    Song = festring("O ") + God
+     + ", You are so big, So absolutely huge, Gosh, "
+     "we're all really impressed down here, I can tell You.";
     break;
    case 4:
     Song = festring("Forgive us, O ") + God
-	   + " for this, our dreadful toadying and barefaced flattery";
+     + " for this, our dreadful toadying and barefaced flattery";
     break;
    case 5:
     Song = festring("But you, ") + God
-	   + ", are so strong and, well, just so super fantastic. Amen.";
+     + ", are so strong and, well, just so super fantastic. Amen.";
     break;
    case 6:
     Song = festring("O ") + God + ", please don't burn us";
@@ -5058,12 +5058,12 @@ void kamikazedwarf::SingRandomSong()
     Song = festring("O ") + God + ", please don't simmer us in stock";
     break;
   }
-  
+
   EditAP(-1000);
 
   if(CanBeSeenByPlayer())
     ADD_MESSAGE("%s sings: \"%s\"",
-		CHAR_DESCRIPTION(DEFINITE), Song.CStr());
+    CHAR_DESCRIPTION(DEFINITE), Song.CStr());
   else
     ADD_MESSAGE("You hear someone sing: \"%s\"", Song.CStr());
 }
@@ -5073,12 +5073,12 @@ void imperialist::DisplayStethoscopeInfo(character*) const
   ADD_MESSAGE("You hear coins clinking inside.");
 }
 
-void humanoid::ApplySpecialAttributeBonuses() 
+void humanoid::ApplySpecialAttributeBonuses()
 {
   if(GetHead())
   {
     AttributeBonus[CHARISMA] -= GetHead()->
-				CalculateScarAttributePenalty(GetAttribute(CHARISMA, false));
+        CalculateScarAttributePenalty(GetAttribute(CHARISMA, false));
   }
   else
     AttributeBonus[CHARISMA] -= GetAttribute(CHARISMA, false) - 1;

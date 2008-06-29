@@ -97,8 +97,8 @@ inline col16 MakeRGB16(int Red, int Green, int Blue)
 inline col16 MakeShadeColor(col16 Color)
 {
   return MakeRGB16(GetRed16(Color) / 3,
-		   GetGreen16(Color) / 3,
-		   GetBlue16(Color) / 3);
+       GetGreen16(Color) / 3,
+       GetBlue16(Color) / 3);
 }
 
 inline col24 GetRed24(col24 Color) { return Color >> 16 & 0xFF; }
@@ -152,6 +152,9 @@ inline int GetMinColor24(col24 Color)
 #define KEY_END 0x14F
 #define KEY_PAGE_DOWN 0x151
 #define KEY_PAGE_UP 0x149
+#define KEY_INS 0x152
+#define KEY_DEL 0x153
+#define KEY_PLUS 0x14E
 #define KEY_SPACE ' '
 #define KEY_NUMPAD_5 2
 
