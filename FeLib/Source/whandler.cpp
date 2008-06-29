@@ -52,16 +52,24 @@ void globalwindowhandler::Init () {
 }
 
 
+void globalwindowhandler::KSDLProcessEvents (void) {
+  SDL_Event Event;
+
+  memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
+  while (SDL_PollEvent(&Event)) {
+    ProcessMessage(&Event);
+    memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
+  }
+}
+
+
 int globalwindowhandler::GetKey (truth EmptyBuffer) {
+  static ulong LastTick = 0;
   SDL_Event Event;
 
   // Flush the buffer
   if (EmptyBuffer) {
-    memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
-    while (SDL_PollEvent(&Event)) {
-      ProcessMessage(&Event);
-      memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
-    }
+    KSDLProcessEvents();
     KeyBuffer.clear();
   }
 
@@ -69,27 +77,20 @@ int globalwindowhandler::GetKey (truth EmptyBuffer) {
     if (!KeyBuffer.empty()) {
       int Key = KeyBuffer[0];
       KeyBuffer.erase(KeyBuffer.begin());
-      // KMOD_RESERVED | KMOD_MODE | KMOD_CAPS  (what's this?)
-      // return it without the modifier presumably???
       if (Key > 0xE000) return Key-0xE000;
       if (Key && Key < 0x81) return Key; // if it's an ASCII symbol
     } else {
-      memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
       if (SDL_GetAppState() & SDL_APPACTIVE && Controls && ControlLoopsEnabled) {
-        static ulong LastTick = 0;
+        KSDLProcessEvents();
         UpdateTick();
         if (LastTick != Tick) {
           LastTick = Tick;
           truth Draw = false;
           for (int c = 0; c < Controls; ++c) if (ControlLoop[c]()) Draw = true;
           if (Draw) graphics::BlitDBToScreen();
-        }
-        while (SDL_PollEvent(&Event)) {
-          ProcessMessage(&Event);
-          memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
-        }
-        SDL_Delay(50);
+        } else SDL_Delay(40);
       } else {
+        memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
         SDL_WaitEvent(&Event);
         ProcessMessage(&Event);
       }

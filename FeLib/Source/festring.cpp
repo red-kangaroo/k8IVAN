@@ -12,6 +12,9 @@
 
 #include <cctype>
 
+/*k8: why?*/
+#include <cstdlib>
+
 #include "festring.h"
 #include "allocate.h"
 #include "error.h"
