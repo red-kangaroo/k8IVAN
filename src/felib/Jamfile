@@ -1,0 +1,23 @@
+SubDir TOP src felib ;
+
+
+felibsources =
+  bitmap.cpp
+  config.cpp
+  error.cpp
+  febot.cpp
+  feio.cpp
+  felist.cpp
+  femain.cpp
+  femath.cpp
+  festring.cpp
+  fetime.cpp
+  graphics.cpp
+  hscore.cpp
+  rawbit.cpp
+  save.cpp
+  whandler.cpp
+;
+
+
+Library felib : $(felibsources) ;

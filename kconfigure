@@ -1,0 +1,60 @@
+#!/bin/sh
+
+#CFLAGS="-O3 -g -Wall" CXXFLAGS="-O3 -g -Wall" make
+
+echo -n "checking SDL ... "
+if [[ `which sdl-config 2>/dev/null` ]]; then
+  echo "sdl-config ok"
+else
+  echo "failed!"
+  exit 1
+fi
+
+echo -n "SDL version ... "
+if [[ "`sdl-config --version`" < "1.2.0" ]]; then
+  echo "fuck!"
+  exit 1
+fi
+
+echo "`sdl-config --version`"
+
+
+echo -n "writing Jamrules ... "
+cat >Jamrules <<_KEOF
+HDRS += \$(TOP)/src/felib \$(TOP)/src/game ;
+
+DEFINES += "LOCAL_STATE_DIR=\\\\\".\\\\\"" ;
+DEFINES += "DATADIR=\\\\\".\\\\\"" ;
+
+C++ = g++ ;
+CC = gcc ;
+
+if \$(DEBUG) {
+  OPTIM = -O0 -g ;
+  ECHO "MSG: DEBUG" ;
+} else if \$(SIZE) {
+  OPTIM = -Os -march=i586 ;
+  ECHO "MSG: optimizing for minimal size." ;
+} else {
+  OPTIM = -O3 -march=pentium3 -mtune=pentium3 -mfpmath=sse -fomit-frame-pointer ;
+  ECHO "MSG: optimizing for speed and pIII." ;
+}
+
+if \$(!NOGDB) {
+  OPTIM += -g ;
+}
+
+CCFLAGS += -Wall `sdl-config --cflags` ;
+#CCFLAGS += -DNDEBUG ;
+LINKFLAGS += `sdl-config --libs` ;
+
+#LINKLIBS += -lm ;
+LINK = \$(C++) ;
+C++FLAGS += \$(CCFLAGS) ;
+
+#ECHO "CC=" \$(CC) ;
+#ECHO "C++=" \$(C++) ;
+
+_KEOF
+
+echo "ok"

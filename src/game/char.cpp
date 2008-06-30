@@ -1013,86 +1013,57 @@ void character::GetAICommand()
   EditAP(-1000);
 }
 
-truth character::MoveTowardsTarget(truth Run)
-{
-  v2 Pos = GetPos();
+truth character::MoveTowardsTarget (truth Run) {
+  v2 MoveTo[3];
   v2 TPos;
+  v2 Pos = GetPos();
 
-  if(!Route.empty())
-  {
+  if (!Route.empty()) {
     TPos = Route.back();
     Route.pop_back();
-  }
-  else
-    TPos = GoingTo;
+  } else TPos = GoingTo;
 
-  v2 MoveTo[3];
+  MoveTo[0] = v2(0, 0);
+  MoveTo[1] = v2(0, 0);
+  MoveTo[2] = v2(0, 0);
 
-  if(TPos.X < Pos.X)
-  {
-    if(TPos.Y < Pos.Y)
-    {
+  if (TPos.X < Pos.X) {
+    if (TPos.Y < Pos.Y) {
       MoveTo[0] = v2(-1, -1);
       MoveTo[1] = v2(-1,  0);
       MoveTo[2] = v2( 0, -1);
-    }
-
-    if(TPos.Y == Pos.Y)
-    {
+    } else if (TPos.Y == Pos.Y) {
       MoveTo[0] = v2(-1,  0);
       MoveTo[1] = v2(-1, -1);
       MoveTo[2] = v2(-1,  1);
-    }
-
-    if(TPos.Y > Pos.Y)
-    {
+    } else if (TPos.Y > Pos.Y) {
       MoveTo[0] = v2(-1, 1);
       MoveTo[1] = v2(-1, 0);
       MoveTo[2] = v2( 0, 1);
     }
-  }
-
-  if(TPos.X == Pos.X)
-  {
-    if(TPos.Y < Pos.Y)
-    {
+  } else if (TPos.X == Pos.X) {
+    if (TPos.Y < Pos.Y) {
       MoveTo[0] = v2( 0, -1);
       MoveTo[1] = v2(-1, -1);
       MoveTo[2] = v2( 1, -1);
-    }
-
-    if(TPos.Y == Pos.Y)
-    {
+    } else if (TPos.Y == Pos.Y) {
       TerminateGoingTo();
       return false;
-    }
-
-    if(TPos.Y > Pos.Y)
-    {
+    } else if (TPos.Y > Pos.Y) {
       MoveTo[0] = v2( 0, 1);
       MoveTo[1] = v2(-1, 1);
       MoveTo[2] = v2( 1, 1);
     }
-  }
-
-  if(TPos.X > Pos.X)
-  {
-    if(TPos.Y < Pos.Y)
-    {
+  } else if (TPos.X > Pos.X) {
+    if (TPos.Y < Pos.Y) {
       MoveTo[0] = v2(1, -1);
       MoveTo[1] = v2(1,  0);
       MoveTo[2] = v2(0, -1);
-    }
-
-    if(TPos.Y == Pos.Y)
-    {
+    } else if (TPos.Y == Pos.Y) {
       MoveTo[0] = v2(1,  0);
       MoveTo[1] = v2(1, -1);
       MoveTo[2] = v2(1,  1);
-    }
-
-    if(TPos.Y > Pos.Y)
-    {
+    } else if (TPos.Y > Pos.Y) {
       MoveTo[0] = v2(1, 1);
       MoveTo[1] = v2(1, 0);
       MoveTo[2] = v2(0, 1);
@@ -1101,31 +1072,26 @@ truth character::MoveTowardsTarget(truth Run)
 
   v2 ModifiedMoveTo = ApplyStateModification(MoveTo[0]);
 
-  if(TryMove(ModifiedMoveTo, true, Run)) return true;
+  if (TryMove(ModifiedMoveTo, true, Run)) return true;
 
-  int L = (Pos - TPos).GetManhattanLength();
+  int L = (Pos-TPos).GetManhattanLength();
 
-  if(RAND() & 1)
-    Swap(MoveTo[1], MoveTo[2]);
+  if (RAND()&1) Swap(MoveTo[1], MoveTo[2]);
 
-  if(Pos.IsAdjacent(TPos))
-  {
+  if (Pos.IsAdjacent(TPos)) {
     TerminateGoingTo();
     return false;
   }
 
-  if((Pos + MoveTo[1] - TPos).GetManhattanLength() <= L
-     && TryMove(ApplyStateModification(MoveTo[1]), true, Run))
+  if ((Pos+MoveTo[1]-TPos).GetManhattanLength() <= L && TryMove(ApplyStateModification(MoveTo[1]), true, Run))
     return true;
 
-  if((Pos + MoveTo[2] - TPos).GetManhattanLength() <= L
-     && TryMove(ApplyStateModification(MoveTo[2]), true, Run))
+  if((Pos+MoveTo[2]-TPos).GetManhattanLength() <= L && TryMove(ApplyStateModification(MoveTo[2]), true, Run))
     return true;
 
-  Illegal.insert(Pos + ModifiedMoveTo);
+  Illegal.insert(Pos+ModifiedMoveTo);
 
-  if(CreateRoute())
-    return true;
+  if (CreateRoute()) return true;
 
   return false;
 }

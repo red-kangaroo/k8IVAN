@@ -1,0 +1,49 @@
+SubDir TOP src game ;
+
+
+gamesources =
+  actset.cpp
+  areaset.cpp
+  charset.cpp
+  charsset.cpp
+  command.cpp
+  coreset.cpp
+  dataset.cpp
+  dungeon.cpp
+  game.cpp
+  godset.cpp
+  iconf.cpp
+  id.cpp
+  igraph.cpp
+  itemset.cpp
+  levelset.cpp
+  main.cpp
+  materset.cpp
+  message.cpp
+  object.cpp
+  roomset.cpp
+  script.cpp
+  slotset.cpp
+  trapset.cpp
+  wmapset.cpp
+  wskill.cpp
+;
+
+
+Main ../../ivan : $(gamesources) ;
+LinkLibraries ../../ivan : felib ;
+#LinkLibraries ivan : $(TOP)/src/felib/libfelib ;
+
+
+#Library felib : $(felibsources) ;
+#ObjectCcFlags $(libklispsources) : -I./klisp/ -I./src/klisp -O0 -g ;
+#ObjectCcFlags $(libklispsources) : -I./klisp/ -I./src/klisp ;
+
+#LINKFLAGS on syren = $(LINKFLAGS) -Wl,--export-dynamic -ldl ;
+#LINKFLAGS on syren += -g ;
+#LINKFLAGS on syren += -Wl,-S ;
+#LINKLIBS on syren += -lm ;
+#ObjectCcFlags syren : -O0 -g ;
+
+
+SubInclude TOP src felib ;
