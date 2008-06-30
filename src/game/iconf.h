@@ -28,12 +28,8 @@ class ivanconfig
   static truth GetLookZoom() { return LookZoom.Value; }
   static truth GetUseAlternativeKeys() { return UseAlternativeKeys.Value; }
   static truth GetBeNice() { return BeNice.Value; }
-#ifndef __DJGPP__
   static truth GetFullScreenMode() { return FullScreenMode.Value; }
   static void SwitchModeHandler();
-#else
-  static truth GetFullScreenMode() { return true; }
-#endif
   static truth GetKickDownDoors() { return KickDownDoors.Value; }
   static truth GetAutoCenterMap() { return AutoCenterMap.Value; }
   static truth GetAutoCenterMapOnLook() { return AutoCenterMapOnLook.Value; }
@@ -54,9 +50,7 @@ class ivanconfig
   static truth ContrastChangeInterface(numberoption*);
   static void AutoSaveIntervalChanger(numberoption*, long);
   static void ContrastChanger(numberoption*, long);
-#ifndef __DJGPP__
   static void FullScreenModeChanger(truthoption*, truth);
-#endif
   static void ContrastHandler(long);
   static void BackGroundDrawer();
   static stringoption DefaultName;
@@ -68,9 +62,7 @@ class ivanconfig
   static truthoption LookZoom;
   static truthoption UseAlternativeKeys;
   static truthoption BeNice;
-#ifndef __DJGPP__
   static truthoption FullScreenMode;
-#endif
   /*k8*/
   static truthoption KickDownDoors;
   static truthoption AutoCenterMap;

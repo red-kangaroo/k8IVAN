@@ -26,10 +26,6 @@ class festring;
 
 /* memcmp doesn't like alignment of structure members */
 
-#ifdef VC
-#pragma pack(1)
-#endif
-
 struct graphicid
 {
   graphicid() { }
@@ -53,10 +49,6 @@ struct graphicid
   ushort Seed NO_ALIGNMENT;
   uchar WobbleData /*k8NO_ALIGNMENT*/;
 };
-
-#ifdef VC
-#pragma pack()
-#endif
 
 inline bool graphicid::operator<(const graphicid& GI) const
 {

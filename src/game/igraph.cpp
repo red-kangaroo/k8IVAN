@@ -54,9 +54,7 @@ void igraph::Init()
     graphics::SetMode("IVAN " IVAN_VERSION, festring(game::GetGameDir() + "Graphics/Icon.bmp").CStr(), v2(800, 600), ivanconfig::GetFullScreenMode());
     DOUBLE_BUFFER->ClearToColor(0);
     graphics::BlitDBToScreen();
-#ifndef __DJGPP__
     graphics::SetSwitchModeHandler(ivanconfig::SwitchModeHandler);
-#endif
     graphics::LoadDefaultFont(game::GetGameDir() + "Graphics/Font.pcx");
     FONT->CreateFontCache(WHITE);
     FONT->CreateFontCache(LIGHT_GRAY);

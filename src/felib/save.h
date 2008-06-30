@@ -40,7 +40,7 @@ inline inputfile& operator>>(inputfile& SaveFile, type& Value)\
 
 typedef std::map<festring, long> valuemap;
 
-/* fstream seems to bug with DJGPP, so we use FILE* here */
+/* fstream seems to bug with DJ GPP, so we use FILE* here */
 
 class outputfile
 {

@@ -13,13 +13,7 @@
 #include <algorithm>
 #include <cstdarg>
 
-#if defined(LINUX) || defined(__DJGPP__)
 #include <sys/stat.h>
-#endif
-
-#ifdef WIN32
-#include <direct.h>
-#endif
 
 #include "whandler.h"
 #include "hscore.h"
@@ -240,19 +234,8 @@ truth game::Init(cfestring& Name)
   else
     PlayerName = Name;
 
-#ifdef WIN32
-  _mkdir("Save");
-  _mkdir("Bones");
-#endif
-
-#ifdef __DJGPP__
-  mkdir("Save", S_IWUSR);
-  mkdir("Bones", S_IWUSR);
-#endif
-
-#ifdef LINUX
   mkdir(GetSaveDir().CStr(), S_IRWXU|S_IRWXG);
-#endif
+  mkdir(GetBoneDir().CStr(), S_IRWXU|S_IRWXG);
 
   LOSTick = 2;
   DangerFound = 0;
@@ -940,11 +923,6 @@ festring game::SaveName(cfestring& Base)
     if(SaveName[c] == ' ')
       SaveName[c] = '_';
 
-#if defined(WIN32) || defined(__DJGPP__)
-  if(SaveName.GetSize() > 13)
-    SaveName.Resize(13);
-#endif
-
   return SaveName;
 }
 
@@ -1242,8 +1220,6 @@ void game::UpdateCamera()
 
 truth game::HandleQuitMessage()
 {
-#ifdef USE_SDL
-
   if(IsRunning())
   {
     if(IsInGetCommand())
@@ -1275,8 +1251,6 @@ truth game::HandleQuitMessage()
   return false;
       }
   }
-
-#endif /* USE_SDL */
 
   return true;
 }
@@ -2233,51 +2207,31 @@ inputfile& operator>>(inputfile& SaveFile, dangerid& Value)
 
 festring game::GetHomeDir()
 {
-#ifdef LINUX
   festring Dir;
   Dir << getenv("HOME") << '/';
   return Dir;
-#endif
-
-#if defined(WIN32) || defined(__DJGPP__)
-  return "";
-#endif
 }
 
 festring game::GetSaveDir()
 {
-#ifdef LINUX
   festring Dir;
   Dir << getenv("HOME") << "/IvanSave/";
   return Dir;
-#endif
-
-#if defined(WIN32) || defined(__DJGPP__)
-  return "Save/";
-#endif
 }
 
 festring game::GetGameDir()
 {
-#ifdef LINUX
   /*k8! return DATADIR "/ivan/"; */
   return DATADIR "/";
-#endif
-
-#if defined(WIN32) || defined(__DJGPP__)
-  return "";
-#endif
 }
 
 festring game::GetBoneDir()
 {
-#ifdef LINUX
-  return LOCAL_STATE_DIR "/Bones/";
-#endif
-
-#if defined(WIN32) || defined(__DJGPP__)
-  return "Bones/";
-#endif
+/*k8*/
+  /*return LOCAL_STATE_DIR "/Bones/";*/
+  festring Dir;
+  Dir << getenv("HOME") << "/IvanSave/Bones/";
+  return Dir;
 }
 
 level* game::GetLevel(int I)

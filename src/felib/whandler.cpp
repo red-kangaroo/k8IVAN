@@ -39,8 +39,6 @@ void globalwindowhandler::DeInstallControlLoop (truth (*What)()) {
 }
 
 
-#ifdef USE_SDL
-
 #include <algorithm>
 
 std::vector<int> globalwindowhandler::KeyBuffer;
@@ -197,4 +195,3 @@ void globalwindowhandler::ProcessMessage (SDL_Event* Event) {
 truth globalwindowhandler::ShiftIsDown () {
   return false;
 }
-#endif

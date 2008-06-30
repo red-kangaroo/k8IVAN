@@ -56,14 +56,12 @@ truthoption ivanconfig::UseAlternativeKeys("UseAlternativeKeys",
 truthoption ivanconfig::BeNice(     "BeNice",
             "be nice to pets",
             true);
-#ifndef __DJGPP__
 truthoption ivanconfig::FullScreenMode(   "FullScreenMode",
             "run the game in full screen mode",
             false,
             &configsystem::NormalTruthDisplayer,
             &configsystem::NormalTruthChangeInterface,
             &FullScreenModeChanger);
-#endif
 /*k8*/
 truthoption ivanconfig::KickDownDoors("KickDownDoors", "Kick down doors by default", false );
 truthoption ivanconfig::AutoCenterMap("AutoCenterMap", "Automatically center map when player moves", true );
@@ -153,14 +151,12 @@ void ivanconfig::ContrastChanger(numberoption* O, long What)
   CalculateContrastLuminance();
 }
 
-#ifndef __DJGPP__
 
 void ivanconfig::FullScreenModeChanger(truthoption*, truth)
 {
   graphics::SwitchMode();
 }
 
-#endif
 
 void ivanconfig::Show()
 {
@@ -178,7 +174,6 @@ void ivanconfig::ContrastHandler(long Value)
   }
 }
 
-#ifndef __DJGPP__
 
 void ivanconfig::SwitchModeHandler()
 {
@@ -186,7 +181,6 @@ void ivanconfig::SwitchModeHandler()
   Save();
 }
 
-#endif
 
 void ivanconfig::CalculateContrastLuminance()
 {
@@ -205,19 +199,13 @@ void ivanconfig::Initialize()
   configsystem::AddOption(&LookZoom);
   configsystem::AddOption(&UseAlternativeKeys);
   configsystem::AddOption(&BeNice);
-#ifndef __DJGPP__
   configsystem::AddOption(&FullScreenMode);
-#endif
 /*k8*/
   configsystem::AddOption(&KickDownDoors);
   configsystem::AddOption(&AutoCenterMap);
   configsystem::AddOption(&AutoCenterMapOnLook);
 /*k8*/
-#if defined(WIN32) || defined(__DJGPP__)
-  configsystem::SetConfigFileName("ivan.cfg");
-#else
   configsystem::SetConfigFileName(festring(getenv("HOME")) + "/.ivan.conf");
-#endif
   configsystem::Load();
   CalculateContrastLuminance();
 }
