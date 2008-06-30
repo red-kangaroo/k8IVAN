@@ -140,7 +140,7 @@ void worldmap::Generate()
     if(!PerfectForAttnam.size())
       continue;
 
-    v2 AttnamPos, ElpuriCavePos, NewAttnamPos, TunnelEntry, TunnelExit;
+    v2 AttnamPos, ElpuriCavePos, NewAttnamPos, TunnelEntry = v2(0, 0), TunnelExit;
     truth Correct = false;
     continent* PetrusLikes;
 

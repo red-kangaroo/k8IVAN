@@ -1408,6 +1408,7 @@ void level::LightningBeam(beamdata& Beam)
    case 5: StartPos = v2(15, 0); break;
    case 6: StartPos = v2(RAND() & 15, 0); break;
    case 7: StartPos = v2(0, 0); break;
+   default: StartPos = v2(0, 0); break;
   }
 
   for(int Length = 0; Length < Beam.Range; ++Length)
@@ -1869,61 +1870,44 @@ void level::GenerateDungeon(int Index)
   CreateItems(LevelScript->GetItems()->Randomize());
 }
 
-void level::GenerateJungle()
-{
-  int x,y;
+void level::GenerateJungle () {
+  int x, y;
 
-  for(x = 0; x < XSize; ++x)
-    for(y = 0; y < YSize; ++y)
-    {
+  for (x = 0; x < XSize; ++x) {
+    for (y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
       Map[x][y]->SetLTerrain(solidterrain::Spawn(GRASS_TERRAIN), 0);
     }
+  }
 
-  for(;;)
-  {
-    CreateTunnelNetwork(1, 4, 20, 120, v2(0, YSize / 2));
-    CreateTunnelNetwork(1, 4, 20, 120, v2(XSize - 1, YSize / 2));
+  for (;;) {
+    CreateTunnelNetwork(1, 4, 20, 120, v2(0, YSize/2));
+    CreateTunnelNetwork(1, 4, 20, 120, v2(XSize-1, YSize/2));
 
-    for(int c = 0; c < 25; ++c)
-    {
+    for (int c = 0; c < 25; ++c) {
       v2 StartPos;
 
-      switch(RAND_N(5))
-      {
-       case 0:
-  StartPos = v2(RAND_N(XSize), 0);
-  break;
-       case 1:
-  StartPos = v2(RAND_N(XSize), YSize - 1);
-  break;
-       case 2:
-  StartPos = v2(0, RAND_N(YSize));
-  break;
-       case 3:
-  StartPos = v2(XSize - 1, RAND_N(YSize));
-  break;
-       case 4:
-  StartPos = v2(RAND_N(XSize), RAND_N(YSize));
+      switch(RAND_N(5)) {
+        case 0: StartPos = v2(RAND_N(XSize), 0); break;
+        case 1: StartPos = v2(RAND_N(XSize), YSize-1); break;
+        case 2: StartPos = v2(0, RAND_N(YSize)); break;
+        case 3: StartPos = v2(XSize-1, RAND_N(YSize)); break;
+        case 4: StartPos = v2(RAND_N(XSize), RAND_N(YSize)); break;
+        default: StartPos = v2(0, 0); break; /* k8: shut up the compiler */
       }
-
       CreateTunnelNetwork(1,4,20, 120, StartPos);
     }
 
-    for(x = 0; x < XSize; ++x)
-    {
+    for (x = 0; x < XSize; ++x) {
       game::BusyAnimation();
-
-      for(y = 0; y < YSize; ++y)
-      {
-  if(FlagMap[x][y] != PREFERRED)
-    Map[x][y]->ChangeOLTerrain(wall::Spawn(BRICK_PROPAGANDA));
-  else if(RAND_2)
-    Map[x][y]->ChangeOLTerrain(decoration::Spawn(PALM));
+      for (y = 0; y < YSize; ++y) {
+        if(FlagMap[x][y] != PREFERRED) Map[x][y]->ChangeOLTerrain(wall::Spawn(BRICK_PROPAGANDA));
+        else if(RAND_2) Map[x][y]->ChangeOLTerrain(decoration::Spawn(PALM));
       }
     }
   }
 }
+
 
 void level::CreateTunnelNetwork(int MinLength, int MaxLength, int MinNodes, int MaxNodes, v2 StartPos)
 {
@@ -2082,100 +2066,75 @@ void level::GenerateTundra()
     Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(decoration::Spawn(DWARF_BIRCH));
 }
 
-void level::GenerateGlacier()
-{
-  int x,y;
 
-  for(x = 0; x < XSize; ++x)
-    for(y = 0; y < YSize; ++y)
-    {
+void level::GenerateGlacier () {
+  int x, y;
+
+  for (x = 0; x < XSize; ++x) {
+    for (y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
       Map[x][y]->SetLTerrain(solidterrain::Spawn(SNOW_TERRAIN), 0);
     }
+  }
 
-  int AmountOfBoulders = RAND_N(20) + 5;
+  int AmountOfBoulders = RAND_N(20)+5;
 
-  for(int c = 0; c < AmountOfBoulders; ++c)
+  for (int c = 0; c < AmountOfBoulders; ++c)
     Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(boulder::Spawn(SNOW_BOULDER));
 
-  for(;;)
-  {
-    CreateTunnelNetwork(1,4,20, 120, v2(0,YSize / 2));
-    CreateTunnelNetwork(1,4,20, 120, v2(XSize - 1,YSize / 2));
+  for (;;) {
+    CreateTunnelNetwork(1,4,20, 120, v2(0,YSize/2));
+    CreateTunnelNetwork(1,4,20, 120, v2(XSize-1,YSize/2));
 
-    for(int c = 0; c < 20; ++c)
-    {
+    for (int c = 0; c < 20; ++c) {
       v2 StartPos;
-
-      switch(RAND_N(5))
-      {
-       case 0:
-  StartPos = v2(RAND_N(XSize), 0);
-  break;
-       case 1:
-  StartPos = v2(RAND_N(XSize), YSize - 1);
-  break;
-       case 2:
-  StartPos = v2(0, RAND_N(YSize));
-  break;
-       case 3:
-  StartPos = v2(XSize - 1, RAND_N(YSize));
-  break;
-       case 4:
-  StartPos = v2(RAND_N(XSize), RAND_N(YSize));
+      switch(RAND_N(5)) {
+        case 0: StartPos = v2(RAND_N(XSize), 0); break;
+        case 1: StartPos = v2(RAND_N(XSize), YSize-1); break;
+        case 2: StartPos = v2(0, RAND_N(YSize)); break;
+        case 3: StartPos = v2(XSize-1, RAND_N(YSize)); break;
+        case 4: StartPos = v2(RAND_N(XSize), RAND_N(YSize)); break;
+        default: StartPos = v2(0, 0); break; /* k8: shut up the compiler */
       }
-
       CreateTunnelNetwork(1,4,20, 120, StartPos);
     }
 
-    for(x = 0; x < XSize; ++x)
-      for(y = 0; y < YSize; ++y)
-  if(FlagMap[x][y] != PREFERRED)
-    FlagMap[x][y] |= RAND_2 ? ICE_TERRAIN : STONE_TERRAIN;
+    for (x = 0; x < XSize; ++x)
+      for (y = 0; y < YSize; ++y)
+        if(FlagMap[x][y] != PREFERRED) FlagMap[x][y] |= RAND_2?ICE_TERRAIN:STONE_TERRAIN;
 
-    for(x = 0; x < XSize; ++x)
-    {
+    for (x = 0; x < XSize; ++x) {
       game::BusyAnimation();
-
-      for(y = 0; y < YSize; ++y)
-      {
-  if(!(FlagMap[x][y] & PREFERRED))
-  {
-    int SquaresAround = 0;
-    int IceAround = 0;
-
-    for(int d = 0; d < 8; ++d)
-    {
-      v2 Pos = v2(x,y) + game::GetMoveVector(d);
-      if(IsValidPos(Pos) && !(FlagMap[Pos.X][Pos.Y] & PREFERRED))
-      {
-        ++SquaresAround;
-        if(FlagMap[Pos.X][Pos.Y] & ICE_TERRAIN)
-    ++IceAround;
+      for (y = 0; y < YSize; ++y) {
+        if (!(FlagMap[x][y] & PREFERRED)) {
+          int SquaresAround = 0;
+          int IceAround = 0;
+          for (int d = 0; d < 8; ++d) {
+            v2 Pos = v2(x,y) + game::GetMoveVector(d);
+            if (IsValidPos(Pos) && !(FlagMap[Pos.X][Pos.Y] & PREFERRED)) {
+              ++SquaresAround;
+              if(FlagMap[Pos.X][Pos.Y] & ICE_TERRAIN) ++IceAround;
+            }
+          }
+          if (IceAround > SquaresAround/2) FlagMap[x][y] = ICE_TERRAIN;
+          else FlagMap[x][y] = STONE_TERRAIN;
+        }
       }
     }
 
-    if(IceAround > SquaresAround / 2)
-      FlagMap[x][y] = ICE_TERRAIN;
-    else
-      FlagMap[x][y] = STONE_TERRAIN;
-  }
+    for (x = 0; x < XSize; ++x) {
+      for (y = 0; y < YSize; ++y) {
+        if (!(FlagMap[x][y] & PREFERRED)) {
+          if(FlagMap[x][y] & ICE_TERRAIN) GetLSquare(x,y)->ChangeOLTerrain(wall::Spawn(ICE_WALL));
+          else GetLSquare(x,y)->ChangeOLTerrain(wall::Spawn(STONE_WALL));
+        }
       }
     }
-
-    for(x = 0; x < XSize; ++x)
-      for(y = 0; y < YSize; ++y)
-  if(!(FlagMap[x][y] & PREFERRED))
-  {
-    if(FlagMap[x][y] & ICE_TERRAIN)
-      GetLSquare(x,y)->ChangeOLTerrain(wall::Spawn(ICE_WALL));
-    else
-      GetLSquare(x,y)->ChangeOLTerrain(wall::Spawn(STONE_WALL));
-  }
 
     break; // Doesn't yet check path in any way
   }
 }
+
 
 bool nodepointerstorer::operator<(const nodepointerstorer& N) const
 {

@@ -270,7 +270,9 @@ void materialscript::Load(inputfile& SaveFile)
 {
   script::Load(SaveFile);
   Config = 0;
-  SaveFile >> (ushort&)Config;
+  ushort s2;
+  SaveFile >> s2;
+  Config = s2;
 }
 
 void basecontentscript::InitDataMap()
