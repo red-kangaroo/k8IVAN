@@ -309,13 +309,14 @@ v2 igraph::RotateTile(rawbitmap* Source, rawbitmap* Dest, v2 Pos, v2 SparklePos,
 
 void igraph::RemoveUser(tilemap::iterator Iterator)
 {
-  tile& Tile = Iterator->second;
+/*k8!!! memory leak by me!*/
+  /*tile& Tile = Iterator->second;
 
   if(!--Tile.Users)
   {
     delete Tile.Bitmap;
     TileMap.erase(Iterator);
-  }
+  }*/
 }
 
 outputfile& operator<<(outputfile& SaveFile, const graphicid& Value)

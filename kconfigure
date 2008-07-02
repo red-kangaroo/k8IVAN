@@ -35,18 +35,26 @@ if \$(DEBUG) {
 } else if \$(SIZE) {
   OPTIM = -Os -march=i586 ;
   ECHO "MSG: optimizing for minimal size." ;
-} else {
+} else if \$(SPEED) {
   OPTIM = -O3 -march=pentium3 -mtune=pentium3 -mfpmath=sse -fomit-frame-pointer ;
   ECHO "MSG: optimizing for speed and pIII." ;
+} else {
+  OPTIM = -O0 ;
+  ECHO "MSG: nooptimize build." ;
 }
 
-if \$(!NOGDB) {
+if ! \$(NOGDB) {
   OPTIM += -g ;
+  LINKFLAGS += -g ;
+} else {
+  OPTIM += -s ;
+  LINKFLAGS += -s ;
 }
 
 CCFLAGS += -Wall `sdl-config --cflags` ;
 #CCFLAGS += -DNDEBUG ;
 LINKFLAGS += `sdl-config --libs` ;
+#LINKFLAGS += -g ;
 
 #LINKLIBS += -lm ;
 LINK = \$(C++) ;
