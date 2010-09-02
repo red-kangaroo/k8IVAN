@@ -401,72 +401,45 @@ truth commandsystem::PickUp(character* Char)
       Stack->Pile(PileVector, Char, 3 - c);
   }
 
-  if(PileVector.size() == 1)
-    if(PileVector[0][0]->CanBePickedUp())
-    {
+  if (PileVector.size() == 1) {
+    if (PileVector[0][0]->CanBePickedUp()) {
       int Amount = PileVector[0].size();
-
-      if(Amount > 1)
-  Amount = game::ScrollBarQuestion(CONST_S("How many ") + PileVector[0][0]->GetName(PLURAL) + '?', Amount, 1, 0, Amount, 0, WHITE, LIGHT_GRAY, DARK_GRAY);
-
-      if(!Amount)
-  return false;
-
-      if((!PileVector[0][0]->GetRoom()
-    || PileVector[0][0]->GetRoom()->PickupItem(Char, PileVector[0][0], Amount))
-   && PileVector[0][0]->CheckPickUpEffect(Char))
-      {
-  for(int c = 0; c < Amount; ++c)
-    PileVector[0][c]->MoveTo(Char->GetStack());
-
-  ADD_MESSAGE("%s picked up.", PileVector[0][0]->GetName(INDEFINITE, Amount).CStr());
-  Char->DexterityAction(2);
-  return true;
+      if (Amount > 1) Amount = game::ScrollBarQuestion(CONST_S("How many ") + PileVector[0][0]->GetName(PLURAL) + '?', Amount, 1, 0, Amount, 0, WHITE, LIGHT_GRAY, DARK_GRAY);
+      if (!Amount) return false;
+      if ((!PileVector[0][0]->GetRoom() ||
+           PileVector[0][0]->GetRoom()->PickupItem(Char, PileVector[0][0], Amount)) &&
+          PileVector[0][0]->CheckPickUpEffect(Char)) {
+        for (int c = 0; c < Amount; ++c) PileVector[0][c]->MoveTo(Char->GetStack());
+        ADD_MESSAGE("%s picked up.", PileVector[0][0]->GetName(INDEFINITE, Amount).CStr());
+        Char->DexterityAction(2);
+        return true;
       }
-      else
-  return false;
-    }
-    else
-    {
+      return false;
+    } else {
       ADD_MESSAGE("%s too large to pick up!", PileVector[0].size() == 1 ? "It is" : "They are");
       return false;
     }
-
+  }
   truth Success = false;
   stack::SetSelected(0);
-
-  for(;;)
-  {
+  for (;;) {
     itemvector ToPickup;
     game::DrawEverythingNoBlit();
     Char->GetStackUnder()->DrawContents(ToPickup, Char, CONST_S("What do you want to pick up?"), REMEMBER_SELECTED);
-
-    if(ToPickup.empty())
-      break;
-
-    if(ToPickup[0]->CanBePickedUp())
-    {
-      if((!ToPickup[0]->GetRoom()
-    || ToPickup[0]->GetRoom()->PickupItem(Char, ToPickup[0], ToPickup.size()))
-   && ToPickup[0]->CheckPickUpEffect(Char))
-      {
-  for(uint c = 0; c < ToPickup.size(); ++c)
-    ToPickup[c]->MoveTo(Char->GetStack());
-
-  ADD_MESSAGE("%s picked up.", ToPickup[0]->GetName(INDEFINITE, ToPickup.size()).CStr());
-  Success = true;
+    if (ToPickup.empty()) break;
+    if (ToPickup[0]->CanBePickedUp()) {
+      if ((!ToPickup[0]->GetRoom() || ToPickup[0]->GetRoom()->PickupItem(Char, ToPickup[0], ToPickup.size())) &&
+          ToPickup[0]->CheckPickUpEffect(Char)) {
+        for (uint c = 0; c < ToPickup.size(); ++c) ToPickup[c]->MoveTo(Char->GetStack());
+        ADD_MESSAGE("%s picked up.", ToPickup[0]->GetName(INDEFINITE, ToPickup.size()).CStr());
+        Success = true;
       }
-    }
-    else
-      ADD_MESSAGE("%s too large to pick up!", ToPickup.size() == 1 ? "It is" : "They are");
+    } else ADD_MESSAGE("%s too large to pick up!", ToPickup.size() == 1 ? "It is" : "They are");
   }
-
-  if(Success)
-  {
+  if (Success) {
     Char->DexterityAction(2);
     return true;
   }
-
   return false;
 }
 
@@ -1218,43 +1191,35 @@ truth commandsystem::Search(character* Char)
 
 #ifdef WIZARD
 
-truth commandsystem::WizardMode(character* Char)
-{
-  if(!game::WizardModeIsActive())
-  {
-    if(game::TruthQuestion(CONST_S("Do you want to cheat, cheater? This action cannot be undone. [y/N]")))
-    {
+truth commandsystem::WizardMode (character *Char) {
+  if (!game::WizardModeIsActive()) {
+    if (game::TruthQuestion(CONST_S("Do you want to cheat, cheater? This action cannot be undone. [y/N]"))) {
       game::ActivateWizardMode();
       ADD_MESSAGE("Wizard mode activated.");
-
-      if(game::IsInWilderness())
-      {
-  v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
-  game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
-  game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
-  game::GetWorldMap()->SendNewDrawRequest();
+      if (game::IsInWilderness()) {
+        v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
+        game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
+        game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
+        game::GetWorldMap()->SendNewDrawRequest();
+      } else {
+        game::LoadWorldMap();
+        v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
+        game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
+        game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
+        game::SaveWorldMap();
       }
-      else
-      {
-  game::LoadWorldMap();
-  v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
-  game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
-  game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
-  game::SaveWorldMap();
-      }
-
       game::Save();
       game::Save(game::GetAutoSaveFileName());
+    } else return false;
+  } else {
+    if (game::GetPlayerName() == "_k8_" && game::TruthQuestion(CONST_S("Do you want to uncheat, cheater? [y/N]"))) {
+      game::DeactivateWizardMode();
+      ADD_MESSAGE("You are the ordinary mortal again.");
+    } else {
+      ADD_MESSAGE("Got some scrolls of wishing.");
+      for (int c = 0; c < 5; ++c) Char->GetStack()->AddItem(scrollofwishing::Spawn());
     }
-    else
-      return false;
   }
-  else
-    ADD_MESSAGE("Got some scrolls of wishing.");
-
-  for(int c = 0; c < 5; ++c)
-    Char->GetStack()->AddItem(scrollofwishing::Spawn());
-
   return false;
 }
 

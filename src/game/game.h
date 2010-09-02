@@ -326,6 +326,7 @@ class game
   static truth MassacreListsEmpty();
 #ifdef WIZARD
   static void ActivateWizardMode() { WizardMode = true; }
+  static void DeactivateWizardMode() { WizardMode = false; }
   static truth WizardModeIsActive() { return WizardMode; }
   static void SeeWholeMap();
   static int GetSeeWholeMapCheatMode() { return SeeWholeMapCheatMode; }

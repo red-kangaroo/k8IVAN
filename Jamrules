@@ -3,6 +3,8 @@ HDRS += $(TOP)/src/felib $(TOP)/src/game ;
 DEFINES += "LOCAL_STATE_DIR=\\\".\\\"" ;
 DEFINES += "DATADIR=\\\".\\\"" ;
 
+DEFINES += WIZARD ;
+
 ALL_LOCATE_TARGET = $(TOP)/_build ;
 ALL_LOCATE_LIB = $(TOP)/_build/libs ;
 ALL_LOCATE_BIN = $(TOP) ;
