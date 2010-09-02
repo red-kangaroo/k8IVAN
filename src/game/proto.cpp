@@ -336,34 +336,25 @@ template <class type> std::pair<const typename type::prototype*, int> SearchForP
   std::pair<const prototype*, int> ID(0, 0);
   std::pair<int, int> Best(0, 0);
 
-  for(int c = 1; c < protocontainer<type>::GetSize(); ++c)
-  {
+  for (int c = 1; c < protocontainer<type>::GetSize(); ++c) {
     const prototype* Proto = protocontainer<type>::GetProto(c);
     const database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
 
-    for(int c = 0; c < ConfigSize; ++c)
-      if(!ConfigData[c]->IsAbstract)
-      {
-  truth BrokenRequested = festring::IgnoreCaseFind(Identifier, " broken ") != festring::NPos;
-
-  if(BrokenRequested == !(ConfigData[c]->Config & BROKEN))
-    continue;
-
-  std::pair<int, int> Correct = CountCorrectNameLetters<type>(ConfigData[c], Identifier);
-
-  if(Correct == Best)
-    Conflict = true;
-  else if(Correct.first > Best.first || (Correct.first == Best.first && Correct.second < Best.second))
-    if(ConfigData[c]->CanBeWished || game::WizardModeIsActive())
-    {
-      ID.first = Proto;
-      ID.second = ConfigData[c]->Config;
-      Best = Correct;
-      Conflict = false;
-    }
-    else
-      Illegal = true;
+    for (int c = 0; c < ConfigSize; ++c)
+      if (!ConfigData[c]->IsAbstract) {
+        truth BrokenRequested = festring::IgnoreCaseFind(Identifier, " broken ") != festring::NPos;
+        if (BrokenRequested == !(ConfigData[c]->Config & BROKEN)) continue;
+        std::pair<int, int> Correct = CountCorrectNameLetters<type>(ConfigData[c], Identifier);
+        if (Correct == Best) Conflict = true;
+        else if (Correct.first > Best.first || (Correct.first == Best.first && Correct.second < Best.second)) {
+          if (ConfigData[c]->CanBeWished || game::WizardModeIsActive()) {
+            ID.first = Proto;
+            ID.second = ConfigData[c]->Config;
+            Best = Correct;
+            Conflict = false;
+          } else Illegal = true;
+        }
       }
   }
 
@@ -439,15 +430,14 @@ material* protosystem::CreateMaterial(cfestring& What, long Volume, truth Output
     int ConfigSize = Proto->GetConfigSize();
 
     for(int c2 = 1; c2 < ConfigSize; ++c2)
-      if(ConfigData[c2]->NameStem == What)
-  if(ConfigData[c2]->CommonFlags & CAN_BE_WISHED
-     || game::WizardModeIsActive())
-    return ConfigData[c2]->ProtoType->Spawn(ConfigData[c2]->Config, Volume);
-  else if(Output)
-  {
-    ADD_MESSAGE("You hear a booming voice: \"No, mortal! This will not be done!\"");
-    return 0;
-  }
+      if (ConfigData[c2]->NameStem == What) {
+        if (ConfigData[c2]->CommonFlags & CAN_BE_WISHED || game::WizardModeIsActive())
+          return ConfigData[c2]->ProtoType->Spawn(ConfigData[c2]->Config, Volume);
+        else if (Output) {
+          ADD_MESSAGE("You hear a booming voice: \"No, mortal! This will not be done!\"");
+          return 0;
+        }
+      }
   }
 
   if(Output)
