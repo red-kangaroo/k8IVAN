@@ -83,24 +83,19 @@ void consume::Handle()
 
   character* Actor = GetActor();
 
-  if(!InDNDMode() && Actor->GetHungerState() >= BLOATED)
-    if(Actor->IsPlayer())
-    {
+  if (!InDNDMode() && Actor->GetHungerState() >= BLOATED) {
+    if (Actor->IsPlayer()) {
       ADD_MESSAGE("You have a really hard time getting all this down your throat.");
-
-      if(game::TruthQuestion(CONST_S("Continue ") + GetDescription() + "? [y/N]"))
-  ActivateInDNDMode();
-      else
-      {
-  Terminate(false);
-  return;
+      if (game::TruthQuestion(CONST_S("Continue ") + GetDescription() + "? [y/N]")) ActivateInDNDMode();
+      else {
+        Terminate(false);
+        return;
       }
-    }
-    else
-    {
+    } else {
       Terminate(false);
       return;
     }
+  }
 
   if(!Actor->IsPlayer() && !Consuming->CanBeEatenByAI(Actor)) // item may be spoiled after action was started
   {

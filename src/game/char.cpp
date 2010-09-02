@@ -139,7 +139,7 @@ statedata StateData[STATES] =
     &character::PoisonedSituationDangerModifier
   }, {
     "Teleporting",
-    SECRET|RANDOMIZABLE&~(SRC_MUSHROOM|SRC_GOOD),
+    SECRET|(RANDOMIZABLE&~(SRC_MUSHROOM|SRC_GOOD)),
     &character::PrintBeginTeleportMessage,
     &character::PrintEndTeleportMessage,
     0,
@@ -149,7 +149,7 @@ statedata StateData[STATES] =
     0
   }, {
     "Polymorphing",
-    SECRET|RANDOMIZABLE&~(SRC_MUSHROOM|SRC_GOOD),
+    SECRET|(RANDOMIZABLE&~(SRC_MUSHROOM|SRC_GOOD)),
     &character::PrintBeginPolymorphMessage,
     &character::PrintEndPolymorphMessage,
     0,
@@ -179,7 +179,7 @@ statedata StateData[STATES] =
     &character::PanicSituationDangerModifier
   }, {
     "Confused",
-    SECRET|RANDOMIZABLE&~(DUR_PERMANENT|SRC_GOOD),
+    SECRET|(RANDOMIZABLE&~(DUR_PERMANENT|SRC_GOOD)),
     &character::PrintBeginConfuseMessage,
     &character::PrintEndConfuseMessage,
     0,
@@ -189,7 +189,7 @@ statedata StateData[STATES] =
     &character::ConfusedSituationDangerModifier
   }, {
     "Parasitized",
-    SECRET|RANDOMIZABLE&~DUR_TEMPORARY,
+    SECRET|(RANDOMIZABLE&~DUR_TEMPORARY),
     &character::PrintBeginParasitizedMessage,
     &character::PrintEndParasitizedMessage,
     0,
@@ -209,7 +209,7 @@ statedata StateData[STATES] =
     0
   }, {
     "GasImmunity",
-    SECRET|RANDOMIZABLE&~(SRC_GOOD|SRC_EVIL),
+    SECRET|(RANDOMIZABLE&~(SRC_GOOD|SRC_EVIL)),
     &character::PrintBeginGasImmunityMessage,
     &character::PrintEndGasImmunityMessage,
     0,
@@ -229,7 +229,7 @@ statedata StateData[STATES] =
     0
   }, {
     "Leprosy",
-    SECRET|RANDOMIZABLE&~DUR_TEMPORARY,
+    SECRET|(RANDOMIZABLE&~DUR_TEMPORARY),
     &character::PrintBeginLeprosyMessage,
     &character::PrintEndLeprosyMessage,
     &character::BeginLeprosy,
@@ -1107,80 +1107,58 @@ int character::CalculateNewSquaresUnder(lsquare** NewSquare, v2 Pos) const
     return 0;
 }
 
-truth character::TryMove(v2 MoveVector, truth Important, truth Run)
-{
-  lsquare* MoveToSquare[MAX_SQUARES_UNDER];
-  character* Pet[MAX_SQUARES_UNDER];
-  character* Neutral[MAX_SQUARES_UNDER];
-  character* Hostile[MAX_SQUARES_UNDER];
+truth character::TryMove (v2 MoveVector, truth Important, truth Run) {
+  lsquare *MoveToSquare[MAX_SQUARES_UNDER];
+  character *Pet[MAX_SQUARES_UNDER];
+  character *Neutral[MAX_SQUARES_UNDER];
+  character *Hostile[MAX_SQUARES_UNDER];
   v2 PetPos[MAX_SQUARES_UNDER];
   v2 NeutralPos[MAX_SQUARES_UNDER];
   v2 HostilePos[MAX_SQUARES_UNDER];
-  v2 MoveTo = GetPos() + MoveVector;
+  v2 MoveTo = GetPos()+MoveVector;
   int Direction = game::GetDirectionForVector(MoveVector);
 
-  if(Direction == DIR_ERROR)
-    ABORT("Direction fault.");
-
-  if(!game::IsInWilderness())
-  {
+  if (Direction == DIR_ERROR) ABORT("Direction fault.");
+  if (!game::IsInWilderness()) {
     int Squares = CalculateNewSquaresUnder(MoveToSquare, MoveTo);
-
-    if(Squares)
-    {
+    if (Squares) {
       int Pets = 0;
       int Neutrals = 0;
       int Hostiles = 0;
-
-      for(int c = 0; c < Squares; ++c)
-      {
-  character* Char = MoveToSquare[c]->GetCharacter();
-
-  if(Char && Char != this)
-  {
-    v2 Pos = MoveToSquare[c]->GetPos();
-
-    if(IsAlly(Char))
-    {
-      Pet[Pets] = Char;
-      PetPos[Pets++] = Pos;
-    }
-    else if(Char->GetRelation(this) != HOSTILE)
-    {
-      Neutral[Neutrals] = Char;
-      NeutralPos[Neutrals++] = Pos;
-    }
-    else
-    {
-      Hostile[Hostiles] = Char;
-      HostilePos[Hostiles++] = Pos;
-    }
-  }
+      for (int c = 0; c < Squares; ++c) {
+        character* Char = MoveToSquare[c]->GetCharacter();
+        if (Char && Char != this) {
+          v2 Pos = MoveToSquare[c]->GetPos();
+          if (IsAlly(Char)) {
+            Pet[Pets] = Char;
+            PetPos[Pets++] = Pos;
+          } else if (Char->GetRelation(this) != HOSTILE) {
+            Neutral[Neutrals] = Char;
+            NeutralPos[Neutrals++] = Pos;
+          } else {
+            Hostile[Hostiles] = Char;
+            HostilePos[Hostiles++] = Pos;
+          }
+        }
       }
 
-      if(Hostiles == 1)
-  return Hit(Hostile[0], HostilePos[0], Direction);
-      else if(Hostiles)
-      {
-  int Index = RAND() % Hostiles;
-  return Hit(Hostile[Index], HostilePos[Index], Direction);
+      if (Hostiles == 1) return Hit(Hostile[0], HostilePos[0], Direction);
+      else if (Hostiles) {
+        int Index = RAND() % Hostiles;
+        return Hit(Hostile[Index], HostilePos[Index], Direction);
       }
 
-      if(Neutrals == 1)
-      {
-  if(!IsPlayer() && !Pets && Important && CanMoveOn(MoveToSquare[0]))
-    return HandleCharacterBlockingTheWay(Neutral[0], NeutralPos[0], Direction);
-  else
-    return IsPlayer() && Hit(Neutral[0], NeutralPos[0], Direction);
+      if (Neutrals == 1) {
+        if (!IsPlayer() && !Pets && Important && CanMoveOn(MoveToSquare[0]))
+          return HandleCharacterBlockingTheWay(Neutral[0], NeutralPos[0], Direction);
+        else
+          return IsPlayer() && Hit(Neutral[0], NeutralPos[0], Direction);
+      } else if (Neutrals) {
+        if (IsPlayer()) {
+          int Index = RAND() % Neutrals;
+          return Hit(Neutral[Index], NeutralPos[Index], Direction);
+        } else return false;
       }
-      else if(Neutrals)
-  if(IsPlayer())
-  {
-    int Index = RAND() % Neutrals;
-    return Hit(Neutral[Index], NeutralPos[Index], Direction);
-  }
-  else
-    return false;
 
       if(!IsPlayer())
   for(int c = 0; c < Squares; ++c)
@@ -2581,36 +2559,27 @@ truth character::FollowLeader(character* Leader)
       return false;
 }
 
-void character::SeekLeader(ccharacter* Leader)
-{
-  if(Leader && Leader != this)
-    if(Leader->CanBeSeenBy(this) && (Leader->SquareUnderCanBeSeenBy(this, true) || !IsGoingSomeWhere()))
-    {
-      if(CommandFlags & FOLLOW_LEADER)
-  SetGoingTo(Leader->GetPos());
-    }
-    else if(!IsGoingSomeWhere())
-    {
-      team* Team = GetTeam();
-
-      for(std::list<character*>::const_iterator i = Team->GetMember().begin();
-    i != Team->GetMember().end(); ++i)
-  if((*i)->IsEnabled()
-     && (*i)->GetID() != GetID()
-     && (CommandFlags & FOLLOW_LEADER)
-     == ((*i)->CommandFlags & FOLLOW_LEADER)
-     && (*i)->CanBeSeenBy(this))
-  {
-    v2 Pos = (*i)->GetPos();
-    v2 Distance = GetPos() - Pos;
-
-    if(abs(Distance.X) > 2 && abs(Distance.Y) > 2)
-    {
-      SetGoingTo(Pos);
-      break;
+void character::SeekLeader (ccharacter *Leader) {
+  if (Leader && Leader != this) {
+    if (Leader->CanBeSeenBy(this) && (Leader->SquareUnderCanBeSeenBy(this, true) || !IsGoingSomeWhere())) {
+      if (CommandFlags & FOLLOW_LEADER) SetGoingTo(Leader->GetPos());
+    } else if (!IsGoingSomeWhere()) {
+      team *Team = GetTeam();
+      for (std::list<character*>::const_iterator i = Team->GetMember().begin(); i != Team->GetMember().end(); ++i) {
+        if ((*i)->IsEnabled() &&
+            (*i)->GetID() != GetID() &&
+            (CommandFlags & FOLLOW_LEADER) == ((*i)->CommandFlags & FOLLOW_LEADER) &&
+            (*i)->CanBeSeenBy(this)) {
+          v2 Pos = (*i)->GetPos();
+          v2 Distance = GetPos()-Pos;
+          if (abs(Distance.X) > 2 && abs(Distance.Y) > 2) {
+            SetGoingTo(Pos);
+            break;
+          }
+        }
+      }
     }
   }
-    }
 }
 
 int character::GetMoveEase() const
@@ -3254,21 +3223,16 @@ int character::ReceiveBodyPartDamage(character* Damager, int Damage, int Type, i
   if(!PenetrateResistance)
     Damage -= (BodyPart->GetTotalResistance(Type) >> 1) + RAND() % ((BodyPart->GetTotalResistance(Type) >> 1) + 1);
 
-  if(int(Damage) < 1)
-    if(Critical)
-      Damage = 1;
-    else
-    {
-      if(ShowNoDamageMsg)
-      {
-  if(IsPlayer())
-    ADD_MESSAGE("You are not hurt.");
-  else if(CanBeSeenByPlayer())
-    ADD_MESSAGE("%s is not hurt.", GetPersonalPronoun().CStr());
+  if (int(Damage) < 1) {
+    if (Critical) Damage = 1;
+    else {
+      if (ShowNoDamageMsg) {
+        if (IsPlayer()) ADD_MESSAGE("You are not hurt.");
+        else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s is not hurt.", GetPersonalPronoun().CStr());
       }
-
       return 0;
     }
+  }
 
   if(Critical && AllowDamageTypeBloodSpill(Type) && !game::IsInWilderness())
   {
@@ -3593,23 +3557,17 @@ void character::Regenerate()
 
   RegenerationBonus *= (50 + GetAttribute(ENDURANCE));
 
-  if(Action && Action->IsRest())
-    if(SquaresUnder == 1)
-      RegenerationBonus *= GetSquareUnder()->GetRestModifier() << 1;
-    else
-    {
+  if (Action && Action->IsRest()) {
+    if (SquaresUnder == 1) RegenerationBonus *= GetSquareUnder()->GetRestModifier() << 1;
+    else {
       int Lowest = GetSquareUnder(0)->GetRestModifier();
-
-      for(int c = 1; c < GetSquaresUnder(); ++c)
-      {
-  int Mod = GetSquareUnder(c)->GetRestModifier();
-
-  if(Mod < Lowest)
-    Lowest = Mod;
+      for (int c = 1; c < GetSquaresUnder(); ++c) {
+        int Mod = GetSquareUnder(c)->GetRestModifier();
+        if (Mod < Lowest) Lowest = Mod;
       }
-
       RegenerationBonus *= Lowest << 1;
     }
+  }
 
   RegenerationCounter += RegenerationBonus;
 
@@ -4599,20 +4557,22 @@ void character::PrintEndInvisibilityMessage() const
 
 void character::PrintBeginInfraVisionMessage() const
 {
-  if(IsPlayer())
+  if (IsPlayer()) {
     if(StateIsActivated(INVISIBLE) && IsWarm() && !(StateIsActivated(ESP) && GetAttribute(INTELLIGENCE) >= 5))
       ADD_MESSAGE("You reappear.");
     else
       ADD_MESSAGE("You feel your perception being magically altered.");
+  }
 }
 
 void character::PrintEndInfraVisionMessage() const
 {
-  if(IsPlayer())
+  if(IsPlayer()) {
     if(StateIsActivated(INVISIBLE) && IsWarm() && !(StateIsActivated(ESP) && GetAttribute(INTELLIGENCE) >= 5))
       ADD_MESSAGE("You disappear.");
     else
       ADD_MESSAGE("You feel your perception returning to normal.");
+  }
 }
 
 void character::PrintBeginESPMessage() const
@@ -7274,10 +7234,7 @@ truth character::CreateRoute()
       {
   character* Char = *i;
 
-  if(Char->IsEnabled()
-     && !Char->Route.empty()
-     && Char->GetMoveType() & GetMoveType() == Char->GetMoveType())
-  {
+  if (Char->IsEnabled() && !Char->Route.empty() && (Char->GetMoveType()&GetMoveType()) == Char->GetMoveType()) {
     v2 CharGoingTo = Char->Route[0];
     v2 iPos = Char->Route.back();
 
@@ -7574,22 +7531,22 @@ truth character::CheckIfTooScaredToHit(ccharacter* Enemy) const
   return false;
 }
 
-void character::PrintBeginLevitationMessage() const
-{
-  if(!IsFlying())
+void character::PrintBeginLevitationMessage() const {
+  if(!IsFlying()) {
     if(IsPlayer())
       ADD_MESSAGE("You rise into the air like a small hot-air balloon.");
     else if(CanBeSeenByPlayer())
       ADD_MESSAGE("%s begins to float.", CHAR_NAME(DEFINITE));
+  }
 }
 
-void character::PrintEndLevitationMessage() const
-{
-  if(!IsFlying())
+void character::PrintEndLevitationMessage () const {
+  if (!IsFlying()) {
     if(IsPlayer())
       ADD_MESSAGE("You descend gently onto the ground.");
     else if(CanBeSeenByPlayer())
       ADD_MESSAGE("%s drops onto the ground.", CHAR_NAME(DEFINITE));
+  }
 }
 
 truth character::IsLimbIndex(int I)
@@ -7685,43 +7642,29 @@ void character::EditExperience(int Identifier, double Value, double Speed)
 
     break;
    case CHARISMA:
-    if(Change > 0)
-    {
+    if (Change > 0) {
       PlayerMsg = "You feel very confident of your social skills.";
-
-      if(IsPet())
-  if(GetAttribute(CHARISMA) <= 15)
-    NPCMsg = "%s looks less ugly.";
-  else
-    NPCMsg = "%s looks more attractive.";
-    }
-    else
-    {
+      if (IsPet()) {
+        if (GetAttribute(CHARISMA) <= 15) NPCMsg = "%s looks less ugly.";
+        else NPCMsg = "%s looks more attractive.";
+      }
+    } else {
       PlayerMsg = "You feel somehow disliked.";
-
-      if(IsPet())
-  if(GetAttribute(CHARISMA) < 15)
-    NPCMsg = "%s looks more ugly.";
-  else
-    NPCMsg = "%s looks less attractive.";
+      if (IsPet()) {
+        if (GetAttribute(CHARISMA) < 15) NPCMsg = "%s looks more ugly.";
+        else NPCMsg = "%s looks less attractive.";
+      }
     }
-
-    if(IsPlayerKind())
-      UpdatePictures();
-
+    if (IsPlayerKind()) UpdatePictures();
     break;
    case MANA:
-    if(Change > 0)
-    {
+    if (Change > 0) {
       PlayerMsg = "You feel magical forces coursing through your body!";
       NPCMsg = "You notice an odd glow around %s.";
-    }
-    else
-    {
+    } else {
       PlayerMsg = "You feel your magical abilities withering slowly.";
       NPCMsg = "You notice strange vibrations in the air around %s. But they disappear rapidly.";
     }
-
     break;
   }
 
@@ -8294,72 +8237,51 @@ void character::Disappear(corpse* Corpse, cchar* Verb, truth (item::*ClosePredic
   truth CanBeSeen = Corpse ? Corpse->CanBeSeenByPlayer() : IsPlayer() || CanBeSeenByPlayer();
   int c;
 
-  if((GetTorso()->*ClosePredicate)())
-  {
-    if(CanBeSeen)
-      if(Corpse)
-  ADD_MESSAGE("%s %ss.", Corpse->CHAR_NAME(DEFINITE), Verb);
-      else if(IsPlayer())
-  ADD_MESSAGE("You %s.", Verb);
-      else
-  ADD_MESSAGE("%s %ss.", CHAR_NAME(DEFINITE), Verb);
-
+  if ((GetTorso()->*ClosePredicate)()) {
+    if (CanBeSeen) {
+      if (Corpse) ADD_MESSAGE("%s %ss.", Corpse->CHAR_NAME(DEFINITE), Verb);
+      else if (IsPlayer()) ADD_MESSAGE("You %s.", Verb);
+      else ADD_MESSAGE("%s %ss.", CHAR_NAME(DEFINITE), Verb);
+    }
     TorsoDisappeared = true;
-
-    for(c = 0; c < GetEquipments(); ++c)
-    {
-      item* Equipment = GetEquipment(c);
-
-      if(Equipment && (Equipment->*ClosePredicate)())
-      {
-  Equipment->RemoveFromSlot();
-  Equipment->SendToHell();
+    for (c = 0; c < GetEquipments(); ++c) {
+      item *Equipment = GetEquipment(c);
+      if (Equipment && (Equipment->*ClosePredicate)()) {
+        Equipment->RemoveFromSlot();
+        Equipment->SendToHell();
       }
     }
-
     itemvector ItemVector;
     GetStack()->FillItemVector(ItemVector);
-
-    for(uint c = 0; c < ItemVector.size(); ++c)
-      if(ItemVector[c] && (ItemVector[c]->*ClosePredicate)())
-      {
-  ItemVector[c]->RemoveFromSlot();
-  ItemVector[c]->SendToHell();
+    for (uint c = 0; c < ItemVector.size(); ++c) {
+      if (ItemVector[c] && (ItemVector[c]->*ClosePredicate)()) {
+        ItemVector[c]->RemoveFromSlot();
+        ItemVector[c]->SendToHell();
       }
+    }
   }
 
-  for(c = 1; c < GetBodyParts(); ++c)
-  {
-    bodypart* BodyPart = GetBodyPart(c);
-
-    if(BodyPart)
-      if((BodyPart->*ClosePredicate)())
-      {
-  if(!TorsoDisappeared && CanBeSeen)
-    if(IsPlayer())
-      ADD_MESSAGE("Your %s %ss.", GetBodyPartName(c).CStr(), Verb);
-    else
-      ADD_MESSAGE("The %s of %s %ss.", GetBodyPartName(c).CStr(), CHAR_NAME(DEFINITE), Verb);
-
-  BodyPart->DropEquipment();
-  item* BodyPart = SevereBodyPart(c);
-
-  if(BodyPart)
-    BodyPart->SendToHell();
+  for (c = 1; c < GetBodyParts(); ++c) {
+    bodypart *BodyPart = GetBodyPart(c);
+    if (BodyPart) {
+      if ((BodyPart->*ClosePredicate)()) {
+        if (!TorsoDisappeared && CanBeSeen) {
+          if(IsPlayer()) ADD_MESSAGE("Your %s %ss.", GetBodyPartName(c).CStr(), Verb);
+          else ADD_MESSAGE("The %s of %s %ss.", GetBodyPartName(c).CStr(), CHAR_NAME(DEFINITE), Verb);
+        }
+        BodyPart->DropEquipment();
+        item *BodyPart = SevereBodyPart(c);
+        if (BodyPart) BodyPart->SendToHell();
+      } else if (TorsoDisappeared) {
+        BodyPart->DropEquipment();
+        item *BodyPart = SevereBodyPart(c);
+        if (BodyPart) {
+          if (Corpse) Corpse->GetSlot()->AddFriendItem(BodyPart);
+          else if (!game::IsInWilderness()) GetStackUnder()->AddItem(BodyPart);
+          else BodyPart->SendToHell();
+        }
       }
-      else if(TorsoDisappeared)
-      {
-  BodyPart->DropEquipment();
-  item* BodyPart = SevereBodyPart(c);
-
-  if(BodyPart)
-    if(Corpse)
-      Corpse->GetSlot()->AddFriendItem(BodyPart);
-    else if(!game::IsInWilderness())
-      GetStackUnder()->AddItem(BodyPart);
-    else
-      BodyPart->SendToHell();
-      }
+    }
   }
 
   if(TorsoDisappeared)
@@ -9414,7 +9336,7 @@ void character::PrintAttribute(cchar* Desc, int I, int PanelPosX, int PanelPosY)
 
   if(Attribute != NoBonusAttribute)
   {
-    int Where = PanelPosX + (String.GetSize() + 1 << 3);
+    int Where = PanelPosX + ((String.GetSize() + 1) << 3);
     FONT->Printf(DOUBLE_BUFFER, v2(Where, PanelPosY * 10), LIGHT_GRAY,
      "%d", NoBonusAttribute);
   }
@@ -9919,30 +9841,24 @@ truth character::CanTameWithDulcis(const character* Tamer) const
   else if(Tamer->GetAttachedGod() == DULCIS)
     Modifier += 50;
 
-  if(TamingDifficulty == 0)
+  if (TamingDifficulty == 0) {
     if(!IgnoreDanger())
       TamingDifficulty = int(10 * GetRelativeDanger(Tamer));
     else
       TamingDifficulty = 10 * GetHPRequirementForGeneration()
        / Max(Tamer->GetHP(), 1);
-
+  }
   return Modifier >= TamingDifficulty * 3;
 }
 
 truth character::CanTameWithLyre(const character* Tamer) const
 {
   int TamingDifficulty = GetTamingDifficulty();
-
-  if(TamingDifficulty == NO_TAMING)
-    return false;
-
-  if(TamingDifficulty == 0)
-    if(!IgnoreDanger())
-      TamingDifficulty = int(10 * GetRelativeDanger(Tamer));
-    else
-      TamingDifficulty = 10 * GetHPRequirementForGeneration()
-       / Max(Tamer->GetHP(), 1);
-
+  if (TamingDifficulty == NO_TAMING) return false;
+  if (TamingDifficulty == 0) {
+    if (!IgnoreDanger()) TamingDifficulty = int(10 * GetRelativeDanger(Tamer));
+    else TamingDifficulty = 10*GetHPRequirementForGeneration()/Max(Tamer->GetHP(), 1);
+  }
   return Tamer->GetAttribute(CHARISMA) >= TamingDifficulty;
 }
 
