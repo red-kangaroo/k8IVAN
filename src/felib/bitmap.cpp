@@ -1057,22 +1057,18 @@ truth bitmap::Fade(long& AlphaSum, packalpha& AlphaAverage, int Amount)
   {
     packalpha* AlphaPtr = &AlphaMap[0][c];
 
-    if(*AlphaPtr)
-      if(*AlphaPtr > Amount)
-      {
-  *AlphaPtr -= Amount;
-  NewAlphaSum += *AlphaPtr;
-  ++Alphas;
-  Changes = true;
+    if (*AlphaPtr) {
+      if (*AlphaPtr > Amount) {
+        *AlphaPtr -= Amount;
+        NewAlphaSum += *AlphaPtr;
+        ++Alphas;
+        Changes = true;
+      } else {
+        *AlphaPtr = 0;
+        Changes = true;
+        if (RandMap) UpdateRandMap(c, false);
       }
-      else
-      {
-  *AlphaPtr = 0;
-  Changes = true;
-
-  if(RandMap)
-    UpdateRandMap(c, false);
-      }
+    }
   }
 
   AlphaSum = NewAlphaSum;
@@ -2055,7 +2051,7 @@ void cachedfont::PrintCharacter(cblitdata B) const
     ulong* DestPtr = reinterpret_cast<ulong*>(*DestLine + B.Dest.X);
 
     for(; FontPtr != EndPtr; ++DestPtr, ++MaskPtr, ++FontPtr)
-      *DestPtr = *DestPtr & *MaskPtr | *FontPtr;
+      *DestPtr = (*DestPtr & *MaskPtr) | *FontPtr;
   }
 }
 

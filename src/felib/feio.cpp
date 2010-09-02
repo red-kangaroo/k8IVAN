@@ -77,12 +77,13 @@ void iosystem::TextScreen(cfestring& Text, v2 Disp,
     graphics::BlitDBToScreen();
   }
 
-  if(GKey)
-    if(BitmapEditor)
-      while(!READ_KEY())
-  BitmapEditor(DOUBLE_BUFFER, false);
-    else
+  if (GKey) {
+    if (BitmapEditor) {
+      while (!READ_KEY()) BitmapEditor(DOUBLE_BUFFER, false);
+    } else {
       GET_KEY();
+    }
+  }
 }
 
 /* Returns amount of chars cSF in string sSH */
@@ -345,14 +346,13 @@ int iosystem::StringQuestion(festring& Input,
       continue;
     }
 
-    if(LastKey == KEY_ENTER)
-      if(Input.GetSize() >= MinLetters)
-  break;
-      else
-      {
-  TooShort = true;
-  continue;
+    if (LastKey == KEY_ENTER) {
+      if (Input.GetSize() >= MinLetters) break;
+      else {
+        TooShort = true;
+        continue;
       }
+    }
 
     if(LastKey >= 0x20 && Input.GetSize() < MaxLetters
        && (LastKey != ' ' || !Input.IsEmpty()))

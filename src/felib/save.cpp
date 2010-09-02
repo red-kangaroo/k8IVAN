@@ -320,21 +320,18 @@ long inputfile::ReadNumber(int CallLevel, truth PreserveTerminator)
   continue;
       }
 
-      /* Convert this into an inline function! */
-
-#define CHECK_OP(op, cl)\
-    if(First == #op[0])\
-      if(cl < CallLevel)\
-        {\
-    Value op##= ReadNumber(cl);\
-    NumberCorrect = true;\
-    continue;\
-        }\
-      else\
-        {\
-    ungetc(#op[0], Buffer);\
-    return Value;\
-        }
+/* Convert this into an inline function! */
+#define CHECK_OP(op, cl) \
+  if (First == #op[0]) { \
+    if (cl < CallLevel) {\
+      Value op##= ReadNumber(cl);\
+      NumberCorrect = true;\
+      continue;\
+    } else {\
+      ungetc(#op[0], Buffer);\
+      return Value;\
+    } \
+  }
 
       CHECK_OP(&, 1); CHECK_OP(|, 1); CHECK_OP(^, 1);
       CHECK_OP(*, 2); CHECK_OP(/, 2); CHECK_OP(%, 2);
@@ -382,17 +379,15 @@ long inputfile::ReadNumber(int CallLevel, truth PreserveTerminator)
     ungetc(Next, Buffer);
       }
 
-      if(First == '(')
-  if(NumberCorrect)
-  {
-    ungetc('(', Buffer);
-    return Value;
-  }
-  else
-  {
-    Value = ReadNumber(4);
-    NumberCorrect = false;
-    continue;
+  if (First == '(') {
+    if (NumberCorrect) {
+      ungetc('(', Buffer);
+      return Value;
+    } else {
+      Value = ReadNumber(4);
+      NumberCorrect = false;
+      continue;
+    }
   }
 
       if(First == '=' && CallLevel == HIGHEST)
