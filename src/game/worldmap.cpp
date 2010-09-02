@@ -537,30 +537,20 @@ void worldmap::CalculateContinents()
       {
   truth Attached = false;
 
-  for(int d = 0; d < 8; ++d)
-  {
-    v2 Pos = v2(x, y) + game::GetMoveVector(d);
-
-    if(IsValidPos(Pos))
-    {
+  for (int d = 0; d < 8; ++d) {
+    v2 Pos = v2(x, y)+game::GetMoveVector(d);
+    if (IsValidPos(Pos)) {
       cint NearCont = ContinentBuffer[Pos.X][Pos.Y];
-
-      if(NearCont)
-      {
+      if (NearCont) {
         cint ThisCont = ContinentBuffer[x][y];
-
-        if(ThisCont)
-        {
-    if(ThisCont != NearCont)
-      if(Continent[ThisCont]->GetSize()
-         < Continent[NearCont]->GetSize())
-        Continent[ThisCont]->AttachTo(Continent[NearCont]);
-      else
-        Continent[NearCont]->AttachTo(Continent[ThisCont]);
-        }
-        else
-    Continent[NearCont]->Add(v2(x, y));
-
+        if (ThisCont) {
+          if (ThisCont != NearCont) {
+            if (Continent[ThisCont]->GetSize() < Continent[NearCont]->GetSize())
+              Continent[ThisCont]->AttachTo(Continent[NearCont]);
+            else
+              Continent[NearCont]->AttachTo(Continent[ThisCont]);
+          }
+        } else Continent[NearCont]->Add(v2(x, y));
         Attached = true;
       }
     }

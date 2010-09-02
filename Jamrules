@@ -20,8 +20,8 @@ if $(DEBUG) {
   OPTIM = -O3 -march=native -mtune=native -mfpmath=sse -fno-strict-aliasing ;
   ECHO "MSG: optimizing for maximum speed." ;
 } else {
-  OPTIM = -O0 ;
-  ECHO "MSG: nooptimize build." ;
+  OPTIM = -O2 -fno-strict-aliasing ;
+  #ECHO "MSG: nooptimize build." ;
 }
 
 if ! $(NOGDB) {
