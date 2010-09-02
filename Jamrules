@@ -1,0 +1,40 @@
+HDRS += $(TOP)/src/felib $(TOP)/src/game ;
+
+DEFINES += "LOCAL_STATE_DIR=\\\".\\\"" ;
+DEFINES += "DATADIR=\\\".\\\"" ;
+
+ALL_LOCATE_TARGET = $(TOP)/_build ;
+ALL_LOCATE_LIB = $(TOP)/_build/libs ;
+ALL_LOCATE_BIN = $(TOP) ;
+
+#C++ = g++ ;
+#CC = gcc ;
+
+if $(DEBUG) {
+  OPTIM = -O0 -g ;
+  ECHO "MSG: DEBUG" ;
+} else if $(SIZE) {
+  OPTIM = -Os -fno-strict-aliasing ;
+  ECHO "MSG: optimizing for minimal size." ;
+} else if $(SPEED) {
+  OPTIM = -O3 -march=native -mtune=native -mfpmath=sse -fno-strict-aliasing ;
+  ECHO "MSG: optimizing for maximum speed." ;
+} else {
+  OPTIM = -O0 ;
+  ECHO "MSG: nooptimize build." ;
+}
+
+if ! $(NOGDB) {
+  OPTIM += -g ;
+  LINKFLAGS += -g ;
+} else {
+  OPTIM += -s ;
+  LINKFLAGS += -s ;
+}
+
+lib-config "sdl-config" ;
+
+#CCFLAGS += -DNDEBUG ;
+#C++FLAGS += -DNDEBUG ;
+CCFLAGS += -Wall ;
+C++FLAGS += -Wall ;

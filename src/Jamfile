@@ -1,3 +1,5 @@
 SubDir TOP src ;
 
-SubInclude TOP src game ;
+
+SubIncludeOnce JAM_IVAN_INC_SRC_FELIB : TOP src felib ;
+SubIncludeOnce JAM_IVAN_INC_SRC_GAME : TOP src game ;

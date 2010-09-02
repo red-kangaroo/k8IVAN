@@ -20,4 +20,4 @@ felibsources =
 ;
 
 
-Library felib : $(felibsources) ;
+Library libfelib.a : $(felibsources) ;

@@ -30,8 +30,8 @@ gamesources =
 ;
 
 
-Main ../../ivan : $(gamesources) ;
-LinkLibraries ../../ivan : felib ;
+C++Main ivan : $(gamesources) ;
+LinkLibraries ivan : libfelib.a ;
 #LinkLibraries ivan : $(TOP)/src/felib/libfelib ;
 
 
@@ -46,4 +46,4 @@ LinkLibraries ../../ivan : felib ;
 #ObjectCcFlags syren : -O0 -g ;
 
 
-SubInclude TOP src felib ;
+SubIncludeOnce JAM_IVAN_INC_SRC_FELIB : TOP src felib ;
