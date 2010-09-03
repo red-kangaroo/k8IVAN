@@ -1217,7 +1217,12 @@ truth commandsystem::WizardMode (character *Char) {
       ADD_MESSAGE("You are the ordinary mortal again.");
     } else {
       ADD_MESSAGE("Got some scrolls of wishing.");
-      for (int c = 0; c < 5; ++c) Char->GetStack()->AddItem(scrollofwishing::Spawn());
+      for (int c = 0; c < 15; ++c) Char->GetStack()->AddItem(scrollofwishing::Spawn());
+      for (int c = 0; c < 15; ++c) Char->GetStack()->AddItem(scrollofchangematerial::Spawn());
+      for (int c = 0; c < 15; ++c) Char->GetStack()->AddItem(scrollofenchantweapon::Spawn());
+      for (int c = 0; c < 15; ++c) Char->GetStack()->AddItem(scrollofenchantarmor::Spawn());
+      for (int c = 0; c < 15; ++c) Char->GetStack()->AddItem(scrollofcharging::Spawn());
+      for (int c = 0; c < 15; ++c) Char->GetStack()->AddItem(scrollofrepair::Spawn());
     }
   }
   return false;

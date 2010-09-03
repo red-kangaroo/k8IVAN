@@ -1858,6 +1858,7 @@ void lsquare::ReceiveEarthQuakeDamage()
 
 truth lsquare::CanBeFeltByPlayer() const
 {
+  if (!PLAYER) return false;
   return OLTerrain && !PLAYER->CanMoveOn(this) && Pos.IsAdjacent(PLAYER->GetPos());
 }
 

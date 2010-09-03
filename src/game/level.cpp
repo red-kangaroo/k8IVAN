@@ -1575,6 +1575,7 @@ void level::ShieldBeam(beamdata& Beam)
     GetLSquare(Beam.StartPos)->DrawParticles(Beam.BeamColor);
     (GetLSquare(Beam.StartPos)->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam);
     return;
+    default: return;
   }
 
   for(int c = 0; c < 3; ++c)
