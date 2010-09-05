@@ -1951,145 +1951,100 @@ truth lsquare::IsScaryToBreathe(ccharacter* Who) const
   return false;
 }
 
-struct groundborderpartner
-{
-  truth operator<(const groundborderpartner& P) const { return Terrain->GetBorderTilePriority() < P.Terrain->GetBorderTilePriority(); }
-  glterrain* Terrain;
+
+struct groundborderpartner {
+  truth operator < (const groundborderpartner &P) const { return Terrain->GetBorderTilePriority() < P.Terrain->GetBorderTilePriority(); }
+  glterrain *Terrain;
   int SquareIndex;
 };
 
-void lsquare::CalculateGroundBorderPartners()
-{
-  if(GroundBorderPartnerInfo & BORDER_PARTNER_ANIMATED)
-    DecStaticAnimatedEntities();
-
-  groundborderpartner BorderPartner[8];
+void lsquare::CalculateGroundBorderPartners () {
+  if (GroundBorderPartnerInfo & BORDER_PARTNER_ANIMATED) DecStaticAnimatedEntities();
+  groundborderpartner BorderPartner[8*2]; //k8: *2 to make g++ shut up (WTF?!)
   int Index = 0;
   int Priority = GLTerrain->GetBorderTilePriority();
-
-  for(int d = 0; d < 8; ++d)
-  {
-    lsquare* Square = NeighbourLSquare[d];
-
-    if(Square)
-    {
-      glterrain* Terrain = Square->GetGLTerrain();
-
-      if(Terrain && Terrain->UseBorderTiles()
-   && Terrain->GetBorderTilePriority() > Priority)
-      {
-  BorderPartner[Index].Terrain = Terrain;
-  BorderPartner[Index].SquareIndex = 7 - d;
-  ++Index;
+  for (int d = 0; d < 8; ++d) {
+    lsquare *Square = NeighbourLSquare[d];
+    if (Square) {
+      glterrain *Terrain = Square->GetGLTerrain();
+      if (Terrain && Terrain->UseBorderTiles() && Terrain->GetBorderTilePriority() > Priority) {
+        BorderPartner[Index].Terrain = Terrain;
+        BorderPartner[Index].SquareIndex = 7-d;
+        ++Index;
       }
     }
   }
-
   GroundBorderPartnerInfo = 0;
-
-  if(!Index)
-  {
+  if (!Index) {
     delete [] GroundBorderPartnerTerrain;
     GroundBorderPartnerTerrain = 0;
     return;
   }
-
-  if(!GroundBorderPartnerTerrain)
-    GroundBorderPartnerTerrain = new glterrain*[8];
-
-  std::sort(BorderPartner, BorderPartner + Index);
+  if (!GroundBorderPartnerTerrain) GroundBorderPartnerTerrain = new glterrain *[8];
+  std::sort(BorderPartner, BorderPartner+Index); // why g++ complains here? ah, ignore it for now
   truth Animated = false;
-
-  for(int c = 0; c < Index; ++c)
-  {
-    glterrain* T = BorderPartner[c].Terrain;
+  for (int c = 0; c < Index; ++c) {
+    glterrain *T = BorderPartner[c].Terrain;
     GroundBorderPartnerTerrain[c] = T;
-    GroundBorderPartnerInfo |= BorderPartner[c].SquareIndex << ((c << 1) + c);
-
-    if(T->IsAnimated())
-      Animated = true;
+    GroundBorderPartnerInfo |= BorderPartner[c].SquareIndex<<((c<<1)+c);
+    if (T->IsAnimated()) Animated = true;
   }
-
-  if(Animated)
-  {
+  if (Animated) {
     GroundBorderPartnerInfo |= BORDER_PARTNER_ANIMATED;
     IncStaticAnimatedEntities();
   }
-
-  GroundBorderPartnerInfo |= Index << 24;
+  GroundBorderPartnerInfo |= Index<<24;
 }
 
-struct overborderpartner
-{
-  truth operator<(const overborderpartner& P) const { return Terrain->GetBorderTilePriority() < P.Terrain->GetBorderTilePriority(); }
-  olterrain* Terrain;
+
+struct overborderpartner {
+  truth operator < (const overborderpartner &P) const { return Terrain->GetBorderTilePriority() < P.Terrain->GetBorderTilePriority(); }
+  olterrain *Terrain;
   int SquareIndex;
 };
 
-void lsquare::CalculateOverBorderPartners()
-{
-  if(OverBorderPartnerInfo & BORDER_PARTNER_ANIMATED)
-    DecStaticAnimatedEntities();
-
-  overborderpartner BorderPartner[8];
+void lsquare::CalculateOverBorderPartners () {
+  if (OverBorderPartnerInfo & BORDER_PARTNER_ANIMATED) DecStaticAnimatedEntities();
+  overborderpartner BorderPartner[8*2]; //k8: *2 to make g++ shut up (WTF?!)
   int Index = 0;
   int Priority = OLTerrain ? OLTerrain->GetBorderTilePriority() : 0;
-
-  for(int d = 0; d < 8; ++d)
-  {
-    lsquare* Square = NeighbourLSquare[d];
-
-    if(Square)
-    {
-      olterrain* Terrain = Square->GetOLTerrain();
-
-      if(Terrain && Terrain->UseBorderTiles()
-   && Terrain->GetBorderTilePriority() > Priority)
-      {
-  BorderPartner[Index].Terrain = Terrain;
-  BorderPartner[Index].SquareIndex = 7 - d;
-  ++Index;
+  for (int d = 0; d < 8; ++d) {
+    lsquare *Square = NeighbourLSquare[d];
+    if (Square) {
+      olterrain *Terrain = Square->GetOLTerrain();
+      if (Terrain && Terrain->UseBorderTiles() && Terrain->GetBorderTilePriority() > Priority) {
+        BorderPartner[Index].Terrain = Terrain;
+        BorderPartner[Index].SquareIndex = 7-d;
+        ++Index;
       }
     }
   }
-
   OverBorderPartnerInfo = 0;
-
-  if(!Index)
-  {
+  if (!Index) {
     delete [] OverBorderPartnerTerrain;
     OverBorderPartnerTerrain = 0;
     return;
   }
-
-  if(!OverBorderPartnerTerrain)
-    OverBorderPartnerTerrain = new olterrain*[8];
-
-  std::sort(BorderPartner, BorderPartner + Index);
+  if (!OverBorderPartnerTerrain) OverBorderPartnerTerrain = new olterrain *[8];
+  std::sort(BorderPartner, BorderPartner+Index); // why g++ complains here? ah, ignore it for now
   truth Animated = false;
-
-  for(int c = 0; c < Index; ++c)
-  {
-    olterrain* T = BorderPartner[c].Terrain;
+  for (int c = 0; c < Index; ++c) {
+    olterrain *T = BorderPartner[c].Terrain;
     OverBorderPartnerTerrain[c] = T;
-    OverBorderPartnerInfo |= BorderPartner[c].SquareIndex << ((c << 1) + c);
-
-    if(T->IsAnimated())
-      Animated = true;
+    OverBorderPartnerInfo |= BorderPartner[c].SquareIndex<<((c<<1)+c);
+    if (T->IsAnimated()) Animated = true;
   }
-
-  if(Animated)
-  {
+  if (Animated) {
     OverBorderPartnerInfo |= BORDER_PARTNER_ANIMATED;
     IncStaticAnimatedEntities();
   }
-
-  OverBorderPartnerInfo |= Index << 24;
+  OverBorderPartnerInfo |= Index<<24;
 /*k8
   if(OverBorderPartnerInfo & BORDER_PARTNER_ANIMATED)
     int esko = esko = 2;
 */
 }
+
 
 void lsquare::RequestForGroundBorderPartnerUpdates()
 {
