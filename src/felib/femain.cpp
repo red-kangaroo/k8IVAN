@@ -9,16 +9,17 @@
  *  along with this file for more details
  *
  */
-
 #include <iostream>
 #include <cstdlib>
+
 #include "SDL.h"
 #include "error.h"
 
-int Main(int, char**);
 
-int main(int argc, char* argv[])
-{
+extern int Main (int, char **);
+
+
+int main (int argc, char *argv[]) {
   /*try
   {*/
     return Main(argc, argv);
@@ -29,6 +30,5 @@ int main(int argc, char* argv[])
     std::cout << Msg << globalerrorhandler::GetBugMsg() << std::endl;
     exit(3);
   }
-
   exit(0);*/
 }
