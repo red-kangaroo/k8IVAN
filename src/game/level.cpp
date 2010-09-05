@@ -563,11 +563,9 @@ truth level::MakeRoom(const roomscript* RoomScript)
     lsquare* Square = Map[GTerrainPos.X + x][GTerrainPos.Y + y];
     Square->ChangeGLTerrain(GTerrainScript->Instantiate());
 
-    if(GTerrainScript->IsInside())
-      if(*GTerrainScript->IsInside())
-        Square->Flags |= INSIDE;
-      else
-        Square->Flags &= ~INSIDE;
+    if (GTerrainScript->IsInside()) {
+      if (*GTerrainScript->IsInside()) Square->Flags |= INSIDE; else Square->Flags &= ~INSIDE;
+    }
   }
     }
   }
@@ -922,25 +920,19 @@ truth level::DrawExplosion(const explosion* Explosion) const
   v2 OldSizeVect = SizeVect;
   v2 PicPos = StrengthPicPos[Explosion->Size];
 
-  if(BPos.X < 0)
-    if(BPos.X + SizeVect.X <= 0)
-      return false;
-    else
-    {
-      PicPos.X -= BPos.X;
-      SizeVect.X += BPos.X;
-      BPos.X = 0;
-    }
+  if (BPos.X < 0) {
+    if (BPos.X + SizeVect.X <= 0) return false;
+    PicPos.X -= BPos.X;
+    SizeVect.X += BPos.X;
+    BPos.X = 0;
+  }
 
-  if(BPos.Y < 0)
-    if(BPos.Y + SizeVect.Y <= 0)
-      return false;
-    else
-    {
-      PicPos.Y -= BPos.Y;
-      SizeVect.Y += BPos.Y;
-      BPos.Y = 0;
-    }
+  if (BPos.Y < 0) {
+    if (BPos.Y + SizeVect.Y <= 0) return false;
+    PicPos.Y -= BPos.Y;
+    SizeVect.Y += BPos.Y;
+    BPos.Y = 0;
+  }
 
   if(BPos.X >= RES.X || BPos.Y >= RES.Y)
     return false;
@@ -1015,11 +1007,9 @@ int level::TriggerExplosions(int MinIndex)
       ++NotSeen;
   }
 
-  if(NotSeen)
-    if(NotSeen == 1)
-      ADD_MESSAGE("You hear an explosion.");
-    else
-      ADD_MESSAGE("You hear explosions.");
+  if (NotSeen) {
+    if (NotSeen == 1) ADD_MESSAGE("You hear an explosion."); else ADD_MESSAGE("You hear explosions.");
+  }
 
   game::DrawEverythingNoBlit();
   truth Drawn = false;
@@ -2412,7 +2402,7 @@ void level::ForceEmitterEmitation(const emittervector& Emitter, const sunemitter
 
     for(sunemittervector::const_iterator i = SunEmitter.begin(); i != SunEmitter.end(); ++i)
     {
-      ulong ID = *i & ~(EMITTER_SHADOW_BITS|EMITTER_SQUARE_PART_BITS) | RE_SUN_EMITATED, SourceFlags;
+      ulong ID = (*i & ~(EMITTER_SHADOW_BITS|EMITTER_SQUARE_PART_BITS)) | RE_SUN_EMITATED, SourceFlags;
       int X, Y;
 
       if(ID & ID_X_COORDINATE)
@@ -2458,9 +2448,7 @@ struct loscontroller : public tickcontroller, public stackcontroller
     }
 
     cint SquarePartIndex = (x & 1) + ((y & 1) << 1);
-    Square->SquarePartLastSeen = Square->SquarePartLastSeen
-         & ~SquarePartTickMask[SquarePartIndex]
-         | ShiftedTick[SquarePartIndex];
+    Square->SquarePartLastSeen = (Square->SquarePartLastSeen & ~SquarePartTickMask[SquarePartIndex]) | ShiftedTick[SquarePartIndex];
     return false;
   }
   static ulong& GetTickReference(int X, int Y)

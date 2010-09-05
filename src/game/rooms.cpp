@@ -9,24 +9,23 @@
  *  along with this file for more details
  *
  */
-
 /* Compiled through roomset.cpp */
 
-void shop::Enter(character* Customer)
-{
-  if(Customer->IsPlayer())
-    if(MasterIsActive())
-    {
-      if(GetMaster()->GetRelation(Customer) != HOSTILE
-   && Customer->CanBeSeenBy(GetMaster()))
-  if(GetMaster()->CanBeSeenByPlayer())
-    ADD_MESSAGE("%s welcomes you warmly to the shop.",
-          GetMaster()->CHAR_NAME(DEFINITE));
-  else
-    ADD_MESSAGE("Something welcomes you warmly to the shop.");
-    }
-    else
+
+
+
+
+void shop::Enter (character *Customer) {
+  if (Customer->IsPlayer()) {
+    if (MasterIsActive()) {
+      if (GetMaster()->GetRelation(Customer) != HOSTILE && Customer->CanBeSeenBy(GetMaster())) {
+        if (GetMaster()->CanBeSeenByPlayer()) ADD_MESSAGE("%s welcomes you warmly to the shop.", GetMaster()->CHAR_NAME(DEFINITE));
+        else ADD_MESSAGE("Something welcomes you warmly to the shop.");
+      }
+    } else {
       ADD_MESSAGE("The shop appears to be deserted.");
+    }
+  }
 }
 
 /* item* ForSale can also be in chest or other container, so don't assume
@@ -52,31 +51,25 @@ truth shop::PickupItem(character* Customer, item* ForSale, int Amount)
     Price = Amount * (Price * 100
           / (100 + Customer->GetAttribute(CHARISMA)) + 1);
 
-    if(GetMaster()->GetConfig() == NEW_ATTNAM)
-      if(ForSale->IsBanana())
-  Price = (Price >> 2) + 1;
-      else if(ForSale->IsEatable(GetMaster()))
-  Price <<= 2;
-      else
-  Price = 0;
+    if (GetMaster()->GetConfig() == NEW_ATTNAM) {
+      if (ForSale->IsBanana()) Price = (Price >> 2) + 1;
+      else if (ForSale->IsEatable(GetMaster())) Price <<= 2;
+      else Price = 0;
+    }
   }
 
-  if(!Customer->IsPlayer())
-    if(Customer->CanBeSeenByPlayer() && Customer->GetMoney() >= Price)
-    {
-      if(Price)
-      {
-  ADD_MESSAGE("%s buys %s.", Customer->CHAR_NAME(DEFINITE),
-        ForSale->GetName(INDEFINITE, Amount).CStr());
-  Customer->EditMoney(-Price);
-  GetMaster()->EditMoney(Price);
-  Customer->EditDealExperience(Price);
+  if (!Customer->IsPlayer()) {
+    if (Customer->CanBeSeenByPlayer() && Customer->GetMoney() >= Price) {
+      if (Price) {
+        ADD_MESSAGE("%s buys %s.", Customer->CHAR_NAME(DEFINITE), ForSale->GetName(INDEFINITE, Amount).CStr());
+        Customer->EditMoney(-Price);
+        GetMaster()->EditMoney(Price);
+        Customer->EditDealExperience(Price);
       }
-
       return true;
     }
-    else
-      return false;
+    return false;
+  }
 
   if(Customer->CanBeSeenBy(GetMaster()))
   {
@@ -156,10 +149,8 @@ truth shop::DropItem(character* Customer, item* ForSale, int Amount)
   long Price = ForSale->GetTruePrice() * Amount
          * (100 + Customer->GetAttribute(CHARISMA)) / 400;
 
-  if(!Customer->IsPlayer())
-    if(Price && Customer->CanBeSeenByPlayer()
-       && GetMaster()->GetMoney() >= Price)
-    {
+  if (!Customer->IsPlayer()) {
+    if (Price && Customer->CanBeSeenByPlayer() && GetMaster()->GetMoney() >= Price) {
       ADD_MESSAGE("%s sells %s.", Customer->CHAR_NAME(DEFINITE),
       ForSale->GetName(INDEFINITE, Amount).CStr());
       Customer->EditMoney(Price);
@@ -167,9 +158,8 @@ truth shop::DropItem(character* Customer, item* ForSale, int Amount)
       Customer->EditDealExperience(Price);
       return true;
     }
-    else
-      return false;
-
+    return false;
+  }
   if(Customer->CanBeSeenBy(GetMaster()))
   {
     if(ForSale->IsHeadOfElpuri() || ForSale->IsGoldenEagleShirt()
@@ -451,24 +441,25 @@ cathedral::cathedral()
   SetEntered(false);
 }
 
-void library::Enter(character* Customer)
-{
-  if(Customer->IsPlayer())
-    if(MasterIsActive())
-    {
-      if(GetMaster()->GetRelation(Customer) != HOSTILE
-   && Customer->CanBeSeenBy(GetMaster()))
-  if(GetMaster()->CanBeSeenByPlayer())
-    ADD_MESSAGE("%s looks at you suspiciously. "
-          "\"Feel free to open the shelves, "
-          "but be quiet in the library!\" %s whispers.",
-          GetMaster()->CHAR_NAME(DEFINITE),
-          GetMaster()->GetPersonalPronoun().CStr());
-  else
-    ADD_MESSAGE("You feel somebody staring at you.");
-    }
-    else
+void library::Enter(character *Customer) {
+  if (Customer->IsPlayer()) {
+    if (MasterIsActive()) {
+      if (GetMaster()->GetRelation(Customer) != HOSTILE && Customer->CanBeSeenBy(GetMaster())) {
+        if (GetMaster()->CanBeSeenByPlayer()) {
+          ADD_MESSAGE(
+            "%s looks at you suspiciously. "
+            "\"Feel free to open the shelves, "
+            "but be quiet in the library!\" %s whispers.",
+            GetMaster()->CHAR_NAME(DEFINITE),
+            GetMaster()->GetPersonalPronoun().CStr());
+        } else {
+          ADD_MESSAGE("You feel somebody staring at you.");
+        }
+      }
+    } else {
       ADD_MESSAGE("The library appears to be deserted.");
+    }
+  }
 }
 
 truth library::PickupItem(character* Customer, item* ForSale, int Amount)
@@ -573,10 +564,8 @@ truth library::DropItem(character* Customer, item* ForSale, int Amount)
   long Price = ForSale->GetTruePrice() * Amount
          * (100 + Customer->GetAttribute(CHARISMA)) / 400;
 
-  if(!Customer->IsPlayer())
-    if(Price && Customer->CanBeSeenByPlayer()
-       && GetMaster()->GetMoney() >= Price)
-    {
+  if (!Customer->IsPlayer()) {
+    if (Price && Customer->CanBeSeenByPlayer() && GetMaster()->GetMoney() >= Price) {
       ADD_MESSAGE("%s sells %s.", Customer->CHAR_NAME(DEFINITE),
       ForSale->GetName(INDEFINITE, Amount).CStr());
       Customer->SetMoney(Customer->GetMoney() + Price);
@@ -584,8 +573,8 @@ truth library::DropItem(character* Customer, item* ForSale, int Amount)
       Customer->EditDealExperience(Price);
       return true;
     }
-    else
-      return false;
+    return false;
+  }
 
   if(Customer->CanBeSeenBy(GetMaster()))
   {

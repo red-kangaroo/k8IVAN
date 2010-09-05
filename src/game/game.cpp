@@ -601,8 +601,11 @@ truth game::TruthQuestion (cfestring &String, int DefaultAnswer, int OtherKeyFor
   if (DefaultAnswer == NO) DefaultAnswer = 'n';
   else if (DefaultAnswer == YES) DefaultAnswer = 'y';
   else if (DefaultAnswer != REQUIRES_ANSWER) ABORT("Illegal TruthQuestion DefaultAnswer send!");
-  int FromKeyQuestion = KeyQuestion(String, DefaultAnswer, 5, 'y', 'Y', 'n', 'N', OtherKeyForTrue);
-  return FromKeyQuestion == 'y' || FromKeyQuestion == 'Y' || FromKeyQuestion == OtherKeyForTrue;
+  int FromKeyQuestion = KeyQuestion(String, DefaultAnswer, 9, 'y', 'Y', 'n', 'N', 't', 'T', 'o', 'O', OtherKeyForTrue);
+  return
+    FromKeyQuestion == 'y' || FromKeyQuestion == 'Y' ||
+    FromKeyQuestion == 't' || FromKeyQuestion == 'T' ||
+    FromKeyQuestion == OtherKeyForTrue;
 }
 
 

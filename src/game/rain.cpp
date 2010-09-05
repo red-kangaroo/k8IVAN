@@ -117,35 +117,26 @@ void rain::RandomizeDropPos(int I) const
   Drop[I].MaxAge = AgeModifier > 1 ? 1 + RAND() % AgeModifier : 1;
 }
 
-void rain::Be()
-{
-  if(++BeCounter < 50)
-    return;
 
+void rain::Be () {
+  if (++BeCounter < 50) return;
   BeCounter = 0;
   long Volume = Liquid->GetVolume();
-
-  if(Volume && !Liquid->IsPowder()) // gum
-  {
-    long Rand = 5000000 / (Volume * SpeedAbs);
-
-    if(OwnLiquid)
-      Rand >>= 3;
-
-    if(Rand < 1 || !(RAND() % Rand))
-    {
+  if (Volume && !Liquid->IsPowder()) { // gum
+    long Rand = 5000000/(Volume*SpeedAbs);
+    if (OwnLiquid) Rand >>= 3;
+    if (Rand < 1 || !(RAND() % Rand)) {
       long DropVolume = Min(Volume, 50L);
       /* Gum */
       LSquareUnder->SpillFluid(Team == PLAYER_TEAM ? PLAYER : 0, Liquid->SpawnMoreLiquid(DropVolume), true, OwnLiquid);
-
-      if(OwnLiquid)
-  if(Volume == DropVolume)
-  {
-    LSquareUnder->RemoveRain(this);
-    SendToHell();
-  }
-  else
-    Liquid->EditVolume(-DropVolume);
+      if (OwnLiquid) {
+        if (Volume == DropVolume) {
+          LSquareUnder->RemoveRain(this);
+          SendToHell();
+        } else {
+          Liquid->EditVolume(-DropVolume);
+        }
+      }
     }
   }
 }

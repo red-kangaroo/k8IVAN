@@ -56,75 +56,57 @@ fluid::~fluid()
   delete [] GearImage;
 }
 
-void fluid::AddLiquid(long Volume)
-{
-  long Pixels = Volume >> 2;
 
-  if(Pixels && UseImage())
-  {
+void fluid::AddLiquid (long Volume) {
+  long Pixels = Volume>>2;
+  if (Pixels && UseImage()) {
     col16 Col = Liquid->GetColor();
-
-    if(MotherItem)
-    {
+    if (MotherItem) {
       pixelpredicate Pred = MotherItem->GetFluidPixelAllowedPredicate();
       Image.AddLiquidToPicture(MotherItem->GetRawPicture(), Pixels, 225, Col, Pred);
-
-      if(GearImage)
-  if(Flags & HAS_BODY_ARMOR_PICTURES)
-    for(int c = 0; c < BODY_ARMOR_PARTS; ++c)
-      GearImage[c].AddLiquidToPicture(igraph::GetHumanoidRawGraphic(), Pixels * BodyArmorPartPixels[c] / HUMAN_BODY_ARMOR_PIXELS, Image.AlphaAverage, Col, Pred);
-  else
-    GearImage->AddLiquidToPicture(igraph::GetHumanoidRawGraphic(), Pixels, Image.AlphaAverage, Col, Pred);
-    }
-    else
+      if (GearImage) {
+        if (Flags & HAS_BODY_ARMOR_PICTURES) {
+          for (int c = 0; c < BODY_ARMOR_PARTS; ++c)
+            GearImage[c].AddLiquidToPicture(igraph::GetHumanoidRawGraphic(), Pixels*BodyArmorPartPixels[c]/HUMAN_BODY_ARMOR_PIXELS, Image.AlphaAverage, Col, Pred);
+        } else {
+          GearImage->AddLiquidToPicture(igraph::GetHumanoidRawGraphic(), Pixels, Image.AlphaAverage, Col, Pred);
+        }
+      }
+    } else {
       Image.AddLiquidToPicture(0, Pixels, 225, Col, 0);
+    }
   }
 }
 
-void fluid::AddLiquidAndVolume(long Volume)
-{
+
+void fluid::AddLiquidAndVolume (long Volume) {
   AddLiquid(Volume);
-  Liquid->SetVolumeNoSignals(Liquid->GetVolume() + Volume);
+  Liquid->SetVolumeNoSignals(Liquid->GetVolume()+Volume);
 }
 
-void fluid::Be()
-{
+void fluid::Be () {
   long Rand = RAND();
-
-  if(!(Rand & 7))
-    if(MotherItem)
-    {
-      if(MotherItem->Exists() && MotherItem->AllowFluidBe())
-  Liquid->TouchEffect(MotherItem, LocationName);
-    }
-    else
-    {
+  if (!(Rand & 7)) {
+    if (MotherItem) {
+      if (MotherItem->Exists() && MotherItem->AllowFluidBe()) Liquid->TouchEffect(MotherItem, LocationName);
+    } else {
       Liquid->TouchEffect(LSquareUnder->GetGLTerrain());
-
-      if(LSquareUnder->GetOLTerrain())
-  Liquid->TouchEffect(LSquareUnder->GetOLTerrain());
-
-      if(LSquareUnder->GetCharacter())
-  LSquareUnder->GetCharacter()->StayOn(Liquid);
+      if (LSquareUnder->GetOLTerrain()) Liquid->TouchEffect(LSquareUnder->GetOLTerrain());
+      if (LSquareUnder->GetCharacter()) LSquareUnder->GetCharacter()->StayOn(Liquid);
     }
-
-  if(MotherItem ? !(Rand & 15) && MotherItem->Exists() && MotherItem->AllowFluidBe() : !(Rand & 63))
-  {
+  }
+  if (MotherItem ? !(Rand & 15) && MotherItem->Exists() && MotherItem->AllowFluidBe() : !(Rand & 63)) {
     long OldVolume = Liquid->GetVolume();
-    long NewVolume = ((OldVolume << 6) - OldVolume) >> 6;
+    long NewVolume = ((OldVolume<<6)-OldVolume)>>6;
     Liquid->SetVolumeNoSignals(NewVolume);
-
-    if(UseImage())
+    if (UseImage()) {
       while(NewVolume < Image.AlphaSum >> 6 && FadePictures());
-
-    if(!MotherItem)
-    {
+    }
+    if (!MotherItem) {
       LSquareUnder->SendNewDrawRequest();
       LSquareUnder->SendMemorizedUpdateRequest();
     }
-
-    if(!Liquid->GetVolume())
-      Destroy();
+    if (!Liquid->GetVolume()) Destroy();
   }
 }
 
@@ -210,17 +192,17 @@ inputfile& operator>>(inputfile& SaveFile, fluid*& Fluid)
   return SaveFile;
 }
 
+
 /* If fluid has decreased, fade, otherwise add new pixels */
-
-void fluid::SignalVolumeAndWeightChange()
-{
+void fluid::SignalVolumeAndWeightChange () {
   long Volume = Liquid->GetVolume();
-
-  if(UseImage())
-    if(Volume < Image.AlphaSum >> 6)
-      while(FadePictures() && Volume < Image.AlphaSum >> 6);
-    else
-      AddLiquid(Volume - (Image.AlphaSum >> 6));
+  if (UseImage()) {
+    if (Volume < Image.AlphaSum >> 6) {
+      while (FadePictures() && Volume < Image.AlphaSum>>6);
+    } else {
+      AddLiquid(Volume-(Image.AlphaSum>>6));
+    }
+  }
 }
 
 truth fluid::FadePictures()
@@ -590,24 +572,19 @@ void fluid::imagedata::AddLiquidToPicture(const rawbitmap* Shadow, long Pixels, 
   AlphaAverage = Picture->CalculateAlphaAverage();
 }
 
-/* Remakes all images. Usually decreases, and never increases, the liquid's
-   volume */
 
-void fluid::Redistribute()
-{
-  if(!UseImage())
-    return;
-
+/* Remakes all images. Usually decreases, and never increases, the liquid's volume */
+void fluid::Redistribute () {
+  if (!UseImage()) return;
   truth InitRandMap = truth(MotherItem);
   Image.Clear(InitRandMap);
-
-  if(GearImage)
-    if(Flags & HAS_BODY_ARMOR_PICTURES)
-      for(int c = 0; c < BODY_ARMOR_PARTS; ++c)
-  GearImage[c].Clear(InitRandMap);
-    else
+  if (GearImage) {
+    if (Flags & HAS_BODY_ARMOR_PICTURES) {
+      for (int c = 0; c < BODY_ARMOR_PARTS; ++c) GearImage[c].Clear(InitRandMap);
+    } else {
       GearImage->Clear(InitRandMap);
-
+    }
+  }
   AddLiquid(Liquid->GetVolume());
 }
 

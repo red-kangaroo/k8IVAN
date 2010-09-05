@@ -361,9 +361,8 @@ struct emitationcontroller : public tickcontroller, public stackcontroller
     }
 
     cint SquarePartIndex = (x & 1) + ((y & 1) << 1);
-    Square->SquarePartEmitationTick = Square->SquarePartEmitationTick
-              & ~SquarePartTickMask[SquarePartIndex]
-              | ShiftedTick[SquarePartIndex];
+    Square->SquarePartEmitationTick =
+      (Square->SquarePartEmitationTick & ~SquarePartTickMask[SquarePartIndex]) | ShiftedTick[SquarePartIndex];
 
     return false;
   }
@@ -383,7 +382,7 @@ struct emitationcontroller : public tickcontroller, public stackcontroller
     }
     else
     {
-      Square->Flags = SquareFlags & ~ALLOW_EMITATION_CONTINUE | PERFECTLY_QUADRI_HANDLED;
+      Square->Flags = (SquareFlags & ~ALLOW_EMITATION_CONTINUE) | PERFECTLY_QUADRI_HANDLED;
       return false;
     }
   }
@@ -989,11 +988,9 @@ void lsquare::ApplyScript(const squarescript* SquareScript, room* Room)
     GetLevel()->AddFlag(Pos, FORBIDDEN);
     ChangeGLTerrain(GLTerrainScript->Instantiate());
 
-    if(GLTerrainScript->IsInside())
-      if(*GLTerrainScript->IsInside())
-  Flags |= INSIDE;
-      else
-  Flags &= ~INSIDE;
+    if (GLTerrainScript->IsInside()) {
+      if (*GLTerrainScript->IsInside()) Flags |= INSIDE; else Flags &= ~INSIDE;
+    }
   }
 
   const contentscript<olterrain>* OLTerrainScript = SquareScript->GetOTerrain();
@@ -1704,11 +1701,10 @@ void lsquare::GetHitByExplosion(const explosion* Explosion)
 
   int Damage = Explosion->Strength / (DistanceSquare + 1);
 
-  if(Character && (Explosion->HurtNeutrals || (Explosion->Terrorist && Character->GetRelation(Explosion->Terrorist) == HOSTILE)))
-    if(Character->IsPlayer())
-      game::SetPlayerWasHurtByExplosion(true);
-    else
-      Character->GetHitByExplosion(Explosion, Damage);
+  if (Character && (Explosion->HurtNeutrals || (Explosion->Terrorist && Character->GetRelation(Explosion->Terrorist) == HOSTILE))) {
+    if (Character->IsPlayer()) game::SetPlayerWasHurtByExplosion(true);
+    else Character->GetHitByExplosion(Explosion, Damage);
+  }
 
   GetStack()->ReceiveDamage(Explosion->Terrorist, Damage >> 1, FIRE);
   GetStack()->ReceiveDamage(Explosion->Terrorist, Damage >> 1, PHYSICAL_DAMAGE);
@@ -1837,13 +1833,13 @@ int lsquare::GetDivineMaster() const
   return RoomIndex ? GetLevel()->GetRoom(RoomIndex)->GetDivineMaster() : 0;
 }
 
-void lsquare::DisplaySmokeInfo(festring& Msg) const
-{
-  if(Smoke)
-    if(!Smoke->Next)
+void lsquare::DisplaySmokeInfo (festring &Msg) const {
+  if (Smoke) {
+    if (!Smoke->Next)
       Msg << " A cloud of " << Smoke->GetGas()->GetName(false, false) << " surrounds the square.";
     else
       Msg << " A lot of gases hover over the square.";
+  }
 }
 
 void lsquare::ReceiveEarthQuakeDamage()
@@ -2539,13 +2535,11 @@ void lsquare::CalculateSunLightLuminance(ulong SeenBitMask)
   {
     ulong ShadowFlag = 1 << EMITTER_SHADOW_SHIFT;
     ulong SquarePartFlag = 1 << EMITTER_SQUARE_PART_SHIFT;
-
-    for(int c = 0; c < 4; ++c, ShadowFlag <<= 1, SquarePartFlag <<= 1)
-      if(SeenBitMask & *i & SquarePartFlag)
-  if(*i & ShadowFlag)
-    ++S;
-  else
-    ++L;
+    for (int c = 0; c < 4; ++c, ShadowFlag <<= 1, SquarePartFlag <<= 1) {
+      if (SeenBitMask & *i & SquarePartFlag) {
+        if (*i & ShadowFlag) ++S; else ++L;
+      }
+    }
   }
 
   if(!L)
@@ -2597,26 +2591,14 @@ truth lsquare::AcidRain(const beamdata& Beam)
   return false;
 }
 
-truth lsquare::DetectMaterial(cmaterial* Material) const
-{
-  if(GLTerrain->DetectMaterial(Material)
-     || OLTerrain && OLTerrain->DetectMaterial(Material)
-     || Stack->DetectMaterial(Material)
-     || Character && Character->DetectMaterial(Material))
-    return true;
-
-  for(const fluid* F = Fluid; F; F = F->Next)
-    if(F->GetLiquid()->IsSameAs(Material))
-      return true;
-
-  for(const smoke* S = Smoke; S; S = S->Next)
-    if(S->GetGas()->IsSameAs(Material))
-      return true;
-
-  for(const rain* R = Rain; R; R = R->Next)
-    if(R->GetLiquid()->IsSameAs(Material))
-      return true;
-
+truth lsquare::DetectMaterial (cmaterial *Material) const {
+  if (GLTerrain->DetectMaterial(Material) ||
+      (OLTerrain && OLTerrain->DetectMaterial(Material)) ||
+      Stack->DetectMaterial(Material) ||
+      (Character && Character->DetectMaterial(Material))) return true;
+  for (const fluid *F = Fluid; F; F = F->Next) if (F->GetLiquid()->IsSameAs(Material)) return true;
+  for (const smoke *S = Smoke; S; S = S->Next) if (S->GetGas()->IsSameAs(Material)) return true;
+  for (const rain *R = Rain; R; R = R->Next) if (R->GetLiquid()->IsSameAs(Material)) return true;
   return false;
 }
 

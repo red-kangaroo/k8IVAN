@@ -177,19 +177,12 @@ void organic::SetSpoilCounter(int What)
     MotherEntity->SignalSpoil(this);
 }
 
-void ironalloy::SetRustLevel(int What)
-{
-  if(GetRustLevel() != What)
-  {
-    if(!RustData)
-      RustData = RAND() & 0xFC | What;
-    else if(!What)
-      RustData = 0;
-    else
-      RustData = RustData & 0xFC | What;
-
-    if(MotherEntity)
-      MotherEntity->SignalRustLevelChange();
+void ironalloy::SetRustLevel (int What) {
+  if (GetRustLevel() != What) {
+    if (!RustData) RustData = (RAND() & 0xFC) | What;
+    else if (!What) RustData = 0;
+    else RustData = (RustData & 0xFC) | What;
+    if (MotherEntity) MotherEntity->SignalRustLevelChange();
   }
 }
 

@@ -488,11 +488,10 @@ int stack::DrawContents(itemvector& ReturnVector, stack* MergeStack,
 
   int Pos = 0;
 
-  if(Flags & NONE_AS_CHOICE)
-    if(!Selected)
-      return 0;
-    else
-      ++Pos;
+  if (Flags & NONE_AS_CHOICE) {
+    if (!Selected) return 0;
+    ++Pos;
+  }
 
   if(MergeStack)
   {
@@ -580,32 +579,24 @@ int stack::SearchChosen(itemvector& ReturnVector,
   itemvectorvector PileVector;
   Pile(PileVector, Viewer, RequiredSquarePosition, SorterFunction);
 
-  for(uint p = 0; p < PileVector.size(); ++p)
-    if(Pos++ == Chosen)
-      if(Flags & NO_MULTI_SELECT)
-      {
-  int Amount = (Flags & SELECT_PAIR
-          && PileVector[p][0]->HandleInPairs()
-          && PileVector[p].size() >= 2
-          ? 2 : 1);
-  ReturnVector.assign(PileVector[p].end() - Amount, PileVector[p].end());
-  return -1;
+  for (uint p = 0; p < PileVector.size(); ++p) {
+    if (Pos++ == Chosen) {
+      if (Flags & NO_MULTI_SELECT) {
+        int Amount = (Flags & SELECT_PAIR && PileVector[p][0]->HandleInPairs() && PileVector[p].size() >= 2 ? 2 : 1);
+        ReturnVector.assign(PileVector[p].end() - Amount, PileVector[p].end());
+        return -1;
+      } else {
+        int Amount = PileVector[p].size();
+        if (Amount > 1) {
+          Amount = game::ScrollBarQuestion(CONST_S("How many ")+PileVector[p][0]->GetName(PLURAL)+'?',
+            Amount, 1, 0, Amount, 0, WHITE,
+            LIGHT_GRAY, DARK_GRAY);
+        }
+        ReturnVector.assign(PileVector[p].end() - Amount, PileVector[p].end());
+        return -1;
       }
-      else
-      {
-  int Amount = PileVector[p].size();
-
-  if(Amount > 1)
-    Amount = game::ScrollBarQuestion(CONST_S("How many ")
-             + PileVector[p][0]->GetName(PLURAL)
-             + '?',
-             Amount, 1, 0, Amount, 0, WHITE,
-             LIGHT_GRAY, DARK_GRAY);
-
-  ReturnVector.assign(PileVector[p].end() - Amount, PileVector[p].end());
-  return -1;
-      }
-
+    }
+  }
   return Pos;
 }
 
@@ -900,15 +891,11 @@ item* stack::GetBottomItem(ccharacter* Char,
     return GetBottomVisibleItem(Char);
 }
 
-item* stack::GetBottomSideItem(ccharacter* Char,
-             int RequiredSquarePosition,
-             truth ForceIgnoreVisibility) const
-{
-  for(stackiterator i = GetBottom(); i.HasItem(); ++i)
-    if(i->GetSquarePosition() == RequiredSquarePosition
-       && (Flags & HIDDEN) || ForceIgnoreVisibility || i->CanBeSeenBy(Char))
-      return *i;
-
+item *stack::GetBottomSideItem (ccharacter *Char, int RequiredSquarePosition, truth ForceIgnoreVisibility) const {
+  for (stackiterator i = GetBottom(); i.HasItem(); ++i) {
+    if ((i->GetSquarePosition() == RequiredSquarePosition && (Flags & HIDDEN)) ||
+        ForceIgnoreVisibility || i->CanBeSeenBy(Char)) return *i;
+  }
   return 0;
 }
 
