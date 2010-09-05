@@ -3040,11 +3040,9 @@ void guard::GetAICommand()
 
   if(WayPoints.size() && !IsGoingSomeWhere())
   {
-    if(GetPos() == WayPoints[NextWayPoint])
-      if(NextWayPoint < WayPoints.size() - 1)
-  ++NextWayPoint;
-      else
-  NextWayPoint = 0;
+    if(GetPos() == WayPoints[NextWayPoint]) {
+      if(NextWayPoint < WayPoints.size() - 1) ++NextWayPoint; else NextWayPoint = 0;
+    }
 
     GoingTo = WayPoints[NextWayPoint];
   }
@@ -3987,12 +3985,12 @@ void necromancer::GetAICommand()
       break;
     }
 
-    if(Interrupt)
+    if(Interrupt) {
       if(CanBeSeenByPlayer())
-  NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell of ") + GetName(DEFINITE) + CONST_S(" interrupts you."));
+        NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell of ") + GetName(DEFINITE) + CONST_S(" interrupts you."));
       else
-  NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell interrupts you."));
-
+        NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell interrupts you."));
+    }
     return;
   }
 

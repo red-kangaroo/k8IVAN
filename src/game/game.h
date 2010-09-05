@@ -305,6 +305,16 @@ class game
   static void UpdateTrapID(entity*, ulong);
   static int GetStoryState() { return StoryState; }
   static void SetStoryState(int What) { StoryState = What; }
+  static int GetMondedrPass () { return MondedrPass; }
+  static void SetMondedrPass (int What) { MondedrPass = What; }
+  static int GetRingOfThieves () { return RingOfThieves; }
+  static void SetRingOfThieves (int What) { RingOfThieves = What; }
+  static int GetMasamune () { return Masamune; }
+  static void SetMasamune (int What) { Masamune = What; }
+  static int GetMuramasa () { return Muramasa; }
+  static void SetMuramasa (int What) { Muramasa = What; }
+  static int GetLoricatusHammer () { return LoricatusHammer; }
+  static void SetLoricatusHammer (int What) { LoricatusHammer = What; }
   static void SetIsInGetCommand(truth What) { InGetCommand = What; }
   static truth IsInGetCommand() { return InGetCommand; }
   static festring GetHomeDir();
@@ -472,6 +482,11 @@ class game
   static int Teams;
   static int Dungeons;
   static int StoryState;
+  static int MondedrPass;
+  static int RingOfThieves;
+  static int Masamune;
+  static int Muramasa;
+  static int LoricatusHammer;
   static truth InGetCommand;
   static truth PlayerHurtByExplosion;
   static area* CurrentArea;

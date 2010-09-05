@@ -44,7 +44,11 @@
 #include "balance.h"
 #include "confdef.h"
 
+/*
 #define SAVE_FILE_VERSION 119 // Increment this if changes make savefiles incompatible
+#define BONE_FILE_VERSION 106 // Increment this if changes make bonefiles incompatible
+*/
+#define SAVE_FILE_VERSION 120 // Increment this if changes make savefiles incompatible
 #define BONE_FILE_VERSION 106 // Increment this if changes make bonefiles incompatible
 
 #define LOADED 0
@@ -73,6 +77,13 @@ double game::AveragePlayerAgilityExperience;
 int game::Teams;
 int game::Dungeons;
 int game::StoryState;
+/* */
+int game::MondedrPass;
+int game::RingOfThieves;
+int game::Masamune;
+int game::Muramasa;
+int game::LoricatusHammer;
+/* */
 massacremap game::PlayerMassacreMap;
 massacremap game::PetMassacreMap;
 massacremap game::MiscMassacreMap;
@@ -328,6 +339,13 @@ truth game::Init (cfestring &Name) {
       Turn = 0;
       InitPlayerAttributeAverage();
       StoryState = 0;
+      /* */
+      MondedrPass = 0;
+      RingOfThieves = 0;
+      Masamune = 0;
+      Muramasa = 0;
+      LoricatusHammer = 0;
+      /* */
       PlayerMassacreMap.clear();
       PetMassacreMap.clear();
       MiscMassacreMap.clear();
@@ -694,6 +712,7 @@ truth game::Save (cfestring &SaveName) {
   SaveFile << AveragePlayerDexterityExperience;
   SaveFile << AveragePlayerAgilityExperience;
   SaveFile << Teams << Dungeons << StoryState << PlayerRunning;
+  SaveFile << MondedrPass << RingOfThieves << Masamune << Muramasa << LoricatusHammer;
   SaveFile << PlayerMassacreMap << PetMassacreMap << MiscMassacreMap;
   SaveFile << PlayerMassacreAmount << PetMassacreAmount << MiscMassacreAmount;
   SaveArray(SaveFile, EquipmentMemory, MAX_EQUIPMENT_SLOTS);
@@ -738,6 +757,7 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> AveragePlayerDexterityExperience;
   SaveFile >> AveragePlayerAgilityExperience;
   SaveFile >> Teams >> Dungeons >> StoryState >> PlayerRunning;
+  SaveFile >> MondedrPass >> RingOfThieves >> Masamune >> Muramasa >> LoricatusHammer;
   SaveFile >> PlayerMassacreMap >> PetMassacreMap >> MiscMassacreMap;
   SaveFile >> PlayerMassacreAmount >> PetMassacreAmount >> MiscMassacreAmount;
   LoadArray(SaveFile, EquipmentMemory, MAX_EQUIPMENT_SLOTS);

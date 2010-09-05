@@ -1054,3 +1054,138 @@ void wondersmellstaff::Break(character* Who, int Much)
     }
     meleeweapon::Break(Who,Much);
 }
+
+
+truth vacuumblade::HitEffect (character *Enemy, character *Hitter, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+  truth BaseSuccess = meleeweapon::HitEffect(Enemy, Hitter, HitPos, BodyPartIndex, Direction, BlockedByArmour);
+  if (!IsBroken() && Enemy->IsEnabled() && !(RAND() % 2)) {
+    if (Hitter) {
+      if (Enemy->IsPlayer() || Hitter->IsPlayer() || Enemy->CanBeSeenByPlayer() || Hitter->CanBeSeenByPlayer())
+        ADD_MESSAGE("%s blade creates a wind vortex cutting %s.", Hitter->CHAR_POSSESSIVE_PRONOUN, Enemy->CHAR_DESCRIPTION(DEFINITE));
+    } else {
+      if (Enemy->IsPlayer() || Enemy->CanBeSeenByPlayer())
+        ADD_MESSAGE("The blade creates a wind vortex cutting %s.", Enemy->CHAR_DESCRIPTION(DEFINITE));
+    }
+    return Enemy->ReceiveBodyPartDamage(Hitter, 6 + (RAND() % 6), ENERGY, BodyPartIndex, Direction) || BaseSuccess;
+  }
+  return BaseSuccess;
+}
+
+
+col16 masamune::GetOutlineColor (int) const { return MakeRGB16(0, 0, 255); }
+
+alpha masamune::GetOutlineAlpha (int Frame) const {
+  Frame &= 31;
+  return 50+(Frame*(31-Frame)>>1);
+}
+
+truth masamune::HitEffect (character *Enemy, character *Hitter, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+  truth BaseSuccess = meleeweapon::HitEffect(Enemy, Hitter, HitPos, BodyPartIndex, Direction, BlockedByArmour);
+  if (!IsBroken() && Enemy->IsEnabled() && !(RAND() % 4)) {
+    if (Enemy->IsPlayer() || Hitter->IsPlayer() || Enemy->CanBeSeenByPlayer() || Hitter->CanBeSeenByPlayer())
+      ADD_MESSAGE("%s Masamune's slash cuts %s so deep you thought it was cut in half for a moment.", Hitter->CHAR_POSSESSIVE_PRONOUN, Enemy->CHAR_DESCRIPTION(DEFINITE));
+    return Enemy->ReceiveBodyPartDamage(Hitter, 4 + (RAND() % 4), PHYSICAL_DAMAGE, BodyPartIndex, Direction) || BaseSuccess;
+  }
+  return BaseSuccess;
+}
+
+truth zulfiqar::HitEffect (character *Enemy, character *Hitter, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+  truth BaseSuccess = meleeweapon::HitEffect(Enemy, Hitter, HitPos, BodyPartIndex, Direction, BlockedByArmour);
+  if (!IsBroken() && Enemy->IsEnabled() && !(RAND() % 3)) {
+    if (Enemy->IsPlayer() || Hitter->IsPlayer() || Enemy->CanBeSeenByPlayer() || Hitter->CanBeSeenByPlayer())
+      ADD_MESSAGE("%s Zulfiqar's slash deeply cuts %s.", Hitter->CHAR_POSSESSIVE_PRONOUN, Enemy->CHAR_DESCRIPTION(DEFINITE));
+    return Enemy->ReceiveBodyPartDamage(Hitter, 4 + (RAND() % 5), PHYSICAL_DAMAGE, BodyPartIndex, Direction) || BaseSuccess;
+  }
+  return BaseSuccess;
+}
+
+truth tipswordofpenetration::HitEffect (character *Enemy, character *Hitter, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+  truth BaseSuccess = meleeweapon::HitEffect(Enemy, Hitter, HitPos, BodyPartIndex, Direction, BlockedByArmour);
+  if (!IsBroken() && Enemy->IsEnabled() && !(RAND() % 3)) {
+    if (Enemy->IsPlayer() || Hitter->IsPlayer() || Enemy->CanBeSeenByPlayer() || Hitter->CanBeSeenByPlayer())
+      ADD_MESSAGE("%s tip sword's slash penetrates %s.", Hitter->CHAR_POSSESSIVE_PRONOUN, Enemy->CHAR_DESCRIPTION(DEFINITE));
+    return Enemy->ReceiveBodyPartDamage(Hitter, 2 + (RAND() % 5), PHYSICAL_DAMAGE, BodyPartIndex, Direction) || BaseSuccess;
+  }
+  return BaseSuccess;
+}
+
+
+col16 loricatushammer::GetOutlineColor (int) const { return MakeRGB16(0, 0, 255); }
+
+alpha loricatushammer::GetOutlineAlpha (int Frame) const {
+  Frame &= 31;
+  return 50 + (Frame * (31 - Frame) >> 1);
+}
+
+
+col16 belderiver::GetOutlineColor (int) const { return MakeRGB16(180, 50, 50); }
+
+alpha belderiver::GetOutlineAlpha (int Frame) const {
+  Frame &= 31;
+  return 50 + (Frame * (31 - Frame) >> 1);
+}
+
+
+col16 demonhead::GetOutlineColor (int) const { return MakeRGB16(255, 0, 0); }
+
+alpha demonhead::GetOutlineAlpha (int Frame) const {
+  Frame &= 31;
+  return 50 + (Frame * (31 - Frame) >> 1);
+}
+
+
+col16 muramasa::GetOutlineColor (int) const { return MakeRGB16(255, 0, 0); }
+
+alpha muramasa::GetOutlineAlpha (int Frame) const {
+  Frame &= 31;
+  return 50 + (Frame * (31 - Frame) >> 1);
+}
+
+truth muramasa::HitEffect (character *Enemy, character *Hitter, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+  truth BaseSuccess = meleeweapon::HitEffect(Enemy, Hitter, HitPos, BodyPartIndex, Direction, BlockedByArmour);
+  if (!IsBroken() && Enemy->IsEnabled() && !(RAND() % 5)) {
+    if (Hitter->IsPlayer()) game::DoEvilDeed(10);
+    if (Enemy->IsPlayer() || Hitter->IsPlayer() || Enemy->CanBeSeenByPlayer() || Hitter->CanBeSeenByPlayer())
+      ADD_MESSAGE("%s Muramasa's life-draining energies swallow %s!", Hitter->CHAR_POSSESSIVE_PRONOUN, Enemy->CHAR_DESCRIPTION(DEFINITE));
+    return Enemy->ReceiveBodyPartDamage(Hitter, 10 + (RAND() % 11), DRAIN, BodyPartIndex, Direction) || BaseSuccess;
+  }
+  return BaseSuccess;
+}
+
+
+int smite::GetSpecialFlags() const {
+  return !IsBroken() ? meleeweapon::GetSpecialFlags()|ST_LIGHTNING : meleeweapon::GetSpecialFlags();
+}
+
+truth smite::HitEffect (character *Enemy, character *Hitter, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+  truth BaseSuccess = meleeweapon::HitEffect(Enemy, Hitter, HitPos, BodyPartIndex, Direction, BlockedByArmour);
+  if (!IsBroken() && Enemy->IsEnabled() && !(RAND() % 5)) {
+    if (Enemy->IsPlayer() || Hitter->IsPlayer() || Enemy->CanBeSeenByPlayer() || Hitter->CanBeSeenByPlayer())
+      ADD_MESSAGE("%s mace named Smite shoots a lightning bolt at %s!", Hitter->CHAR_POSSESSIVE_PRONOUN, Enemy->CHAR_DESCRIPTION(DEFINITE));
+    beamdata Beam (
+      Hitter,
+      CONST_S("electrocuted @bkp mace named Smite"),
+      Hitter->GetPos(),
+      WHITE,
+      BEAM_LIGHTNING,
+      Direction,
+      5,
+      0
+    );
+    GetLevel()->LightningBeam(Beam);
+    return true;
+  }
+  return BaseSuccess;
+}
+
+truth smite::ReceiveDamage (character *Damager, int Damage, int Type, int Dir) {
+  return Type & ELECTRICITY ? false : meleeweapon::ReceiveDamage(Damager, Damage, Type, Dir);
+}
+
+
+col16 goldenjaguarshirt::GetOutlineColor (int) const { return MakeRGB16(255, 255, 128); }
+
+alpha goldenjaguarshirt::GetOutlineAlpha (int Frame) const {
+  Frame &= 31;
+  return 50 + (Frame * (31 - Frame) >> 1);
+}

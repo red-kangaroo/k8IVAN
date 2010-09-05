@@ -277,6 +277,105 @@ meleeweapon
     EnchantmentPlusChance = 10;
   }
 
+/*****************************************************************************/
+Config KNIGHT_SWORD;
+  {
+    DefaultSize = 120;
+    Possibility = 15;
+    WeaponCategory = LARGE_SWORDS;
+    DefaultMainVolume = 200;
+    DefaultSecondaryVolume = 100;
+    BitmapPos = 110,257;
+    FormModifier = 145;
+    StrengthModifier = 120;
+    NameSingular = "knight sword";
+    MainMaterialConfig = { 5, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_TOOTH, ADAMANT; }
+    SecondaryMaterialConfig = { 5, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_TOOTH, ADAMANT; }
+    MaterialConfigChances = { 5, 200, 150, 50, 25, 1; }
+    Roundness = 20;
+    IsTwoHanded = true;
+    AttachedGod = LEGIFER;
+    WieldedBitmapPos = 150, 475;
+    EnchantmentPlusChance = 30;
+    DamageFlags = SLASH|PIERCE;
+  }
+
+  Config BROKEN|KNIGHT_SWORD;
+  {
+    Possibility = 5;
+    BitmapPos = 110, 279;
+    WieldedBitmapPos = 176, 80;
+    MainMaterialConfig = { 4, RUBY, SAPPHIRE, DIAMOND, FLAWLESS_DIAMOND; }
+    SecondaryMaterialConfig = { 4, STEEL, STEEL, MITHRIL, MITHRIL; }
+    MaterialConfigChances = { 4, 100, 100, 10, 1; }
+    EnchantmentPlusChance = 60;
+  }
+
+Config TIP_SWORD;
+  {
+    DefaultSize = 120;
+    Possibility = 6;
+    WeaponCategory = LARGE_SWORDS;
+    DefaultMainVolume = 145;
+    DefaultSecondaryVolume = 50;
+    BitmapPos = 86, 330;
+    FormModifier = 125;
+    StrengthModifier = 120;
+    NameSingular = "tip sword";
+    MainMaterialConfig = { 5, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_TOOTH, ADAMANT; }
+    SecondaryMaterialConfig = { 5, EBONY_WOOD, EBONY_WOOD, EBONY_WOOD, EBONY_WOOD, EBONY_WOOD; }
+    MaterialConfigChances = { 5, 200, 150, 50, 25, 1; }
+    Roundness = 30;
+    AttachedGod = CRUENTUS;
+    WieldedBitmapPos = 140, 536;
+    EnchantmentPlusChance = 6;
+    DamageFlags = SLASH|PIERCE;
+  }
+
+  Config BROKEN|TIP_SWORD;
+  {
+    Possibility = 2;
+    BitmapPos = 87, 267;
+    WieldedBitmapPos = 160, 536;
+    MainMaterialConfig = { 3, MITHRIL, ILLITHIUM, ADAMANT; }
+    SecondaryMaterialConfig = { 3, EBONY_WOOD, EBONY_WOOD, EBONY_WOOD; }
+    MaterialConfigChances = { 3, 10, 5, 1; }
+    EnchantmentPlusChance = 12;
+  }
+
+  Config KATANA;
+  {
+    DefaultSize = 100;
+    Possibility = 30;
+    WeaponCategory = LARGE_SWORDS;
+    DefaultMainVolume = 110;
+    DefaultSecondaryVolume = 30;
+    BitmapPos = 110, 209;
+    FormModifier = 115;
+    StrengthModifier = 100;
+    NameSingular = "katana";
+    MainMaterialConfig = { 7, EBONY_WOOD, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_TOOTH; }
+    SecondaryMaterialConfig = { 7, EBONY_WOOD, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_TOOTH; }
+    MaterialConfigChances = { 7, 50, 1000, 750, 100, 25, 25, 5; }
+    Roundness = 20;
+    AttachedGod = LEGIFER;
+    WieldedBitmapPos = 176, 112;
+    EnchantmentPlusChance = 5;
+    DamageFlags = SLASH|PIERCE;
+  }
+
+  Config BROKEN|KATANA;
+  {
+    Possibility = 5;
+    BitmapPos = 110, 225;
+    WieldedBitmapPos = 176, 80;
+    MainMaterialConfig = { 4, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    SecondaryMaterialConfig = { 4, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    MaterialConfigChances = { 4, 100, 25, 25, 10; }
+    EnchantmentPlusChance = 10;
+  }
+/*****************************************************************************/
+
   Config TWO_HANDED_SCIMITAR;
   {
     DefaultSize = 140;
@@ -341,6 +440,41 @@ meleeweapon
     MaterialConfigChances = { 7, 150, 25, 25, 5, 5, 5, 5; }
     EnchantmentPlusChance = 30;
   }
+
+/*****************************************************************************/
+  Config SPETUM;
+  {
+    DefaultSize = 180;
+    Possibility = 15;
+    WeaponCategory = POLE_ARMS;
+    StrengthModifier = 70;
+    BitmapPos = 110, 345;
+    FormModifier = 160;
+    DefaultMainVolume = 100;
+    DefaultSecondaryVolume = 1800;
+    NameSingular = "spetum";
+    MainMaterialConfig = { 5, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_BONE, OMMEL_TOOTH; }
+    SecondaryMaterialConfig == TEAK_WOOD;
+    MaterialConfigChances = { 5, 100, 25, 10, 5, 1; }
+    Roundness = 25;
+    IsTwoHanded = true;
+    AttachedGod = CRUENTUS;
+    WieldedBitmapPos = 149, 512;
+    EnchantmentPlusChance = 30;
+    DamageFlags = PIERCE;
+  }
+
+  Config BROKEN|SPETUM;
+  {
+    Possibility = 5;
+    BitmapPos = 84, 349;
+    WieldedBitmapPos = 165, 512;
+    MainMaterialConfig = { 6, METEORIC_STEEL, MITHRIL, SAPPHIRE, RUBY, DIAMOND, ADAMANT; }
+    MaterialConfigChances = { 6, 25, 25, 5, 5, 2, 1; }
+    EnchantmentPlusChance = 30;
+  }
+
+/*****************************************************************************/
 
   Config AXE;
   {
@@ -1017,6 +1151,29 @@ bodyarmor /* armor-> */
     AthleteArmArmorBitmapPos = 80, 560;
     LegArmorBitmapPos = 16, 544;
   }
+
+/*****************************************************************************/
+  Config DRAGON_CUIRASS;
+  {
+    StrengthModifier = 225;
+    DefaultSize = 100;
+    DefaultMainVolume = 5000;
+    BitmapPos = 86, 306;
+    Possibility = 8;
+    NameSingular = "dragon";
+    PostFix = "cuirass";
+    Alias == "dragon cuirass";
+    CanBeBroken = false;
+    MainMaterialConfig = { 4, DRAGON_HIDE, MITHRIL, OCTIRON, DAMASCUS_STEEL;}
+    MaterialConfigChances = { 4, 10, 4, 2, 1; }
+    InElasticityPenaltyModifier = 20;
+    EnchantmentPlusChance = 5;
+    TorsoArmorBitmapPos = 5, 576;
+    ArmArmorBitmapPos = 80, 416;
+    AthleteArmArmorBitmapPos = 80, 448;
+    LegArmorBitmapPos = 16, 416;
+  }
+/*****************************************************************************/
 }
 
 goldeneagleshirt /* armor->bodyarmor-> */
@@ -1200,7 +1357,11 @@ bone
   FormModifier = 25;
   Category = MISC;
   NameSingular = "bone";
-  MainMaterialConfig == BONE;
+/*****************************************************************************/
+  /*MainMaterialConfig == BONE;*/
+  MainMaterialConfig = { 2, BONE, OMMEL_BONE; }
+  MaterialConfigChances = { 2, 100, 1; }
+/*****************************************************************************/
   Roundness = 20;
   IsTwoHanded = true;
   AttachedGod = MORTIFER;
@@ -1753,6 +1914,29 @@ stone
   HasNormalPictureDirection = false;
 }
 
+/*****************************************************************************/
+solstone
+{
+  DefaultSize = 30;
+  Possibility = 25;
+  Category = VALUABLE;
+  DefaultMainVolume = -417;
+  StrengthModifier = 100;
+  BitmapPos = 0, 48;
+  FormModifier = 10;
+  Adjective = "sol";
+  NameSingular = "stone";
+  Price = 100;
+  MainMaterialConfig == OBSIDIAN;
+  Roundness = 90;
+  AttachedGod = NONE;
+  WieldedBitmapPos = 160, 368;
+  IsValuable = true;
+  HasNormalPictureDirection = false;
+  TeleportPriority = 20000;
+}
+/*****************************************************************************/
+
 scrolloftaming /* scroll-> */
 {
   Possibility = 25;
@@ -1978,6 +2162,28 @@ cloak /* armor-> */
     EnchantmentPlusChance = 10;
     CloakBitmapPos = 48, 496;
   }
+
+/*****************************************************************************/
+  Config CLOAK_OF_WERE_WOLF_FUR;
+  {
+    Possibility = 5;
+    NameSingular = "werewolf fur cloak";
+    MainMaterialConfig == WERE_WOLF_FLESH;
+    GearStates = LYCANTHROPY;
+    EnchantmentPlusChance = 5;
+    Alias == "werewolf fur cloak";
+  }
+
+  Config BROKEN|CLOAK_OF_WERE_WOLF_FUR;
+  {
+    Possibility = 0;
+    BitmapPos = 64, 304;
+    InElasticityPenaltyModifier = 40;
+    AcidResistance = 2;
+    EnchantmentPlusChance = 10;
+    CloakBitmapPos = 48, 496;
+  }
+/*****************************************************************************/
 }
 
 boot /* armor-> */
@@ -3153,6 +3359,29 @@ whipofthievery /* meleeweapon->whip-> */
   EnchantmentPlusChance = 10;
 }
 
+/*****************************************************************************/
+gleipnir /* meleeweapon->whip-> */
+{
+  DefaultSize = 250;
+  Possibility = 0;
+  DefaultMainVolume = 1000;
+  DefaultSecondaryVolume = 50;
+  StrengthModifier = 30;
+  NameSingular = "whip of thievery";
+  PostFix = "named Gleipnir";
+  MainMaterialConfig == SPIDER_SILK;
+  SecondaryMaterialConfig == OBSIDIAN;
+  Roundness = 3;
+  FormModifier = 25; /* this is multiplied by MainMaterial's flexibility */
+  Price = 1000;
+  AttachedGod = CLEPTIA;
+  EnchantmentPlusChance = 10;
+  CanBeWished = false;
+  Alias == "Gleipnir";
+  IsQuestItem = true;
+}
+/*****************************************************************************/
+
 scrollofenchantweapon /* scroll-> */
 {
   Possibility = 40;
@@ -3776,4 +4005,689 @@ firstbornchild
     NameSingular = "daughter";
   }
 }
+
+/*****************************************************************************/
+rescuethepeasant
+{
+  DefaultSize = 70;
+  Possibility = 1;
+  WeaponCategory = SMALL_SWORDS;
+  DefaultMainVolume = 60;
+  DefaultSecondaryVolume = 20;
+  BitmapPos = 48, 240;
+  FormModifier = 190;
+  StrengthModifier = 135;
+  Adjective = "short";
+  NameSingular = "sword";
+  PostFix = "named Rescue the Peasant";
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == RUBY;
+  Roundness = 15;
+  Price = 500;
+  GearStates = SEARCHING;
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Alias == "Rescue the Peasant";
+  AttachedGod = CLEPTIA;
+  WieldedBitmapPos = 160, 32;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH|PIERCE;
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 48, 272;
+    Price = 100;
+    GearStates = 0;
+    WieldedBitmapPos = 176, 208;
+    EnchantmentPlusChance = 4;
+  }
+}
+
+aegis /* shield-> */
+{
+  DefaultSize = 60;
+  Possibility = 1;
+  Category = SHIELD;
+  DefaultMainVolume = 350;
+  StrengthModifier = 150;
+  BitmapPos = 32, 336;
+  FormModifier = 15;
+  Adjective = "holy";
+  NameSingular = "shield";
+  PostFix = "named Aegis";
+  MainMaterialConfig == ARCANITE;
+  Roundness = 105;
+  Alias == "Aegis";
+  WeaponCategory = SHIELDS;
+  CanBeBroken = false;
+  WieldedBitmapPos = 128, 32;
+  FireResistance = 15;
+  ElectricityResistance = 15;
+  AcidResistance = 15;
+  EnchantmentPlusChance = 15;
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    DefaultSize = 40;
+    FormModifier = 20;
+    BitmapPos = 48, 224;
+    WieldedBitmapPos = 128, 48;
+    FireResistance = 15;
+    ElectricityResistance = 15;
+    AcidResistance = 15;
+    EnchantmentPlusChance = 30;
+  }
+}
+
+phoenixshield /* shield-> */
+{
+  DefaultSize = 60;
+  Possibility = 0;
+  Category = SHIELD;
+  DefaultMainVolume = 350;
+  StrengthModifier = 150;
+  BitmapPos = 32, 336;
+  FormModifier = 15;
+  Adjective = "blessed";
+  NameSingular = "shield";
+  PostFix = "of the Phoenix";
+  MainMaterialConfig == GOLD;
+  Roundness = 85;
+  Alias == "Shield of the Phoenix";
+  WeaponCategory = SHIELDS;
+  CanBeBroken = true;
+  WieldedBitmapPos = 128, 32;
+  EnchantmentPlusChance = 2;
+  GearStates = LIFE_SAVED;
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    DefaultSize = 40;
+    FormModifier = 20;
+    BitmapPos = 48, 224;
+    WieldedBitmapPos = 128, 48;
+    EnchantmentPlusChance = 30;
+    GearStates = 0;
+  }
+}
+
+defender /* meleeweapon-> */
+{
+  DefaultSize = 120;
+  Possibility = 1;
+  WeaponCategory = LARGE_SWORDS;
+  StrengthModifier = 125;
+  BitmapPos = 110,257;
+  FormModifier = 145;
+  DefaultMainVolume = 225;
+  DefaultSecondaryVolume = 125;
+  Adjective = "knight";
+  NameSingular = "sword";
+  PostFix = "named Defender";
+  MainMaterialConfig == ARCANITE;
+  SecondaryMaterialConfig == BRONZE;
+  Roundness = 60;
+  Alias == "Defender";
+  IsTwoHanded = true;
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Price = 1000;
+  AttachedGod = LEGIFER;
+  WieldedBitmapPos = 150, 475;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH|PIERCE;
+  
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 110, 279;
+    Price = 150;
+    WieldedBitmapPos = 176, 80;
+    EnchantmentPlusChance = 4;
+  }
+}
+
+aethier /* meleeweapon-> */
+{
+  DefaultSize = 150;
+  Possibility = 1;
+  WeaponCategory = LARGE_SWORDS;
+  StrengthModifier = 155;
+  BitmapPos = 0, 0;
+  FormModifier = 180;
+  DefaultMainVolume = 350;
+  DefaultSecondaryVolume = 150;
+  NameSingular = "two-handed sword";
+  PostFix = "named Aethier";
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == SAPPHIRE;
+  Roundness = 20;
+  IsTwoHanded = true;
+  Alias == "Aethier";
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Price = 750;
+  AttachedGod = LEGIFER;
+  WieldedBitmapPos = 160, 16;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH|PIERCE;
+  GearStates = INFRA_VISION;	
+  
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 32, 80;
+    WieldedBitmapPos = 176, 80;
+    Price = 150;
+    EnchantmentPlusChance = 4;
+    GearStates = 0;	
+  }
+}
+
+cronus
+{
+  DefaultSize = 60;
+  Possibility = 1;
+  WeaponCategory = SMALL_SWORDS;
+  DefaultMainVolume = 125;
+  DefaultSecondaryVolume = 50;
+  BitmapPos = 48, 144;
+  FormModifier = 120;
+  StrengthModifier = 50;
+  Adjective = "Cronus";
+  NameSingular = "sickle";
+  Alias == "Cronus";
+  MainMaterialConfig == ADAMANT;
+  SecondaryMaterialConfig == OCTIRON;
+  Roundness = 30;
+  CanBeBroken = false;
+  CanBeWished = false;
+  BaseEnchantment = 2;
+  ArticleMode = FORCE_THE;
+  Price = 750;
+  AttachedGod = CRUENTUS;
+  WieldedBitmapPos = 176, 32;
+  IsQuestItem = false;
+  DamageFlags = SLASH;
+  AffectsArmStrength = true;
+
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 48, 176;
+    Price = 150;
+    WieldedBitmapPos = 176, 240;
+
+  }
+}
+
+sunsword
+{
+  DefaultSize = 130;
+  Possibility = 1;
+  WeaponCategory = LARGE_SWORDS;
+  StrengthModifier = 150;
+  BitmapPos = 64, 160;
+  FormModifier = 200;
+  DefaultMainVolume = 225;
+  DefaultSecondaryVolume = 100;
+  Adjective = "shining";
+  NameSingular = "bastard sword";
+  PostFix = "named Sunsword";
+  MainMaterialConfig == ARCANITE;
+  SecondaryMaterialConfig == SUN_CRYSTAL;
+  Roundness = 20;
+  IsTwoHanded = true;
+  Alias == "Sunsword";
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Price = 500;
+  AttachedGod = SOPHOS;
+  WieldedBitmapPos = 160, 16;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH;
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 64, 192;
+    WieldedBitmapPos = 176, 80;
+    Price = 100;
+    EnchantmentPlusChance = 4;
+    GearStates = 0;
+  }
+}
+
+vormav {
+  DefaultSize = 60;
+  Possibility = 0;
+  WeaponCategory = AXES;
+  DefaultMainVolume = 200;
+  DefaultSecondaryVolume = 500;
+  StrengthModifier = 80;
+  BitmapPos = 16, 256;
+  FormModifier = 140;
+  NameSingular = "axe";
+  PostFix = "named Vormav";
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == RUBY;
+  Roundness = 20;
+  IsTwoHanded = true;
+  Alias == "Vormav";
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Price = 500;
+  AttachedGod = LORICATUS;
+  WieldedBitmapPos = 160, 176;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH;
+  GearStates = HASTE|INFRA_VISION|ESP;
+  
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 32, 176;
+    Price = 100;
+    WieldedBitmapPos = 176, 176;
+    EnchantmentPlusChance = 4;
+    GearStates = 0;
+  }
+}
+
+belderiver /* meleeweapon-> */
+{
+  DefaultSize = 80;
+  Possibility = 0;
+  WeaponCategory = LARGE_SWORDS;
+  DefaultMainVolume = 100;
+  DefaultSecondaryVolume = 40;
+  BitmapPos = 111, 191;
+  FormModifier = 500;
+  StrengthModifier = 100;
+  CanBeWished = false;
+  IsMaterialChangeable = false;
+  NameSingular = "dark sword";
+  Adjective = "cursed";
+  PostFix = "named Belderiver";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == PSYPHER;
+  SecondaryMaterialConfig == BLACK_DIAMOND;
+  IsPolymorphable = false;
+  Alias == "Belderiver";
+  Roundness = 20;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  CanBeBroken = false;
+  CanBeEnchanted = false;
+  BaseEnchantment = 16;
+  AttachedGod = MORTIFER;
+  WieldedBitmapPos = 163, 398;
+  IsQuestItem = true;
+  DamageFlags = SLASH|PIERCE;
+}
+
+demonhead {
+  DefaultSize = 200;
+  Possibility = 1;
+  WeaponCategory = AXES;
+  DefaultMainVolume = 800;
+  DefaultSecondaryVolume = 1600;
+  StrengthModifier = 300;
+  BitmapPos = 64, 80;
+  FormModifier = 300;
+  Adjective = "extremely heavy";
+  NameSingular = "battle-axe";
+  PostFix = "named Demonhead";
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == OCTIRON;
+  Roundness = 30;
+  IsTwoHanded = true;
+  Alias == "Demonhead";
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Price = 750;
+  AttachedGod = CRUENTUS;
+  WieldedBitmapPos = 160, 272;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH;
+  
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 64, 96;
+    WieldedBitmapPos = 176, 272;
+    Price = 150;
+    EnchantmentPlusChance = 4;
+  }
+}
+
+goldenjaguarshirt /* armor->bodyarmor-> */
+{
+  DefaultSize = 60;
+  BitmapPos = 16, 112;
+  Possibility = 0;
+  CanBeWished = false;
+  IsDestroyable = false;
+  IsMaterialChangeable = true;
+  DefaultMainVolume = 1000;
+  StrengthModifier = 200;
+  NameSingular = "Shirt of the Golden Jaguar";
+  MainMaterialConfig == ANGEL_HAIR;
+  ArticleMode = FORCE_THE;
+  IsPolymorphable = false;
+  CanBeBroken = false;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  InElasticityPenaltyModifier = 30;
+  CanBeEnchanted = true;
+  AttachedGod = LORICATUS;
+  GearStates = HASTE|POLYMORPH_CONTROL|TELEPORT_CONTROL;
+  TorsoArmorBitmapPos = 32, 416;
+  ArmArmorBitmapPos = 80, 416;
+  AthleteArmArmorBitmapPos = 80, 448;
+  LegArmorBitmapPos = 16, 416;
+}
+
+loricatushammer
+{
+  DefaultSize = 90;
+  Possibility = 0;
+  WeaponCategory = BLUNT_WEAPONS;
+  DefaultMainVolume = 300;
+  DefaultSecondaryVolume = 600;
+  StrengthModifier = 125;
+  BitmapPos = 48, 160;
+  FormModifier = 180;
+  NameSingular = "hammer";
+  PostFix = "of Loricatuses' Smithwork";
+  Alias == "Loricatus Hammer";
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == SAPPHIRE;
+  Roundness = 25;
+  IsTwoHanded = true;
+  CanBeUsedBySmith = true;
+  CanBeBroken = false;
+  CanBeWished = false;
+  ArticleMode = FORCE_THE;
+  Price = 1000;
+  AttachedGod = LORICATUS;
+  WieldedBitmapPos = 176, 16;
+  IsQuestItem = true;
+}
+
+muramasa /* meleeweapon-> */
+{
+  StrengthModifier = 100;
+  FormModifier = 225;
+  DefaultSize = 150;
+  Possibility = 0;
+  CanBeWished = false;
+  BitmapPos = 109, 210;
+  WeaponCategory = LARGE_SWORDS;
+  IsMaterialChangeable = false;
+  DefaultMainVolume = 150;
+  DefaultSecondaryVolume = 60;
+  Adjective = "ancient";
+  NameSingular = "katana";
+  UsesLongAdjectiveArticle = true;
+  PostFix = "named Muramasa";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == RUBY;
+  IsPolymorphable = false;
+  Alias == "Muramasa";
+  Roundness = 30;
+  IsTwoHanded = false;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  CanBeBroken = false;
+  AttachedGod = CRUENTUS;
+  WieldedBitmapPos = 176, 112;
+  IsQuestItem = true;
+}
+
+masamune /* meleeweapon-> */
+{
+  StrengthModifier = 100;
+  FormModifier = 125;
+  DefaultSize = 150;
+  Possibility = 0;
+  CanBeWished = false;
+  BitmapPos = 109, 210;
+  WeaponCategory = LARGE_SWORDS;
+  IsMaterialChangeable = false;
+  DefaultMainVolume = 150;
+  DefaultSecondaryVolume = 60;
+  Adjective = "ancient";
+  NameSingular = "katana";
+  UsesLongAdjectiveArticle = true;
+  PostFix = "named Masamune";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == SAPPHIRE;
+  IsPolymorphable = false;
+  Alias == "Masamune";
+  Roundness = 45;
+  IsTwoHanded = false;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  CanBeBroken = false;
+  AttachedGod = LEGIFER;
+  WieldedBitmapPos = 176, 112;
+  IsQuestItem = true;
+}
+
+zulfiqar /* meleeweapon-> */
+{
+  DefaultSize = 220;
+  Possibility = 1;
+  WeaponCategory = LARGE_SWORDS;
+  StrengthModifier = 175;
+  BitmapPos = 0, 16;
+  FormModifier = 160;
+  DefaultMainVolume = 400;
+  DefaultSecondaryVolume = 150;
+  Adjective = "two-handed";
+  NameSingular = "scimitar";
+  PostFix = "named Zulfiqar";
+  MainMaterialConfig == METEORIC_STEEL;
+  SecondaryMaterialConfig == DAMASCUS_STEEL;
+  Roundness = 15;
+  IsTwoHanded = true;
+  Alias == "Zulfiqar";
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Price = 750;
+  AttachedGod = CRUENTUS;
+  WieldedBitmapPos = 176, 112;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH;
+  
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 32, 96;
+    Price = 150;
+    WieldedBitmapPos = 176, 80;
+    EnchantmentPlusChance = 4;
+  }
+}
+
+smite /* meleeweapon-> */
+{
+  StrengthModifier = 150;
+  FormModifier = 175;
+  DefaultSize = 90;
+  BitmapPos = 0, 32;
+  Possibility = 0;
+  DefaultMainVolume = 450;
+  DefaultSecondaryVolume = 375;
+  WeaponCategory = BLUNT_WEAPONS;
+  NameSingular = "mace";
+  PostFix = "named Smite";
+  MainMaterialConfig == METEORIC_STEEL;
+  SecondaryMaterialConfig == EBONY_WOOD;
+  Roundness = 30; /* we count the handle, too */
+  IsTwoHanded = true;
+  Alias == "Smite";
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Price = 250;
+  AttachedGod = CRUENTUS;
+  WieldedBitmapPos = 160, 192;
+  EnchantmentPlusChance = 2;
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 32, 112;
+    Price = 50;
+    WieldedBitmapPos = 176, 192;
+    EnchantmentPlusChance = 4;
+  }
+}
+
+maingauche
+  {
+    DefaultSize = 50;
+    Possibility = 25;
+    WeaponCategory = SMALL_SWORDS;
+    DefaultMainVolume = 30;
+    DefaultSecondaryVolume = 30;
+    BitmapPos = 110, 305;
+    FormModifier = 80;
+    StrengthModifier = 65;
+    NameSingular = "main gauche";
+    MainMaterialConfig = { 5, IRON, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_TOOTH; }
+    SecondaryMaterialConfig = { 5, IRON, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_TOOTH; }
+    MaterialConfigChances = { 5, 1000, 100, 25, 25, 5; }
+    Roundness = 35;
+    AttachedGod = CLEPTIA;
+    WieldedBitmapPos = 160, 288;
+    EnchantmentPlusChance = 25;
+    DamageFlags = SLASH|PIERCE;
+
+  Config BROKEN;
+  {
+    Possibility = 5;
+    BitmapPos = 110, 321;
+    WieldedBitmapPos = 176, 285;
+    MainMaterialConfig = { 7, STEEL, METEORIC_STEEL, MITHRIL, SAPPHIRE, RUBY, DIAMOND, ADAMANT; }
+    SecondaryMaterialConfig = { 7, STEEL, METEORIC_STEEL, MITHRIL, SAPPHIRE, RUBY, DIAMOND, ADAMANT; }
+    MaterialConfigChances = { 7, 100, 25, 25, 5, 5, 5, 5; }
+    EnchantmentPlusChance = 50;
+  }
+}
+
+ullrbone
+{
+  Possibility = 5;
+  DefaultMainVolume = 500;
+  StrengthModifier = 150;
+  BitmapPos = 16, 240;
+  FormModifier = 250;
+  DefaultSize = 50;
+  Price = 1000;
+  NameSingular = "bone";
+  PostFix = "of Ullr";
+  ArticleMode = FORCE_THE;
+  IsPolymorphable = false;
+  Roundness = 20;
+  WieldedBitmapPos = 160, 336;
+  CanBePiled = false;
+  CanBeBroken = false;
+  MainMaterialConfig == BONE;
+  CanBeCloned = false;
+  CanBeMirrored = false;
+  AllowEquip = true;
+  IsValuable = true;
+}
+
+/* meleeweapon-> */
+vacuumblade
+{
+  DefaultSize = 120;
+  Possibility = 1;
+  WeaponCategory = LARGE_SWORDS;
+  DefaultMainVolume = 130;
+  DefaultSecondaryVolume = 45;
+  BitmapPos = 16, 336;
+  FormModifier = 110;
+  StrengthModifier = 100;
+  NameSingular = "blade";
+  Adjective = "vacuum";
+  MainMaterialConfig == VACUUM_BLADE_AIR;
+  SecondaryMaterialConfig == VACUUM_BLADE_AIR;
+  MaterialConfigChances = { 5, 1000, 750, 100, 25, 25; }
+  Roundness = 0;
+  BaseEmitation = rgb24(150, 120, 90);
+  Price = 250;
+  AttachedGod = SILVA;
+  WieldedBitmapPos = 160, 16;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH|PIERCE;
+  IsTwoHanded = false;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  CanBeBroken = false;
+  CanBeEnchanted = false;
+  IsMaterialChangeable = false;
+}
+
+tipswordofpenetration /* meleeweapon-> */
+{
+  DefaultSize = 120;
+  Possibility = 1;
+  WeaponCategory = LARGE_SWORDS;
+  StrengthModifier = 125;
+  BitmapPos = 86, 330;
+  FormModifier = 125;
+  DefaultMainVolume = 225;
+  DefaultSecondaryVolume = 125;
+  NameSingular = "tip sword";
+  PostFix = "of Penetration";
+  MainMaterialConfig == STEEL;
+  SecondaryMaterialConfig == SAPPHIRE;
+  Roundness = 30;
+  Alias == "Penetration";
+  IsTwoHanded = true;
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Price = 1000;
+  AttachedGod = CRUENTUS;
+  WieldedBitmapPos = 140, 536;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH|PIERCE;
+  AffectsAgility = true;
+  GearStates = HASTE;
+  
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 87, 267;
+    Price = 150;
+    WieldedBitmapPos = 160, 536;
+    EnchantmentPlusChance = 4;
+  }
+}
+/*****************************************************************************/
 

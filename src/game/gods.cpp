@@ -164,8 +164,15 @@ void valpurus::PrayBadEffect()
   PLAYER->CheckDeath(CONST_S("faced the hammer of Justice from the hand of ") + GetName(), 0);
 }
 
-void legifer::PrayGoodEffect()
-{
+void legifer::PrayGoodEffect () {
+  if (!game::GetMasamune()) {
+    if (GetRelation() == 1000) {
+      ADD_MESSAGE("You hear a booming voice: \"Thou have mastered the arts of law, order, and honor. I grant thee the most sacred symbol of mastery, the Masamune!\" A weapon glowing in power appears from nothing.");
+      PLAYER->GetGiftStack()->AddItem(masamune::Spawn());
+      game::SetMasamune(1);
+      return; //k8
+    }
+  }
   ADD_MESSAGE("A booming voice echoes: \"Inlux! Inlux! Save us!\" A huge firestorm engulfs everything around you.");
   game::GetCurrentLevel()->Explosion(PLAYER, CONST_S("killed by the holy fire of ") + GetName(), PLAYER->GetPos(), (300 + Max(GetRelation(), 0)) >> 3, false);
 }
@@ -177,35 +184,25 @@ void legifer::PrayBadEffect()
   PLAYER->CheckDeath(CONST_S("burned to death by the wrath of ") + GetName(), 0);
 }
 
-void dulcis::PrayGoodEffect()
-{
+void dulcis::PrayGoodEffect () {
   ADD_MESSAGE("A beautiful melody echoes around you.");
-
-  for(int d = 0; d < PLAYER->GetNeighbourSquares(); ++d)
-  {
-    square* Square = PLAYER->GetNeighbourSquare(d);
-
-    if(Square)
-    {
-      character* Char = Square->GetCharacter();
-
-      if(Char)
-  if(Char->CanHear())
-    if(Char->CanTameWithDulcis(PLAYER))
-    {
-      if(Char->GetTeam() == PLAYER->GetTeam())
-        ADD_MESSAGE("%s seems to be very happy.", Char->CHAR_DESCRIPTION(DEFINITE));
-      else if(Char->GetRelation(PLAYER) == HOSTILE)
-        ADD_MESSAGE("%s stops fighting.", Char->CHAR_DESCRIPTION(DEFINITE));
-      else
-        ADD_MESSAGE("%s seems to be very friendly towards you.", Char->CHAR_DESCRIPTION(DEFINITE));
-
-      Char->ChangeTeam(PLAYER->GetTeam());
-    }
-    else
-      ADD_MESSAGE("%s resists its charming call.", Char->CHAR_DESCRIPTION(DEFINITE));
-  else
-    ADD_MESSAGE("%s seems not affected.", Char->CHAR_DESCRIPTION(DEFINITE));
+  for (int d = 0; d < PLAYER->GetNeighbourSquares(); ++d) {
+    square *Square = PLAYER->GetNeighbourSquare(d);
+    if (Square) {
+      character *Char = Square->GetCharacter();
+      if (Char) {
+        if (Char->CanHear()) {
+          if (Char->CanTameWithDulcis(PLAYER)) {
+            if (Char->GetTeam() == PLAYER->GetTeam())
+              ADD_MESSAGE("%s seems to be very happy.", Char->CHAR_DESCRIPTION(DEFINITE));
+            else if (Char->GetRelation(PLAYER) == HOSTILE)
+              ADD_MESSAGE("%s stops fighting.", Char->CHAR_DESCRIPTION(DEFINITE));
+            else
+              ADD_MESSAGE("%s seems to be very friendly towards you.", Char->CHAR_DESCRIPTION(DEFINITE));
+            Char->ChangeTeam(PLAYER->GetTeam());
+          } else ADD_MESSAGE("%s resists its charming call.", Char->CHAR_DESCRIPTION(DEFINITE));
+        } else ADD_MESSAGE("%s seems not affected.", Char->CHAR_DESCRIPTION(DEFINITE));
+      }
     }
   }
 }
@@ -479,6 +476,14 @@ void silva::PrayBadEffect()
 
 void loricatus::PrayGoodEffect()
 {
+  if (!game::GetLoricatusHammer()) {
+    if (GetRelation() == 1000) {
+      ADD_MESSAGE("You hear a booming voice: \"Thou have succeeded the arts of blacksmithing, I aid ye well with a divine hammer\" A hammer appears from nothing.");
+      PLAYER->GetGiftStack()->AddItem(loricatushammer::Spawn());
+      game::SetLoricatusHammer(1);
+    }
+  }
+
   item* MainWielded = PLAYER->GetMainWielded();
 
   if(MainWielded)
@@ -944,6 +949,14 @@ void infuscor::PrayGoodEffect()
 
 void cruentus::PrayGoodEffect()
 {
+  if (!game::GetMuramasa()) {
+    if (GetRelation() == 1000) {
+      ADD_MESSAGE("The air around you becomes as warm as blood. A voice booms: \"Thou have pleased me greatly, lift and behold: thy most sacred reward, the Muramasa\" A weapon of pure corruption materializes before you.");
+      PLAYER->GetGiftStack()->AddItem(muramasa::Spawn());
+      game::SetMuramasa(1);
+    }
+  }
+
   rect Rect;
   femath::CalculateEnvironmentRectangle(Rect, game::GetCurrentLevel()->GetBorder(), PLAYER->GetPos(), 10);
   truth AudiencePresent = false;

@@ -313,6 +313,15 @@
 #define LEAD (SOLID_ID + 65)
 #define BLACK_GRANITE (SOLID_ID + 66)
 #define BLACK_LEATHER (SOLID_ID + 67)
+/**********************/
+#define FLAWLESS_DIAMOND (SOLID_ID + 68)
+#define EMERALD (SOLID_ID + 69)
+#define SUN_CRYSTAL (SOLID_ID + 70)
+#define BLACK_DIAMOND (SOLID_ID + 71)
+#define PSYPHER (SOLID_ID + 72)
+#define EXTRA_HARD_BASALT (SOLID_ID + 73)
+#define WEAK_GLASS (SOLID_ID + 74)
+/**********************/
 
 #define ORGANIC_ID (4096 * 2)
 
@@ -343,6 +352,9 @@
 #define GOOD_WONDER_STAFF_VAPOUR (GAS_ID + 8)
 #define FART (GAS_ID + 9)
 #define MUSTARD_GAS (GAS_ID + 10)
+/**********************/
+#define VACUUM_BLADE_AIR (GAS_ID + 11)
+/**********************/
 
 #define LIQUID_ID (4096 * 4)
 
@@ -433,6 +445,9 @@
 #define STEEL (IRON_ALLOY_ID + 2)
 #define METEORIC_STEEL (IRON_ALLOY_ID + 3)
 #define ADAMANT (IRON_ALLOY_ID + 4)
+/**********************/
+#define DAMASCUS_STEEL (IRON_ALLOY_ID + 5)
+/**********************/
 
 #define UNARMED_ATTACK 0
 #define WEAPON_ATTACK 1
@@ -492,6 +507,12 @@
 #define SCYTHE 14
 #define QUARTER_STAFF 15
 #define HAMMER 16
+/**********************/
+#define KNIGHT_SWORD 17
+#define KATANA 18
+#define SPETUM 19
+#define TIP_SWORD 20
+/**********************/
 
 #define GOROVITS_HAMMER 1
 #define GOROVITS_SICKLE 2
@@ -500,6 +521,9 @@
 #define CHAIN_MAIL 1
 #define PLATE_MAIL 2
 #define ARMOR_OF_GREAT_HEALTH 3
+/**********************/
+#define DRAGON_CUIRASS 4
+/**********************/
 
 #define CHEAP 1
 #define EXPENSIVE 2
@@ -527,6 +551,9 @@
 #define CLOAK_OF_FIRE_RESISTANCE 2
 #define CLOAK_OF_ELECTRICITY_RESISTANCE 3
 #define CLOAK_OF_ACID_RESISTANCE 4
+/**********************/
+#define CLOAK_OF_WERE_WOLF_FUR 5
+/**********************/
 
 #define BOOT_OF_STRENGTH 1
 #define BOOT_OF_AGILITY 2
@@ -546,6 +573,11 @@
 #define RING_OF_ELECTRICITY_RESISTANCE 9
 #define RING_OF_SEARCHING 10
 #define RING_OF_ACID_RESISTANCE 11
+/**********************/
+/*TODO:
+#define RING_OF_THIEVES 12
+*/
+/**********************/
 
 #define AMULET_OF_LIFE_SAVING 1
 #define AMULET_OF_ESP 2
@@ -577,6 +609,13 @@
 #define ELITE 6
 #define MASTER 7
 #define GRAND_MASTER 8
+/**********************/
+/*TODO:
+#define MONDEDR_GUARD 9
+#define DWARVEN_GUARD 10
+#define ENQUIOX 128
+*/
+/**********************/
 
 #define DARK 1
 #define GREATER_DARK 2
@@ -598,6 +637,11 @@
 
 #define LARGE 1
 #define GIANT 2
+/**********************/
+/*TODO:
+#define ARANEA 3
+*/
+/**********************/
 
 #define BLACK_BEAR 1
 #define GRIZZLY_BEAR 2
@@ -905,6 +949,22 @@
 #define NO_ARTICLE 4
 #define FORCE_THE 8
 #define SHOW_MATERIAL 16
+
+/**********************/
+/* Spatial Flags */
+/*TODO:
+#define MF_OBJECT  256
+#define MF_FLOOR   512
+#define MF_CEIL    1024
+#define MF_WALL    2048
+#define MF_ONFLOOR 4096
+#define MF_LOWWALL 8192
+#define MF_TABLE   16384
+#define MF_WINDOW  128
+#define MF_LARGE   64
+#define MF_STAIR   32
+*/
+/**********************/
 
 /***************************/
 /* Material DataBase flags */

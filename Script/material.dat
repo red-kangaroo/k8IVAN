@@ -306,6 +306,59 @@ solid
     InteractionFlags = Base&~CAN_DISSOLVE;
   }
 
+/*****************************************************************************/
+  Config FLAWLESS_DIAMOND;
+  {
+    StrengthValue = 350;
+    ConsumeType = CT_MINERAL;
+    Density = 3250;
+    Color = rgb16(200, 200, 255);
+    PriceModifier = 15000;
+    NameStem = "flawless diamond";
+    Alpha = 175;
+    AttachedGod = MELLIS;
+    NaturalForm = stone;
+    IntelligenceRequirement = 44;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = Base|IS_SPARKLING|IS_GOLEM_MATERIAL;
+    InteractionFlags = Base;
+  }
+
+  Config BLACK_DIAMOND;
+  {
+    StrengthValue = 375;
+    ConsumeType = CT_MINERAL;
+    Density = 3500;
+    Color = rgb16(0, 0, 0);
+    PriceModifier = 15000;
+    NameStem = "black diamond";
+    Alpha = 175;
+    AttachedGod = MELLIS;
+    NaturalForm = stone;
+    IntelligenceRequirement = 50;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = Base|IS_SPARKLING|IS_GOLEM_MATERIAL;
+    InteractionFlags = Base;
+  }
+
+  Config PSYPHER;
+  {
+    StrengthValue = 600;
+    ConsumeType = CT_MINERAL;
+    Density = 3500;
+    Color = rgb16(180, 50, 50);
+    PriceModifier = 15000;
+    NameStem = "psypher";
+    Alpha = 200;
+    AttachedGod = MORTIFER;
+    NaturalForm = stone;
+    IntelligenceRequirement = 150;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = Base;
+    InteractionFlags = Base;
+  }
+/*****************************************************************************/
+
   Config SILVER;
   {
     StrengthValue = 60;
@@ -339,6 +392,26 @@ solid
     CategoryFlags = Base|IS_SPARKLING|IS_GOLEM_MATERIAL;
     InteractionFlags = Base&~CAN_DISSOLVE;
   }
+
+/*****************************************************************************/
+  Config EMERALD;
+  {
+    StrengthValue = 250;
+    ConsumeType = CT_MINERAL;
+    Density = 4000;
+    Color = rgb16(0, 180, 0);
+    PriceModifier = 8000;
+    NameStem = "emerald";
+    Alpha = 200;
+    AttachedGod = MELLIS;
+    NaturalForm = stone;
+    HardenedMaterial = DIAMOND;
+    IntelligenceRequirement = 35;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = Base|IS_SPARKLING|IS_GOLEM_MATERIAL;
+    InteractionFlags = Base;
+  }
+/*****************************************************************************/
 
   Config RUBY;
   {
@@ -770,6 +843,27 @@ solid
     InteractionFlags = Base&~CAN_DISSOLVE;
   }
 
+/*****************************************************************************/
+  Config SUN_CRYSTAL;
+  {
+    StrengthValue = 150;
+    ConsumeType = CT_MINERAL;
+    Density = 2000;
+    Color = rgb16(224, 224, 0);
+    NameStem = "sun light crystal";
+    AdjectiveStem = "crystal";
+    Alpha = 150;
+    AttachedGod = TERRA;
+    Emitation = rgb24(160, 160, 160);
+    NaturalForm = stone;
+    PriceModifier = 8000;
+    IntelligenceRequirement = 20;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = Base|IS_SPARKLING|;
+    InteractionFlags = Base&~CAN_DISSOLVE;
+  }
+/*****************************************************************************/
+
   Config SAND_STONE;
   {
     StrengthValue = 25;
@@ -875,6 +969,21 @@ solid
     HardenedMaterial = MILKY_QUARTZ;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
+
+/*****************************************************************************/
+Config EXTRA_HARD_BASALT;
+  {
+    StrengthValue = 120;
+    ConsumeType = CT_MINERAL;
+    Density = 3500;
+    Color = rgb16(60, 60, 60);
+    NameStem = "basalt";
+    AttachedGod = TERRA;
+    NaturalForm = stone;
+    HardenedMaterial = MILKY_QUARTZ;
+    CategoryFlags = Base;
+  }
+/*****************************************************************************/
 
   Config MILKY_QUARTZ;
   {
@@ -1389,6 +1498,18 @@ gas
     AttachedGod = CRUENTUS;
     BreatheMessage = "It smells like mustard here."; 
     Effect = EFFECT_MUSTARD_GAS;
+    StepInWisdomLimit = 8;
+  }
+
+  /*FIXME*/
+  Config VACUUM_BLADE_AIR;
+  {
+    Color = rgb16(120, 70, 40);
+    NameStem = "vacuum blade air";
+    Alpha = 200;
+    AttachedGod = CRUENTUS; /*FIXME*/
+    BreatheMessage = "It smells like vacuum here."; 
+    /*Effect = EFFECT_MUSTARD_GAS;*/
     StepInWisdomLimit = 8;
   }
 }
@@ -2307,4 +2428,21 @@ ironalloy /* metals that rust */
     NameFlags = Base|USE_AN;
     CategoryFlags = Base|IS_SPARKLING;
   }
+
+/*****************************************************************************/
+  Config DAMASCUS_STEEL;
+  {
+    StrengthValue = 400;
+    ConsumeType = CT_METAL;
+    Density = 5000;
+    Color = rgb16(80, 80, 80);
+    PriceModifier = 10000;
+    NameStem = "damascus steel";
+    AttachedGod = LORICATUS;
+    RustModifier = 5;
+    HardenedMaterial = VALPURIUM;
+    IntelligenceRequirement = 60;
+    CommonFlags = Base|IS_VALUABLE;
+  }
+/*****************************************************************************/
 }

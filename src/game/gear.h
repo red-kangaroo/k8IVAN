@@ -124,6 +124,12 @@ ITEM(mjolak, meleeweapon)
   virtual truth HitEffect(character*, character*, v2, int, int, truth);
 };
 
+ITEM(vacuumblade, meleeweapon)
+{
+public:
+  virtual truth HitEffect (character *, character *, v2, int, int, truth);
+};
+
 ITEM(vermis, meleeweapon)
 {
  public:
@@ -362,6 +368,129 @@ ITEM(chastitybelt, lockablebelt)
 {
  public:
   virtual int GetFormModifier() const { return item::GetFormModifier(); }
+};
+
+ITEM(sunsword, meleeweapon)
+{
+};
+
+ITEM(rescuethepeasant, meleeweapon)
+{
+};
+
+ITEM(vormav, meleeweapon)
+{
+};
+
+ITEM(cronus, meleeweapon)
+{
+};
+
+ITEM(defender, meleeweapon)
+{
+};
+
+ITEM(aethier, meleeweapon)
+{
+};
+
+ITEM(aegis, shield)
+{
+};
+
+ITEM(phoenixshield, shield)
+{
+};
+
+ITEM(belderiver, meleeweapon)
+{
+public:
+  virtual truth AllowAlphaEverywhere () const { return true; }
+protected:
+  virtual int GetClassAnimationFrames () const { return 32; }
+  virtual col16 GetOutlineColor (int) const;
+  virtual alpha GetOutlineAlpha (int) const;
+};
+
+ITEM(loricatushammer, meleeweapon)
+{
+public:
+  virtual truth AllowAlphaEverywhere () const { return true; }
+protected:
+  virtual int GetClassAnimationFrames() const { return 32; }
+  virtual col16 GetOutlineColor (int) const;
+  virtual alpha GetOutlineAlpha (int) const;
+};
+
+ITEM(goldenjaguarshirt, bodyarmor)
+{
+public:
+  virtual truth IsConsumable () const { return false; }
+  virtual truth AllowAlphaEverywhere () const { return true; }
+protected:
+  virtual int GetClassAnimationFrames () const { return 32; }
+  virtual col16 GetOutlineColor (int) const;
+  virtual alpha GetOutlineAlpha (int) const;
+};
+
+ITEM(demonhead, meleeweapon)
+{
+public:
+  virtual truth AllowAlphaEverywhere () const { return true; }
+protected:
+  virtual int GetClassAnimationFrames () const { return 32; }
+  virtual col16 GetOutlineColor (int) const;
+  virtual alpha GetOutlineAlpha (int) const;
+};
+
+ITEM(smite, meleeweapon)
+{
+public:
+  virtual truth HitEffect (character *, character *, v2, int, int, truth);
+  virtual int GetSpecialFlags () const;
+  virtual truth ReceiveDamage (character*, int, int, int);
+};
+
+ITEM(muramasa, meleeweapon)
+{
+public:
+  virtual truth HitEffect (character *, character *, v2, int, int, truth);
+  virtual truth AllowAlphaEverywhere() const { return true; }
+protected:
+  virtual int GetClassAnimationFrames () const { return 32; }
+  virtual col16 GetOutlineColor (int) const;
+  virtual alpha GetOutlineAlpha (int) const;
+};
+
+ITEM(masamune, meleeweapon)
+{
+public:
+  virtual truth HitEffect (character *, character *, v2, int, int, truth);
+  virtual truth AllowAlphaEverywhere () const { return true; }
+protected:
+  virtual int GetClassAnimationFrames () const { return 32; }
+  virtual col16 GetOutlineColor(int) const;
+  virtual alpha GetOutlineAlpha(int) const;
+};
+
+ITEM(zulfiqar, meleeweapon)
+{
+public:
+  virtual truth HitEffect (character *, character *, v2, int, int, truth);
+};
+
+ITEM(tipswordofpenetration, meleeweapon)
+{
+public:
+  virtual truth HitEffect (character *, character *, v2, int, int, truth);
+};
+
+ITEM(maingauche, meleeweapon)
+{
+};
+
+ITEM(gleipnir, whipofthievery)
+{
 };
 
 #endif
