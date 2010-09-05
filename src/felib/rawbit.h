@@ -27,12 +27,13 @@ class festring;
 typedef std::map<col16, std::pair<cachedfont *, cachedfont *> > fontcache;
 
 
+/* actually this is simple 256-color with palette PCX codec */
 class rawbitmap {
 public:
-  rawbitmap (cfestring &);
+  rawbitmap (cfestring &FileName);
   rawbitmap (v2);
   ~rawbitmap ();
-  void Save (cfestring &);
+  void Save (cfestring &FileName);
   void MaskedBlit (bitmap *Bitmap, v2 Src, v2 Dest, v2 Border, packcol16 *Color) const;
   void MaskedBlit (bitmap *Bitmap, packcol16 *Color) const;
 
