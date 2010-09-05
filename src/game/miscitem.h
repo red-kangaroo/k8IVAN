@@ -506,6 +506,13 @@ ITEM(encryptedscroll, scroll)
   virtual truth IsEncryptedScroll() const { return true; }
 };
 
+ITEM(mondedrpass, scroll)
+{
+public:
+  virtual void FinishReading (character *);
+  virtual truth IsMondedrPass () const { return true; }
+};
+
 ITEM(horn, item)
 {
  public:

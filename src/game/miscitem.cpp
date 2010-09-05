@@ -2992,3 +2992,11 @@ col16 solstone::GetOutlineColor (int Frame) const {
   }
   return TRANSPARENT_COLOR;
 }
+
+
+void mondedrpass::FinishReading (character *Reader) {
+  ADD_MESSAGE("This sheet of paper contains many interesting facts about Mondedr. After finishing reading the pass burns up.");
+  RemoveFromSlot();
+  SendToHell();
+  Reader->EditExperience(INTELLIGENCE, 3000, 1 << 12);
+}

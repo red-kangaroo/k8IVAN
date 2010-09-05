@@ -5191,3 +5191,166 @@ void guard::BeTalkedTo()
     GetStack()->AddItem(Item[c]);
   }
 }
+
+
+void denim::GetAICommand () {
+  int Enemies = 0;
+  for (int c = 0; c < game::GetTeams(); ++c) {
+    if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) Enemies += game::GetTeam(c)->GetEnabledMembers();
+  }
+  StandIdleAI();
+}
+
+
+v2 wisefarmer::GetHeadBitmapPos () const { return v2(96, (4 + (RAND() & 1)) << 4); }
+v2 wisefarmer::GetRightArmBitmapPos () const { return v2(64, (RAND() & 1) << 4); }
+
+void wisefarmer::GetAICommand () {
+  int Enemies = 0;
+  for (int c = 0; c < game::GetTeams(); ++c) {
+    if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) Enemies += game::GetTeam(c)->GetEnabledMembers();
+  }
+  StandIdleAI();
+}
+
+
+void raven::GetAICommand () {
+  int Enemies = 0;
+  for (int c = 0; c < game::GetTeams(); ++c) {
+    if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) Enemies += game::GetTeam(c)->GetEnabledMembers();
+  }
+  StandIdleAI();
+}
+
+
+void vulcan::GetAICommand () {
+  int Enemies = 0;
+  for (int c = 0; c < game::GetTeams(); ++c) {
+    if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) Enemies += game::GetTeam(c)->GetEnabledMembers();
+  }
+  StandIdleAI();
+}
+
+
+truth rogue::IsRetreating () const {
+  if (humanoid::IsRetreating()) return true;
+  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) if ((*i)->GetSparkleFlags()) return true;
+  return false;
+}
+
+
+void rogue::GetAICommand () {
+  if (!IsRetreating()) {
+    character *Char = GetRandomNeighbour();
+    if (Char) {
+      itemvector Sparkling;
+      for (stackiterator i = Char->GetStack()->GetBottom(); i.HasItem(); ++i) {
+        if ((*i)->GetSparkleFlags() && !MakesBurdened((*i)->GetWeight())) Sparkling.push_back(*i);
+      }
+      if (!Sparkling.empty()) {
+        item *ToSteal = Sparkling[RAND() % Sparkling.size()];
+        ToSteal->RemoveFromSlot();
+        GetStack()->AddItem(ToSteal);
+        if (Char->IsPlayer()) ADD_MESSAGE("%s steals your %s.", CHAR_NAME(DEFINITE), ToSteal->CHAR_NAME(UNARTICLED));
+        EditAP(-500);
+        return;
+      }
+    }
+  }
+  humanoid::GetAICommand();
+}
+
+
+void assassin::BeTalkedTo () {
+  if (GetRelation(PLAYER) == HOSTILE) {
+    if (PLAYER->GetMoney() >= 1500) {
+      ADD_MESSAGE("%s talks: \"If you shell out 1500 gold pieces I'll join your side\"", CHAR_DESCRIPTION(DEFINITE));
+      if (game::TruthQuestion(CONST_S("Do you want to bribe him? [y/N]"))) {
+        PLAYER->SetMoney(PLAYER->GetMoney()-1500);
+        ChangeTeam(PLAYER->GetTeam());
+        RemoveHomeData();
+      }
+    } else {
+      ADD_MESSAGE("\"Trying to reason me with diplomancy won't work on me.\"");
+    }
+  }
+}
+
+
+void raven::BeTalkedTo () {
+  if (GetRelation(PLAYER) == HOSTILE) {
+    ADD_MESSAGE("I bet you are with those filthy Attnamanese bastards!");
+    return;
+  }
+  if (!game::GetRingOfThieves()) {
+    if (PLAYER->RemoveRingOfThieves()) {
+      game::TextScreen(CONST_S(
+        "You hand over the Ring of Thieves, Raven's eyes glow in amazement.\n"
+        "\"May Cleptia bless this mighty warrior, whom vanquished Vulcan-Loki!\n"
+        "Retrieving the ring is no easy task, Vulcan is a powerful adversary.\n"
+        "The importance of the Ring of Thieves is great. It is used to channel\n"
+        "Cleptia's power to help Mondedr avoid it's enemies, including Petrus.\n"
+        "Without it we would have been raided by every nation that hates us.\n"
+        "Not a mere mortal like Vulcan-Loki could channel the ring's power for\n"
+        "himself so he decided to contract a deal with Oree to assist him.\n"
+        "To reward your efforts I will give you the artifact whip, Gleipnir.\"\n\n"
+        "\"I pray to Cleptia that you will use it well..\"\n\n"""));
+      game::GetGod(CLEPTIA)->AdjustRelation(500);
+      game::GetGod(NEFAS)->AdjustRelation(50);
+      game::GetGod(SCABIES)->AdjustRelation(50);
+      game::GetGod(INFUSCOR)->AdjustRelation(50);
+      game::GetGod(CRUENTUS)->AdjustRelation(50);
+      game::GetGod(MORTIFER)->AdjustRelation(50);
+      meleeweapon* Weapon = whipofthievery::Spawn();
+      Weapon->InitMaterials(MAKE_MATERIAL(SPIDER_SILK), MAKE_MATERIAL(EBONY_WOOD), true);
+      PLAYER->GetGiftStack()->AddItem(Weapon);
+      GetArea()->SendNewDrawRequest();
+      ADD_MESSAGE("A whip materializes near your feet.");
+
+      game::SetRingOfThieves(1);
+    } else {
+      ADD_MESSAGE("\"Mondedr's most important artifact, the Ring of Thieves, has been stolen by Vulcan-Loki; residing at the deepest floor of the underground temple, he awaits Oree to receive it and reward him with incredible power.\"");
+    }
+  }
+  else {
+    /* StoryState == 100 */
+    ADD_MESSAGE("\"I must thank you again, I hope you make good use of that whip.\"");
+  }
+}
+
+
+void mysteryman::BeTalkedTo () {
+  if (GetRelation(PLAYER) == HOSTILE) {
+    ADD_MESSAGE("This is why the government doesn't mess with me, fool!");
+    return;
+  }
+  if (!game::GetMondedrPass()) {
+    if (PLAYER->RemoveMondedrPass()) {
+      game::TextScreen(CONST_S(
+        "You hand over the mondedr pass,\n"
+        "the man quickly snatches it and starts reading it right away.\n"
+        "The man scans the text very quickly, his eyes run around a hundred laps per second.\n"
+        "His eyes come to a halt.\n"
+        "\"I have revealed the location of Mondedr.\" He hands you a map.\n"
+        "\"It is a good thing I was born in this world, no? You owe me nothing, the \n"
+        "the amount of information in the sheet of paper is what repays it.\"\n\n"""));
+      /*TODO:
+      game::LoadWorldMap();
+      v2 MondedrPos = game::GetWorldMap()->GetEntryPos(0, MONDEDR);
+      game::GetWorldMap()->GetWSquare(MondedrPos)->ChangeOWTerrain(mondedr::Spawn());
+      game::GetWorldMap()->RevealEnvironment(MondedrPos, 1);
+      game::SaveWorldMap();
+      GetArea()->SendNewDrawRequest();
+      ADD_MESSAGE("\"And by the way, the government always watches you.\"");
+      */
+      game::SetMondedrPass(1);
+    } else {
+      ADD_MESSAGE("\"Shoo, come back if you have a sheet of paper they call 'Mondedr Pass'\"");
+    }
+  } else {
+    /* StoryState == 100 */
+    ADD_MESSAGE("The man says: \"I don't have anymore business with you, shoo.\"");
+  }
+}
+
+

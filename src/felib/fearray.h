@@ -64,7 +64,7 @@ template <class type> inline fearray<type>::~fearray<type>()
     for(; TempPtr != EndPtr; ++TempPtr)
       TempPtr->~type();
 
-    delete [] &REFS(Ptr);
+    delete [] REFSA(Ptr);
   }
 }
 
@@ -89,7 +89,7 @@ template <class type> inline void fearray<type>::Clear()
       for(sizetype c = 0; c < Size; ++c)
   Ptr[c].~type();
 
-      delete [] &REFS(Ptr);
+      delete [] REFSA(Ptr);
     }
 
     Data = 0;
@@ -129,7 +129,7 @@ template <class type> inline void fearray<type>::Add(const type& Type)
   Ptr[c].~type();
       }
 
-      delete [] &REFS(Ptr);
+      delete [] REFSA(Ptr);
     }
     else
       for(sizetype c = 0; c < Size; ++c)

@@ -143,7 +143,7 @@ inline festring::festring (sizetype N, char C) : Size(N), OwnsData(true), Reserv
 inline festring::~festring () {
   if (OwnsData) {
     char *Ptr = Data;
-    if (Ptr && !REFS(Ptr)--) delete [] &REFS(Ptr);
+    if (Ptr && REFS(Ptr)-- == 0) delete [] REFSA(Ptr);
   }
 }
 

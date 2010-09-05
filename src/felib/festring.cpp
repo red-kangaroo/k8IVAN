@@ -55,7 +55,7 @@ festring& festring::operator=(cchar* CStr)
     }
 
     if(!REFS(Ptr)--)
-      delete [] &REFS(Ptr);
+      delete [] REFSA(Ptr);
   }
 
   Data = const_cast<char*>(CStr);
@@ -81,7 +81,7 @@ festring& festring::operator=(cfestring& Str)
     }
 
     if(!REFS(Ptr)--)
-      delete [] &REFS(Ptr);
+      delete [] REFSA(Ptr);
   }
 
   if((Data = StrPtr) && (OwnsData = Str.OwnsData))
@@ -137,7 +137,7 @@ void festring::SlowAppend(char Char)
     ulong* DeletePtr = 0;
 
     if(OwnsData && !REFS(OldPtr)--)
-      DeletePtr = &REFS(OldPtr);
+      DeletePtr = REFSA(OldPtr);
 
     Reserved = NewSize|FESTRING_PAGE;
     char* NewPtr = 4 + new char[Reserved + 5];
@@ -174,7 +174,7 @@ void festring::SlowAppend(cchar* CStr, sizetype N)
     ulong* DeletePtr = 0;
 
     if(OwnsData && !REFS(OldPtr)--)
-      DeletePtr = &REFS(OldPtr);
+      DeletePtr = REFSA(OldPtr);
 
     Reserved = NewSize|FESTRING_PAGE;
     char* NewPtr = 4 + new char[Reserved + 5];
@@ -204,7 +204,7 @@ void festring::Assign(sizetype N, char C)
       return;
     }
     else
-      delete [] &REFS(Ptr);
+      delete [] REFSA(Ptr);
   }
 
   Reserved = N|FESTRING_PAGE;
@@ -236,7 +236,7 @@ void festring::Resize(sizetype N, char C)
     return;
   }
   else
-    DeletePtr = &REFS(OldPtr);
+    DeletePtr = REFSA(OldPtr);
       }
       else
   --REFS(OldPtr);
@@ -432,7 +432,7 @@ void festring::Insert(sizetype Pos, cchar* CStr, sizetype N)
       return;
     }
     else
-      DeletePtr = &REFS(OldPtr);
+      DeletePtr = REFSA(OldPtr);
   }
   else
     --REFS(OldPtr);

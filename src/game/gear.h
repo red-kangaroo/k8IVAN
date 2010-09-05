@@ -285,6 +285,12 @@ ITEM(ring, item)
   virtual col16 GetMaterialColorB(int) const;
 };
 
+ITEM(ringofthieves, ring)
+{
+public:
+  virtual truth IsRingOfThieves () const { return true; }
+};
+
 ITEM(amulet, item)
 {
  public:

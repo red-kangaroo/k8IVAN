@@ -1659,6 +1659,49 @@ truth character::RemoveEncryptedScroll()
   return false;
 }
 
+
+truth character::RemoveMondedrPass () {
+  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) {
+    if (i->IsMondedrPass()) {
+      item *Item = *i;
+      Item->RemoveFromSlot();
+      Item->SendToHell();
+      return true;
+    }
+  }
+  for (int c = 0; c < GetEquipments(); ++c) {
+    item *Item = GetEquipment(c);
+    if (Item && Item->IsMondedrPass()) {
+      Item->RemoveFromSlot();
+      Item->SendToHell();
+      return true;
+    }
+  }
+  return false;
+}
+
+
+truth character::RemoveRingOfThieves () {
+  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) {
+    if (i->IsRingOfThieves()) {
+      item *Item = *i;
+      Item->RemoveFromSlot();
+      Item->SendToHell();
+      return true;
+    }
+  }
+  for (int c = 0; c < GetEquipments(); ++c) {
+    item *Item = GetEquipment(c);
+    if (Item && Item->IsRingOfThieves()) {
+      Item->RemoveFromSlot();
+      Item->SendToHell();
+      return true;
+    }
+  }
+  return false;
+}
+
+
 truth character::ReadItem(item* ToBeRead)
 {
   if(ToBeRead->CanBeRead(this))

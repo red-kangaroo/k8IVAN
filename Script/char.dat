@@ -325,7 +325,6 @@ nonhumanoid
 }
 
 /*****************************************************************************/
-/*TODO:
 denim
 {
   DefaultArmStrength = 35;
@@ -382,9 +381,7 @@ denim
   UndeadVersions = false;
   IsImmuneToWhipOfThievery = true;
 }
-*/
 
-/*TODO:
 raven
 {
   DefaultArmStrength = 35;
@@ -443,9 +440,7 @@ raven
   IsImmuneToWhipOfThievery = true;
   ClassStates = INFRA_VISION|ESP|TELEPORT|TELEPORT_CONTROL;
 }
-*/
 
-/*TODO:
 vulcan
 {
   DefaultArmStrength = 20;
@@ -503,9 +498,7 @@ vulcan
   IsImmuneToWhipOfThievery = true;
   ClassStates = INFRA_VISION|TELEPORT|TELEPORT_CONTROL;
 }
-*/
 
-/*TODO:
 rogue
 {
   DefaultArmStrength = 10;
@@ -540,9 +533,7 @@ rogue
   IsSadist = true;
   ClassStates = INFRA_VISION;
 }
-*/
 
-/*TODO:
 assassin
 {
   DefaultArmStrength = 12;
@@ -580,7 +571,6 @@ assassin
   ClassStates = INFRA_VISION;
   Frequency = 1000;
 }
-*/
 /*****************************************************************************/
 
 playerkind
@@ -715,7 +705,6 @@ farmer
 
 
 /*****************************************************************************/
-/*TODO:
 wisefarmer
 {
   DefaultArmStrength = 40;
@@ -763,9 +752,7 @@ wisefarmer
   }
   DisplacePriority = -2;
 }
-*/
 
-/*TODO:
 bum
 {
   DefaultArmStrength = 18;
@@ -801,7 +788,6 @@ bum
     "\"Attnam used to sell ethanol-based windscreen cleaners but when I began to drink it they switched to methanol-based cleaners.\"";
   }
 }
-*/
 /*****************************************************************************/
 
 guard

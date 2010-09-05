@@ -3518,6 +3518,43 @@ encryptedscroll /* scroll-> */
   IsQuestItem = true;
 }
 
+mondedrpass /* scroll-> */
+{
+  Adjective = "mondedr";
+  NameSingular = "pass";
+  IsDestroyable = false;
+  IsMaterialChangeable = false;
+  IsPolymorphable = false;
+  CanBeCloned = false;
+  AttachedGod = CLEPTIA;
+  Price = 2000;
+  Possibility = 10;
+}
+
+ringofthieves
+{
+  Adjective = "ring";
+  NameSingular = "of thieves";
+  DefaultSize = 2;
+  DefaultMainVolume = 3;
+  StrengthModifier = 100;
+  BitmapPos = 16, 400;
+  FormModifier = 10;
+  Roundness = 10; /* it is considered here opened */
+  WieldedBitmapPos = 160, 368;
+  TeleportPriority = 300;
+  Possibility = 0;
+  ElectricityResistance = 5;
+  FireResistance = 5;
+  AcidResistance = 1;
+  PoisonResistance = 1;
+  MainMaterialConfig == EMERALD;
+  GearStates = HASTE;
+  Price = 500;
+  AttachedGod = CLEPTIA;
+  CanBeWished = false;
+}
+
 horn
 {
   StrengthModifier = 70;
