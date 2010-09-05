@@ -6773,23 +6773,29 @@ void character::PrintEndGasImmunityMessage() const
     ADD_MESSAGE("Yuck! The world smells bad again.");
 }
 
-void character::ShowAdventureInfo() const
-{
-  if(GetStack()->GetItems() && game::TruthQuestion(CONST_S("Do you want to see your inventory? [y/n]"), REQUIRES_ANSWER))
-  {
-    GetStack()->DrawContents(this, CONST_S("Your inventory"), NO_SELECT);
-
-    for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i)
-      i->DrawContents(this);
-
-    doforequipmentswithparam<ccharacter*>()(this, &item::DrawContents, this);
+void character::ShowAdventureInfo () const {
+  for (;;) {
+    int Key = game::AskForKeyPress(CONST_S("Do you want to see your [M]essages")+
+      (GetStack()->GetItems() ? CONST_S(", [I]nventory") : CONST_S(""))+
+      (!game::MassacreListsEmpty() ? CONST_S(", [K]ills") : CONST_S(""))+
+      CONST_S(", [N]othing?"));
+    switch (Key) {
+      case 'i': case 'I':
+        if (GetStack()->GetItems()) {
+          GetStack()->DrawContents(this, CONST_S("Your inventory"), NO_SELECT);
+          for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) i->DrawContents(this);
+          doforequipmentswithparam<ccharacter*>()(this, &item::DrawContents, this);
+        }
+        break;
+      case 'k': case 'K':
+        if (!game::MassacreListsEmpty()) game::DisplayMassacreLists();
+        break;
+      case 'm': case 'M':
+        msgsystem::DrawMessageHistory();
+        break;
+      case 'n': case 'N': return;
+    }
   }
-
-  if(game::TruthQuestion(CONST_S("Do you want to see your message history? [y/n]"), REQUIRES_ANSWER))
-    msgsystem::DrawMessageHistory();
-
-  if(!game::MassacreListsEmpty() && game::TruthQuestion(CONST_S("Do you want to see your massacre history? [y/n]"), REQUIRES_ANSWER))
-    game::DisplayMassacreLists();
 }
 
 truth character::EditAllAttributes(int Amount)
