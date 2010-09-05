@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __FEBOT_H__
-#define __FEBOT_H__
+#ifndef __FELIB_FEBOT_H__
+#define __FELIB_FEBOT_H__
 
 #include <set>
 #include <list>

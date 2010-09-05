@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __GRAPHICS_H__
-#define __GRAPHICS_H__
+#ifndef __FELIB_GRAPHICS_H__
+#define __FELIB_GRAPHICS_H__
 
 #include "SDL.h"
 

@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __BITMAP_H__
-#define __BITMAP_H__
+#ifndef __FELIB_BITMAP_H__
+#define __FELIB_BITMAP_H__
 
 #include "v2.h"
 

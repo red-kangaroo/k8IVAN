@@ -9,6 +9,7 @@
  *  along with this file for more details
  *
  */
+#include <algorithm>
 
 #include "whandler.h"
 #include "graphics.h"
@@ -16,10 +17,14 @@
 #include "bitmap.h"
 #include "festring.h"
 
+
 truth (*globalwindowhandler::ControlLoop[MAX_CONTROLS])();
 int globalwindowhandler::Controls = 0;
 ulong globalwindowhandler::Tick;
 truth globalwindowhandler::ControlLoopsEnabled = true;
+
+std::vector<int> globalwindowhandler::KeyBuffer;
+truth (*globalwindowhandler::QuitMessageHandler)() = 0;
 
 
 void globalwindowhandler::InstallControlLoop (truth (*What)()) {
@@ -30,19 +35,12 @@ void globalwindowhandler::InstallControlLoop (truth (*What)()) {
 
 void globalwindowhandler::DeInstallControlLoop (truth (*What)()) {
   int c;
-
   for (c = 0; c < Controls; ++c) if (ControlLoop[c] == What) break;
   if (c != Controls) {
     --Controls;
     for (; c < Controls; ++c) ControlLoop[c] = ControlLoop[c+1];
   }
 }
-
-
-#include <algorithm>
-
-std::vector<int> globalwindowhandler::KeyBuffer;
-truth (*globalwindowhandler::QuitMessageHandler)() = 0;
 
 
 void globalwindowhandler::Init () {
@@ -53,7 +51,6 @@ void globalwindowhandler::Init () {
 
 void globalwindowhandler::KSDLProcessEvents (truth dodelay) {
   SDL_Event Event;
-
   memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
   if (SDL_PollEvent(&Event)) {
     do {
@@ -66,7 +63,6 @@ void globalwindowhandler::KSDLProcessEvents (truth dodelay) {
 
 void globalwindowhandler::KSDLWaitEvent (void) {
   SDL_Event Event;
-
   memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
   SDL_WaitEvent(&Event);
   ProcessMessage(&Event);
@@ -75,13 +71,11 @@ void globalwindowhandler::KSDLWaitEvent (void) {
 
 int globalwindowhandler::GetKey (truth EmptyBuffer) {
   static ulong LastTick = 0;
-
   // Flush the buffer
   if (EmptyBuffer) {
     KSDLProcessEvents();
     KeyBuffer.clear();
   }
-
   for (;;) {
     if (!KeyBuffer.empty()) {
       int Key = KeyBuffer[0];
@@ -106,16 +100,13 @@ int globalwindowhandler::GetKey (truth EmptyBuffer) {
 
 
 int globalwindowhandler::ReadKey () {
-  if (SDL_GetAppState() & SDL_APPACTIVE) KSDLProcessEvents();
-  else KSDLWaitEvent();
-
+  if (SDL_GetAppState() & SDL_APPACTIVE) KSDLProcessEvents(); else KSDLWaitEvent();
   return KeyBuffer.size() ? GetKey(false) : 0;
 }
 
 
-void globalwindowhandler::ProcessMessage (SDL_Event* Event) {
+void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
   int KeyPressed;
-
   switch (Event->active.type) {
     case SDL_VIDEOEXPOSE:
       graphics::BlitDBToScreen();
@@ -129,7 +120,8 @@ void globalwindowhandler::ProcessMessage (SDL_Event* Event) {
           if (Event->key.keysym.mod & KMOD_ALT) {
             graphics::SwitchMode();
             return;
-          } else KeyPressed = KEY_ENTER; //Event->key.keysym.unicode;
+          }
+          KeyPressed = KEY_ENTER; //Event->key.keysym.unicode;
           break;
         case SDLK_DOWN: case SDLK_KP2:
           KeyPressed = KEY_DOWN+0xE000;
@@ -175,14 +167,14 @@ void globalwindowhandler::ProcessMessage (SDL_Event* Event) {
           DOUBLE_BUFFER->Save(festring("Scrshot.bmp"));
           return;
         case SDLK_e:
-          if (Event->key.keysym.mod & KMOD_ALT &&
-              (Event->key.keysym.mod & KMOD_LCTRL || Event->key.keysym.mod & KMOD_RCTRL)) {
+          if ((Event->key.keysym.mod & KMOD_ALT) &&
+              ((Event->key.keysym.mod & KMOD_LCTRL) || (Event->key.keysym.mod & KMOD_RCTRL))) {
             KeyPressed = '\177';
             break;
           }
         default:
           KeyPressed = Event->key.keysym.unicode;
-         if (!KeyPressed) return;
+          if (!KeyPressed) return;
       }
       if (std::find(KeyBuffer.begin(), KeyBuffer.end(), KeyPressed) == KeyBuffer.end()) KeyBuffer.push_back(KeyPressed);
       break;

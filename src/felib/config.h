@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
+#ifndef __FELIB_CONFIG_H__
+#define __FELIB_CONFIG_H__
 
 #include <fstream>
 

@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __COLORBIT_H__
-#define __COLORBIT_H__
+#ifndef __FELIB_COLORBIT_H__
+#define __FELIB_COLORBIT_H__
 
 #include <map>
 #include <vector>
@@ -24,55 +23,49 @@ class bitmap;
 class cachedfont;
 class festring;
 
-typedef std::map<col16, std::pair<cachedfont*, cachedfont*> > fontcache;
 
-class rawbitmap
-{
- public:
-  rawbitmap(cfestring&);
-  rawbitmap(v2);
-  ~rawbitmap();
-  void Save(cfestring&);
-  void MaskedBlit(bitmap*, v2, v2,
-      v2, packcol16*) const;
-  void MaskedBlit(bitmap*, packcol16*) const;
+typedef std::map<col16, std::pair<cachedfont *, cachedfont *> > fontcache;
 
-  void LIKE_PRINTF(5, 6) Printf(bitmap*, v2, packcol16,
-        cchar*, ...) const;
-  void LIKE_PRINTF(5, 6) PrintfUnshaded(bitmap*, v2, packcol16,
-          cchar*, ...) const;
-  cachedfont* Colorize(cpackcol16*, alpha = 255,
-           cpackalpha* = 0) const;
-  bitmap* Colorize(v2, v2, v2,
-       cpackcol16*, alpha = 255,
-       cpackalpha* = 0,
-       cuchar* = 0, truth = true) const;
-  v2 GetSize() const { return Size; }
 
-  void AlterGradient(v2, v2, int, int, truth);
-  void SwapColors(v2, v2, int, int);
-  void Roll(v2, v2, v2, paletteindex*);
+class rawbitmap {
+public:
+  rawbitmap (cfestring &);
+  rawbitmap (v2);
+  ~rawbitmap ();
+  void Save (cfestring &);
+  void MaskedBlit (bitmap *Bitmap, v2 Src, v2 Dest, v2 Border, packcol16 *Color) const;
+  void MaskedBlit (bitmap *Bitmap, packcol16 *Color) const;
 
-  void CreateFontCache(packcol16);
-  static truth IsMaterialColor(int Color) { return Color >= 192; }
-  static int GetMaterialColorIndex(int Color) { return (Color-192) >> 4; }
-  int GetMaterialColorIndex(int X, int Y) const
-  { return (PaletteBuffer[Y][X]-192) >> 4; }
-  truth IsTransparent(v2) const;
-  truth IsMaterialColor1(v2) const;
-  v2 RandomizeSparklePos(cv2*, v2*, v2, v2, int, int) const;
-  void CopyPaletteFrom(rawbitmap*);
-  void PutPixel(v2 Pos, paletteindex Color)
-  { PaletteBuffer[Pos.Y][Pos.X] = Color; }
-  paletteindex GetPixel(v2 Pos) const
-  { return PaletteBuffer[Pos.Y][Pos.X]; }
-  void Clear();
-  void NormalBlit(rawbitmap*, v2, v2, v2, int = 0) const;
- protected:
+  void LIKE_PRINTF(5, 6) Printf (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const;
+  void LIKE_PRINTF(5, 6) PrintfUnshaded (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const;
+  cachedfont *Colorize (cpackcol16 *Color, alpha BaseAlpha=255, cpackalpha *Alpha=0) const;
+  bitmap *Colorize (v2 Pos, v2 Border, v2 Move, cpackcol16 *Color, alpha BaseAlpha=255,
+    cpackalpha *Alpha=0, cuchar *RustData=0, truth AllowReguralColors=true) const;
+  v2 GetSize () const { return Size; }
+
+  void AlterGradient (v2 Pos, v2 Border, int MColor, int Amount, truth Clip);
+  void SwapColors (v2 Pos, v2 Border, int Color1, int Color2);
+  void Roll (v2 Pos, v2 Border, v2 Move, paletteindex *TempBuffer);
+
+  void CreateFontCache (packcol16 Color);
+  static truth IsMaterialColor (int Color) { return Color >= 192; }
+  static int GetMaterialColorIndex (int Color) { return (Color-192) >> 4; }
+  int GetMaterialColorIndex (int X, int Y) const { return (PaletteBuffer[Y][X]-192) >> 4; }
+  truth IsTransparent (v2 Pos) const;
+  truth IsMaterialColor1 (v2 Pos) const;
+  v2 RandomizeSparklePos (cv2 *ValidityArray, v2 *PossibleBuffer, v2 Pos, v2 Border, int ValidityArraySize, int SparkleFlags) const;
+  void CopyPaletteFrom (rawbitmap *Bitmap);
+  void PutPixel (v2 Pos, paletteindex Color) { PaletteBuffer[Pos.Y][Pos.X] = Color; }
+  paletteindex GetPixel (v2 Pos) const { return PaletteBuffer[Pos.Y][Pos.X]; }
+  void Clear ();
+  void NormalBlit (rawbitmap *Bitmap, v2 Src, v2 Dest, v2 Border, int Flags=0) const;
+
+protected:
   v2 Size;
-  uchar* Palette;
-  paletteindex** PaletteBuffer;
+  uchar *Palette;
+  paletteindex **PaletteBuffer;
   fontcache FontCache;
 };
+
 
 #endif

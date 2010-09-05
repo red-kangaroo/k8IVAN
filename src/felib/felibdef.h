@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __FELIBDEF_H__
-#define __FELIBDEF_H__
+#ifndef __FELIB_FELIBDEF_H__
+#define __FELIB_FELIBDEF_H__
 
 /*
  * Global defines for the project FeLib.

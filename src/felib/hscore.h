@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __HSCORE_H__
-#define __HSCORE_H__
+#ifndef __FELIB_HSCORE_H__
+#define __FELIB_HSCORE_H__
 
 #include <vector>
 #include <ctime>

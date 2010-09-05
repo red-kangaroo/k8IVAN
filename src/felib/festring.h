@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __FESTRING_H__
-#define __FESTRING_H__
+#ifndef __FELIB_FESTRING_H__
+#define __FELIB_FESTRING_H__
 
 #include <vector>
 

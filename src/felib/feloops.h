@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __FELOOPS_H__
-#define __FELOOPS_H__
+#ifndef __FELIB_FELOOPS_H__
+#define __FELIB_FELOOPS_H__
 
 #include "typedef.h"
 

@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __FEMATH_H__
-#define __FEMATH_H__
+#ifndef __FELIB_FEMATH_H__
+#define __FELIB_FEMATH_H__
 
 #include <vector>
 #include <cmath>

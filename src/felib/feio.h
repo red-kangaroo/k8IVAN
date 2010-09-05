@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __FEIO_H__
-#define __FEIO_H__
+#ifndef __FELIB_FEIO_H__
+#define __FELIB_FEIO_H__
 
 #include "v2.h"
 #include "festring.h"

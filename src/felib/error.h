@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __ERROR_H__
-#define __ERROR_H__
+#ifndef __FELIB_ERROR_H__
+#define __FELIB_ERROR_H__
 
 #include "felibdef.h"
 

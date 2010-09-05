@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __FETIME_H__
-#define __FETIME_H__
+#ifndef __FELIB_FETIME_H__
+#define __FELIB_FETIME_H__
 
 #include <ctime>
 

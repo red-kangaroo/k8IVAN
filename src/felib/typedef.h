@@ -9,11 +9,11 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __TYPEDEF_H__
-#define __TYPEDEF_H__
+#ifndef __FELIB_TYPEDEF_H__
+#define __FELIB_TYPEDEF_H__
 
 #include "pragmas.h"
+
 
 class bitmap;
 class festring;
@@ -54,5 +54,6 @@ typedef const bitmap cbitmap;
 typedef const blitdata cblitdata;
 typedef const festring cfestring;
 typedef const v2 cv2;
+
 
 #endif

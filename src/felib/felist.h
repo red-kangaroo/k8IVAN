@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __LIST_H__
-#define __LIST_H__
+#ifndef __FELIB_LIST_H__
+#define __FELIB_LIST_H__
 
 #include <vector>
 

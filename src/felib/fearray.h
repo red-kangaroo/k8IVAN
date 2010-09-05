@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __FEARRAY_H__
-#define __FEARRAY_H__
+#ifndef __FELIB_FEARRAY_H__
+#define __FELIB_FEARRAY_H__
 
 #include "femath.h"
 

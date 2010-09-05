@@ -9,9 +9,8 @@
  *  along with this file for more details
  *
  */
-
-#ifndef __ALLOCATE_H__
-#define __ALLOCATE_H__
+#ifndef __FELIB_ALLOCATE_H__
+#define __FELIB_ALLOCATE_H__
 
 #include "typedef.h"
 

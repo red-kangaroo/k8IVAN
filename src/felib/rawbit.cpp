@@ -18,7 +18,7 @@
 #include "save.h"
 #include "femath.h"
 
-void rawbitmap::MaskedBlit(bitmap* Bitmap, packcol16* Color) const { MaskedBlit(Bitmap, ZERO_V2, ZERO_V2, Size, Color); }
+void rawbitmap::MaskedBlit (bitmap *Bitmap, packcol16 *Color) const { MaskedBlit(Bitmap, ZERO_V2, ZERO_V2, Size, Color); }
 
 rawbitmap::rawbitmap(cfestring& FileName)
 {
@@ -361,7 +361,7 @@ bitmap* rawbitmap::Colorize(v2 Pos, v2 Border, v2 Move, cpackcol16* Color, alpha
   return Bitmap;
 }
 
-void rawbitmap::Printf(bitmap* Bitmap, v2 Pos, packcol16 Color, cchar* Format, ...) const
+void rawbitmap::Printf(bitmap *Bitmap, v2 Pos, packcol16 Color, cchar* Format, ...) const
 {
   char Buffer[256];
 

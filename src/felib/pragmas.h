@@ -9,11 +9,12 @@
  *  along with this file for more details
  *
  */
+#ifndef __FELIB_PRAGMAS_H__
+#define __FELIB_PRAGMAS_H__
 
-#ifndef __PRAGMAS_H__
-#define __PRAGMAS_H__
 
 #include <cstring>
 #include <cmath>
+
 
 #endif
