@@ -29,8 +29,8 @@ public:
   festring () : Data(0), Size(0), OwnsData(false), Reserved(0) {}
   explicit festring (sizetype);
   festring (sizetype, char);
-  festring (cchar *CStr) : Data(const_cast<char*>(CStr)), Size(strlen(CStr)), OwnsData(false), Reserved(0) {}
-  festring (cchar *CStr, sizetype N) : Data(const_cast<char*>(CStr)), Size(N), OwnsData(false), Reserved(0) {}
+  festring (cchar *CStr) : Data(const_cast<char *>(CStr)), Size(strlen(CStr)), OwnsData(false), Reserved(0) {}
+  festring (cchar *CStr, sizetype N) : Data(const_cast<char *>(CStr)), Size(N), OwnsData(false), Reserved(0) {}
   festring (cfestring &);
   ~festring ();
   festring &Capitalize ();
@@ -119,6 +119,7 @@ template <class type> inline festringpile operator + (cfestring& S, type What) {
 inline festringpile operator + (cfestring &S, cfestring &What) { return festringpile(S)+What; }
 inline festringpile operator + (cfestring &S, const festringpile &What) { return festringpile(S)+What; }
 
+
 inline festring::festring (cfestring &Str) :
   Data(Str.Data), Size(Str.Size), OwnsData(Str.OwnsData), Reserved(Str.Reserved)
 {
@@ -141,9 +142,9 @@ inline festring::festring (sizetype N, char C) : Size(N), OwnsData(true), Reserv
 
 
 inline festring::~festring () {
-  if (OwnsData) {
+  if (OwnsData && Data) {
     char *Ptr = Data;
-    if (Ptr && REFS(Ptr)-- == 0) delete [] REFSA(Ptr);
+    if (!REFS(Ptr)--) delete [] REFSA(Ptr);
   }
 }
 
@@ -274,7 +275,7 @@ struct ignorecaseorderer {
 };
 
 
-#define CONST_S(str) festring(str, sizeof(str) - 1)
+#define CONST_S(str) festring(str, sizeof(str)-1)
 
 
 /*
