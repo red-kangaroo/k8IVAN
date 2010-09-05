@@ -29,8 +29,25 @@ public:
   festring () : Data(0), Size(0), OwnsData(false), Reserved(0) {}
   explicit festring (sizetype);
   festring (sizetype, char);
-  festring (cchar *CStr) : Data(const_cast<char *>(CStr)), Size(strlen(CStr)), OwnsData(false), Reserved(0) {}
-  festring (cchar *CStr, sizetype N) : Data(const_cast<char *>(CStr)), Size(N), OwnsData(false), Reserved(0) {}
+  festring (cchar *CStr) : Data(0/*const_cast<char *>(CStr)*/), Size(strlen(CStr)), OwnsData(false), Reserved(0) {
+    const char *s = const_cast<char *>(CStr);
+    int N = s ? strlen(s) : 0;
+    char *Ptr = 4+new char[Reserved+5+N];
+    REFS(Ptr) = 0;
+    Data = Ptr;
+    if (N) {
+      if (s) memcpy(Data, s, N); else memset(Data, 0, N);
+    }
+  }
+  festring (cchar *CStr, sizetype N) : Data(0/*const_cast<char *>(CStr)*/), Size(N), OwnsData(false), Reserved(0) {
+    const char *s = const_cast<char *>(CStr);
+    char *Ptr = 4+new char[Reserved+5+N];
+    REFS(Ptr) = 0;
+    Data = Ptr;
+    if (N) {
+      if (s) memcpy(Data, s, N); else memset(Data, 0, N);
+    }
+  }
   festring (cfestring &);
   ~festring ();
   festring &Capitalize ();
