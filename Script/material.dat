@@ -1496,7 +1496,7 @@ gas
     NameStem = "mustard gas";
     Alpha = 200;
     AttachedGod = CRUENTUS;
-    BreatheMessage = "It smells like mustard here."; 
+    BreatheMessage = "It smells like mustard here.";
     Effect = EFFECT_MUSTARD_GAS;
     StepInWisdomLimit = 8;
   }
@@ -1508,7 +1508,7 @@ gas
     NameStem = "vacuum blade air";
     Alpha = 200;
     AttachedGod = CRUENTUS; /*FIXME*/
-    BreatheMessage = "It smells like vacuum here."; 
+    BreatheMessage = "It smells like vacuum here.";
     /*Effect = EFFECT_MUSTARD_GAS;*/
     StepInWisdomLimit = 8;
   }

@@ -3009,7 +3009,7 @@ zombie
 
   Config ZOMBIE_OF_KHAZ_ZADM;
   {
-    DefaultName = "Khaz-zadm";		
+    DefaultName = "Khaz-zadm";
     TamingDifficulty = NO_TAMING;
     IsNameable = false;
     IsUnique = true;
@@ -6000,14 +6000,14 @@ siren
 
   /* if somebody really wants to J_Kahvi has provided
      detailed discussion of nipple and pubic hair
-     color in Doc/Data/Dialog.txt starting from 
+     color in Doc/Data/Dialog.txt starting from
      line 2552 to 2640 */
 
   Config LIGHT_ASIAN_SIREN;
   {
     SkinColor = rgb16(254, 247, 208);
     HairColor = rgb16(80, 48, 32);
-    TorsoMainColor = rgb16(70, 40, 25);	
+    TorsoMainColor = rgb16(70, 40, 25);
     NameSingular = "test1";
   }
 
@@ -6017,7 +6017,7 @@ siren
     HairColor = rgb16(64, 48, 32);
     TorsoMainColor = rgb16(50, 40, 28);
     NameSingular = "test2";
-  }  
+  }
 
   Config CAUCASIAN_SIREN;
   {
@@ -6031,14 +6031,14 @@ siren
     SkinColor = rgb16(128, 80, 48);
     HairColor = rgb16(80, 48, 32);
     TorsoMainColor = rgb16(60, 30, 25);
-  }  
+  }
 
   Config GREEN_SIREN;
   {
     SkinColor = rgb16(180, 255, 150);
     HairColor = rgb16(200, 48, 32);
     TorsoMainColor = rgb16(180, 40, 25);
-  } 
+  }
 }
 
 mindworm
@@ -6054,7 +6054,7 @@ mindworm
   Config HATCHLING;
   {
     TotalVolume = 30;
-    TorsoBitmapPos = 208, 32;    
+    TorsoBitmapPos = 208, 32;
     TotalSize = 7;
     NameSingular = "mind worm hatchling";
   }
@@ -6062,7 +6062,7 @@ mindworm
   Config BOIL;
   {
     TotalVolume = 30;
-    TorsoBitmapPos = 208, 32;    
+    TorsoBitmapPos = 208, 32;
     TotalSize = 7;
     NameSingular = "mind worm boil";
   }

@@ -2647,7 +2647,7 @@ amulet
     ElectricityResistance = 30;
     AcidResistance = 5;
     PoisonResistance = 5;
-  } 
+  }
 }
 
 bodypart
@@ -3824,7 +3824,7 @@ scrollofgolemcreation /* scroll-> */
   ReadDifficulty = 1000;
 }
 
-gasgrenade 
+gasgrenade
 {
   DefaultSize = 15;
   Category = MISC;
@@ -3842,7 +3842,7 @@ gasgrenade
   Alias == "gas grenade";
 }
 
-holyhandgrenade 
+holyhandgrenade
 {
   DefaultSize = 15;
   Category = MISC;
@@ -3938,7 +3938,7 @@ acidshield /* armor ->*/
   CanBeBroken = true;
   WieldedBitmapPos = 128, 32;
   AttachedGod = SCABIES;
- 
+
   Config BROKEN;
   {
     Possibility = 3;
@@ -3955,7 +3955,7 @@ acidshield /* armor ->*/
 pantheonbook /* holybook-> */
 {
   DefaultSize = 30;
-  Possibility = 1; 
+  Possibility = 1;
   Category = BOOK;
   DefaultMainVolume = 2500;
   StrengthModifier = 150;
@@ -3980,7 +3980,7 @@ gorovitscopyoflenin /* item-> */
   Category = MISC;
   DefaultMainVolume = 80000;
   DefaultSecondaryVolume = 100; /* clothes */
-  MainMaterialConfig == LEAD; 
+  MainMaterialConfig == LEAD;
   SecondaryMaterialConfig == FABRIC;
   Adjective = "Gorovits family life-size";
   NameSingular = "copy";
@@ -4030,13 +4030,13 @@ firstbornchild
   CanBeBroken = false;
   DamageFlags = BLUNT;
   IsAbstract = true;
-  Adjective = "first-born";    
+  Adjective = "first-born";
   AttachedGod = SILVA;
 
   Config MALE;
   {
     NameSingular = "son";
-  } 
+  }
   Config FEMALE;
   {
     NameSingular = "daughter";
@@ -4178,7 +4178,7 @@ defender /* meleeweapon-> */
   WieldedBitmapPos = 150, 475;
   EnchantmentPlusChance = 2;
   DamageFlags = SLASH|PIERCE;
-  
+
 
   Config BROKEN;
   {
@@ -4215,8 +4215,8 @@ aethier /* meleeweapon-> */
   WieldedBitmapPos = 160, 16;
   EnchantmentPlusChance = 2;
   DamageFlags = SLASH|PIERCE;
-  GearStates = INFRA_VISION;	
-  
+  GearStates = INFRA_VISION;
+
 
   Config BROKEN;
   {
@@ -4225,7 +4225,7 @@ aethier /* meleeweapon-> */
     WieldedBitmapPos = 176, 80;
     Price = 150;
     EnchantmentPlusChance = 4;
-    GearStates = 0;	
+    GearStates = 0;
   }
 }
 
@@ -4330,7 +4330,7 @@ vormav {
   EnchantmentPlusChance = 2;
   DamageFlags = SLASH;
   GearStates = HASTE|INFRA_VISION|ESP;
-  
+
 
   Config BROKEN;
   {
@@ -4400,7 +4400,7 @@ demonhead {
   WieldedBitmapPos = 160, 272;
   EnchantmentPlusChance = 2;
   DamageFlags = SLASH;
-  
+
 
   Config BROKEN;
   {
@@ -4586,7 +4586,7 @@ zulfiqar /* meleeweapon-> */
   WieldedBitmapPos = 176, 112;
   EnchantmentPlusChance = 2;
   DamageFlags = SLASH;
-  
+
 
   Config BROKEN;
   {
@@ -4747,7 +4747,7 @@ tipswordofpenetration /* meleeweapon-> */
   DamageFlags = SLASH|PIERCE;
   AffectsAgility = true;
   GearStates = HASTE;
-  
+
 
   Config BROKEN;
   {
@@ -4759,4 +4759,3 @@ tipswordofpenetration /* meleeweapon-> */
   }
 }
 /*****************************************************************************/
-
