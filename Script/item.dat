@@ -4528,8 +4528,7 @@ masamune /* meleeweapon-> */
   IsQuestItem = true;
 }
 
-/* meleeweapon-> */
-kawai
+kawai /* meleeweapon-> */
 {
   StrengthModifier = 100;
   FormModifier = 225;
@@ -4560,7 +4559,6 @@ kawai
   WieldedBitmapPos = 176, 112;
   IsQuestItem = false;
 }
-
 
 zulfiqar /* meleeweapon-> */
 {

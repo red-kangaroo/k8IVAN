@@ -515,11 +515,12 @@ void protosystem::Initialize()
 
   for(c = 1; c < protocontainer<item>::GetSize(); ++c)
   {
-    const prototype* Proto = protocontainer<item>::GetProtoData()[c];
+    const prototype *Proto = protocontainer<item>::GetProtoData()[c];
+    if (!Proto->GetConfigData()) {
+      ABORT("Seems that database is missing <%s>!", Proto->GetClassID());
+    }
     ItemConfigDataSize += Proto->GetConfigSize();
-
-    if(Proto->GetConfigData()[0]->IsAbstract)
-      --ItemConfigDataSize;
+    if (Proto->GetConfigData()[0]->IsAbstract) --ItemConfigDataSize;
   }
 
   ItemConfigData = new database*[ItemConfigDataSize];

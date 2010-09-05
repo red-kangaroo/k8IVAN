@@ -57,6 +57,10 @@ template <class type> void databasecreator<type>::ReadFrom (inputfile &SaveFile)
     int Type = protocontainer<type>::SearchCodeName(Word);
     if (!Type) ABORT("Odd term %s encountered in %s datafile line %ld!", Word.CStr(), protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
     prototype *Proto = protocontainer<type>::GetProtoData()[Type];
+    if (!Proto) ABORT("Something weird with <%s>!", Word.CStr());
+    if (Proto->Base && !Proto->Base->ConfigData) {
+      ABORT("Database has no description of <%s>!", Proto->Base->GetClassID());
+    }
     database *DataBase = Proto->Base ? new database(**Proto->Base->ConfigData) : new database;
     DataBase->InitDefaults(Proto, 0);
     TempConfig[0] = DataBase;
