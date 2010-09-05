@@ -109,13 +109,15 @@ void wand::Load(inputfile& SaveFile)
 
 void scrollofwishing::FinishReading(character* Reader)
 {
-  game::Wish(Reader,
+  if (game::Wish(Reader,
        "%s appears from nothing and the scroll burns!",
-       "Two %s appear from nothing and the scroll burns!");
-
-  RemoveFromSlot();
-  SendToHell();
-  Reader->EditExperience(INTELLIGENCE, 600, 1 << 12);
+       "Two %s appear from nothing and the scroll burns!", true)) {
+    RemoveFromSlot();
+    SendToHell();
+    Reader->EditExperience(INTELLIGENCE, 600, 1 << 12);
+  } else {
+    ADD_MESSAGE("You changed your mind (ah, you're just a moron!)");
+  }
 }
 
 void scrollofchangematerial::FinishReading(character* Reader)

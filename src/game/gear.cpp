@@ -1179,3 +1179,22 @@ alpha goldenjaguarshirt::GetOutlineAlpha (int Frame) const {
   Frame &= 31;
   return 50 + (Frame * (31 - Frame) >> 1);
 }
+
+
+col16 kawai::GetOutlineColor (int) const { return MakeRGB16(255, 0, 0); }
+
+alpha kawai::GetOutlineAlpha (int Frame) const {
+  Frame &= 31;
+  return 50 + (Frame * (31 - Frame) >> 1);
+}
+
+truth kawai::HitEffect (character *Enemy, character *Hitter, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+  truth BaseSuccess = meleeweapon::HitEffect(Enemy, Hitter, HitPos, BodyPartIndex, Direction, BlockedByArmour);
+  if (!IsBroken() && Enemy->IsEnabled() && !(RAND() % 5)) {
+    if (Hitter->IsPlayer()) game::DoEvilDeed(10);
+    if (Enemy->IsPlayer() || Hitter->IsPlayer() || Enemy->CanBeSeenByPlayer() || Hitter->CanBeSeenByPlayer())
+      ADD_MESSAGE("%s Kawai's life-draining energies swallow %s!", Hitter->CHAR_POSSESSIVE_PRONOUN, Enemy->CHAR_DESCRIPTION(DEFINITE));
+    return Enemy->ReceiveBodyPartDamage(Hitter, 10 + (RAND() % 11), DRAIN, BodyPartIndex, Direction) || BaseSuccess;
+  }
+  return BaseSuccess;
+}

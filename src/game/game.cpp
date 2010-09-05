@@ -2404,16 +2404,21 @@ ulong game::IncreaseSquarePartEmitationTicks () {
 }
 
 
-void game::Wish (character *Wisher, cchar *MsgSingle, cchar *MsgPair) {
+bool game::Wish (character *Wisher, cchar *MsgSingle, cchar *MsgPair, bool canAbort) {
   for (;;) {
+    festring oldDef = DefaultWish;
     festring Temp = DefaultQuestion(CONST_S("What do you want to wish for?"), DefaultWish);
+    if (DefaultWish == "nothing" && canAbort) {
+      DefaultWish = oldDef;
+      return false;
+    }
     item *TempItem = protosystem::CreateItem(Temp, Wisher->IsPlayer());
     if (TempItem) {
       Wisher->GetStack()->AddItem(TempItem);
       TempItem->SpecialGenerationHandler();
       if (TempItem->HandleInPairs()) ADD_MESSAGE(MsgPair, TempItem->CHAR_NAME(PLURAL));
       else ADD_MESSAGE(MsgSingle, TempItem->CHAR_NAME(INDEFINITE));
-      return;
+      return true;
     }
   }
 }

@@ -499,4 +499,16 @@ ITEM(gleipnir, whipofthievery)
 {
 };
 
+ITEM(kawai, meleeweapon)
+{
+public:
+  virtual truth HitEffect (character *, character *, v2, int, int, truth);
+  virtual truth AllowAlphaEverywhere() const { return true; }
+protected:
+  virtual int GetClassAnimationFrames () const { return 32; }
+  virtual col16 GetOutlineColor (int) const;
+  virtual alpha GetOutlineAlpha (int) const;
+};
+
+
 #endif

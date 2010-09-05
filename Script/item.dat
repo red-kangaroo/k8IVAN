@@ -4528,6 +4528,40 @@ masamune /* meleeweapon-> */
   IsQuestItem = true;
 }
 
+/* meleeweapon-> */
+kawai
+{
+  StrengthModifier = 100;
+  FormModifier = 225;
+  DefaultSize = 150;
+  Possibility = 10;
+  CanBeWished = false;
+  BitmapPos = 109, 210;
+  WeaponCategory = LARGE_SWORDS;
+  IsMaterialChangeable = false;
+  DefaultMainVolume = 150;
+  DefaultSecondaryVolume = 60;
+  Adjective = "ancient";
+  NameSingular = "katana";
+  UsesLongAdjectiveArticle = true;
+  PostFix = "named Kawai";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == RUBY;
+  BaseEmitation = rgb24(150, 120, 90);
+  IsPolymorphable = false;
+  Alias == "Kawai";
+  Roundness = 30;
+  IsTwoHanded = false;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  CanBeBroken = false;
+  AttachedGod = CRUENTUS;
+  WieldedBitmapPos = 176, 112;
+  IsQuestItem = false;
+}
+
+
 zulfiqar /* meleeweapon-> */
 {
   DefaultSize = 220;

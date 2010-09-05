@@ -391,7 +391,7 @@ class game
   static int CalculateMinimumEmitationRadius(col24);
   static ulong IncreaseSquarePartEmitationTicks();
   static cint GetLargeMoveDirection(int I) { return LargeMoveDirection[I]; }
-  static void Wish(character*, cchar*, cchar*);
+  static bool Wish(character*, cchar*, cchar*, bool canAbort=false);
   static festring DefaultQuestion(festring, festring&, stringkeyhandler = 0);
   static void GetTime(ivantime&);
   static long GetTurn() { return Turn; }
