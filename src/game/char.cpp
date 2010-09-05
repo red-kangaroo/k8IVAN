@@ -5553,8 +5553,11 @@ int characterprototype::CreateSpecialConfigurations(characterdatabase** TempConf
   if(Level == 1 && TempConfig[0]->CreateUndeadConfigurations)
     for(int c = 1; c < protocontainer<character>::GetSize(); ++c)
     {
-      const character::prototype* Proto = protocontainer<character>::GetProto(c);
-      const character::database*const* CharacterConfigData = Proto->GetConfigData();
+      const character::prototype *Proto = protocontainer<character>::GetProto(c);
+      const character::database *const *CharacterConfigData = Proto->GetConfigData();
+      if (!CharacterConfigData) {
+        ABORT("No database entry for character <%s>!", Proto->GetClassID());
+      }
       const character::database*const* End = CharacterConfigData + Proto->GetConfigSize();
 
       for(++CharacterConfigData; CharacterConfigData != End; ++CharacterConfigData)

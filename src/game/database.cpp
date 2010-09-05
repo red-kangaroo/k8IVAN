@@ -9,201 +9,153 @@
  *  along with this file for more details
  *
  */
-
 /* Compiled through dataset.cpp */
 
-int CreateConfigTable(databasebase*** ConfigTable, databasebase*** TempTable, databasebase** ConfigArray, long* TempTableInfo, int Type, int Configs, int TempTables)
-{
-  memset(ConfigTable, 0, CONFIG_TABLE_SIZE * sizeof(databasebase**));
 
-  for(int c = 0; c < Configs; ++c)
-  {
+
+int CreateConfigTable(databasebase ***ConfigTable, databasebase ***TempTable,
+  databasebase **ConfigArray, long *TempTableInfo, int Type, int Configs, int TempTables)
+{
+  memset(ConfigTable, 0, CONFIG_TABLE_SIZE*sizeof(databasebase **));
+  for (int c = 0; c < Configs; ++c) {
     int Config = ConfigArray[c]->Config;
     int Hash = (Config >> 8) ^ (Config & 0xFF);
-
-    if((TempTableInfo[Hash] & 0xFFFF) != Type)
-    {
+    if ((TempTableInfo[Hash] & 0xFFFF) != Type) {
       TempTable[0][Hash] = ConfigArray[c];
       TempTableInfo[Hash] = Type | 0x10000;
-    }
-    else
-    {
+    } else {
       int Conflicts = (TempTableInfo[Hash] & 0xFFFF0000) >> 16;
-
-      if(Conflicts == TempTables)
-  TempTable[TempTables++] = new databasebase*[CONFIG_TABLE_SIZE];
-
+      if (Conflicts == TempTables) TempTable[TempTables++] = new databasebase *[CONFIG_TABLE_SIZE];
       TempTable[Conflicts][Hash] = ConfigArray[c];
       TempTableInfo[Hash] += 0x10000;
     }
   }
-
-  for(int c1 = 0; c1 < CONFIG_TABLE_SIZE; ++c1)
-    if((TempTableInfo[c1] & 0xFFFF) == Type)
-    {
+  for (int c1 = 0; c1 < CONFIG_TABLE_SIZE; ++c1) {
+    if ((TempTableInfo[c1] & 0xFFFF) == Type) {
       int Entries = (TempTableInfo[c1] & 0xFFFF0000) >> 16;
       ConfigTable[c1] = new databasebase*[Entries + 1];
-
-      for(int c2 = 0; c2 < Entries; ++c2)
-  ConfigTable[c1][c2] = TempTable[c2][c1];
-
+      for (int c2 = 0; c2 < Entries; ++c2) ConfigTable[c1][c2] = TempTable[c2][c1];
       ConfigTable[c1][Entries] = 0;
     }
-
+  }
   return TempTables;
 }
 
-template <class type> void databasecreator<type>::ReadFrom(inputfile& SaveFile)
-{
+
+template <class type> void databasecreator<type>::ReadFrom (inputfile &SaveFile) {
   typedef typename type::prototype prototype;
   festring Word;
-  database* TempConfig[1024];
-  databasebase** TempTable[1024];
+  database *TempConfig[1024];
+  databasebase **TempTable[1024];
   long TempTableInfo[CONFIG_TABLE_SIZE];
   int TempTables = 1;
-  databasebase* FirstTempTable[CONFIG_TABLE_SIZE];
+  databasebase *FirstTempTable[CONFIG_TABLE_SIZE];
   TempTable[0] = FirstTempTable;
-  memset(TempTableInfo, 0, CONFIG_TABLE_SIZE * sizeof(long));
+  memset(TempTableInfo, 0, CONFIG_TABLE_SIZE*sizeof(long));
   CreateDataBaseMemberMap();
-
-  for(SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false))
-  {
+  for (SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false)) {
     int Type = protocontainer<type>::SearchCodeName(Word);
-
-    if(!Type)
-      ABORT("Odd term %s encountered in %s datafile line %ld!", Word.CStr(), protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
-
-    prototype* Proto = protocontainer<type>::GetProtoData()[Type];
-    database* DataBase = Proto->Base ? new database(**Proto->Base->ConfigData) : new database;
+    if (!Type) ABORT("Odd term %s encountered in %s datafile line %ld!", Word.CStr(), protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
+    prototype *Proto = protocontainer<type>::GetProtoData()[Type];
+    database *DataBase = Proto->Base ? new database(**Proto->Base->ConfigData) : new database;
     DataBase->InitDefaults(Proto, 0);
     TempConfig[0] = DataBase;
     int Configs = 1;
-
-    if(SaveFile.ReadWord() != "{")
-      ABORT("Bracket missing in %s datafile line %ld!", protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
-
-    for(SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word))
-    {
-      if(Word == "Config")
-      {
-  int ConfigNumber = SaveFile.ReadNumber();
-  database* ConfigDataBase = new database(*Proto->ChooseBaseForConfig(TempConfig, Configs, ConfigNumber));
-  ConfigDataBase->InitDefaults(Proto, ConfigNumber);
-  TempConfig[Configs++] = ConfigDataBase;
-
-  if(SaveFile.ReadWord() != "{")
-    ABORT("Bracket missing in %s datafile line %ld!", protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
-
-  for(SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word))
-    if(!AnalyzeData(SaveFile, Word, *ConfigDataBase))
-      ABORT("Illegal datavalue %s found while building up %s config #%d, line %ld!", Word.CStr(), Proto->GetClassID(), ConfigNumber, SaveFile.TellLine());
-
-  ConfigDataBase->PostProcess();
-  continue;
+    if (SaveFile.ReadWord() != "{") ABORT("Bracket missing in %s datafile line %ld!", protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
+    for (SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word)) {
+      if (Word == "Config") {
+        int ConfigNumber = SaveFile.ReadNumber();
+        database* ConfigDataBase = new database(*Proto->ChooseBaseForConfig(TempConfig, Configs, ConfigNumber));
+        ConfigDataBase->InitDefaults(Proto, ConfigNumber);
+        TempConfig[Configs++] = ConfigDataBase;
+        if (SaveFile.ReadWord() != "{") ABORT("Bracket missing in %s datafile line %ld!", protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
+        for (SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word))
+          if (!AnalyzeData(SaveFile, Word, *ConfigDataBase)) ABORT("Illegal datavalue %s found while building up %s config #%d, line %ld!", Word.CStr(), Proto->GetClassID(), ConfigNumber, SaveFile.TellLine());
+        ConfigDataBase->PostProcess();
+        continue;
       }
-
-      if(!AnalyzeData(SaveFile, Word, *DataBase))
-  ABORT("Illegal datavalue %s found while building up %s, line %ld!", Word.CStr(), Proto->GetClassID(), SaveFile.TellLine());
+      if (!AnalyzeData(SaveFile, Word, *DataBase)) ABORT("Illegal datavalue %s found while building up %s, line %ld!", Word.CStr(), Proto->GetClassID(), SaveFile.TellLine());
     }
-
     DataBase->PostProcess();
     //Configs = Proto->CreateSpecialConfigurations(TempConfig, Configs);
-    Proto->ConfigData = new database*[Configs];
+    Proto->ConfigData = new database *[Configs];
     Proto->ConfigSize = Configs;
-    memcpy(Proto->ConfigData, TempConfig, Configs * sizeof(database*));
+    memcpy(Proto->ConfigData, TempConfig, Configs*sizeof(database *));
   }
-
   int c1;
-
-  for(c1 = 0; c1 < SPECIAL_CONFIGURATION_GENERATION_LEVELS; ++c1)
-    for(int c2 = 1; c2 < protocontainer<type>::GetSize(); ++c2)
-    {
-      prototype* Proto = protocontainer<type>::GetProtoData()[c2];
+  for (c1 = 0; c1 < SPECIAL_CONFIGURATION_GENERATION_LEVELS; ++c1) {
+    for (int c2 = 1; c2 < protocontainer<type>::GetSize(); ++c2) {
+      prototype *Proto = protocontainer<type>::GetProtoData()[c2];
       int Configs = Proto->ConfigSize;
-      memcpy(TempConfig, Proto->ConfigData, Configs * sizeof(database*));
+      memcpy(TempConfig, Proto->ConfigData, Configs*sizeof(database *));
       Configs = Proto->CreateSpecialConfigurations(TempConfig, Configs, c1);
-
-      if(Proto->ConfigSize != Configs)
-      {
-  delete [] Proto->ConfigData;
-  Proto->ConfigData = new database*[Configs];
-  Proto->ConfigSize = Configs;
-  memcpy(Proto->ConfigData, TempConfig, Configs * sizeof(database*));
+      if (Proto->ConfigSize != Configs) {
+        delete [] Proto->ConfigData;
+        Proto->ConfigData = new database *[Configs];
+        Proto->ConfigSize = Configs;
+        memcpy(Proto->ConfigData, TempConfig, Configs*sizeof(database *));
       }
     }
-
-  for(c1 = 1; c1 < protocontainer<type>::GetSize(); ++c1)
-  {
-    prototype* Proto = protocontainer<type>::GetProtoData()[c1];
-
+  }
+  for (c1 = 1; c1 < protocontainer<type>::GetSize(); ++c1) {
+    prototype *Proto = protocontainer<type>::GetProtoData()[c1];
     TempTables =
-      CreateConfigTable(reinterpret_cast<databasebase***>(Proto->ConfigTable),
+      CreateConfigTable(reinterpret_cast<databasebase ***>(Proto->ConfigTable),
       TempTable,
-      reinterpret_cast<databasebase**>(Proto->ConfigData),
+      reinterpret_cast<databasebase **>(Proto->ConfigData),
       TempTableInfo, c1, Proto->ConfigSize, TempTables);
   }
-
-  for(c1 = 1; c1 < TempTables; ++c1)
-    delete [] TempTable[c1];
-
+  for (c1 = 1; c1 < TempTables; ++c1) delete [] TempTable[c1];
   GetDataBaseMemberMap().clear();
 }
 
-template <class type> int databasecreator<type>::CreateDivineConfigurations(const prototype* Proto, database** TempConfig, int Configs)
+
+template <class type> int databasecreator<type>::CreateDivineConfigurations (const prototype *Proto,
+  database **TempConfig, int Configs)
 {
   int OldConfigs = Configs;
-
-  for(int c1 = 1; c1 < protocontainer<god>::GetSize(); ++c1)
-  {
-    database* ConfigDataBase = 0;
+  for (int c1 = 1; c1 < protocontainer<god>::GetSize(); ++c1) {
+    database *ConfigDataBase = 0;
     int c2;
-
-    for(c2 = 1; c2 < OldConfigs; ++c2)
-    {
+    for (c2 = 1; c2 < OldConfigs; ++c2) {
       ConfigDataBase = TempConfig[c2];
-
-      if(ConfigDataBase->Config == c1)
-  break;
+      if (ConfigDataBase->Config == c1) break;
     }
-
     truth Created = false;
-
-    if(c2 == OldConfigs)
-    {
+    if (c2 == OldConfigs) {
       ConfigDataBase = new database(**TempConfig);
       ConfigDataBase->InitDefaults(Proto, c1);
       Created = true;
     }
-
     ConfigDataBase->AttachedGod = c1;
     ConfigDataBase->PostFix << "of " << festring(protocontainer<god>::GetProto(c1)->GetClassID()).CapitalizeCopy();
-
-    if(Created)
-      TempConfig[Configs++] = ConfigDataBase;
+    if (Created) TempConfig[Configs++] = ConfigDataBase;
   }
-
   return Configs;
 }
 
-template int databasecreator<character>::CreateDivineConfigurations(const prototype*, database**, int);
-template int databasecreator<item>::CreateDivineConfigurations(const prototype*, database**, int);
-template int databasecreator<olterrain>::CreateDivineConfigurations(const prototype*, database**, int);
 
-template <class database, class member> struct databasemember : public databasememberbase<database>
-{
-  databasemember(member Member) : Member(Member) { }
-  virtual void ReadData(database& DataBase, inputfile& SaveFile) { ::ReadData(DataBase.*Member, SaveFile); }
+template int databasecreator<character>::CreateDivineConfigurations (const prototype *, database **, int);
+template int databasecreator<item>::CreateDivineConfigurations (const prototype *, database **, int);
+template int databasecreator<olterrain>::CreateDivineConfigurations (const prototype *, database **, int);
+
+
+template <class database, class member> struct databasemember : public databasememberbase<database> {
+  databasemember (member Member) : Member(Member) { }
+  virtual void ReadData (database &DataBase, inputfile &SaveFile) { ::ReadData(DataBase.*Member, SaveFile); }
   member Member;
 };
+
 
 template <class database, class member> void AddMember(std::map<festring, databasememberbase<database>*>& Map, cchar* Str, member Member)
 {
   Map.insert(std::pair<festring, databasememberbase<database>*>(Str, new databasemember<database, member>(Member)));
 }
 
+
 /* Explicit instantiations seem to increase compile speed greatly here... */
 
-#define INST_ADD_MEMBER(type, member)\
+#define INST_ADD_MEMBER(type, member) \
 template void AddMember<type##database, member type##database::*>(std::map<festring, databasememberbase<type##database>*>&, cchar*, member type##database::*)
 
 INST_ADD_MEMBER(character, int);
@@ -532,8 +484,7 @@ template<> void databasecreator<item>::CreateDataBaseMemberMap()
   ADD_MEMBER(IsSadistWeapon);
 }
 
-template <class type>
-void databasecreator<type>::CreateLTerrainDataBaseMemberMap()
+template <class type> void databasecreator<type>::CreateLTerrainDataBaseMemberMap()
 {
   databasemembermap& Map = GetDataBaseMemberMap();
   ADD_MEMBER(BitmapPos);
@@ -646,161 +597,115 @@ template<> void databasecreator<material>::SetBaseValue(cfestring& Word, databas
   ADD_BASE_VALUE(InteractionFlags);
 }
 
-template <class type>
-truth databasecreator<type>::AnalyzeData(inputfile& SaveFile, cfestring& Word, database& DataBase)
-{
-  typename databasemembermap::iterator i = GetDataBaseMemberMap().find(Word);
 
-  if(i != GetDataBaseMemberMap().end())
-  {
+template <class type> truth databasecreator<type>::AnalyzeData (inputfile &SaveFile, cfestring &Word, database &DataBase) {
+  typename databasemembermap::iterator i = GetDataBaseMemberMap().find(Word);
+  if (i != GetDataBaseMemberMap().end()) {
     SetBaseValue(Word, i->second, DataBase);
     i->second->ReadData(DataBase, SaveFile);
     CheckDefaults(Word, DataBase);
     return true;
   }
-  else
-    return false;
+  return false;
 }
 
-template<> void databasecreator<character>::CheckDefaults(cfestring& Word, character::database& DataBase)
-{
-  if(Word == "ArmBitmapPos")
-    DataBase.RightArmBitmapPos =
-      DataBase.LeftArmBitmapPos =
-      DataBase.ArmBitmapPos;
-  else if(Word == "LegBitmapPos")
-    DataBase.GroinBitmapPos =
-      DataBase.RightLegBitmapPos =
-      DataBase.LeftLegBitmapPos =
-      DataBase.LegBitmapPos;
-  else if(Word == "ClothColor")
-    DataBase.CapColor =
-      DataBase.TorsoMainColor =
-      DataBase.ArmMainColor =
-      DataBase.GauntletColor =
-      DataBase.LegMainColor =
-      DataBase.ClothColor;
-  else if(Word == "NameSingular")
-    DataBase.NamePlural = DataBase.NameSingular + 's';
-  else if(Word == "BaseUnarmedStrength")
-  {
-    DataBase.BaseBiteStrength = DataBase.BaseUnarmedStrength >> 1;
-    DataBase.BaseKickStrength = DataBase.BaseUnarmedStrength << 1;
-  }
-  else if(Word == "RightGauntlet")
-    DataBase.LeftGauntlet = DataBase.RightGauntlet;
-  else if(Word == "RightBoot")
-    DataBase.LeftBoot = DataBase.RightBoot;
-  else if(Word == "DefaultName")
-    DataBase.Alias.Add(DataBase.DefaultName);
-  else if(Word == "IsUnique")
-    DataBase.CanBeWished = !DataBase.IsUnique;
+
+template <> void databasecreator<character>::CheckDefaults (cfestring &Word, character::database &DataBase) {
+  if (Word == "ArmBitmapPos") DataBase.RightArmBitmapPos = DataBase.LeftArmBitmapPos = DataBase.ArmBitmapPos;
+  else if (Word == "LegBitmapPos") DataBase.GroinBitmapPos = DataBase.RightLegBitmapPos = DataBase.LeftLegBitmapPos = DataBase.LegBitmapPos;
+  else if (Word == "ClothColor") DataBase.CapColor = DataBase.TorsoMainColor = DataBase.ArmMainColor = DataBase.GauntletColor = DataBase.LegMainColor = DataBase.ClothColor;
+  else if (Word == "NameSingular") DataBase.NamePlural = DataBase.NameSingular+'s';
+  else if (Word == "BaseUnarmedStrength") {
+    DataBase.BaseBiteStrength = DataBase.BaseUnarmedStrength>>1;
+    DataBase.BaseKickStrength = DataBase.BaseUnarmedStrength<<1;
+  } else if (Word == "RightGauntlet") DataBase.LeftGauntlet = DataBase.RightGauntlet;
+  else if (Word == "RightBoot") DataBase.LeftBoot = DataBase.RightBoot;
+  else if (Word == "DefaultName") DataBase.Alias.Add(DataBase.DefaultName);
+  else if (Word == "IsUnique") DataBase.CanBeWished = !DataBase.IsUnique;
 }
 
-template<> void databasecreator<item>::CheckDefaults(cfestring& Word, item::database& DataBase)
-{
-  if(Word == "NameSingular")
-  {
-    DataBase.NamePlural = DataBase.NameSingular + 's';
+
+template <> void databasecreator<item>::CheckDefaults (cfestring &Word, item::database &DataBase) {
+  if (Word == "NameSingular") {
+    DataBase.NamePlural = DataBase.NameSingular+'s';
     DataBase.FlexibleNameSingular = DataBase.NameSingular;
-  }
-  else if(Word == "BitmapPos")
-    DataBase.WallBitmapPos = DataBase.BitmapPos;
-  else if(Word == "MaterialConfigChances")
-    DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances);
-  else if(Word == "CanBeCloned")
-    DataBase.CanBeMirrored = DataBase.CanBeCloned;
+  } else if (Word == "BitmapPos") DataBase.WallBitmapPos = DataBase.BitmapPos;
+  else if (Word == "MaterialConfigChances") DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances);
+  else if (Word == "CanBeCloned") DataBase.CanBeMirrored = DataBase.CanBeCloned;
 }
 
-template<> void databasecreator<glterrain>::CheckDefaults(cfestring& Word, glterrain::database& DataBase)
-{
-  if(Word == "NameSingular")
-    DataBase.NamePlural = DataBase.NameSingular + 's';
-  else if(Word == "MaterialConfigChances")
-    DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances);
+
+template <> void databasecreator<glterrain>::CheckDefaults (cfestring &Word, glterrain::database &DataBase) {
+  if (Word == "NameSingular") DataBase.NamePlural = DataBase.NameSingular+'s';
+  else if (Word == "MaterialConfigChances") DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances);
 }
 
-template<> void databasecreator<olterrain>::CheckDefaults(cfestring& Word, olterrain::database& DataBase)
-{
-  if(Word == "NameSingular")
-    DataBase.NamePlural = DataBase.NameSingular + 's';
-  else if(Word == "MaterialConfigChances")
-    DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances);
+
+template <> void databasecreator<olterrain>::CheckDefaults (cfestring &Word, olterrain::database &DataBase) {
+  if (Word == "NameSingular") DataBase.NamePlural = DataBase.NameSingular+'s';
+  else if (Word == "MaterialConfigChances") DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances);
 }
 
-template<> void databasecreator<material>::CheckDefaults(cfestring& Word, material::database& DataBase)
-{
-  if(Word == "NameStem")
-    DataBase.AdjectiveStem = DataBase.NameStem;
-  else if(Word == "Color")
-    DataBase.RainColor = DataBase.Color;
+
+template <> void databasecreator<material>::CheckDefaults (cfestring &Word, material::database &DataBase) {
+  if (Word == "NameStem") DataBase.AdjectiveStem = DataBase.NameStem;
+  else if (Word == "Color") DataBase.RainColor = DataBase.Color;
 }
 
-void databasesystem::Initialize()
-{
+
+void databasesystem::Initialize () {
   {
     /* Must be before character */
-
-    inputfile ScriptFile(game::GetGameDir() + "Script/material.dat", &game::GetGlobalValueMap());
+    inputfile ScriptFile(game::GetGameDir()+"Script/material.dat", &game::GetGlobalValueMap());
     databasecreator<material>::ReadFrom(ScriptFile);
   }
-
   {
-    inputfile ScriptFile(game::GetGameDir() + "Script/char.dat", &game::GetGlobalValueMap());
+    inputfile ScriptFile(game::GetGameDir()+"Script/char.dat", &game::GetGlobalValueMap());
     databasecreator<character>::ReadFrom(ScriptFile);
   }
-
   {
     /* Must be before olterrain */
-
-    inputfile ScriptFile(game::GetGameDir() + "Script/item.dat", &game::GetGlobalValueMap());
+    inputfile ScriptFile(game::GetGameDir()+"Script/item.dat", &game::GetGlobalValueMap());
     databasecreator<item>::ReadFrom(ScriptFile);
   }
-
   {
-    inputfile ScriptFile(game::GetGameDir() + "Script/glterra.dat", &game::GetGlobalValueMap());
+    inputfile ScriptFile(game::GetGameDir()+"Script/glterra.dat", &game::GetGlobalValueMap());
     databasecreator<glterrain>::ReadFrom(ScriptFile);
   }
-
   {
-    inputfile ScriptFile(game::GetGameDir() + "Script/olterra.dat", &game::GetGlobalValueMap());
+    inputfile ScriptFile(game::GetGameDir()+"Script/olterra.dat", &game::GetGlobalValueMap());
     databasecreator<olterrain>::ReadFrom(ScriptFile);
   }
 }
 
-template <class type> inline void databasecreator<type>::FindDataBase(const database*& DataBase, const prototype* Proto, int Config)
-{
-  database** Table = Proto->ConfigTable[(Config >> 8) ^ (Config & 0xFF)];
 
-  if(Table)
-  {
-    if((*Table)->Config == Config)
-    {
+template <class type> inline void databasecreator<type>::FindDataBase (const database *&DataBase,
+  const prototype *Proto, int Config)
+{
+  database **Table = Proto->ConfigTable[(Config >> 8) ^ (Config & 0xFF)];
+  if (Table) {
+    if ((*Table)->Config == Config) {
       DataBase = *Table;
       return;
     }
-    else
-      for(++Table; *Table; ++Table)
-  if((*Table)->Config == Config)
-  {
-    DataBase = *Table;
-    return;
+    for (++Table; *Table; ++Table) {
+      if ((*Table)->Config == Config) {
+        DataBase = *Table;
+        return;
+      }
+    }
   }
-  }
-
   DataBase = 0;
 }
 
-template void databasecreator<character>::FindDataBase(const database*&, const prototype*, int);
-template void databasecreator<material>::FindDataBase(const database*&, const prototype*, int);
 
-template <class type> void databasecreator<type>::InstallDataBase(type* Instance, int Config)
-{
-  const prototype* Proto = Instance->FindProtoType();
+template void databasecreator<character>::FindDataBase (const database *&, const prototype *, int);
+template void databasecreator<material>::FindDataBase (const database *&, const prototype *, int);
+
+template <class type> void databasecreator<type>::InstallDataBase (type *Instance, int Config) {
+  const prototype *Proto = Instance->FindProtoType();
   FindDataBase(Instance->DataBase, Proto, Config);
-
-  if(!Instance->DataBase)
-    ABORT("Undefined %s configuration #%d sought!", Proto->GetClassID(), Config);
+  if (!Instance->DataBase) ABORT("Undefined %s configuration #%d sought!", Proto->GetClassID(), Config);
 }
 
 #define INST_INSTALL_DATABASE(type)\
