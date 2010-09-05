@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #include <cstdarg>
 #include <cstring>
 #include <cstdlib>
@@ -18,59 +17,47 @@
 #include <iostream>
 
 #include <new>
-#define set_new_handler std::set_new_handler
+#define set_new_handler  std::set_new_handler
 
 #include "error.h"
 
+
 /* Shouldn't be initialized here! */
+cchar *globalerrorhandler::BugMsg =
+  "\n\nPlease don't send your bug reports, i don't give a shit.\n";
 
-cchar* globalerrorhandler::BugMsg
-= "\n\nPlease send bug report to ivan-users@sourceforge.net\n"
-"including a brief description of what you did, what version\n"
-"you are running and which kind of system you are using.";
-
-void (*globalerrorhandler::OldNewHandler)() = 0;
+void (*globalerrorhandler::OldNewHandler) () = 0;
 
 
-void globalerrorhandler::Install()
-{
+void globalerrorhandler::Install () {
   static truth AlreadyInstalled = false;
-
-  if(!AlreadyInstalled)
-  {
+  if (!AlreadyInstalled) {
     AlreadyInstalled = true;
     OldNewHandler = set_new_handler(NewHandler);
-
     atexit(globalerrorhandler::DeInstall);
   }
 }
 
-void globalerrorhandler::DeInstall()
-{
+
+void globalerrorhandler::DeInstall () {
   set_new_handler(OldNewHandler);
 }
 
-void globalerrorhandler::Abort(cchar* Format, ...)
-{
-  char Buffer[512];
 
+void globalerrorhandler::Abort (cchar *Format, ...) {
+  char Buffer[512];
   va_list AP;
   va_start(AP, Format);
-  vsprintf(Buffer, Format, AP);
+  vsnprintf(Buffer, sizeof(Buffer)-1, Format, AP);
   va_end(AP);
-
   strcat(Buffer, BugMsg);
-
   std::cout << Buffer << std::endl;
-
   exit(4);
 }
 
-void globalerrorhandler::NewHandler()
-{
-  cchar* Msg = "Fatal Error: Memory depleted.\n"
-        "Get more RAM and hard disk space.";
-  std::cout << Msg << std::endl;
 
+void globalerrorhandler::NewHandler () {
+  const cchar *Msg = "Fatal Error: Memory depleted.\nGet more RAM and hard disk space.";
+  std::cout << Msg << std::endl;
   exit(1);
 }
