@@ -273,28 +273,17 @@ truth bodypart::ReceiveDamage(character* Damager, int Damage, int Type, int)
     if(DamageTypeCanScar(Type) && !(RAND_N(25 + 25 * HP / MaxHP)))
       GenerateScar(Damage, Type);
 
-    if(Master->IsPlayer())
-      if(HP == 1 && BHP > 1)
-      {
-  if(IsAlive())
-    ADD_MESSAGE("Your %s bleeds very badly.", GetBodyPartName().CStr());
-  else
-    ADD_MESSAGE("Your %s is in very bad condition.", GetBodyPartName().CStr());
-
-  if(Master->BodyPartIsVital(GetBodyPartIndex()))
-    game::AskForEscPress(CONST_S("Vital bodypart in serious danger!"));
+    if (Master->IsPlayer()) {
+      if (HP == 1 && BHP > 1) {
+        if (IsAlive()) ADD_MESSAGE("Your %s bleeds very badly.", GetBodyPartName().CStr());
+        else ADD_MESSAGE("Your %s is in very bad condition.", GetBodyPartName().CStr());
+        if (Master->BodyPartIsVital(GetBodyPartIndex())) game::AskForEscPress(CONST_S("Vital bodypart in serious danger!"));
+      } else if (IsBadlyHurt() && !WasBadlyHurt) {
+        if (IsAlive()) ADD_MESSAGE("Your %s bleeds.", GetBodyPartName().CStr());
+        else ADD_MESSAGE("Your %s is in bad condition.", GetBodyPartName().CStr());
+        if (Master->BodyPartIsVital(GetBodyPartIndex())) game::AskForEscPress(CONST_S("Vital bodypart in danger!"));
       }
-      else if(IsBadlyHurt() && !WasBadlyHurt)
-      {
-  if(IsAlive())
-    ADD_MESSAGE("Your %s bleeds.", GetBodyPartName().CStr());
-  else
-    ADD_MESSAGE("Your %s is in bad condition.", GetBodyPartName().CStr());
-
-  if(Master->BodyPartIsVital(GetBodyPartIndex()))
-    game::AskForEscPress(CONST_S("Vital bodypart in danger!"));
-      }
-
+    }
     SignalPossibleUsabilityChange();
   }
 
@@ -1752,11 +1741,9 @@ void bodypart::Be()
     if(Master->AllowSpoil() || !Master->IsEnabled())
       MainMaterial->Be(ItemFlags);
 
-    if(Exists() && LifeExpectancy)
-      if(LifeExpectancy == 1)
-  Master->SignalDisappearance();
-      else
-  --LifeExpectancy;
+    if (Exists() && LifeExpectancy) {
+      if (LifeExpectancy == 1) Master->SignalDisappearance(); else --LifeExpectancy;
+    }
   }
   else
   {
@@ -3324,7 +3311,7 @@ void bodypart::SetIsInfectedByLeprosy(truth What)
 void bodypart::SetSparkleFlags(int What)
 {
   cint S = SPARKLING_B|SPARKLING_C|SPARKLING_D;
-  Flags = Flags & ~(S << BODYPART_SPARKLE_SHIFT) | ((What & S) << BODYPART_SPARKLE_SHIFT);
+  Flags = (Flags & ~(S << BODYPART_SPARKLE_SHIFT)) | ((What & S) << BODYPART_SPARKLE_SHIFT);
 }
 
 truth arm::IsAnimated() const

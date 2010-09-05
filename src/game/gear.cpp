@@ -370,26 +370,16 @@ void meleeweapon::AddInventoryEntry(ccharacter* Viewer, festring& Entry, int, tr
   }
 }
 
-void meleeweapon::SignalSpoil(material* Material)
-{
-  if(!Exists())
-    return;
-
-  if(Material == MainMaterial)
-  {
-    if(CanBeSeenByPlayer())
-      if(SecondaryMaterial->GetVolume())
-  ADD_MESSAGE("The edge of %s spoils.", GetExtendedDescription().CStr());
-      else
-  ADD_MESSAGE("%s spoils.", GetExtendedDescription().CStr());
-
+void meleeweapon::SignalSpoil (material *Material) {
+  if (!Exists()) return;
+  if (Material == MainMaterial) {
+    if (CanBeSeenByPlayer()) {
+      if (SecondaryMaterial->GetVolume()) ADD_MESSAGE("The edge of %s spoils.", GetExtendedDescription().CStr());
+      else ADD_MESSAGE("%s spoils.", GetExtendedDescription().CStr());
+    }
     RemoveMainMaterial();
-  }
-  else
-  {
-    if(CanBeSeenByPlayer())
-      ADD_MESSAGE("The handle of %s spoils", GetExtendedDescription().CStr());
-
+  } else {
+    if (CanBeSeenByPlayer()) ADD_MESSAGE("The handle of %s spoils", GetExtendedDescription().CStr());
     delete RemoveSecondaryMaterial();
   }
 }

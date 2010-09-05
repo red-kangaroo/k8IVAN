@@ -242,63 +242,6 @@ CHARACTER(petrus, humanoid)
   ulong LastHealed;
 };
 
-CHARACTER(mysteryman, humanoid)
-{
-public:
-    virtual void BeTalkedTo();
-};
-
-CHARACTER(denim, humanoid)
-{
-protected:
-    virtual void GetAICommand();
-};
-
-CHARACTER(raven, humanoid)
-{
-public:
-    virtual void BeTalkedTo();
-protected:
-    virtual void GetAICommand();
-};
-
-CHARACTER(wisefarmer, humanoid)
-{
-protected:
-    virtual void GetAICommand();
-public:
-    virtual v2 GetHeadBitmapPos() const;
-    virtual v2 GetRightArmBitmapPos() const;
-    virtual v2 GetLeftArmBitmapPos() const {
-        return GetRightArmBitmapPos();
-    }
-};
-
-CHARACTER(vulcan, humanoid)
-{
-protected:
-    virtual void GetAICommand();
-};
-
-CHARACTER(bum, humanoid)
-{
-};
-
-CHARACTER(rogue, humanoid)
-{
-public:
-  virtual void GetAICommand();
-  virtual truth IsRetreating() const;
-};
-
-
-CHARACTER(assassin, humanoid)
-{
-public:
-  virtual void BeTalkedTo();
-};
-
-
 CHARACTER(farmer, humanoid)
 {
  public:
@@ -708,6 +651,61 @@ CHARACTER(siren, humanoid)
 
 CHARACTER(punisher, humanoid)
 {
-
 };
+
+
+CHARACTER(mysteryman, humanoid)
+{
+public:
+  virtual void BeTalkedTo();
+};
+
+CHARACTER(denim, humanoid)
+{
+protected:
+  virtual void GetAICommand();
+};
+
+CHARACTER(raven, humanoid)
+{
+public:
+  virtual void BeTalkedTo();
+protected:
+  virtual void GetAICommand();
+};
+
+CHARACTER(wisefarmer, humanoid)
+{
+protected:
+  virtual void GetAICommand();
+public:
+  virtual v2 GetHeadBitmapPos() const;
+  virtual v2 GetRightArmBitmapPos() const;
+  virtual v2 GetLeftArmBitmapPos() const { return GetRightArmBitmapPos(); }
+};
+
+CHARACTER(vulcan, humanoid)
+{
+protected:
+  virtual void GetAICommand();
+};
+
+CHARACTER(bum, humanoid)
+{
+};
+
+CHARACTER(rogue, humanoid)
+{
+public:
+  virtual void GetAICommand();
+  virtual truth IsRetreating() const;
+};
+
+
+CHARACTER(assassin, humanoid)
+{
+public:
+  virtual void BeTalkedTo();
+};
+
 #endif

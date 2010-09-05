@@ -772,20 +772,16 @@ void item::Be()
 {
   MainMaterial->Be(ItemFlags);
 
-  if(Exists() && LifeExpectancy)
-    if(LifeExpectancy == 1)
-    {
-      if(CanBeSeenByPlayer())
-  ADD_MESSAGE("%s disappears.", GetExtendedDescription().CStr());
-
+  if (Exists() && LifeExpectancy) {
+    if (LifeExpectancy == 1) {
+      if (CanBeSeenByPlayer()) ADD_MESSAGE("%s disappears.", GetExtendedDescription().CStr());
       truth Equipped = PLAYER->Equips(this);
       Disappear();
-
-      if(Equipped)
-  game::AskForEscPress(CONST_S("Equipment destroyed!"));
-    }
-    else
+      if (Equipped) game::AskForEscPress(CONST_S("Equipment destroyed!"));
+    } else {
       --LifeExpectancy;
+    }
+  }
 }
 
 int item::GetOfferValue(int Receiver) const
@@ -1279,16 +1275,12 @@ void item::SpillFluid(character*, liquid* Liquid, int SquareIndex)
     delete Liquid;
 }
 
-void item::TryToRust(long LiquidModifier)
-{
-  if(MainMaterial->TryToRust(LiquidModifier))
-  {
-    if(CanBeSeenByPlayer())
-      if(MainMaterial->GetRustLevel() == NOT_RUSTED)
-  ADD_MESSAGE("%s rusts.", CHAR_NAME(DEFINITE));
-      else
-  ADD_MESSAGE("%s rusts more.", CHAR_NAME(DEFINITE));
-
+void item::TryToRust (long LiquidModifier) {
+  if (MainMaterial->TryToRust(LiquidModifier)) {
+    if (CanBeSeenByPlayer()) {
+      if (MainMaterial->GetRustLevel() == NOT_RUSTED) ADD_MESSAGE("%s rusts.", CHAR_NAME(DEFINITE));
+      else ADD_MESSAGE("%s rusts more.", CHAR_NAME(DEFINITE));
+    }
     MainMaterial->SetRustLevel(MainMaterial->GetRustLevel() + 1);
   }
 }
