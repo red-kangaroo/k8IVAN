@@ -2306,7 +2306,7 @@ truth largecat::SpecialSaveLife()
     ADD_MESSAGE("%s appears!", CHAR_NAME(INDEFINITE));
 
   if(IsPlayer())
-    game::AskForKeyPress(CONST_S("Life saved! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Life saved!"));
 
   RestoreBodyParts();
   ResetSpoiling();

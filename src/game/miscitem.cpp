@@ -664,7 +664,7 @@ void mine::StepOnEffect(character* Stepper)
   SendNewDrawAndMemorizedUpdateRequest();
 
   if(Stepper->IsPlayer())
-    game::AskForKeyPress(CONST_S("Trap activated! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Trap activated!"));
 
   lsquare* Square = GetLSquareUnder();
   RemoveFromSlot();
@@ -1068,7 +1068,7 @@ void beartrap::StepOnEffect(character* Stepper)
     SendNewDrawAndMemorizedUpdateRequest();
 
     if(Stepper->IsPlayer())
-      game::AskForKeyPress(CONST_S("Trap activated! [press any key to continue]"));
+      game::AskForEscPress(CONST_S("Trap activated!"));
 
     Stepper->ReceiveBodyPartDamage(0, GetBaseTrapDamage() << 1, PHYSICAL_DAMAGE, StepperBodyPart, YOURSELF, false, false, false);
     Stepper->CheckDeath(CONST_S("died by stepping to ") + GetName(INDEFINITE), 0, IGNORE_TRAPS);
@@ -1207,7 +1207,7 @@ truth beartrap::Apply(character* User)
     SendNewDrawAndMemorizedUpdateRequest();
 
     if(User->IsPlayer())
-      game::AskForKeyPress(CONST_S("Trap activated! [press any key to continue]"));
+      game::AskForEscPress(CONST_S("Trap activated!"));
 
     User->ReceiveBodyPartDamage(0, 1 + (RAND() & 1), PHYSICAL_DAMAGE, UserBodyPart, YOURSELF, false, false, false);
     User->CheckDeath(CONST_S("died failing to set ") + GetName(INDEFINITE), 0, IGNORE_TRAPS);
@@ -1388,7 +1388,7 @@ void potion::Break(character* Breaker, int Dir)
   }
 
   if(PLAYER->Equips(Remains))
-    game::AskForKeyPress(CONST_S("Equipment broken! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Equipment broken!"));
 }
 
 void materialcontainer::Be()
@@ -2312,7 +2312,7 @@ material* materialcontainer::RemoveMainMaterial()
   SendToHell();
 
   if(Equipped)
-    game::AskForKeyPress(CONST_S("Equipment destroyed! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Equipment destroyed!"));
 
   return 0;
 }

@@ -282,7 +282,7 @@ truth bodypart::ReceiveDamage(character* Damager, int Damage, int Type, int)
     ADD_MESSAGE("Your %s is in very bad condition.", GetBodyPartName().CStr());
 
   if(Master->BodyPartIsVital(GetBodyPartIndex()))
-    game::AskForKeyPress(CONST_S("Vital bodypart in serious danger! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Vital bodypart in serious danger!"));
       }
       else if(IsBadlyHurt() && !WasBadlyHurt)
       {
@@ -292,7 +292,7 @@ truth bodypart::ReceiveDamage(character* Damager, int Damage, int Type, int)
     ADD_MESSAGE("Your %s is in bad condition.", GetBodyPartName().CStr());
 
   if(Master->BodyPartIsVital(GetBodyPartIndex()))
-    game::AskForKeyPress(CONST_S("Vital bodypart in danger! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Vital bodypart in danger!"));
       }
 
     SignalPossibleUsabilityChange();

@@ -90,7 +90,7 @@ void itemtrapbase::Search(ccharacter* Char, int Perception)
 
     if(Char->IsPlayer())
     {
-      game::AskForKeyPress(CONST_S("Trap found! [press any key to continue]"));
+      game::AskForEscPress(CONST_S("Trap found!"));
       ADD_MESSAGE("You find %s.", CHAR_NAME(INDEFINITE));
     }
   }

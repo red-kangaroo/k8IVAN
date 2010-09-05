@@ -254,6 +254,7 @@ class game
   static v2 PositionQuestion(cfestring&, v2, positionhandler = 0, positionkeyhandler = 0, truth = true);
   static void LookHandler(v2);
   static int AskForKeyPress(cfestring&);
+  static void AskForEscPress(cfestring &Topic);
   static truth AnimationController();
   static gamescript* GetGameScript() { return GameScript; }
   static void InitScript();

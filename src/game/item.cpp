@@ -714,7 +714,7 @@ void item::SignalSpoil(material*)
   Disappear();
 
   if(Equipped)
-    game::AskForKeyPress(CONST_S("Equipment destroyed! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Equipment destroyed!"));
 }
 
 item* item::DuplicateToStack(stack* CurrentStack, ulong Flags)
@@ -765,7 +765,7 @@ void item::Break(character* Breaker, int)
   SendToHell();
 
   if(PLAYER->Equips(Broken))
-    game::AskForKeyPress(CONST_S("Equipment broken! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Equipment broken!"));
 }
 
 void item::Be()
@@ -782,7 +782,7 @@ void item::Be()
       Disappear();
 
       if(Equipped)
-  game::AskForKeyPress(CONST_S("Equipment destroyed! [press any key to continue]"));
+  game::AskForEscPress(CONST_S("Equipment destroyed!"));
     }
     else
       --LifeExpectancy;
@@ -1365,7 +1365,7 @@ void item::Destroy(character* Destroyer, int)
   SendToHell();
 
   if(Equipped)
-    game::AskForKeyPress(CONST_S("Equipment destroyed! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Equipment destroyed!"));
 }
 
 void item::RemoveRust()

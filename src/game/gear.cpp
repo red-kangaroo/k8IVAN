@@ -859,7 +859,7 @@ material* meleeweapon::RemoveMainMaterial()
     RemoveFromSlot();
 
   if(Equipped)
-    game::AskForKeyPress(CONST_S("Equipment destroyed! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Equipment destroyed!"));
 
   SendToHell();
   return 0;

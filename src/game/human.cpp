@@ -556,7 +556,7 @@ void petrus::BeTalkedTo()
       GetHead()->GetMainMaterial()->SetSkinColor(MakeRGB16(255, 75, 50));
       GetHead()->UpdatePictures();
       SendNewDrawRequest();
-      game::AskForKeyPress(CONST_S("You are attacked! [press any key to continue]"));
+      game::AskForEscPress(CONST_S("You are attacked!"));
       PLAYER->GetTeam()->Hostility(GetTeam());
       game::SetStoryState(2);
       return;
@@ -4446,7 +4446,7 @@ void humanoid::DropBodyPart(int Index)
     if(IsPlayer())
     {
       ADD_MESSAGE("You feel very ill. Your %s snaps off.", NameOfDropped.CStr());
-      game::AskForKeyPress(CONST_S("Bodypart severed! [press any key to continue]"));
+      game::AskForEscPress(CONST_S("Bodypart severed!"));
       DeActivateVoluntaryAction();
     }
     else if(CanBeSeenByPlayer())
@@ -4457,7 +4457,7 @@ void humanoid::DropBodyPart(int Index)
     if(IsPlayer())
     {
       ADD_MESSAGE("You feel very ill. Your %s disappears.", NameOfDropped.CStr());
-      game::AskForKeyPress(CONST_S("Bodypart destroyed! [press any key to continue]"));
+      game::AskForEscPress(CONST_S("Bodypart destroyed!"));
       DeActivateVoluntaryAction();
     }
     else if(CanBeSeenByPlayer())

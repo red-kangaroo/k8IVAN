@@ -1147,6 +1147,18 @@ int game::AskForKeyPress (cfestring &Topic) {
 }
 
 
+void game::AskForEscPress (cfestring &Topic) {
+  DrawEverythingNoBlit();
+  FONT->Printf(DOUBLE_BUFFER, v2(16, 8), WHITE, "%s [press ESC]", Topic.CapitalizeCopy().CStr());
+  graphics::BlitDBToScreen();
+  int Key;
+  do {
+    Key = GET_KEY();
+  } while (Key != KEY_ESC);
+  igraph::BlitBackGround(v2(16, 6), v2(GetScreenXSize()<<4, 23));
+}
+
+
 /* Handler is called when the key has been identified as a movement key
  * KeyHandler is called when the key has NOT been identified as a movement key
  * Both can be deactivated by passing 0 as parameter */

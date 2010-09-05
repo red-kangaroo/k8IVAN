@@ -2050,12 +2050,12 @@ void character::GetPlayerCommand () {
           game::SetCausePanicFlag(false);
           BeginTemporaryState(PANIC, 500+RAND_N(500));
         }
-        game::AskForKeyPress(CONST_S("You are horrified by your situation! [press any key to continue]"));
+        game::AskForEscPress(CONST_S("You are horrified by your situation!"));
       } else if (ivanconfig::GetWarnAboutDanger()) {
         if (game::GetDangerFound() > 50.)
-          game::AskForKeyPress(CONST_S("You sense great danger! [press any key to continue]"));
+          game::AskForEscPress(CONST_S("You sense great danger!"));
         else
-          game::AskForKeyPress(CONST_S("You sense danger! [press any key to continue]"));
+          game::AskForEscPress(CONST_S("You sense danger!"));
       }
       game::SetDangerFound(0);
     }
@@ -3036,7 +3036,7 @@ void character::TestWalkability()
   Remove();
   SendToHell();
   festring DeathMsg = festring(SquareUnder->DeathMessage(this));
-  game::AskForKeyPress(DeathMsg + ". [press any key to continue]");
+  game::AskForEscPress(DeathMsg+".");
   festring Msg = SquareUnder->ScoreEntry(this);
   PLAYER->AddScoreEntry(Msg);
   game::End(Msg);
@@ -3266,7 +3266,7 @@ int character::ReceiveBodyPartDamage(character* Damager, int Damage, int Type, i
       SendNewDrawRequest();
 
       if(IsPlayer())
-  game::AskForKeyPress(CONST_S("Bodypart destroyed! [press any key to continue]"));
+  game::AskForEscPress(CONST_S("Bodypart destroyed!"));
     }
     else
     {
@@ -3300,7 +3300,7 @@ int character::ReceiveBodyPartDamage(character* Damager, int Damage, int Type, i
   ADD_MESSAGE("It vanishes.");
 
       if(IsPlayer())
-  game::AskForKeyPress(CONST_S("Bodypart severed! [press any key to continue]"));
+  game::AskForEscPress(CONST_S("Bodypart severed!"));
     }
 
     if(CanPanicFromSeveredBodyPart()
@@ -4725,7 +4725,7 @@ void character::SaveLife()
   }
 
   if(IsPlayer())
-    game::AskForKeyPress(CONST_S("Life saved! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Life saved!"));
 
   RestoreBodyParts();
   ResetSpoiling();
@@ -8801,7 +8801,7 @@ truth character::TeleportRandomItem(truth TryToHinderVisibility)
     ADD_MESSAGE("%s disappears.", Item->CHAR_NAME(DEFINITE));
 
   if(Equipped)
-    game::AskForKeyPress(CONST_S("Equipment lost! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Equipment lost!"));
 
   v2 Pos = GetPos();
   int Range = Item->GetEmitation() && TryToHinderVisibility ? 25 : 5;
@@ -9774,7 +9774,7 @@ item* character::GiveMostExpensiveItem(character* ToWhom)
   ToGive->RemoveFromSlot();
 
   if(Equipped)
-    game::AskForKeyPress(CONST_S("Equipment lost! [press any key to continue]"));
+    game::AskForEscPress(CONST_S("Equipment lost!"));
 
   ToWhom->ReceiveItemAsPresent(ToGive);
   EditAP(-1000);
