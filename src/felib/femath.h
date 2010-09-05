@@ -189,8 +189,7 @@ truth quadricontroller<controller>::Handler(int x, int y)
 
     if((SquareTick & Mask) < controller::ShiftedTick[SquarePartIndex])
     {
-      SquareTick = SquareTick & ~Mask
-       | controller::ShiftedQuadriTick[SquarePartIndex];
+      SquareTick = (SquareTick & ~Mask) | controller::ShiftedQuadriTick[SquarePartIndex];
       int DeltaX = OrigoX - HalfX, DeltaY = OrigoY - HalfY;
 
       if(DeltaX * DeltaX + DeltaY * DeltaY <= RadiusSquare)
