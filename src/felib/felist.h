@@ -16,6 +16,7 @@
 
 #include "v2.h"
 
+
 class outputfile;
 class inputfile;
 class rawbitmap;
@@ -24,15 +25,14 @@ class festring;
 struct felistentry;
 struct felistdescription;
 
-typedef void (*entrydrawer)(bitmap*, v2, uint);
 
-class felist
-{
- public:
-  felist(cfestring&, col16 = WHITE, uint = 0);
-  ~felist();
-  void AddEntry(cfestring&, col16, uint = 0,
-    uint = NO_IMAGE, truth = true);
+typedef void (*entrydrawer) (bitmap *Bitmap, v2 Pos, uint);
+
+class felist {
+public:
+  felist (cfestring &, col16 = WHITE, uint = 0);
+  ~felist ();
+  void AddEntry (cfestring &, col16, uint = 0, uint = NO_IMAGE, truth = true);
   void AddDescription(cfestring&, col16 = WHITE);
   uint Draw();
   void QuickDraw(bitmap*, uint) const;
