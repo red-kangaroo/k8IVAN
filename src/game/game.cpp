@@ -2844,3 +2844,27 @@ void game::ShowDeathSmiley (bitmap *Buffer, truth) {
   igraph::GetSmileyGraphic()->NormalBlit(B);
   if (Buffer == DOUBLE_BUFFER) graphics::BlitDBToScreen();
 }
+
+
+int game::ListSelector (cfestring &title, ...) {
+  int cnt = 0;
+  va_list items;
+  va_start(items, title);
+  //
+  felist List(title);
+  for (;;) {
+    const char *s = va_arg(items, const char *);
+    if (!s) break;
+    List.AddEntry(s, LIGHT_GRAY);
+    cnt++;
+  }
+  va_end(items);
+  game::SetStandardListAttributes(List);
+  List.AddFlags(SELECTABLE | FELIST_NO_BADKEY_EXIT);
+  uint sel = List.Draw();
+  List.Empty();
+  List.RemoveFlags(SELECTABLE | FELIST_NO_BADKEY_EXIT);
+  if (sel & FELIST_ERROR_BIT) return -1;
+  if (sel >= (uint)cnt) return -1;
+  return (int)sel;
+}

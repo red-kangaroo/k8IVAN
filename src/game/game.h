@@ -432,6 +432,9 @@ class game
   {
     EnterTextDisplacement = What;
   }
+
+  static int ListSelector (cfestring &title, ...);
+
  private:
   static void UpdateCameraCoordinate(int&, int, int, int);
   static cchar* const Alignment[];

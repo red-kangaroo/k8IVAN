@@ -6821,6 +6821,7 @@ void character::PrintEndGasImmunityMessage() const
 
 void character::ShowAdventureInfo () const {
   for (;;) {
+/*
     int Key = game::AskForKeyPress(CONST_S("Do you want to see your [M]essages")+
       (GetStack()->GetItems() ? CONST_S(", [I]nventory") : CONST_S(""))+
       (!game::MassacreListsEmpty() ? CONST_S(", [K]ills") : CONST_S(""))+
@@ -6840,6 +6841,30 @@ void character::ShowAdventureInfo () const {
         msgsystem::DrawMessageHistory();
         break;
       case 'n': case 'N': return;
+    }
+  }
+*/
+    int sel = game::ListSelector(CONST_S("Do you want to see some funny history?"),
+      "Show massacre history",
+      "Show inventory",
+      "Show message history",
+      NULL
+    );
+    if (sel < 0) break;
+    switch (sel) {
+      case 0:
+        if (!game::MassacreListsEmpty()) game::DisplayMassacreLists();
+        break;
+      case 1:
+        if (GetStack()->GetItems()) {
+          GetStack()->DrawContents(this, CONST_S("Your inventory"), NO_SELECT);
+          for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) i->DrawContents(this);
+          doforequipmentswithparam<ccharacter*>()(this, &item::DrawContents, this);
+        }
+        break;
+      case 2:
+        msgsystem::DrawMessageHistory();
+        break;
     }
   }
 }

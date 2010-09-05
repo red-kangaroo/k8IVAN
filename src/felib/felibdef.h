@@ -165,6 +165,9 @@ inline int GetMinColor24(col24 Color)
 #define DRAW_BACKGROUND_AFTERWARDS 8
 #define FADE 16
 
+/* special list flag */
+#define FELIST_NO_BADKEY_EXIT  0x80
+
 /* felist errors */
 
 #define FELIST_ERROR_BIT 0x8000

@@ -1166,9 +1166,8 @@ truth commandsystem::Polymorph (character *Char) {
 
 truth commandsystem::GetScroll (character *Char) {
   for (;;) {
+    /*
     felist List(CONST_S("Select scroll to add"));
-    //List.AddDescription(CONST_S("Scroll name"));
-    //List.AddDescription(CONST_S(""));
     List.AddEntry(CONST_S("Scroll of Wishing"), WHITE);
     List.AddEntry(CONST_S("Scroll of Charging"), WHITE);
     List.AddEntry(CONST_S("Scroll of Repair"), WHITE);
@@ -1186,6 +1185,22 @@ truth commandsystem::GetScroll (character *Char) {
     List.Empty();
     List.RemoveFlags(SELECTABLE);
     if (sel & FELIST_ERROR_BIT) return false;
+    */
+    int sel = game::ListSelector(CONST_S("Select scroll to add"),
+      "Scroll of Wishing",
+      "Scroll of Charging",
+      "Scroll of Repair",
+      "Scroll of Change Material",
+      "Scroll of Enchant Weapon",
+      "Scroll of Enchant Armor",
+      "Scroll of Taming",
+      "Scroll of Teleportation",
+      "Scroll of Detect Material",
+      "Scroll of Harden Material",
+      "Scroll of Golem Creation",
+      NULL
+    );
+    if (sel < 0) break;
     festring sname;
     switch (sel) {
       case 0: sname = "Wishing"; Char->GetStack()->AddItem(scrollofwishing::Spawn()); break;
@@ -1201,44 +1216,12 @@ truth commandsystem::GetScroll (character *Char) {
       case 10: sname = "Golem Creation"; Char->GetStack()->AddItem(scrollofgolemcreation::Spawn()); break;
       default: sel = 666; break;
     }
-    if (sel != 666) ADD_MESSAGE("Got Scroll of %s.", sname.CStr());
-  }
-  return false;
-/*
-  for (;;) {
-    int Key = game::AskForKeyPress(
-      CONST_S("What do you want to get: [W]ish, [C]hMat, enW[e]apon, en[A]rmor, [R]epair, char[G]e?")
-    );
-    switch (Key) {
-      case KEY_ESC: return false;
-      case 'w': case 'W':
-        ADD_MESSAGE("Got scroll of wishing.");
-        Char->GetStack()->AddItem(scrollofwishing::Spawn());
-        break;
-      case 'c': case 'C':
-        ADD_MESSAGE("Got scroll of change material.");
-        Char->GetStack()->AddItem(scrollofchangematerial::Spawn());
-        break;
-      case 'e': case 'E':
-        ADD_MESSAGE("Got scroll of enchant weapon.");
-        Char->GetStack()->AddItem(scrollofenchantweapon::Spawn());
-        break;
-      case 'a': case 'A':
-        ADD_MESSAGE("Got scroll of enchant armor.");
-        Char->GetStack()->AddItem(scrollofenchantarmor::Spawn());
-        break;
-      case 'r': case 'R':
-        ADD_MESSAGE("Got scroll of repair.");
-        Char->GetStack()->AddItem(scrollofrepair::Spawn());
-        break;
-      case 'g': case 'G':
-        ADD_MESSAGE("Got scroll of charging.");
-        Char->GetStack()->AddItem(scrollofcharging::Spawn());
-        break;
+    if (sel != 666) {
+      ADD_MESSAGE("Got Scroll of %s.", sname.CStr());
+      break;
     }
   }
   return false;
-*/
 }
 #endif
 
