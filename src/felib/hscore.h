@@ -17,30 +17,42 @@
 
 #include "festring.h"
 
+
 #define HIGH_SCORE_FILENAME LOCAL_STATE_DIR "/ivan-highscore.scores"
 
-class festring;
+/* Increment this if changes make highscores incompatible */
+#define HIGH_SCORE_VERSION 121
 
-class highscore
-{
- public:
-  highscore(cfestring& = HIGH_SCORE_FILENAME);
-  truth Add(long, cfestring&);
-  void Draw() const;
-  void Save(cfestring& = HIGH_SCORE_FILENAME) const;
-  void Load(cfestring& = HIGH_SCORE_FILENAME);
-  truth LastAddFailed() const;
-  void AddToFile(highscore*) const;
-  truth MergeToFile(highscore*) const;
-  int Find(long, cfestring&, time_t, long);
-  cfestring& GetEntry(int) const;
-  long GetScore(int) const;
-  long GetSize() const;
-  ushort GetVersion() const { return Version; }
-  void Clear();
-  truth CheckVersion() const;
- private:
-  truth Add(long, cfestring&, time_t, long);
+
+class highscore {
+public:
+  highscore (cfestring &File=HIGH_SCORE_FILENAME);
+
+  void Clear ();
+
+  truth CheckVersion () const { return Version == HIGH_SCORE_VERSION; }
+
+  void Save (cfestring &File=HIGH_SCORE_FILENAME) const;
+  void Load (cfestring &File=HIGH_SCORE_FILENAME);
+  //void AddToFile (highscore *) const;
+  truth MergeToFile (highscore *To) const;
+
+  truth Add (long NewScore, cfestring &NewEntry);
+  truth LastAddFailed () const { return LastAdd == MAX_HIGHSCORES; }
+
+  int Find (long AScore, cfestring &AEntry, time_t ATime, long ARandomID);
+
+  ushort GetVersion () const { return Version; }
+  cfestring &GetEntry (int I) const { return Entry[I]; }
+  long GetScore (int I) const { return Score[I]; }
+  long GetSize () const { return Entry.size(); }
+
+  void Draw () const;
+
+private:
+  truth Add (long NewScore, cfestring &NewEntry, time_t NewTime, long NewRandomID);
+
+private:
   std::vector<festring> Entry;
   std::vector<long> Score;
   std::vector<time_t> Time;
@@ -48,5 +60,6 @@ class highscore
   int LastAdd;
   ushort Version;
 };
+
 
 #endif

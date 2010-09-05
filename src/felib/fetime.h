@@ -16,14 +16,16 @@
 
 #include "festring.h"
 
-class time
-{
- public:
-  static time_t GetZeroTime();
-  static time_t TimeAdd(time_t,time_t);
-  static time_t TimeDifference(time_t,time_t);
-  static festring VerbalizeAsTimeSpent(time_t);
-  static festring VerbalizeAsCalenderTime(time_t);
+
+class time {
+public:
+  static time_t GetZeroTime ();
+  static time_t TimeAdd (time_t A, time_t B);
+  static time_t TimeDifference (time_t A, time_t B);
+  // dummies
+  static festring VerbalizeAsTimeSpent (time_t);
+  static festring VerbalizeAsCalenderTime (time_t);
 };
+
 
 #endif

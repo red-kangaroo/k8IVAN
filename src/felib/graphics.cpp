@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #include "SDL.h"
 
 #include "graphics.h"
@@ -18,38 +17,33 @@
 #include "error.h"
 #include "rawbit.h"
 
-void (*graphics::SwitchModeHandler)();
 
-SDL_Surface* graphics::Screen;
+void (*graphics::SwitchModeHandler) ();
+
+SDL_Surface *graphics::Screen;
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-SDL_Surface* graphics::TempSurface;
+SDL_Surface *graphics::TempSurface;
 #endif
 
-bitmap* graphics::DoubleBuffer;
+bitmap *graphics::DoubleBuffer;
 v2 graphics::Res;
 int graphics::ColorDepth;
-rawbitmap* graphics::DefaultFont = 0;
+rawbitmap *graphics::DefaultFont = 0;
 
-void graphics::Init()
-{
+
+void graphics::Init () {
   static truth AlreadyInstalled = false;
-
-  if(!AlreadyInstalled)
-  {
+  if (!AlreadyInstalled) {
     AlreadyInstalled = true;
-
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE))
-      ABORT("Can't initialize SDL.");
-
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE)) ABORT("Can't initialize SDL.");
     atexit(graphics::DeInit);
   }
 }
 
-void graphics::DeInit()
-{
+
+void graphics::DeInit () {
   delete DefaultFont;
   DefaultFont = 0;
-
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
   SDL_FreeSurface(TempSurface);
 #endif
@@ -57,123 +51,77 @@ void graphics::DeInit()
 }
 
 
-void graphics::SetMode(cchar* Title, cchar* IconName,
-           v2 NewRes, truth FullScreen)
-{
-  if(IconName)
-  {
-    SDL_Surface* Icon = SDL_LoadBMP(IconName);
-    SDL_SetColorKey(Icon, SDL_SRCCOLORKEY,
-        SDL_MapRGB(Icon->format, 255, 255, 255));
+void graphics::SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScreen) {
+  if (IconName) {
+    SDL_Surface *Icon = SDL_LoadBMP(IconName);
+    SDL_SetColorKey(Icon, SDL_SRCCOLORKEY, SDL_MapRGB(Icon->format, 255, 255, 255));
     SDL_WM_SetIcon(Icon, NULL);
   }
-
   ulong Flags = SDL_SWSURFACE;
-
-  if(FullScreen)
-  {
+  if (FullScreen) {
     SDL_ShowCursor(SDL_DISABLE);
     Flags |= SDL_FULLSCREEN;
   }
-
   Screen = SDL_SetVideoMode(NewRes.X, NewRes.Y, 16, Flags);
-
-  if(!Screen)
-    ABORT("Couldn't set video mode.");
-
+  if (!Screen) ABORT("Couldn't set video mode.");
   SDL_WM_SetCaption(Title, 0);
   globalwindowhandler::Init();
   DoubleBuffer = new bitmap(NewRes);
   Res = NewRes;
   ColorDepth = 16;
-
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-
   Uint32 rmask, gmask, bmask;
   rmask = 0xF800;
   gmask = 0x7E0;
   bmask = 0x1F;
-
-  TempSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, Res.X, Res.Y, 16,
-             rmask, gmask, bmask, 0);
-
-  if(!TempSurface)
-      ABORT("CreateRGBSurface failed: %s\n", SDL_GetError());
-
+  TempSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, Res.X, Res.Y, 16, rmask, gmask, bmask, 0);
+  if (!TempSurface) ABORT("CreateRGBSurface failed: %s\n", SDL_GetError());
 #endif
 }
 
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
 
-void graphics::BlitDBToScreen()
-{
+void graphics::BlitDBToScreen () {
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
   SDL_LockSurface(TempSurface);
-  packcol16* SrcPtr = DoubleBuffer->GetImage()[0];
-  packcol16* DestPtr = static_cast<packcol16*>(TempSurface->pixels);
+  packcol16 *SrcPtr = DoubleBuffer->GetImage()[0];
+  packcol16 *DestPtr = static_cast<packcol16 *>(TempSurface->pixels);
   ulong ScreenYMove = (TempSurface->pitch >> 1);
   ulong LineSize = Res.X << 1;
-
-  for(int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove)
-    memcpy(DestPtr, SrcPtr, LineSize);
-
+  for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memcpy(DestPtr, SrcPtr, LineSize);
   SDL_UnlockSurface(TempSurface);
-  SDL_Surface* S = SDL_DisplayFormat(TempSurface);
+  SDL_Surface *S = SDL_DisplayFormat(TempSurface);
   SDL_BlitSurface(S, NULL, Screen, NULL);
   SDL_FreeSurface(S);
   SDL_UpdateRect(Screen, 0, 0, Res.X, Res.Y);
-}
-
 #else
-
-void graphics::BlitDBToScreen()
-{
-  if(SDL_MUSTLOCK(Screen) && SDL_LockSurface(Screen) < 0)
-    ABORT("Can't lock screen");
-
-  packcol16* SrcPtr = DoubleBuffer->GetImage()[0];
-  packcol16* DestPtr = static_cast<packcol16*>(Screen->pixels);
+  if (SDL_MUSTLOCK(Screen) && SDL_LockSurface(Screen) < 0) ABORT("Can't lock screen");
+  packcol16 *SrcPtr = DoubleBuffer->GetImage()[0];
+  packcol16 *DestPtr = static_cast<packcol16 *>(Screen->pixels);
   ulong ScreenYMove = (Screen->pitch >> 1);
   ulong LineSize = Res.X << 1;
-
-  for(int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove)
-    memcpy(DestPtr, SrcPtr, LineSize);
-
-  if(SDL_MUSTLOCK(Screen))
-    SDL_UnlockSurface(Screen);
-
+  for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memcpy(DestPtr, SrcPtr, LineSize);
+  if (SDL_MUSTLOCK(Screen)) SDL_UnlockSurface(Screen);
   SDL_UpdateRect(Screen, 0, 0, Res.X, Res.Y);
 }
-
 #endif
 
-void graphics::SwitchMode()
-{
-  ulong Flags;
 
-  if(Screen->flags & SDL_FULLSCREEN)
-  {
+void graphics::SwitchMode () {
+  ulong Flags;
+  if (Screen->flags & SDL_FULLSCREEN) {
     SDL_ShowCursor(SDL_ENABLE);
     Flags = SDL_SWSURFACE;
-  }
-  else
-  {
+  } else {
     SDL_ShowCursor(SDL_DISABLE);
     Flags = SDL_SWSURFACE|SDL_FULLSCREEN;
   }
-
-  if(SwitchModeHandler)
-    SwitchModeHandler();
-
+  if (SwitchModeHandler) SwitchModeHandler();
   Screen = SDL_SetVideoMode(Res.X, Res.Y, ColorDepth, Flags);
-
-  if(!Screen)
-    ABORT("Couldn't toggle fullscreen mode.");
-
+  if (!Screen) ABORT("Couldn't toggle fullscreen mode.");
   BlitDBToScreen();
 }
 
 
-void graphics::LoadDefaultFont(cfestring& FileName)
-{
+void graphics::LoadDefaultFont (cfestring &FileName) {
   DefaultFont = new rawbitmap(FileName);
 }

@@ -9,33 +9,15 @@
  *  along with this file for more details
  *
  */
-
-/* This file might have some problems with some obscure systems.
-   But it also should be rather easy to fix. */
-
+/* this file might have some problems with some obscure systems; but it also should be rather easy to fix. */
 #include <ctime>
 
 #include "fetime.h"
-#include "festring.h"
 
-time_t time::GetZeroTime() { return 0; }
 
-time_t time::TimeAdd(time_t A, time_t B)
-{
-  return A + B;
-}
+time_t time::GetZeroTime () { return 0; }
+time_t time::TimeAdd (time_t A, time_t B) { return A+B; }
+time_t time::TimeDifference (time_t A, time_t B) { return A-B; }
 
-time_t time::TimeDifference(time_t A, time_t B)
-{
-  return A - B;
-}
-
-festring time::VerbalizeAsTimeSpent(time_t)
-{
-  return "mur";
-}
-
-festring time::VerbalizeAsCalenderTime(time_t)
-{
-  return "murimuri";
-}
+festring time::VerbalizeAsTimeSpent (time_t) { return "mur"; }
+festring time::VerbalizeAsCalenderTime (time_t) { return "murimuri"; }
