@@ -1169,7 +1169,7 @@ int game::AskForKeyPress (cfestring &Topic) {
 
 void game::AskForEscPress (cfestring &Topic) {
   DrawEverythingNoBlit();
-  FONT->Printf(DOUBLE_BUFFER, v2(16, 8), WHITE, "%s [press ESC]", Topic.CapitalizeCopy().CStr());
+  FONT->Printf(DOUBLE_BUFFER, v2(16, 8), RED/*WHITE*/, "%s [press ESC]", Topic.CapitalizeCopy().CStr());
   graphics::BlitDBToScreen();
   int Key;
   do {
