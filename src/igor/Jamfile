@@ -1,0 +1,8 @@
+SubDir TOP src igor ;
+
+
+C++Main igor : igor.cpp ;
+LinkLibraries igor : libfelib.a ;
+
+
+SubIncludeOnce JAM_IVAN_INC_SRC_FELIB : TOP src felib ;
