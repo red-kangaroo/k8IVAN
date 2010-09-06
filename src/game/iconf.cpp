@@ -34,6 +34,7 @@ truthoption ivanconfig::KickDownDoors("KickDownDoors", "Kick down doors by defau
 truthoption ivanconfig::AutoCenterMap("AutoCenterMap", "Automatically center map when player moves", true);
 truthoption ivanconfig::AutoCenterMapOnLook("AutoCenterMapOnLook", "Automatically center map when player looks", true);
 truthoption ivanconfig::FastListMode("FastLists", "Instantly select list items with alpha keys", true, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FastListChanger);
+truthoption ivanconfig::PlaySounds("PlaySounds", "use sounds", false);
 /*k8*/
 
 
@@ -186,6 +187,7 @@ void ivanconfig::Initialize () {
   configsystem::AddOption(&AutoCenterMap);
   configsystem::AddOption(&AutoCenterMapOnLook);
   configsystem::AddOption(&FastListMode);
+  configsystem::AddOption(&PlaySounds);
 /*k8*/
   configsystem::SetConfigFileName(getConfigPath()+"/.ivan.conf");
   configsystem::Load();

@@ -9,23 +9,24 @@
  *  along with this file for more details
  *
  */
-
 #ifndef __MESSAGE_H__
 #define __MESSAGE_H__
 
+#include <vector>
 #include "v2.h"
+#include "festring.h"
 
-#define ADD_MESSAGE msgsystem::AddMessage
+#define ADD_MESSAGE  msgsystem::AddMessage
+
 
 class felist;
 class outputfile;
 class inputfile;
 class bitmap;
-class festring;
 
-class msgsystem
-{
- public:
+
+class msgsystem {
+public:
   static void LIKE_PRINTF(1, 2) AddMessage(cchar*, ...);
   static void Draw();
   static void DrawMessageHistory();
@@ -41,7 +42,7 @@ class msgsystem
   static void Init();
   static void InitMessagesSinceLastKeyScan();
   static void ThyMessagesAreNowOld();
- private:
+private:
   static felist MessageHistory;
   static festring LastMessage;
   static festring BigMessage;
@@ -53,5 +54,23 @@ class msgsystem
   static bitmap* QuickDrawCache;
   static int LastMessageLines;
 };
+
+
+class soundsystem {
+public:
+  static void playSound (const festring &Buffer);
+
+private:
+  static void initSound ();
+  static int addFile (const festring &filename);
+  //static truth matches (const festring &Pattern, const festring &Buffer);
+  static struct SoundFile *findMatchingSound (const festring &Buffer);
+
+private:
+  static int SoundState;
+  static std::vector<struct SoundFile> files;
+  static std::vector<struct SoundInfo> patterns;
+};
+
 
 #endif
