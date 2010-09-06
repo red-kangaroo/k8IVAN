@@ -6,7 +6,7 @@ Dungeon MONDEDR;
   Description = "Underground Mondedr";
   ShortDescription = "UM";
 
-    LevelDefault
+  LevelDefault
   {
     Size = 40, 40;
     GenerateMonsters = true;
@@ -188,20 +188,20 @@ Dungeon MONDEDR;
       }
     }
 
-            Square, Pos 36, 39;
+    Square, Pos 36, 39;
     {
       Character = guard(MONDEDR_GUARD);
     }
 
-     Room
-        {
-          Pos = 16,16;
-        Size = 30,16;
-        AltarPossible = false;
-          GenerateFountains = false;
-        Shape = RECTANGLE;
+    Room
+    {
+      Pos = 16,16;
+      Size = 30,16;
+      AltarPossible = false;
+      GenerateFountains = false;
+      Shape = RECTANGLE;
 
- GTerrainMap
+      GTerrainMap
       {
         Pos = 0,0;
         Size = 30,16;
@@ -209,9 +209,9 @@ Dungeon MONDEDR;
         {
           # = EBONY_WOOD solidterrain(FLOOR) { IsInside = true; }
           - = 0;
-            }
-                }
-          {
+        }
+      }
+      {
         ##############################
         #---------------#------------#
         #---------------#------------#
@@ -228,8 +228,9 @@ Dungeon MONDEDR;
         #------------#--#------------#
         #------------#--#------------#
         ##############################
-       }
-OTerrainMap
+      }
+
+      OTerrainMap
       {
         Pos = 0,0;
         Size = 30,16;
@@ -237,11 +238,11 @@ OTerrainMap
         Types
         {
           # = EBONY_WOOD wall(BRICK_FINE);
-                  - = 0;
+          - = 0;
           | = decoration(CARPET);
           D = EBONY_WOOD door(HEXAGONAL_LOCK);
         }
-            }
+      }
       {
         ##############################
         #---------------#------------#
@@ -259,9 +260,9 @@ OTerrainMap
         #------------#--#------------#
         #------------#--#------------#
         ##############DD##############
+      }
 
-    }
-CharacterMap
+      CharacterMap
       {
         Pos = 0,0;
         Size = 30,16;
@@ -269,10 +270,10 @@ CharacterMap
         Types
         {
           # = 0;
-                  - = 0;
+          - = 0;
           g = guard(MONDEDR_GUARD);
         }
-            }
+      }
       {
         ##############################
         #g--------------#g----------g#
@@ -290,16 +291,17 @@ CharacterMap
         #------------#--#------------#
         #g----------g#--#g----------g#
         ##############################
-   }
-       Square, Pos 6,10;
-    {
-      OTerrain = stairs(STAIRS_DOWN);
-      EntryIndex = STAIRS_DOWN;
+      }
+
+      Square, Pos 6,10;
+      {
+        OTerrain = stairs(STAIRS_DOWN);
+        EntryIndex = STAIRS_DOWN;
+      }
     }
   }
- }
 
-Level 1;
+  Level 1;
   {
     Description = Cellar;
     ShortDescription = Cellar;
@@ -360,13 +362,13 @@ Level 1;
           < = stairs(STAIRS_UP);
           N = GRANITE wall(BRICK_FINE);
           b = boulder(1);
-      D = BLACK_GRANITE door(HEXAGONAL_LOCK);
+          D = BLACK_GRANITE door(HEXAGONAL_LOCK);
           X = BLACK_GRANITE wall(BROKEN_WALL);
           I = ironmaiden;
           A = OCTIRON altar(CLEPTIA);
           T = OCTIRON throne;
-      | = decoration(CARPET);
-      }
+          | = decoration(CARPET);
+        }
       }
       {
         ***************************************
@@ -477,7 +479,8 @@ Level 1;
         ***************************************
         ***************************************
       }
-          CharacterMap
+
+      CharacterMap
       {
         Size = 39, 44;
         Pos = 0, 0;
@@ -488,7 +491,7 @@ Level 1;
           R = raven { Flags = IS_MASTER; }
           g = guard(MONDEDR_GUARD);
           P = priest(CLEPTIA);
-      }
+        }
       }
       {
         ***************************************
@@ -536,35 +539,37 @@ Level 1;
         ***************************************
         ***************************************
       }
-
     }
+
     Square, Pos 7,5;
     {
       OTerrain = stairs(STAIRS_UP);
       EntryIndex = STAIRS_UP;
     }
-               Square, Pos 32,30;
+
+    Square, Pos 32,30;
     {
       OTerrain = stairs(STAIRS_DOWN);
       EntryIndex = STAIRS_DOWN;
     }
   }
-    Level 2;
-  {
-  FillSquare = WATER liquidterrain(UNDERGROUND_LAKE), 0;
-  Rooms = 60;
-  Items = 0;
 
-      Square, Random;
+  Level 2;
+  {
+    FillSquare = WATER liquidterrain(UNDERGROUND_LAKE), 0;
+    Rooms = 60;
+    Items = 0;
+
+    Square, Random;
     {
       Character = rogue { Team = MONSTER_TEAM; }
       Times = 5;
     }
 
-      Square, Random;
+    Square, Random;
     {
       Items == Random { MinPrice = 250; MaxPrice = 2000; }
-          Times = 10;
+      Times = 10;
     }
 
     Square, Random ATTACHABLE;
@@ -581,19 +586,19 @@ Level 1;
       AttachRequired = true;
     }
   }
+
   Level 3;
   {
-
-        Square, Random;
+    Square, Random;
     {
       Character = rogue { Team = MONSTER_TEAM; }
       Times = 6;
     }
 
-        Square, Random;
+    Square, Random;
     {
       Items == Random { MinPrice = 500; MaxPrice = 2000; }
-          Times = 10;
+      Times = 10;
     }
 
     Square, Random NOT_WALKABLE|ATTACHABLE;
@@ -610,22 +615,22 @@ Level 1;
       AttachRequired = true;
     }
   }
-    Level 4;
-  {
 
-        Square, Random;
+  Level 4;
+  {
+    Square, Random;
     {
       Character = rogue { Team = MONSTER_TEAM; }
       Times = 7;
     }
 
-        Square, Random;
+    Square, Random;
     {
       Character = assassin { Team = MONSTER_TEAM; }
       Times = 1;
     }
 
-        Square, Random;
+    Square, Random;
     {
       Items == Random { MinPrice = 500; MaxPrice = 2000; }
           Times = 10;
@@ -645,9 +650,10 @@ Level 1;
       AttachRequired = true;
     }
   }
+
   Level 5;
   {
-      Size = 61, 67;
+    Size = 61, 67;
     GenerateMonsters = false;
     Rooms = 1;
     Items = 0;
@@ -666,10 +672,10 @@ Level 1;
     FillSquare = solidterrain(GROUND), BLACK_GRANITE earth;
     TunnelSquare = solidterrain(GROUND), 0;
 
-   Room
-        {
-          Pos = 6,6;
-        Size = 45, 42;
+    Room
+    {
+      Pos = 6,6;
+      Size = 45, 42;
       WallSquare = solidterrain(GROUND), 0;
       FloorSquare = solidterrain(GROUND), 0;
       AltarPossible = false;
@@ -692,13 +698,13 @@ Level 1;
         Size = 45, 54;
         Pos = 0, 0;
         Types
-      {
+        {
           * = 0;
           # = 0;
           ~ = WATER liquidterrain(UNDERGROUND_LAKE);
+        }
       }
-      }
-          {
+      {
         **************#################**************
         *************##...............##*************
         ************##.................##************
@@ -753,10 +759,8 @@ Level 1;
         ******************#......#*******************
         ******************#......#*******************
         ******************########*******************
+      }
 
-
-
-       }
       OTerrainMap
       {
         Size = 45, 54;
@@ -774,23 +778,23 @@ Level 1;
           < = stairs(STAIRS_UP);
           N = GRANITE wall(BRICK_FINE);
           b = boulder(1);
-      D = BLACK_GRANITE door(HEXAGONAL_LOCK);
+          D = BLACK_GRANITE door(HEXAGONAL_LOCK);
           X = BLACK_GRANITE wall(BROKEN_WALL);
           I = ironmaiden;
           A = OCTIRON altar(CLEPTIA);
           T = OCTIRON throne;
-      1 = decoration(POOL_CORNER) { VisualEffects = NONE; }
-      2 = decoration(POOL_CORNER) { VisualEffects = MIRROR; }
-      3 = decoration(POOL_CORNER) { VisualEffects = MIRROR | FLIP; }
-      4 = decoration(POOL_CORNER) { VisualEffects = FLIP; }
-      5 = decoration(POOL_BORDER) { VisualEffects = NONE; }
-      6 = decoration(POOL_BORDER) { VisualEffects = ROTATE; }
-      7 = decoration(POOL_BORDER) { VisualEffects = FLIP; }
-      8 = decoration(POOL_BORDER) { VisualEffects = MIRROR | ROTATE; }
-      | = decoration(CARPET);
+          1 = decoration(POOL_CORNER) { VisualEffects = NONE; }
+          2 = decoration(POOL_CORNER) { VisualEffects = MIRROR; }
+          3 = decoration(POOL_CORNER) { VisualEffects = MIRROR | FLIP; }
+          4 = decoration(POOL_CORNER) { VisualEffects = FLIP; }
+          5 = decoration(POOL_BORDER) { VisualEffects = NONE; }
+          6 = decoration(POOL_BORDER) { VisualEffects = ROTATE; }
+          7 = decoration(POOL_BORDER) { VisualEffects = FLIP; }
+          8 = decoration(POOL_BORDER) { VisualEffects = MIRROR | ROTATE; }
+          | = decoration(CARPET);
+        }
       }
-      }
-          {
+      {
         **************#################**************
         *************##...............##*************
         ************##.................##************
@@ -845,28 +849,26 @@ Level 1;
         ******************#......#*******************
         ******************#......#*******************
         ******************########*******************
+      }
 
-
-
-       }
-CharacterMap
+      CharacterMap
       {
         Pos = 0,0;
         Size = 45, 54;
 
         Types
         {
-                  * = 0;
+          * = 0;
           # = 0;
-                  - = 0;
-                B = blinkdog { Team = MONSTER_TEAM; }
-                F = floatingeye { Team = MONSTER_TEAM; }
+          - = 0;
+          B = blinkdog { Team = MONSTER_TEAM; }
+          F = floatingeye { Team = MONSTER_TEAM; }
           A = assassin { Team = MONSTER_TEAM; }
-                  V = vulcan { Team = MONSTER_TEAM; }
-                S = invisiblestalker { Team = MONSTER_TEAM; }
-                f = frog(DARK) { Team = MONSTER_TEAM; }
+          V = vulcan { Team = MONSTER_TEAM; }
+          S = invisiblestalker { Team = MONSTER_TEAM; }
+          f = frog(DARK) { Team = MONSTER_TEAM; }
         }
-            }
+      }
       {
         **************#################**************
         *************##...............##*************
@@ -922,23 +924,23 @@ CharacterMap
         ******************#......#*******************
         ******************#......#*******************
         ******************########*******************
-   }
-   ItemMap
+      }
+
+      ItemMap
       {
         Pos = 0,0;
         Size = 45, 54;
-
         Types
         {
-                  * == 0;
+          * == 0;
           # == 0;
-                  - == 0;
-                  1 == lantern { SquarePosition = UP; }
+          - == 0;
+          1 == lantern { SquarePosition = UP; }
           2 == lantern { SquarePosition = DOWN; }
           3 == lantern { SquarePosition = RIGHT; }
           4 == lantern { SquarePosition = LEFT; }
         }
-            }
+      }
       {
         **************#######2#2#######**************
         *************##...............##*************
@@ -994,13 +996,13 @@ CharacterMap
         ******************#......#*******************
         ******************#......#*******************
         ******************########*******************
-   }
-          Square, Pos 22,36;
-    {
-      OTerrain = stairs(STAIRS_UP);
-      EntryIndex = STAIRS_UP;
+      }
+
+      Square, Pos 22,36;
+      {
+        OTerrain = stairs(STAIRS_UP);
+        EntryIndex = STAIRS_UP;
+      }
     }
   }
-  }
-
 }

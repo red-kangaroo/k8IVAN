@@ -723,7 +723,8 @@ Dungeon ATTNAM;
       DoorSquare = solidterrain(FLOOR), door;
     }
 
-    /*Square, Random;
+    /********************************
+    Square, Random;
     {
       Character = communist { Team = IVAN_TEAM; }
       Times = 3;
@@ -829,7 +830,8 @@ Dungeon ATTNAM;
     {
       Character = spider { Team = MONSTER_TEAM; }
       Times = 3;
-    }*/
+    }
+    ********************************/
   }
 
   Level 1;
@@ -897,9 +899,7 @@ Dungeon ATTNAM;
           X = BLACK_GRANITE wall(BROKEN_WALL);
           W = olterraincontainer(SHELF)
           {
-                ItemsInside = { 1,
-                        potion { Times = 1:4; SecondaryMaterial = VODKA; }
-                              }
+            ItemsInside = { 1, potion { Times = 1:4; SecondaryMaterial = VODKA; } }
           }
           I = ironmaiden;
       }

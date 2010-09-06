@@ -69,7 +69,7 @@ Dungeon UNDER_WATER_TUNNEL;
     }
   }
 
-RandomLevel 0:2;
+  RandomLevel 0:2;
   {
     Room /* vault */
     {
@@ -171,14 +171,13 @@ RandomLevel 0:2;
         EntryIndex = STAIRS_UP;
       }
 
-/*k8: you have to buy lantern first!
+      /*k8: you have to buy lantern first!
       Square, Pos 2,1;
       {
         Items == lantern;
       }
-*/
+      */
     }
-
   }
 
   Level 1;
@@ -438,7 +437,7 @@ RandomLevel 0:2;
     EnchantmentPlusChanceDelta = 0;
     BackGroundType = BLUE_FRACTAL;
 
-      RoomDefault
+    RoomDefault
     {
       Size = 3:5,3:5;
       Pos = 2:XSize-5,2:YSize-5;
@@ -450,43 +449,39 @@ RandomLevel 0:2;
       AltarPossible = false;
     }
 
-        Square, Random;
+    Square, Random;
     {
       Character = spider(GIANT);
       Times = 50;
     }
 
-Square, Random IN_ROOM|HAS_NO_OTERRAIN|NOT_IN_ROOM;
-      {
-          OTerrain = stairs(STAIRS_UP) { AttachedArea = 3; }
-          EntryIndex = STAIRS_UP;
-      }
+    Square, Random IN_ROOM|HAS_NO_OTERRAIN|NOT_IN_ROOM;
+    {
+      OTerrain = stairs(STAIRS_UP) { AttachedArea = 3; }
+      EntryIndex = STAIRS_UP;
+    }
 
-
-Room
+    Room
     {
       Size = 10:14,7:9;
       GenerateFountains = false;
       AltarPossible = false;
-        Shape = ROUND_CORNERS;
+      Shape = ROUND_CORNERS;
 
-        Square, Random;
-    {
-      Items == SPIDER_SILK bodyarmor(PLATE_MAIL);
+      Square, Random;
+      {
+        Items == SPIDER_SILK bodyarmor(PLATE_MAIL);
+      }
+
+      Square, Random;
+      {
+        Items == solstone;
+      }
+
+      Square, Random;
+      {
+        Character = lobhse { Team = MONSTER_TEAM; }
+      }
     }
-
-        Square, Random;
-    {
-      Items == solstone;
-    }
-
-       Square, Random;
-    {
-      Character = lobhse { Team = MONSTER_TEAM; }
-    }
-
-     }
-
-
   }
 }
