@@ -36,7 +36,9 @@ void outputfile::ReOpen () {
 
 inputfile::inputfile (cfestring &FileName, const valuemap *ValueMap, truth AbortOnErr) :
   Buffer(fopen(FileName.CStr(), "rb")),
-  FileName(FileName), ValueMap(ValueMap)
+  FileName(FileName),
+  ValueMap(ValueMap),
+  lastWordWasString(false)
 {
   if (AbortOnErr && !IsOpen()) ABORT("File %s not found!", FileName.CStr());
 }
@@ -48,7 +50,7 @@ inputfile::~inputfile () {
 
 
 festring inputfile::ReadWord (truth AbortOnEOF) {
-  static festring ToReturn;
+  /*static*/ festring ToReturn;
   ReadWord(ToReturn, AbortOnEOF);
   return ToReturn;
 }
@@ -99,6 +101,7 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
   //
   if (Char == '"') {
     // string
+    lastWordWasString = true;
     long StartPos = TellPos();
     int OldChar = 0;
     for (;;) {
@@ -121,6 +124,7 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
 void inputfile::ReadWord (festring &String, truth AbortOnEOF) {
   int Mode = 0;
   String.Empty();
+  lastWordWasString = false;
   for (int Char = fgetc(Buffer); !feof(Buffer); Char = fgetc(Buffer)) {
     if (isalpha(Char) || Char == '_') {
       if (!Mode) Mode = MODE_WORD;
@@ -189,12 +193,24 @@ char inputfile::ReadLetter (truth AbortOnEOF) {
 
 /* Reads a number or a formula from inputfile. Valid values could be for
    instance "3", "5 * 4+5", "2+Variable%4" etc. */
-long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
+//long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
+festring inputfile::ReadNumberIntr (int CallLevel, long *num, truth *isString, truth allowStr, truth PreserveTerminator) {
   long Value = 0;
-  static festring Word;
+  /*static*/ festring Word;
   truth NumberCorrect = false;
+  truth firstWord = true;
+  *isString = false;
+  *num = 0;
+  festring res;
   for (;;) {
     ReadWord(Word);
+    if (firstWord) {
+      if (allowStr && lastWordWasString) {
+        *isString = true;
+        return Word;
+      }
+      firstWord = false;
+    }
     char First = Word[0];
     if (isdigit(First)) {
       Value = atoi(Word.CStr());
@@ -204,11 +220,13 @@ long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
     if (Word.GetSize() == 1) {
       if (First == ';' || First == ',' || First == ':') {
         if (CallLevel != HIGHEST || PreserveTerminator) ungetc(First, Buffer);
-        return Value;
+        *num = Value;
+        return res;
       }
       if (First == ')') {
         if ((CallLevel != HIGHEST && CallLevel != 4) || PreserveTerminator) ungetc(')', Buffer);
-        return Value;
+        *num = Value;
+        return res;
       }
       if (First == '~') {
         Value = ~ReadNumber(4);
@@ -224,7 +242,8 @@ long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
       continue;\
     } else {\
       ungetc(#op[0], Buffer);\
-      return Value;\
+      *num = Value;\
+      return res;\
     } \
   }
       CHECK_OP(&, 1); CHECK_OP(|, 1); CHECK_OP(^, 1);
@@ -240,7 +259,8 @@ long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
         } else {
           ungetc('<', Buffer);
           ungetc('<', Buffer);
-          return Value;
+          *num = Value;
+          return res;
         } else {
           ungetc(Next, Buffer);
         }
@@ -255,7 +275,8 @@ long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
         } else {
           ungetc('>', Buffer);
           ungetc('>', Buffer);
-          return Value;
+          *num = Value;
+          return res;
         } else {
           ungetc(Next, Buffer);
         }
@@ -263,7 +284,8 @@ long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
       if (First == '(') {
         if (NumberCorrect) {
           ungetc('(', Buffer);
-          return Value;
+          *num = Value;
+          return res;
         } else {
           Value = ReadNumber(4);
           NumberCorrect = false;
@@ -274,7 +296,8 @@ long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
       if (First == '#') {
         // for #defines
         ungetc('#', Buffer);
-        return Value;
+        *num = Value;
+        return res;
       }
     }
     if (Word == "rgb") {
@@ -316,6 +339,19 @@ long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
     ABORT("Odd numeric value \"%s\" encountered in file %s, line %ld!",
     Word.CStr(), FileName.CStr(), TellLine());
   }
+}
+
+
+long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
+  long num = 0;
+  truth isString = false;
+  ReadNumberIntr(CallLevel, &num, &isString, false, PreserveTerminator);
+  return num;
+}
+
+
+festring inputfile::ReadStringOrNumber (long *num, truth *isString, truth PreserveTerminator) {
+  return ReadNumberIntr(0xFF, num, isString, true, PreserveTerminator);
 }
 
 
@@ -392,7 +428,7 @@ void ReadData (festring &String, inputfile &SaveFile) {
 
 void ReadData (fearray<long> &Array, inputfile &SaveFile) {
   Array.Clear();
-  static festring Word;
+  /*static*/ festring Word;
   SaveFile.ReadWord(Word);
   if (Word == "=") SaveFile.ReadWord(Word);
   if (Word == "=") {
@@ -410,7 +446,7 @@ void ReadData (fearray<long> &Array, inputfile &SaveFile) {
 
 void ReadData (fearray<festring> &Array, inputfile &SaveFile) {
   Array.Clear();
-  static festring Word;
+  /*static*/ festring Word;
   SaveFile.ReadWord(Word);
   if (Word == "=") SaveFile.ReadWord(Word);
   if (Word == "=") {

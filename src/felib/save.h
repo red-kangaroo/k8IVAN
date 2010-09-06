@@ -49,7 +49,7 @@ public:
   void Put (char What) { fputc(What, Buffer); }
   void Write (cchar *Offset, long Size) { fwrite(Offset, 1, Size, Buffer); }
   truth IsOpen () { return truth(Buffer); }
-  void Close () { fclose(Buffer); }
+  void Close () { fclose(Buffer); Buffer = 0; }
   void Flush () { fflush(Buffer); }
   void ReOpen ();
 
@@ -68,6 +68,7 @@ class inputfile {
   void ReadWord (festring &String, truth AbortOnEOF=true);
   char ReadLetter (truth AbortOnEOF=true);
   long ReadNumber (int CallLevel=0xFF, truth PreserveTerminator=false);
+  festring ReadStringOrNumber (long *num, truth *isString, truth PreserveTerminator=false);
   v2 ReadVector2d ();
   rect ReadRect ();
   int Get () { return fgetc(Buffer); }
@@ -82,15 +83,17 @@ class inputfile {
   ulong TellLine () { return TellLineOfPos(TellPos()); }
   ulong TellLineOfPos (long);
   cfestring& GetFileName () const { return FileName; }
-  void Close () { fclose(Buffer); }
+  void Close () { fclose(Buffer); Buffer = 0; }
 
 private:
+  festring ReadNumberIntr (int CallLevel, long *num, truth *isString, truth allowStr, truth PreserveTerminator);
   int HandlePunct (festring &String, int Char, int Mode);
 
 private:
   FILE *Buffer;
   festring FileName;
   const valuemap *ValueMap;
+  truth lastWordWasString;
 };
 
 
