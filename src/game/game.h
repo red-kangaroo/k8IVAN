@@ -433,7 +433,8 @@ class game
     EnterTextDisplacement = What;
   }
 
-  static int ListSelector (cfestring &title, ...);
+  static int ListSelector (int defsel, cfestring &title, ...); // defsel<0: first
+  static int ListSelectorArray (int defsel, cfestring &title, const char *items[]); // defsel<0: first
 
  private:
   static void UpdateCameraCoordinate(int&, int, int, int);

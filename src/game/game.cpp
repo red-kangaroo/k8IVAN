@@ -2846,25 +2846,43 @@ void game::ShowDeathSmiley (bitmap *Buffer, truth) {
 }
 
 
-int game::ListSelector (cfestring &title, ...) {
+static int doListSelector (felist &list, int defsel, int cnt) {
+  game::SetStandardListAttributes(list);
+  list.AddFlags(SELECTABLE | FELIST_NO_BADKEY_EXIT);
+  if (defsel > 0) list.SetSelected(defsel);
+  uint sel = list.Draw();
+  list.Empty();
+  list.RemoveFlags(SELECTABLE | FELIST_NO_BADKEY_EXIT);
+  if (sel & FELIST_ERROR_BIT) return -1;
+  if (sel >= (uint)cnt) return -1;
+  return (int)sel;
+}
+
+
+int game::ListSelector (int defsel, cfestring &title, ...) {
   int cnt = 0;
   va_list items;
   va_start(items, title);
   //
-  felist List(title);
+  felist list(title);
   for (;;) {
     const char *s = va_arg(items, const char *);
     if (!s) break;
-    List.AddEntry(s, LIGHT_GRAY);
+    list.AddEntry(s, LIGHT_GRAY);
     cnt++;
   }
   va_end(items);
-  game::SetStandardListAttributes(List);
-  List.AddFlags(SELECTABLE | FELIST_NO_BADKEY_EXIT);
-  uint sel = List.Draw();
-  List.Empty();
-  List.RemoveFlags(SELECTABLE | FELIST_NO_BADKEY_EXIT);
-  if (sel & FELIST_ERROR_BIT) return -1;
-  if (sel >= (uint)cnt) return -1;
-  return (int)sel;
+  return doListSelector(list, defsel, cnt);
+}
+
+
+int game::ListSelectorArray (int defsel, cfestring &title, const char *items[]) {
+  int cnt = 0;
+  felist list(title);
+  for (;;) {
+    if (!items[cnt]) break;
+    list.AddEntry(items[cnt], LIGHT_GRAY);
+    cnt++;
+  }
+  return doListSelector(list, defsel, cnt);
 }

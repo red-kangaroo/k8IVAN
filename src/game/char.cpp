@@ -6820,54 +6820,51 @@ void character::PrintEndGasImmunityMessage() const
 }
 
 void character::ShowAdventureInfo () const {
-  for (;;) {
-/*
-    int Key = game::AskForKeyPress(CONST_S("Do you want to see your [M]essages")+
-      (GetStack()->GetItems() ? CONST_S(", [I]nventory") : CONST_S(""))+
-      (!game::MassacreListsEmpty() ? CONST_S(", [K]ills") : CONST_S(""))+
-      CONST_S(", [N]othing?"));
-    switch (Key) {
-      case 'i': case 'I':
-        if (GetStack()->GetItems()) {
-          GetStack()->DrawContents(this, CONST_S("Your inventory"), NO_SELECT);
-          for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) i->DrawContents(this);
-          doforequipmentswithparam<ccharacter*>()(this, &item::DrawContents, this);
-        }
-        break;
-      case 'k': case 'K':
-        if (!game::MassacreListsEmpty()) game::DisplayMassacreLists();
-        break;
-      case 'm': case 'M':
-        msgsystem::DrawMessageHistory();
-        break;
-      case 'n': case 'N': return;
-    }
-  }
-*/
-    int sel = game::ListSelector(CONST_S("Do you want to see some funny history?"),
-      "Show massacre history",
+  static const char *lists[4][4] = {
+    { "Show massacre history",
       "Show inventory",
       "Show message history",
-      NULL
-    );
+      NULL },
+    { "Show inventory",
+      "Show message history",
+      NULL,
+      NULL },
+    { "Show message history",
+      NULL,
+      NULL,
+      NULL },
+    { "Show massacre history",
+      "Show message history",
+      NULL,
+      NULL }
+  };
+  // massacre, inventory, messages
+  static const int nums[4][3] = {
+    { 0, 1, 2},
+    {-1, 0, 1},
+    {-1,-1, 0},
+    { 0,-1, 0}
+  };
+  int idx = 0;
+  if (GetStack()->GetItems()) {
+    idx = game::MassacreListsEmpty() ? 1 : 0;
+  } else {
+    idx = game::MassacreListsEmpty() ? 2 : 3;
+  }
+  int sel = -1;
+  for (;;) {
+    sel = game::ListSelectorArray(sel, CONST_S("Do you want to see some funny history?"), lists[idx]);
     if (sel < 0) break;
-    switch (sel) {
-      case 0:
-        if (!game::MassacreListsEmpty()) game::DisplayMassacreLists();
-        break;
-      case 1:
-        if (GetStack()->GetItems()) {
-          GetStack()->DrawContents(this, CONST_S("Your inventory"), NO_SELECT);
-          for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) i->DrawContents(this);
-          doforequipmentswithparam<ccharacter*>()(this, &item::DrawContents, this);
-        }
-        break;
-      case 2:
-        msgsystem::DrawMessageHistory();
-        break;
+    if (sel == nums[idx][0] && !game::MassacreListsEmpty()) game::DisplayMassacreLists();
+    if (sel == nums[idx][1] && GetStack()->GetItems()) {
+      GetStack()->DrawContents(this, CONST_S("Your inventory"), NO_SELECT);
+      for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) i->DrawContents(this);
+      doforequipmentswithparam<ccharacter*>()(this, &item::DrawContents, this);
     }
+    if (sel == nums[idx][2]) msgsystem::DrawMessageHistory();
   }
 }
+
 
 truth character::EditAllAttributes(int Amount)
 {

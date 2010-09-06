@@ -1166,27 +1166,7 @@ truth commandsystem::Polymorph (character *Char) {
 
 truth commandsystem::GetScroll (character *Char) {
   for (;;) {
-    /*
-    felist List(CONST_S("Select scroll to add"));
-    List.AddEntry(CONST_S("Scroll of Wishing"), WHITE);
-    List.AddEntry(CONST_S("Scroll of Charging"), WHITE);
-    List.AddEntry(CONST_S("Scroll of Repair"), WHITE);
-    List.AddEntry(CONST_S("Scroll of Change Material"), WHITE);
-    List.AddEntry(CONST_S("Scroll of Enchant Weapon"), WHITE);
-    List.AddEntry(CONST_S("Scroll of Enchant Armor"), WHITE);
-    List.AddEntry(CONST_S("Scroll of Taming"), WHITE);
-    List.AddEntry(CONST_S("Scroll of Teleportation"), WHITE);
-    List.AddEntry(CONST_S("Scroll of Detect Material"), WHITE);
-    List.AddEntry(CONST_S("Scroll of Harden Material"), WHITE);
-    List.AddEntry(CONST_S("Scroll of Golem Creation"), WHITE);
-    game::SetStandardListAttributes(List);
-    List.AddFlags(SELECTABLE);
-    uint sel = List.Draw();
-    List.Empty();
-    List.RemoveFlags(SELECTABLE);
-    if (sel & FELIST_ERROR_BIT) return false;
-    */
-    int sel = game::ListSelector(CONST_S("Select scroll to add"),
+    int sel = game::ListSelector(-1, CONST_S("Select scroll to add"),
       "Scroll of Wishing",
       "Scroll of Charging",
       "Scroll of Repair",
