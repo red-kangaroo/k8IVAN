@@ -1344,170 +1344,126 @@ truth character::ReadItem (item *ToBeRead) {
 }
 
 
-void character::CalculateBurdenState()
-{
+void character::CalculateBurdenState () {
   int OldBurdenState = BurdenState;
   long SumOfMasses = GetCarriedWeight();
-  long CarryingStrengthUnits = long(GetCarryingStrength()) * 2500;
-
-  if(SumOfMasses > (CarryingStrengthUnits << 1) + CarryingStrengthUnits)
-    BurdenState = OVER_LOADED;
-  else if(SumOfMasses > CarryingStrengthUnits << 1)
-    BurdenState = STRESSED;
-  else if(SumOfMasses > CarryingStrengthUnits)
-    BurdenState = BURDENED;
-  else
-    BurdenState = UNBURDENED;
-
-  if(!IsInitializing() && BurdenState != OldBurdenState)
-    CalculateBattleInfo();
+  long CarryingStrengthUnits = long(GetCarryingStrength())*2500;
+  if (SumOfMasses > (CarryingStrengthUnits << 1) + CarryingStrengthUnits) BurdenState = OVER_LOADED;
+  else if (SumOfMasses > CarryingStrengthUnits << 1) BurdenState = STRESSED;
+  else if (SumOfMasses > CarryingStrengthUnits) BurdenState = BURDENED;
+  else BurdenState = UNBURDENED;
+  if (!IsInitializing() && BurdenState != OldBurdenState) CalculateBattleInfo();
 }
 
-void character::Save(outputfile& SaveFile) const
-{
+
+void character::Save (outputfile &SaveFile) const {
   SaveFile << (ushort)GetType();
   Stack->Save(SaveFile);
   SaveFile << ID;
-  int c;
-
-  for(c = 0; c < BASE_ATTRIBUTES; ++c)
-    SaveFile << BaseExperience[c];
+  for (int c = 0; c < BASE_ATTRIBUTES; ++c) SaveFile << BaseExperience[c];
 
   SaveFile << ExpModifierMap;
-  SaveFile << NP << AP << Stamina << GenerationDanger << ScienceTalks
-     << CounterToMindWormHatch;
+  SaveFile << NP << AP << Stamina << GenerationDanger << ScienceTalks << CounterToMindWormHatch;
   SaveFile << TemporaryState << EquipmentState << Money << GoingTo << RegenerationCounter << Route << Illegal;
   SaveFile.Put(!!IsEnabled());
   SaveFile << HomeData << BlocksSinceLastTurn << CommandFlags;
   SaveFile << WarnFlags << (ushort)Flags;
 
-  for(c = 0; c < BodyParts; ++c)
-    SaveFile << BodyPartSlot[c] << OriginalBodyPartID[c];
+  for (int c = 0; c < BodyParts; ++c) SaveFile << BodyPartSlot[c] << OriginalBodyPartID[c];
 
   SaveLinkedList(SaveFile, TrapData);
   SaveFile << Action;
 
-  for(c = 0; c < STATES; ++c)
-    SaveFile << TemporaryStateCounter[c];
+  for (int c = 0; c < STATES; ++c) SaveFile << TemporaryStateCounter[c];
 
-  if(GetTeam())
-  {
+  if (GetTeam()) {
     SaveFile.Put(true);
     SaveFile << Team->GetID();
+  } else {
+    SaveFile.Put(false);
   }
-  else
-    SaveFile.Put(false);
 
-  if(GetTeam() && GetTeam()->GetLeader() == this)
-    SaveFile.Put(true);
-  else
-    SaveFile.Put(false);
+  if (GetTeam() && GetTeam()->GetLeader() == this) SaveFile.Put(true); else SaveFile.Put(false);
 
   SaveFile << AssignedName << PolymorphBackup;
 
-  for(c = 0; c < AllowedWeaponSkillCategories; ++c)
-    SaveFile << CWeaponSkill[c];
+  for (int c = 0; c < AllowedWeaponSkillCategories; ++c) SaveFile << CWeaponSkill[c];
 
   SaveFile << (ushort)GetConfig();
 }
 
-void character::Load(inputfile& SaveFile)
-{
+
+void character::Load (inputfile &SaveFile) {
   LoadSquaresUnder();
-  int c;
   Stack->Load(SaveFile);
   SaveFile >> ID;
   game::AddCharacterID(this, ID);
 
-  for(c = 0; c < BASE_ATTRIBUTES; ++c)
-    SaveFile >> BaseExperience[c];
+  for (int c = 0; c < BASE_ATTRIBUTES; ++c) SaveFile >> BaseExperience[c];
 
   SaveFile >> ExpModifierMap;
-  SaveFile >> NP >> AP >> Stamina >> GenerationDanger >> ScienceTalks
-     >> CounterToMindWormHatch;
+  SaveFile >> NP >> AP >> Stamina >> GenerationDanger >> ScienceTalks >> CounterToMindWormHatch;
   SaveFile >> TemporaryState >> EquipmentState >> Money >> GoingTo >> RegenerationCounter >> Route >> Illegal;
 
-  if(!SaveFile.Get())
-    Disable();
+  if (!SaveFile.Get()) Disable();
 
   SaveFile >> HomeData >> BlocksSinceLastTurn >> CommandFlags;
   SaveFile >> WarnFlags;
   WarnFlags &= ~WARNED;
   Flags |= ReadType<ushort>(SaveFile) & ~ENTITY_FLAGS;
 
-  for(c = 0; c < BodyParts; ++c)
-  {
+  for (int c = 0; c < BodyParts; ++c) {
     SaveFile >> BodyPartSlot[c] >> OriginalBodyPartID[c];
-
-    item* BodyPart = *BodyPartSlot[c];
-
-    if(BodyPart)
-      BodyPart->Disable();
+    item *BodyPart = *BodyPartSlot[c];
+    if (BodyPart) BodyPart->Disable();
   }
 
   LoadLinkedList(SaveFile, TrapData);
   SaveFile >> Action;
 
-  if(Action)
-    Action->SetActor(this);
+  if (Action) Action->SetActor(this);
 
-  for(c = 0; c < STATES; ++c)
-    SaveFile >> TemporaryStateCounter[c];
+  for (int c = 0; c < STATES; ++c) SaveFile >> TemporaryStateCounter[c];
 
-  if(SaveFile.Get())
-    SetTeam(game::GetTeam(ReadType<int>(SaveFile)));
+  if (SaveFile.Get()) SetTeam(game::GetTeam(ReadType<int>(SaveFile)));
 
-  if(SaveFile.Get())
-    GetTeam()->SetLeader(this);
+  if (SaveFile.Get()) GetTeam()->SetLeader(this);
 
   SaveFile >> AssignedName >> PolymorphBackup;
 
-  for(c = 0; c < AllowedWeaponSkillCategories; ++c)
-    SaveFile >> CWeaponSkill[c];
+  for (int c = 0; c < AllowedWeaponSkillCategories; ++c) SaveFile >> CWeaponSkill[c];
 
   databasecreator<character>::InstallDataBase(this, ReadType<ushort>(SaveFile));
 
-  if(IsEnabled() && !game::IsInWilderness())
-    for(c = 1; c < GetSquaresUnder(); ++c)
-      GetSquareUnder(c)->SetCharacter(this);
+  if (IsEnabled() && !game::IsInWilderness()) {
+    for (int c = 1; c < GetSquaresUnder(); ++c) GetSquareUnder(c)->SetCharacter(this);
+  }
 }
 
-truth character::Engrave(cfestring& What)
-{
+
+truth character::Engrave (cfestring &What) {
   GetLSquareUnder()->Engrave(What);
   return true;
 }
 
-truth character::MoveRandomly()
-{
-  if(!IsEnabled())
-    return false;
-
-  for(int c = 0; c < 10; ++c)
-  {
-    v2 ToTry = game::GetMoveVector(RAND() & 7);
-
-    if(GetLevel()->IsValidPos(GetPos() + ToTry))
-    {
-      lsquare* Square = GetNearLSquare(GetPos() + ToTry);
-
-      if(!Square->IsDangerous(this)
-   && !Square->IsScary(this)
-   && TryMove(ToTry, false, false))
-  return true;
+truth character::MoveRandomly () {
+  if (!IsEnabled()) return false;
+  for (int c = 0; c < 10; ++c) {
+    v2 ToTry = game::GetMoveVector(RAND()&7);
+    if (GetLevel()->IsValidPos(GetPos()+ToTry)) {
+      lsquare *Square = GetNearLSquare(GetPos()+ToTry);
+      if (!Square->IsDangerous(this) && !Square->IsScary(this) && TryMove(ToTry, false, false)) return true;
     }
   }
-
   return false;
 }
 
-truth character::TestForPickup(item* ToBeTested) const
-{
-  if(MakesBurdened(ToBeTested->GetWeight() + GetCarriedWeight()))
-    return false;
 
+truth character::TestForPickup (item *ToBeTested) const {
+  if (MakesBurdened(ToBeTested->GetWeight()+GetCarriedWeight())) return false;
   return true;
 }
+
 
 void character::AddScoreEntry(cfestring& Description, double Multiplier, truth AddEndLevel) const
 {

@@ -297,7 +297,7 @@ public:
   truth RemoveMondedrPass ();
   truth RemoveRingOfThieves ();
   truth IsPlayer() const { return Flags & C_PLAYER; }
-  truth Engrave(cfestring&);
+  truth Engrave (cfestring &What);
   void AddScoreEntry(cfestring&, double = 1., truth = true) const;
   long GetAP() const { return AP; }
   long GetNP() const { return NP; }
