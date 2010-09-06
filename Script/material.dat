@@ -1501,16 +1501,15 @@ gas
     StepInWisdomLimit = 8;
   }
 
-  /*FIXME*/
   Config VACUUM_BLADE_AIR;
   {
-    Color = rgb16(120, 70, 40);
+    StrengthValue = 1;
+    Density = 10;
+    Color = rgb16(180, 180, 255);
     NameStem = "vacuum blade air";
-    Alpha = 200;
-    AttachedGod = CRUENTUS; /*FIXME*/
-    BreatheMessage = "It smells like vacuum here.";
-    /*Effect = EFFECT_MUSTARD_GAS;*/
-    StepInWisdomLimit = 8;
+    Alpha = 150;
+    AttachedGod = TERRA;
+    NameFlags = Base;
   }
 }
 

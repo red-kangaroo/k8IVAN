@@ -475,6 +475,19 @@ stairs /* olterrain-> */
     BitmapPos = 0, 192;
     IsUpLink = true;
   }
+
+  Config KHARAZ_ARAD_ENTRY;
+  {
+    PostFix = "downwards";
+    BitmapPos = 0, 208;
+  }
+
+  Config KHARAZ_ARAD_EXIT;
+  {
+    PostFix = "upwards";
+    BitmapPos = 0, 192;
+    IsUpLink = true;
+  }
 }
 
 portal /* stairs -> */

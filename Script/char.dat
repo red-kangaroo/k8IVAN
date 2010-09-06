@@ -2397,6 +2397,26 @@ spider
     HostileReplies == "@Dd stridulates wildly, producing a small creaking noise.";
     FriendlyReplies == "@Dd stridulates softly, producing a barely audible but quite confortable noise.";
   }
+
+  Config ARANEA;
+  {
+    DefaultArmStrength = 20;
+    DefaultAgility = 26;
+    DefaultEndurance = 18;
+    DefaultPerception = 26;
+    DefaultIntelligence = 4;
+    DefaultWisdom = 4;
+    DefaultCharisma = 5;
+    Adjective = "aranea";
+    TorsoBitmapPos = 256, 0;
+    BaseBiteStrength = 400;
+    CWeaponSkillHits == 50;
+    TotalVolume = 5000;
+    TotalSize = 50;
+    Frequency = 0;
+    HostileReplies == "@Dd stridulates wildly, producing a small creaking noise.";
+    FriendlyReplies == "@Dd stridulates softly, producing a barely audible but quite confortable noise.";
+  }
 }
 
 jackal
@@ -4476,6 +4496,17 @@ smith
   DefaultName = "Ikiros";
   TamingDifficulty = NO_TAMING;
   AttachedGod = LORICATUS;
+
+  Config KHARAZ_ARAD;
+  {
+    DefaultName = "Khorocko";
+    HeadBitmapPos = 112, 160;
+    TorsoBitmapPos = 48, 16;
+    ArmBitmapPos = 80, 0;
+    LegBitmapPos = 0, 208;
+    HairColor = rgb16(144, 72, 0);
+    BeltColor = rgb16(72, 56, 16);
+  }
 }
 
 ostrich
@@ -6233,4 +6264,55 @@ mysteryman
   HostileReplies == "\"This is why the government doesn't mess with me, fool!\"";
   AttachedGod = CRUENTUS;
   IsSadist = true;
+}
+
+reaper
+{
+  DefaultArmStrength = 20;
+  DefaultLegStrength = 20; /* not used */
+  DefaultDexterity = 25;
+  DefaultAgility = 50;
+  DefaultEndurance = 15;
+  DefaultPerception = 18;
+  DefaultIntelligence = 20;
+  DefaultWisdom = 25;
+  DefaultCharisma = 10;
+  DefaultMana = 50;
+  StandVerb = "floating";
+  TotalVolume = 200000;
+  TotalSize = 250;
+  CanRead = true;
+  NameSingular = "reaper";
+  ClothColor = rgb16(100, 100, 160);
+  HeadBitmapPos = 96, 95;
+  TorsoBitmapPos = 32, 272;
+  ArmBitmapPos = 64, 272;
+  /* LegBitmapPos is not used */
+  KnownCWeaponSkills == POLE_ARMS;
+  CWeaponSkillHits == 500;
+  RightSWeaponSkillHits = 200;
+  PanicLevel = 0;
+  BaseEmitation = rgb24(110, 110, 130);
+  HostileReplies == "\"I'm an invitation Mortifer personally sent!\"";
+  FriendlyReplies == "\"You know, I've been on both sides; Mortifer is more of a party man but Valpurus is really boring. \"";
+  Belt = SPIDER_SILK belt;
+  FleshMaterial = BONE;
+  DeathMessage = "@Dd vanishes from existence.";
+  SpillsBlood = false;
+  Sweats = false;
+  AttachedGod = MORTIFER;
+  BodyPartsDisappearWhenSevered = true;
+  ClassStates = GAS_IMMUNITY|LEVITATION;
+  WieldedPosition = -1, -3;
+  CanChoke = false;
+  IsImmuneToStickiness = true;
+  UndeadVersions = false;
+  RightWielded = meleeweapon(SCYTHE);
+  IsCatacombCreature = true;
+  Frequency = 1000;
+  SkinColor = rgb16(160, 160, 160);
+  EyeColor = rgb16(0, 0, 0);
+  TorsoMainColor = rgb16(0, 0, 0);
+  LegMainColor = rgb16(160,160,160);
+  ArmMainColor = rgb16(0, 0, 0);
 }

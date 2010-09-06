@@ -109,6 +109,7 @@ Team MONDEDR;
   KillEvilness = 50;
 }
 
+
 Dungeon ELPURI_CAVE;
 {
   Levels = 16;
@@ -3665,6 +3666,7 @@ Dungeon NEW_ATTNAM;
           2 == lantern { SquarePosition = DOWN; }
           3 == lantern { SquarePosition = RIGHT; }
           4 == lantern { SquarePosition = LEFT; }
+          5 == lantern;
         }
       }
       {
@@ -3672,7 +3674,7 @@ Dungeon NEW_ATTNAM;
         ##bbb##
         #bbbbb#
         #bk.pb#
-        3bbbbb4
+        3bb5bb4
         ##bbb##
         .#####.
       }
@@ -4924,6 +4926,8 @@ CharacterMap
   }
 
 }
+
+
 Dungeon UNDER_WATER_TUNNEL;
 {
   Levels = 5;
@@ -5095,10 +5099,12 @@ RandomLevel 0:2;
         EntryIndex = STAIRS_UP;
       }
 
+/*k8: you have to buy lantern first!
       Square, Pos 2,1;
       {
         Items == lantern;
       }
+*/
     }
 
   }

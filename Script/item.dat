@@ -4379,7 +4379,8 @@ belderiver /* meleeweapon-> */
   DamageFlags = SLASH|PIERCE;
 }
 
-demonhead {
+demonhead
+{
   DefaultSize = 200;
   Possibility = 1;
   WeaponCategory = AXES;
@@ -4534,16 +4535,18 @@ masamune /* meleeweapon-> */
 
 kawai /* meleeweapon-> */
 {
-  StrengthModifier = 100;
-  FormModifier = 225;
-  DefaultSize = 150;
-  Possibility = 10;
+  StrengthModifier = 100; /*200;*/
+  FormModifier = 1500; /*225;*/
+  DefaultSize = 80;
+  Possibility = 4;
   CanBeWished = false;
+  IsDestroyable = false;
+  CanBeGeneratedInContainer = true;
   BitmapPos = 109, 210;
   WeaponCategory = LARGE_SWORDS;
   IsMaterialChangeable = false;
-  DefaultMainVolume = 150;
-  DefaultSecondaryVolume = 60;
+  DefaultMainVolume = 100;/*150;*/
+  DefaultSecondaryVolume = 40;/*60;*/
   Adjective = "ancient";
   NameSingular = "katana";
   UsesLongAdjectiveArticle = true;
@@ -4557,11 +4560,18 @@ kawai /* meleeweapon-> */
   Roundness = 30;
   IsTwoHanded = false;
   CanBeCloned = false;
-  CanBeMirrored = true;
+  CanBeMirrored = false;
   CanBeBroken = false;
-  AttachedGod = CRUENTUS;
+  AttachedGod = NONE;
   WieldedBitmapPos = 176, 112;
   IsQuestItem = false;
+  EnchantmentMinusChance = 0;
+  EnchantmentPlusChance = 16;
+  FireResistance = 30;
+  PoisonResistance = 30;
+  ElectricityResistance = 30;
+  AcidResistance = 30;
+  DamageFlags = SLASH|PIERCE;
 }
 
 zulfiqar /* meleeweapon-> */
@@ -4590,7 +4600,6 @@ zulfiqar /* meleeweapon-> */
   WieldedBitmapPos = 176, 112;
   EnchantmentPlusChance = 2;
   DamageFlags = SLASH;
-
 
   Config BROKEN;
   {
