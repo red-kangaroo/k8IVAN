@@ -37,6 +37,7 @@ truthoption ivanconfig::AutoCenterMap("AutoCenterMap", "Automatically center map
 truthoption ivanconfig::AutoCenterMapOnLook("AutoCenterMapOnLook", "Automatically center map when player looks", true);
 truthoption ivanconfig::FastListMode("FastLists", "Instantly select list items with alpha keys", true, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FastListChanger);
 truthoption ivanconfig::PlaySounds("PlaySounds", "use sounds", false);
+truthoption ivanconfig::ConfirmCorpses("ConfirmCorpses", "confirm corpse pickup", true);
 /*k8*/
 
 
@@ -190,6 +191,7 @@ void ivanconfig::Initialize () {
   configsystem::AddOption(&AutoCenterMapOnLook);
   configsystem::AddOption(&FastListMode);
   configsystem::AddOption(&PlaySounds);
+  configsystem::AddOption(&ConfirmCorpses);
 /*k8*/
   configsystem::SetConfigFileName(getConfigPath()+"/.ivan.rc");
   configsystem::Load();

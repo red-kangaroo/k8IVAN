@@ -535,6 +535,7 @@ ITEM(corpse, item)
   virtual int GetSparkleFlags() const;
   virtual truth IsRusted() const { return false; }
   virtual truth CanBeHardened(ccharacter*) const { return false; }
+  virtual truth IsCorpse () const { return true; } //FIXME:k8: is there such function already?
  protected:
   virtual void GenerateMaterials() { }
   virtual col16 GetMaterialColorA(int) const;

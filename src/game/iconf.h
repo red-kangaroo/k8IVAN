@@ -33,6 +33,7 @@ public:
   static truth GetAutoCenterMap () { return AutoCenterMap.Value; }
   static truth GetAutoCenterMapOnLook () { return AutoCenterMapOnLook.Value; }
   static truth GetPlaySounds () { return PlaySounds.Value; }
+  static truth GetConfirmCorpses () { return ConfirmCorpses.Value; }
   static long ApplyContrastTo (long);
   static void Save () { configsystem::Save(); }
   static void Load () { configsystem::Load(); }
@@ -75,6 +76,7 @@ private:
   static truthoption AutoCenterMapOnLook;
   static truthoption FastListMode;
   static truthoption PlaySounds;
+  static truthoption ConfirmCorpses;
   /*k8*/
   static col24 ContrastLuminance;
 };

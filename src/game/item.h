@@ -579,7 +579,10 @@ class item : public object
   void Haste();
   void Slow();
   void SendMemorizedUpdateRequest() const;
- protected:
+
+  virtual truth IsCorpse () const { return false; } //FIXME:k8: is there such function already?
+
+protected:
   virtual cchar* GetBreakVerb() const;
   virtual long GetMaterialPrice() const;
   void LoadDataBaseStats();

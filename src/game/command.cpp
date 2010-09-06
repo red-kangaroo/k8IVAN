@@ -402,6 +402,13 @@ truth commandsystem::PickUp (character *Char) {
       if ((!PileVector[0][0]->GetRoom() ||
            PileVector[0][0]->GetRoom()->PickupItem(Char, PileVector[0][0], Amount)) &&
           PileVector[0][0]->CheckPickUpEffect(Char)) {
+        if (PileVector[0][0]->IsCorpse() && ivanconfig::GetConfirmCorpses()) {
+          //if (!game::TruthQuestion(CONST_S("Do you really want to pick up the corpse? [y/N]"))) return false;
+          itemvector ToPickup;
+          game::DrawEverythingNoBlit();
+          Char->GetStackUnder()->DrawContents(ToPickup, Char, CONST_S("Do you really want to pick up the corpse?"), REMEMBER_SELECTED);
+          if (ToPickup.empty()) return false;
+        }
         for (int c = 0; c < Amount; ++c) PileVector[0][c]->MoveTo(Char->GetStack());
         ADD_MESSAGE("%s picked up.", PileVector[0][0]->GetName(INDEFINITE, Amount).CStr());
         Char->DexterityAction(2);
