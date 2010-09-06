@@ -99,6 +99,7 @@ public:
   static truth Possess (character *);
   static truth Polymorph (character *);
   static truth GetScroll (character *);
+  static truth WizardWish (character *);
 #endif
   static truth ToggleRunning (character *);
   static truth IssueCommand (character *);

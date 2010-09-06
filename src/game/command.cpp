@@ -139,6 +139,7 @@ command *commandsystem::Command[] = {
   new command(&WalkThroughWalls, "toggle walk through walls mode", '4', '4', true, true),
   new command(&RaiseGodRelations, "raise your relations to the gods", '5', '5', true, true),
   new command(&LowerGodRelations, "lower your relations to the gods", '6', '6', true, true),
+  new command(&WizardWish, "wish something", '=', '=', true, true),
   new command(&GainDivineKnowledge, "gain knowledge of all gods", '\"', '\"', true, true),
   new command(&GainAllItems, "gain all items", '$', '$', true, true),
   new command(&SecretKnowledge, "reveal secret knowledge", '*', '*', true, false),
@@ -1201,6 +1202,14 @@ truth commandsystem::GetScroll (character *Char) {
       break;
     }
   }
+  return false;
+}
+
+
+truth commandsystem::WizardWish (character *Char) {
+  game::Wish(PLAYER,
+    "%s appears from nothing and the scroll burns!",
+    "Two %s appear from nothing and the scroll burns!", true);
   return false;
 }
 #endif
