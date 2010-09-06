@@ -55,7 +55,7 @@ template <class type> void databasecreator<type>::ReadFrom (inputfile &SaveFile)
   CreateDataBaseMemberMap();
   for (SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false)) {
     int Type = protocontainer<type>::SearchCodeName(Word);
-    if (!Type) ABORT("Odd term %s encountered in %s datafile line %ld!", Word.CStr(), protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
+    if (!Type) ABORT("Odd term <%s> encountered in %s datafile line %ld!", Word.CStr(), protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
     prototype *Proto = protocontainer<type>::GetProtoData()[Type];
     if (!Proto) ABORT("Something weird with <%s>!", Word.CStr());
     if (Proto->Base && !Proto->Base->ConfigData) {

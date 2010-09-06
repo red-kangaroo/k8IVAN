@@ -701,11 +701,15 @@ public:
   virtual truth IsRetreating() const;
 };
 
-
 CHARACTER(assassin, humanoid)
 {
 public:
   virtual void BeTalkedTo();
 };
+
+CHARACTER(reaper, genie)
+{
+};
+
 
 #endif
