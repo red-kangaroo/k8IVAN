@@ -4,6 +4,13 @@ Config "filename.dat";
 Message "text";
   write message to stderr.
 
+Override item { ... }
+Redefine item { ... }
+  redefine already defined item; useful for modding.
+
+Extend item { ... }
+  extend already defined item: add new configs; useful for modding.
+
 
 I.V.A.N. will load item_00.dat to item_99.dat (if present)
 I.V.A.N. will load char_00.dat to char_99.dat (if present)
