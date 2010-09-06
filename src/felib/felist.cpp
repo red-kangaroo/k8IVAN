@@ -220,7 +220,8 @@ truth felist::DrawPage (bitmap *Buffer) const {
   while (!Entry[c]->Selectable && Entry[c]->String.IsEmpty()) ++c;
   std::vector<festring> Chapter;
   //col16 selBack = BackColor^0xFFFF, selText = BackColor;
-  col16 selBack = LIGHT_GRAY, selText = BLACK;
+  //col16 selBack = LIGHT_GRAY, selText = BLACK;
+  col16 selBack = BLUE, selText = WHITE;
   for (;;) {
     Str.Empty();
     uint Marginal = Entry[c]->Marginal;
@@ -236,7 +237,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
         if (EntryDrawer) EntryDrawer(Buffer, v2(Pos.X+13, LastFillBottom), Entry[c]->ImageKey);
         if (selected) {
           //FONT->PrintfUnshaded(Buffer, v2(Pos.X+38, LastFillBottom+5), WHITE, "%s", Str.CStr());
-          FONT->PrintfUnshaded(Buffer, v2(Pos.X+37, LastFillBottom+5), selText, "%s", Str.CStr());
+          FONT->PrintfUnshaded(Buffer, v2(Pos.X+37, LastFillBottom+4), selText, "%s", Str.CStr());
         } else {
           FONT->Printf(Buffer, v2(Pos.X+37, LastFillBottom+4), Entry[c]->Color, "%s", Str.CStr());
         }
@@ -248,7 +249,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
           Buffer->Fill(Pos.X+3, LastFillBottom, Width-6, 10, !selected ? BackColor : selBack);
           if (selected) {
             //FONT->PrintfUnshaded(Buffer, v2(Pos.X+38, LastFillBottom+1), WHITE, "%s", Chapter[l].CStr());
-            FONT->PrintfUnshaded(Buffer, v2(Pos.X+37, LastFillBottom+1), selText, "%s", Chapter[l].CStr());
+            FONT->PrintfUnshaded(Buffer, v2(Pos.X+37, LastFillBottom), selText, "%s", Chapter[l].CStr());
           } else {
             FONT->Printf(Buffer, v2(Pos.X+37, LastFillBottom), Entry[c]->Color, "%s", Chapter[l].CStr());
           }
@@ -262,7 +263,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
         Buffer->Fill(Pos.X+3, LastFillBottom, Width-6, 10, !selected ? BackColor : selBack);
         if (selected) {
           //FONT->PrintfUnshaded(Buffer, v2(Pos.X+14, LastFillBottom+1), WHITE, "%s", Chapter[l].CStr());
-          FONT->PrintfUnshaded(Buffer, v2(Pos.X+13, LastFillBottom+1), selText, "%s", Chapter[l].CStr());
+          FONT->PrintfUnshaded(Buffer, v2(Pos.X+13, LastFillBottom), selText, "%s", Chapter[l].CStr());
         } else {
           FONT->Printf(Buffer, v2(Pos.X+13, LastFillBottom), Entry[c]->Color, "%s", Chapter[l].CStr());
         }
