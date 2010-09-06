@@ -5191,887 +5191,628 @@ void character::FinalProcessForBone () {
 }
 
 
-void character::SetSoulID(ulong What)
-{
-  if(GetPolymorphBackup())
-    GetPolymorphBackup()->SetSoulID(What);
+void character::SetSoulID (ulong What) {
+  if (GetPolymorphBackup()) GetPolymorphBackup()->SetSoulID(What);
 }
 
-truth character::SearchForItem(citem* Item) const
-{
-  if(combineequipmentpredicateswithparam<ulong>()(this, &item::HasID, Item->GetID(), 1))
-    return true;
 
-  for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i)
-    if(*i == Item)
-      return true;
-
+truth character::SearchForItem (citem *Item) const {
+  if (combineequipmentpredicateswithparam<ulong>()(this, &item::HasID, Item->GetID(), 1)) return true;
+  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) if (*i == Item) return true;
   return false;
 }
 
-item* character::SearchForItem(const sweaponskill* SWeaponSkill) const
-{
-  for(int c = 0; c < GetEquipments(); ++c)
-  {
-    item* Equipment = GetEquipment(c);
 
-    if(Equipment && SWeaponSkill->IsSkillOf(Equipment))
-      return Equipment;
+item *character::SearchForItem (const sweaponskill *SWeaponSkill) const {
+  for (int c = 0; c < GetEquipments(); ++c) {
+    item *Equipment = GetEquipment(c);
+    if (Equipment && SWeaponSkill->IsSkillOf(Equipment)) return Equipment;
   }
-
-  for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i)
-    if(SWeaponSkill->IsSkillOf(*i))
-      return *i;
-
+  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) if (SWeaponSkill->IsSkillOf(*i)) return *i;
   return 0;
 }
 
-void character::PutNear(v2 Pos)
-{
+
+void character::PutNear (v2 Pos) {
   v2 NewPos = game::GetCurrentLevel()->GetNearestFreeSquare(this, Pos, false);
-
-  if(NewPos == ERROR_V2)
-    do
-    {
-      NewPos = game::GetCurrentLevel()->GetRandomSquare(this);
-    }
-    while(NewPos == Pos);
-
+  if (NewPos == ERROR_V2) {
+    do { NewPos = game::GetCurrentLevel()->GetRandomSquare(this); } while(NewPos == Pos);
+  }
   PutTo(NewPos);
 }
 
-void character::PutToOrNear(v2 Pos)
-{
-  if(game::IsInWilderness() || (CanMoveOn(game::GetCurrentLevel()->GetLSquare(Pos)) && IsFreeForMe(game::GetCurrentLevel()->GetLSquare(Pos))))
+
+void character::PutToOrNear (v2 Pos) {
+  if (game::IsInWilderness() || (CanMoveOn(game::GetCurrentLevel()->GetLSquare(Pos)) && IsFreeForMe(game::GetCurrentLevel()->GetLSquare(Pos))))
     PutTo(Pos);
   else
     PutNear(Pos);
 }
 
-void character::PutTo(v2 Pos)
-{
+
+void character::PutTo (v2 Pos) {
   SquareUnder[0] = game::GetCurrentArea()->GetSquare(Pos);
   SquareUnder[0]->AddCharacter(this);
 }
 
-void character::Remove()
-{
+
+void character::Remove () {
   SquareUnder[0]->RemoveCharacter();
   SquareUnder[0] = 0;
 }
 
-void character::SendNewDrawRequest() const
-{
-  for(int c = 0; c < SquaresUnder; ++c)
-  {
-    square* Square = GetSquareUnder(c);
 
-    if(Square)
-      Square->SendNewDrawRequest();
+void character::SendNewDrawRequest () const {
+  for (int c = 0; c < SquaresUnder; ++c) {
+    square *Square = GetSquareUnder(c);
+    if (Square) Square->SendNewDrawRequest();
   }
 }
 
-truth character::IsOver(v2 Pos) const
-{
-  for(int c = 0; c < SquaresUnder; ++c)
-  {
-    square* Square = GetSquareUnder(c);
 
-    if(Square && Square->GetPos() == Pos)
-      return true;
+truth character::IsOver (v2 Pos) const {
+  for (int c = 0; c < SquaresUnder; ++c) {
+    square *Square = GetSquareUnder(c);
+    if (Square && Square->GetPos() == Pos) return true;
   }
-
   return false;
 }
 
-truth character::CanTheoreticallyMoveOn(const lsquare* LSquare) const
-{
-  return GetMoveType() & LSquare->GetTheoreticalWalkability();
-}
 
-truth character::CanMoveOn(const lsquare* LSquare) const
-{
-  return GetMoveType() & LSquare->GetWalkability();
-}
+truth character::CanTheoreticallyMoveOn (const lsquare *LSquare) const { return GetMoveType() & LSquare->GetTheoreticalWalkability(); }
+truth character::CanMoveOn (const lsquare *LSquare) const { return GetMoveType() & LSquare->GetWalkability(); }
+truth character::CanMoveOn (const square *Square) const { return GetMoveType() & Square->GetSquareWalkability(); }
+truth character::CanMoveOn (const olterrain *OLTerrain) const { return GetMoveType() & OLTerrain->GetWalkability(); }
+truth character::CanMoveOn (const oterrain *OTerrain) const { return GetMoveType() & OTerrain->GetWalkability(); }
+truth character::IsFreeForMe(square *Square) const { return !Square->GetCharacter() || Square->GetCharacter() == this; }
+void character::LoadSquaresUnder () { SquareUnder[0] = game::GetSquareInLoad(); }
 
-truth character::CanMoveOn(const square* Square) const
-{
-  return GetMoveType() & Square->GetSquareWalkability();
-}
-
-truth character::CanMoveOn(const olterrain* OLTerrain) const
-{
-  return GetMoveType() & OLTerrain->GetWalkability();
-}
-
-truth character::CanMoveOn(const oterrain* OTerrain) const
-{
-  return GetMoveType() & OTerrain->GetWalkability();
-}
-
-truth character::IsFreeForMe(square* Square) const
-{
-  return !Square->GetCharacter() || Square->GetCharacter() == this;
-}
-
-void character::LoadSquaresUnder()
-{
-  SquareUnder[0] = game::GetSquareInLoad();
-}
-
-truth character::AttackAdjacentEnemyAI()
-{
-  if(!IsEnabled())
-    return false;
-
-  character* Char[MAX_NEIGHBOUR_SQUARES];
+truth character::AttackAdjacentEnemyAI () {
+  if (!IsEnabled()) return false;
+  character *Char[MAX_NEIGHBOUR_SQUARES];
   v2 Pos[MAX_NEIGHBOUR_SQUARES];
   int Dir[MAX_NEIGHBOUR_SQUARES];
   int Index = 0;
-
-  for(int d = 0; d < GetNeighbourSquares(); ++d)
-  {
-    square* Square = GetNeighbourSquare(d);
-
-    if(Square)
-    {
-      character* Enemy = Square->GetCharacter();
-
-      if(Enemy && (GetRelation(Enemy) == HOSTILE || StateIsActivated(CONFUSED)))
-      {
-  Dir[Index] = d;
-  Pos[Index] = Square->GetPos();
-  Char[Index++] = Enemy;
+  for (int d = 0; d < GetNeighbourSquares(); ++d) {
+    square *Square = GetNeighbourSquare(d);
+    if (Square) {
+      character *Enemy = Square->GetCharacter();
+      if (Enemy && (GetRelation(Enemy) == HOSTILE || StateIsActivated(CONFUSED))) {
+        Dir[Index] = d;
+        Pos[Index] = Square->GetPos();
+        Char[Index++] = Enemy;
       }
     }
   }
-
-  if(Index)
-  {
+  if (Index) {
     int ChosenIndex = RAND() % Index;
     Hit(Char[ChosenIndex], Pos[ChosenIndex], Dir[ChosenIndex]);
     return true;
   }
-
   return false;
 }
 
-void character::SignalStepFrom(lsquare** OldSquareUnder)
-{
+
+void character::SignalStepFrom (lsquare **OldSquareUnder) {
   int c;
-  lsquare* NewSquareUnder[MAX_SQUARES_UNDER];
-
-  for(c = 0; c < GetSquaresUnder(); ++c)
-    NewSquareUnder[c] = GetLSquareUnder(c);
-
-  for(c = 0; c < GetSquaresUnder(); ++c)
-    if(IsEnabled() && GetLSquareUnder(c) == NewSquareUnder[c])
-      NewSquareUnder[c]->StepOn(this, OldSquareUnder);
+  lsquare *NewSquareUnder[MAX_SQUARES_UNDER];
+  for (c = 0; c < GetSquaresUnder(); ++c) NewSquareUnder[c] = GetLSquareUnder(c);
+  for (c = 0; c < GetSquaresUnder(); ++c) {
+    if (IsEnabled() && GetLSquareUnder(c) == NewSquareUnder[c]) NewSquareUnder[c]->StepOn(this, OldSquareUnder);
+  }
 }
 
-int character::GetSumOfAttributes() const
-{
+
+int character::GetSumOfAttributes () const {
   return GetAttribute(ENDURANCE) + GetAttribute(PERCEPTION) + GetAttribute(INTELLIGENCE) + GetAttribute(WISDOM) + GetAttribute(CHARISMA) + GetAttribute(ARM_STRENGTH) + GetAttribute(AGILITY);
 }
 
-void character::IntelligenceAction(int Difficulty)
-{
+
+void character::IntelligenceAction (int Difficulty) {
   EditAP(-20000 * Difficulty / APBonus(GetAttribute(INTELLIGENCE)));
   EditExperience(INTELLIGENCE, Difficulty * 15, 1 << 7);
 }
 
-struct walkabilitycontroller
-{
-  static truth Handler(int x, int y)
-  {
-    return x >= 0 && y >= 0 && x < LevelXSize && y < LevelYSize
-    && Map[x][y]->GetTheoreticalWalkability() & MoveType;
+
+struct walkabilitycontroller {
+  static truth Handler (int x, int y) {
+    return x >= 0 && y >= 0 && x < LevelXSize && y < LevelYSize && Map[x][y]->GetTheoreticalWalkability() & MoveType;
   }
-  static lsquare*** Map;
+  static lsquare ***Map;
   static int LevelXSize, LevelYSize;
   static int MoveType;
 };
 
-lsquare*** walkabilitycontroller::Map;
+
+lsquare ***walkabilitycontroller::Map;
 int walkabilitycontroller::LevelXSize, walkabilitycontroller::LevelYSize;
 int walkabilitycontroller::MoveType;
 
-truth character::CreateRoute()
-{
-  Route.clear();
 
-  if(GetAttribute(INTELLIGENCE) >= 10 && !StateIsActivated(CONFUSED))
-  {
+truth character::CreateRoute () {
+  Route.clear();
+  if (GetAttribute(INTELLIGENCE) >= 10 && !StateIsActivated(CONFUSED)) {
     v2 Pos = GetPos();
     walkabilitycontroller::Map = GetLevel()->GetMap();
     walkabilitycontroller::LevelXSize = GetLevel()->GetXSize();
     walkabilitycontroller::LevelYSize = GetLevel()->GetYSize();
     walkabilitycontroller::MoveType = GetMoveType();
-    node* Node;
-
-    for(int c = 0; c < game::GetTeams(); ++c)
-      for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-      {
-  character* Char = *i;
-
-  if (Char->IsEnabled() && !Char->Route.empty() && (Char->GetMoveType()&GetMoveType()) == Char->GetMoveType()) {
-    v2 CharGoingTo = Char->Route[0];
-    v2 iPos = Char->Route.back();
-
-    if((GoingTo - CharGoingTo).GetLengthSquare() <= 100
-       && (Pos - iPos).GetLengthSquare() <= 100
-       && mapmath<walkabilitycontroller>::DoLine(CharGoingTo.X, CharGoingTo.Y, GoingTo.X, GoingTo.Y, SKIP_FIRST)
-       && mapmath<walkabilitycontroller>::DoLine(Pos.X, Pos.Y, iPos.X, iPos.Y, SKIP_FIRST))
-    {
-      if(!Illegal.empty() && Illegal.find(Char->Route.back()) != Illegal.end())
-        continue;
-
-      Node = GetLevel()->FindRoute(CharGoingTo, GoingTo, Illegal, GetMoveType());
-
-      if(Node)
-        while(Node->Last)
-        {
-    Route.push_back(Node->Pos);
-    Node = Node->Last;
+    node *Node;
+    for (int c = 0; c < game::GetTeams(); ++c)
+      for (std::list<character *>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
+      character *Char = *i;
+      if (Char->IsEnabled() && !Char->Route.empty() && (Char->GetMoveType()&GetMoveType()) == Char->GetMoveType()) {
+        v2 CharGoingTo = Char->Route[0];
+        v2 iPos = Char->Route.back();
+        if ((GoingTo-CharGoingTo).GetLengthSquare() <= 100 && (Pos - iPos).GetLengthSquare() <= 100 &&
+            mapmath<walkabilitycontroller>::DoLine(CharGoingTo.X, CharGoingTo.Y, GoingTo.X, GoingTo.Y, SKIP_FIRST) &&
+            mapmath<walkabilitycontroller>::DoLine(Pos.X, Pos.Y, iPos.X, iPos.Y, SKIP_FIRST)) {
+          if (!Illegal.empty() && Illegal.find(Char->Route.back()) != Illegal.end()) continue;
+          Node = GetLevel()->FindRoute(CharGoingTo, GoingTo, Illegal, GetMoveType());
+          if (Node) { while(Node->Last) { Route.push_back(Node->Pos); Node = Node->Last; } }
+          else { Route.clear(); continue; }
+          Route.insert(Route.end(), Char->Route.begin(), Char->Route.end());
+          Node = GetLevel()->FindRoute(Pos, iPos, Illegal, GetMoveType());
+          if (Node) { while (Node->Last) { Route.push_back(Node->Pos); Node = Node->Last; } }
+          else { Route.clear(); continue; }
+          IntelligenceAction(1);
+          return true;
         }
-      else
-      {
-        Route.clear();
-        continue;
       }
-
-      Route.insert(Route.end(), Char->Route.begin(), Char->Route.end());
-      Node = GetLevel()->FindRoute(Pos, iPos, Illegal, GetMoveType());
-
-      if(Node)
-        while(Node->Last)
-        {
-    Route.push_back(Node->Pos);
-    Node = Node->Last;
-        }
-      else
-      {
-        Route.clear();
-        continue;
-      }
-
-      IntelligenceAction(1);
-      return true;
     }
-  }
-      }
-
     Node = GetLevel()->FindRoute(Pos, GoingTo, Illegal, GetMoveType());
-
-    if(Node)
-      while(Node->Last)
-      {
-  Route.push_back(Node->Pos);
-  Node = Node->Last;
-      }
-    else
-      TerminateGoingTo();
-
+    if (Node) { while(Node->Last) { Route.push_back(Node->Pos); Node = Node->Last; } }
+    else TerminateGoingTo();
     IntelligenceAction(5);
     return true;
   }
-  else
-    return false;
+  return false;
 }
 
-void character::SetGoingTo(v2 What)
-{
-  if(GoingTo != What)
-  {
+
+void character::SetGoingTo (v2 What) {
+  if (GoingTo != What) {
     GoingTo = What;
     Route.clear();
     Illegal.clear();
   }
 }
 
-void character::TerminateGoingTo()
-{
+
+void character::TerminateGoingTo () {
   GoingTo = ERROR_V2;
   Route.clear();
   Illegal.clear();
 }
 
-truth character::CheckForFood(int Radius)
-{
-  if(StateIsActivated(PANIC) || !UsesNutrition() || !IsEnabled())
-    return false;
 
+truth character::CheckForFood (int Radius) {
+  if (StateIsActivated(PANIC) || !UsesNutrition() || !IsEnabled()) return false;
   v2 Pos = GetPos();
   int x, y;
-
-  for(int r = 1; r <= Radius; ++r)
-  {
-    x = Pos.X - r;
-
-    if(x >= 0)
-      for(y = Pos.Y - r; y <= Pos.Y + r; ++y)
-  if(CheckForFoodInSquare(v2(x, y)))
-    return true;
-
-    x = Pos.X + r;
-
-    if(x < GetLevel()->GetXSize())
-      for(y = Pos.Y - r; y <= Pos.Y + r; ++y)
-  if(CheckForFoodInSquare(v2(x, y)))
-    return true;
-
-    y = Pos.Y - r;
-
-    if(y >= 0)
-      for(x = Pos.X - r; x <= Pos.X + r; ++x)
-  if(CheckForFoodInSquare(v2(x, y)))
-    return true;
-
-    y = Pos.Y + r;
-
-    if(y < GetLevel()->GetYSize())
-      for(x = Pos.X - r; x <= Pos.X + r; ++x)
-  if(CheckForFoodInSquare(v2(x, y)))
-    return true;
+  for (int r = 1; r <= Radius; ++r) {
+    x = Pos.X-r;
+    if (x >= 0) {
+      for (y = Pos.Y-r; y <= Pos.Y+r; ++y) if (CheckForFoodInSquare(v2(x, y))) return true;
+    }
+    x = Pos.X+r;
+    if (x < GetLevel()->GetXSize()) {
+      for (y = Pos.Y-r; y <= Pos.Y+r; ++y) if (CheckForFoodInSquare(v2(x, y))) return true;
+    }
+    y = Pos.Y-r;
+    if (y >= 0) {
+      for (x = Pos.X-r; x <= Pos.X+r; ++x) if (CheckForFoodInSquare(v2(x, y))) return true;
+    }
+    y = Pos.Y+r;
+    if (y < GetLevel()->GetYSize()) {
+      for (x = Pos.X-r; x <= Pos.X+r; ++x) if (CheckForFoodInSquare(v2(x, y))) return true;
+    }
   }
-
   return false;
 }
 
-truth character::CheckForFoodInSquare(v2 Pos)
-{
-  level* Level = GetLevel();
 
-  if(Level->IsValidPos(Pos))
-  {
-    lsquare* Square = Level->GetLSquare(Pos);
-    stack* Stack = Square->GetStack();
-
-    if(Stack->GetItems())
-      for(stackiterator i = Stack->GetBottom(); i.HasItem(); ++i)
-  if(i->IsPickable(this)
-     && i->CanBeSeenBy(this)
-     && i->CanBeEatenByAI(this)
-     && (!Square->GetRoomIndex()
-         || Square->GetRoom()->AllowFoodSearch()))
-  {
-    SetGoingTo(Pos);
-    return MoveTowardsTarget(false);
+truth character::CheckForFoodInSquare (v2 Pos) {
+  level *Level = GetLevel();
+  if (Level->IsValidPos(Pos)) {
+    lsquare *Square = Level->GetLSquare(Pos);
+    stack *Stack = Square->GetStack();
+    if (Stack->GetItems()) {
+      for (stackiterator i = Stack->GetBottom(); i.HasItem(); ++i) {
+        if (i->IsPickable(this) && i->CanBeSeenBy(this) && i->CanBeEatenByAI(this) && (!Square->GetRoomIndex() || Square->GetRoom()->AllowFoodSearch())) {
+          SetGoingTo(Pos);
+          return MoveTowardsTarget(false);
+        }
+      }
+    }
   }
-  }
-
   return false;
 }
 
-void character::SetConfig(int NewConfig, int SpecialFlags)
-{
+
+void character::SetConfig (int NewConfig, int SpecialFlags) {
   databasecreator<character>::InstallDataBase(this, NewConfig);
   CalculateAll();
   CheckIfSeen();
-
-  if(!(SpecialFlags & NO_PIC_UPDATE))
-    UpdatePictures();
+  if (!(SpecialFlags & NO_PIC_UPDATE)) UpdatePictures();
 }
 
-truth character::IsOver(citem* Item) const
-{
-  for(int c1 = 0; c1 < Item->GetSquaresUnder(); ++c1)
-    for(int c2 = 0; c2 < SquaresUnder; ++c2)
-      if(Item->GetPos(c1) == GetPos(c2))
-  return true;
 
+truth character::IsOver (citem *Item) const {
+  for (int c1 = 0; c1 < Item->GetSquaresUnder(); ++c1)
+    for (int c2 = 0; c2 < SquaresUnder; ++c2)
+      if (Item->GetPos(c1) == GetPos(c2)) return true;
   return false;
 }
 
-truth character::CheckConsume(cfestring& Verb) const
-{
-  if(!UsesNutrition())
-  {
-    if(IsPlayer())
-      ADD_MESSAGE("In this form you can't and don't need to %s.", Verb.CStr());
 
+truth character::CheckConsume (cfestring &Verb) const {
+  if (!UsesNutrition()) {
+    if (IsPlayer()) ADD_MESSAGE("In this form you can't and don't need to %s.", Verb.CStr());
     return false;
   }
-
   return true;
 }
 
-void character::PutTo(lsquare* To)
-{
+
+void character::PutTo (lsquare *To) {
   PutTo(To->GetPos());
 }
 
-double character::RandomizeBabyExperience(double SumE)
-{
-  if(!SumE)
-    return 0;
 
+double character::RandomizeBabyExperience (double SumE) {
+  if (!SumE) return 0;
   double E = (SumE / 4) - (SumE / 32) + (double(RAND()) / MAX_RAND) * (SumE / 16 + 1);
   return Limit(E, MIN_EXP, MAX_EXP);
 }
 
-liquid* character::CreateBlood(long Volume) const
-{
+
+liquid *character::CreateBlood (long Volume) const {
   return liquid::Spawn(GetBloodMaterial(), Volume);
 }
 
-void character::SpillFluid(character* Spiller, liquid* Liquid, int SquareIndex)
-{
+
+void character::SpillFluid (character *Spiller, liquid *Liquid, int SquareIndex) {
   long ReserveVolume = Liquid->GetVolume() >> 1;
   Liquid->EditVolume(-ReserveVolume);
   GetStack()->SpillFluid(Spiller, Liquid, long(Liquid->GetVolume() * sqrt(double(GetStack()->GetVolume()) / GetVolume())));
   Liquid->EditVolume(ReserveVolume);
   int c;
   long Modifier[MAX_BODYPARTS], ModifierSum = 0;
-
-  for(c = 0; c < BodyParts; ++c)
-    if(GetBodyPart(c))
-    {
+  for (c = 0; c < BodyParts; ++c) {
+    if (GetBodyPart(c)) {
       Modifier[c] = long(sqrt(GetBodyPart(c)->GetVolume()));
-
-      if(Modifier[c])
-  Modifier[c] *= 1 + (RAND() & 3);
-
+      if (Modifier[c]) Modifier[c] *= 1 + (RAND() & 3);
       ModifierSum += Modifier[c];
-    }
-    else
+    } else {
       Modifier[c] = 0;
-
-  for(c = 1; c < GetBodyParts(); ++c)
-    if(GetBodyPart(c) && IsEnabled())
+    }
+  }
+  for (c = 1; c < GetBodyParts(); ++c) {
+    if (GetBodyPart(c) && IsEnabled())
       GetBodyPart(c)->SpillFluid(Spiller, Liquid->SpawnMoreLiquid(Liquid->GetVolume() * Modifier[c] / ModifierSum), SquareIndex);
-
-  if(IsEnabled())
-  {
+  }
+  if (IsEnabled()) {
     Liquid->SetVolume(Liquid->GetVolume() * Modifier[TORSO_INDEX] / ModifierSum);
     GetTorso()->SpillFluid(Spiller, Liquid, SquareIndex);
   }
 }
 
-void character::StayOn(liquid* Liquid)
-{
+
+void character::StayOn (liquid *Liquid) {
   Liquid->TouchEffect(this, TORSO_INDEX);
 }
 
-truth character::IsAlly(ccharacter* Char) const
-{
+
+truth character::IsAlly (ccharacter *Char) const {
   return Char->GetTeam()->GetID() == GetTeam()->GetID();
 }
 
-void character::ResetSpoiling()
-{
+
+void character::ResetSpoiling () {
   doforbodyparts()(this, &bodypart::ResetSpoiling);
 }
 
-item* character::SearchForItem(ccharacter* Char, sorter Sorter) const
-{
-  item* Equipment = findequipment<ccharacter*>()(this, Sorter, Char);
 
-  if(Equipment)
-    return Equipment;
-
-  for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i)
-    if(((*i)->*Sorter)(Char))
-      return *i;
-
+item *character::SearchForItem (ccharacter *Char, sorter Sorter) const {
+  item *Equipment = findequipment<ccharacter *>()(this, Sorter, Char);
+  if (Equipment) return Equipment;
+  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) if (((*i)->*Sorter)(Char)) return *i;
   return 0;
 }
 
-truth character::DetectMaterial(cmaterial* Material) const
-{
-  return GetStack()->DetectMaterial(Material)
-    || combinebodypartpredicateswithparam<cmaterial*>()(this, &bodypart::DetectMaterial, Material, 1)
-    || combineequipmentpredicateswithparam<cmaterial*>()(this, &item::DetectMaterial, Material, 1);
+
+truth character::DetectMaterial (cmaterial *Material) const {
+  return GetStack()->DetectMaterial(Material) ||
+    combinebodypartpredicateswithparam<cmaterial*>()(this, &bodypart::DetectMaterial, Material, 1) ||
+    combineequipmentpredicateswithparam<cmaterial*>()(this, &item::DetectMaterial, Material, 1);
 }
 
-truth character::DamageTypeDestroysBodyPart(int Type)
-{
+
+truth character::DamageTypeDestroysBodyPart (int Type) {
   return (Type&0xFFF) != PHYSICAL_DAMAGE;
 }
 
-truth character::CheckIfTooScaredToHit(ccharacter* Enemy) const
-{
-  if(IsPlayer() && StateIsActivated(PANIC))
-    for(int d = 0; d < GetNeighbourSquares(); ++d)
-    {
-      square* Square = GetNeighbourSquare(d);
 
-      if(Square)
-      {
-  if(CanMoveOn(Square)
-     && (!Square->GetCharacter()
-         || Square->GetCharacter()->IsPet()))
-  {
-    ADD_MESSAGE("You are too scared to attack %s.", Enemy->CHAR_DESCRIPTION(DEFINITE));
-    return true;
-  }
+truth character::CheckIfTooScaredToHit (ccharacter *Enemy) const {
+  if (IsPlayer() && StateIsActivated(PANIC)) {
+    for (int d = 0; d < GetNeighbourSquares(); ++d) {
+      square *Square = GetNeighbourSquare(d);
+      if (Square) {
+        if(CanMoveOn(Square) && (!Square->GetCharacter() || Square->GetCharacter()->IsPet())) {
+          ADD_MESSAGE("You are too scared to attack %s.", Enemy->CHAR_DESCRIPTION(DEFINITE));
+          return true;
+        }
       }
     }
-
+  }
   return false;
 }
 
-void character::PrintBeginLevitationMessage() const {
-  if(!IsFlying()) {
-    if(IsPlayer())
-      ADD_MESSAGE("You rise into the air like a small hot-air balloon.");
-    else if(CanBeSeenByPlayer())
-      ADD_MESSAGE("%s begins to float.", CHAR_NAME(DEFINITE));
+
+void character::PrintBeginLevitationMessage () const {
+  if (!IsFlying()) {
+    if (IsPlayer()) ADD_MESSAGE("You rise into the air like a small hot-air balloon.");
+    else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s begins to float.", CHAR_NAME(DEFINITE));
   }
 }
+
 
 void character::PrintEndLevitationMessage () const {
   if (!IsFlying()) {
-    if(IsPlayer())
-      ADD_MESSAGE("You descend gently onto the ground.");
-    else if(CanBeSeenByPlayer())
-      ADD_MESSAGE("%s drops onto the ground.", CHAR_NAME(DEFINITE));
+    if (IsPlayer()) ADD_MESSAGE("You descend gently onto the ground.");
+    else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s drops onto the ground.", CHAR_NAME(DEFINITE));
   }
 }
 
-truth character::IsLimbIndex(int I)
-{
-  switch(I)
-  {
-   case RIGHT_ARM_INDEX:
-   case LEFT_ARM_INDEX:
-   case RIGHT_LEG_INDEX:
-   case LEFT_LEG_INDEX:
-    return true;
-  }
 
+truth character::IsLimbIndex (int I) {
+  switch (I) {
+    case RIGHT_ARM_INDEX:
+    case LEFT_ARM_INDEX:
+    case RIGHT_LEG_INDEX:
+    case LEFT_LEG_INDEX:
+      return true;
+  }
   return false;
 }
 
-void character::EditExperience(int Identifier, double Value, double Speed)
-{
-  if(!AllowExperience()
-     || (Identifier == ENDURANCE && UseMaterialAttributes()))
-    return;
 
-  int Change = RawEditExperience(BaseExperience[Identifier],
-         GetNaturalExperience(Identifier),
-         Value, Speed);
-
-  if(!Change)
-    return;
-
-  cchar* PlayerMsg = 0, * NPCMsg = 0;
-
-  switch(Identifier)
-  {
-   case ENDURANCE:
-    if(Change > 0)
-    {
-      PlayerMsg = "You feel tougher than anything!";
-
-      if(IsPet())
-  NPCMsg = "Suddenly %s looks tougher.";
-    }
-    else
-    {
-      PlayerMsg = "You feel less healthy.";
-
-      if(IsPet())
-  NPCMsg = "Suddenly %s looks less healthy.";
-    }
-
-    CalculateBodyPartMaxHPs();
-    CalculateMaxStamina();
-    break;
-   case PERCEPTION:
-    if(IsPlayer())
-    {
-      if(Change > 0)
-  PlayerMsg = "You now see the world in much better detail than before.";
-      else
-      {
-  PlayerMsg = "You feel very guru.";
-  game::GetGod(VALPURUS)->AdjustRelation(100);
+void character::EditExperience (int Identifier, double Value, double Speed) {
+  if (!AllowExperience() || (Identifier == ENDURANCE && UseMaterialAttributes())) return;
+  int Change = RawEditExperience(BaseExperience[Identifier], GetNaturalExperience(Identifier), Value, Speed);
+  if (!Change) return;
+  cchar *PlayerMsg = 0, *NPCMsg = 0;
+  switch (Identifier) {
+    case ENDURANCE:
+      if (Change > 0) {
+        PlayerMsg = "You feel tougher than anything!";
+        if (IsPet()) NPCMsg = "Suddenly %s looks tougher.";
+      } else {
+        PlayerMsg = "You feel less healthy.";
+        if (IsPet()) NPCMsg = "Suddenly %s looks less healthy.";
       }
-
-      game::SendLOSUpdateRequest();
-    }
-    break;
-   case INTELLIGENCE:
-    if(IsPlayer())
-    {
-      if(Change > 0)
-  PlayerMsg = "Suddenly the inner structure of the Multiverse around you looks quite simple.";
-      else
-  PlayerMsg = "It surely is hard to think today.";
-
-      UpdateESPLOS();
-    }
-
-    if(IsPlayerKind())
-      UpdatePictures();
-
-    break;
-   case WISDOM:
-    if(IsPlayer())
-    {
-      if(Change > 0)
-  PlayerMsg = "You feel your life experience increasing all the time.";
-      else
-  PlayerMsg = "You feel like having done something unwise.";
-    }
-
-    if(IsPlayerKind())
-      UpdatePictures();
-
-    break;
-   case CHARISMA:
-    if (Change > 0) {
-      PlayerMsg = "You feel very confident of your social skills.";
-      if (IsPet()) {
-        if (GetAttribute(CHARISMA) <= 15) NPCMsg = "%s looks less ugly.";
-        else NPCMsg = "%s looks more attractive.";
+      CalculateBodyPartMaxHPs();
+      CalculateMaxStamina();
+      break;
+    case PERCEPTION:
+      if (IsPlayer()) {
+        if (Change > 0) {
+          PlayerMsg = "You now see the world in much better detail than before.";
+        } else {
+          PlayerMsg = "You feel very guru.";
+          game::GetGod(VALPURUS)->AdjustRelation(100);
+        }
+        game::SendLOSUpdateRequest();
       }
-    } else {
-      PlayerMsg = "You feel somehow disliked.";
-      if (IsPet()) {
-        if (GetAttribute(CHARISMA) < 15) NPCMsg = "%s looks more ugly.";
-        else NPCMsg = "%s looks less attractive.";
+      break;
+    case INTELLIGENCE:
+      if (IsPlayer()) {
+        if (Change > 0) PlayerMsg = "Suddenly the inner structure of the Multiverse around you looks quite simple.";
+        else PlayerMsg = "It surely is hard to think today.";
+        UpdateESPLOS();
       }
-    }
-    if (IsPlayerKind()) UpdatePictures();
-    break;
-   case MANA:
-    if (Change > 0) {
-      PlayerMsg = "You feel magical forces coursing through your body!";
-      NPCMsg = "You notice an odd glow around %s.";
-    } else {
-      PlayerMsg = "You feel your magical abilities withering slowly.";
-      NPCMsg = "You notice strange vibrations in the air around %s. But they disappear rapidly.";
-    }
-    break;
+      if (IsPlayerKind()) UpdatePictures();
+      break;
+    case WISDOM:
+      if (IsPlayer()) {
+        if (Change > 0) PlayerMsg = "You feel your life experience increasing all the time.";
+        else PlayerMsg = "You feel like having done something unwise.";
+      }
+      if (IsPlayerKind()) UpdatePictures();
+      break;
+    case CHARISMA:
+      if (Change > 0) {
+        PlayerMsg = "You feel very confident of your social skills.";
+        if (IsPet()) {
+          if (GetAttribute(CHARISMA) <= 15) NPCMsg = "%s looks less ugly.";
+          else NPCMsg = "%s looks more attractive.";
+        }
+      } else {
+        PlayerMsg = "You feel somehow disliked.";
+        if (IsPet()) {
+          if (GetAttribute(CHARISMA) < 15) NPCMsg = "%s looks more ugly.";
+          else NPCMsg = "%s looks less attractive.";
+        }
+      }
+      if (IsPlayerKind()) UpdatePictures();
+      break;
+    case MANA:
+      if (Change > 0) {
+       PlayerMsg = "You feel magical forces coursing through your body!";
+        NPCMsg = "You notice an odd glow around %s.";
+       } else {
+        PlayerMsg = "You feel your magical abilities withering slowly.";
+        NPCMsg = "You notice strange vibrations in the air around %s. But they disappear rapidly.";
+     }
+       break;
   }
 
-  if(IsPlayer())
-    ADD_MESSAGE(PlayerMsg);
-  else if(NPCMsg && CanBeSeenByPlayer())
-    ADD_MESSAGE(NPCMsg, CHAR_NAME(DEFINITE));
+  if (IsPlayer()) ADD_MESSAGE(PlayerMsg);
+  else if (NPCMsg && CanBeSeenByPlayer()) ADD_MESSAGE(NPCMsg, CHAR_NAME(DEFINITE));
 
   CalculateBattleInfo();
 }
 
-int character::RawEditExperience(double& Exp, double NaturalExp, double Value, double Speed) const
-{
-  double OldExp = Exp;
 
-  if(Speed < 0)
-  {
+int character::RawEditExperience (double &Exp, double NaturalExp, double Value, double Speed) const {
+  double OldExp = Exp;
+  if (Speed < 0) {
     Speed = -Speed;
     Value = -Value;
   }
-
-  if(!OldExp || !Value
-     || (Value > 0 && OldExp >= NaturalExp * (100 + Value) / 100)
-     || (Value < 0 && OldExp <= NaturalExp * (100 + Value) / 100))
-    return 0;
-
-  if(!IsPlayer())
-    Speed *= 1.5;
-
+  if(!OldExp || !Value || (Value > 0 && OldExp >= NaturalExp * (100 + Value) / 100) ||
+     (Value < 0 && OldExp <= NaturalExp * (100 + Value) / 100)) return 0;
+  if (!IsPlayer()) Speed *= 1.5;
   Exp += (NaturalExp * (100 + Value) - 100 * OldExp) * Speed * EXP_DIVISOR;
   LimitRef(Exp, MIN_EXP, MAX_EXP);
   int NewA = int(Exp * EXP_DIVISOR);
   int OldA = int(OldExp * EXP_DIVISOR);
   int Delta = NewA - OldA;
-
-  if(Delta > 0)
-    Exp = Max(Exp, (NewA + 0.05) * EXP_MULTIPLIER);
-  else if(Delta < 0)
-    Exp = Min(Exp, (NewA + 0.95) * EXP_MULTIPLIER);
-
+  if (Delta > 0) Exp = Max(Exp, (NewA + 0.05) * EXP_MULTIPLIER);
+  else if (Delta < 0) Exp = Min(Exp, (NewA + 0.95) * EXP_MULTIPLIER);
   LimitRef(Exp, MIN_EXP, MAX_EXP);
   return Delta;
 }
 
-int character::GetAttribute(int Identifier, truth AllowBonus) const
-{
+
+int character::GetAttribute (int Identifier, truth AllowBonus) const {
   int A = int(BaseExperience[Identifier] * EXP_DIVISOR);
-
-  if(AllowBonus && Identifier == INTELLIGENCE && BrainsHurt())
-    return Max((A + AttributeBonus[INTELLIGENCE]) / 3, 1);
-
+  if (AllowBonus && Identifier == INTELLIGENCE && BrainsHurt()) return Max((A + AttributeBonus[INTELLIGENCE]) / 3, 1);
   return A && AllowBonus ? Max(A + AttributeBonus[Identifier], 1) : A;
 }
 
-void characterdatabase::PostProcess()
-{
-  double AM = (100 + AttributeBonus) * EXP_MULTIPLIER / 100;
 
-  for(int c = 0; c < ATTRIBUTES; ++c)
-    NaturalExperience[c] = this->*ExpPtr[c] * AM;
+void characterdatabase::PostProcess () {
+  double AM = (100 + AttributeBonus) * EXP_MULTIPLIER / 100;
+  for (int c = 0; c < ATTRIBUTES; ++c) NaturalExperience[c] = this->*ExpPtr[c] * AM;
 }
 
-void character::EditDealExperience(long Price)
-{
+
+void character::EditDealExperience (long Price) {
   EditExperience(CHARISMA, sqrt(Price) / 5, 1 << 9);
 }
 
-void character::PrintBeginLeprosyMessage() const
-{
-  if(IsPlayer())
-    ADD_MESSAGE("You feel you're falling in pieces.");
+
+void character::PrintBeginLeprosyMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel you're falling in pieces.");
 }
 
-void character::PrintEndLeprosyMessage() const
-{
-  if(IsPlayer())
-    ADD_MESSAGE("You feel your limbs are stuck in place tightly."); // CHANGE OR DIE
+
+void character::PrintEndLeprosyMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel your limbs are stuck in place tightly."); // CHANGE OR DIE
 }
 
-void character::TryToInfectWithLeprosy(ccharacter* Infector)
-{
-  if(!IsImmuneToLeprosy()
-     && ((GetRelation(Infector) == HOSTILE
-    && !RAND_N(50 * GetAttribute(ENDURANCE)))
-   || !RAND_N(500 * GetAttribute(ENDURANCE))))
-    GainIntrinsic(LEPROSY);
+
+void character::TryToInfectWithLeprosy (ccharacter *Infector) {
+  if (!IsImmuneToLeprosy() &&
+      ((GetRelation(Infector) == HOSTILE && !RAND_N(50 * GetAttribute(ENDURANCE))) ||
+       !RAND_N(500 * GetAttribute(ENDURANCE)))) GainIntrinsic(LEPROSY);
 }
 
-void character::SignalGeneration()
-{
-  const_cast<database*>(DataBase)->Flags |= HAS_BEEN_GENERATED;
+
+void character::SignalGeneration () {
+  const_cast<database *>(DataBase)->Flags |= HAS_BEEN_GENERATED;
 }
 
-void character::CheckIfSeen()
-{
-  if(IsPlayer() || CanBeSeenByPlayer())
-    SignalSeen();
+
+void character::CheckIfSeen () {
+  if (IsPlayer() || CanBeSeenByPlayer()) SignalSeen();
 }
 
-void character::SignalSeen()
-{
-  if(!(WarnFlags & WARNED)
-     && GetRelation(PLAYER) == HOSTILE)
-  {
+
+void character::SignalSeen () {
+  if (!(WarnFlags & WARNED) && GetRelation(PLAYER) == HOSTILE) {
     double Danger = GetRelativeDanger(PLAYER);
-
-    if(Danger > 5.)
-    {
+    if (Danger > 5.0) {
       game::SetDangerFound(Max(game::GetDangerFound(), Danger));
-
-      if(Danger > 500. && !(WarnFlags & HAS_CAUSED_PANIC))
-      {
-  WarnFlags |= HAS_CAUSED_PANIC;
-  game::SetCausePanicFlag(true);
+      if (Danger > 500.0 && !(WarnFlags & HAS_CAUSED_PANIC)) {
+        WarnFlags |= HAS_CAUSED_PANIC;
+        game::SetCausePanicFlag(true);
       }
-
       WarnFlags |= WARNED;
     }
   }
-
-  const_cast<database*>(DataBase)->Flags |= HAS_BEEN_SEEN;
+  const_cast<database *>(DataBase)->Flags |= HAS_BEEN_SEEN;
 }
 
-int character::GetPolymorphIntelligenceRequirement() const
-{
-  if(DataBase->PolymorphIntelligenceRequirement == DEPENDS_ON_ATTRIBUTES)
-    return Max(GetAttributeAverage() - 5, 0);
-  else
-    return DataBase->PolymorphIntelligenceRequirement;
+
+int character::GetPolymorphIntelligenceRequirement () const {
+  if (DataBase->PolymorphIntelligenceRequirement == DEPENDS_ON_ATTRIBUTES) return Max(GetAttributeAverage() - 5, 0);
+  return DataBase->PolymorphIntelligenceRequirement;
 }
 
-void character::RemoveAllItems()
-{
+
+void character::RemoveAllItems () {
   GetStack()->Clean();
-
-  for(int c = 0; c < GetEquipments(); ++c)
-  {
-    item* Equipment = GetEquipment(c);
-
-    if(Equipment)
-    {
+  for (int c = 0; c < GetEquipments(); ++c) {
+    item *Equipment = GetEquipment(c);
+    if (Equipment) {
       Equipment->RemoveFromSlot();
       Equipment->SendToHell();
     }
   }
 }
 
-int character::CalculateWeaponSkillHits(ccharacter* Enemy) const
-{
-  if(Enemy->IsPlayer())
-  {
+
+int character::CalculateWeaponSkillHits (ccharacter *Enemy) const {
+  if (Enemy->IsPlayer()) {
     configid ConfigID(GetType(), GetConfig());
     const dangerid& DangerID = game::GetDangerMap().find(ConfigID)->second;
     return Min(int(DangerID.EquippedDanger * 2000), 1000);
   }
-  else
-    return Min(int(GetRelativeDanger(Enemy, true) * 2000), 1000);
+  return Min(int(GetRelativeDanger(Enemy, true) * 2000), 1000);
 }
 
-truth character::CanUseEquipment(int I) const
-{
+
+truth character::CanUseEquipment (int I) const {
   return CanUseEquipment() && I < GetEquipments() && GetBodyPartOfEquipment(I) && EquipmentIsAllowed(I);
 }
 
+
 /* Target mustn't have any equipment */
-
-void character::DonateEquipmentTo(character* Character)
-{
-  if(IsPlayer())
-  {
-    ulong* EquipmentMemory = game::GetEquipmentMemory();
-
-    for(int c = 0; c < MAX_EQUIPMENT_SLOTS; ++c)
-    {
-      item* Item = GetEquipment(c);
-
-      if(Item)
-      {
-  if(Character->CanUseEquipment(c))
-  {
-    Item->RemoveFromSlot();
-    Character->SetEquipment(c, Item);
-  }
-  else
-  {
-    EquipmentMemory[c] = Item->GetID();
-    Item->MoveTo(Character->GetStack());
-  }
-      }
-      else if(CanUseEquipment(c))
-  EquipmentMemory[c] = 0;
-      else if(EquipmentMemory[c]
-        && Character->CanUseEquipment(c))
-      {
-  for(stackiterator i = Character->GetStack()->GetBottom();
-      i.HasItem(); ++i)
-    if(i->GetID() == EquipmentMemory[c])
-    {
-      item* Item = *i;
-      Item->RemoveFromSlot();
-      Character->SetEquipment(c, Item);
-      break;
-    }
-
-  EquipmentMemory[c] = 0;
+void character::DonateEquipmentTo (character *Character) {
+  if (IsPlayer()) {
+    ulong *EquipmentMemory = game::GetEquipmentMemory();
+    for (int c = 0; c < MAX_EQUIPMENT_SLOTS; ++c) {
+      item *Item = GetEquipment(c);
+      if (Item) {
+        if (Character->CanUseEquipment(c)) {
+          Item->RemoveFromSlot();
+          Character->SetEquipment(c, Item);
+        } else {
+          EquipmentMemory[c] = Item->GetID();
+          Item->MoveTo(Character->GetStack());
+        }
+      } else if (CanUseEquipment(c)) {
+        EquipmentMemory[c] = 0;
+      } else if (EquipmentMemory[c] && Character->CanUseEquipment(c)) {
+        for (stackiterator i = Character->GetStack()->GetBottom(); i.HasItem(); ++i) {
+          if (i->GetID() == EquipmentMemory[c]) {
+            item *Item = *i;
+            Item->RemoveFromSlot();
+            Character->SetEquipment(c, Item);
+            break;
+          }
+        }
+        EquipmentMemory[c] = 0;
       }
     }
-  }
-  else
-  {
-    for(int c = 0; c < GetEquipments(); ++c)
-    {
-      item* Item = GetEquipment(c);
-
-      if(Item)
-      {
-  if(Character->CanUseEquipment(c))
-  {
-    Item->RemoveFromSlot();
-    Character->SetEquipment(c, Item);
-  }
-  else
-    Item->MoveTo(Character->GetStackUnder());
+  } else {
+    for (int c = 0; c < GetEquipments(); ++c) {
+      item *Item = GetEquipment(c);
+      if (Item) {
+        if (Character->CanUseEquipment(c)) {
+          Item->RemoveFromSlot();
+          Character->SetEquipment(c, Item);
+        } else {
+          Item->MoveTo(Character->GetStackUnder());
+        }
       }
     }
   }
 }
+
 
 void character::ReceivePeaSoup(long)
 {
