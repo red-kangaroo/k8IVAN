@@ -1,0 +1,142 @@
+<html>
+<head>
+<title>IVAN script lecture 4</title>
+</head>
+<body>
+
+<h2>holybanana's IVAN script course, lecture IV</h2>
+<h4>Basic syntax structure of the script</h4>
+
+<p>Browsing through he script, you may note that most of the commands
+there are of form X { A=B; C=D; E=F; ... }. Let's call this form a <i>structure
+definition</i> and the commands A=B; C=D; and so on <i>member value
+assignments</i>. In other words, the script consists of <i>structures</i> which
+have <i>members</i> to which you can assign <i>values</i>. The order
+which you present structure definitions and member value assignments
+has usually no relevance. (There are some rare exceptions.) The script also
+works whether you divide your script to separate lines or not. You
+can also insert extra spaces and tabs between words without changing the
+meaning of the script. However, you cannot cut a line or insert
+a space or tab inside a word, for instance write "darkmage" as "dark mage".
+Even though it is not syntactically necessary, you should follow the
+intendation used previously in the script. So write like this:</p>
+
+<pre>
+X
+{
+  A=B;
+  C=D;
+  E=F;
+  ...
+}
+</pre>
+
+And please avoid intending like this, for instance:
+
+<pre>
+X {
+A=B;
+C=D;
+E=F;
+...
+}
+</pre>
+
+<p>Each member of a structure has a <i>type</i>. (Remember "type" also
+has another meaning introduced in <a href="lecture1.html">lecture I</a>.
+We use the phrases "entity type" and "script member type" to distinguish
+between these two meanings, if there's some possibility of confusion.)
+The most common are other structures, <i>integers</i>, <i>vectors</i>,
+<i>strings</i>, <i>contentscripts</i>
+and <i>arrays of elements of a certain type</i>.</p>
+
+<p>Integers are presented like this: 5, 1000000, -532489, 6*527, 5*(-6+62/7)+9
+and so on. Division is rounded down. One special class of integers are colors,
+which are presented like this: rgb16(100,0,100) or rgb24(255,0,0). These
+are functions which transform triples (red,green,blue) into integers.
+The elements of these triples are in the range from 0 to 255. So rgb16(0,255,0)
+and rgb24(0,255,0) both mean bright green. rgb16 is used for colors of material
+coloring and rgb24 is used for lights.</p>
+
+<p>Vectors represent positions in two-dimensional spaces, for instance in
+bitmaps or levels. They are presented as X, Y where X and Y are integers.</p>
+
+<p>Any word is a string. So is a phrase surrounded by quotation marks. So
+Alfred is a string and so is "Alex the Great", but the words Alex the Great
+are three separate strings. It is customary to always use quotation marks to
+help readers recognize strings, so you should use "Alfred" instead of Alfred.
+You may use the symbols \" to insert a quotation mark inside a string.
+Example: "The guard says: \"Buzz off!\"".</p>
+
+<p>Contentscripts are the commands which represent instantiations of entities,
+explained in <a href="lecture2.html">lecture II</a>, for instance
+OMMEL_HAIR cloak(CLOAK_OF_FIRE_RESISTANCE). There are character, item,
+ground terrain and over terrain contentscripts.</p>
+
+<p>An array of elements of a certain type is presented as { n, A, B, C, ..., X; },
+where A, B, C, ..., X is a list of n elements which are all of that type. For instance,
+let's consider an array of item contentscripts, which are quite common. Let's choose
+a structure member of such an array type: the Inventory member of character databases
+of char.dat. As an example, here's the basic inventory of Golgor Dhan:</p>
+
+<pre>
+    Inventory = { 2, scrollofenchantarmor { Times = 2; }, scrollofenchantweapon { Times = 2; } }
+</pre>
+
+<p>Btw, here we learn a new parameter for instantiations, Times. It is a member of
+integer type and determines how many times the instantiation is repeated. So the above
+script means exactly the same as</p>
+
+<pre>
+    Inventory = { 4, scrollofenchantarmor, scrollofenchantarmor, scrollofenchantweapon, scrollofenchantweapon; }
+</pre>
+
+<p>Often, you want the array to have only one element. Here's an example:</p>
+
+<pre>
+    Square, Random;
+    {
+      Items == mine(BIG_MINE) { Team = MONSTER_TEAM; IsActive = true; Chance = 50; }
+    }
+</pre>
+
+<p>This creates a big mine at a random location which is visible to monsters but
+not other teams, is active and has 50% chance of appearing. Note that you use the
+syntax == X; instead of = { 1, X; }. The latter works also, but is uglier.</p>
+
+<p>A structure may have a member of its own type as a member or member of a member, etc.
+This allows recursion. For instance, you can determine the contents of chest as an
+array of item contentscripts even though the chest is presented as an item contentscript
+itself. Example:</p>
+
+<pre>
+  Inventory == itemcontainer(LARGE_CHEST) { ItemsInside == itemcontainer(CHEST) { ItemsInside == itemcontainer(SMALL_CHEST); } }
+</pre>
+
+<p>If you add this to the player, he will get a chest inside a chest inside a chest.</p>
+
+<p>Exercise: Suppose the player's bananagrower friends give him a farewell gift at the start
+of each journey. That is, a random amount of bananas is generated at the start of the game
+in the player's inventory. One banana is always generated. Five to six bananas are most
+common. The maximum of ten bananas is generated only rarely. Bananagrowers are generous
+to their friends but ten is already a bit too much, as they have to feed their children.
+How do you implement this feature using just the script?</p>
+
+<p>Exercise II: Is there any way to have an item appear one time in ten thousand games in
+a specific place, using just the script? Answer yes or no. If you answered yes, present an example.</p>
+
+<hr>
+
+<p>
+<a href="lecture3.html">Previous lecture</a>
+<a href="lecture5.html">Next lecture</a>
+<a href="index.html">Back to main</a>
+</p>
+
+<hr>
+
+<p>Last modified September 1 2006.</p>
+
+</body>
+</html>
+
