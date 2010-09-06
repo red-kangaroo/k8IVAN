@@ -1,4 +1,6 @@
-Config KNIGHT_SWORD;
+Extend meleeweapon
+{
+  Config KNIGHT_SWORD;
   {
     DefaultSize = 120;
     Possibility = 15;
@@ -31,7 +33,7 @@ Config KNIGHT_SWORD;
     EnchantmentPlusChance = 60;
   }
 
-Config TIP_SWORD;
+  Config TIP_SWORD;
   {
     DefaultSize = 120;
     Possibility = 6;
@@ -126,3 +128,4 @@ Config TIP_SWORD;
     MaterialConfigChances = { 6, 25, 25, 5, 5, 2, 1; }
     EnchantmentPlusChance = 30;
   }
+}

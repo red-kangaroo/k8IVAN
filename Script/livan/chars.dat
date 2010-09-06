@@ -6,3 +6,6 @@ Include "livan/chars/assassin.dat";
 Include "livan/chars/wisefarmer.dat";
 Include "livan/chars/bum.dat";
 Include "livan/chars/menatrixfusanga.dat";
+
+Include "livan/chars/cfg/guard.dat";
+Include "livan/chars/cfg/priest.dat";

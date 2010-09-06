@@ -1,3 +1,5 @@
+Extend ironalloy /* metals that rust */
+{
   Config DAMASCUS_STEEL;
   {
     StrengthValue = 400;
@@ -12,3 +14,4 @@
     IntelligenceRequirement = 60;
     CommonFlags = Base|IS_VALUABLE;
   }
+}

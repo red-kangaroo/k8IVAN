@@ -1,0 +1,18 @@
+/* chain whip by Iankill */
+
+Extend whip
+{
+  Config CHAIN_WHIP;
+  {
+    DefaultSize = 150;
+    Possibility = 25;
+    DefaultMainVolume = 200;
+    DefaultSecondaryVolume = 50;
+    StrengthModifier = 20;
+    MainMaterialConfig = { 4, BRONZE, IRON, STEEL, METEORIC_STEEL; }
+    MaterialConfigChances = { 4, 75, 50, 25, 10; }
+    Adjective = "chain";
+    FormModifier = 200;
+    EnchantmentPlusChance = 20;
+  }
+}

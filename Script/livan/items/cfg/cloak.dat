@@ -1,3 +1,5 @@
+Extend cloak /* armor-> */
+{
   Config CLOAK_OF_WERE_WOLF_FUR;
   {
     Possibility = 5;
@@ -17,3 +19,4 @@
     EnchantmentPlusChance = 10;
     CloakBitmapPos = 48, 496;
   }
+}

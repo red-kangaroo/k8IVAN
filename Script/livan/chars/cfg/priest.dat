@@ -1,3 +1,5 @@
+Extend priest
+{
   Config CLEPTIA;
   {
     DefaultArmStrength = 15;
@@ -31,3 +33,4 @@
     RightSWeaponSkillHits = 20;
     FriendlyReplies == "@Dd talks to you: \"They say the avatar of Cleptia is a guy named Sparrow Hat.\"";
   }
+}

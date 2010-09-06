@@ -726,8 +726,6 @@ meleeweapon
     MaterialConfigChances = { 4, 100, 25, 25, 5; }
     EnchantmentPlusChance = 40;
   }
-
-  Config "livan/items/cfg/melee.dat";
 }
 
 banana /* materialcontainer-> */
@@ -1019,9 +1017,6 @@ bodyarmor /* armor-> */
     AthleteArmArmorBitmapPos = 80, 560;
     LegArmorBitmapPos = 16, 544;
   }
-
-  Config "livan/items/cfg/armor.dat";
-  Config "atomic/items/cfg/atomic_00.dat";
 }
 
 goldeneagleshirt /* armor->bodyarmor-> */
@@ -1999,8 +1994,6 @@ cloak /* armor-> */
     EnchantmentPlusChance = 10;
     CloakBitmapPos = 48, 496;
   }
-
-  Config "livan/items/cfg/cloak.dat";
 }
 
 boot /* armor-> */
@@ -3840,7 +3833,3 @@ firstbornchild
     NameSingular = "daughter";
   }
 }
-
-
-Include "livan/items.dat";
-Include "k8/items.dat";

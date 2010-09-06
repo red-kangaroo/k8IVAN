@@ -1053,8 +1053,6 @@ solid
     CategoryFlags = Base|CAN_BE_TAILORED|IS_GOLEM_MATERIAL;
     InteractionFlags = CAN_BURN;
   }
-
-  Config "livan/materials/cfg/solid.dat";
 }
 
 organic /* substances that spoil but are not flesh */
@@ -2320,6 +2318,4 @@ ironalloy /* metals that rust */
     NameFlags = Base|USE_AN;
     CategoryFlags = Base|IS_SPARKLING;
   }
-
-  Config "livan/materials/cfg/ironalloy.dat";
 }

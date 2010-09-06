@@ -20,3 +20,7 @@ Include "livan/items/maingauche.dat";
 Include "livan/items/ullrbone.dat";
 Include "livan/items/vacuumblade.dat";
 Include "livan/items/tipswordofpenetration.dat";
+
+Include "livan/items/cfg/armor.dat";
+Include "livan/items/cfg/cloak.dat";
+Include "livan/items/cfg/melee.dat";

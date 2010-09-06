@@ -1,3 +1,5 @@
+Extend bodyarmor /* armor-> */
+{
   Config ARMOR_OF_THE_OMMEL;
   {
     StrengthModifier = 160;
@@ -37,3 +39,4 @@
     AcidResistance = 1;
     PoisonResistance = 1;
   }
+}

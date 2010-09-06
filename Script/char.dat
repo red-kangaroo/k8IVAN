@@ -675,8 +675,6 @@ guard
     DisplacePriority = 4;
     UndeadVersions = false;
   }
-
-  Config "livan/chars/cfg/guard.dat";
 }
 
 shopkeeper
@@ -913,8 +911,6 @@ priest
     }
     AutomaticallySeen = true;
   }
-
-  Config "livan/chars/cfg/shopkeeper.dat";
 }
 
 oree
@@ -5798,6 +5794,3 @@ reaper
   LegMainColor = rgb16(160,160,160);
   ArmMainColor = rgb16(0, 0, 0);
 }
-
-
-Include "livan/chars.dat";
