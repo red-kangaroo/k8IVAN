@@ -207,6 +207,15 @@ festring inputfile::ReadNumberIntr (int CallLevel, long *num, truth *isString, t
     if (firstWord) {
       if (allowStr && lastWordWasString) {
         *isString = true;
+        ReadWord(res);
+        if (res.GetSize() == 1) {
+          if (res[0] != ';') {
+            ABORT("Invalid terminator in file %s, line %ld!", FileName.CStr(), TellLine());
+            if (PreserveTerminator) ungetc(res[0], Buffer);
+          }
+        } else {
+          ABORT("Terminator expected in file %s, line %ld!", FileName.CStr(), TellLine());
+        }
         return Word;
       }
       firstWord = false;

@@ -1,0 +1,9 @@
+Config "filename.dat";
+  include this file for config.
+
+Message "text";
+  write message to stderr.
+
+
+I.V.A.N. will load item_00.dat to item_99.dat (if present)
+I.V.A.N. will load char_00.dat to char_99.dat (if present)

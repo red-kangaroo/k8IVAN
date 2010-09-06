@@ -1174,6 +1174,9 @@ bodyarmor /* armor-> */
     LegArmorBitmapPos = 16, 416;
   }
 /*****************************************************************************/
+  Message "loading custom item configs...";
+  Config "item_cfg_00.dat";
+  Message "done loading custom item configs...";
 }
 
 goldeneagleshirt /* armor->bodyarmor-> */
@@ -1803,6 +1806,20 @@ whip /* meleeweapon-> */
     StrengthModifier = 20;
     Adjective = "runed";
     FormModifier = 20;
+    EnchantmentPlusChance = 20;
+  }
+
+  Config CHAIN_WHIP; /* by Iankill */
+  {
+    DefaultSize = 150;
+    Possibility = 25;
+    DefaultMainVolume = 200;
+    DefaultSecondaryVolume = 50;
+    StrengthModifier = 20;
+    MainMaterialConfig = { 4, BRONZE, IRON, STEEL, METEORIC_STEEL; }
+    MaterialConfigChances = { 4, 75, 50, 25, 10; }
+    Adjective = "chain";
+    FormModifier = 200;
     EnchantmentPlusChance = 20;
   }
 }

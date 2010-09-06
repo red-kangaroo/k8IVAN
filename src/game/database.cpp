@@ -10,7 +10,7 @@
  *
  */
 /* Compiled through dataset.cpp */
-
+#include <stack>
 
 
 int CreateConfigTable(databasebase ***ConfigTable, databasebase ***TempTable,
@@ -53,39 +53,80 @@ template <class type> void databasecreator<type>::ReadFrom (inputfile &SaveFile)
   TempTable[0] = FirstTempTable;
   memset(TempTableInfo, 0, CONFIG_TABLE_SIZE*sizeof(long));
   CreateDataBaseMemberMap();
-  for (SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false)) {
-    int Type = protocontainer<type>::SearchCodeName(Word);
-    if (!Type) ABORT("Odd term <%s> encountered in %s datafile line %ld!", Word.CStr(), protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
-    prototype *Proto = protocontainer<type>::GetProtoData()[Type];
-    if (!Proto) ABORT("Something weird with <%s>!", Word.CStr());
-    if (Proto->Base && !Proto->Base->ConfigData) {
-      ABORT("Database has no description of <%s>!", Proto->Base->GetClassID());
-    }
-    database *DataBase = Proto->Base ? new database(**Proto->Base->ConfigData) : new database;
-    DataBase->InitDefaults(Proto, 0);
-    TempConfig[0] = DataBase;
-    int Configs = 1;
-    if (SaveFile.ReadWord() != "{") ABORT("Bracket missing in %s datafile line %ld!", protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
-    for (SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word)) {
-      if (Word == "Config") {
-        int ConfigNumber = SaveFile.ReadNumber();
-        database* ConfigDataBase = new database(*Proto->ChooseBaseForConfig(TempConfig, Configs, ConfigNumber));
-        ConfigDataBase->InitDefaults(Proto, ConfigNumber);
-        TempConfig[Configs++] = ConfigDataBase;
-        if (SaveFile.ReadWord() != "{") ABORT("Bracket missing in %s datafile line %ld!", protocontainer<type>::GetMainClassID(), SaveFile.TellLine());
-        for (SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word))
-          if (!AnalyzeData(SaveFile, Word, *ConfigDataBase)) ABORT("Illegal datavalue %s found while building up %s config #%d, line %ld!", Word.CStr(), Proto->GetClassID(), ConfigNumber, SaveFile.TellLine());
-        ConfigDataBase->PostProcess();
-        continue;
+  std::stack<inputfile *> infStack;
+  infStack.push(&SaveFile);
+  while (!infStack.empty()) {
+    inputfile *inFile = infStack.top();
+    infStack.pop();
+    for (inFile->ReadWord(Word, false); !inFile->Eof(); inFile->ReadWord(Word, false)) {
+      int Type = protocontainer<type>::SearchCodeName(Word);
+      if (!Type) ABORT("Odd term <%s> encountered in %s datafile line %ld!", Word.CStr(), protocontainer<type>::GetMainClassID(), inFile->TellLine());
+      prototype *Proto = protocontainer<type>::GetProtoData()[Type];
+      if (!Proto) ABORT("Something weird with <%s>!", Word.CStr());
+      if (Proto->Base && !Proto->Base->ConfigData) {
+        ABORT("Database has no description of <%s>!", Proto->Base->GetClassID());
       }
-      if (!AnalyzeData(SaveFile, Word, *DataBase)) ABORT("Illegal datavalue %s found while building up %s, line %ld!", Word.CStr(), Proto->GetClassID(), SaveFile.TellLine());
+      database *DataBase = Proto->Base ? new database(**Proto->Base->ConfigData) : new database;
+      DataBase->InitDefaults(Proto, 0);
+      TempConfig[0] = DataBase;
+      int Configs = 1;
+      if (inFile->ReadWord() != "{") ABORT("Bracket missing in %s datafile line %ld!", protocontainer<type>::GetMainClassID(), inFile->TellLine());
+      //for (inFile->ReadWord(Word); Word != "}"; inFile->ReadWord(Word))
+      for (;;) {
+        inFile->ReadWord(Word, false);
+        if (Word == "" && inFile->Eof()) {
+          if (infStack.empty()) ABORT("Bracket missing in %s datafile line %ld!", protocontainer<type>::GetMainClassID(), inFile->TellLine());
+          delete inFile;
+          inFile = infStack.top();
+          infStack.pop();
+          continue;
+        }
+        //fprintf(stderr, "D: %d; <%s>\n", (int)infStack.size(), Word.CStr());
+        if (Word == "}") break;
+        //
+        if (Word == "Config") {
+          long ConfigNumber = -1;
+          truth isString = false;
+          festring fname;
+          fname = inFile->ReadStringOrNumber(&ConfigNumber, &isString);
+          if (isString) {
+            // include file
+            //Word = inFile->ReadWord();
+            //if (Word != ";") ABORT("Invalid terminator at line %ld!", inFile->TellLine());
+            //fprintf(stderr, "INCLUDE: [%s]\n", fname.CStr());
+            inputfile *incf = new inputfile(game::GetGameDir()+"Script/"+fname, &game::GetGlobalValueMap());
+            infStack.push(inFile);
+            inFile = incf;
+          } else {
+            //int ConfigNumber = inFile->ReadNumber();
+            //fprintf(stderr, "CFG: <%d>\n", (int)ConfigNumber);
+            database *ConfigDataBase = new database(*Proto->ChooseBaseForConfig(TempConfig, Configs, ConfigNumber));
+            ConfigDataBase->InitDefaults(Proto, ConfigNumber);
+            TempConfig[Configs++] = ConfigDataBase;
+            if (inFile->ReadWord() != "{") ABORT("Bracket missing in %s datafile line %ld!", protocontainer<type>::GetMainClassID(), inFile->TellLine());
+            for (inFile->ReadWord(Word); Word != "}"; inFile->ReadWord(Word)) {
+              if (!AnalyzeData(*inFile, Word, *ConfigDataBase)) ABORT("Illegal datavalue %s found while building up %s config #%d, line %ld!", Word.CStr(), Proto->GetClassID(), ConfigNumber, inFile->TellLine());
+            }
+            ConfigDataBase->PostProcess();
+          }
+          continue;
+        } else if (Word == "Message") {
+          Word = inFile->ReadWord();
+          if (inFile->ReadWord() != ";") ABORT("Invalid terminator at line %ld!", inFile->TellLine());
+          fprintf(stderr, "MESSAGE: %s\n", Word.CStr());
+          continue;
+        }
+        if (!AnalyzeData(*inFile, Word, *DataBase)) ABORT("Illegal datavalue %s found while building up %s, line %ld!", Word.CStr(), Proto->GetClassID(), inFile->TellLine());
+      }
+      DataBase->PostProcess();
+      //Configs = Proto->CreateSpecialConfigurations(TempConfig, Configs);
+      Proto->ConfigData = new database *[Configs];
+      Proto->ConfigSize = Configs;
+      memcpy(Proto->ConfigData, TempConfig, Configs*sizeof(database *));
     }
-    DataBase->PostProcess();
-    //Configs = Proto->CreateSpecialConfigurations(TempConfig, Configs);
-    Proto->ConfigData = new database *[Configs];
-    Proto->ConfigSize = Configs;
-    memcpy(Proto->ConfigData, TempConfig, Configs*sizeof(database *));
+    if (!infStack.empty()) delete inFile;
   }
+  //
   int c1;
   for (c1 = 0; c1 < SPECIAL_CONFIGURATION_GENERATION_LEVELS; ++c1) {
     for (int c2 = 1; c2 < protocontainer<type>::GetSize(); ++c2) {
@@ -667,10 +708,32 @@ void databasesystem::Initialize () {
     inputfile ScriptFile(game::GetGameDir()+"Script/char.dat", &game::GetGlobalValueMap());
     databasecreator<character>::ReadFrom(ScriptFile);
   }
+  { /* additional char files */
+    for (int f = 0; f <= 99; f++) {
+      char bnum[32];
+      sprintf(bnum, "Script/char_%02d.dat", f);
+      inputfile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
+      if (ifl.IsOpen()) {
+        databasecreator<character>::ReadFrom(ifl);
+        ifl.Close();
+      }
+    }
+  }
   {
     /* Must be before olterrain */
     inputfile ScriptFile(game::GetGameDir()+"Script/item.dat", &game::GetGlobalValueMap());
     databasecreator<item>::ReadFrom(ScriptFile);
+  }
+  { /* additional item files */
+    for (int f = 0; f <= 99; f++) {
+      char bnum[32];
+      sprintf(bnum, "Script/item_%02d.dat", f);
+      inputfile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
+      if (ifl.IsOpen()) {
+        databasecreator<item>::ReadFrom(ifl);
+        ifl.Close();
+      }
+    }
   }
   {
     inputfile ScriptFile(game::GetGameDir()+"Script/glterra.dat", &game::GetGlobalValueMap());

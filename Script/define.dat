@@ -524,6 +524,7 @@
 /**********************/
 #define DRAGON_CUIRASS 4
 /**********************/
+#define ARMOR_OF_THE_OMMEL 5
 
 #define CHEAP 1
 #define EXPENSIVE 2
@@ -544,6 +545,7 @@
 #define WAND_OF_NECROMANCY 14
 
 #define RUNED_WHIP 1
+#define CHAIN_WHIP 2
 
 #define BIG_MINE 1
 
