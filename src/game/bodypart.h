@@ -122,8 +122,10 @@ ITEM(bodypart, item)
   virtual truth UpdateArmorPictures() { return false; }
   virtual void DrawArmor(blitdata&) const { }
   virtual void UpdatePictures();
-  item* GetExternalBodyArmor() const;
-  item* GetExternalCloak() const;
+  item *GetExternalBodyArmor () const;
+  item *GetExternalCloak () const;
+  item *GetExternalHelmet () const;
+  item *GetExternalBelt () const;
   virtual void ReceiveAcid(material*, cfestring&, long);
   virtual truth ShowFluids() const { return false; }
   virtual void TryToRust(long);
@@ -155,7 +157,8 @@ ITEM(bodypart, item)
   static truth DamageTypeCanScar(int);
   void GenerateScar(int, int);
   int CalculateScarAttributePenalty(int) const;
- protected:
+
+protected:
   virtual alpha GetMaxAlpha() const;
   virtual void GenerateMaterials() { }
   virtual void AddPostFix(festring&, int) const;
@@ -335,6 +338,8 @@ ITEM(arm, bodypart)
   virtual void SignalEquipmentAdd(gearslot*);
   virtual void SignalEquipmentRemoval(gearslot*, citem*);
   void ApplyDexterityPenalty(item*);
+  void ApplyStrengthBonus (item *Item);
+  void ApplyDexterityBonus (item *Item);
   virtual truth DamageArmor(character*, int, int);
   truth CheckIfWeaponTooHeavy(cchar*) const;
   virtual truth EditAllAttributes(int);
@@ -352,7 +357,8 @@ ITEM(arm, bodypart)
   virtual void SignalPossibleUsabilityChange();
   virtual truth IsAnimated() const;
   truth HasSadistWeapon() const;
- protected:
+
+protected:
   virtual sweaponskill** GetCurrentSWeaponSkill() const { return 0; }
   void UpdateArmArmorPictures(graphicdata&, graphicdata&, int) const;
   int GetCurrentSWeaponSkillBonus() const;
@@ -440,6 +446,8 @@ ITEM(leg, bodypart)
   virtual void CalculateAttributeBonuses();
   virtual void SignalEquipmentAdd(gearslot*);
   void ApplyAgilityPenalty(item*);
+  void ApplyStrengthBonus (item *Item);
+  void ApplyAgilityBonus (item *Item);
   virtual void SignalVolumeAndWeightChange();
   virtual truth DamageArmor(character*, int, int);
   virtual truth EditAllAttributes(int);
@@ -449,7 +457,8 @@ ITEM(leg, bodypart)
   double GetStrengthExperience() const { return StrengthExperience; }
   double GetAgilityExperience() const { return AgilityExperience; }
   virtual void SignalPossibleUsabilityChange();
- protected:
+
+protected:
   void UpdateLegArmorPictures(graphicdata&, graphicdata&, int) const;
   gearslot BootSlot;
   double StrengthExperience;

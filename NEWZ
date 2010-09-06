@@ -14,3 +14,15 @@ Extend item { ... }
 
 I.V.A.N. will load item_00.dat to item_99.dat (if present)
 I.V.A.N. will load char_00.dat to char_99.dat (if present)
+
+
+added patch from Planplan:
+
+allows Helmet, Cloak, Body Armor and Belt to add Arm Strength,
+Dexterity, Leg Strength and Agility. It's maybe a bit dirty, but it
+work.
+
+The enchant bonus is divised by 2, because the bonus value is added to
+each arm or leg. A +1 Dexterity bonus will add +0.5 Dexterity to each
+arm so (could be invisible for a +1 item so, unless you're Dexterity is
+already a bit trained).
