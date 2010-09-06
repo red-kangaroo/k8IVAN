@@ -39,33 +39,28 @@ struct trapdata;
 struct blitdata;
 
 typedef std::vector<std::pair<double, int> > blockvector;
-typedef truth (item::*sorter)(ccharacter*) const;
-typedef truth (character::*petmanagementfunction)();
-typedef character* (*characterspawner)(int, int);
-typedef character* (*charactercloner)(ccharacter*);
+typedef truth (item::*sorter)(ccharacter *) const;
+typedef truth (character::*petmanagementfunction) ();
+typedef character *(*characterspawner) (int, int);
+typedef character *(*charactercloner) (ccharacter *);
 
-inline int APBonus(int Attribute)
-{
-  return Attribute >= 10 ? 90 + Attribute : 50 + Attribute * 5;
-}
+// for GeneralFindItem
+typedef truth (*ItemCheckerCB) (item *i);
 
-struct expid
-{
-  bool operator<(expid) const;
+inline int APBonus (int Attribute) { return Attribute >= 10 ? 90 + Attribute : 50 + Attribute * 5; }
+
+struct expid {
+  bool operator < (expid) const;
   int ActID, SrcID;
 };
 
-inline bool expid::operator<(expid E) const
-{
-  return ActID != E.ActID ? ActID < E.ActID : SrcID < E.SrcID;
-}
+inline bool expid::operator < (expid E) const { return ActID != E.ActID ? ActID < E.ActID : SrcID < E.SrcID; }
 
 RAW_SAVE_LOAD(expid);
 
 typedef std::map<expid, double> expmodifiermap;
 
-struct characterdatabase : public databasebase
-{
+struct characterdatabase : public databasebase {
   typedef characterprototype prototype;
   void InitDefaults(const prototype*, int);
   truth AllowRandomInstantiation() const { return CanBeGenerated && !IsUnique; }
@@ -275,9 +270,8 @@ class characterprototype
   cchar* ClassID;
 };
 
-class character : public entity, public id
-{
- public:
+class character : public entity, public id {
+public:
   friend class databasecreator<character>;
   friend class corpse;
   typedef characterprototype prototype;
@@ -410,9 +404,9 @@ class character : public entity, public id
   virtual truth CanConsume(material*) const;
   action* GetAction() const { return Action; }
   void SetAction(action* What) { Action = What; }
-  virtual void SwitchToDig(item*, v2) { }
-  virtual void SetRightWielded(item*) { }
-  virtual void SetLeftWielded(item*) { }
+  virtual void SwitchToDig(item*, v2) {}
+  virtual void SetRightWielded(item*) {}
+  virtual void SetLeftWielded(item*) {}
   void GoOn(go*, truth = false);
   virtual truth CheckKick() const;
   virtual int OpenMultiplier() const { return 2; }
@@ -429,7 +423,7 @@ class character : public entity, public id
   virtual item* GetEquipment(int) const { return 0; }
   virtual int GetEquipments() const { return 0; }
   virtual sorter EquipmentSorter(int) const { return 0; }
-  virtual void SetEquipment(int, item*) { }
+  virtual void SetEquipment(int, item*) {}
   void AddHealingLiquidConsumeEndMessage() const;
   void AddSchoolFoodConsumeEndMessage() const;
   void AddSchoolFoodHitMessage() const;
@@ -451,7 +445,7 @@ class character : public entity, public id
   virtual truth EquipmentIsAllowed(int) const { return true; }
   truth CanUseEquipment(int) const;
   const database* GetDataBase() const { return DataBase; }
-  void SetParameters(int) { }
+  void SetParameters(int) {}
   virtual double GetNaturalExperience(int) const;
   DATA_BASE_VALUE(const prototype*, ProtoType);
   DATA_BASE_VALUE(int, Config);
@@ -604,7 +598,7 @@ class character : public entity, public id
   int GetType() const { return GetProtoType()->GetIndex(); }
   void TeleportRandomly(truth = false);
   truth TeleportNear(character*);
-  virtual void InitSpecialAttributes() { }
+  virtual void InitSpecialAttributes() {}
   virtual void Kick(lsquare*, int, truth = false) = 0;
   virtual int GetAttribute(int, truth = true) const;
   virtual truth EditAttribute(int, int);
@@ -663,7 +657,7 @@ class character : public entity, public id
   void StartReading(item*, long);
   void DexterityAction(int);
   void IntelligenceAction(int);
-  virtual void SWeaponSkillTick() { }
+  virtual void SWeaponSkillTick() {}
   void PrintBeginInvisibilityMessage() const;
   void PrintEndInvisibilityMessage() const;
   void PrintBeginInfraVisionMessage() const;
@@ -717,7 +711,7 @@ class character : public entity, public id
   int GetRandomNonVitalBodyPart() const;
   void TeleportSomePartsAway(int);
   virtual void SignalVolumeAndWeightChange();
-  virtual void SignalBodyPartVolumeAndWeightChange() { }
+  virtual void SignalBodyPartVolumeAndWeightChange() {}
   void CalculateVolumeAndWeight();
   long GetVolume() const { return Volume; }
   long GetBodyVolume() const { return BodyVolume; }
@@ -747,14 +741,14 @@ class character : public entity, public id
   double GetRelativeDanger(ccharacter*, truth = false) const;
   double GetTimeToDie(ccharacter*, int, double, truth, truth) const;
   virtual double GetTimeToKill(ccharacter*, truth) const = 0;
-  virtual void AddSpecialEquipmentInfo(festring&, int) const { }
+  virtual void AddSpecialEquipmentInfo(festring&, int) const {}
   virtual festring GetBodyPartName(int, truth = false) const;
   item* SearchForItem(ulong) const;
   truth SearchForItem(citem*) const;
   item* SearchForItem(const sweaponskill*) const;
   truth ContentsCanBeSeenBy(ccharacter*) const;
   festring GetBeVerb() const;
-  virtual void CreateBlockPossibilityVector(blockvector&, double) const { }
+  virtual void CreateBlockPossibilityVector(blockvector&, double) const {}
   virtual truth SpecialUnarmedEffect(character*, v2, int, int, truth) { return false; }
   virtual truth SpecialKickEffect(character*, v2, int, int, truth) { return false; }
   virtual truth SpecialBiteEffect(character*, v2, int, int, truth) { return false; }
@@ -817,7 +811,7 @@ class character : public entity, public id
   truth IsOnGround() const;
   virtual truth CheckIfEquipmentIsNotUsable(int) const { return false; }
   virtual truth MoveTowardsHomePos();
-  virtual void SetWayPoints(const fearray<packv2>&) { }
+  virtual void SetWayPoints(const fearray<packv2>&) {}
   truth TryToChangeEquipment(stack*, stack*, int);
   void PrintBeginParasitizedMessage() const;
   void PrintEndParasitizedMessage() const;
@@ -902,7 +896,7 @@ class character : public entity, public id
   square* GetNaturalNeighbourSquare(int I) const { return character::GetNeighbourSquare(I); }
   lsquare* GetNaturalNeighbourLSquare(int I) const { return character::GetNeighbourLSquare(I); }
   void SignalStepFrom(lsquare**);
-  virtual void SpecialBodyDefenceEffect(character*, bodypart*, int) { }
+  virtual void SpecialBodyDefenceEffect(character*, bodypart*, int) {}
   virtual int GetSumOfAttributes() const;
   truth IsGoingSomeWhere() const { return GoingTo != ERROR_V2; }
   virtual truth CreateRoute();
@@ -911,7 +905,7 @@ class character : public entity, public id
   truth CheckForFood(int);
   truth CheckForFoodInSquare(v2);
   virtual truth CheckIfSatiated() { return GetNP() > SATIATED_LEVEL; }
-  virtual void SignalNaturalGeneration() { }
+  virtual void SignalNaturalGeneration() {}
   virtual truth IsBunny() const { return false; }
   void SetConfig(int, int = 0);
   bodypartslot* GetBodyPartSlot(int I) { return &BodyPartSlot[I]; }
@@ -935,7 +929,7 @@ class character : public entity, public id
   virtual character* GetLeader() const;
   int GetMoveType() const;
   virtual truth IsSumoWrestler() const { return false; }
-  void InitMaterials(const materialscript*, const materialscript*, truth) { }
+  void InitMaterials(const materialscript*, const materialscript*, truth) {}
   item* SearchForItem(ccharacter*, sorter) const;
   virtual character* CreateZombie() const { return 0; }
   virtual festring GetZombieDescription() const;
@@ -1065,7 +1059,7 @@ class character : public entity, public id
   virtual cchar* GetNormalDeathMessage() const;
   virtual bool IsConscious() const;
   void ForcePutNear(v2);
-  virtual void ApplySpecialAttributeBonuses() { }
+  virtual void ApplySpecialAttributeBonuses() {}
   void ReceiveMustardGas(int, long);
   void ReceiveMustardGasLiquid(int, long);
   truth IsBadPath(v2) const;
@@ -1093,9 +1087,9 @@ class character : public entity, public id
   static truth DamageTypeDestroysBodyPart(int);
   virtual void LoadSquaresUnder();
   virtual bodypart* MakeBodyPart(int) const;
-  virtual void SpecialTurnHandler() { }
+  virtual void SpecialTurnHandler() {}
   void Initialize(int, int);
-  virtual void PostConstruct() { }
+  virtual void PostConstruct() {}
   void LoadDataBaseStats();
   virtual v2 GetBodyPartBitmapPos(int, truth = false) const;
   virtual col16 GetBodyPartColorA(int, truth = false) const;
@@ -1142,12 +1136,17 @@ class character : public entity, public id
   virtual int ModifyBodyPartHitPreference(int, int Modifier) const { return Modifier; }
   virtual int ModifyBodyPartToHitChance(int, int Chance) const { return Chance; }
   virtual truth CanPanicFromSeveredBodyPart() const { return true; }
-  virtual void SpecialBodyPartSeverReaction() { }
+  virtual void SpecialBodyPartSeverReaction() {}
   truth AttackAdjacentEnemyAI();
   double RandomizeBabyExperience(double);
   static truth IsLimbIndex(int);
   virtual truth AllowExperience() const { return true; }
   virtual const prototype* FindProtoType() const { return &ProtoType; }
+
+  item *GeneralFindItem (ItemCheckerCB chk) const;
+  int GeneralRemoveItem (ItemCheckerCB chk, truth allItems=false); // return count
+
+public:
   static const prototype ProtoType;
   stack* Stack;
   long NP, AP;

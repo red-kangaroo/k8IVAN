@@ -1012,450 +1012,337 @@ truth character::TryMove (v2 MoveVector, truth Important, truth Run) {
   }
 }
 
-void character::CreateCorpse(lsquare* Square)
-{
-  if(!BodyPartsDisappearWhenSevered() && !game::AllBodyPartsVanish())
-  {
-    corpse* Corpse = corpse::Spawn(0, NO_MATERIALS);
+
+void character::CreateCorpse (lsquare *Square) {
+  if (!BodyPartsDisappearWhenSevered() && !game::AllBodyPartsVanish()) {
+    corpse *Corpse = corpse::Spawn(0, NO_MATERIALS);
     Corpse->SetDeceased(this);
     Square->AddItem(Corpse);
     Disable();
-  }
-  else
+  } else {
     SendToHell();
+  }
 }
 
-void character::Die(ccharacter* Killer, cfestring& Msg, ulong DeathFlags)
-{
+
+void character::Die (ccharacter *Killer, cfestring &Msg, ulong DeathFlags) {
   /* Note: This function musn't delete any objects, since one of these may be
      the one currently processed by pool::Be()! */
-
-  if(!IsEnabled())
-    return;
-
+  if (!IsEnabled()) return;
   RemoveTraps();
-
-  if(IsPlayer())
-  {
+  if (IsPlayer()) {
     ADD_MESSAGE("You die.");
-
-    if(game::WizardModeIsActive())
-    {
+    if (game::WizardModeIsActive()) {
       game::DrawEverything();
-
-      if(!game::TruthQuestion(CONST_S("Do you want to do this, cheater? [y/n]"), REQUIRES_ANSWER))
-      {
-  RestoreBodyParts();
-  ResetSpoiling();
-  RestoreHP();
-  RestoreStamina();
-  ResetStates();
-  SetNP(SATIATED_LEVEL);
-  SendNewDrawRequest();
-  return;
+      if (!game::TruthQuestion(CONST_S("Do you want to do this, cheater? [y/n]"), REQUIRES_ANSWER)) {
+        RestoreBodyParts();
+        ResetSpoiling();
+        RestoreHP();
+        RestoreStamina();
+        ResetStates();
+        SetNP(SATIATED_LEVEL);
+        SendNewDrawRequest();
+        return;
       }
     }
-  }
-  else if(CanBeSeenByPlayer() && !(DeathFlags & DISALLOW_MSG))
+  } else if (CanBeSeenByPlayer() && !(DeathFlags & DISALLOW_MSG)) {
     ProcessAndAddMessage(GetDeathMessage());
-  else if(DeathFlags & FORCE_MSG)
+  } else if (DeathFlags & FORCE_MSG) {
     ADD_MESSAGE("You sense the death of something.");
+  }
 
-  if(!(DeathFlags & FORBID_REINCARNATION))
-  {
-    if(StateIsActivated(LIFE_SAVED)
-       && CanMoveOn(!game::IsInWilderness() ? GetSquareUnder() : PLAYER->GetSquareUnder()))
-    {
+  if (!(DeathFlags & FORBID_REINCARNATION)) {
+    if (StateIsActivated(LIFE_SAVED) && CanMoveOn(!game::IsInWilderness() ? GetSquareUnder() : PLAYER->GetSquareUnder())) {
       SaveLife();
       return;
     }
-
-    if(SpecialSaveLife())
-      return;
-  }
-  else if(StateIsActivated(LIFE_SAVED))
+    if (SpecialSaveLife()) return;
+  } else if (StateIsActivated(LIFE_SAVED)) {
     RemoveLifeSavers();
+  }
 
   Flags |= C_IN_NO_MSG_MODE;
-  character* Ghost = 0;
-
-  if(IsPlayer())
-  {
+  character *Ghost = 0;
+  if (IsPlayer()) {
     game::RemoveSaves();
-
-    if(!game::IsInWilderness())
-    {
+    if (!game::IsInWilderness()) {
       Ghost = game::CreateGhost();
       Ghost->Disable();
     }
   }
 
-  square* SquareUnder[MAX_SQUARES_UNDER];
-  lsquare** LSquareUnder = reinterpret_cast<lsquare**>(SquareUnder); /* warning; wtf? */
+  square *SquareUnder[MAX_SQUARES_UNDER];
+  lsquare **LSquareUnder = reinterpret_cast<lsquare **>(SquareUnder); /* warning; wtf? */
   memset(SquareUnder, 0, sizeof(SquareUnder));
   Disable();
-
-  if(IsPlayer() || !game::IsInWilderness())
-  {
-    for(int c = 0; c < SquaresUnder; ++c)
-      SquareUnder[c] = GetSquareUnder(c);
-
+  if (IsPlayer() || !game::IsInWilderness()) {
+    for (int c = 0; c < SquaresUnder; ++c) SquareUnder[c] = GetSquareUnder(c);
     Remove();
-  }
-  else
-  {
+  } else {
     charactervector& V = game::GetWorldMap()->GetPlayerGroup();
     V.erase(std::find(V.begin(), V.end(), this));
   }
 
-  if(!game::IsInWilderness())
-  {
-    if(!StateIsActivated(POLYMORPHED))
-    {
-      if(!IsPlayer() && !IsTemporary() && !Msg.IsEmpty())
-  game::SignalDeath(this, Killer, Msg);
-
-      if(!(DeathFlags & DISALLOW_CORPSE))
-  CreateCorpse(LSquareUnder[0]);
-      else
-  SendToHell();
-    }
-    else
-    {
-      if(!IsPlayer() && !IsTemporary() && !Msg.IsEmpty())
-  game::SignalDeath(GetPolymorphBackup(), Killer, Msg);
-
+  if (!game::IsInWilderness()) {
+    if (!StateIsActivated(POLYMORPHED)) {
+      if (!IsPlayer() && !IsTemporary() && !Msg.IsEmpty()) game::SignalDeath(this, Killer, Msg);
+      if (!(DeathFlags & DISALLOW_CORPSE)) CreateCorpse(LSquareUnder[0]); else SendToHell();
+    } else {
+      if (!IsPlayer() && !IsTemporary() && !Msg.IsEmpty()) game::SignalDeath(GetPolymorphBackup(), Killer, Msg);
       GetPolymorphBackup()->CreateCorpse(LSquareUnder[0]);
       GetPolymorphBackup()->Flags &= ~C_POLYMORPHED;
       SetPolymorphBackup(0);
       SendToHell();
     }
-  }
-  else
-  {
-    if(!IsPlayer() && !IsTemporary() && !Msg.IsEmpty())
-      game::SignalDeath(this, Killer, Msg);
-
+  } else {
+    if (!IsPlayer() && !IsTemporary() && !Msg.IsEmpty()) game::SignalDeath(this, Killer, Msg);
     SendToHell();
   }
 
-  if(IsPlayer())
-  {
-    if(!game::IsInWilderness())
-      for(int c = 0; c < GetSquaresUnder(); ++c)
-  LSquareUnder[c]->SetTemporaryEmitation(GetEmitation());
-
+  if (IsPlayer()) {
+    if (!game::IsInWilderness()) {
+      for (int c = 0; c < GetSquaresUnder(); ++c) LSquareUnder[c]->SetTemporaryEmitation(GetEmitation());
+    }
     ShowAdventureInfo();
-
-    if(!game::IsInWilderness())
-      for(int c = 0; c < GetSquaresUnder(); ++c)
-  LSquareUnder[c]->SetTemporaryEmitation(0);
+    if (!game::IsInWilderness()) {
+      for(int c = 0; c < GetSquaresUnder(); ++c) LSquareUnder[c]->SetTemporaryEmitation(0);
+    }
   }
 
-  if(!game::IsInWilderness())
-  {
-    if(GetSquaresUnder() == 1)
-    {
-      stack* StackUnder = LSquareUnder[0]->GetStack();
+  if (!game::IsInWilderness()) {
+    if (GetSquaresUnder() == 1) {
+      stack *StackUnder = LSquareUnder[0]->GetStack();
       GetStack()->MoveItemsTo(StackUnder);
       doforbodypartswithparam<stack*>()(this, &bodypart::DropEquipment, StackUnder);
-    }
-    else
-    {
-      while(GetStack()->GetItems())
-  GetStack()->GetBottom()->MoveTo(LSquareUnder[RAND_N(GetSquaresUnder())]->GetStack());
-
-      for(int c = 0; c < BodyParts; ++c)
-      {
-  bodypart* BodyPart = GetBodyPart(c);
-
-  if(BodyPart)
-    BodyPart->DropEquipment(LSquareUnder[RAND_N(GetSquaresUnder())]->GetStack());
+    } else {
+      while (GetStack()->GetItems()) GetStack()->GetBottom()->MoveTo(LSquareUnder[RAND_N(GetSquaresUnder())]->GetStack());
+      for (int c = 0; c < BodyParts; ++c) {
+        bodypart *BodyPart = GetBodyPart(c);
+        if (BodyPart) BodyPart->DropEquipment(LSquareUnder[RAND_N(GetSquaresUnder())]->GetStack());
       }
     }
   }
 
-  if(GetTeam()->GetLeader() == this)
-    GetTeam()->SetLeader(0);
+  if (GetTeam()->GetLeader() == this) GetTeam()->SetLeader(0);
 
   Flags &= ~C_IN_NO_MSG_MODE;
 
-  if(IsPlayer())
-  {
+  if (IsPlayer()) {
     AddScoreEntry(Msg);
-
-    if(!game::IsInWilderness())
-    {
+    if (!game::IsInWilderness()) {
       Ghost->PutTo(LSquareUnder[0]->GetPos());
       Ghost->Enable();
       game::CreateBone();
     }
-
     game::TextScreen(CONST_S("Unfortunately you died."), ZERO_V2, WHITE, true, true, &game::ShowDeathSmiley);
     game::End(Msg);
   }
 }
 
-void character::AddMissMessage(ccharacter* Enemy) const
-{
+
+void character::AddMissMessage (ccharacter *Enemy) const {
   festring Msg;
-
-  if(Enemy->IsPlayer())
-    Msg = GetDescription(DEFINITE) + " misses you!";
-  else if(IsPlayer())
-    Msg = CONST_S("You miss ") + Enemy->GetDescription(DEFINITE) + '!';
-  else if(CanBeSeenByPlayer() || Enemy->CanBeSeenByPlayer())
-    Msg = GetDescription(DEFINITE) + " misses " + Enemy->GetDescription(DEFINITE) + '!';
-  else
-    return;
-
+  if (Enemy->IsPlayer()) Msg = GetDescription(DEFINITE)+" misses you!";
+  else if (IsPlayer()) Msg = CONST_S("You miss ")+Enemy->GetDescription(DEFINITE)+'!';
+  else if (CanBeSeenByPlayer() || Enemy->CanBeSeenByPlayer()) Msg = GetDescription(DEFINITE)+" misses "+Enemy->GetDescription(DEFINITE)+'!';
+  else return;
   ADD_MESSAGE("%s", Msg.CStr());
 }
 
-void character::AddBlockMessage(ccharacter* Enemy, citem* Blocker, cfestring& HitNoun, truth Partial) const
-{
-  festring Msg;
-  festring BlockVerb = (Partial ? " to partially block the " : " to block the ") + HitNoun;
 
-  if(IsPlayer())
+void character::AddBlockMessage (ccharacter *Enemy, citem *Blocker, cfestring &HitNoun, truth Partial) const {
+  festring Msg;
+  festring BlockVerb = (Partial ? " to partially block the " : " to block the ")+HitNoun;
+  if (IsPlayer()) {
     Msg << "You manage" << BlockVerb << " with your " << Blocker->GetName(UNARTICLED) << '!';
-  else if(Enemy->IsPlayer() || Enemy->CanBeSeenByPlayer())
-  {
-    if(CanBeSeenByPlayer())
+  } else if (Enemy->IsPlayer() || Enemy->CanBeSeenByPlayer()) {
+    if (CanBeSeenByPlayer())
       Msg << GetName(DEFINITE) << " manages" << BlockVerb << " with " << GetPossessivePronoun() << ' ' << Blocker->GetName(UNARTICLED) << '!';
     else
       Msg << "Something manages" << BlockVerb << " with something!";
-  }
-  else
+  } else {
     return;
-
+  }
   ADD_MESSAGE("%s", Msg.CStr());
 }
 
-void character::AddPrimitiveHitMessage(ccharacter* Enemy, cfestring& FirstPersonHitVerb, cfestring& ThirdPersonHitVerb, int BodyPart) const
+
+void character::AddPrimitiveHitMessage (ccharacter *Enemy, cfestring &FirstPersonHitVerb,
+  cfestring &ThirdPersonHitVerb, int BodyPart) const
 {
   festring Msg;
   festring BodyPartDescription;
-
-  if(BodyPart && (Enemy->CanBeSeenByPlayer() || Enemy->IsPlayer()))
+  if (BodyPart && (Enemy->CanBeSeenByPlayer() || Enemy->IsPlayer()))
     BodyPartDescription << " in the " << Enemy->GetBodyPartName(BodyPart);
-
-  if(Enemy->IsPlayer())
+  if (Enemy->IsPlayer())
     Msg << GetDescription(DEFINITE) << ' ' << ThirdPersonHitVerb << " you" << BodyPartDescription << '!';
-  else if(IsPlayer())
+  else if (IsPlayer())
     Msg << "You " << FirstPersonHitVerb << ' ' << Enemy->GetDescription(DEFINITE) << BodyPartDescription << '!';
-  else if(CanBeSeenByPlayer() || Enemy->CanBeSeenByPlayer())
+  else if (CanBeSeenByPlayer() || Enemy->CanBeSeenByPlayer())
     Msg << GetDescription(DEFINITE) << ' ' << ThirdPersonHitVerb << ' ' << Enemy->GetDescription(DEFINITE) + BodyPartDescription << '!';
   else
     return;
-
   ADD_MESSAGE("%s", Msg.CStr());
 }
 
-cchar*const HitVerb[] = { "strike", "slash", "stab" };
-cchar*const HitVerb3rdPersonEnd[] = { "s", "es", "s" };
 
-void character::AddWeaponHitMessage(ccharacter* Enemy, citem* Weapon, int BodyPart, truth Critical) const
-{
+cchar *const HitVerb[] = { "strike", "slash", "stab" };
+cchar *const HitVerb3rdPersonEnd[] = { "s", "es", "s" };
+
+
+void character::AddWeaponHitMessage (ccharacter *Enemy, citem *Weapon, int BodyPart, truth Critical) const {
   festring Msg;
   festring BodyPartDescription;
 
-  if(BodyPart && (Enemy->CanBeSeenByPlayer() || Enemy->IsPlayer()))
+  if (BodyPart && (Enemy->CanBeSeenByPlayer() || Enemy->IsPlayer()))
     BodyPartDescription << " in the " << Enemy->GetBodyPartName(BodyPart);
 
   int FittingTypes = 0;
   int DamageFlags = Weapon->GetDamageFlags();
   int DamageType = 0;
 
-  for(int c = 0; c < DAMAGE_TYPES; ++c)
-    if(1 << c & DamageFlags)
-    {
-      if(!FittingTypes || !RAND_N(FittingTypes + 1))
-  DamageType = c;
-
+  for (int c = 0; c < DAMAGE_TYPES; ++c) {
+    if (1 << c & DamageFlags) {
+      if (!FittingTypes || !RAND_N(FittingTypes+1)) DamageType = c;
       ++FittingTypes;
     }
+  }
 
-  if(!FittingTypes)
-    ABORT("No damage flags specified for %s!", Weapon->CHAR_NAME(UNARTICLED));
+  if (!FittingTypes) ABORT("No damage flags specified for %s!", Weapon->CHAR_NAME(UNARTICLED));
 
   festring NewHitVerb = Critical ? " critically " : " ";
   NewHitVerb << HitVerb[DamageType];
-  cchar*const E = HitVerb3rdPersonEnd[DamageType];
+  cchar *const E = HitVerb3rdPersonEnd[DamageType];
 
-  if(Enemy->IsPlayer())
-  {
+  if (Enemy->IsPlayer()) {
     Msg << GetDescription(DEFINITE) << NewHitVerb << E << " you" << BodyPartDescription;
-
-    if(CanBeSeenByPlayer())
-      Msg << " with " << GetPossessivePronoun() << ' ' << Weapon->GetName(UNARTICLED);
-
+    if (CanBeSeenByPlayer()) Msg << " with " << GetPossessivePronoun() << ' ' << Weapon->GetName(UNARTICLED);
     Msg << '!';
   }
-  else if(IsPlayer())
+  else if (IsPlayer()) {
     Msg << "You" << NewHitVerb << ' ' << Enemy->GetDescription(DEFINITE) << BodyPartDescription << '!';
-  else if(CanBeSeenByPlayer() || Enemy->CanBeSeenByPlayer())
-  {
+  } else if(CanBeSeenByPlayer() || Enemy->CanBeSeenByPlayer()) {
     Msg << GetDescription(DEFINITE) << NewHitVerb << E << ' ' << Enemy->GetDescription(DEFINITE) << BodyPartDescription;
-
-    if(CanBeSeenByPlayer())
-      Msg << " with " << GetPossessivePronoun() << ' ' << Weapon->GetName(UNARTICLED);
-
+    if (CanBeSeenByPlayer()) Msg << " with " << GetPossessivePronoun() << ' ' << Weapon->GetName(UNARTICLED);
     Msg << '!';
   }
-  else
+  else {
     return;
-
+  }
   ADD_MESSAGE("%s", Msg.CStr());
 }
 
-truth character::HasHeadOfElpuri() const
-{
-  for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i)
-    if(i->IsHeadOfElpuri())
-      return true;
 
+item *character::GeneralFindItem (ItemCheckerCB chk) const {
+  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) {
+    item *it = *i;
+    if (it && chk(it)) return it;
+  }
+  return 0;
+}
+
+
+static truth isElpuriHead (item *i) { return i->IsHeadOfElpuri(); }
+truth character::HasHeadOfElpuri () const {
+  if (GeneralFindItem(::isElpuriHead)) return true;
   return combineequipmentpredicates()(this, &item::IsHeadOfElpuri, 1);
 }
 
-truth character::HasPetrussNut() const
-{
-  for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i)
-    if(i->IsPetrussNut())
-      return true;
 
+static truth isPetrussNut (item *i) { return i->IsPetrussNut(); }
+truth character::HasPetrussNut () const {
+  if (GeneralFindItem(::isPetrussNut)) return true;
   return combineequipmentpredicates()(this, &item::IsPetrussNut, 1);
 }
 
-truth character::HasGoldenEagleShirt() const
-{
-  for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i)
-    if(i->IsGoldenEagleShirt())
-      return true;
 
+static truth isGoldenEagleShirt (item *i) { return i->IsGoldenEagleShirt(); }
+truth character::HasGoldenEagleShirt () const {
+  if (GeneralFindItem(::isGoldenEagleShirt)) return true;
   return combineequipmentpredicates()(this, &item::IsGoldenEagleShirt, 1);
 }
 
-truth character::RemoveEncryptedScroll()
-{
-  for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i)
-    if(i->IsEncryptedScroll())
-    {
-      item* Item = *i;
-      Item->RemoveFromSlot();
-      Item->SendToHell();
-      return true;
-    }
 
-  for(int c = 0; c < GetEquipments(); ++c)
-  {
-    item* Item = GetEquipment(c);
-
-    if(Item && Item->IsEncryptedScroll())
-    {
-      Item->RemoveFromSlot();
-      Item->SendToHell();
-      return true;
-    }
-  }
-
-  return false;
-}
-
-
-truth character::RemoveMondedrPass () {
-  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) {
-    if (i->IsMondedrPass()) {
+int character::GeneralRemoveItem (ItemCheckerCB chk, truth allItems) {
+  truth done;
+  int cnt = 0;
+  // inventory
+  do {
+    done = true;
+    for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) {
       item *Item = *i;
-      Item->RemoveFromSlot();
-      Item->SendToHell();
-      return true;
+      if (Item && chk(Item)) {
+        Item->RemoveFromSlot();
+        Item->SendToHell();
+        cnt++;
+        if (!allItems) return cnt;
+        done = false;
+        break;
+      }
     }
-  }
-  for (int c = 0; c < GetEquipments(); ++c) {
-    item *Item = GetEquipment(c);
-    if (Item && Item->IsMondedrPass()) {
-      Item->RemoveFromSlot();
-      Item->SendToHell();
-      return true;
+  } while (!done);
+  // equipments
+  do {
+    done = true;
+    for (int c = 0; c < GetEquipments(); ++c) {
+      item *Item = GetEquipment(c);
+      if (Item && chk(Item)) {
+        Item->RemoveFromSlot();
+        Item->SendToHell();
+        cnt++;
+        if (!allItems) return cnt;
+        done = false;
+        break;
+      }
     }
-  }
-  return false;
+  } while (!done);
+  return cnt;
 }
 
 
-truth character::RemoveRingOfThieves () {
-  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) {
-    if (i->IsRingOfThieves()) {
-      item *Item = *i;
-      Item->RemoveFromSlot();
-      Item->SendToHell();
-      return true;
-    }
-  }
-  for (int c = 0; c < GetEquipments(); ++c) {
-    item *Item = GetEquipment(c);
-    if (Item && Item->IsRingOfThieves()) {
-      Item->RemoveFromSlot();
-      Item->SendToHell();
-      return true;
-    }
-  }
-  return false;
-}
+static truth isEncryptedScroll (item *i) { return i->IsEncryptedScroll(); }
+truth character::RemoveEncryptedScroll () { return GeneralRemoveItem(::isEncryptedScroll) != 0; }
 
 
-truth character::ReadItem(item* ToBeRead)
-{
-  if(ToBeRead->CanBeRead(this))
-  {
-    if(!GetLSquareUnder()->IsDark() || game::GetSeeWholeMapCheatMode())
-    {
-      if(StateIsActivated(CONFUSED) && !(RAND() & 7))
-      {
-  if(!ToBeRead->IsDestroyable(this))
-    ADD_MESSAGE("You read some words of %s and understand exactly nothing.", ToBeRead->CHAR_NAME(DEFINITE));
-  else
-  {
-    ADD_MESSAGE("%s is very confusing. Or perhaps you are just too confused?", ToBeRead->CHAR_NAME(DEFINITE));
-    ActivateRandomState(SRC_CONFUSE_READ, 1000 + RAND() % 1500);
-    ToBeRead->RemoveFromSlot();
-    ToBeRead->SendToHell();
-  }
+static truth isMondedrPass (item *i) { return i->IsMondedrPass(); }
+truth character::RemoveMondedrPass () { return GeneralRemoveItem(::isMondedrPass) != 0; }
 
-  EditAP(-1000);
-  return true;
-      }
 
-      if(ToBeRead->Read(this))
-      {
-  if(!game::WizardModeIsActive())
-  {
-    /* This AP is used to take the stuff out of backpack */
-    DexterityAction(5);
-  }
+static truth isRingOfThieves (item *i) { return i->IsRingOfThieves(); }
+truth character::RemoveRingOfThieves () { return GeneralRemoveItem(::isRingOfThieves) != 0; }
 
-  return true;
-      }
-      else
-  return false;
-    }
-    else
-    {
-      if(IsPlayer())
-  ADD_MESSAGE("It's too dark here to read.");
 
-      return false;
-    }
-  }
-  else
-  {
-    if(IsPlayer())
-      ADD_MESSAGE("You can't read this.");
-
+truth character::ReadItem (item *ToBeRead) {
+  if (!ToBeRead->CanBeRead(this)) {
+    if (IsPlayer()) ADD_MESSAGE("You can't read this.");
     return false;
   }
+  if (!GetLSquareUnder()->IsDark() || game::GetSeeWholeMapCheatMode()) {
+    if (StateIsActivated(CONFUSED) && !(RAND()&7)) {
+      if (!ToBeRead->IsDestroyable(this)) {
+        ADD_MESSAGE("You read some words of %s and understand exactly nothing.", ToBeRead->CHAR_NAME(DEFINITE));
+      } else {
+        ADD_MESSAGE("%s is very confusing. Or perhaps you are just too confused?", ToBeRead->CHAR_NAME(DEFINITE));
+        ActivateRandomState(SRC_CONFUSE_READ, 1000+RAND()%1500);
+        ToBeRead->RemoveFromSlot();
+        ToBeRead->SendToHell();
+      }
+      EditAP(-1000);
+      return true;
+    }
+    if (ToBeRead->Read(this)) {
+      if (!game::WizardModeIsActive()) {
+        /* This AP is used to take the stuff out of backpack */
+        DexterityAction(5);
+      }
+      return true;
+    }
+    return false;
+  }
+  if (IsPlayer()) ADD_MESSAGE("It's too dark here to read.");
+  return false;
 }
+
 
 void character::CalculateBurdenState()
 {
