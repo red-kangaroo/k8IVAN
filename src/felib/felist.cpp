@@ -190,6 +190,20 @@ uint felist::Draw () {
         }
         continue;
       }
+      if (Pressed == KEY_HOME) {
+        Selected = PageBegin;
+        JustSelectMove = true;
+        continue;
+      }
+      if (Pressed == KEY_END) {
+        //fprintf(stderr, "sel: %u; pb: %u; pl: %u; ss: %u; ae: %s\n", Selected, PageBegin, PageLength, Selectables, AtTheEnd ? "end" : "not end");
+        if (Selectables) {
+          Selected = PageBegin+PageLength-1;
+          if (Selected >= Selectables) Selected = Selectables-1;
+        }
+        JustSelectMove = true;
+        continue;
+      }
       if (Pressed == KEY_ENTER) {
         Return = Selected;
         break;
