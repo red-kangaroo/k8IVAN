@@ -82,7 +82,7 @@ class inputfile {
   long TellPos () { return ftell(Buffer); }
   ulong TellLine () { return TellLineOfPos(TellPos()); }
   ulong TellLineOfPos (long);
-  cfestring& GetFileName () const { return FileName; }
+  cfestring &GetFileName () const { return FileName; }
   void Close () { fclose(Buffer); Buffer = 0; }
 
 private:

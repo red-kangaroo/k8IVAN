@@ -1,57 +1,18 @@
-/*
-kawai /* meleeweapon-> */
-{
-  StrengthModifier = 100; /*200;*/
-  FormModifier = 225;
-  DefaultSize = 80;
-  Possibility = 4;
-  CanBeWished = false;
-  IsDestroyable = false;
-  CanBeGeneratedInContainer = true;
-  BitmapPos = 109, 210;
-  WeaponCategory = LARGE_SWORDS;
-  IsMaterialChangeable = false;
-  DefaultMainVolume = 100;/*150;*/
-  DefaultSecondaryVolume = 40;/*60;*/
-  Adjective = "ancient";
-  NameSingular = "katana";
-  UsesLongAdjectiveArticle = true;
-  PostFix = "named Kawai";
-  ArticleMode = FORCE_THE;
-  MainMaterialConfig == ILLITHIUM;
-  SecondaryMaterialConfig == RUBY;
-  BaseEmitation = rgb24(150, 120, 90);
-  IsPolymorphable = false;
-  Alias == "Kawai";
-  Roundness = 30;
-  IsTwoHanded = false;
-  CanBeCloned = false;
-  CanBeMirrored = false;
-  CanBeBroken = false;
-  AttachedGod = NONE;
-  WieldedBitmapPos = 176, 112;
-  IsQuestItem = false;
-  EnchantmentMinusChance = 0;
-  EnchantmentPlusChance = 16;
-  FireResistance = 30;
-  PoisonResistance = 30;
-  ElectricityResistance = 30;
-  AcidResistance = 30;
-  DamageFlags = SLASH|PIERCE;
-}
+/* chain whip by Iankill */
 
-
-Extend kawai
+Extend whip
 {
-  Config BROKEN;
+  Config CHAIN_WHIP;
   {
-    DefaultSize = 15;
-    Possibility = 1000;
-    FormModifier = 40;
-    Price = 0;
-    BaseEmitation = 0;
-    BitmapPos = 32, 96;
-    WieldedBitmapPos = 176, 80;
+    DefaultSize = 150;
+    Possibility = 25;
+    DefaultMainVolume = 200;
+    DefaultSecondaryVolume = 50;
+    StrengthModifier = 20;
+    MainMaterialConfig = { 4, BRONZE, IRON, STEEL, METEORIC_STEEL; }
+    MaterialConfigChances = { 4, 75, 50, 25, 10; }
+    Adjective = "chain";
+    FormModifier = 200;
+    EnchantmentPlusChance = 20;
   }
 }
-*/

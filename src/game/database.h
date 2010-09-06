@@ -32,7 +32,8 @@ template <class type> class databasecreator
   typedef typename type::database database;
   typedef typename type::prototype prototype;
   typedef std::map<festring, databasememberbase<database>*> databasemembermap;
-  static void ReadFrom(inputfile&);
+  //static void ReadFrom (inputfile &);
+  static void ReadFrom (const festring &baseFileName);
   static void FindDataBase(const database*&, const prototype*, int);
   static void InstallDataBase(type*, int);
   static void CreateDataBaseMemberMap();

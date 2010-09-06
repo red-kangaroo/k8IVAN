@@ -1,0 +1,67 @@
+/* rapier and knuckle by Neonivek */
+
+Extend meleeweapon
+{
+  Config KNUCKLE;
+  {
+    DefaultSize = 30;
+    Possibility = 90;
+    WeaponCategory = UNARMED;
+    DefaultMainVolume = 25;
+    DefaultSecondaryVolume = 0;
+    BitmapPos = 112, 368;
+    FormModifier = 80;
+    StrengthModifier = 100;
+    NameSingular = "knuckle";
+    MainMaterialConfig = { 9, EBONY_WOOD, COPPER, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, SILVER, GOLD; }
+    SecondaryMaterialConfig = { 9, EBONY_WOOD, COPPER, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, SILVER, GOLD; }
+    MaterialConfigChances = { 9, 100, 500, 500, 200, 200, 50, 20, 10, 5; }
+    Roundness = 40;
+    AttachedGod = CRUENTUS;
+    WieldedBitmapPos = 160, 416;
+    EnchantmentPlusChance = 20;
+  }
+
+  Config BROKEN|KNUCKLE;
+  {
+    Possibility = 20;
+    BitmapPos = 112, 400;
+    WieldedBitmapPos = 176, 416;
+    MainMaterialConfig = { 9, EBONY_WOOD, COPPER, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, SILVER, GOLD; }
+    SecondaryMaterialConfig = { 9, EBONY_WOOD, COPPER, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, SILVER, GOLD; }
+    MaterialConfigChances = { 9, 100, 500, 500, 200, 200, 50, 20, 10, 5; }
+    EnchantmentPlusChance = 40;
+  }
+
+  Config RAPIER;
+  {
+    DefaultSize = 50;
+    Possibility = 50;
+    WeaponCategory = SMALL_SWORDS;
+    DefaultMainVolume = 40;
+    DefaultSecondaryVolume = 30;
+    BitmapPos = 64, 352;
+    FormModifier = 100;
+    StrengthModifier = 40;
+    NameSingular = "rapier";
+    MainMaterialConfig = { 6, IRON, STEEL, MITHRIL, SILVER, ARCANITE, EBONY_WOOD; }
+    SecondaryMaterialConfig = { 6, PINE_WOOD, FIR_WOOD, BIRCH_WOOD, OAK_WOOD, TEAK_WOOD, EBONY_WOOD; }
+    MaterialConfigChances = {6, 500, 200, 100, 10, 5, 2; }
+    Roundness = 20;
+    AttachedGod = LORICATUS;
+    WieldedBitmapPos = 160, 384;
+    EnchantmentPlusChance = 30;
+    DamageFlags = PIERCE;
+  }
+
+  Config BROKEN|RAPIER;
+  {
+    Possibility = 20;
+    BitmapPos = 112, 384;
+    WieldedBitmapPos = 176, 416;
+    MainMaterialConfig = { 6, IRON, STEEL, MITHRIL, SILVER, ARCANITE, EBONY_WOOD; }
+    SecondaryMaterialConfig = { 6, PINE_WOOD, FIR_WOOD, BIRCH_WOOD, OAK_WOOD, TEAK_WOOD, EBONY_WOOD; }
+    MaterialConfigChances = {6, 500, 200, 100, 10, 5, 2; }
+    EnchantmentPlusChance = 40;
+  }
+}
