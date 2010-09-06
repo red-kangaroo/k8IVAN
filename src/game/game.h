@@ -157,9 +157,9 @@ typedef std::vector<character*> charactervector;
 class quitrequest { };
 class areachangerequest { };
 
-class game
-{
- public:
+
+class game {
+public:
   static truth Init(cfestring& = CONST_S(""));
   static void DeInit();
   static void Run();
@@ -429,22 +429,22 @@ class game
   static void AdjustRelationsToAllGods(int);
   static void ShowDeathSmiley(bitmap*, truth);
   static void SetEnterImage(cbitmap* What) { EnterImage = What; }
-  static void SetEnterTextDisplacement(v2 What)
-  {
-    EnterTextDisplacement = What;
-  }
+  static void SetEnterTextDisplacement (v2 What) { EnterTextDisplacement = What; }
 
   static int ListSelector (int defsel, cfestring &title, ...); // defsel<0: first
   static int ListSelectorArray (int defsel, cfestring &title, const char *items[]); // defsel<0: first
 
- private:
+  static char GetAbnormalMoveKey (int idx);
+  static void SetAbnormalMoveKey (int idx, char ch);
+
+private:
   static void UpdateCameraCoordinate(int&, int, int, int);
   static cchar* const Alignment[];
   static god** God;
   static int CurrentLevelIndex;
   static int CurrentDungeonIndex;
   static cint MoveNormalCommandKey[];
-  static cint MoveAbnormalCommandKey[];
+  static int MoveAbnormalCommandKey[];
   static cv2 MoveVector[];
   static cv2 RelativeMoveVector[];
   static cv2 BasicMoveVector[];

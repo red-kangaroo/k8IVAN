@@ -62,22 +62,93 @@ command::command(truth (*LinkedFunction)(character *), cchar *Description, char 
 char command::GetKey () const { return !ivanconfig::GetUseAlternativeKeys() ? Key1 : Key2; }
 
 
+static const char *adirNames[9] = {
+  "dir-left-up",
+  "dir-up",
+  "dir-right-up",
+  "dir-left",
+  "dir-right",
+  "dir-left-down",
+  "dir-down",
+  "dir-right-down",
+  "dir-none"
+};
+
+
 /* k8 */
 void commandsystem::ConfigureKeys () {
   command *cmd;
   char buf[512];
-  int i1;
-  FILE *fl = fopen("keys.cfg", "rt");
+  festring fname;
+#ifdef LOCAL_SAVES
+  fname << ivanconfig::GetMyDir();
+#else
+  fname << getenv("HOME");
+#endif
+  fname << "/.keys.rc";
+  FILE *fl = fopen(fname.CStr(), "r");
   if (!fl) return;
-  while (fgets(buf, 500, fl)) {
+  while (fgets(buf, 510, fl)) {
     cstrTrim(buf);
-    if (buf[2] != '=') {
+    char k1 = 0, k2 = 0, i1;
+    if (buf[0] == '=') {
+      i1 = 1;
+    } else if (buf[2] != '=') {
       if (buf[1] != '=') continue;
-      i1 = 0;
-    } else i1 = 1;
-    for (int f = 1; (cmd = commandsystem::GetCommand(f)) != 0; f++) {
-      if (!strcmp(buf+i1+2, cmd->GetDescription())) cmd->SetKeys(buf[0], buf[i1]);
+      i1 = 2;
+      k1 = buf[0];
+    } else {
+      i1 = 3;
+      k1 = buf[0];
+      k2 = buf[1];
     }
+    for (int f = 1; (cmd = commandsystem::GetCommand(f)) != 0; f++) {
+      if (!strcmp(buf+i1, cmd->GetDescription())) cmd->SetKeys(k1, k2);
+    }
+    for (int f = 0; f <= 8; f++) if (!strcmp(buf+i1, adirNames[f])) game::SetAbnormalMoveKey(f, k1);
+  }
+  fclose(fl);
+}
+
+
+void commandsystem::SaveKeys (truth forced) {
+  command *cmd;
+  festring fname;
+  int isWizard = 0;
+#ifdef LOCAL_SAVES
+  fname << ivanconfig::GetMyDir();
+#else
+  fname << getenv("HOME");
+#endif
+  fname << "/.keys.rc";
+  if (!forced) {
+    FILE *fl = fopen(fname.CStr(), "r");
+    if (fl) { fclose(fl); return; }
+  }
+  FILE *fl = fopen(fname.CStr(), "w");
+  if (!fl) return;
+  for (; isWizard < 2; isWizard++) {
+    fputs(isWizard ? "\n# wizard actions\n" : "# actions\n", fl);
+    for (int f = 1; (cmd = commandsystem::GetCommand(f)) != 0; f++) {
+      if (cmd->IsWizardModeFunction()) {
+        if (!isWizard) continue;
+      } else {
+        if (isWizard) continue;
+      }
+      cchar *dsc = cmd->GetDescription();
+      char k1 = cmd->GetKey1(), k2 = cmd->GetKey2();
+      if (!dsc || !dsc[0]) continue;
+      if (k1 && k2 && k1 != k2) fprintf(fl, "%c%c", k1, k2);
+      else if (k1) fprintf(fl, "%c", k1);
+      else if (k2) fprintf(fl, "%c", k2);
+      fprintf(fl, "=%s\n", dsc);
+    }
+  }
+  fputs("\n# alternate movement\n", fl);
+  for (int f = 0; f <= 8; f++) {
+    char ch = game::GetAbnormalMoveKey(f);
+    if (ch) fputc(ch, fl);
+    fprintf(fl, "=%s\n", adirNames[f]);
   }
   fclose(fl);
 }

@@ -41,6 +41,8 @@ public:
   static void Initialize ();
   static void Show ();
 
+  static festring GetMyDir ();
+
 private:
   static v2 GetQuestionPos ();
   static void AutoSaveIntervalDisplayer (const numberoption *, festring &);

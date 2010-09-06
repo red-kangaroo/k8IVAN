@@ -18,6 +18,8 @@
 #include "igraph.h"
 #include "felist.h"
 
+#include "command.h"
+
 
 stringoption ivanconfig::DefaultName("DefaultName", "player's default name", "", &configsystem::NormalStringDisplayer, &DefaultNameChangeInterface);
 stringoption ivanconfig::DefaultPetName("DefaultPetName", "starting pet's default name", CONST_S("Kenny"), &configsystem::NormalStringDisplayer, &DefaultPetNameChangeInterface);
@@ -144,8 +146,8 @@ void ivanconfig::CalculateContrastLuminance () {
 
 
 /* k8 */
-static char *getMyDir (void) {
-  static char buf[128], myDir[8192];
+festring ivanconfig::GetMyDir (void) {
+  char buf[128], myDir[8192];
   pid_t mypid = getpid();
   memset(myDir, 0, sizeof(myDir));
   sprintf(buf, "/proc/%u/exe", (unsigned int)mypid);
@@ -163,7 +165,7 @@ static char *getMyDir (void) {
 static festring getConfigPath () {
   festring path;
 #ifdef LOCAL_SAVES
-  path << getMyDir();
+  path << ivanconfig::GetMyDir();
 #else
   path << getenv("HOME");
 #endif
@@ -193,4 +195,7 @@ void ivanconfig::Initialize () {
   configsystem::Load();
   felist::SetFastListMode(!FastListMode.Value);
   CalculateContrastLuminance();
+
+  commandsystem::ConfigureKeys();
+  commandsystem::SaveKeys(false);
 }

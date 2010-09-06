@@ -2095,28 +2095,23 @@ void character::GetPlayerCommand () {
         }
         game::AskForEscPress(CONST_S("You are horrified by your situation!"));
       } else if (ivanconfig::GetWarnAboutDanger()) {
-        if (game::GetDangerFound() > 50.)
-          game::AskForEscPress(CONST_S("You sense great danger!"));
-        else
-          game::AskForEscPress(CONST_S("You sense danger!"));
+        if (game::GetDangerFound() > 50.) game::AskForEscPress(CONST_S("You sense great danger!"));
+        else game::AskForEscPress(CONST_S("You sense danger!"));
       }
       game::SetDangerFound(0);
     }
     game::SetIsInGetCommand(true);
     int Key = GET_KEY();
     game::SetIsInGetCommand(false);
-    if(Key != '+' && Key != '-' && Key != 'M') msgsystem::ThyMessagesAreNowOld(); // gum
-
+    if (Key != '+' && Key != '-' && Key != 'M') msgsystem::ThyMessagesAreNowOld(); // gum
     truth ValidKeyPressed = false;
     int c;
-
     for (c = 0; c < DIRECTION_COMMAND_KEYS; ++c) {
       if (Key == game::GetMoveCommandKey(c)) {
         HasActed = TryMove(ApplyStateModification(game::GetMoveVector(c)), true, game::PlayerIsRunning());
         ValidKeyPressed = true;
       }
     }
-
     for (c = 1; (cmd = commandsystem::GetCommand(c)); ++c) {
       /* k8 */
       /* Numpad aliases for most commonly used commands */
@@ -2135,13 +2130,11 @@ void character::GetPlayerCommand () {
         break;
       }
     }
-
-    if(!ValidKeyPressed)
-      ADD_MESSAGE("Unknown key. Press '?' for a list of commands.");
+    if (!ValidKeyPressed) ADD_MESSAGE("Unknown key. Press '?' for a list of commands.");
   }
-
   game::IncreaseTurn();
 }
+
 
 void character::Vomit(v2 Pos, int Amount, truth ShowMsg)
 {

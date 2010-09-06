@@ -127,7 +127,7 @@ cchar *const game::Alignment[] = { "L++", "L+", "L", "L-", "N+", "N=", "N-", "C+
 god **game::God;
 
 cint game::MoveNormalCommandKey[] = { KEY_HOME, KEY_UP, KEY_PAGE_UP, KEY_LEFT, KEY_RIGHT, KEY_END, KEY_DOWN, KEY_PAGE_DOWN, '.' };
-cint game::MoveAbnormalCommandKey[] = { '7','8','9','u','o','j','k','l','.' };
+int game::MoveAbnormalCommandKey[] = { '7','8','9','u','o','j','k','l','.' };
 
 cv2 game::MoveVector[] = { v2(-1, -1), v2(0, -1), v2(1, -1), v2(-1, 0), v2(1, 0), v2(-1, 1), v2(0, 1), v2(1, 1), v2(0, 0) };
 cv2 game::RelativeMoveVector[] = { v2(-1, -1), v2(1, 0), v2(1, 0), v2(-2, 1), v2(2, 0), v2(-2, 1), v2(1, 0), v2(1, 0), v2(-1, -1) };
@@ -171,6 +171,17 @@ std::vector<v2> game::SpecialCursorPos;
 std::vector<int> game::SpecialCursorData;
 cbitmap *game::EnterImage;
 v2 game::EnterTextDisplacement;
+
+
+char game::GetAbnormalMoveKey (int idx) {
+  if (idx < 0 || idx > 8) return 0;
+  return MoveAbnormalCommandKey[idx];
+}
+
+
+void game::SetAbnormalMoveKey (int idx, char ch) {
+  if (idx >= 0 && idx <= 8) MoveAbnormalCommandKey[idx] = ch;
+}
 
 
 void game::AddCharacterID (character *Char, ulong ID) {
@@ -1850,27 +1861,10 @@ festring game::GetHomeDir () {
 }
 
 
-/* k8 */
-static char *getMyDir (void) {
-  static char buf[128], myDir[8192];
-  pid_t mypid = getpid();
-  memset(myDir, 0, sizeof(myDir));
-  sprintf(buf, "/proc/%u/exe", (unsigned int)mypid);
-  if (readlink(buf, myDir, sizeof(myDir)-1) < 0) strcpy(myDir, ".");
-  else {
-    char *p = (char *)strrchr(myDir, '/');
-    if (!p) strcpy(myDir, "."); else *p = '\0';
-  }
-  if (myDir[strlen(myDir)-1] == '/') myDir[strlen(myDir)-1] = '\0';
-  return myDir;
-}
-/* k8 */
-
-
 festring game::GetSaveDir () {
   festring Dir;
 #ifdef LOCAL_SAVES
-  Dir << getMyDir() << "/Save/";
+  Dir << ivanconfig::GetMyDir() << "/Save/";
 #else
   Dir << getenv("HOME") << "/IvanSave/";
 #endif
@@ -1882,7 +1876,7 @@ festring game::GetGameDir () {
   /*k8! return DATADIR "/ivan/"; */
   /*k8! return DATADIR "/"; */
   festring Dir;
-  Dir << getMyDir() << "/";
+  Dir << ivanconfig::GetMyDir() << "/";
   return Dir;
 }
 
@@ -1891,7 +1885,7 @@ festring game::GetBoneDir () {
   /*k8! return LOCAL_STATE_DIR "/Bones/";*/
   festring Dir;
 #ifdef LOCAL_SAVES
-  Dir << getMyDir() << "/Save/Bones/";
+  Dir << ivanconfig::GetMyDir() << "/Save/Bones/";
 #else
   Dir << getenv("HOME") << "/IvanSave/Bones/";
 #endif
