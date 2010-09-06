@@ -21,6 +21,11 @@
 
 
 const felist *FelistCurrentlyDrawn = 0;
+truth fastListMode = 0;
+
+
+truth felist::GetFastListMode () { return fastListMode; }
+void felist::SetFastListMode (truth modeon) { fastListMode = modeon; }
 
 
 truth FelistDrawController () {
@@ -141,7 +146,12 @@ uint felist::Draw () {
         Pressed -= 65;
         if (Pressed < PageLength && Pressed+PageBegin < Selectables) {
           Return = Selected = Pressed+PageBegin;
-          break;
+          if (fastListMode) {
+            JustSelectMove = true;
+            continue;
+          } else {
+            break;
+          }
         }
         continue;
       }

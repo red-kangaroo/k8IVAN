@@ -64,6 +64,9 @@ public:
   col16 GetColor (uint I) const;
   void SetColor (uint I, col16 What);
 
+  static truth GetFastListMode ();
+  static void SetFastListMode (truth modeon);
+
 private:
   void DrawDescription (bitmap *Bitmap) const;
 
