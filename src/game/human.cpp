@@ -5334,7 +5334,6 @@ void mysteryman::BeTalkedTo () {
         "\"I have revealed the location of Mondedr.\" He hands you a map.\n"
         "\"It is a good thing I was born in this world, no? You owe me nothing, the \n"
         "the amount of information in the sheet of paper is what repays it.\"\n\n"""));
-      /*TODO:
       game::LoadWorldMap();
       v2 MondedrPos = game::GetWorldMap()->GetEntryPos(0, MONDEDR);
       game::GetWorldMap()->GetWSquare(MondedrPos)->ChangeOWTerrain(mondedr::Spawn());
@@ -5342,7 +5341,6 @@ void mysteryman::BeTalkedTo () {
       game::SaveWorldMap();
       GetArea()->SendNewDrawRequest();
       ADD_MESSAGE("\"And by the way, the government always watches you.\"");
-      */
       game::SetMondedrPass(1);
     } else {
       ADD_MESSAGE("\"Shoo, come back if you have a sheet of paper they call 'Mondedr Pass'\"");

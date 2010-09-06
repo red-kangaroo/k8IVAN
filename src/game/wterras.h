@@ -131,4 +131,14 @@ OWTERRAIN(underwatertunnelexit, owterrain)
   virtual int GetAttachedArea() const { return 2; }
 };
 
+
+OWTERRAIN(mondedr, owterrain)
+{
+public:
+  virtual cchar *GetNameStem () const;
+  virtual v2 GetBitmapPos (int) const;
+  virtual int GetAttachedDungeon () const;
+};
+
+
 #endif

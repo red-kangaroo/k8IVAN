@@ -1808,23 +1808,51 @@ festring game::GetHomeDir () {
 }
 
 
+/* k8 */
+static char *getMyDir (void) {
+  static char buf[128], myDir[8192];
+  pid_t mypid = getpid();
+  memset(myDir, 0, sizeof(myDir));
+  sprintf(buf, "/proc/%u/exe", (unsigned int)mypid);
+  if (readlink(buf, myDir, sizeof(myDir)-1) < 0) strcpy(myDir, ".");
+  else {
+    char *p = (char *)strrchr(myDir, '/');
+    if (!p) strcpy(myDir, "."); else *p = '\0';
+  }
+  if (myDir[strlen(myDir)-1] == '/') myDir[strlen(myDir)-1] = '\0';
+  return myDir;
+}
+/* k8 */
+
+
 festring game::GetSaveDir () {
   festring Dir;
+#ifdef LOCAL_SAVES
+  Dir << getMyDir() << "/Save/";
+#else
   Dir << getenv("HOME") << "/IvanSave/";
+#endif
   return Dir;
 }
 
 
 festring game::GetGameDir () {
   /*k8! return DATADIR "/ivan/"; */
-  return DATADIR "/";
+  /*k8! return DATADIR "/"; */
+  festring Dir;
+  Dir << getMyDir() << "/";
+  return Dir;
 }
 
 
 festring game::GetBoneDir () {
   /*k8! return LOCAL_STATE_DIR "/Bones/";*/
   festring Dir;
+#ifdef LOCAL_SAVES
+  Dir << getMyDir() << "/Save/Bones/";
+#else
   Dir << getenv("HOME") << "/IvanSave/Bones/";
+#endif
   return Dir;
 }
 

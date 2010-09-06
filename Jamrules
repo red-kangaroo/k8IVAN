@@ -9,6 +9,12 @@ ALL_LOCATE_TARGET = $(TOP)/_build ;
 ALL_LOCATE_LIB = $(TOP)/_build/libs ;
 ALL_LOCATE_BIN = $(TOP) ;
 
+
+if ! $(GLOBAL_SAVES) {
+  DEFINES += LOCAL_SAVES ;
+}
+
+
 #C++ = g++ ;
 #CC = gcc ;
 

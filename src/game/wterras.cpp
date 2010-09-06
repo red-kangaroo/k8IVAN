@@ -72,3 +72,8 @@ int underwatertunnelexit::GetAttachedDungeon() const
 { return UNDER_WATER_TUNNEL; }
 
 int ocean::GetWalkability() const { return ANY_MOVE&~WALK; }
+
+
+const char *mondedr::GetNameStem() const { return "hidden village"; }
+v2 mondedr::GetBitmapPos (int) const { return v2(16, 64); }
+int mondedr::GetAttachedDungeon () const { return MONDEDR; }
