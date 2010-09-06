@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #ifndef __TERRA_H__
 #define __TERRA_H__
 
