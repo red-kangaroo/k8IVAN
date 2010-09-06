@@ -6459,512 +6459,381 @@ truth character::TeleportRandomItem (truth TryToHinderVisibility) {
 }
 
 
-truth character::HasClearRouteTo(v2 Pos) const
-{
+truth character::HasClearRouteTo (v2 Pos) const {
   pathcontroller::Map = GetLevel()->GetMap();
   pathcontroller::Character = this;
   v2 ThisPos = GetPos();
   return mapmath<pathcontroller>::DoLine(ThisPos.X, ThisPos.Y, Pos.X, Pos.Y, SKIP_FIRST);
 }
 
-truth character::IsTransparent() const
-{
+
+truth character::IsTransparent () const {
   return !IsEnormous() || GetTorso()->GetMainMaterial()->IsTransparent() || StateIsActivated(INVISIBLE);
 }
 
-void character::SignalPossibleTransparencyChange()
-{
-  if(!game::IsInWilderness())
-    for(int c = 0; c < SquaresUnder; ++c)
-    {
-      lsquare* Square = GetLSquareUnder(c);
 
-      if(Square)
-  Square->SignalPossibleTransparencyChange();
+void character::SignalPossibleTransparencyChange () {
+  if (!game::IsInWilderness()) {
+    for (int c = 0; c < SquaresUnder; ++c) {
+      lsquare *Square = GetLSquareUnder(c);
+      if (Square) Square->SignalPossibleTransparencyChange();
     }
+  }
 }
 
-int character::GetCursorData() const
-{
+
+int character::GetCursorData () const {
   int Bad = 0;
   int Color = game::PlayerIsRunning() ? BLUE_CURSOR : DARK_CURSOR;
-
-  for(int c = 0; c < BodyParts; ++c)
-  {
-    bodypart* BodyPart = GetBodyPart(c);
-
-    if(BodyPart && BodyPart->IsUsable())
-    {
+  for (int c = 0; c < BodyParts; ++c) {
+    bodypart *BodyPart = GetBodyPart(c);
+    if (BodyPart && BodyPart->IsUsable()) {
       int ConditionColorIndex = BodyPart->GetConditionColorIndex();
-
-      if((BodyPartIsVital(c) && !ConditionColorIndex)
-   || (ConditionColorIndex <= 1 && ++Bad == 2))
-  return Color|CURSOR_FLASH;
-    }
-    else if(++Bad == 2)
-      return Color|CURSOR_FLASH;
+      if ((BodyPartIsVital(c) && !ConditionColorIndex) || (ConditionColorIndex <= 1 && ++Bad == 2)) return Color|CURSOR_FLASH;
+    } else if (++Bad == 2) return Color|CURSOR_FLASH;
   }
-
   Color = game::PlayerIsRunning() ? YELLOW_CURSOR : RED_CURSOR;
   return Bad ? Color|CURSOR_FLASH : Color;
 }
 
-void character::TryToName()
-{
-  if(!IsPet())
-    ADD_MESSAGE("%s refuses to let YOU decide what %s's called.", CHAR_NAME(DEFINITE), CHAR_PERSONAL_PRONOUN);
-  else if(IsPlayer())
-    ADD_MESSAGE("You can't rename yourself.");
-  else if(!IsNameable())
-    ADD_MESSAGE("%s refuses to be called anything else but %s.", CHAR_NAME(DEFINITE), CHAR_NAME(DEFINITE));
-  else
-  {
-    festring Topic = CONST_S("What name will you give to ") + GetName(DEFINITE) + '?';
-    festring Name = game::StringQuestion(Topic, WHITE, 0, 80, true);
 
-    if(Name.GetSize())
-      SetAssignedName(Name);
+void character::TryToName () {
+  if (!IsPet()) ADD_MESSAGE("%s refuses to let YOU decide what %s's called.", CHAR_NAME(DEFINITE), CHAR_PERSONAL_PRONOUN);
+  else if (IsPlayer()) ADD_MESSAGE("You can't rename yourself.");
+  else if (!IsNameable()) ADD_MESSAGE("%s refuses to be called anything else but %s.", CHAR_NAME(DEFINITE), CHAR_NAME(DEFINITE));
+  else {
+    festring Topic = CONST_S("What name will you give to ")+GetName(DEFINITE)+'?';
+    festring Name = game::StringQuestion(Topic, WHITE, 0, 80, true);
+    if (Name.GetSize()) SetAssignedName(Name);
   }
 }
 
-double character::GetSituationDanger(ccharacter* Enemy, v2 ThisPos, v2 EnemyPos, truth SeesEnemy) const
-{
+
+double character::GetSituationDanger (ccharacter *Enemy, v2 ThisPos, v2 EnemyPos, truth SeesEnemy) const {
   double Danger;
-
-  if(IgnoreDanger() && !IsPlayer())
-  {
-    if(Enemy->IgnoreDanger() && !Enemy->IsPlayer())
-    {
-      Danger = double(GetHP()) * GetHPRequirementForGeneration() / (Enemy->GetHP() * Enemy->GetHPRequirementForGeneration());
+  if (IgnoreDanger() && !IsPlayer()) {
+    if (Enemy->IgnoreDanger() && !Enemy->IsPlayer()) {
+      Danger = double(GetHP())*GetHPRequirementForGeneration()/(Enemy->GetHP()*Enemy->GetHPRequirementForGeneration());
     }
-    else
-      Danger = .25 * GetHPRequirementForGeneration() / Enemy->GetHP();
-  }
-  else if(Enemy->IgnoreDanger() && !Enemy->IsPlayer())
-    Danger = 4. * GetHP() / Enemy->GetHPRequirementForGeneration();
-  else
+    else {
+      Danger = 0.25*GetHPRequirementForGeneration()/Enemy->GetHP();
+    }
+  } else if (Enemy->IgnoreDanger() && !Enemy->IsPlayer()) {
+    Danger = 4.0*GetHP()/Enemy->GetHPRequirementForGeneration();
+  } else {
     Danger = GetRelativeDanger(Enemy);
-
-  Danger *= 3. / ((EnemyPos - ThisPos).GetManhattanLength() + 2);
-
-  if(!SeesEnemy)
-    Danger *= .2;
-
-  if(StateIsActivated(PANIC))
-    Danger *= .2;
-
-  Danger *= double(GetHP()) * Enemy->GetMaxHP() / (Enemy->GetHP() * GetMaxHP());
+  }
+  Danger *= 3.0/((EnemyPos-ThisPos).GetManhattanLength()+2);
+  if (!SeesEnemy) Danger *= 0.2;
+  if (StateIsActivated(PANIC)) Danger *= 0.2;
+  Danger *= double(GetHP())*Enemy->GetMaxHP()/(Enemy->GetHP()*GetMaxHP());
   return Danger;
 }
 
-void character::ModifySituationDanger(double& Danger) const
-{
-  switch(GetTirednessState())
-  {
-   case FAINTING:
-    Danger *= 1.5;
-   case EXHAUSTED:
-    Danger *= 1.25;
-  }
 
-  for(int c = 0; c < STATES; ++c)
-    if(StateIsActivated(1 << c) && StateData[c].SituationDangerModifier != 0)
-      (this->*StateData[c].SituationDangerModifier)(Danger);
+void character::ModifySituationDanger (double &Danger) const {
+  switch (GetTirednessState()) {
+    case FAINTING: Danger *= 1.5;
+    case EXHAUSTED: Danger *= 1.25;
+  }
+  for (int c = 0; c < STATES; ++c) {
+    if (StateIsActivated(1 << c) && StateData[c].SituationDangerModifier != 0) (this->*StateData[c].SituationDangerModifier)(Danger);
+  }
 }
 
-void character::LycanthropySituationDangerModifier(double& Danger) const
-{
-  character* Wolf = werewolfwolf::Spawn();
+
+void character::LycanthropySituationDangerModifier (double &Danger) const {
+  character *Wolf = werewolfwolf::Spawn();
   double DangerToWolf = GetRelativeDanger(Wolf);
   Danger *= pow(DangerToWolf, 0.1);
   delete Wolf;
 }
 
-void character::PoisonedSituationDangerModifier(double& Danger) const
-{
+
+void character::PoisonedSituationDangerModifier (double &Danger) const {
   int C = GetTemporaryStateCounter(POISONED);
-  Danger *= (1 + (C * C) / (GetHP() * 10000. * (GetGlobalResistance(POISON) + 1)));
+  Danger *= (1+(C*C)/(GetHP()*10000.0*(GetGlobalResistance(POISON)+1)));
 }
 
-void character::PolymorphingSituationDangerModifier(double& Danger) const
-{
-  if(!StateIsActivated(POLYMORPH_CONTROL))
-    Danger *= 1.5;
+
+void character::PolymorphingSituationDangerModifier (double &Danger) const {
+  if (!StateIsActivated(POLYMORPH_CONTROL)) Danger *= 1.5;
 }
 
-void character::PanicSituationDangerModifier(double& Danger) const
-{
+
+void character::PanicSituationDangerModifier (double &Danger) const {
   Danger *= 1.5;
 }
 
-void character::ConfusedSituationDangerModifier(double& Danger) const
-{
+
+void character::ConfusedSituationDangerModifier (double &Danger) const {
   Danger *= 1.5;
 }
 
-void character::ParasitizedSituationDangerModifier(double& Danger) const
-{
+
+void character::ParasitizedSituationDangerModifier (double &Danger) const {
   Danger *= 1.25;
 }
 
-void character::LeprosySituationDangerModifier(double& Danger) const
-{
+
+void character::LeprosySituationDangerModifier (double &Danger) const {
   Danger *= 1.5;
 }
 
-void character::AddRandomScienceName(festring& String) const
-{
-  festring Science = GetScienceTalkName().GetRandomElement().CStr();
 
-  if(Science[0] == '!')
-  {
-    String << Science.CStr() + 1;
+void character::AddRandomScienceName (festring &String) const {
+  festring Science = GetScienceTalkName().GetRandomElement().CStr();
+  if (Science[0] == '!') {
+    String << Science.CStr()+1;
     return;
   }
-
   festring Attribute = GetScienceTalkAdjectiveAttribute().GetRandomElement();
   festring Prefix;
   truth NoAttrib = Attribute.IsEmpty(), NoSecondAdjective = false;
-
-  if(!Attribute.IsEmpty() && Attribute[0] == '!')
-  {
+  if (!Attribute.IsEmpty() && Attribute[0] == '!') {
     NoSecondAdjective = true;
     Attribute.Erase(0, 1);
   }
-
-  if(!Science.Find("the "))
-  {
+  if (!Science.Find("the ")) {
     Science.Erase(0, 4);
-
-    if(!Attribute.Find("the ", 0, 4))
-      Attribute << " the";
-    else
-      Attribute.Insert(0, "the ", 4);
+    if (!Attribute.Find("the ", 0, 4)) Attribute << " the"; else Attribute.Insert(0, "the ", 4);
   }
-
-  if(islower(Science[0])
-     && Science.Find(' ') == festring::NPos
-     && Science.Find('-') == festring::NPos
-     && Science.Find("phobia") == festring::NPos)
-  {
+  if (islower(Science[0]) && Science.Find(' ') == festring::NPos && Science.Find('-') == festring::NPos &&
+      Science.Find("phobia") == festring::NPos) {
     Prefix = GetScienceTalkPrefix().GetRandomElement();
-
-    if(!Prefix.IsEmpty() && Science.Find(Prefix) != festring::NPos)
-      Prefix.Empty();
+    if (!Prefix.IsEmpty() && Science.Find(Prefix) != festring::NPos) Prefix.Empty();
   }
-
   int L = Prefix.GetSize();
-
-  if(L && Prefix[L - 1] == Science[0])
-    Science.Erase(0, 1);
-
-  if(!NoAttrib && !NoSecondAdjective == !RAND_GOOD(3))
-  {
+  if (L && Prefix[L-1] == Science[0]) Science.Erase(0, 1);
+  if (!NoAttrib && !NoSecondAdjective == !RAND_GOOD(3)) {
     int S1 = NoSecondAdjective ? 0 : GetScienceTalkAdjectiveAttribute().Size;
     int S2 = GetScienceTalkSubstantiveAttribute().Size;
     festring OtherAttribute;
-    int Chosen = RAND_GOOD(S1 + S2);
-
-    if(Chosen < S1)
-      OtherAttribute = GetScienceTalkAdjectiveAttribute()[Chosen];
-    else
-      OtherAttribute = GetScienceTalkSubstantiveAttribute()[Chosen - S1];
-
-    if(!OtherAttribute.IsEmpty() && OtherAttribute.Find("the ", 0, 4)
-       && Attribute.Find(OtherAttribute) == festring::NPos)
-    {
+    int Chosen = RAND_GOOD(S1+S2);
+    if (Chosen < S1) OtherAttribute = GetScienceTalkAdjectiveAttribute()[Chosen];
+    else OtherAttribute = GetScienceTalkSubstantiveAttribute()[Chosen - S1];
+    if (!OtherAttribute.IsEmpty() && OtherAttribute.Find("the ", 0, 4) && Attribute.Find(OtherAttribute) == festring::NPos) {
       String << Attribute << ' ' << OtherAttribute << ' ' << Prefix << Science;
       return;
     }
   }
-
   String << Attribute;
-
-  if(!NoAttrib)
-    String << ' ';
-
+  if (!NoAttrib) String << ' ';
   String << Prefix << Science;
 }
 
-truth character::TryToTalkAboutScience()
-{
-  if(GetRelation(PLAYER) == HOSTILE
-     || GetScienceTalkPossibility() <= RAND_GOOD(100)
-     || PLAYER->GetAttribute(INTELLIGENCE) < GetScienceTalkIntelligenceRequirement()
-     || PLAYER->GetAttribute(WISDOM) < GetScienceTalkWisdomRequirement()
-     || PLAYER->GetAttribute(CHARISMA) < GetScienceTalkCharismaRequirement())
+
+truth character::TryToTalkAboutScience () {
+  if (GetRelation(PLAYER) == HOSTILE ||
+      GetScienceTalkPossibility() <= RAND_GOOD(100) ||
+      PLAYER->GetAttribute(INTELLIGENCE) < GetScienceTalkIntelligenceRequirement() ||
+      PLAYER->GetAttribute(WISDOM) < GetScienceTalkWisdomRequirement() ||
+      PLAYER->GetAttribute(CHARISMA) < GetScienceTalkCharismaRequirement())
     return false;
-
   festring Science;
-
-  if(RAND_GOOD(3))
+  if (RAND_GOOD(3)) {
     AddRandomScienceName(Science);
-  else
-  {
+  } else {
     festring S1, S2;
     AddRandomScienceName(S1);
     AddRandomScienceName(S2);
-
-    if(S1.Find(S2) == festring::NPos && S2.Find(S1) == festring::NPos)
-    {
-      switch(RAND_GOOD(3))
-      {
-       case 0: Science = "the relation of "; break;
-       case 1: Science = "the differences of "; break;
-       case 2: Science = "the similarities of "; break;
+    if (S1.Find(S2) == festring::NPos && S2.Find(S1) == festring::NPos) {
+      switch (RAND_GOOD(3)) {
+        case 0: Science = "the relation of "; break;
+        case 1: Science = "the differences of "; break;
+        case 2: Science = "the similarities of "; break;
       }
-
       Science << S1 << " and " << S2;
     }
-    else
+    else {
       AddRandomScienceName(Science);
+    }
   }
-
-  switch((RAND() + GET_TICK()) % 10)
-  {
-   case 0:
-    ADD_MESSAGE("You have a rather pleasant chat about %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
-    break;
-   case 1:
-    ADD_MESSAGE("%s explains a few of %s opinions regarding %s to you.", CHAR_DESCRIPTION(DEFINITE), CHAR_POSSESSIVE_PRONOUN, Science.CStr());
-    break;
-   case 2:
-    ADD_MESSAGE("%s reveals a number of %s insightful views of %s to you.", CHAR_DESCRIPTION(DEFINITE), CHAR_POSSESSIVE_PRONOUN, Science.CStr());
-    break;
-   case 3:
-    ADD_MESSAGE("You exhange some information pertaining to %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
-    break;
-   case 4:
-    ADD_MESSAGE("You engage in a pretty intriguing conversation about %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
-    break;
-   case 5:
-    ADD_MESSAGE("You discuss at length about %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
-    break;
-   case 6:
-    ADD_MESSAGE("You have a somewhat boring talk concerning %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
-    break;
-   case 7:
-    ADD_MESSAGE("You are drawn into a heated argument regarding %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
-    break;
-   case 8:
-    ADD_MESSAGE("%s delivers a long monologue concerning eg. %s.", CHAR_DESCRIPTION(DEFINITE), Science.CStr());
-    break;
-   case 9:
-    ADD_MESSAGE("You dive into a brief but thought-provoking debate over %s with %s", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
-    break;
+  switch ((RAND() + GET_TICK()) % 10) {
+    case 0:
+      ADD_MESSAGE("You have a rather pleasant chat about %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
+      break;
+    case 1:
+      ADD_MESSAGE("%s explains a few of %s opinions regarding %s to you.", CHAR_DESCRIPTION(DEFINITE), CHAR_POSSESSIVE_PRONOUN, Science.CStr());
+      break;
+    case 2:
+      ADD_MESSAGE("%s reveals a number of %s insightful views of %s to you.", CHAR_DESCRIPTION(DEFINITE), CHAR_POSSESSIVE_PRONOUN, Science.CStr());
+      break;
+    case 3:
+      ADD_MESSAGE("You exhange some information pertaining to %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
+      break;
+    case 4:
+      ADD_MESSAGE("You engage in a pretty intriguing conversation about %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
+      break;
+    case 5:
+      ADD_MESSAGE("You discuss at length about %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
+      break;
+    case 6:
+      ADD_MESSAGE("You have a somewhat boring talk concerning %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
+      break;
+    case 7:
+      ADD_MESSAGE("You are drawn into a heated argument regarding %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
+      break;
+    case 8:
+      ADD_MESSAGE("%s delivers a long monologue concerning eg. %s.", CHAR_DESCRIPTION(DEFINITE), Science.CStr());
+      break;
+    case 9:
+      ADD_MESSAGE("You dive into a brief but thought-provoking debate over %s with %s", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
+      break;
   }
-
   PLAYER->EditExperience(INTELLIGENCE, 1000, 50. * GetScienceTalkIntelligenceModifier() / ++ScienceTalks);
   PLAYER->EditExperience(WISDOM, 1000, 50. * GetScienceTalkWisdomModifier() / ++ScienceTalks);
   PLAYER->EditExperience(CHARISMA, 1000, 50. * GetScienceTalkCharismaModifier() / ++ScienceTalks);
   return true;
 }
 
-truth character::IsUsingWeaponOfCategory(int Category) const
-{
-  return ((GetMainWielded() && GetMainWielded()->GetWeaponCategory() == Category)
-    || (GetSecondaryWielded() && GetSecondaryWielded()->GetWeaponCategory() == Category));
+
+truth character::IsUsingWeaponOfCategory (int Category) const {
+  return
+    ((GetMainWielded() && GetMainWielded()->GetWeaponCategory() == Category) ||
+     (GetSecondaryWielded() && GetSecondaryWielded()->GetWeaponCategory() == Category));
 }
 
-truth character::TryToUnStickTraps(v2 Dir)
-{
-  if(!TrapData)
-    return true;
 
+truth character::TryToUnStickTraps (v2 Dir) {
+  if (!TrapData) return true;
   std::vector<trapdata> TrapVector;
-
-  for(const trapdata* T = TrapData; T; T = T->Next)
-    TrapVector.push_back(*TrapData);
-
-  for(uint c = 0; c < TrapVector.size(); ++c)
-    if(IsEnabled())
-    {
-      entity* Trap = game::SearchTrap(TrapVector[c].TrapID);
-
-/*k8:???
-      if(!Trap->Exists())
-  int esko = esko = 2;
-*/ if(!Trap->Exists()) continue; /*k8: ??? added by me; what this means? */
-      if(Trap->GetVictimID() == GetID() && Trap->TryToUnStick(this, Dir))
-  break;
+  for (const trapdata *T = TrapData; T; T = T->Next) TrapVector.push_back(*TrapData);
+  for (uint c = 0; c < TrapVector.size(); ++c) {
+    if (IsEnabled()) {
+      entity *Trap = game::SearchTrap(TrapVector[c].TrapID);
+      /*k8:??? if(!Trap->Exists()) int esko = esko = 2; */
+      if (!Trap->Exists()) continue; /*k8: ??? added by me; what this means? */
+      if (Trap->GetVictimID() == GetID() && Trap->TryToUnStick(this, Dir))
+      break;
     }
-
+  }
   return !TrapData && IsEnabled();
 }
 
-struct trapidcomparer
-{
-  trapidcomparer(ulong ID) : ID(ID) {}
-  truth operator()(const trapdata* T) const { return T->TrapID == ID; }
+
+struct trapidcomparer {
+  trapidcomparer (ulong ID) : ID(ID) {}
+  truth operator () (const trapdata *T) const { return T->TrapID == ID; }
   ulong ID;
 };
 
-void character::RemoveTrap(ulong ID)
-{
-  trapdata*& T = ListFind(TrapData, trapidcomparer(ID));
+
+void character::RemoveTrap (ulong ID) {
+  trapdata *&T = ListFind(TrapData, trapidcomparer(ID));
   T = T->Next;
   doforbodyparts()(this, &bodypart::SignalPossibleUsabilityChange);
 }
 
-void character::AddTrap(ulong ID, ulong BodyParts)
-{
-  trapdata*& T = ListFind(TrapData, trapidcomparer(ID));
 
-  if(T)
-    T->BodyParts |= BodyParts;
-  else
-    T = new trapdata(ID, GetID(), BodyParts);
-
+void character::AddTrap (ulong ID, ulong BodyParts) {
+  trapdata *&T = ListFind(TrapData, trapidcomparer(ID));
+  if (T) T->BodyParts |= BodyParts;
+  else T = new trapdata(ID, GetID(), BodyParts);
   doforbodyparts()(this, &bodypart::SignalPossibleUsabilityChange);
 }
 
-truth character::IsStuckToTrap(ulong ID) const
-{
-  for(const trapdata* T = TrapData; T; T = T->Next)
-    if(T->TrapID == ID)
-      return true;
 
+truth character::IsStuckToTrap (ulong ID) const {
+  for (const trapdata *T = TrapData; T; T = T->Next) if (T->TrapID == ID) return true;
   return false;
 }
 
-void character::RemoveTraps()
-{
-  for(trapdata* T = TrapData; T;)
-  {
-    entity* Trap = game::SearchTrap(T->TrapID);
 
-    if(Trap)
-      Trap->UnStick();
-
-    trapdata* ToDel = T;
+void character::RemoveTraps () {
+  for (trapdata *T = TrapData; T;) {
+    entity *Trap = game::SearchTrap(T->TrapID);
+    if (Trap) Trap->UnStick();
+    trapdata *ToDel = T;
     T = T->Next;
     delete ToDel;
   }
-
   TrapData = 0;
   doforbodyparts()(this, &bodypart::SignalPossibleUsabilityChange);
 }
 
-void character::RemoveTraps(int BodyPartIndex)
-{
+
+void character::RemoveTraps (int BodyPartIndex) {
   ulong Flag = 1 << BodyPartIndex;
-
-  for(trapdata** T = &TrapData; *T;)
-    if((*T)->BodyParts & Flag)
-    {
-      entity* Trap = game::SearchTrap((*T)->TrapID);
-
-      if(!((*T)->BodyParts &= ~Flag))
-      {
-  if(Trap)
-    Trap->UnStick();
-
-  trapdata* ToDel = *T;
-  *T = (*T)->Next;
-  delete ToDel;
-      }
-      else
-      {
-  if(Trap)
-    Trap->UnStick(BodyPartIndex);
-
-  T = &(*T)->Next;
+  for (trapdata **T = &TrapData; *T;) {
+    if ((*T)->BodyParts & Flag) {
+      entity *Trap = game::SearchTrap((*T)->TrapID);
+      if (!((*T)->BodyParts &= ~Flag)) {
+        if (Trap) Trap->UnStick();
+        trapdata *ToDel = *T;
+        *T = (*T)->Next;
+        delete ToDel;
+      } else {
+        if (Trap) Trap->UnStick(BodyPartIndex);
+        T = &(*T)->Next;
       }
     }
-    else
+    else {
       T = &(*T)->Next;
-
-  if(GetBodyPart(BodyPartIndex))
-    GetBodyPart(BodyPartIndex)->SignalPossibleUsabilityChange();
+    }
+  }
+  if (GetBodyPart(BodyPartIndex)) GetBodyPart(BodyPartIndex)->SignalPossibleUsabilityChange();
 }
 
-festring character::GetTrapDescription() const
-{
+
+festring character::GetTrapDescription () const {
   festring Desc;
-  std::pair<entity*, int> TrapStack[3];
+  std::pair<entity *, int> TrapStack[3];
   int Index = 0;
-
-  for(const trapdata* T = TrapData; T; T = T->Next)
-  {
-    if(Index < 3)
-    {
-      entity* Trap = game::SearchTrap(T->TrapID);
-
-      if(Trap)
-      {
-  int c;
-
-  for(c = 0; c < Index; ++c)
-    if(TrapStack[c].first->GetTrapType() == Trap->GetTrapType())
-      ++TrapStack[c].second;
-
-  if(c == Index)
-    TrapStack[Index++] = std::make_pair(Trap, 1);
+  for (const trapdata *T = TrapData; T; T = T->Next) {
+    if (Index < 3) {
+      entity *Trap = game::SearchTrap(T->TrapID);
+      if (Trap) {
+        int c;
+        for (c = 0; c < Index; ++c) if (TrapStack[c].first->GetTrapType() == Trap->GetTrapType()) ++TrapStack[c].second;
+        if (c == Index) TrapStack[Index++] = std::make_pair(Trap, 1);
       }
-    }
-    else
-    {
+    } else {
       ++Index;
       break;
     }
   }
-
-  if(Index <= 3)
-  {
+  if (Index <= 3) {
     TrapStack[0].first->AddTrapName(Desc, TrapStack[0].second);
-
-    if(Index == 2)
-    {
+    if (Index == 2) {
       Desc << " and ";
       TrapStack[1].first->AddTrapName(Desc, TrapStack[1].second);
-    }
-    else if(Index == 3)
-    {
+    } else if (Index == 3) {
       Desc << ", ";
       TrapStack[1].first->AddTrapName(Desc, TrapStack[1].second);
       Desc << " and ";
       TrapStack[2].first->AddTrapName(Desc, TrapStack[2].second);
     }
-  }
-  else
+  } else {
     Desc << "lots of traps";
-
+  }
   return Desc;
 }
 
-int character::RandomizeHurtBodyPart(ulong BodyParts) const
-{
+
+int character::RandomizeHurtBodyPart (ulong BodyParts) const {
   int BodyPartIndex[MAX_BODYPARTS];
   int Index = 0;
-
-  for(int c = 0; c < GetBodyParts(); ++c)
-    if(1 << c & BodyParts)
-    {
-/*k8: ??? if(!GetBodyPart(c)) int esko = esko = 2; */
-      if(!GetBodyPart(c)) continue;
-
+  for (int c = 0; c < GetBodyParts(); ++c) {
+    if (1 << c & BodyParts) {
+      /*k8: ??? if(!GetBodyPart(c)) int esko = esko = 2; */
+      if (!GetBodyPart(c)) continue;
       BodyPartIndex[Index++] = c;
     }
-
-/*k8: ???
-  if(!Index)
-    int esko = esko = 2;*/
+    /*k8: ??? if(!Index) int esko = esko = 2;*/
+  }
   if (!Index) abort();
-
   return BodyPartIndex[RAND_N(Index)];
 }
 
-truth character::BodyPartIsStuck(int I) const
-{
-  for(const trapdata* T = TrapData; T; T = T->Next)
-    if(1 << I & T->BodyParts)
-      return true;
 
+truth character::BodyPartIsStuck (int I) const {
+  for (const trapdata *T = TrapData; T; T = T->Next) if (1 << I & T->BodyParts) return true;
   return false;
 }
 
-void character::PrintAttribute(cchar* Desc, int I, int PanelPosX, int PanelPosY) const
-{
+
+void character::PrintAttribute (cchar *Desc, int I, int PanelPosX, int PanelPosY) const {
   int Attribute = GetAttribute(I);
   int NoBonusAttribute = GetAttribute(I, false);
   col16 C = game::GetAttributeColor(I);
@@ -6973,315 +6842,234 @@ void character::PrintAttribute(cchar* Desc, int I, int PanelPosX, int PanelPosY)
   String << Attribute;
   String.Resize(8);
   FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY * 10), C, String.CStr());
-
-  if(Attribute != NoBonusAttribute)
-  {
+  if (Attribute != NoBonusAttribute) {
     int Where = PanelPosX + ((String.GetSize() + 1) << 3);
-    FONT->Printf(DOUBLE_BUFFER, v2(Where, PanelPosY * 10), LIGHT_GRAY,
-     "%d", NoBonusAttribute);
+    FONT->Printf(DOUBLE_BUFFER, v2(Where, PanelPosY * 10), LIGHT_GRAY, "%d", NoBonusAttribute);
   }
 }
 
-truth character::AllowUnconsciousness() const
-{
+
+truth character::AllowUnconsciousness () const {
   return DataBase->AllowUnconsciousness && TorsoIsAlive();
 }
 
-truth character::CanPanic() const
-{
+
+truth character::CanPanic () const {
   return !Action || !Action->IsUnconsciousness();
 }
 
-int character::GetRandomBodyPart(ulong Possible) const
-{
+
+int character::GetRandomBodyPart (ulong Possible) const {
   int OKBodyPart[MAX_BODYPARTS];
   int OKBodyParts = 0;
-
-  for(int c = 0; c < BodyParts; ++c)
-    if(1 << c & Possible && GetBodyPart(c))
-      OKBodyPart[OKBodyParts++] = c;
-
+  for (int c = 0; c < BodyParts; ++c) if (1 << c & Possible && GetBodyPart(c)) OKBodyPart[OKBodyParts++] = c;
   return OKBodyParts ? OKBodyPart[RAND_N(OKBodyParts)] : NONE_INDEX;
 }
 
-void character::EditNP(long What)
-{
+
+void character::EditNP (long What) {
   int OldState = GetHungerState();
   NP += What;
   int NewState = GetHungerState();
-
-  if(OldState > VERY_HUNGRY && NewState == VERY_HUNGRY)
-    DeActivateVoluntaryAction(CONST_S("You are getting really hungry."));
-
-  if(OldState > STARVING && NewState == STARVING)
-    DeActivateVoluntaryAction(CONST_S("You are getting extremely hungry."));
+  if (OldState > VERY_HUNGRY && NewState == VERY_HUNGRY) DeActivateVoluntaryAction(CONST_S("You are getting really hungry."));
+  if (OldState > STARVING && NewState == STARVING) DeActivateVoluntaryAction(CONST_S("You are getting extremely hungry."));
 }
 
-truth character::IsSwimming() const
-{
-  return !IsFlying() && GetSquareUnder()
-    && GetSquareUnder()->GetSquareWalkability() & SWIM;
+
+truth character::IsSwimming () const {
+  return !IsFlying() && GetSquareUnder() && GetSquareUnder()->GetSquareWalkability() & SWIM;
 }
 
-void character::AddBlackUnicornConsumeEndMessage() const
-{
-  if(IsPlayer())
-    ADD_MESSAGE("You feel dirty and loathsome.");
+
+void character::AddBlackUnicornConsumeEndMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel dirty and loathsome.");
 }
 
-void character::AddGrayUnicornConsumeEndMessage() const
-{
-  if(IsPlayer())
-    ADD_MESSAGE("You feel neutralized.");
+
+void character::AddGrayUnicornConsumeEndMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel neutralized.");
 }
 
-void character::AddWhiteUnicornConsumeEndMessage() const
-{
-  if(IsPlayer())
-    ADD_MESSAGE("You feel purified.");
+
+void character::AddWhiteUnicornConsumeEndMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel purified.");
 }
 
-void character::AddOmmelBoneConsumeEndMessage() const
-{
-  if(IsPlayer())
-    ADD_MESSAGE("You feel the power of all your canine ancestors combining in your body.");
-  else if(CanBeSeenByPlayer())
-    ADD_MESSAGE("For a moment %s looks extremely ferocious. You shudder.", CHAR_NAME(DEFINITE));
+
+void character::AddOmmelBoneConsumeEndMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel the power of all your canine ancestors combining in your body.");
+  else if (CanBeSeenByPlayer()) ADD_MESSAGE("For a moment %s looks extremely ferocious. You shudder.", CHAR_NAME(DEFINITE));
 }
 
-int character::GetBodyPartSparkleFlags(int) const
-{
-  return ((GetNaturalSparkleFlags() & SKIN_COLOR ? SPARKLING_A : 0)
-    | (GetNaturalSparkleFlags() & TORSO_MAIN_COLOR ? SPARKLING_B : 0)
-    | (GetNaturalSparkleFlags() & TORSO_SPECIAL_COLOR ? SPARKLING_D : 0));
+
+int character::GetBodyPartSparkleFlags (int) const {
+  return
+    ((GetNaturalSparkleFlags() & SKIN_COLOR ? SPARKLING_A : 0) |
+     (GetNaturalSparkleFlags() & TORSO_MAIN_COLOR ? SPARKLING_B : 0) |
+     (GetNaturalSparkleFlags() & TORSO_SPECIAL_COLOR ? SPARKLING_D : 0));
 }
 
-truth character::IsAnimated() const
-{
+
+truth character::IsAnimated () const {
   return combinebodypartpredicates()(this, &bodypart::IsAnimated, 1);
 }
 
-double character::GetNaturalExperience(int Identifier) const
-{
+
+double character::GetNaturalExperience (int Identifier) const {
   return DataBase->NaturalExperience[Identifier];
 }
 
-truth character::HasBodyPart(sorter Sorter) const
-{
-  if(Sorter == 0)
-    return true;
 
+truth character::HasBodyPart (sorter Sorter) const {
+  if (Sorter == 0) return true;
   return combinebodypartpredicateswithparam<ccharacter*>()(this, Sorter, this, 1);
 }
 
-truth character::PossessesItem(sorter Sorter) const
-{
-  if(Sorter == 0)
-    return true;
 
-  return (GetStack()->SortedItems(this, Sorter)
-    || combinebodypartpredicateswithparam<ccharacter*>()(this, Sorter, this, 1)
-    || combineequipmentpredicateswithparam<ccharacter*>()(this, Sorter, this, 1));
+truth character::PossessesItem (sorter Sorter) const {
+  if (Sorter == 0) return true;
+  return
+    (GetStack()->SortedItems(this, Sorter) ||
+     combinebodypartpredicateswithparam<ccharacter*>()(this, Sorter, this, 1) ||
+     combineequipmentpredicateswithparam<ccharacter*>()(this, Sorter, this, 1));
 }
 
+
 /* 0 <= I <= 1 */
-
-cchar* character::GetRunDescriptionLine(int I) const
-{
-  if(!GetRunDescriptionLineOne().IsEmpty())
-    return !I ? GetRunDescriptionLineOne().CStr() : GetRunDescriptionLineTwo().CStr();
-
-  if(IsFlying())
-    return !I ? "Flying" : "very fast";
-
-  if(IsSwimming())
-    return !I ? "Swimming" : "very fast";
-
+cchar *character::GetRunDescriptionLine (int I) const {
+  if (!GetRunDescriptionLineOne().IsEmpty()) return !I ? GetRunDescriptionLineOne().CStr() : GetRunDescriptionLineTwo().CStr();
+  if (IsFlying()) return !I ? "Flying" : "very fast";
+  if (IsSwimming()) return !I ? "Swimming" : "very fast";
   return !I ? "Running" : "";
 }
 
-void character::VomitAtRandomDirection(int Amount)
-{
-  if(game::IsInWilderness())
-    return;
 
+void character::VomitAtRandomDirection (int Amount) {
+  if (game::IsInWilderness()) return;
   /* Lacks support of multitile monsters */
-
   v2 Possible[9];
   int Index = 0;
-
-  for(int d = 0; d < 9; ++d)
-  {
-    lsquare* Square = GetLSquareUnder()->GetNeighbourLSquare(d);
-
-    if(Square && !Square->VomitingIsDangerous(this))
-      Possible[Index++] = Square->GetPos();
+  for (int d = 0; d < 9; ++d) {
+    lsquare *Square = GetLSquareUnder()->GetNeighbourLSquare(d);
+    if (Square && !Square->VomitingIsDangerous(this)) Possible[Index++] = Square->GetPos();
   }
-
-  if(Index)
-    Vomit(Possible[RAND_N(Index)], Amount);
-  else
-    Vomit(GetPos(), Amount);
+  if (Index) Vomit(Possible[RAND_N(Index)], Amount);
+  else Vomit(GetPos(), Amount);
 }
 
-void character::RemoveLifeSavers()
-{
-  for(int c = 0; c < GetEquipments(); ++c)
-  {
-    item* Equipment = GetEquipment(c);
 
-    if(Equipment && Equipment->IsInCorrectSlot(c) && Equipment->GetGearStates() & LIFE_SAVED)
-    {
+void character::RemoveLifeSavers () {
+  for (int c = 0; c < GetEquipments(); ++c) {
+    item *Equipment = GetEquipment(c);
+    if (Equipment && Equipment->IsInCorrectSlot(c) && Equipment->GetGearStates() & LIFE_SAVED) {
       Equipment->SendToHell();
       Equipment->RemoveFromSlot();
     }
   }
 }
 
-ccharacter* character::FindCarrier() const
-{
+
+ccharacter *character::FindCarrier () const {
   return this; //check
 }
 
-void character::PrintBeginHiccupsMessage() const
-{
-  if(IsPlayer())
-    ADD_MESSAGE("Your diaphragm is spasming vehemently.");
+
+void character::PrintBeginHiccupsMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("Your diaphragm is spasming vehemently.");
 }
 
-void character::PrintEndHiccupsMessage() const
-{
-  if(IsPlayer())
-    ADD_MESSAGE("You feel your annoying hiccoughs have finally subsided.");
+
+void character::PrintEndHiccupsMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel your annoying hiccoughs have finally subsided.");
 }
 
-void character::HiccupsHandler()
-{
-  /*if(!(RAND() % 2000))
-  {
-    if(IsPlayer())
-      ADD_MESSAGE("");
-    else if(CanBeSeenByPlayer())
-      ADD_MESSAGE("");
-    else if((PLAYER->GetPos() - GetPos()).GetLengthSquare() <= 400)
-      ADD_MESSAGE("");
 
+void character::HiccupsHandler () {
+  /*
+  if (!(RAND() % 2000)) {
+    if (IsPlayer()) ADD_MESSAGE("");
+    else if (CanBeSeenByPlayer()) ADD_MESSAGE("");
+    else if ((PLAYER->GetPos()-GetPos()).GetLengthSquare() <= 400) ADD_MESSAGE("");
     game::CallForAttention(GetPos(), 400);
-  }*/
+  }
+  */
 }
 
-void character::HiccupsSituationDangerModifier(double& Danger) const
-{
+
+void character::HiccupsSituationDangerModifier (double &Danger) const {
   Danger *= 1.25;
 }
 
-bool character::IsConscious() const
-{
+
+bool character::IsConscious () const {
   return !Action || !Action->IsUnconsciousness();
 }
 
-wsquare* character::GetNearWSquare(v2 Pos) const
-{
-  return static_cast<wsquare*>(GetSquareUnder()->GetArea()->GetSquare(Pos));
+
+wsquare *character::GetNearWSquare (v2 Pos) const {
+  return static_cast<wsquare *>(GetSquareUnder()->GetArea()->GetSquare(Pos));
 }
 
-wsquare* character::GetNearWSquare(int x, int y) const
-{
-  return static_cast<wsquare*>(GetSquareUnder()->GetArea()->GetSquare(x, y));
+
+wsquare *character::GetNearWSquare (int x, int y) const {
+  return static_cast<wsquare *>(GetSquareUnder()->GetArea()->GetSquare(x, y));
 }
 
-void character::ForcePutNear(v2 Pos)
-{
+
+void character::ForcePutNear (v2 Pos) {
   /* GUM SOLUTION!!! */
-
   v2 NewPos = game::GetCurrentLevel()->GetNearestFreeSquare(PLAYER, Pos, false);
-
-  if(NewPos == ERROR_V2)
-    do
-    {
-      NewPos = game::GetCurrentLevel()->GetRandomSquare(this);
-    }
-    while(NewPos == Pos);
-
+  if (NewPos == ERROR_V2) do { NewPos = game::GetCurrentLevel()->GetRandomSquare(this); } while(NewPos == Pos);
   PutTo(NewPos);
 }
 
-void character::ReceiveMustardGas(int BodyPart, long Volume)
-{
-  if(Volume)
-    GetBodyPart(BodyPart)->AddFluid(liquid::Spawn(MUSTARD_GAS_LIQUID, Volume), CONST_S("skin"), 0, true);
+
+void character::ReceiveMustardGas (int BodyPart, long Volume) {
+  if (Volume) GetBodyPart(BodyPart)->AddFluid(liquid::Spawn(MUSTARD_GAS_LIQUID, Volume), CONST_S("skin"), 0, true);
 }
 
-void character::ReceiveMustardGasLiquid(int BodyPartIndex, long Modifier)
-{
-  bodypart* BodyPart = GetBodyPart(BodyPartIndex);
 
-  if(BodyPart->GetMainMaterial()->GetInteractionFlags() & IS_AFFECTED_BY_MUSTARD_GAS)
-  {
+void character::ReceiveMustardGasLiquid (int BodyPartIndex, long Modifier) {
+  bodypart *BodyPart = GetBodyPart(BodyPartIndex);
+  if (BodyPart->GetMainMaterial()->GetInteractionFlags() & IS_AFFECTED_BY_MUSTARD_GAS) {
     long Tries = Modifier;
     Modifier -= Tries; //opt%?
     int Damage = 0;
-
-    for(long c = 0; c < Tries; ++c)
-      if(!(RAND() % 100))
-  ++Damage;
-
-    if(Modifier && !(RAND() % 1000 / Modifier))
-      ++Damage;
-
-    if(Damage)
-    {
+    for (long c = 0; c < Tries; ++c) if (!(RAND() % 100)) ++Damage;
+    if (Modifier && !(RAND() % 1000 / Modifier)) ++Damage;
+    if (Damage) {
       ulong Minute = game::GetTotalMinutes();
-
-      if(GetLastAcidMsgMin() != Minute && (CanBeSeenByPlayer() || IsPlayer()))
-      {
-  SetLastAcidMsgMin(Minute);
-
-  if(IsPlayer())
-    ADD_MESSAGE("Mustard gas dissolves the skin of your %s.",
-          BodyPart->GetBodyPartName().CStr());
-  else
-    ADD_MESSAGE("Mustard gas dissolves %s.", CHAR_NAME(DEFINITE));
+      if (GetLastAcidMsgMin() != Minute && (CanBeSeenByPlayer() || IsPlayer())) {
+        SetLastAcidMsgMin(Minute);
+        if (IsPlayer()) ADD_MESSAGE("Mustard gas dissolves the skin of your %s.", BodyPart->GetBodyPartName().CStr());
+        else ADD_MESSAGE("Mustard gas dissolves %s.", CHAR_NAME(DEFINITE));
       }
-
-      ReceiveBodyPartDamage(0, Damage, MUSTARD_GAS_DAMAGE,
-          BodyPartIndex, YOURSELF, false, false, false);
+      ReceiveBodyPartDamage(0, Damage, MUSTARD_GAS_DAMAGE, BodyPartIndex, YOURSELF, false, false, false);
       CheckDeath(CONST_S("killed by a fatal exposure to mustard gas"));
     }
   }
 }
 
-truth character::IsBadPath(v2 Pos) const
-{
-  if(!IsGoingSomeWhere())
-    return false;
 
+truth character::IsBadPath (v2 Pos) const {
+  if (!IsGoingSomeWhere()) return false;
   v2 TPos = !Route.empty() ? Route.back() : GoingTo;
-
-  return ((TPos - Pos).GetManhattanLength()
-    > (TPos - GetPos()).GetManhattanLength());
+  return ((TPos - Pos).GetManhattanLength() > (TPos - GetPos()).GetManhattanLength());
 }
 
-double& character::GetExpModifierRef(expid E)
-{
+
+double &character::GetExpModifierRef (expid E) {
   return ExpModifierMap.insert(std::make_pair(E, 1.)).first->second;
 }
 
+
 /* Should probably do more. Now only makes Player forget gods */
-truth character::ForgetRandomThing()
-{
-  if(IsPlayer())
-  {
+truth character::ForgetRandomThing () {
+  if (IsPlayer()) {
     /* hopefully this code isn't some where else */
-    std::vector<god*> Known;
-
-    for(int c = 1; c <= GODS; ++c)
-      if(game::GetGod(c)->IsKnown())
-  Known.push_back(game::GetGod(c));
-
-    if(Known.empty())
-      return false;
-
+    std::vector<god *> Known;
+    for (int c = 1; c <= GODS; ++c) if (game::GetGod(c)->IsKnown()) Known.push_back(game::GetGod(c));
+    if (Known.empty()) return false;
     int RandomGod = RAND_N(Known.size());
     Known.at(RAND_N(Known.size()))->SetIsKnown(false);
     ADD_MESSAGE("You forget how to pray to %s.",
@@ -7291,208 +7079,133 @@ truth character::ForgetRandomThing()
   return false;
 }
 
-int character::CheckForBlock(character* Enemy, item* Weapon,
-           double ToHitValue, int Damage,
-           int Success, int Type)
-{
+
+int character::CheckForBlock (character *Enemy, item *Weapon, double ToHitValue, int Damage, int Success, int Type) {
   return Damage;
 };
 
-void character::ApplyAllGodsKnownBonus()
-{
-  stack* AddPlace = GetStackUnder();
 
-  if(game::IsInWilderness())
-    AddPlace = GetStack();
-  else
-    AddPlace = GetStackUnder();
-
-  pantheonbook* NewBook = pantheonbook::Spawn();
+void character::ApplyAllGodsKnownBonus () {
+  stack *AddPlace = GetStackUnder();
+  if (game::IsInWilderness()) AddPlace = GetStack(); else AddPlace = GetStackUnder();
+  pantheonbook *NewBook = pantheonbook::Spawn();
   AddPlace->AddItem(NewBook);
-
   ADD_MESSAGE("\"MORTAL! BEHOLD THE HOLY SAGA\"");
-  ADD_MESSAGE("%s materializes near your feet.",
-        NewBook->CHAR_NAME(INDEFINITE));
+  ADD_MESSAGE("%s materializes near your feet.", NewBook->CHAR_NAME(INDEFINITE));
 }
 
-void character::ReceiveSirenSong(character* Siren)
-{
-  if(Siren->GetTeam() == GetTeam())
-    return;
 
-  if(!RAND_N(4))
-  {
-    if(IsPlayer())
-      ADD_MESSAGE("The beautiful melody of %s makes you feel sleepy.",
-        Siren->CHAR_NAME(DEFINITE));
-    else if(CanBeSeenByPlayer())
-      ADD_MESSAGE("The beautiful melody of %s makes %s look sleepy.",
-        Siren->CHAR_NAME(DEFINITE), CHAR_NAME(DEFINITE)); /*k8*/
-
+void character::ReceiveSirenSong (character *Siren) {
+  if (Siren->GetTeam() == GetTeam()) return;
+  if (!RAND_N(4)) {
+    if (IsPlayer()) ADD_MESSAGE("The beautiful melody of %s makes you feel sleepy.", Siren->CHAR_NAME(DEFINITE));
+    else if (CanBeSeenByPlayer()) ADD_MESSAGE("The beautiful melody of %s makes %s look sleepy.", Siren->CHAR_NAME(DEFINITE), CHAR_NAME(DEFINITE)); /*k8*/
     Stamina -= (1 + RAND_N(4)) * 10000;
     return;
   }
-
-  if(!IsPlayer() && IsCharmable() && !RAND_N(5))
-  {
+  if (!IsPlayer() && IsCharmable() && !RAND_N(5)) {
     ChangeTeam(Siren->GetTeam());
-    ADD_MESSAGE("%s seems to be totally brainwashed by %s melodies.", CHAR_NAME(DEFINITE),
-      Siren->CHAR_NAME(DEFINITE));
+    ADD_MESSAGE("%s seems to be totally brainwashed by %s melodies.", CHAR_NAME(DEFINITE), Siren->CHAR_NAME(DEFINITE));
     return;
   }
-
-  if(!RAND_N(4))
-  {
-    item* What = GiveMostExpensiveItem(Siren);
-
-    if(What)
-    {
-      if(IsPlayer())
-      {
-  ADD_MESSAGE("%s music persuades you to give %s to %s as a present.",
-        Siren->CHAR_NAME(DEFINITE), What->CHAR_NAME(DEFINITE),
-        Siren->CHAR_OBJECT_PRONOUN);
+  if (!RAND_N(4)) {
+    item *What = GiveMostExpensiveItem(Siren);
+    if (What) {
+      if (IsPlayer()) {
+        ADD_MESSAGE("%s music persuades you to give %s to %s as a present.", Siren->CHAR_NAME(DEFINITE), What->CHAR_NAME(DEFINITE), Siren->CHAR_OBJECT_PRONOUN);
+      } else {
+        ADD_MESSAGE("%s is persuated to give %s to %s because of %s beautiful singing.", CHAR_NAME(DEFINITE), What->CHAR_NAME(INDEFINITE), Siren->CHAR_NAME(DEFINITE), Siren->CHAR_OBJECT_PRONOUN);
       }
-      else
-      {
-  ADD_MESSAGE("%s is persuated to give %s to %s because of %s beautiful singing.",
-        CHAR_NAME(DEFINITE),
-        What->CHAR_NAME(INDEFINITE),
-        Siren->CHAR_NAME(DEFINITE),
-        Siren->CHAR_OBJECT_PRONOUN);
-
-      }
+    } else {
+      if (IsPlayer()) ADD_MESSAGE("You would like to give something to %s.", Siren->CHAR_NAME(DEFINITE));
     }
-    else
-    {
-      if(IsPlayer())
-  ADD_MESSAGE("You would like to give something to %s.", Siren->CHAR_NAME(DEFINITE));
-    }
-
     return;
   }
 }
 
+
 // return 0, if no item found
-
-item* character::FindMostExpensiveItem() const
-{
+item *character::FindMostExpensiveItem () const {
   int MaxPrice = -1;
-  item* MostExpensive = 0;
-
-  for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i)
-    if((*i)->GetPrice() > MaxPrice)
-    {
+  item *MostExpensive = 0;
+  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) {
+    if ((*i)->GetPrice() > MaxPrice) {
       MaxPrice = (*i)->GetPrice();
       MostExpensive = (*i);
     }
-
-  for(int c = 0; c < GetEquipments(); ++c)
-  {
-    item* Equipment = GetEquipment(c);
-
-    if(Equipment && Equipment->GetPrice() > MaxPrice)
-    {
+  }
+  for (int c = 0; c < GetEquipments(); ++c) {
+    item *Equipment = GetEquipment(c);
+    if (Equipment && Equipment->GetPrice() > MaxPrice) {
       MaxPrice = Equipment->GetPrice();
       MostExpensive = Equipment;
     }
   }
-
   return MostExpensive;
 }
 
+
 // returns 0 if no items available
-
-item* character::GiveMostExpensiveItem(character* ToWhom)
-{
-  item* ToGive = FindMostExpensiveItem();
-
-  if(!ToGive)
-    return 0;
-
+item *character::GiveMostExpensiveItem(character *ToWhom) {
+  item *ToGive = FindMostExpensiveItem();
+  if (!ToGive) return 0;
   truth Equipped = PLAYER->Equips(ToGive);
   ToGive->RemoveFromSlot();
-
-  if(Equipped)
-    game::AskForEscPress(CONST_S("Equipment lost!"));
-
+  if (Equipped) game::AskForEscPress(CONST_S("Equipment lost!"));
   ToWhom->ReceiveItemAsPresent(ToGive);
   EditAP(-1000);
   return ToGive;
 }
 
-void character::ReceiveItemAsPresent(item* Present)
-{
-  if(TestForPickup(Present))
-    GetStack()->AddItem(Present);
-  else
-    GetStackUnder()->AddItem(Present);
+
+void character::ReceiveItemAsPresent (item *Present) {
+  if (TestForPickup(Present)) GetStack()->AddItem(Present); else GetStackUnder()->AddItem(Present);
 }
 
-/* returns 0 if no enemies in sight */
 
-character* character::GetNearestEnemy() const
-{
-  character* NearestEnemy = 0;
+/* returns 0 if no enemies in sight */
+character *character::GetNearestEnemy () const {
+  character *NearestEnemy = 0;
   long NearestEnemyDistance = 0x7FFFFFFF;
   v2 Pos = GetPos();
-
-  for(int c = 0; c < game::GetTeams(); ++c)
-    if(GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE)
-    {
-      for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-  if((*i)->IsEnabled())
-  {
-    long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X),
-          abs((*i)->GetPos().Y - Pos.Y));
-
-    if((ThisDistance < NearestEnemyDistance
-        || (ThisDistance == NearestEnemyDistance && !(RAND() % 3)))
-       && (*i)->CanBeSeenBy(this))
-    {
-      NearestEnemy = *i;
-      NearestEnemyDistance = ThisDistance;
+  for (int c = 0; c < game::GetTeams(); ++c) {
+    if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
+      for (std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
+        if ((*i)->IsEnabled()) {
+          long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
+          if ((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND() % 3))) && (*i)->CanBeSeenBy(this)) {
+            NearestEnemy = *i;
+            NearestEnemyDistance = ThisDistance;
+          }
+        }
+      }
     }
   }
-    }
-
   return NearestEnemy;
 }
 
-truth character::MindWormCanPenetrateSkull(mindworm*) const
-{
+
+truth character::MindWormCanPenetrateSkull (mindworm *) const {
   return false;
 }
 
-truth character::CanTameWithDulcis(const character* Tamer) const
-{
+
+truth character::CanTameWithDulcis (const character *Tamer) const {
   int TamingDifficulty = GetTamingDifficulty();
-
-  if(TamingDifficulty == NO_TAMING)
-    return false;
-
-  if(GetAttachedGod() == DULCIS)
-    return true;
-
+  if (TamingDifficulty == NO_TAMING) return false;
+  if (GetAttachedGod() == DULCIS) return true;
   int Modifier = Tamer->GetAttribute(WISDOM) + Tamer->GetAttribute(CHARISMA);
-
-  if(Tamer->IsPlayer())
-    Modifier += game::GetGod(DULCIS)->GetRelation() / 20;
-  else if(Tamer->GetAttachedGod() == DULCIS)
-    Modifier += 50;
-
+  if (Tamer->IsPlayer()) Modifier += game::GetGod(DULCIS)->GetRelation() / 20;
+  else if (Tamer->GetAttachedGod() == DULCIS) Modifier += 50;
   if (TamingDifficulty == 0) {
-    if(!IgnoreDanger())
-      TamingDifficulty = int(10 * GetRelativeDanger(Tamer));
-    else
-      TamingDifficulty = 10 * GetHPRequirementForGeneration()
-       / Max(Tamer->GetHP(), 1);
+    if (!IgnoreDanger()) TamingDifficulty = int(10 * GetRelativeDanger(Tamer));
+    else TamingDifficulty = 10 * GetHPRequirementForGeneration()/Max(Tamer->GetHP(), 1);
   }
   return Modifier >= TamingDifficulty * 3;
 }
 
-truth character::CanTameWithLyre(const character* Tamer) const
-{
+
+truth character::CanTameWithLyre (const character *Tamer) const {
   int TamingDifficulty = GetTamingDifficulty();
   if (TamingDifficulty == NO_TAMING) return false;
   if (TamingDifficulty == 0) {
@@ -7502,69 +7215,52 @@ truth character::CanTameWithLyre(const character* Tamer) const
   return Tamer->GetAttribute(CHARISMA) >= TamingDifficulty;
 }
 
-truth character::CanTameWithScroll(const character* Tamer) const
-{
+
+truth character::CanTameWithScroll (const character *Tamer) const {
   int TamingDifficulty = GetTamingDifficulty();
-  return (TamingDifficulty != NO_TAMING
-    && (TamingDifficulty == 0
-        || Tamer->GetAttribute(INTELLIGENCE) * 4
-        + Tamer->GetAttribute(CHARISMA)
-        >= TamingDifficulty * 5));
+  return
+    (TamingDifficulty != NO_TAMING &&
+     (TamingDifficulty == 0 ||
+      Tamer->GetAttribute(INTELLIGENCE) * 4 + Tamer->GetAttribute(CHARISMA) >= TamingDifficulty * 5));
 }
 
-truth character::CheckSadism()
-{
-  if(!IsSadist() || !HasSadistAttackMode() || !IsSmall()) // gum
-    return false;
 
-  if(!RAND_N(10))
-  {
-    for(int d = 0; d < 8; ++d)
-    {
-      square* Square = GetNeighbourSquare(d);
-
-      if(Square)
-      {
-  character* Char = Square->GetCharacter();
-
-  if(Char && Char->IsMasochist() && GetRelation(Char) == FRIEND
-     && Char->GetHP() * 3 >= Char->GetMaxHP() * 2
-     && Hit(Char, Square->GetPos(), d, SADIST_HIT))
-  {
-    TerminateGoingTo();
-    return true;
-  }
+truth character::CheckSadism () {
+  if (!IsSadist() || !HasSadistAttackMode() || !IsSmall()) return false; // gum
+  if (!RAND_N(10)) {
+    for (int d = 0; d < 8; ++d) {
+      square *Square = GetNeighbourSquare(d);
+      if (Square) {
+        character *Char = Square->GetCharacter();
+        if (Char && Char->IsMasochist() && GetRelation(Char) == FRIEND &&
+            Char->GetHP() * 3 >= Char->GetMaxHP() * 2 && Hit(Char, Square->GetPos(), d, SADIST_HIT)) {
+          TerminateGoingTo();
+          return true;
+        }
       }
     }
   }
-
   return false;
 }
 
-truth character::CheckForBeverage()
-{
-  if(StateIsActivated(PANIC) || !IsEnabled() || !UsesNutrition() || CheckIfSatiated())
-    return false;
 
+truth character::CheckForBeverage () {
+  if (StateIsActivated(PANIC) || !IsEnabled() || !UsesNutrition() || CheckIfSatiated()) return false;
   itemvector ItemVector;
   GetStack()->FillItemVector(ItemVector);
-
-  for(uint c = 0; c < ItemVector.size(); ++c)
-    if(ItemVector[c]->IsBeverage(this) && TryToConsume(ItemVector[c]))
-      return true;
-
+  for (uint c = 0; c < ItemVector.size(); ++c) if (ItemVector[c]->IsBeverage(this) && TryToConsume(ItemVector[c])) return true;
   return false;
 }
 
-void character::Haste()
-{
+
+void character::Haste () {
   doforbodyparts()(this, &bodypart::Haste);
   doforequipments()(this, &item::Haste);
   BeginTemporaryState(HASTE, 500 + RAND() % 1000);
 }
 
-void character::Slow()
-{
+
+void character::Slow () {
   doforbodyparts()(this, &bodypart::Slow);
   doforequipments()(this, &item::Slow);
   BeginTemporaryState(HASTE, 500 + RAND() % 1000);
