@@ -189,7 +189,7 @@ void ivanconfig::Initialize () {
   configsystem::AddOption(&FastListMode);
   configsystem::AddOption(&PlaySounds);
 /*k8*/
-  configsystem::SetConfigFileName(getConfigPath()+"/.ivan.conf");
+  configsystem::SetConfigFileName(getConfigPath()+"/.ivan.rc");
   configsystem::Load();
   felist::SetFastListMode(!FastListMode.Value);
   CalculateContrastLuminance();

@@ -17,7 +17,7 @@ cv2 TILE_V2(TILE_SIZE, TILE_SIZE);
 
 int Main (int, char **) {
   festring OldDirectory;
-  std::ifstream IConfigFile("igor.cfg");
+  std::ifstream IConfigFile(".igor.rc");
   if (IConfigFile.is_open()) {
     char ch;
     while (IConfigFile.get(ch)) OldDirectory << ch;
@@ -34,7 +34,7 @@ int Main (int, char **) {
   if (Directory.IsEmpty()) Directory = OldDirectory;
   if (!Directory.IsEmpty() && Directory[Directory.GetSize()-1] != '/') Directory << '/';
 
-  std::ofstream OConfigFile("igor.cfg");
+  std::ofstream OConfigFile(".igor.rc");
   OConfigFile << Directory.CStr();
   OConfigFile.close();
 
