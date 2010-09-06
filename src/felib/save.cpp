@@ -9,10 +9,22 @@
  *  along with this file for more details
  *
  */
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <cctype>
 
 #include "save.h"
 #include "femath.h"
+
+
+truth inputfile::fileExists (const festring &fname) {
+  struct stat st;
+  if (stat(fname.CStr(), &st)) return false;
+  if (!S_ISREG(st.st_mode)) return false;
+  return access(fname.CStr(), R_OK) == 0;
+}
 
 
 outputfile::outputfile (cfestring &FileName, truth AbortOnErr) :

@@ -53,6 +53,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
       cfname << bnum;
     }
     cfname << ".dat";
+    if (!inputfile::fileExists(cfname)) continue;
     inputfile *ifl = new inputfile(cfname, &game::GetGlobalValueMap(), false);
     if (!ifl->IsOpen()) {
       delete ifl;

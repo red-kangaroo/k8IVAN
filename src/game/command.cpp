@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "save.h"
 #include "command.h"
 #include "char.h"
 #include "message.h"
@@ -122,8 +123,7 @@ void commandsystem::SaveKeys (truth forced) {
 #endif
   fname << "/.keys.rc";
   if (!forced) {
-    FILE *fl = fopen(fname.CStr(), "r");
-    if (fl) { fclose(fl); return; }
+    if (inputfile::fileExists(fname)) return;
   }
   FILE *fl = fopen(fname.CStr(), "w");
   if (!fl) return;

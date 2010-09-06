@@ -85,6 +85,8 @@ class inputfile {
   cfestring &GetFileName () const { return FileName; }
   void Close () { fclose(Buffer); Buffer = 0; }
 
+  static truth fileExists (const festring &fname);
+
 private:
   festring ReadNumberIntr (int CallLevel, long *num, truth *isString, truth allowStr, truth PreserveTerminator);
   int HandlePunct (festring &String, int Char, int Mode);

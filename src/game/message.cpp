@@ -286,7 +286,7 @@ void soundsystem::initSound () {
     Mix_AllocateChannels(16);
     SoundState = -2;
     festring cfgfile = game::GetGameDir()+"Sound/config.txt";
-    FILE *f = fopen(cfgfile.CStr(), "rt");
+    FILE *f = fopen(cfgfile.CStr(), "r");
     if (!f) SoundState = -1;
     else {
       festring Pattern, File;
