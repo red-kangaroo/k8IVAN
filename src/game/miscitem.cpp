@@ -116,7 +116,7 @@ void scrollofwishing::FinishReading(character* Reader)
     SendToHell();
     Reader->EditExperience(INTELLIGENCE, 600, 1 << 12);
   } else {
-    ADD_MESSAGE("You changed your mind, %s?", game::Insult());
+    ADD_MESSAGE("You changed your mind, didn't you, %s?", game::Insult());
   }
 }
 
