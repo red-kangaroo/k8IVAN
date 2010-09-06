@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #include "char.h"
 #include "proto.h"
 #include "game.h"

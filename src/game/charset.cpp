@@ -9,8 +9,7 @@
  *  along with this file for more details
  *
  */
-
- #define __FILE_OF_STATIC_CHARACTER_PROTOTYPE_DEFINITIONS__
+#define __FILE_OF_STATIC_CHARACTER_PROTOTYPE_DEFINITIONS__
 
 #include "proto.h"
 #include "char.h"

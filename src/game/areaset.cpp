@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #include "allocate.h"
 #include "char.h"
 #include "game.h"

@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #include "stack.h"
 #include "message.h"
 #include "actions.h"

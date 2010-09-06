@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #include "entity.h"
 #include "pool.h"
 #include "v2.h"
