@@ -100,6 +100,7 @@ public:
   static truth Polymorph (character *);
   static truth GetScroll (character *);
   static truth WizardWish (character *);
+  static truth OpenMondedr (character *);
 #endif
   static truth ToggleRunning (character *);
   static truth IssueCommand (character *);

@@ -1,5 +1,4 @@
-/*
- *
+/* *
  *  Iter Vehemens ad Necem (IVAN)
  *  Copyright (C) Timo Kiviluoto
  *  Released under the GNU General
@@ -149,6 +148,7 @@ command *commandsystem::Command[] = {
   new command(&Possess, "possess creature", '{', '{', false, true),
   new command(&Polymorph, "polymorph", '[', '[', true, true),
   new command(&GetScroll, "get scroll", 'R', 'R', true, true),
+  new command(&OpenMondedr, "open Mondedr", 'm', 'm', true, true),
 #endif
   0
 };
@@ -423,6 +423,9 @@ truth commandsystem::NOP (character *Char) {
 truth commandsystem::Save (character *) {
   if (game::TruthQuestion(CONST_S("Do you truly wish to save and flee? [y/N]"))) {
     game::Save();
+    if (game::WizardModeIsActive()) {
+      if (!game::TruthQuestion(CONST_S("Do you want to exit, cheater? [y/N]"))) return false;
+    }
     game::End("", false);
     return true;
   }
@@ -899,18 +902,11 @@ truth commandsystem::WizardMode (character *Char) {
     if (game::TruthQuestion(CONST_S("Do you want to cheat, cheater? This action cannot be undone. [y/N]"))) {
       game::ActivateWizardMode();
       ADD_MESSAGE("Wizard mode activated.");
-      if (game::IsInWilderness()) {
-        v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
-        game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
-        game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
-        game::GetWorldMap()->SendNewDrawRequest();
-      } else {
-        game::LoadWorldMap();
-        v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
-        game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
-        game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
-        game::SaveWorldMap();
-      }
+      if (!game::IsInWilderness()) game::LoadWorldMap();
+      v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
+      game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
+      game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
+      if (game::IsInWilderness()) game::GetWorldMap()->SendNewDrawRequest(); else game::SaveWorldMap();
       game::Save();
       game::Save(game::GetAutoSaveFileName());
     }
@@ -1209,6 +1205,24 @@ truth commandsystem::GetScroll (character *Char) {
 truth commandsystem::WizardWish (character *Char) {
   if (!game::Wish(PLAYER, "%s appears from nothing!", "Two %s appear from nothing!", true)) {
     ADD_MESSAGE("You changed your mind, didn't you, %s?", game::Insult());
+  }
+  return false;
+}
+
+
+truth commandsystem::OpenMondedr (character *Char) {
+  if (!game::GetMondedrPass()) {
+    if (!game::IsInWilderness()) game::LoadWorldMap();
+    v2 MondedrPos = game::GetWorldMap()->GetEntryPos(0, MONDEDR);
+    game::GetWorldMap()->GetWSquare(MondedrPos)->ChangeOWTerrain(mondedr::Spawn());
+    game::GetWorldMap()->RevealEnvironment(MondedrPos, 1);
+    if (game::IsInWilderness()) game::GetWorldMap()->SendNewDrawRequest(); else game::SaveWorldMap();
+    game::SetMondedrPass(1);
+    game::Save();
+    game::Save(game::GetAutoSaveFileName());
+    ADD_MESSAGE("Mondedr opened.");
+  } else {
+    ADD_MESSAGE("Mondedr already opened.");
   }
   return false;
 }

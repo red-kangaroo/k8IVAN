@@ -709,7 +709,10 @@ template void databasecreator<material>::FindDataBase (const database *&, const 
 template <class type> void databasecreator<type>::InstallDataBase (type *Instance, int Config) {
   const prototype *Proto = Instance->FindProtoType();
   FindDataBase(Instance->DataBase, Proto, Config);
-  if (!Instance->DataBase) ABORT("Undefined %s configuration #%d sought!", Proto->GetClassID(), Config);
+  if (!Instance->DataBase) {
+    //*((int *)0) = 0;
+    ABORT("Undefined %s configuration #%d sought!", Proto->GetClassID(), Config);
+  }
 }
 
 #define INST_INSTALL_DATABASE(type)\

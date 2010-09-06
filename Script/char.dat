@@ -1219,6 +1219,52 @@ shopkeeper
       "\"The monsters don't attack me, because of our mutually profitable contract.\"";
     }
   }
+
+  Config KHARAZ_ARAD_SHOP;
+  {
+    AttributeBonus = 25;
+    Helmet = MITHRIL helmet { Enchantment = 2; }
+    Cloak = NYMPH_HAIR cloak { Enchantment = 2; }
+    BodyArmor = MITHRIL bodyarmor(CHAIN_MAIL) { Enchantment = 2; }
+    Belt = NYMPH_HAIR belt(BELT_OF_CARRYING) { Enchantment = 2; }
+    RightWielded = MITHRIL pickaxe { Enchantment = 3; }
+    RightGauntlet = NYMPH_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = NYMPH_HAIR boot { Enchantment = 2; }
+    KnownCWeaponSkills == AXES;
+    CWeaponSkillHits == 1000;
+    RightSWeaponSkillHits = 500;
+    DefaultName = "Crow";
+    FriendlyReplies =
+    {
+      2,
+      "@Dd sighs: \"I wonder why I have so few customers these days...\"",
+      "\"Did you know I came from Mondedr? Before I left Raven gave me somes wares before I left.\"",
+    }
+   }
+
+  Config MONDEDR;
+  {
+    SkinColor = rgb16(0, 96, 0);
+    EyeColor = rgb16(200, 200, 0);
+    ClothColor = rgb16(48, 32, 16);
+    Helmet = MITHRIL helmet { Enchantment = 1; }
+    Cloak = NYMPH_HAIR cloak { Enchantment = 1; }
+    BodyArmor = MITHRIL bodyarmor(CHAIN_MAIL) { Enchantment = 1; }
+    Belt = NYMPH_HAIR belt(BELT_OF_CARRYING) { Enchantment = 1; }
+    RightWielded = MITHRIL pickaxe { Enchantment = 2; }
+    RightGauntlet = NYMPH_HAIR gauntlet { Enchantment = 1; }
+    RightBoot = NYMPH_HAIR boot { Enchantment = 1; }
+    KnownCWeaponSkills == AXES;
+    CWeaponSkillHits == 200;
+    RightSWeaponSkillHits = 100;
+    DefaultName = "Gobs";
+    FriendlyReplies =
+    {
+      2,
+      "\"Don't kill me! I am just an innocent bystander... Just don't ask where I got them hee-hee-hee.\"",
+      "\"I heard the previous owner of this shop, Crow, moved to Kharaz-Arad.\"";
+    }
+  }
 }
 
 priest
