@@ -30,9 +30,6 @@
 #include "v2.h"
 
 #define IVAN_VERSION "0.666.0"
-#ifndef WIZARD
-#define WIZARD
-#endif
 
 class item;
 class material;
@@ -488,6 +485,8 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define TOURIST_GUIDE_TEAM 9
 #define TOURIST_TEAM 10
 #define BETRAYED_TEAM 11
+#define MONDEDR_TEAM 12
+#define KHARAZ_ARAD_TEAM 13
 #define NO_TEAM 0xFFFF
 
 #define LOAD 1
@@ -513,6 +512,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define ATTNAM 2
 #define NEW_ATTNAM 3
 #define UNDER_WATER_TUNNEL 4
+#define MONDEDR 5
 #define UNDER_WATER_TUNNEL_EXIT 0x80
 
 #define VESANA_LEVEL 2
@@ -943,6 +943,18 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define NO_ARTICLE 4 // for instance "Petrus's wive number 4"
 #define FORCE_THE 8
 #define SHOW_MATERIAL 16 // only works for terrains
+
+/* Spatial Flags (unused for now) */
+#define MF_OBJECT  256
+#define MF_FLOOR   512
+#define MF_CEIL    1024
+#define MF_WALL    2048
+#define MF_ONFLOOR 4096
+#define MF_LOWWALL 8192
+#define MF_TABLE   16384
+#define MF_WINDOW  128
+#define MF_LARGE   64
+#define MF_STAIR   32
 
 /****************************/
 /* Character DataBase flags */

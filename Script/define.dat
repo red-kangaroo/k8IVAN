@@ -574,9 +574,7 @@
 #define RING_OF_SEARCHING 10
 #define RING_OF_ACID_RESISTANCE 11
 /**********************/
-/*TODO:
 #define RING_OF_THIEVES 12
-*/
 /**********************/
 
 #define AMULET_OF_LIFE_SAVING 1
@@ -610,11 +608,9 @@
 #define MASTER 7
 #define GRAND_MASTER 8
 /**********************/
-/*TODO:
 #define MONDEDR_GUARD 9
 #define DWARVEN_GUARD 10
 #define ENQUIOX 128
-*/
 /**********************/
 
 #define DARK 1
@@ -638,9 +634,7 @@
 #define LARGE 1
 #define GIANT 2
 /**********************/
-/*TODO:
 #define ARANEA 3
-*/
 /**********************/
 
 #define BLACK_BEAR 1
@@ -745,6 +739,8 @@
 #define OREE_LAIR_EXIT 400
 #define SUMO_ARENA_ENTRY 700
 #define SUMO_ARENA_EXIT 800
+#define KHARAZ_ARAD_ENTRY 900
+#define KHARAZ_ARAD_EXIT 1000
 #define FOUNTAIN 65535
 
 #define BOOK_CASE 1
@@ -772,6 +768,8 @@
 #define TOURIST_GUIDE_TEAM 9
 #define TOURIST_TEAM 10
 #define BETRAYED_TEAM 11
+#define MONDEDR_TEAM 12
+#define KHARAZ_ARAD_TEAM 13
 
 #define NOT_WALKABLE 1
 #define HAS_CHARACTER 2
@@ -785,6 +783,8 @@
 #define ATTNAM 2
 #define NEW_ATTNAM 3
 #define UNDER_WATER_TUNNEL 4
+#define MONDEDR 5
+#define KHARAZ_ARAD_SHOP 127
 #define UNDER_WATER_TUNNEL_EXIT 128
 
 #define VESANA_LEVEL 2
@@ -792,9 +792,19 @@
 #define SPIDER_LEVEL 4
 #define ENNER_BEAST_LEVEL 4
 #define ZOMBIE_LEVEL 5
+/* */
+#define CITY_LEVEL 6
+#define FUSANGA_LEVEL 7
+#define IVAN_LEVEL 9
+#define DARK_LEVEL 10
+#define OREE_LAIR 14
+#define KHARAZ_ARAD 15
+#define PLANT_LEVEL 16
+/*
 #define IVAN_LEVEL 7
 #define DARK_LEVEL 8
 #define OREE_LAIR 12
+*/
 
 #define RECTANGLE 1
 #define ROUND_CORNERS 2
@@ -825,6 +835,7 @@
 #define ROOM_LIBRARY 4
 #define ROOM_BANANA_DROP_AREA 5
 #define ROOM_SUMO_ARENA 6
+#define ROOM_VAULT 7
 
 #define BEAM_POLYMORPH 0
 #define BEAM_STRIKE 1
@@ -952,7 +963,7 @@
 
 /**********************/
 /* Spatial Flags */
-/*TODO:
+/*FIXME: means nothing yet*/
 #define MF_OBJECT  256
 #define MF_FLOOR   512
 #define MF_CEIL    1024
@@ -963,7 +974,6 @@
 #define MF_WINDOW  128
 #define MF_LARGE   64
 #define MF_STAIR   32
-*/
 /**********************/
 
 /***************************/

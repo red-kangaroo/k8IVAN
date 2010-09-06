@@ -474,4 +474,26 @@ CHARACTER(mindworm, nonhumanoid)
   virtual void TryToImplantLarvae(character*);
   virtual void PsiAttack(character*);
 };
+
+
+CHARACTER(menatrixfusanga, largecreature)
+{
+public:
+  menatrixfusanga() : TurnsExisted(0) {}
+  void SetSpecies (int);
+  int GetSpecies () const { return Species; }
+  virtual void Save (outputfile &) const;
+  virtual void Load (inputfile &);
+  virtual void FinalProcessForBone ();
+  virtual col16 GetSkinColor () const;
+  virtual bodypart *MakeBodyPart (int) const;
+protected:
+  virtual void GetAICommand ();
+  virtual void CreateCorpse (lsquare *);
+  virtual truth MustBeRemovedFromBone () const;
+  long TurnsExisted;
+  int Species;
+};
+
+
 #endif

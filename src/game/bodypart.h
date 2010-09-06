@@ -745,4 +745,10 @@ ITEM(spidertorso, normaltorso)
   virtual v2 GetBitmapPos(int) const;
 };
 
+
+ITEM(menatrixtorso, largetorso)
+{
+};
+
+
 #endif
