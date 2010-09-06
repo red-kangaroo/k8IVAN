@@ -188,61 +188,57 @@ Dungeon ELPURI_CAVE;
 
   RandomLevel 1:3;
   {
-
     Room
     {
       Size = 10:14,10:14;
       AltarPossible = false;
       Shape = RECTANGLE;
-          FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
-          GenerateLanterns = false;
-
-
-                Square, Random;
-    {
-      Items == Random { MinPrice = 500; MaxPrice = 2000; }
-          Times = 1;
-    }
-
-                Square, Random;
-    {
-          OTerrain = decoration(FIR);
-    }
-
-                        Square, Random;
-    {
-          OTerrain = decoration(OAK);
-    }
-
-                        Square, Random;
-    {
-          OTerrain = decoration(BIRCH);
-    }
-
-                        Square, Random;
-    {
-          OTerrain = decoration(TEAK);
-    }
-
-                        Square, Random;
-    {
-          OTerrain = decoration(DWARF_BIRCH);
-    }
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      GenerateLanterns = false;
 
       Square, Random;
-    {
-      Character = magpie;
-          OTerrain = decoration(PINE);
-          Items == stone { Times = 0:1;}
-      Times = 5:10;
-    }
+      {
+        Items == Random { MinPrice = 500; MaxPrice = 2000; }
+        Times = 1;
+      }
 
+      Square, Random;
+      {
+        OTerrain = decoration(FIR);
+      }
+
+      Square, Random;
+      {
+        OTerrain = decoration(OAK);
+      }
+
+      Square, Random;
+      {
+        OTerrain = decoration(BIRCH);
+      }
+
+      Square, Random;
+      {
+        OTerrain = decoration(TEAK);
+      }
+
+      Square, Random;
+      {
+        OTerrain = decoration(DWARF_BIRCH);
+      }
+
+      Square, Random;
+      {
+        Character = magpie;
+        OTerrain = decoration(PINE);
+        Items == stone { Times = 0:1;}
+        Times = 5:10;
+      }
     }
   }
 
- Level 3;
+  Level 3;
   {
-
     Room
     {
       Size = 7,6;
@@ -345,7 +341,6 @@ Dungeon ELPURI_CAVE;
   RandomLevel 0:11;
   {
     /* I'm Evil, Bwahaha */
-
     Square, Random;
     {
       Items == VALPURIUM VALPURIUM flamingsword { Enchantment = 10; LifeExpectancy = 1000:10000; Chance = 5; }
@@ -355,7 +350,6 @@ Dungeon ELPURI_CAVE;
   RandomLevel 0:11;
   {
     /* I'm Evil, Bwahaha */
-
     Square, Random;
     {
       Items == itemcontainer(LARGE_CHEST) { LifeExpectancy = 100:10000; Chance = 5; ItemsInside == Random { MinPrice = 1500; Times = 10; Category = HELMET|AMULET|CLOAK|BODY_ARMOR|WEAPON|SHIELD|RING|GAUNTLET|BELT|BOOT|TOOL|VALUABLE; LifeExpectancy = 100:10000; } }
@@ -545,14 +539,14 @@ Dungeon ELPURI_CAVE;
       Flags = 0;
     }
 
-        Room
+    Room
     {
       Pos = 2:XSize-5,2:YSize-5;
       Size = 5,5;
       AllowLockedDoors = false;
       AllowBoobyTrappedDoors = false;
       Shape = ROUND_CORNERS;
-          AltarPossible = false;
+      AltarPossible = false;
 
       Square, Pos 2,2;
       {
@@ -566,18 +560,18 @@ Dungeon ELPURI_CAVE;
       }
     }
 
-             Room
-        {
-          Pos = 2:XSize-5,2:YSize-5;
-        Size = 31,23;
-                WallSquare = GRANITE solidterrain(GROUND), 0;
-    FloorSquare = GRANITE solidterrain(GROUND), 0;
-            DoorSquare = GRANITE solidterrain(GROUND), 0;
-        AltarPossible = false;
-          GenerateFountains = false;
-        Shape = RECTANGLE;
+    Room
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      Size = 31,23;
+      WallSquare = GRANITE solidterrain(GROUND), 0;
+      FloorSquare = GRANITE solidterrain(GROUND), 0;
+      DoorSquare = GRANITE solidterrain(GROUND), 0;
+      AltarPossible = false;
+      GenerateFountains = false;
+      Shape = RECTANGLE;
 
- GTerrainMap
+      GTerrainMap
       {
         Pos = 0,0;
         Size = 31,23;
@@ -585,11 +579,11 @@ Dungeon ELPURI_CAVE;
         {
           # = TEAK_WOOD solidterrain(PARQUET) { IsInside = true; }
           - = TEAK_WOOD solidterrain(PARQUET) { IsInside = true; }
-                  ~ = FIR_WOOD solidterrain(PARQUET) { IsInside = true; }
-                  @ = FIR_WOOD solidterrain(PARQUET) { IsInside = true; }
-            }
-                }
-          {
+          ~ = FIR_WOOD solidterrain(PARQUET) { IsInside = true; }
+          @ = FIR_WOOD solidterrain(PARQUET) { IsInside = true; }
+        }
+      }
+      {
         ###################....@@@@@@@@
         #-----------------#....@~~~~~~@
         #------#####------#....@~~~~~~@
@@ -613,8 +607,9 @@ Dungeon ELPURI_CAVE;
         ......................@~~~~~@..
         ......................@~~~~~@..
         ......................@@@@@@@..
-       }
-OTerrainMap
+      }
+
+      OTerrainMap
       {
         Pos = 0,0;
         Size = 31,23;
@@ -622,13 +617,13 @@ OTerrainMap
         Types
         {
           # = EBONY_WOOD wall(BRICK_FINE);
-                  - = 0;
+          - = 0;
           | = decoration(CARPET);
           D = TEAK_WOOD door(HEXAGONAL_LOCK);
-                  d = FIR_WOOD door(HEXAGONAL_LOCK);
+          d = FIR_WOOD door(HEXAGONAL_LOCK);
         }
-            }
-          {
+      }
+      {
         ###################....########
         #-----------------#....#------#
         #------##D##------#....#------#
@@ -652,8 +647,9 @@ OTerrainMap
         ......................#-----#..
         ......................#-----#..
         ......................#######..
-       }
-CharacterMap
+      }
+
+      CharacterMap
       {
         Pos = 0,0;
         Size = 31,23;
@@ -661,11 +657,11 @@ CharacterMap
         Types
         {
           # = 0;
-                  - = 0;
+          - = 0;
           w = wisefarmer;
         }
-            }
-          {
+      }
+      {
         ###################....########
         #-----------------#....#------#
         #------#####------#....#------#
@@ -689,24 +685,25 @@ CharacterMap
         ......................#-----#..
         ......................#-----#..
         ......................#######..
-       }
-           ItemMap
+      }
+
+      ItemMap
       {
         Pos = 0,0;
         Size = 31, 23;
 
         Types
         {
-                  * == 0;
+          * == 0;
           # == 0;
-                  - == 0;
-                  1 == lantern { SquarePosition = UP; }
+          - == 0;
+          1 == lantern { SquarePosition = UP; }
           2 == lantern { SquarePosition = DOWN; }
           3 == lantern { SquarePosition = RIGHT; }
           4 == lantern { SquarePosition = LEFT; }
-                  $ == Random { MinPrice = 1000; MaxPrice = 5000; }
+          $ == Random { MinPrice = 1000; MaxPrice = 5000; }
         }
-            }
+      }
       {
         ###################....########
         #-----------------#....#------#
@@ -731,21 +728,22 @@ CharacterMap
         ......................#-----#..
         ......................#-----#..
         ......................#######..
-   }
-       Square, Pos 3,13;
-    {
-      OTerrain = stairs(STAIRS_DOWN);
-      EntryIndex = STAIRS_DOWN;
-    }
-  }
+      }
 
-                Square, Random;
+      Square, Pos 3,13;
+      {
+        OTerrain = stairs(STAIRS_DOWN);
+        EntryIndex = STAIRS_DOWN;
+      }
+    }
+
+    Square, Random;
     {
       Items == GRANITE stone;
-          Times = 50:100;
+      Times = 50:100;
     }
 
-            Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
     {
       OTerrain = boulder(1);
       Times = 50:100;
@@ -757,24 +755,24 @@ CharacterMap
       Times = 50:100;
     }
 
-            Square, Random IN_ROOM|HAS_NO_OTERRAIN;
+    Square, Random IN_ROOM|HAS_NO_OTERRAIN;
     {
       GTerrain = GRANITE solidterrain(GROUND);
       Times = 100;
     }
 
-          Room
-        {
-          Pos = 2:XSize-5,2:YSize-5;
-        Size = 8,8;
-                WallSquare = GRANITE solidterrain(GROUND), 0;
-    FloorSquare = GRANITE solidterrain(GROUND), 0;
-            DoorSquare = GRANITE solidterrain(GROUND), 0;
-        AltarPossible = false;
-          GenerateFountains = false;
-        Shape = RECTANGLE;
+    Room
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      Size = 8,8;
+      WallSquare = GRANITE solidterrain(GROUND), 0;
+      FloorSquare = GRANITE solidterrain(GROUND), 0;
+      DoorSquare = GRANITE solidterrain(GROUND), 0;
+      AltarPossible = false;
+      GenerateFountains = false;
+      Shape = RECTANGLE;
 
- GTerrainMap
+      GTerrainMap
       {
         Pos = 0,0;
         Size = 8,8;
@@ -782,11 +780,11 @@ CharacterMap
         {
           # = GRANITE solidterrain(GROUND) { IsInside = true; }
           - = FIR_WOOD solidterrain(PARQUET) { IsInside = true; }
-                  ~ = FIR_WOOD solidterrain(PARQUET) { IsInside = true; }
-                  @ = FIR_WOOD solidterrain(PARQUET) { IsInside = true; }
-            }
-                }
-          {
+          ~ = FIR_WOOD solidterrain(PARQUET) { IsInside = true; }
+          @ = FIR_WOOD solidterrain(PARQUET) { IsInside = true; }
+        }
+      }
+      {
         ########
         #------.
         #------.
@@ -795,8 +793,9 @@ CharacterMap
         #----...
         #--.....
         #-......
-       }
-OTerrainMap
+      }
+
+      OTerrainMap
       {
         Pos = 0,0;
         Size = 8,8;
@@ -804,13 +803,13 @@ OTerrainMap
         Types
         {
           # = EBONY_WOOD wall(BRICK_FINE);
-                  - = 0;
+          - = 0;
           | = decoration(CARPET);
           D = TEAK_WOOD door(HEXAGONAL_LOCK);
-                  d = FIR_WOOD door(HEXAGONAL_LOCK);
+          d = FIR_WOOD door(HEXAGONAL_LOCK);
         }
-            }
-          {
+      }
+      {
         #####---
         #------.
         #------.
@@ -819,8 +818,9 @@ OTerrainMap
         -----...
         ---.....
         --......
-       }
-CharacterMap
+      }
+
+      CharacterMap
       {
         Pos = 0,0;
         Size = 8,8;
@@ -828,10 +828,10 @@ CharacterMap
         Types
         {
           # = 0;
-                  - = 0;
+          - = 0;
         }
-            }
-          {
+      }
+      {
         ########
         #------.
         #------.
@@ -840,25 +840,26 @@ CharacterMap
         #----...
         #--.....
         #-......
-       }
-           ItemMap
+      }
+
+      ItemMap
       {
         Pos = 0,0;
         Size = 8, 8;
 
         Types
         {
-                  * == 0;
+          * == 0;
           # == 0;
-                  - == 0;
-                  1 == lantern { SquarePosition = UP; }
+          - == 0;
+          1 == lantern { SquarePosition = UP; }
           2 == lantern { SquarePosition = DOWN; }
           3 == lantern { SquarePosition = RIGHT; }
           4 == lantern { SquarePosition = LEFT; }
-                  5 == lantern;
-                  / == EBONY_WOOD stick;
+          5 == lantern;
+          / == EBONY_WOOD stick;
         }
-            }
+      }
       {
         #####///
         #//----.
@@ -868,10 +869,10 @@ CharacterMap
         /----...
         /--.....
         /-......
-   }
-  }
+      }
+    }
 
-  Room
+    Room
     {
       Pos = 2:XSize-5,2:YSize-5;
       Size = 7,6;
@@ -881,15 +882,13 @@ CharacterMap
       Type = ROOM_NORMAL;
       GenerateLanterns = false;
       GenerateWindows = false;
-          AltarPossible = false;
+      AltarPossible = false;
 
       Square, Pos 3, 5;
       {
         GTerrain = solidterrain(PARQUET);
         OTerrain = door;
       }
-
-
 
       Square, Pos 3, 0;
       {
@@ -922,7 +921,6 @@ CharacterMap
         =...=
       }
     }
-
   }
 
   RandomLevel 1:4;
@@ -984,34 +982,34 @@ CharacterMap
   }
 
   Level FUSANGA_LEVEL;
-{
-Size = 60, 60;
-Rooms = 100;
-IgnoreDefaultSpecialSquares = true;
+  {
+    Size = 60, 60;
+    Rooms = 100;
+    IgnoreDefaultSpecialSquares = true;
 
-        Square, Pos 1, 1;
+    Square, Pos 1, 1;
     {
       OTerrain = stairs(STAIRS_UP);
       EntryIndex = STAIRS_UP;
       AttachRequired = true;
     }
 
-        Square, Pos 58, 58;
+    Square, Pos 58, 58;
     {
       OTerrain = stairs(STAIRS_DOWN);
       EntryIndex = STAIRS_DOWN;
       AttachRequired = true;
     }
 
-        Square, Random;
+    Square, Random;
     {
       Character = magicmushroom { Team = MONSTER_TEAM; }
       Times = 10;
     }
 
-RoomDefault
+    RoomDefault
     {
-          AltarPossible = false;
+      AltarPossible = false;
       Pos = 2:XSize-5,2:YSize-5;
       Size = 3:3,3:3;
       AltarPossible = false;
@@ -1032,14 +1030,15 @@ RoomDefault
       UseFillSquareWalls = false;
       Flags = 0;
     }
-        Room
+
+    Room
     {
       Size = 4,4;
       Pos = 30,30;
       GenerateFountains = false;
       AltarPossible = false;
       GenerateLanterns = false;
-          Shape = ROUND_CORNERS;
+      Shape = ROUND_CORNERS;
 
       CharacterMap
       {
@@ -1058,7 +1057,7 @@ RoomDefault
         .MM.
       }
     }
-}
+  }
 
   Level 8;
   {
@@ -1796,7 +1795,7 @@ RoomDefault
     }
   }
 
-Level KHARAZ_ARAD;
+  Level KHARAZ_ARAD;
   {
     Description = "Kharaz-Arad";
     ShortDescription = "KharazArad";
@@ -1833,20 +1832,20 @@ Level KHARAZ_ARAD;
       UseFillSquareWalls = false;
       Flags = 0;
 
-                Square, Random;
-    {
-      Items == Random { MinPrice = 1; MaxPrice = 2000; }
-          Times = 0:1;
+      Square, Random;
+      {
+        Items == Random { MinPrice = 1; MaxPrice = 2000; }
+        Times = 0:1;
+      }
+
+      Square, Random;
+      {
+        Items == Random { MinPrice = 1; MaxPrice = 1000; }
+        Times = 0:1;
+      }
     }
 
-                        Square, Random;
-    {
-      Items == Random { MinPrice = 1; MaxPrice = 1000; }
-          Times = 0:1;
-    }
-    }
-
-            Room
+    Room
     {
       Pos = 2:XSize-5,2:YSize-5;
       Size = 6:10,6:10;
@@ -1868,25 +1867,23 @@ Level KHARAZ_ARAD;
       UseFillSquareWalls = true;
       Flags = 0;
 
+      Square, Random;
+      {
+        Items == stone;
+        Times = 1;
+      }
 
-                Square, Random;
-    {
-      Items == stone;
-          Times = 1;
-    }
-
-                        Square, Random;
-    {
-      Items == stone;
-          Times = 0:1;
-    }
-
+      Square, Random;
+      {
+        Items == stone;
+        Times = 0:1;
+      }
     }
 
     Room
-        {
+    {
       Size = 7,6;
-         GenerateFountains = false;
+      GenerateFountains = false;
       AltarPossible = false;
       Shape = ROUND_CORNERS;
 
@@ -1911,16 +1908,16 @@ Level KHARAZ_ARAD;
         OTerrain = stairs(STAIRS_UP) { AttachedArea = 3; }
         EntryIndex = STAIRS_UP;
       }
-         }
+    }
 
-          Room
+    Room
     {
       Size = 9,9;
       AltarPossible = false;
       DivineMaster = MELLIS;
       Type = ROOM_SHOP;
       GenerateFountains = false;
-          Shape = RECTANGLE;
+      Shape = RECTANGLE;
       GenerateLanterns = false;
 
       CharacterMap
@@ -1959,8 +1956,8 @@ Level KHARAZ_ARAD;
           e == Random { MinPrice = 100; MaxPrice = 10000; Category = FOOD|POTION; }
           u == Random { MinPrice = 100; MaxPrice = 10000; Category = WAND|TOOL; }
           r == Random { MinPrice = 100; MaxPrice = 10000; Category = SCROLL|BOOK; }
-            R == Random { MinPrice = 300; MaxPrice = 10000; Category = WEAPON; }
-            W == Random { MinPrice = 750; MaxPrice = 10000; Category = WEAPON; }
+          R == Random { MinPrice = 300; MaxPrice = 10000; Category = WEAPON; }
+          W == Random { MinPrice = 750; MaxPrice = 10000; Category = WEAPON; }
           1 == lantern { SquarePosition = UP; }
           2 == lantern { SquarePosition = DOWN; }
           3 == lantern { SquarePosition = RIGHT; }
@@ -1978,14 +1975,15 @@ Level KHARAZ_ARAD;
       }
     }
 
-          Room
-        {
+    Room
+    {
       Type = ROOM_VAULT;
       Size = 37,20;
       AltarPossible = false;
-          GenerateFountains = false;
+      GenerateFountains = false;
       Shape = RECTANGLE;
- GTerrainMap
+
+      GTerrainMap
       {
         Pos = 2,2;
         Size = 33,16;
@@ -1993,28 +1991,28 @@ Level KHARAZ_ARAD;
         {
           # = STEEL solidterrain(FLOOR) { IsInside = true; }
           - = STEEL solidterrain(FLOOR) { IsInside = true; }
-            }
-                }
-          {
-          #################################
-          #-----#--#-------------#--#-----#
-          #-----#--#-------------#--#-----#
-          #-----#--#-------------#--#-----#
-          #-----#--#-------------#--#-----#
-          #-----#--#-------------#--#-----#
-          #-----#--#-------------#--#-----#
-          #######--###############--#######
-          #-----#-------------------#-----#
-          #-----#-------------------#-----#
-          #-----#####################-----#
-          #-----#-------------------#-----#
-          #-----#-------------------#-----#
-          #-----#-------------------#-----#
-          #-----#-------------------#-----#
-          #################################
-          }
+        }
+      }
+      {
+        #################################
+        #-----#--#-------------#--#-----#
+        #-----#--#-------------#--#-----#
+        #-----#--#-------------#--#-----#
+        #-----#--#-------------#--#-----#
+        #-----#--#-------------#--#-----#
+        #-----#--#-------------#--#-----#
+        #######--###############--#######
+        #-----#-------------------#-----#
+        #-----#-------------------#-----#
+        #-----#####################-----#
+        #-----#-------------------#-----#
+        #-----#-------------------#-----#
+        #-----#-------------------#-----#
+        #-----#-------------------#-----#
+        #################################
+      }
 
-OTerrainMap
+      OTerrainMap
       {
         Pos = 2,2;
         Size = 33,16;
@@ -2022,117 +2020,120 @@ OTerrainMap
         Types
         {
           # = STEEL wall(BRICK_FINE);
-                  - = 0;
+          - = 0;
           T = throne;
           | = decoration(CARPET);
           A = ADAMANT altar(LORICATUS);
           D = STEEL door(HEXAGONAL_LOCK);
         }
-            }
+      }
       {
-          #################################
-          #-----D--#------T------#--D-----#
-          #-----#--#------|------#--#-----#
-          #-----#--#------|------#--#-----#
-          #-----#--#------|------#--#-----#
-          #-----#--#------|------#--#-----#
-          #-----#--#------|------#--#-----#
-          #######--#######D#######--#######
-          #-----D---------|---------D-----#
-          #-----#---------|---------#-----#
-          #-----##########D##########-----#
-          #-----#-------------------#-----#
-          #-----#-------------------#-----#
-          #-----#-------------------#-----#
-          #-----#-------------------#-----#
-          ################D################
-          }
-          ItemMap
-      {
-        Pos = 2,2;
-        Size = 33,16;
-        Types
-        {
-                # == 0;
-                - == 0;
-                S == goldenjaguarshirt;
-                P == phoenixshield;
-            1 == lantern { SquarePosition = UP; }
-            2 == lantern { SquarePosition = DOWN; }
-            3 == lantern { SquarePosition = RIGHT; }
-            4 == lantern { SquarePosition = LEFT; }
-                                  b == backpack;
-                }
-                }
-          {
-          ########2#####2###2#####2########
-          3-----#--#-------------#--#-----4
-          #-----4--#-------------#--3-----#
-          #-----#--#-------------#--#-----#
-          #--S--#--3-------------4--#--P--#
-          #-----#--#-------------#--#-----#
-          3-----4--#-------------#--3-----4
-          #######--######1#1######--#######
-          3-----#-------------------#-----4
-          #b---b3-------------------4-----#
-          #b---b#########1#1#########-----#
-          #b---b#-------------------#-----#
-          #b---b3-------------------4-----#
-          #b---b#-------------------#-----#
-          3-----4-------------------3-----4
-          ###############1#1###############
-          }
-          CharacterMap
-      {
-        Pos = 2,2;
-        Size = 33,16;
-        Types
-        {
-                # = 0;
-                - = 0;
-                g = guard(DWARVEN_GUARD);
-                D = denim;
-        E = guard(ENQUIOX);
-                K = kamikazedwarf(LORICATUS);
-                }
-            }
-          {
-          #################################
-          #g----#-g#g-----DE----g#g-#----g#
-          #-----#--#-------------#--#-----#
-          #-----#--#-----g-g-----#--#-----#
-          #-----#--#-------------#--#-----#
-          #-----#--#-----g-g-----#--#-----#
-          #g---g#--#-------------#--#g---g#
-          #######--###############--#######
-          #-----#-------------------#-----#
-          #-----#-------------------#-----#
-          #-----#####################-----#
-          #-----#-------------------#-----#
-          #-----#-------------------#-----#
-          #-----#-------------------#-----#
-          #KKKKK#-------------------#-----#
-          #################################
-          }
-   }
+        #################################
+        #-----D--#------T------#--D-----#
+        #-----#--#------|------#--#-----#
+        #-----#--#------|------#--#-----#
+        #-----#--#------|------#--#-----#
+        #-----#--#------|------#--#-----#
+        #-----#--#------|------#--#-----#
+        #######--#######D#######--#######
+        #-----D---------|---------D-----#
+        #-----#---------|---------#-----#
+        #-----##########D##########-----#
+        #-----#-------------------#-----#
+        #-----#-------------------#-----#
+        #-----#-------------------#-----#
+        #-----#-------------------#-----#
+        ################D################
+      }
 
-                Room
+      ItemMap
+      {
+        Pos = 2,2;
+        Size = 33,16;
+        Types
         {
+          # == 0;
+          - == 0;
+          S == goldenjaguarshirt;
+          P == phoenixshield;
+          1 == lantern { SquarePosition = UP; }
+          2 == lantern { SquarePosition = DOWN; }
+          3 == lantern { SquarePosition = RIGHT; }
+          4 == lantern { SquarePosition = LEFT; }
+          b == backpack;
+        }
+      }
+      {
+        ########2#####2###2#####2########
+        3-----#--#-------------#--#-----4
+        #-----4--#-------------#--3-----#
+        #-----#--#-------------#--#-----#
+        #--S--#--3-------------4--#--P--#
+        #-----#--#-------------#--#-----#
+        3-----4--#-------------#--3-----4
+        #######--######1#1######--#######
+        3-----#-------------------#-----4
+        #b---b3-------------------4-----#
+        #b---b#########1#1#########-----#
+        #b---b#-------------------#-----#
+        #b---b3-------------------4-----#
+        #b---b#-------------------#-----#
+        3-----4-------------------3-----4
+        ###############1#1###############
+      }
+
+      CharacterMap
+      {
+        Pos = 2,2;
+        Size = 33,16;
+        Types
+        {
+          # = 0;
+          - = 0;
+          g = guard(DWARVEN_GUARD);
+          D = denim;
+          E = guard(ENQUIOX);
+          K = kamikazedwarf(LORICATUS);
+        }
+      }
+      {
+        #################################
+        #g----#-g#g-----DE----g#g-#----g#
+        #-----#--#-------------#--#-----#
+        #-----#--#-----g-g-----#--#-----#
+        #-----#--#-------------#--#-----#
+        #-----#--#-----g-g-----#--#-----#
+        #g---g#--#-------------#--#g---g#
+        #######--###############--#######
+        #-----#-------------------#-----#
+        #-----#-------------------#-----#
+        #-----#####################-----#
+        #-----#-------------------#-----#
+        #-----#-------------------#-----#
+        #-----#-------------------#-----#
+        #KKKKK#-------------------#-----#
+        #################################
+      }
+    }
+
+    Room
+    {
       Size = 7,7;
       AltarPossible = false;
-          GenerateFountains = false;
+      GenerateFountains = false;
       Shape = ROUND_CORNERS;
       GenerateLanterns = false;
 
-                Square, Pos 3, 2;
+      Square, Pos 3, 2;
       {
         Character = smith(KHARAZ_ARAD) { Flags = IS_MASTER; }
       }
 
-                Square, Pos 3, 3;
+      Square, Pos 3, 3;
       {
         OTerrain = decoration(ANVIL);
       }
+
       Square, Pos 1, 1;
       {
         Items == lantern { SquarePosition = RIGHT; }
