@@ -117,31 +117,23 @@ truth elpuri::Hit(character* Enemy, v2, int, int Flags)
   return true;
 }
 
-truth dog::Catches(item* Thingy)
-{
-  if(Thingy->DogWillCatchAndConsume(this))
-  {
-    if(ConsumeItem(Thingy, CONST_S("eating")))
-    {
-      if(IsPlayer())
-  ADD_MESSAGE("You catch %s in mid-air and consume it.", Thingy->CHAR_NAME(DEFINITE));
-      else
-      {
-  if(CanBeSeenByPlayer())
-    ADD_MESSAGE("%s catches %s and eats it.", CHAR_NAME(DEFINITE), Thingy->CHAR_NAME(DEFINITE));
-
-  ChangeTeam(PLAYER->GetTeam());
+truth dog::Catches (item *Thingy) {
+  if (Thingy->DogWillCatchAndConsume(this)) {
+    if (ConsumeItem(Thingy, CONST_S("eating"))) {
+      if (IsPlayer()) {
+        ADD_MESSAGE("You catch %s in mid-air and consume it.", Thingy->CHAR_NAME(DEFINITE));
+      } else {
+        if (CanBeSeenByPlayer()) ADD_MESSAGE("%s catches %s and eats it.", CHAR_NAME(DEFINITE), Thingy->CHAR_NAME(DEFINITE));
+        ChangeTeam(PLAYER->GetTeam());
       }
-    }
-    else if(IsPlayer())
+    } else if (IsPlayer()) {
       ADD_MESSAGE("You catch %s in mid-air.", Thingy->CHAR_NAME(DEFINITE));
-    else if(CanBeSeenByPlayer())
+    } else if (CanBeSeenByPlayer()) {
       ADD_MESSAGE("%s catches %s.", CHAR_NAME(DEFINITE), Thingy->CHAR_NAME(DEFINITE));
-
+    }
     return true;
   }
-  else
-    return false;
+  return false;
 }
 
 truth unicorn::SpecialEnemySightedReaction(character*)
@@ -512,30 +504,23 @@ void nonhumanoid::CalculateBiteAttackInfo()
   CalculateBiteAPCost();
 }
 
-void dog::BeTalkedTo()
-{
-  if(RAND_N(5))
-  {
-    if(GetRelation(PLAYER) != HOSTILE)
-    {
+void dog::BeTalkedTo () {
+  if (RAND_N(5)) {
+    if (GetRelation(PLAYER) != HOSTILE) {
       static truth Last;
-      cchar* Reply;
-
-      if(GetHP() << 1 > GetMaxHP())
-  Reply = Last ? "barks happily" : "wags its tail happily";
-      else
-  Reply = Last ? "yelps" : "howls";
-
+      cchar *Reply;
+      if (GetHP()<< 1 > GetMaxHP()) Reply = Last ? "barks happily" : "wags its tail happily";
+      else Reply = Last ? "yelps" : "howls";
       ADD_MESSAGE("%s %s.", CHAR_NAME(DEFINITE), Reply);
       Last = !Last;
-    }
-    else
+    } else {
       character::BeTalkedTo();
-  }
-  else if(RAND_N(5))
+    }
+  } else if (RAND_N(5)) {
     ADD_MESSAGE("\"Can't you understand I can't speak?\"");
-  else
+  } else {
     ADD_MESSAGE("\"Meow.\"");
+  }
 }
 
 col16 wolf::GetSkinColor() const
@@ -1883,11 +1868,9 @@ void mommo::GetAICommand()
   EditAP(-1000);
 }
 
-void dog::GetAICommand()
-{
-  if(!game::IsInWilderness() && !(RAND() & 7))
-    GetLSquareUnder()->SpillFluid(this, liquid::Spawn(DOG_DROOL, 25 + RAND() % 50), false, false);
-
+void dog::GetAICommand () {
+  if (!game::IsInWilderness() && !(RAND()&7))
+    GetLSquareUnder()->SpillFluid(this, liquid::Spawn(DOG_DROOL, 25+RAND()%50), false, false);
   character::GetAICommand();
 }
 
