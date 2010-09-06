@@ -59,6 +59,20 @@ template <class type> void databasecreator<type>::ReadFrom (inputfile &SaveFile)
     inputfile *inFile = infStack.top();
     infStack.pop();
     for (inFile->ReadWord(Word, false); !inFile->Eof(); inFile->ReadWord(Word, false)) {
+      if (Word == "Include") {
+        Word = inFile->ReadWord();
+        if (inFile->ReadWord() != ";") ABORT("Invalid terminator at line %ld!", inFile->TellLine());
+        inputfile *incf = new inputfile(game::GetGameDir()+"Script/"+Word, &game::GetGlobalValueMap());
+        infStack.push(inFile);
+        inFile = incf;
+        continue;
+      }
+      if (Word == "Message") {
+        Word = inFile->ReadWord();
+        if (inFile->ReadWord() != ";") ABORT("Invalid terminator at line %ld!", inFile->TellLine());
+        fprintf(stderr, "MESSAGE: %s\n", Word.CStr());
+        continue;
+      }
       int Type = protocontainer<type>::SearchCodeName(Word);
       if (!Type) ABORT("Odd term <%s> encountered in %s datafile line %ld!", Word.CStr(), protocontainer<type>::GetMainClassID(), inFile->TellLine());
       prototype *Proto = protocontainer<type>::GetProtoData()[Type];

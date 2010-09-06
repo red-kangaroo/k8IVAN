@@ -238,6 +238,17 @@ void game::InitScript () {
   inputfile ScriptFile(GetGameDir()+"Script/dungeon.dat", &GlobalValueMap);
   GameScript = new gamescript;
   GameScript->ReadFrom(ScriptFile);
+  { /* additional dungeon files */
+    for (int f = 0; f <= 99; f++) {
+      char bnum[32];
+      sprintf(bnum, "Script/dungeon_%02d.dat", f);
+      inputfile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
+      if (ifl.IsOpen()) {
+        GameScript->ReadFrom(ifl);
+        ifl.Close();
+      }
+    }
+  }
   GameScript->RandomizeLevels();
 }
 

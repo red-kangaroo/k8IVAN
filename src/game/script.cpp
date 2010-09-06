@@ -1135,43 +1135,46 @@ void teamscript::Load(inputfile& SaveFile)
 const std::list<std::pair<int, teamscript> >& gamescript::GetTeam() const { return Team; }
 const std::map<int, dungeonscript>& gamescript::GetDungeon() const { return Dungeon; }
 
-void gamescript::InitDataMap()
-{
+
+void gamescript::InitDataMap () {
   INIT_ENTRY(Dungeons);
   INIT_ENTRY(Teams);
 }
 
-void gamescript::ReadFrom(inputfile& SaveFile)
-{
-  static festring Word;
 
-  for(SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false))
-  {
-    if(Word == "Dungeon")
-    {
+void gamescript::ReadFrom (inputfile &SaveFile) {
+  festring Word;
+  for (SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false)) {
+    if (Word == "Dungeon") {
       int Index = SaveFile.ReadNumber();
       std::pair<std::map<int, dungeonscript>::iterator, bool> Return = Dungeon.insert(std::make_pair(Index, dungeonscript()));
-
-      if(Return.second)
-  Return.first->second.ReadFrom(SaveFile);
-      else
-  ABORT("Dungeon #%d defined again in game script line %ld!", Index, SaveFile.TellLine());
-
+      if (Return.second) Return.first->second.ReadFrom(SaveFile);
+      else ABORT("Dungeon #%d defined again in game script line %ld!", Index, SaveFile.TellLine());
       continue;
     }
-
-    if(Word == "Team")
-    {
+    if (Word == "Team") {
       int Index = SaveFile.ReadNumber();
       Team.push_back(std::pair<int, teamscript>(Index, teamscript()));
       Team.back().second.ReadFrom(SaveFile);
       continue;
     }
-
-    if(!ReadMember(SaveFile, Word))
-      ABORT("Odd script term %s encountered in game script line %ld!", Word.CStr(), SaveFile.TellLine());
+    if (Word == "Include") {
+      Word = SaveFile.ReadWord();
+      if (SaveFile.ReadWord() != ";") ABORT("Invalid terminator at line %ld!", SaveFile.TellLine());
+      inputfile incf(game::GetGameDir()+"Script/"+Word, &game::GetGlobalValueMap());
+      ReadFrom(incf);
+      continue;
+    }
+    if (Word == "Message") {
+      Word = SaveFile.ReadWord();
+      if (SaveFile.ReadWord() != ";") ABORT("Invalid terminator at line %ld!", SaveFile.TellLine());
+      fprintf(stderr, "MESSAGE: %s\n", Word.CStr());
+      continue;
+    }
+    if (!ReadMember(SaveFile, Word)) ABORT("Odd script term %s encountered in game script line %ld!", Word.CStr(), SaveFile.TellLine());
   }
 }
+
 
 void gamescript::RandomizeLevels()
 {
