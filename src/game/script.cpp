@@ -1161,6 +1161,7 @@ void gamescript::ReadFrom (inputfile &SaveFile) {
     if (Word == "Include") {
       Word = SaveFile.ReadWord();
       if (SaveFile.ReadWord() != ";") ABORT("Invalid terminator at line %ld!", SaveFile.TellLine());
+      fprintf(stderr, "loading: %s\n", Word.CStr());
       inputfile incf(game::GetGameDir()+"Script/"+Word, &game::GetGlobalValueMap());
       ReadFrom(incf);
       continue;

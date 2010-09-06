@@ -1,0 +1,20 @@
+solstone
+{
+  DefaultSize = 30;
+  Possibility = 25;
+  Category = VALUABLE;
+  DefaultMainVolume = -417;
+  StrengthModifier = 100;
+  BitmapPos = 0, 48;
+  FormModifier = 10;
+  Adjective = "sol";
+  NameSingular = "stone";
+  Price = 100;
+  MainMaterialConfig == OBSIDIAN;
+  Roundness = 90;
+  AttachedGod = NONE;
+  WieldedBitmapPos = 160, 368;
+  IsValuable = true;
+  HasNormalPictureDirection = false;
+  TeleportPriority = 20000;
+}

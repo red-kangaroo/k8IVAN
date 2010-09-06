@@ -110,7 +110,6 @@ Team MONDEDR;
 }
 
 
-
 Include "dungeons/new_attnam.dat";
 Include "dungeons/attnam.dat";
 Include "dungeons/UT.dat";

@@ -1,0 +1,98 @@
+  Config DWARVEN_GUARD;
+  {
+    Helmet = IRON helmet(FULL_HELMET);
+    BodyArmor = IRON bodyarmor(PLATE_MAIL);
+    RightWielded = IRON meleeweapon(MACE);
+    LeftWielded = IRON shield;
+    Adjective = "dwarven";
+    CWeaponSkillHits = { 2, 100, 100; }
+    RightSWeaponSkillHits = 10;
+    LeftSWeaponSkillHits = 10;
+    PanicLevel = 25;
+    ClothColor = rgb16(80, 80, 80);
+    FriendlyReplies =
+    {
+      2,
+      "\"Don't you dare take anything from the vault\"",
+      "\"Don't you dare take anything from the vault\"",
+    }
+  }
+
+  Config MONDEDR_GUARD;
+  {
+    DefaultArmStrength = 20;
+    DefaultLegStrength = 20;
+    DefaultDexterity = 25;
+    DefaultAgility = 30;
+    DefaultEndurance = 15;
+    DefaultPerception = 25;
+    DefaultIntelligence = 15;
+    HeadBitmapPos = 112, 464;
+    TorsoBitmapPos = 48, 224;
+    ArmBitmapPos = 80, 64;
+    LegBitmapPos = 16, 160;
+    ClothColor = rgb16(50, 50, 50);
+    BodyArmor = HARDENED_LEATHER bodyarmor(PLATE_MAIL);
+    Cloak = HARDENED_LEATHER cloak;
+    RightWielded = IRON IRON meleeweapon(DAGGER);
+    LeftWielded = STEEL maingauche;
+    Adjective = "mondedr";
+    KnownCWeaponSkills = { 2, SMALL_SWORDS, SHIELDS; }
+    CWeaponSkillHits = { 2, 500, 500; }
+    RightSWeaponSkillHits = 10;
+    LeftSWeaponSkillHits = 10;
+    PanicLevel = 25;
+    AttachedGod = CLEPTIA;
+    ClothColor = rgb16(80, 80, 80);
+    FriendlyReplies =
+    {
+      3,
+      "\"Even us guards are allowed to steal from our enemies.\"",
+      "\"They say Mondedr is not invisible, but hard to find.\"",
+      "\"I heard that a long time ago Petrus tried to search for Mondedr but Raven added legs to it so Petrus could give up searching.\"",
+    }
+  }
+
+  Config ENQUIOX;
+  {
+    AttributeBonus = 45;
+    TorsoBitmapPos = 48, 16;
+    ArmBitmapPos = 80, 0;
+    LegBitmapPos = 0, 208;
+    HairColor = rgb16(144, 72, 0);
+    TotalVolume = 120000;
+    Helmet = SAPPHIRE helmet(FULL_HELMET) { Enchantment = 3; }
+    Amulet = amulet(AMULET_OF_ESP);
+    BodyArmor = SAPPHIRE bodyarmor(PLATE_MAIL) { Enchantment = 3; }
+    Cloak = FABRIC cloak(CLOAK_OF_FIRE_RESISTANCE) { Enchantment = 6; }
+    RightWielded = smite;
+    RightRing = ring(RING_OF_TELEPORT_CONTROL);
+    LeftRing = ring(RING_OF_INFRA_VISION);
+    RightGauntlet = NYMPH_HAIR gauntlet(GAUNTLET_OF_STRENGTH) { Enchantment = 3; }
+    RightBoot = MITHRIL boot(BOOT_OF_STRENGTH) { Enchantment = 3; }
+    Adjective = "master";
+    KnownCWeaponSkills = { 2, LARGE_SWORDS, SHIELDS; }
+    CWeaponSkillHits = { 2, 2000, 2000; }
+    RightSWeaponSkillHits = 200;
+    LeftSWeaponSkillHits = 200;
+    PanicLevel = 5;
+    TamingDifficulty = NO_TAMING;
+    IsUnique = true;
+    DefaultName = "Enquiox";
+    IsNameable = false;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    ClothColor = rgb16(144, 144, 200);
+    CanBeConfused = false;
+    NaturalSparkleFlags = CLOTH_COLOR;
+    IsImmuneToItemTeleport = true;
+    FriendlyReplies =
+    {
+      2,
+      "\"Don't you dare take anything from the vault\"",
+      "\"Don't you dare take anything from the vault\"",
+    }
+    AllowUnconsciousness = false;
+    DisplacePriority = 4;
+    UndeadVersions = false;
+  }

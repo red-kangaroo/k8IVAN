@@ -1,4 +1,4 @@
-Message "loading Underwater Tunnels...";
+/* Underwater Tunnels */
 
 Dungeon UNDER_WATER_TUNNEL;
 {

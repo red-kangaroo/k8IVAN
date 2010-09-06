@@ -1,0 +1,34 @@
+rogue
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 10;
+  DefaultDexterity = 18;
+  DefaultAgility = 15;
+  DefaultEndurance = 15;
+  DefaultPerception = 20;
+  DefaultIntelligence = 10;
+  HeadBitmapPos = 112, 464;
+  TorsoBitmapPos = 48, 224;
+  ArmBitmapPos = 80, 64;
+  LegBitmapPos = 16, 160;
+  ClothColor = rgb16(100, 50, 50);
+  BodyArmor = LEATHER bodyarmor(PLATE_MAIL);
+  Cloak = LEATHER cloak;
+  RightWielded = meleeweapon(DAGGER);
+  KnownCWeaponSkills == SMALL_SWORDS;
+  KnownCWeaponSkills = { 2, SMALL_SWORDS, SHIELDS; }
+  CWeaponSkillHits = { 2, 500, 500; }
+  RightSWeaponSkillHits = 10;
+  PanicLevel = 25;
+  ClothColor = rgb16(80, 80, 80);
+  CanRead = true;
+  NameSingular = "rogue";
+  CanBeGenerated = false;
+  ClassStates = INFRA_VISION;
+  HostileReplies == "\"They say my rich parents spoiled me but they just fed me the wealth. How's that bad for your character?\"";
+  FriendlyReplies == "\"Heh, heh, mind if I take anything valuable?.\"";
+  IgnoreDanger = true;
+  AttachedGod = CLEPTIA;
+  IsSadist = true;
+  ClassStates = INFRA_VISION;
+}

@@ -62,6 +62,7 @@ template <class type> void databasecreator<type>::ReadFrom (inputfile &SaveFile)
       if (Word == "Include") {
         Word = inFile->ReadWord();
         if (inFile->ReadWord() != ";") ABORT("Invalid terminator at line %ld!", inFile->TellLine());
+        fprintf(stderr, "loading: %s\n", Word.CStr());
         inputfile *incf = new inputfile(game::GetGameDir()+"Script/"+Word, &game::GetGlobalValueMap());
         infStack.push(inFile);
         inFile = incf;
@@ -107,7 +108,7 @@ template <class type> void databasecreator<type>::ReadFrom (inputfile &SaveFile)
             // include file
             //Word = inFile->ReadWord();
             //if (Word != ";") ABORT("Invalid terminator at line %ld!", inFile->TellLine());
-            //fprintf(stderr, "INCLUDE: [%s]\n", fname.CStr());
+            fprintf(stderr, "loading: %s\n", fname.CStr());
             inputfile *incf = new inputfile(game::GetGameDir()+"Script/"+fname, &game::GetGlobalValueMap());
             infStack.push(inFile);
             inFile = incf;
@@ -728,6 +729,7 @@ void databasesystem::Initialize () {
       sprintf(bnum, "Script/char_%02d.dat", f);
       inputfile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
       if (ifl.IsOpen()) {
+        fprintf(stderr, "loading: %s\n", bnum+7);
         databasecreator<character>::ReadFrom(ifl);
         ifl.Close();
       }
@@ -744,6 +746,7 @@ void databasesystem::Initialize () {
       sprintf(bnum, "Script/item_%02d.dat", f);
       inputfile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
       if (ifl.IsOpen()) {
+        fprintf(stderr, "loading: %s\n", bnum+7);
         databasecreator<item>::ReadFrom(ifl);
         ifl.Close();
       }

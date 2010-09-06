@@ -1,0 +1,38 @@
+aethier /* meleeweapon-> */
+{
+  DefaultSize = 150;
+  Possibility = 1;
+  WeaponCategory = LARGE_SWORDS;
+  StrengthModifier = 155;
+  BitmapPos = 0, 0;
+  FormModifier = 180;
+  DefaultMainVolume = 350;
+  DefaultSecondaryVolume = 150;
+  NameSingular = "two-handed sword";
+  PostFix = "named Aethier";
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == SAPPHIRE;
+  Roundness = 20;
+  IsTwoHanded = true;
+  Alias == "Aethier";
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Price = 750;
+  AttachedGod = LEGIFER;
+  WieldedBitmapPos = 160, 16;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH|PIERCE;
+  GearStates = INFRA_VISION;
+
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 32, 80;
+    WieldedBitmapPos = 176, 80;
+    Price = 150;
+    EnchantmentPlusChance = 4;
+    GearStates = 0;
+  }
+}

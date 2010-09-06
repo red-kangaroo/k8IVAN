@@ -244,6 +244,7 @@ void game::InitScript () {
       sprintf(bnum, "Script/dungeon_%02d.dat", f);
       inputfile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
       if (ifl.IsOpen()) {
+        fprintf(stderr, "loading: %s\n", bnum+7);
         GameScript->ReadFrom(ifl);
         ifl.Close();
       }
@@ -1292,13 +1293,43 @@ truth game::AnimationController () {
 }
 
 
-void game::InitGlobalValueMap () {
-  inputfile SaveFile(GetGameDir()+"Script/define.dat", &GlobalValueMap);
+void game::LoadGlobalValueMap (inputfile &SaveFile) {
   festring Word;
   for (SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false)) {
+    if (Word == "Include") {
+      Word = SaveFile.ReadWord();
+      if (SaveFile.ReadWord() != ";") ABORT("Invalid terminator at line %ld!", SaveFile.TellLine());
+      fprintf(stderr, "loading: %s\n", Word.CStr());
+      inputfile incf(game::GetGameDir()+"Script/"+Word, &game::GetGlobalValueMap());
+      LoadGlobalValueMap(incf);
+      continue;
+    }
+    if (Word == "Message") {
+      Word = SaveFile.ReadWord();
+      if (SaveFile.ReadWord() != ";") ABORT("Invalid terminator at line %ld!", SaveFile.TellLine());
+      fprintf(stderr, "MESSAGE: %s\n", Word.CStr());
+      continue;
+    }
     if (Word != "#" || SaveFile.ReadWord() != "define") ABORT("Illegal datafile define on line %ld!", SaveFile.TellLine());
     SaveFile.ReadWord(Word);
     GlobalValueMap.insert(std::make_pair(Word, SaveFile.ReadNumber()));
+  }
+}
+
+
+void game::InitGlobalValueMap () {
+  inputfile SaveFile(GetGameDir()+"Script/define.dat", &GlobalValueMap);
+  LoadGlobalValueMap(SaveFile);
+  { /* additional item files */
+    for (int f = 0; f <= 99; f++) {
+      char bnum[32];
+      sprintf(bnum, "Script/define_%02d.dat", f);
+      inputfile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
+      if (ifl.IsOpen()) {
+        LoadGlobalValueMap(ifl);
+        ifl.Close();
+      }
+    }
   }
 }
 

@@ -1,0 +1,45 @@
+menatrixfusanga
+{
+  DefaultArmStrength = 62;
+  DefaultAgility = 20;
+  DefaultEndurance = 60;
+  DefaultPerception = 32;
+  DefaultIntelligence = 40;
+  DefaultWisdom = 8;
+  DefaultDexterity = 20;
+  DefaultCharisma = 40;
+  DefaultMana = 0;
+  TotalVolume = 60000;
+  TorsoBitmapPos = 0, 237;
+  TotalSize = 250;
+  Adjective = "massive magical";
+  NameSingular = "mother mushroom";
+  DefaultName = "menatrix fusanga";
+  SkinColor = rgb16(111, 74, 60);
+  TorsoMainColor = rgb16(111, 74, 60); /* the cap */
+  TorsoSpecialColor = rgb16(111, 74, 60);
+  PanicLevel = 0;
+  TamingDifficulty = NO_TAMING;
+  IsNameable = false;
+  IsUnique = true;
+  DeathMessage = "@Dd is brutally destroyed.";
+  BaseEmitation = rgb24(140, 100, 100);
+  FleshMaterial = MAGIC_MUSHROOM_FLESH;
+  AttachedGod = SCABIES;
+  CanOpen = false;
+  ClassStates = INFRA_VISION|TELEPORT_CONTROL|GAS_IMMUNITY;
+  HasEyes = false;
+  HasHead = false;
+  HasALeg = false;
+  IsPolymorphable = false;
+  SpillsBlood = false;
+  Sweats = false;
+  StandVerb = "wobbling";
+  IsRooted = true;
+  AllowUnconsciousness = false;
+  BaseUnarmedStrength = 600;
+  KnownCWeaponSkills == UNARMED;
+  CWeaponSkillHits == 30;
+  HostileReplies == "@Dd expresses @sp utter contempt for your pitiful and loathsome existence by wobbling erratically.";
+  FriendlyReplies == "@Dd wobbles disappointedly due to the fact that you are cheating.";
+}

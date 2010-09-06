@@ -1,0 +1,31 @@
+belderiver /* meleeweapon-> */
+{
+  DefaultSize = 80;
+  Possibility = 0;
+  WeaponCategory = LARGE_SWORDS;
+  DefaultMainVolume = 100;
+  DefaultSecondaryVolume = 40;
+  BitmapPos = 111, 191;
+  FormModifier = 500;
+  StrengthModifier = 100;
+  CanBeWished = false;
+  IsMaterialChangeable = false;
+  NameSingular = "dark sword";
+  Adjective = "cursed";
+  PostFix = "named Belderiver";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == PSYPHER;
+  SecondaryMaterialConfig == BLACK_DIAMOND;
+  IsPolymorphable = false;
+  Alias == "Belderiver";
+  Roundness = 20;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  CanBeBroken = false;
+  CanBeEnchanted = false;
+  BaseEnchantment = 16;
+  AttachedGod = MORTIFER;
+  WieldedBitmapPos = 163, 398;
+  IsQuestItem = true;
+  DamageFlags = SLASH|PIERCE;
+}

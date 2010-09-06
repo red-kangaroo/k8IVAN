@@ -1,4 +1,4 @@
-Message "loading Gloomy Caves...";
+/* Gloomy Caves */
 
 Dungeon ELPURI_CAVE;
 {

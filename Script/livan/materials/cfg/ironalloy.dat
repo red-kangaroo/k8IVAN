@@ -1,0 +1,14 @@
+  Config DAMASCUS_STEEL;
+  {
+    StrengthValue = 400;
+    ConsumeType = CT_METAL;
+    Density = 5000;
+    Color = rgb16(80, 80, 80);
+    PriceModifier = 10000;
+    NameStem = "damascus steel";
+    AttachedGod = LORICATUS;
+    RustModifier = 5;
+    HardenedMaterial = VALPURIUM;
+    IntelligenceRequirement = 60;
+    CommonFlags = Base|IS_VALUABLE;
+  }

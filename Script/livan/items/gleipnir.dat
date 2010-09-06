@@ -1,0 +1,20 @@
+gleipnir /* meleeweapon->whip-> */
+{
+  DefaultSize = 250;
+  Possibility = 0;
+  DefaultMainVolume = 1000;
+  DefaultSecondaryVolume = 50;
+  StrengthModifier = 30;
+  NameSingular = "whip of thievery";
+  PostFix = "named Gleipnir";
+  MainMaterialConfig == SPIDER_SILK;
+  SecondaryMaterialConfig == OBSIDIAN;
+  Roundness = 3;
+  FormModifier = 25; /* this is multiplied by MainMaterial's flexibility */
+  Price = 1000;
+  AttachedGod = CLEPTIA;
+  EnchantmentPlusChance = 10;
+  CanBeWished = false;
+  Alias == "Gleipnir";
+  IsQuestItem = true;
+}

@@ -1,0 +1,37 @@
+assassin
+{
+  DefaultArmStrength = 12;
+  DefaultLegStrength = 12;
+  DefaultDexterity = 20;
+  DefaultAgility = 17;
+  DefaultEndurance = 17;
+  DefaultPerception = 20;
+  DefaultIntelligence = 10;
+  HeadBitmapPos = 112, 464;
+  TorsoBitmapPos = 48, 224;
+  ArmBitmapPos = 80, 64;
+  LegBitmapPos = 16, 160;
+  ClothColor = rgb16(100, 50, 50);
+  BodyArmor = HARDENED_LEATHER bodyarmor(PLATE_MAIL);
+  Cloak = HARDENED_LEATHER HARDENED_LEATHER cloak;
+  RightWielded = meleeweapon(DAGGER);
+  LeftWielded = maingauche;
+  KnownCWeaponSkills == SMALL_SWORDS;
+  KnownCWeaponSkills = { 2, SMALL_SWORDS, SHIELDS; }
+  CWeaponSkillHits = { 2, 500, 500; }
+  RightSWeaponSkillHits = 15;
+  LeftSWeaponSkillHits = 15;
+  PanicLevel = 10;
+  ClothColor = rgb16(80, 80, 160);
+  CanRead = true;
+  NameSingular = "assassin";
+  CanBeGenerated = true;
+  ClassStates = INFRA_VISION;
+  HostileReplies == "\"Trying to reason me with diplomacy won't work on me.\"";
+  FriendlyReplies == "\"Eh, gets the job done..\"";
+  IgnoreDanger = true;
+  AttachedGod = CLEPTIA;
+  IsSadist = true;
+  ClassStates = INFRA_VISION;
+  Frequency = 1000;
+}
