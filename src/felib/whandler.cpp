@@ -9,6 +9,10 @@
  *  along with this file for more details
  *
  */
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include <algorithm>
 
 #include "whandler.h"
@@ -105,6 +109,21 @@ int globalwindowhandler::ReadKey () {
 }
 
 
+static festring GetMyDir (void) {
+  char buf[128], myDir[8192];
+  pid_t mypid = getpid();
+  memset(myDir, 0, sizeof(myDir));
+  sprintf(buf, "/proc/%u/exe", (unsigned int)mypid);
+  if (readlink(buf, myDir, sizeof(myDir)-1) < 0) strcpy(myDir, ".");
+  else {
+    char *p = (char *)strrchr(myDir, '/');
+    if (!p) strcpy(myDir, "."); else *p = '\0';
+  }
+  if (myDir[strlen(myDir)-1] == '/') myDir[strlen(myDir)-1] = '\0';
+  return myDir;
+}
+
+
 void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
   int KeyPressed;
   switch (Event->active.type) {
@@ -162,10 +181,21 @@ void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
         case SDLK_KP_PLUS:
           KeyPressed = KEY_PLUS+0xE000;
           break;
-        case SDLK_SYSREQ: case SDLK_PRINT:
+        case SDLK_SYSREQ: case SDLK_PRINT: {
           /*DOUBLE_BUFFER->Save(festring(getenv("HOME")) + "/Scrshot.bmp");*/
-          DOUBLE_BUFFER->Save(festring("Scrshot.bmp"));
-          return;
+          festring dir = GetMyDir()+"/SShots";
+          mkdir(dir.CStr(), 0755);
+          for (int f = 0; f < 1000; f++) {
+            char buf[16];
+            sprintf(buf, "%03d", f);
+            festring fn = dir+"/scrshot"+buf+".bmp";
+            FILE *fl = fopen(fn.CStr(), "r");
+            if (fl) { fclose(fl); continue; }
+            fprintf(stderr, "screenshot: %s\n", fn.CStr());
+            DOUBLE_BUFFER->Save(fn);
+            break;
+          }
+          return; }
         case SDLK_e:
           if ((Event->key.keysym.mod & KMOD_ALT) &&
               ((Event->key.keysym.mod & KMOD_LCTRL) || (Event->key.keysym.mod & KMOD_RCTRL))) {

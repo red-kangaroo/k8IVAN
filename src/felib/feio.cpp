@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #include <ctime>
 #include <cctype>
 
@@ -27,56 +26,43 @@
 #include "festring.h"
 #include "bitmap.h"
 
+
 #define PENT_WIDTH 70
+
 
 /* Prints screen full of Text in color Color. If GKey is true function
    waits for keypress. BitmapEditor is a pointer to function that is
    called during every fade tick. */
-
-void iosystem::TextScreen(cfestring& Text, v2 Disp,
-        col16 Color, truth GKey, truth Fade,
-        bitmapeditor BitmapEditor)
-{
+void iosystem::TextScreen (cfestring & Text, v2 Disp, col16 Color, truth GKey, truth Fade, bitmapeditor BitmapEditor) {
   bitmap Buffer(RES, 0);
   Buffer.ActivateFastFlag();
   festring::sizetype c;
   int LineNumber = 0;
-
-  for(c = 0; c < Text.GetSize(); ++c)
-    if(Text[c] == '\n')
-      ++LineNumber;
-
+  for (c = 0; c < Text.GetSize(); ++c) if (Text[c] == '\n') ++LineNumber;
   LineNumber >>= 1;
   char Line[200];
   int Lines = 0, LastBeginningOfLine = 0;
-
-  for(c = 0; c < Text.GetSize(); ++c)
-    if(Text[c] == '\n')
-    {
-      Line[c - LastBeginningOfLine] = 0;
-      v2 PrintPos((RES.X >> 1) - (strlen(Line) << 2) + Disp.X,
-      (RES.Y << 1) / 5 - (LineNumber - Lines) * 15 + Disp.Y);
+  for (c = 0; c < Text.GetSize(); ++c) {
+    if (Text[c] == '\n') {
+      Line[c-LastBeginningOfLine] = 0;
+      v2 PrintPos((RES.X>>1)-(strlen(Line)<<2)+Disp.X, (RES.Y<<1)/5-(LineNumber-Lines)*15+Disp.Y);
       FONT->Printf(&Buffer, PrintPos, Color, Line);
       ++Lines;
-      LastBeginningOfLine = c + 1;
+      LastBeginningOfLine = c+1;
+    } else {
+      Line[c-LastBeginningOfLine] = Text[c];
     }
-    else
-      Line[c - LastBeginningOfLine] = Text[c];
-
-  Line[c - LastBeginningOfLine] = 0;
-  v2 PrintPos((RES.X >> 1) - (strlen(Line) << 2) + Disp.X,
-        (RES.Y << 1) / 5 - (LineNumber - Lines) * 15 + Disp.Y);
+  }
+  Line[c-LastBeginningOfLine] = 0;
+  v2 PrintPos((RES.X>>1)-(strlen(Line)<<2)+Disp.X, (RES.Y<<1)/5-(LineNumber-Lines)*15+Disp.Y);
   FONT->Printf(&Buffer, PrintPos, Color, Line);
-
-  if(Fade)
+  if (Fade) {
     Buffer.FadeToScreen(BitmapEditor);
-  else
-  {
+  } else {
     BitmapEditor(&Buffer, true);
     Buffer.FastBlit(DOUBLE_BUFFER);
     graphics::BlitDBToScreen();
   }
-
   if (GKey) {
     if (BitmapEditor) {
       while (!READ_KEY()) BitmapEditor(DOUBLE_BUFFER, false);
@@ -86,18 +72,14 @@ void iosystem::TextScreen(cfestring& Text, v2 Disp,
   }
 }
 
+
 /* Returns amount of chars cSF in string sSH */
-
-int CountChars(char cSF, cfestring& sSH)
-{
+static int CountChars (char cSF, cfestring &sSH) {
   int iReturnCounter = 0;
-
-  for(festring::sizetype i = 0; i < sSH.GetSize(); ++i)
-    if(sSH[i] == cSF)
-      ++iReturnCounter;
-
+  for (festring::sizetype i = 0; i < sSH.GetSize(); ++i) if (sSH[i] == cSF) ++iReturnCounter;
   return iReturnCounter;
 }
+
 
 /* Draws a menu on bitmap BackGround to position Pos. festring Topic
    is the text that is shown before the choices '\r' is a line-ending
@@ -112,15 +94,10 @@ int CountChars(char cSF, cfestring& sSH)
 /* Warning: This function is utter garbage that just happens to work.
    If you need to use this function use the comments. Don't try to
    understand it. It is impossible. */
-
-int iosystem::Menu(cbitmap* BackGround, v2 Pos,
-       cfestring& Topic, cfestring& sMS,
-       col16 Color, cfestring& SmallText1,
-       cfestring& SmallText2)
+int iosystem::Menu (cbitmap *BackGround, v2 Pos, cfestring &Topic, cfestring &sMS, col16 Color,
+  cfestring &SmallText1, cfestring &SmallText2, truth allowEsc)
 {
-  if(CountChars('\r',sMS) < 1)
-    return (-1);
-
+  if (CountChars('\r',sMS) < 1) return (-1);
   truth bReady = false;
   int iSelected = 0;
   bitmap Backup(DOUBLE_BUFFER);
@@ -128,131 +105,94 @@ int iosystem::Menu(cbitmap* BackGround, v2 Pos,
   bitmap Buffer(RES);
   Buffer.ActivateFastFlag();
   int c = 0;
-
-  if(BackGround)
-    BackGround->FastBlit(&Buffer);
-  else
-    Buffer.ClearToColor(0);
-
+  if (BackGround) BackGround->FastBlit(&Buffer); else Buffer.ClearToColor(0);
   festring sCopyOfMS;
   festring VeryUnGuruPrintf;
-
-  while(!bReady)
-  {
+  while (!bReady) {
     clock_t StartTime = clock();
     sCopyOfMS = Topic;
     int i;
-
-    for(i = 0; i < CountChars('\r', Topic); ++i)
-    {
+    for (i = 0; i < CountChars('\r', Topic); ++i) {
       festring::sizetype RPos = sCopyOfMS.Find('\r');
       VeryUnGuruPrintf = sCopyOfMS;
       VeryUnGuruPrintf.Resize(RPos);
       sCopyOfMS.Erase(0,RPos+1);
-      v2 PrintPos(Pos.X - (VeryUnGuruPrintf.GetSize() << 2),
-      Pos.Y - 30 - (CountChars('\r', Topic)
-        + CountChars('\r', sMS)) * 25 + i * 25);
+      v2 PrintPos(Pos.X-(VeryUnGuruPrintf.GetSize()<<2),
+      Pos.Y-30-(CountChars('\r', Topic)+CountChars('\r', sMS))*25+i*25);
       FONT->Printf(&Buffer, PrintPos, RED, "%s", VeryUnGuruPrintf.CStr());
     }
-
     sCopyOfMS = sMS;
-
-    for(i = 0; i < CountChars('\r', sMS); ++i)
-    {
+    for (i = 0; i < CountChars('\r', sMS); ++i) {
       festring::sizetype RPos = sCopyOfMS.Find('\r');
       VeryUnGuruPrintf = sCopyOfMS;
       VeryUnGuruPrintf.Resize(RPos);
       sCopyOfMS.Erase(0,RPos+1);
-      int XPos = Pos.X - ((VeryUnGuruPrintf.GetSize() + 3) << 2);
-      int YPos = Pos.Y - CountChars('\r', sMS) * 25 + i * 50;
-      Buffer.Fill(XPos, YPos, ((VeryUnGuruPrintf.GetSize() + 3) << 3), 9, 0);
-
-      if(i == iSelected)
-  FONT->PrintfUnshaded(&Buffer, v2(XPos + 1, YPos + 1), WHITE,
-           "%d. %s", i + 1, VeryUnGuruPrintf.CStr());
-      else
-  FONT->Printf(&Buffer, v2(XPos, YPos), Color, "%d. %s",
-         i + 1, VeryUnGuruPrintf.CStr());
+      int XPos = Pos.X-((VeryUnGuruPrintf.GetSize()+3)<<2);
+      int YPos = Pos.Y-CountChars('\r', sMS)*25+i*50;
+      Buffer.Fill(XPos, YPos, ((VeryUnGuruPrintf.GetSize()+3)<<3), 9, 0);
+      if (i == iSelected) FONT->PrintfUnshaded(&Buffer, v2(XPos + 1, YPos + 1), WHITE, "%d. %s", i+1, VeryUnGuruPrintf.CStr());
+      else FONT->Printf(&Buffer, v2(XPos, YPos), Color, "%d. %s", i+1, VeryUnGuruPrintf.CStr());
     }
-
     sCopyOfMS = SmallText1;
-
-    for(i = 0; i < CountChars('\r', SmallText1); ++i)
-    {
+    for (i = 0; i < CountChars('\r', SmallText1); ++i) {
       festring::sizetype RPos = sCopyOfMS.Find('\r');
       VeryUnGuruPrintf = sCopyOfMS;
       VeryUnGuruPrintf.Resize(RPos);
       sCopyOfMS.Erase(0,RPos+1);
-      v2 PrintPos(3, RES.Y - CountChars('\r', SmallText1) * 10 + i * 10);
+      v2 PrintPos(3, RES.Y-CountChars('\r', SmallText1)*10+i*10);
       FONT->Printf(&Buffer, PrintPos, Color, "%s", VeryUnGuruPrintf.CStr());
     }
-
     sCopyOfMS = SmallText2;
-
-    for(i = 0; i < CountChars('\r', SmallText2); ++i)
-    {
+    for (i = 0; i < CountChars('\r', SmallText2); ++i) {
       festring::sizetype RPos = sCopyOfMS.Find('\r');
       VeryUnGuruPrintf = sCopyOfMS;
       VeryUnGuruPrintf.Resize(RPos);
       sCopyOfMS.Erase(0,RPos+1);
-      v2 PrintPos(RES.X - (VeryUnGuruPrintf.GetSize() << 3) - 2,
-      RES.Y - CountChars('\r', SmallText2) * 10 + i * 10);
+      v2 PrintPos(RES.X - (VeryUnGuruPrintf.GetSize()<<3)-2, RES.Y-CountChars('\r', SmallText2)*10+i*10);
       FONT->Printf(&Buffer, PrintPos, Color, "%s", VeryUnGuruPrintf.CStr());
     }
-
     int k;
-
-    if(c < 5)
-    {
-      int Element = 127 - c * 25;
-      blitdata BlitData = { DOUBLE_BUFFER,
-          { 0, 0 },
-          { 0, 0 },
-          { RES.X, RES.Y },
-          { MakeRGB24(Element, Element, Element) },
-          0,
-          0 };
+    if (c < 5) {
+      int Element = 127-c*25;
+      blitdata BlitData = {
+        DOUBLE_BUFFER,
+        { 0, 0 },
+        { 0, 0 },
+        { RES.X, RES.Y },
+        { MakeRGB24(Element, Element, Element) },
+        0,
+        0
+      };
       Backup.LuminanceMaskedBlit(BlitData);
       Buffer.SimpleAlphaBlit(DOUBLE_BUFFER, c++ * 50, 0);
       graphics::BlitDBToScreen();
-      while(clock() - StartTime < 0.05 * CLOCKS_PER_SEC);
+      while (clock() - StartTime < 0.05 * CLOCKS_PER_SEC);
       k = READ_KEY();
-    }
-    else
-    {
+    } else {
       Buffer.FastBlit(DOUBLE_BUFFER);
       graphics::BlitDBToScreen();
       k = GET_KEY(false);
     }
-
-    switch(k)
-    {
-     case KEY_UP:
-      if(iSelected > 0)
-  --iSelected;
-      else
-  iSelected = (CountChars('\r',sMS)-1);
-      break;
-
-     case KEY_DOWN:
-      if(iSelected < (CountChars('\r',sMS)-1))
-  ++iSelected;
-      else
-  iSelected = 0;
-      break;
-
-     case 0x00D:
-      bReady = true;
-      break;
-
-     default:
-      if(k > 0x30 && k < 0x31 + CountChars('\r',sMS))
-  return k - 0x31;
+    switch (k) {
+      case KEY_UP:
+        if(iSelected > 0) --iSelected; else iSelected = (CountChars('\r',sMS)-1);
+        break;
+      case KEY_DOWN:
+        if(iSelected < (CountChars('\r',sMS)-1)) ++iSelected; else iSelected = 0;
+        break;
+      case 0x00D:
+        bReady = true;
+        break;
+      case KEY_ESC:
+        if (allowEsc) return -1;
+        break;
+      default:
+        if (k > 0x30 && k < 0x31+CountChars('\r',sMS)) return k-0x31;
     }
   }
-
   return iSelected;
 }
+
 
 /* Asks the user a question requiring a string answer. The answer is saved
    to Input. Input can also already have a default something retyped for
