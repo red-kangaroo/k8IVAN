@@ -1218,15 +1218,13 @@ void character::AddWeaponHitMessage (ccharacter *Enemy, citem *Weapon, int BodyP
     Msg << GetDescription(DEFINITE) << NewHitVerb << E << " you" << BodyPartDescription;
     if (CanBeSeenByPlayer()) Msg << " with " << GetPossessivePronoun() << ' ' << Weapon->GetName(UNARTICLED);
     Msg << '!';
-  }
-  else if (IsPlayer()) {
+  } else if (IsPlayer()) {
     Msg << "You" << NewHitVerb << ' ' << Enemy->GetDescription(DEFINITE) << BodyPartDescription << '!';
   } else if(CanBeSeenByPlayer() || Enemy->CanBeSeenByPlayer()) {
     Msg << GetDescription(DEFINITE) << NewHitVerb << E << ' ' << Enemy->GetDescription(DEFINITE) << BodyPartDescription;
     if (CanBeSeenByPlayer()) Msg << " with " << GetPossessivePronoun() << ' ' << Weapon->GetName(UNARTICLED);
     Msg << '!';
-  }
-  else {
+  } else {
     return;
   }
   ADD_MESSAGE("%s", Msg.CStr());
@@ -1465,172 +1463,113 @@ truth character::TestForPickup (item *ToBeTested) const {
 }
 
 
-void character::AddScoreEntry(cfestring& Description, double Multiplier, truth AddEndLevel) const
-{
-  if(!game::WizardModeIsReallyActive())
-  {
+void character::AddScoreEntry (cfestring &Description, double Multiplier, truth AddEndLevel) const {
+  if (!game::WizardModeIsReallyActive()) {
     highscore HScore;
-
-    if(!HScore.CheckVersion())
-    {
-      if(game::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("The highscore version doesn't match.\rDo you want to erase previous records and start a new file?\rNote, if you answer no, the score of your current game will be lost!\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY))
-  return;
-
+    if (!HScore.CheckVersion()) {
+      if (game::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("The highscore version doesn't match.\rDo you want to erase previous records and start a new file?\rNote, if you answer no, the score of your current game will be lost!\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY)) return;
       HScore.Clear();
     }
-
     festring Desc = game::GetPlayerName();
     Desc << ", " << Description;
-
-    if(AddEndLevel)
-      Desc << " in " + (game::IsInWilderness() ? "the world map" : game::GetCurrentDungeon()->GetLevelDescription(game::GetCurrentLevelIndex()));
-
-    HScore.Add(long(game::GetScore() * Multiplier), Desc);
+    if (AddEndLevel) Desc << " in "+(game::IsInWilderness() ? "the world map" : game::GetCurrentDungeon()->GetLevelDescription(game::GetCurrentLevelIndex()));
+    HScore.Add(long(game::GetScore()*Multiplier), Desc);
     HScore.Save();
   }
 }
 
-truth character::CheckDeath(cfestring& Msg, ccharacter* Murderer, ulong DeathFlags)
-{
-  if(!IsEnabled())
-    return true;
 
-  if(game::IsSumoWrestling() && IsDead())
-  {
+truth character::CheckDeath (cfestring &Msg, ccharacter *Murderer, ulong DeathFlags) {
+  if (!IsEnabled()) return true;
+  if (game::IsSumoWrestling() && IsDead()) {
     game::EndSumoWrestling(!!IsPlayer());
     return true;
   }
-
-  if(DeathFlags & FORCE_DEATH || IsDead())
-  {
-    if(Murderer && Murderer->IsPlayer() && GetTeam()->GetKillEvilness())
-      game::DoEvilDeed(GetTeam()->GetKillEvilness());
-
+  if (DeathFlags & FORCE_DEATH || IsDead()) {
+    if (Murderer && Murderer->IsPlayer() && GetTeam()->GetKillEvilness()) game::DoEvilDeed(GetTeam()->GetKillEvilness());
     festring SpecifierMsg;
     int SpecifierParts = 0;
-
-    if(GetPolymorphBackup())
-    {
+    if (GetPolymorphBackup()) {
       SpecifierMsg << " polymorphed into ";
       id::AddName(SpecifierMsg, INDEFINITE);
       ++SpecifierParts;
     }
-
-    if(!(DeathFlags & IGNORE_TRAPS) && IsStuck())
-    {
-      if(SpecifierParts++)
-  SpecifierMsg << " and";
-
+    if (!(DeathFlags & IGNORE_TRAPS) && IsStuck()) {
+      if (SpecifierParts++) SpecifierMsg << " and";
       SpecifierMsg << " caught in " << GetTrapDescription();
     }
-
-    if(GetAction()
-       && !(DeathFlags & IGNORE_UNCONSCIOUSNESS
-      && GetAction()->IsUnconsciousness()))
-    {
+    if (GetAction() && !(DeathFlags & IGNORE_UNCONSCIOUSNESS && GetAction()->IsUnconsciousness())) {
       festring ActionMsg = GetAction()->GetDeathExplanation();
-
-      if(!ActionMsg.IsEmpty())
-      {
-  if(SpecifierParts > 1)
-    SpecifierMsg = ActionMsg << ',' << SpecifierMsg;
-  else
-  {
-    if(SpecifierParts)
-      SpecifierMsg << " and";
-
-    SpecifierMsg << ActionMsg;
-  }
-
-  ++SpecifierParts;
+      if (!ActionMsg.IsEmpty()) {
+        if (SpecifierParts > 1) {
+          SpecifierMsg = ActionMsg << ',' << SpecifierMsg;
+        } else {
+          if (SpecifierParts) SpecifierMsg << " and";
+          SpecifierMsg << ActionMsg;
+        }
+        ++SpecifierParts;
       }
     }
-
     festring NewMsg = Msg;
-
-    if(Murderer == this)
-    {
+    if (Murderer == this) {
       SEARCH_N_REPLACE(NewMsg, "@bkp", CONST_S("by ") + GetPossessivePronoun(false) + " own");
       SEARCH_N_REPLACE(NewMsg, "@bk", CONST_S("by ") + GetObjectPronoun(false) + "self");
       SEARCH_N_REPLACE(NewMsg, "@k", GetObjectPronoun(false) + "self");
-    }
-    else
-    {
+    } else {
       SEARCH_N_REPLACE(NewMsg, "@bkp", CONST_S("by ") + Murderer->GetName(INDEFINITE) + "'s");
       SEARCH_N_REPLACE(NewMsg, "@bk", CONST_S("by ") + Murderer->GetName(INDEFINITE));
       SEARCH_N_REPLACE(NewMsg, "@k", CONST_S("by ") + Murderer->GetName(INDEFINITE));
     }
-
-    if(SpecifierParts)
-      NewMsg << " while" << SpecifierMsg;
-
-    if(IsPlayer() && game::WizardModeIsActive())
-      ADD_MESSAGE("Death message: %s. Score: %ld.", NewMsg.CStr(), game::GetScore());
-
+    if (SpecifierParts) NewMsg << " while" << SpecifierMsg;
+    if (IsPlayer() && game::WizardModeIsActive()) ADD_MESSAGE("Death message: %s. Score: %ld.", NewMsg.CStr(), game::GetScore());
     Die(Murderer, NewMsg, DeathFlags);
     return true;
   }
-  else
-    return false;
+  return false;
 }
 
-truth character::CheckStarvationDeath(cfestring& Msg)
-{
-  if(GetNP() < 1 && UsesNutrition())
-    return CheckDeath(Msg, 0, FORCE_DEATH);
-  else
-    return false;
+
+truth character::CheckStarvationDeath (cfestring &Msg) {
+  if (GetNP() < 1 && UsesNutrition()) return CheckDeath(Msg, 0, FORCE_DEATH);
+  return false;
 }
 
-void character::ThrowItem(int Direction, item* ToBeThrown)
-{
-  if(Direction > 7)
-    ABORT("Throw in TOO odd direction...");
 
+void character::ThrowItem (int Direction, item *ToBeThrown) {
+  if (Direction > 7) ABORT("Throw in TOO odd direction...");
   ToBeThrown->Fly(this, Direction, GetAttribute(ARM_STRENGTH));
 }
 
-void character::HasBeenHitByItem(character* Thrower, item* Thingy, int Damage, double ToHitValue, int Direction)
-{
-  if(IsPlayer())
-    ADD_MESSAGE("%s hits you.", Thingy->CHAR_NAME(DEFINITE));
-  else if(CanBeSeenByPlayer())
-    ADD_MESSAGE("%s hits %s.", Thingy->CHAR_NAME(DEFINITE), CHAR_NAME(DEFINITE));
 
+void character::HasBeenHitByItem (character *Thrower, item *Thingy, int Damage, double ToHitValue, int Direction) {
+  if (IsPlayer()) ADD_MESSAGE("%s hits you.", Thingy->CHAR_NAME(DEFINITE));
+  else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s hits %s.", Thingy->CHAR_NAME(DEFINITE), CHAR_NAME(DEFINITE));
   int BodyPart = ChooseBodyPartToReceiveHit(ToHitValue, DodgeValue);
   int WeaponSkillHits = Thrower ? CalculateWeaponSkillHits(Thrower) : 0;
   int DoneDamage = ReceiveBodyPartDamage(Thrower, Damage, PHYSICAL_DAMAGE, BodyPart, Direction);
   truth Succeeded = (GetBodyPart(BodyPart) && HitEffect(Thrower, Thingy, Thingy->GetPos(), THROW_ATTACK, BodyPart, Direction, !DoneDamage)) || DoneDamage;
-
-  if(Succeeded && Thrower)
-    Thrower->WeaponSkillHit(Thingy, THROW_ATTACK, WeaponSkillHits);
-
-  festring DeathMsg = CONST_S("killed by a flying ") + Thingy->GetName(UNARTICLED);
-
-  if(CheckDeath(DeathMsg, Thrower))
-    return;
-
-  if(Thrower)
-  {
-    if(Thrower->CanBeSeenByPlayer())
-      DeActivateVoluntaryAction(CONST_S("The attack of ") + Thrower->GetName(DEFINITE) + CONST_S(" interrupts you."));
+  if (Succeeded && Thrower) Thrower->WeaponSkillHit(Thingy, THROW_ATTACK, WeaponSkillHits);
+  festring DeathMsg = CONST_S("killed by a flying ")+Thingy->GetName(UNARTICLED);
+  if (CheckDeath(DeathMsg, Thrower)) return;
+  if (Thrower) {
+    if (Thrower->CanBeSeenByPlayer())
+      DeActivateVoluntaryAction(CONST_S("The attack of ")+Thrower->GetName(DEFINITE)+CONST_S(" interrupts you."));
     else
       DeActivateVoluntaryAction(CONST_S("The attack interrupts you."));
-  }
-  else
+  } else {
     DeActivateVoluntaryAction(CONST_S("The hit interrupts you."));
+  }
 }
 
-truth character::DodgesFlyingItem(item* Item, double ToHitValue)
-{
-  return !Item->EffectIsGood() && RAND() % int(100 + ToHitValue / DodgeValue * 100) < 100;
+
+truth character::DodgesFlyingItem (item *Item, double ToHitValue) {
+  return !Item->EffectIsGood() && RAND() % int(100+ToHitValue/DodgeValue*100) < 100;
 }
 
 
 void character::GetPlayerCommand () {
   command *cmd;
   truth HasActed = false;
-
   while (!HasActed) {
     game::DrawEverything();
     if (game::GetDangerFound()) {
@@ -1682,61 +1621,41 @@ void character::GetPlayerCommand () {
 }
 
 
-void character::Vomit(v2 Pos, int Amount, truth ShowMsg)
-{
-  if(!CanVomit())
-    return;
-
-  if(ShowMsg)
-  {
-    if(IsPlayer())
-      ADD_MESSAGE("You vomit.");
-    else if(CanBeSeenByPlayer())
-      ADD_MESSAGE("%s vomits.", CHAR_NAME(DEFINITE));
+void character::Vomit (v2 Pos, int Amount, truth ShowMsg) {
+  if (!CanVomit()) return;
+  if (ShowMsg) {
+    if (IsPlayer()) ADD_MESSAGE("You vomit.");
+    else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s vomits.", CHAR_NAME(DEFINITE));
   }
-
-  if(VomittingIsUnhealthy())
-  {
+  if (VomittingIsUnhealthy()) {
     EditExperience(ARM_STRENGTH, -75, 1 << 9);
     EditExperience(LEG_STRENGTH, -75, 1 << 9);
   }
-
-  if(IsPlayer())
-  {
-    EditNP(-2500 - RAND() % 2501);
+  if (IsPlayer()) {
+    EditNP(-2500-RAND()%2501);
     CheckStarvationDeath(CONST_S("vomited himself to death"));
   }
-
-  if(StateIsActivated(PARASITIZED) && !(RAND() & 7))
-  {
-    if(IsPlayer())
-      ADD_MESSAGE("You notice a dead broad tapeworm among your former stomach contents.");
-
+  if (StateIsActivated(PARASITIZED) && !(RAND() & 7)) {
+    if (IsPlayer()) ADD_MESSAGE("You notice a dead broad tapeworm among your former stomach contents.");
     DeActivateTemporaryState(PARASITIZED);
   }
-
-  if(!game::IsInWilderness())
-    GetNearLSquare(Pos)->ReceiveVomit(this, liquid::Spawn(GetVomitMaterial(), long(sqrt(GetBodyVolume()) * Amount / 1000)));
+  if (!game::IsInWilderness()) {
+    GetNearLSquare(Pos)->ReceiveVomit(this, liquid::Spawn(GetVomitMaterial(), long(sqrt(GetBodyVolume())*Amount/1000)));
+  }
 }
 
-truth character::Polymorph(character* NewForm, int Counter)
-{
-  if(!IsPolymorphable() || (!IsPlayer() && game::IsInWilderness()))
-  {
+
+truth character::Polymorph (character *NewForm, int Counter) {
+  if (!IsPolymorphable() || (!IsPlayer() && game::IsInWilderness())) {
     delete NewForm;
     return false;
   }
-
   RemoveTraps();
-
-  if(GetAction())
-    GetAction()->Terminate(false);
-
+  if (GetAction()) GetAction()->Terminate(false);
   NewForm->SetAssignedName("");
-
-  if(IsPlayer())
+  if (IsPlayer())
     ADD_MESSAGE("Your body glows in a crimson light. You transform into %s!", NewForm->CHAR_NAME(INDEFINITE));
-  else if(CanBeSeenByPlayer())
+  else if (CanBeSeenByPlayer())
     ADD_MESSAGE("%s glows in a crimson light and %s transforms into %s!", CHAR_NAME(DEFINITE), GetPersonalPronoun().CStr(), NewForm->CHAR_NAME(INDEFINITE));
 
   Flags |= C_IN_NO_MSG_MODE;
@@ -1744,8 +1663,7 @@ truth character::Polymorph(character* NewForm, int Counter)
   NewForm->ChangeTeam(GetTeam());
   NewForm->GenerationDanger = GenerationDanger;
 
-  if(GetTeam()->GetLeader() == this)
-    GetTeam()->SetLeader(NewForm);
+  if (GetTeam()->GetLeader() == this) GetTeam()->SetLeader(NewForm);
 
   v2 Pos = GetPos();
   Remove();
@@ -1754,14 +1672,11 @@ truth character::Polymorph(character* NewForm, int Counter)
   NewForm->ActivateTemporaryState(POLYMORPHED);
   NewForm->SetTemporaryStateCounter(POLYMORPHED, Counter);
 
-  if(TemporaryStateIsActivated(POLYMORPHED))
-  {
+  if (TemporaryStateIsActivated(POLYMORPHED)) {
     NewForm->SetPolymorphBackup(GetPolymorphBackup());
     SetPolymorphBackup(0);
     SendToHell();
-  }
-  else
-  {
+  } else {
     NewForm->SetPolymorphBackup(this);
     Flags |= C_POLYMORPHED;
     Disable();
@@ -1774,8 +1689,7 @@ truth character::Polymorph(character* NewForm, int Counter)
   NewForm->Flags &= ~C_IN_NO_MSG_MODE;
   NewForm->CalculateAll();
 
-  if(IsPlayer())
-  {
+  if (IsPlayer()) {
     Flags &= ~C_PLAYER;
     game::SetPlayer(NewForm);
     game::SendLOSUpdateRequest();
@@ -1786,360 +1700,232 @@ truth character::Polymorph(character* NewForm, int Counter)
   return true;
 }
 
-void character::BeKicked(character* Kicker, item* Boot, bodypart* Leg, v2 HitPos, double KickDamage, double ToHitValue, int Success, int Direction, truth Critical, truth ForceHit)
-{
-  switch(TakeHit(Kicker, Boot, Leg, HitPos, KickDamage, ToHitValue, Success, KICK_ATTACK, Direction, Critical, ForceHit))
-  {
-   case HAS_HIT:
-   case HAS_BLOCKED:
-   case DID_NO_DAMAGE:
-    if(IsEnabled() && !CheckBalance(KickDamage))
-    {
-      if(IsPlayer())
-  ADD_MESSAGE("The kick throws you off balance.");
-      else if(Kicker->IsPlayer())
-  ADD_MESSAGE("The kick throws %s off balance.", CHAR_DESCRIPTION(DEFINITE));
 
-      v2 FallToPos = GetPos() + game::GetMoveVector(Direction);
+void character::BeKicked (character *Kicker, item *Boot, bodypart *Leg, v2 HitPos, double KickDamage,
+  double ToHitValue, int Success, int Direction, truth Critical, truth ForceHit)
+{
+  switch (TakeHit(Kicker, Boot, Leg, HitPos, KickDamage, ToHitValue, Success, KICK_ATTACK, Direction, Critical, ForceHit)) {
+    case HAS_HIT:
+    case HAS_BLOCKED:
+    case DID_NO_DAMAGE:
+      if (IsEnabled() && !CheckBalance(KickDamage)) {
+        if (IsPlayer()) ADD_MESSAGE("The kick throws you off balance.");
+        else if (Kicker->IsPlayer()) ADD_MESSAGE("The kick throws %s off balance.", CHAR_DESCRIPTION(DEFINITE));
+      v2 FallToPos = GetPos()+game::GetMoveVector(Direction);
       FallTo(Kicker, FallToPos);
     }
   }
 }
 
-/* Return true if still in balance */
 
-truth character::CheckBalance(double KickDamage)
-{
-  return !CanMove()
-    || IsStuck()
-    || !KickDamage
-    || (!IsFlying()
-  && KickDamage * 5 < RAND() % GetSize());
+/* Return true if still in balance */
+truth character::CheckBalance (double KickDamage) {
+  return !CanMove() || IsStuck() || !KickDamage || (!IsFlying() && KickDamage*5 < RAND()%GetSize());
 }
 
-void character::FallTo(character* GuiltyGuy, v2 Where)
-{
+
+void character::FallTo (character *GuiltyGuy, v2 Where) {
   EditAP(-500);
-  lsquare* MoveToSquare[MAX_SQUARES_UNDER];
+  lsquare *MoveToSquare[MAX_SQUARES_UNDER];
   int Squares = CalculateNewSquaresUnder(MoveToSquare, Where);
-
-  if(Squares)
-  {
+  if (Squares) {
     truth NoRoom = false;
-
-    for(int c = 0; c < Squares; ++c)
-    {
-      olterrain* Terrain = MoveToSquare[c]->GetOLTerrain();
-
-      if(Terrain && !CanMoveOn(Terrain))
-      {
-  NoRoom = true;
-  break;
-      }
+    for (int c = 0; c < Squares; ++c) {
+      olterrain *Terrain = MoveToSquare[c]->GetOLTerrain();
+      if (Terrain && !CanMoveOn(Terrain)) { NoRoom = true; break; }
     }
-
-    if(NoRoom)
-    {
-      if(HasHead())
-      {
-  if(IsPlayer())
-    ADD_MESSAGE("You hit your head on the wall.");
-  else if(CanBeSeenByPlayer())
-    ADD_MESSAGE("%s hits %s head on the wall.", CHAR_NAME(DEFINITE), GetPossessivePronoun().CStr());
+    if (NoRoom) {
+      if (HasHead()) {
+        if (IsPlayer()) ADD_MESSAGE("You hit your head on the wall.");
+        else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s hits %s head on the wall.", CHAR_NAME(DEFINITE), GetPossessivePronoun().CStr());
       }
-
-      ReceiveDamage(GuiltyGuy, 1 + RAND() % 5, PHYSICAL_DAMAGE, HEAD);
+      ReceiveDamage(GuiltyGuy, 1+RAND()%5, PHYSICAL_DAMAGE, HEAD);
       CheckDeath(CONST_S("killed by hitting a wall due to being kicked @bk"), GuiltyGuy);
-    }
-    else
-    {
-      if(IsFreeForMe(MoveToSquare[0]))
-  Move(Where, true);
-
+    } else {
+      if (IsFreeForMe(MoveToSquare[0])) Move(Where, true);
       // Place code that handles characters bouncing to each other here
     }
   }
 }
 
-truth character::CheckCannibalism(cmaterial* What) const
-{
+
+truth character::CheckCannibalism (cmaterial *What) const {
   return GetTorso()->GetMainMaterial()->IsSameAs(What);
 }
 
-void character::StandIdleAI()
-{
+
+void character::StandIdleAI () {
   SeekLeader(GetLeader());
-
-  if(CheckForEnemies(true, true, true))
-    return;
-
-  if(CheckForUsefulItemsOnGround())
-    return;
-
-  if(FollowLeader(GetLeader()))
-    return;
-
-  if(CheckForDoors())
-    return;
-
-  if(MoveTowardsHomePos())
-    return;
-
-  if(CheckSadism())
-    return;
-
+  if (CheckForEnemies(true, true, true)) return;
+  if (CheckForUsefulItemsOnGround()) return;
+  if (FollowLeader(GetLeader())) return;
+  if (CheckForDoors()) return;
+  if (MoveTowardsHomePos()) return;
+  if (CheckSadism()) return;
   EditAP(-1000);
 }
 
-truth character::LoseConsciousness(int Counter, truth HungerFaint)
-{
-  if(!AllowUnconsciousness())
-    return false;
 
-  action* Action = GetAction();
-
-  if(Action)
-  {
-    if(HungerFaint && !Action->AllowUnconsciousness())
-      return false;
-
-    if(Action->IsUnconsciousness())
-    {
-      static_cast<unconsciousness*>(Action)->RaiseCounterTo(Counter);
+truth character::LoseConsciousness (int Counter, truth HungerFaint) {
+  if (!AllowUnconsciousness()) return false;
+  action *Action = GetAction();
+  if (Action) {
+    if (HungerFaint && !Action->AllowUnconsciousness()) return false;
+    if (Action->IsUnconsciousness()) {
+      static_cast<unconsciousness *>(Action)->RaiseCounterTo(Counter);
       return true;
     }
-    else
-      Action->Terminate(false);
+    Action->Terminate(false);
   }
-
-  if(IsPlayer())
-    ADD_MESSAGE("You lose consciousness.");
-  else if(CanBeSeenByPlayer())
-    ADD_MESSAGE("%s loses consciousness.", CHAR_NAME(DEFINITE));
-
-  unconsciousness* Unconsciousness = unconsciousness::Spawn(this);
+  if (IsPlayer()) ADD_MESSAGE("You lose consciousness.");
+  else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s loses consciousness.", CHAR_NAME(DEFINITE));
+  unconsciousness *Unconsciousness = unconsciousness::Spawn(this);
   Unconsciousness->SetCounter(Counter);
   SetAction(Unconsciousness);
   return true;
 }
 
-void character::DeActivateVoluntaryAction(cfestring& Reason)
-{
-  if(GetAction() && GetAction()->IsVoluntary())
-  {
-    if(IsPlayer())
-    {
-      if(Reason.GetSize())
-  ADD_MESSAGE("%s", Reason.CStr());
 
-      if(game::TruthQuestion(CONST_S("Continue ") + GetAction()->GetDescription() + "? [y/N]"))
-  GetAction()->ActivateInDNDMode();
-      else
-  GetAction()->Terminate(false);
+void character::DeActivateVoluntaryAction (cfestring &Reason) {
+  if (GetAction() && GetAction()->IsVoluntary()) {
+    if (IsPlayer()) {
+      if (Reason.GetSize()) ADD_MESSAGE("%s", Reason.CStr());
+      if (game::TruthQuestion(CONST_S("Continue ") + GetAction()->GetDescription()+"? [y/N]")) GetAction()->ActivateInDNDMode();
+      else GetAction()->Terminate(false);
     }
-    else
+    else {
       GetAction()->Terminate(false);
+    }
   }
 }
 
-void character::ActionAutoTermination()
-{
-  if(!GetAction() || !GetAction()->IsVoluntary() || GetAction()->InDNDMode())
-    return;
 
+void character::ActionAutoTermination () {
+  if (!GetAction() || !GetAction()->IsVoluntary() || GetAction()->InDNDMode()) return;
   v2 Pos = GetPos();
-
-  for(int c = 0; c < game::GetTeams(); ++c)
-    if(GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE)
-      for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-  if((*i)->IsEnabled()
-     && (*i)->CanBeSeenBy(this, false, true)
-     && ((*i)->CanMove() || (*i)->GetPos().IsAdjacent(Pos))
-     && (*i)->CanAttack())
-  {
-    if(IsPlayer())
-    {
-      ADD_MESSAGE("%s seems to be hostile.", (*i)->CHAR_NAME(DEFINITE));
-
-      if(game::TruthQuestion(CONST_S("Continue ") + GetAction()->GetDescription() + "? [y/N]"))
-        GetAction()->ActivateInDNDMode();
-      else
-        GetAction()->Terminate(false);
+  for (int c = 0; c < game::GetTeams(); ++c) {
+    if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
+      for (std::list<character *>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
+        character *ch = *i;
+        if (ch->IsEnabled() && ch->CanBeSeenBy(this, false, true) && (ch->CanMove() || ch->GetPos().IsAdjacent(Pos)) && ch->CanAttack()) {
+          if (IsPlayer()) {
+            ADD_MESSAGE("%s seems to be hostile.", ch->CHAR_NAME(DEFINITE));
+            if (game::TruthQuestion(CONST_S("Continue ")+GetAction()->GetDescription()+"? [y/N]")) GetAction()->ActivateInDNDMode();
+            else GetAction()->Terminate(false);
+          } else {
+            GetAction()->Terminate(false);
+          }
+          return;
+        }
+      }
     }
-    else
-      GetAction()->Terminate(false);
-
-    return;
   }
 }
 
-truth character::CheckForEnemies(truth CheckDoors, truth CheckGround, truth MayMoveRandomly, truth RunTowardsTarget)
-{
-  if(!IsEnabled())
-    return false;
 
+truth character::CheckForEnemies (truth CheckDoors, truth CheckGround, truth MayMoveRandomly, truth RunTowardsTarget) {
+  if (!IsEnabled()) return false;
   truth HostileCharsNear = false;
-  character* NearestChar = 0;
+  character *NearestChar = 0;
   long NearestDistance = 0x7FFFFFFF;
   v2 Pos = GetPos();
-
-  for(int c = 0; c < game::GetTeams(); ++c)
-    if(GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE)
-      for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-  if((*i)->IsEnabled() && GetAttribute(WISDOM) < (*i)->GetAttackWisdomLimit())
-  {
-    long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
-
-    if(ThisDistance <= GetLOSRangeSquare())
-      HostileCharsNear = true;
-
-    if((ThisDistance < NearestDistance
-        || (ThisDistance == NearestDistance && !(RAND() % 3)))
-       && (*i)->CanBeSeenBy(this, false, IsGoingSomeWhere())
-       && (!IsGoingSomeWhere() || HasClearRouteTo((*i)->GetPos())))
-    {
-      NearestChar = *i;
-      NearestDistance = ThisDistance;
+  for (int c = 0; c < game::GetTeams(); ++c) {
+    if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
+      for (std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
+        character *ch = *i;
+        if (ch->IsEnabled() && GetAttribute(WISDOM) < ch->GetAttackWisdomLimit()) {
+          long ThisDistance = Max<long>(abs(ch->GetPos().X - Pos.X), abs(ch->GetPos().Y - Pos.Y));
+          if (ThisDistance <= GetLOSRangeSquare()) HostileCharsNear = true;
+          if ((ThisDistance < NearestDistance || (ThisDistance == NearestDistance && !(RAND() % 3))) &&
+              ch->CanBeSeenBy(this, false, IsGoingSomeWhere()) &&
+              (!IsGoingSomeWhere() || HasClearRouteTo(ch->GetPos()))) {
+            NearestChar = ch;
+            NearestDistance = ThisDistance;
+          }
+        }
+      }
     }
   }
 
-  if(NearestChar)
-  {
-    if(GetAttribute(INTELLIGENCE) >= 10 || IsSpy())
-      game::CallForAttention(GetPos(), 100);
-
-    if(SpecialEnemySightedReaction(NearestChar))
-      return true;
-
-    if(IsExtraCoward() && !StateIsActivated(PANIC) && NearestChar->GetRelativeDanger(this) >= 0.5)
-    {
-      if(CanBeSeenByPlayer())
-  ADD_MESSAGE("%s sees %s.", CHAR_NAME(DEFINITE), NearestChar->CHAR_DESCRIPTION(DEFINITE));
-
-      BeginTemporaryState(PANIC, 500 + RAND() % 500);
+  if (NearestChar) {
+    if (GetAttribute(INTELLIGENCE) >= 10 || IsSpy()) game::CallForAttention(GetPos(), 100);
+    if (SpecialEnemySightedReaction(NearestChar)) return true;
+    if (IsExtraCoward() && !StateIsActivated(PANIC) && NearestChar->GetRelativeDanger(this) >= 0.5) {
+      if (CanBeSeenByPlayer()) ADD_MESSAGE("%s sees %s.", CHAR_NAME(DEFINITE), NearestChar->CHAR_DESCRIPTION(DEFINITE));
+      BeginTemporaryState(PANIC, 500+RAND()%500);
     }
-
-    if(!IsRetreating())
-    {
-      if(CheckGround && NearestDistance > 2 && CheckForUsefulItemsOnGround(false))
-  return true;
-
+    if (!IsRetreating()) {
+      if (CheckGround && NearestDistance > 2 && CheckForUsefulItemsOnGround(false)) return true;
       SetGoingTo(NearestChar->GetPos());
+    } else {
+      SetGoingTo(Pos-((NearestChar->GetPos()-Pos)<<4));
     }
-    else
-      SetGoingTo(Pos - ((NearestChar->GetPos() - Pos) << 4));
-
     return MoveTowardsTarget(true);
-  }
-  else
-  {
-    character* Leader = GetLeader();
-
-    if(Leader == this)
-      Leader = 0;
-
-    if(!Leader && IsGoingSomeWhere())
-    {
-      if(!MoveTowardsTarget(RunTowardsTarget))
-      {
-  TerminateGoingTo();
-  return false;
+  } else {
+    character *Leader = GetLeader();
+    if (Leader == this) Leader = 0;
+    if (!Leader && IsGoingSomeWhere()) {
+      if (!MoveTowardsTarget(RunTowardsTarget)) {
+        TerminateGoingTo();
+        return false;
+      } else {
+        if (!IsEnabled()) return true;
+        if (GetPos() == GoingTo) TerminateGoingTo();
+        return true;
       }
-      else
-      {
-  if(!IsEnabled())
-    return true;
-
-  if(GetPos() == GoingTo)
-    TerminateGoingTo();
-
-  return true;
+    } else {
+      if ((!Leader || (Leader && !IsGoingSomeWhere())) && HostileCharsNear) {
+        if (CheckDoors && CheckForDoors()) return true;
+        if (CheckGround && CheckForUsefulItemsOnGround()) return true;
+        if (MayMoveRandomly && MoveRandomly()) return true; // one has heard that an enemy is near but doesn't know where
       }
-    }
-    else
-    {
-      if((!Leader || (Leader && !IsGoingSomeWhere())) && HostileCharsNear)
-      {
-  if(CheckDoors && CheckForDoors())
-    return true;
-
-  if(CheckGround && CheckForUsefulItemsOnGround())
-    return true;
-
-  if(MayMoveRandomly && MoveRandomly()) // one has heard that an enemy is near but doesn't know where
-    return true;
-      }
-
       return false;
     }
   }
 }
 
-truth character::CheckForDoors()
-{
-  if(!CanOpen() || !IsEnabled())
-    return false;
 
-  for(int d = 0; d < GetNeighbourSquares(); ++d)
-  {
-    lsquare* Square = GetNeighbourLSquare(d);
-
-    if(Square && Square->GetOLTerrain() && Square->GetOLTerrain()->Open(this))
-      return true;
+truth character::CheckForDoors () {
+  if (!CanOpen() || !IsEnabled()) return false;
+  for (int d = 0; d < GetNeighbourSquares(); ++d) {
+    lsquare *Square = GetNeighbourLSquare(d);
+    if (Square && Square->GetOLTerrain() && Square->GetOLTerrain()->Open(this)) return true;
   }
-
   return false;
 }
 
-truth character::CheckForUsefulItemsOnGround(truth CheckFood)
-{
-  if(StateIsActivated(PANIC) || !IsEnabled())
-    return false;
 
+truth character::CheckForUsefulItemsOnGround (truth CheckFood) {
+  if (StateIsActivated(PANIC) || !IsEnabled()) return false;
   itemvector ItemVector;
   GetStackUnder()->FillItemVector(ItemVector);
-
-  for(uint c = 0; c < ItemVector.size(); ++c)
-    if(ItemVector[c]->CanBeSeenBy(this) && ItemVector[c]->IsPickable(this))
-    {
-      if(!(CommandFlags & DONT_CHANGE_EQUIPMENT)
-   && TryToEquip(ItemVector[c]))
-  return true;
-
-      if(CheckFood && UsesNutrition() && !CheckIfSatiated()
-   && TryToConsume(ItemVector[c]))
-  return true;
+  for (uint c = 0; c < ItemVector.size(); ++c) {
+    if (ItemVector[c]->CanBeSeenBy(this) && ItemVector[c]->IsPickable(this)) {
+      if (!(CommandFlags & DONT_CHANGE_EQUIPMENT) && TryToEquip(ItemVector[c])) return true;
+      if (CheckFood && UsesNutrition() && !CheckIfSatiated() && TryToConsume(ItemVector[c])) return true;
     }
-
-  return false;
-}
-
-truth character::FollowLeader(character* Leader)
-{
-  if(!Leader || Leader == this || !IsEnabled())
-    return false;
-
-  if(CommandFlags & FOLLOW_LEADER && Leader->CanBeSeenBy(this) && Leader->SquareUnderCanBeSeenBy(this, true))
-  {
-    v2 Distance = GetPos() - GoingTo;
-
-    if(abs(Distance.X) <= 2 && abs(Distance.Y) <= 2)
-      return false;
-    else
-      return MoveTowardsTarget(false);
   }
-  else
-    if(IsGoingSomeWhere())
-      if(!MoveTowardsTarget(true))
-      {
-  TerminateGoingTo();
   return false;
-      }
-      else
-  return true;
-    else
-      return false;
 }
+
+
+truth character::FollowLeader (character *Leader) {
+  if (!Leader || Leader == this || !IsEnabled()) return false;
+  if (CommandFlags & FOLLOW_LEADER && Leader->CanBeSeenBy(this) && Leader->SquareUnderCanBeSeenBy(this, true)) {
+    v2 Distance = GetPos()-GoingTo;
+    if (abs(Distance.X) <= 2 && abs(Distance.Y) <= 2) return false;
+    return MoveTowardsTarget(false);
+  }
+  if (IsGoingSomeWhere()) {
+    if (!MoveTowardsTarget(true)) {
+      TerminateGoingTo();
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
+
 
 void character::SeekLeader (ccharacter *Leader) {
   if (Leader && Leader != this) {
@@ -2147,12 +1933,11 @@ void character::SeekLeader (ccharacter *Leader) {
       if (CommandFlags & FOLLOW_LEADER) SetGoingTo(Leader->GetPos());
     } else if (!IsGoingSomeWhere()) {
       team *Team = GetTeam();
-      for (std::list<character*>::const_iterator i = Team->GetMember().begin(); i != Team->GetMember().end(); ++i) {
-        if ((*i)->IsEnabled() &&
-            (*i)->GetID() != GetID() &&
-            (CommandFlags & FOLLOW_LEADER) == ((*i)->CommandFlags & FOLLOW_LEADER) &&
-            (*i)->CanBeSeenBy(this)) {
-          v2 Pos = (*i)->GetPos();
+      for (std::list<character *>::const_iterator i = Team->GetMember().begin(); i != Team->GetMember().end(); ++i) {
+        character *ch = *i;
+        if (ch->IsEnabled() && ch->GetID() != GetID() &&
+            (CommandFlags & FOLLOW_LEADER) == (ch->CommandFlags & FOLLOW_LEADER) && ch->CanBeSeenBy(this)) {
+          v2 Pos = ch->GetPos();
           v2 Distance = GetPos()-Pos;
           if (abs(Distance.X) > 2 && abs(Distance.Y) > 2) {
             SetGoingTo(Pos);
@@ -2164,78 +1949,55 @@ void character::SeekLeader (ccharacter *Leader) {
   }
 }
 
-int character::GetMoveEase() const
-{
-  switch(BurdenState)
-  {
-   case OVER_LOADED:
-   case STRESSED: return 50;
-   case BURDENED: return 75;
-   case UNBURDENED: return 100;
-  }
 
+int character::GetMoveEase () const {
+  switch (BurdenState) {
+    case OVER_LOADED:
+    case STRESSED: return 50;
+    case BURDENED: return 75;
+    case UNBURDENED: return 100;
+  }
   return 666;
 }
 
-int character::GetLOSRange() const
-{
-  if(!game::IsInWilderness())
-    return GetAttribute(PERCEPTION) * GetLevel()->GetLOSModifier() / 48;
-  else
-    return 3;
+
+int character::GetLOSRange () const {
+  if (!game::IsInWilderness()) return GetAttribute(PERCEPTION)*GetLevel()->GetLOSModifier()/48;
+  return 3;
 }
 
-truth character::Displace(character* Who, truth Forced)
-{
-  if(GetBurdenState() == OVER_LOADED)
-  {
-    if(IsPlayer())
-    {
-      cchar* CrawlVerb = StateIsActivated(LEVITATION) ? "float" : "crawl";
+
+truth character::Displace (character *Who, truth Forced) {
+  if (GetBurdenState() == OVER_LOADED) {
+    if (IsPlayer()) {
+      cchar *CrawlVerb = StateIsActivated(LEVITATION) ? "float" : "crawl";
       ADD_MESSAGE("You try very hard to %s forward. But your load is too heavy.", CrawlVerb);
       EditAP(-1000);
       return true;
     }
-    else
-      return false;
+    return false;
   }
 
   double Danger = GetRelativeDanger(Who);
-  int PriorityDifference = Limit(GetDisplacePriority() - Who->GetDisplacePriority(), -31, 31);
+  int PriorityDifference = Limit(GetDisplacePriority()-Who->GetDisplacePriority(), -31, 31);
 
-  if(IsPlayer())
-    ++PriorityDifference;
-  else if(Who->IsPlayer())
-    --PriorityDifference;
+  if (IsPlayer()) ++PriorityDifference;
+  else if (Who->IsPlayer()) --PriorityDifference;
 
-  if(PriorityDifference >= 0)
-    Danger *= 1 << PriorityDifference;
-  else
-    Danger /= 1 << -PriorityDifference;
+  if (PriorityDifference >= 0) Danger *= 1 << PriorityDifference;
+  else Danger /= 1 << -PriorityDifference;
 
-  if(IsSmall() && Who->IsSmall()
-     && (Forced || Danger > 1. || !(Who->IsPlayer() || Who->IsBadPath(GetPos())))
-     && !IsStuck() && !Who->IsStuck()
-     && (!Who->GetAction() || Who->GetAction()->TryDisplace())
-     && CanMove() && Who->CanMove() && Who->CanMoveOn(GetLSquareUnder()))
-  {
-    if(IsPlayer())
-      ADD_MESSAGE("You displace %s!", Who->CHAR_DESCRIPTION(DEFINITE));
-    else if(Who->IsPlayer())
-      ADD_MESSAGE("%s displaces you!", CHAR_DESCRIPTION(DEFINITE));
-    else if(CanBeSeenByPlayer() || Who->CanBeSeenByPlayer())
-      ADD_MESSAGE("%s displaces %s!", CHAR_DESCRIPTION(DEFINITE), Who->CHAR_DESCRIPTION(DEFINITE));
-
-    lsquare* OldSquareUnder1[MAX_SQUARES_UNDER];
-    lsquare* OldSquareUnder2[MAX_SQUARES_UNDER];
-    int c;
-
-    for(c = 0; c < GetSquaresUnder(); ++c)
-      OldSquareUnder1[c] = GetLSquareUnder(c);
-
-    for(c = 0; c < Who->GetSquaresUnder(); ++c)
-      OldSquareUnder2[c] = Who->GetLSquareUnder(c);
-
+  if (IsSmall() && Who->IsSmall() &&
+      (Forced || Danger > 1.0 || !(Who->IsPlayer() || Who->IsBadPath(GetPos()))) &&
+      !IsStuck() && !Who->IsStuck() && (!Who->GetAction() || Who->GetAction()->TryDisplace()) &&
+      CanMove() && Who->CanMove() && Who->CanMoveOn(GetLSquareUnder())) {
+    if (IsPlayer()) ADD_MESSAGE("You displace %s!", Who->CHAR_DESCRIPTION(DEFINITE));
+    else if (Who->IsPlayer()) ADD_MESSAGE("%s displaces you!", CHAR_DESCRIPTION(DEFINITE));
+    else if (CanBeSeenByPlayer() || Who->CanBeSeenByPlayer()) ADD_MESSAGE("%s displaces %s!", CHAR_DESCRIPTION(DEFINITE), Who->CHAR_DESCRIPTION(DEFINITE));
+    lsquare *OldSquareUnder1[MAX_SQUARES_UNDER];
+    lsquare *OldSquareUnder2[MAX_SQUARES_UNDER];
+    for (int c = 0; c < GetSquaresUnder(); ++c) OldSquareUnder1[c] = GetLSquareUnder(c);
+    for (int c = 0; c < Who->GetSquaresUnder(); ++c) OldSquareUnder2[c] = Who->GetLSquareUnder(c);
     v2 Pos = GetPos();
     v2 WhoPos = Who->GetPos();
     Remove();
@@ -2243,52 +2005,37 @@ truth character::Displace(character* Who, truth Forced)
     PutTo(WhoPos);
     Who->PutTo(Pos);
     EditAP(-GetMoveAPRequirement(GetSquareUnder()->GetEntryDifficulty()) - 500);
-    EditNP(-12 * GetSquareUnder()->GetEntryDifficulty());
+    EditNP(-12*GetSquareUnder()->GetEntryDifficulty());
     EditExperience(AGILITY, 75, GetSquareUnder()->GetEntryDifficulty() << 7);
-
-    if(IsPlayer())
-      ShowNewPosInfo();
-
-    if(Who->IsPlayer())
-      Who->ShowNewPosInfo();
-
+    if (IsPlayer()) ShowNewPosInfo();
+    if (Who->IsPlayer()) Who->ShowNewPosInfo();
     SignalStepFrom(OldSquareUnder1);
     Who->SignalStepFrom(OldSquareUnder2);
     return true;
-  }
-  else
-  {
-    if(IsPlayer())
-    {
+  } else {
+    if (IsPlayer()) {
       ADD_MESSAGE("%s resists!", Who->CHAR_DESCRIPTION(DEFINITE));
       EditAP(-1000);
       return true;
     }
-    else
-      return false;
+    return false;
   }
 }
 
-void character::SetNP(long What)
-{
+
+void character::SetNP (long What) {
   int OldState = GetHungerState();
   NP = What;
-
-  if(IsPlayer())
-  {
+  if (IsPlayer()) {
     int NewState = GetHungerState();
-
-    if(NewState == STARVING && OldState > STARVING)
-      DeActivateVoluntaryAction(CONST_S("You are getting really hungry."));
-    else if(NewState == VERY_HUNGRY && OldState > VERY_HUNGRY)
-      DeActivateVoluntaryAction(CONST_S("You are getting very hungry."));
-    else if(NewState == HUNGRY && OldState > HUNGRY)
-      DeActivateVoluntaryAction(CONST_S("You are getting hungry."));
+    if (NewState == STARVING && OldState > STARVING) DeActivateVoluntaryAction(CONST_S("You are getting really hungry."));
+    else if (NewState == VERY_HUNGRY && OldState > VERY_HUNGRY) DeActivateVoluntaryAction(CONST_S("You are getting very hungry."));
+    else if (NewState == HUNGRY && OldState > HUNGRY) DeActivateVoluntaryAction(CONST_S("You are getting hungry."));
   }
 }
 
-void character::ShowNewPosInfo() const
-{
+
+void character::ShowNewPosInfo () const {
   msgsystem::EnterBigMessageMode();
   v2 Pos = GetPos();
 
@@ -2304,126 +2051,86 @@ void character::ShowNewPosInfo() const
   game::DrawEverythingNoBlit();
   UpdateESPLOS();
 
-  if(!game::IsInWilderness())
-  {
-    if(GetLSquareUnder()->IsDark() && !game::GetSeeWholeMapCheatMode())
-      ADD_MESSAGE("It's dark in here!");
+  if (!game::IsInWilderness()) {
+    if (GetLSquareUnder()->IsDark() && !game::GetSeeWholeMapCheatMode()) ADD_MESSAGE("It's dark in here!");
 
     GetLSquareUnder()->ShowSmokeMessage();
     itemvectorvector PileVector;
     GetStackUnder()->Pile(PileVector, this, CENTER);
 
-    if(PileVector.size())
-    {
+    if (PileVector.size()) {
       truth Feel = !GetLSquareUnder()->IsTransparent() || GetLSquareUnder()->IsDark();
-
-      if(PileVector.size() == 1)
-      {
-  if(Feel)
-    ADD_MESSAGE("You feel %s lying here.", PileVector[0][0]->GetName(INDEFINITE, PileVector[0].size()).CStr());
-  else
-    ADD_MESSAGE("%s %s lying here.", PileVector[0][0]->GetName(INDEFINITE, PileVector[0].size()).CStr(), PileVector[0].size() == 1 ? "is" : "are");
-      }
-      else
-      {
-  int Items = 0;
-
-  for(uint c = 0; c < PileVector.size(); ++c)
-    if((Items += PileVector[c].size()) > 3)
-      break;
-
-  if(Items > 3)
-  {
-    if(Feel)
-      ADD_MESSAGE("You feel several items lying here.");
-    else
-      ADD_MESSAGE("Several items are lying here.");
-  }
-  else if(Items)
-  {
-    if(Feel)
-      ADD_MESSAGE("You feel a few items lying here.");
-    else
-      ADD_MESSAGE("A few items are lying here.");
-  }
+      if (PileVector.size() == 1) {
+        if (Feel) ADD_MESSAGE("You feel %s lying here.", PileVector[0][0]->GetName(INDEFINITE, PileVector[0].size()).CStr());
+        else ADD_MESSAGE("%s %s lying here.", PileVector[0][0]->GetName(INDEFINITE, PileVector[0].size()).CStr(), PileVector[0].size() == 1 ? "is" : "are");
+      } else {
+        int Items = 0;
+        for (uint c = 0; c < PileVector.size(); ++c) {
+          if ((Items += PileVector[c].size()) > 3) break;
+        }
+        if (Items > 3) {
+          if (Feel) ADD_MESSAGE("You feel several items lying here.");
+          else ADD_MESSAGE("Several items are lying here.");
+        } else if (Items) {
+          if (Feel) ADD_MESSAGE("You feel a few items lying here.");
+          else ADD_MESSAGE("A few items are lying here.");
+        }
       }
     }
 
     festring SideItems;
     GetLSquareUnder()->GetSideItemDescription(SideItems);
 
-    if(!SideItems.IsEmpty())
-      ADD_MESSAGE("There is %s.", SideItems.CStr());
+    if (!SideItems.IsEmpty()) ADD_MESSAGE("There is %s.", SideItems.CStr());
 
-    if(GetLSquareUnder()->HasEngravings())
-    {
-      if(CanRead())
-  ADD_MESSAGE("Something has been engraved here: \"%s\"", GetLSquareUnder()->GetEngraved());
-      else
-  ADD_MESSAGE("Something has been engraved here.");
+    if (GetLSquareUnder()->HasEngravings()) {
+      if (CanRead()) ADD_MESSAGE("Something has been engraved here: \"%s\"", GetLSquareUnder()->GetEngraved());
+      else ADD_MESSAGE("Something has been engraved here.");
     }
   }
 
   msgsystem::LeaveBigMessageMode();
 }
 
-void character::Hostility(character* Enemy)
-{
-  if(Enemy == this || !Enemy || !Team || !Enemy->Team)
-    return;
 
-  if(Enemy->IsMasochist() && GetRelation(Enemy) == FRIEND)
-    return;
-
-  if(!IsAlly(Enemy))
+void character::Hostility (character *Enemy) {
+  if (Enemy == this || !Enemy || !Team || !Enemy->Team) return;
+  if (Enemy->IsMasochist() && GetRelation(Enemy) == FRIEND) return;
+  if (!IsAlly(Enemy)) {
     GetTeam()->Hostility(Enemy->GetTeam());
-  else if(IsPlayer() && !Enemy->IsPlayer()) // I believe both may be players due to polymorph feature...
-  {
-    if(Enemy->CanBeSeenByPlayer())
-      ADD_MESSAGE("%s becomes enraged.", Enemy->CHAR_NAME(DEFINITE));
-
+  } else if (IsPlayer() && !Enemy->IsPlayer()) {
+    // I believe both may be players due to polymorph feature...
+    if (Enemy->CanBeSeenByPlayer()) ADD_MESSAGE("%s becomes enraged.", Enemy->CHAR_NAME(DEFINITE));
     Enemy->ChangeTeam(game::GetTeam(BETRAYED_TEAM));
   }
 }
 
-stack* character::GetGiftStack() const
-{
-  if(GetLSquareUnder()->GetRoomIndex() && !GetLSquareUnder()->GetRoom()->AllowDropGifts())
-    return GetStack();
-  else
-    return GetStackUnder();
+
+stack *character::GetGiftStack () const {
+  if (GetLSquareUnder()->GetRoomIndex() && !GetLSquareUnder()->GetRoom()->AllowDropGifts()) return GetStack();
+  return GetStackUnder();
 }
 
-truth character::MoveRandomlyInRoom()
-{
-  for(int c = 0; c < 10; ++c)
-  {
-    v2 ToTry = game::GetMoveVector(RAND() & 7);
 
-    if(GetLevel()->IsValidPos(GetPos() + ToTry))
-    {
-      lsquare* Square = GetNearLSquare(GetPos() + ToTry);
-
-      if(!Square->IsDangerous(this)
-   && !Square->IsScary(this)
-   && (!Square->GetOLTerrain()
-       || !Square->GetOLTerrain()->IsDoor())
-   && TryMove(ToTry, false, false))
-  return true;
+truth character::MoveRandomlyInRoom () {
+  for (int c = 0; c < 10; ++c) {
+    v2 ToTry = game::GetMoveVector(RAND()&7);
+    if (GetLevel()->IsValidPos(GetPos()+ToTry)) {
+      lsquare *Square = GetNearLSquare(GetPos()+ToTry);
+      if (!Square->IsDangerous(this) && !Square->IsScary(this) &&
+          (!Square->GetOLTerrain() || !Square->GetOLTerrain()->IsDoor()) &&
+          TryMove(ToTry, false, false)) return true;
     }
   }
-
   return false;
 }
 
-void character::GoOn(go* Go, truth FirstStep)
-{
-  v2 MoveVector = ApplyStateModification(game::GetMoveVector(Go->GetDirection()));
-  lsquare* MoveToSquare[MAX_SQUARES_UNDER];
-  int Squares = CalculateNewSquaresUnder(MoveToSquare, GetPos() + MoveVector);
 
-  if(!Squares || !CanMoveOn(MoveToSquare[0]))
-  {
+void character::GoOn (go *Go, truth FirstStep) {
+  v2 MoveVector = ApplyStateModification(game::GetMoveVector(Go->GetDirection()));
+  lsquare *MoveToSquare[MAX_SQUARES_UNDER];
+  int Squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
+  if (!Squares || !CanMoveOn(MoveToSquare[0])) {
     Go->Terminate(false);
     return;
   }
@@ -2431,53 +2138,41 @@ void character::GoOn(go* Go, truth FirstStep)
   uint OldRoomIndex = GetLSquareUnder()->GetRoomIndex();
   uint CurrentRoomIndex = MoveToSquare[0]->GetRoomIndex();
 
-  if((OldRoomIndex && (CurrentRoomIndex != OldRoomIndex)) && !FirstStep)
-  {
+  if ((OldRoomIndex && (CurrentRoomIndex != OldRoomIndex)) && !FirstStep) {
     Go->Terminate(false);
     return;
   }
 
-  for(int c = 0; c < Squares; ++c)
-    if((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) || MoveToSquare[c]->IsDangerous(this))
-    {
+  for (int c = 0; c < Squares; ++c) {
+    if ((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) || MoveToSquare[c]->IsDangerous(this)) {
       Go->Terminate(false);
       return;
     }
+  }
 
   int OKDirectionsCounter = 0;
-
-  for(int d = 0; d < GetNeighbourSquares(); ++d)
-  {
-    lsquare* Square = GetNeighbourLSquare(d);
-
-    if(Square && CanMoveOn(Square))
-      ++OKDirectionsCounter;
+  for (int d = 0; d < GetNeighbourSquares(); ++d) {
+    lsquare *Square = GetNeighbourLSquare(d);
+    if (Square && CanMoveOn(Square)) ++OKDirectionsCounter;
   }
 
-  if(!Go->IsWalkingInOpen())
-  {
-    if(OKDirectionsCounter > 2)
-    {
+  if (!Go->IsWalkingInOpen()) {
+    if (OKDirectionsCounter > 2) {
       Go->Terminate(false);
       return;
     }
-  }
-  else
-    if(OKDirectionsCounter <= 2)
-      Go->SetIsWalkingInOpen(false);
+  } else if (OKDirectionsCounter <= 2) Go->SetIsWalkingInOpen(false);
 
-  square* BeginSquare = GetSquareUnder();
+  square *BeginSquare = GetSquareUnder();
 
-  if(!TryMove(MoveVector, true, game::PlayerIsRunning())
-     || BeginSquare == GetSquareUnder()
-     || (CurrentRoomIndex && (OldRoomIndex != CurrentRoomIndex)))
-  {
+  if (!TryMove(MoveVector, true, game::PlayerIsRunning()) ||
+      BeginSquare == GetSquareUnder() ||
+      (CurrentRoomIndex && (OldRoomIndex != CurrentRoomIndex))) {
     Go->Terminate(false);
     return;
   }
 
-  if(GetStackUnder()->GetVisibleItems(this))
-  {
+  if (GetStackUnder()->GetVisibleItems(this)) {
     Go->Terminate(false);
     return;
   }
@@ -2485,159 +2180,116 @@ void character::GoOn(go* Go, truth FirstStep)
   game::DrawEverything();
 }
 
-void character::SetTeam(team* What)
-{
-/*k8
-  if(Team)
-    int esko = esko = 2;
-*/
+
+void character::SetTeam (team *What) {
+  /*k8 if(Team) int esko = esko = 2; */
   Team = What;
   SetTeamIterator(What->Add(this));
 }
 
-void character::ChangeTeam(team* What)
-{
-  if(Team)
-    Team->Remove(GetTeamIterator());
 
+void character::ChangeTeam (team *What) {
+  if (Team) Team->Remove(GetTeamIterator());
   Team = What;
   SendNewDrawRequest();
-
-  if(Team)
-    SetTeamIterator(Team->Add(this));
+  if (Team) SetTeamIterator(Team->Add(this));
 }
 
-truth character::ChangeRandomAttribute(int HowMuch)
-{
-  for(int c = 0; c < 50; ++c)
-  {
-    int AttribID = RAND() % ATTRIBUTES;
 
-    if(EditAttribute(AttribID, HowMuch))
-      return true;
+truth character::ChangeRandomAttribute (int HowMuch) {
+  for (int c = 0; c < 50; ++c) {
+    int AttribID = RAND()%ATTRIBUTES;
+    if (EditAttribute(AttribID, HowMuch)) return true;
   }
-
   return false;
 }
 
-int character::RandomizeReply(long& Said, int Replies)
-{
-  truth NotSaid = false;
 
-  for(int c = 0; c < Replies; ++c)
-    if(!(Said & (1 << c)))
-    {
+int character::RandomizeReply (long &Said, int Replies) {
+  truth NotSaid = false;
+  for (int c = 0; c < Replies; ++c) {
+    if (!(Said & (1 << c))) {
       NotSaid = true;
       break;
     }
-
-  if(!NotSaid)
-    Said = 0;
-
+  }
+  if (!NotSaid) Said = 0;
   long ToSay;
-  while(Said & 1 << (ToSay = RAND() % Replies));
+  while (Said & 1 << (ToSay = RAND() % Replies));
   Said |= 1 << ToSay;
   return ToSay;
 }
 
-void character::DisplayInfo(festring& Msg)
-{
-  if(IsPlayer())
+
+void character::DisplayInfo (festring &Msg) {
+  if (IsPlayer()) {
     Msg << " You are " << GetStandVerb() << " here.";
-  else
-  {
+  } else {
     Msg << ' ' << GetName(INDEFINITE).CapitalizeCopy() << " is " << GetStandVerb() << " here. " << GetPersonalPronoun().CapitalizeCopy();
-    cchar* Separator1 = GetAction() ? "," : " and";
-    cchar* Separator2 = " and";
-
-    if(GetTeam() == PLAYER->GetTeam())
+    cchar *Separator1 = GetAction() ? "," : " and";
+    cchar *Separator2 = " and";
+    if (GetTeam() == PLAYER->GetTeam()) {
       Msg << " is tame";
-    else
-    {
+    } else {
       int Relation = GetRelation(PLAYER);
-
-      if(Relation == HOSTILE)
-  Msg << " is hostile";
-      else if(Relation == UNCARING)
-      {
-  Msg << " does not care about you";
-  Separator1 = Separator2 = " and is";
+      if (Relation == HOSTILE) Msg << " is hostile";
+      else if (Relation == UNCARING) {
+        Msg << " does not care about you";
+        Separator1 = Separator2 = " and is";
+      } else {
+        Msg << " is friendly";
       }
-      else
-  Msg << " is friendly";
     }
-
-    if(StateIsActivated(PANIC))
-    {
+    if (StateIsActivated(PANIC)) {
       Msg << Separator1 << " panicked";
       Separator2 = " and";
     }
-
-    if(GetAction())
-      Msg << Separator2 << ' ' << GetAction()->GetDescription();
-
+    if (GetAction()) Msg << Separator2 << ' ' << GetAction()->GetDescription();
     Msg << '.';
   }
 }
 
-void character::TestWalkability()
-{
-  if(!IsEnabled())
-    return;
 
-  square* SquareUnder = !game::IsInWilderness()
-      ? GetSquareUnder() : PLAYER->GetSquareUnder();
-
-  if(SquareUnder->IsFatalToStay() && !CanMoveOn(SquareUnder))
-  {
+void character::TestWalkability () {
+  if (!IsEnabled()) return;
+  square *SquareUnder = !game::IsInWilderness() ? GetSquareUnder() : PLAYER->GetSquareUnder();
+  if (SquareUnder->IsFatalToStay() && !CanMoveOn(SquareUnder)) {
     truth Alive = false;
-
-    if(!game::IsInWilderness() || IsPlayer())
-      for(int d = 0; d < GetNeighbourSquares(); ++d)
-      {
-  square* Square = GetNeighbourSquare(d);
-
-  if(Square && CanMoveOn(Square) && IsFreeForMe(Square))
-  {
-    if(IsPlayer())
-      ADD_MESSAGE("%s.", SquareUnder->SurviveMessage(this));
-    else if(CanBeSeenByPlayer())
-      ADD_MESSAGE("%s %s.", CHAR_NAME(DEFINITE), SquareUnder->MonsterSurviveMessage(this));
-
-    Move(Square->GetPos(), true); // actually, this shouldn't be a teleport move
-    SquareUnder->SurviveEffect(this);
-    Alive = true;
-    break;
-  }
+    if (!game::IsInWilderness() || IsPlayer()) {
+      for (int d = 0; d < GetNeighbourSquares(); ++d) {
+        square *Square = GetNeighbourSquare(d);
+        if (Square && CanMoveOn(Square) && IsFreeForMe(Square)) {
+          if (IsPlayer()) ADD_MESSAGE("%s.", SquareUnder->SurviveMessage(this));
+          else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s %s.", CHAR_NAME(DEFINITE), SquareUnder->MonsterSurviveMessage(this));
+          Move(Square->GetPos(), true); // actually, this shouldn't be a teleport move
+          SquareUnder->SurviveEffect(this);
+          Alive = true;
+          break;
+        }
       }
-
-    if(!Alive)
-    {
-      if(IsPlayer())
-      {
-  Remove();
-  SendToHell();
-  festring DeathMsg = festring(SquareUnder->DeathMessage(this));
-  game::AskForEscPress(DeathMsg+".");
-  festring Msg = SquareUnder->ScoreEntry(this);
-  PLAYER->AddScoreEntry(Msg);
-  game::End(Msg);
-      }
-      else
-      {
-  if(CanBeSeenByPlayer())
-    ADD_MESSAGE("%s %s.", CHAR_NAME(DEFINITE), SquareUnder->MonsterDeathVerb(this));
-
-  Die(0, SquareUnder->ScoreEntry(this), DISALLOW_MSG);
+    }
+    if (!Alive) {
+      if (IsPlayer()) {
+        Remove();
+        SendToHell();
+        festring DeathMsg = festring(SquareUnder->DeathMessage(this));
+        game::AskForEscPress(DeathMsg+".");
+        festring Msg = SquareUnder->ScoreEntry(this);
+        PLAYER->AddScoreEntry(Msg);
+        game::End(Msg);
+      } else {
+        if (CanBeSeenByPlayer()) ADD_MESSAGE("%s %s.", CHAR_NAME(DEFINITE), SquareUnder->MonsterDeathVerb(this));
+        Die(0, SquareUnder->ScoreEntry(this), DISALLOW_MSG);
       }
     }
   }
 }
 
-int character::GetSize() const
-{
+
+int character::GetSize () const {
   return GetTorso()->GetSize();
 }
+
 
 void character::SetMainMaterial(material* NewMaterial, int SpecialFlags)
 {
