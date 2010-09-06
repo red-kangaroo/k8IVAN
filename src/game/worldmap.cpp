@@ -16,35 +16,32 @@
 #define LATITUDE_EFFECT   40    //increase for more effect
 #define ALTITUDE_EFFECT   0.02
 
-#define COLD      10
-#define MEDIUM      12
-#define WARM      17
+#define COLD    10
+#define MEDIUM  12
+#define WARM    17
 #define HOT     19
 
-int DirX[8] = { -1, -1, -1, 0, 0, 1, 1, 1 };
-int DirY[8] = { -1, 0, 1, -1, 1, -1, 0, 1 };
+static const int DirX[8] = { -1, -1, -1, 0, 0, 1, 1, 1 };
+static const int DirY[8] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
-worldmap::worldmap() { }
-continent* worldmap::GetContinentUnder(v2 Pos) const
-{ return Continent[ContinentBuffer[Pos.X][Pos.Y]]; }
-v2 worldmap::GetEntryPos(ccharacter*, int I) const
-{ return EntryMap.find(I)->second; }
-continent* worldmap::GetContinent(int I) const { return Continent[I]; }
-int worldmap::GetAltitude(v2 Pos) { return AltitudeBuffer[Pos.X][Pos.Y]; }
-charactervector& worldmap::GetPlayerGroup() { return PlayerGroup; }
-character* worldmap::GetPlayerGroupMember(int c) { return PlayerGroup[c]; }
 
-worldmap::worldmap(int XSize, int YSize) : area(XSize, YSize)
-{
-  Map = reinterpret_cast<wsquare***>(area::Map);
+worldmap::worldmap () {}
+continent *worldmap::GetContinentUnder (v2 Pos) const { return Continent[ContinentBuffer[Pos.X][Pos.Y]]; }
+v2 worldmap::GetEntryPos (ccharacter *, int I) const { return EntryMap.find(I)->second; }
+continent *worldmap::GetContinent (int I) const { return Continent[I]; }
+int worldmap::GetAltitude (v2 Pos) { return AltitudeBuffer[Pos.X][Pos.Y]; }
+charactervector &worldmap::GetPlayerGroup () { return PlayerGroup; }
+character *worldmap::GetPlayerGroupMember (int c) { return PlayerGroup[c]; }
 
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
+
+worldmap::worldmap (int XSize, int YSize) : area(XSize, YSize) {
+  Map = reinterpret_cast<wsquare ***>(area::Map);
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y] = new wsquare(this, v2(x, y));
       Map[x][y]->SetGWTerrain(ocean::Spawn());
     }
-
+  }
   Alloc2D(TypeBuffer, XSize, YSize);
   Alloc2D(AltitudeBuffer, XSize, YSize);
   Alloc2D(ContinentBuffer, XSize, YSize);
@@ -53,264 +50,245 @@ worldmap::worldmap(int XSize, int YSize) : area(XSize, YSize)
   continent::ContinentBuffer = ContinentBuffer;
 }
 
-worldmap::~worldmap()
-{
+
+worldmap::~worldmap () {
   delete [] TypeBuffer;
   delete [] AltitudeBuffer;
   delete [] ContinentBuffer;
-
-  uint c;
-
-  for(c = 1; c < Continent.size(); ++c)
-    delete Continent[c];
-
-  for(c = 0; c < PlayerGroup.size(); ++c)
-    delete PlayerGroup[c];
+  for (uint c = 1; c < Continent.size(); ++c) delete Continent[c];
+  for (uint c = 0; c < PlayerGroup.size(); ++c) delete PlayerGroup[c];
 }
 
-void worldmap::Save(outputfile& SaveFile) const
-{
+
+void worldmap::Save (outputfile &SaveFile) const {
   area::Save(SaveFile);
-  SaveFile.Write(reinterpret_cast<char*>(TypeBuffer[0]),
-     XSizeTimesYSize * sizeof(uchar));
-  SaveFile.Write(reinterpret_cast<char*>(AltitudeBuffer[0]),
-     XSizeTimesYSize * sizeof(short));
-  SaveFile.Write(reinterpret_cast<char*>(ContinentBuffer[0]),
-     XSizeTimesYSize * sizeof(uchar));
-
-  for(ulong c = 0; c < XSizeTimesYSize; ++c)
-    Map[0][c]->Save(SaveFile);
-
+  SaveFile.Write(reinterpret_cast<char*>(TypeBuffer[0]), XSizeTimesYSize*sizeof(uchar));
+  SaveFile.Write(reinterpret_cast<char*>(AltitudeBuffer[0]), XSizeTimesYSize*sizeof(short));
+  SaveFile.Write(reinterpret_cast<char*>(ContinentBuffer[0]), XSizeTimesYSize*sizeof(uchar));
+  for (ulong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->Save(SaveFile);
   SaveFile << Continent << PlayerGroup;
 }
 
-void worldmap::Load(inputfile& SaveFile)
-{
+
+void worldmap::Load (inputfile &SaveFile) {
   area::Load(SaveFile);
-  Map = reinterpret_cast<wsquare***>(area::Map);
+  Map = reinterpret_cast<wsquare ***>(area::Map);
   Alloc2D(TypeBuffer, XSize, YSize);
   Alloc2D(AltitudeBuffer, XSize, YSize);
   Alloc2D(ContinentBuffer, XSize, YSize);
-  SaveFile.Read(reinterpret_cast<char*>(TypeBuffer[0]),
-    XSizeTimesYSize * sizeof(uchar));
-  SaveFile.Read(reinterpret_cast<char*>(AltitudeBuffer[0]),
-    XSizeTimesYSize * sizeof(short));
-  SaveFile.Read(reinterpret_cast<char*>(ContinentBuffer[0]),
-    XSizeTimesYSize * sizeof(uchar));
+  SaveFile.Read(reinterpret_cast<char*>(TypeBuffer[0]), XSizeTimesYSize*sizeof(uchar));
+  SaveFile.Read(reinterpret_cast<char*>(AltitudeBuffer[0]), XSizeTimesYSize*sizeof(short));
+  SaveFile.Read(reinterpret_cast<char*>(ContinentBuffer[0]), XSizeTimesYSize*sizeof(uchar));
   continent::TypeBuffer = TypeBuffer;
   continent::AltitudeBuffer = AltitudeBuffer;
   continent::ContinentBuffer = ContinentBuffer;
   int x, y;
-
-  for(x = 0; x < XSize; ++x)
-    for(y = 0; y < YSize; ++y)
+  for (x = 0; x < XSize; ++x)
+    for (y = 0; y < YSize; ++y)
       Map[x][y] = new wsquare(this, v2(x, y));
-
-  for(x = 0; x < XSize; ++x)
-    for(y = 0; y < YSize; ++y)
-    {
+  for (x = 0; x < XSize; ++x) {
+    for (y = 0; y < YSize; ++y) {
       game::SetSquareInLoad(Map[x][y]);
       Map[x][y]->Load(SaveFile);
     }
-
+  }
   CalculateNeighbourBitmapPoses();
   SaveFile >> Continent >> PlayerGroup;
 }
 
 
-void worldmap::Generate()
-{
-    Alloc2D(OldAltitudeBuffer, XSize, YSize);
-    Alloc2D(OldTypeBuffer, XSize, YSize);
+void worldmap::Generate () {
+  Alloc2D(OldAltitudeBuffer, XSize, YSize);
+  Alloc2D(OldTypeBuffer, XSize, YSize);
 
-    for (;;)
-    {
-        RandomizeAltitude();
-        SmoothAltitude();
-        GenerateClimate();
-        SmoothClimate();
-        CalculateContinents();
-        std::vector<continent*> PerfectForAttnam, PerfectForNewAttnam;
+  for (;;)
+  {
+      RandomizeAltitude();
+      SmoothAltitude();
+      GenerateClimate();
+      SmoothClimate();
+      CalculateContinents();
+      std::vector<continent*> PerfectForAttnam, PerfectForNewAttnam;
 
-        for (uint c = 1; c < Continent.size(); ++c)
-            if (Continent[c]->GetSize() > 25 && Continent[c]->GetSize() < 1000
-                    && Continent[c]->GetGTerrainAmount(EGForestType)
-                    && Continent[c]->GetGTerrainAmount(SnowType)
-                    && Continent[c]->GetGTerrainAmount(SteppeType))
-                PerfectForAttnam.push_back(Continent[c]);
+      for (uint c = 1; c < Continent.size(); ++c)
+          if (Continent[c]->GetSize() > 25 && Continent[c]->GetSize() < 1000
+                  && Continent[c]->GetGTerrainAmount(EGForestType)
+                  && Continent[c]->GetGTerrainAmount(SnowType)
+                  && Continent[c]->GetGTerrainAmount(SteppeType))
+              PerfectForAttnam.push_back(Continent[c]);
 
-        if (!PerfectForAttnam.size())
-            continue;
+      if (!PerfectForAttnam.size())
+          continue;
 
-        v2 AttnamPos, ElpuriCavePos, NewAttnamPos, TunnelEntry, TunnelExit, MondedrPos;
-        truth Correct = false;
-        continent* PetrusLikes;
+      v2 AttnamPos, ElpuriCavePos, NewAttnamPos, TunnelEntry, TunnelExit, MondedrPos;
+      truth Correct = false;
+      continent* PetrusLikes;
 
-        for (int c1 = 0; c1 < 25; ++c1)
-        {
-            game::BusyAnimation();
-            PetrusLikes = PerfectForAttnam[RAND() % PerfectForAttnam.size()];
-            AttnamPos = PetrusLikes->GetRandomMember(EGForestType);
-            ElpuriCavePos = PetrusLikes->GetRandomMember(SnowType);
-            MondedrPos = PetrusLikes->GetRandomMember(SteppeType);
+      for (int c1 = 0; c1 < 25; ++c1)
+      {
+          game::BusyAnimation();
+          PetrusLikes = PerfectForAttnam[RAND() % PerfectForAttnam.size()];
+          AttnamPos = PetrusLikes->GetRandomMember(EGForestType);
+          ElpuriCavePos = PetrusLikes->GetRandomMember(SnowType);
+          MondedrPos = PetrusLikes->GetRandomMember(SteppeType);
 
-            for (int c2 = 1; c2 < 50; ++c2)
-            {
-                TunnelExit = PetrusLikes->GetMember(RAND() % PetrusLikes->GetSize());
+          for (int c2 = 1; c2 < 50; ++c2)
+          {
+              TunnelExit = PetrusLikes->GetMember(RAND() % PetrusLikes->GetSize());
 
-                if (AttnamPos != TunnelExit && ElpuriCavePos != TunnelExit)
-                {
-                    for (int d1 = 0; d1 < 8; ++d1)
-                    {
-                        v2 Pos = TunnelExit + game::GetMoveVector(d1);
+              if (AttnamPos != TunnelExit && ElpuriCavePos != TunnelExit)
+              {
+                  for (int d1 = 0; d1 < 8; ++d1)
+                  {
+                      v2 Pos = TunnelExit + game::GetMoveVector(d1);
 
-                        if (IsValidPos(Pos) && AltitudeBuffer[Pos.X][Pos.Y] <= 0)
-                        {
-                            int Distance = 3 + (RAND() & 3);
-                            truth Error = false;
-                            TunnelEntry = Pos;
+                      if (IsValidPos(Pos) && AltitudeBuffer[Pos.X][Pos.Y] <= 0)
+                      {
+                          int Distance = 3 + (RAND() & 3);
+                          truth Error = false;
+                          TunnelEntry = Pos;
 
-                            for (int c2 = 0; c2 < Distance; ++c2)
-                            {
-                                TunnelEntry += game::GetMoveVector(d1);
+                          for (int c2 = 0; c2 < Distance; ++c2)
+                          {
+                              TunnelEntry += game::GetMoveVector(d1);
 
-                                if (!IsValidPos(TunnelEntry)
-                                        || AltitudeBuffer[TunnelEntry.X][TunnelEntry.Y] > 0)
-                                {
-                                    Error = true;
-                                    break;
-                                }
-                            }
+                              if (!IsValidPos(TunnelEntry)
+                                      || AltitudeBuffer[TunnelEntry.X][TunnelEntry.Y] > 0)
+                              {
+                                  Error = true;
+                                  break;
+                              }
+                          }
 
-                            if (Error)
-                                continue;
+                          if (Error)
+                              continue;
 
-                            int x, y;
-                            int Counter = 0;
+                          int x, y;
+                          int Counter = 0;
 
-                            for (x = TunnelEntry.X - 3; x <= TunnelEntry.X + 3; ++x)
-                            {
-                                for (y = TunnelEntry.Y - 3; y <= TunnelEntry.Y + 3;
-                                        ++y, ++Counter)
-                                    if (Counter != 0 && Counter != 6
-                                            && Counter != 42 && Counter != 48
-                                            && (!IsValidPos(x, y)
-                                                || AltitudeBuffer[x][y] > 0
-                                                || AltitudeBuffer[x][y] < -350))
-                                    {
-                                        Error = true;
-                                        break;
-                                    }
+                          for (x = TunnelEntry.X - 3; x <= TunnelEntry.X + 3; ++x)
+                          {
+                              for (y = TunnelEntry.Y - 3; y <= TunnelEntry.Y + 3;
+                                      ++y, ++Counter)
+                                  if (Counter != 0 && Counter != 6
+                                          && Counter != 42 && Counter != 48
+                                          && (!IsValidPos(x, y)
+                                              || AltitudeBuffer[x][y] > 0
+                                              || AltitudeBuffer[x][y] < -350))
+                                  {
+                                      Error = true;
+                                      break;
+                                  }
 
-                                if (Error)
-                                    break;
-                            }
+                              if (Error)
+                                  break;
+                          }
 
-                            if (Error)
-                                continue;
+                          if (Error)
+                              continue;
 
-                            Error = true;
+                          Error = true;
 
-                            for (x = 0; x < XSize; ++x)
-                                if (TypeBuffer[x][TunnelEntry.Y] == JungleType)
-                                {
-                                    Error = false;
-                                    break;
-                                }
+                          for (x = 0; x < XSize; ++x)
+                              if (TypeBuffer[x][TunnelEntry.Y] == JungleType)
+                              {
+                                  Error = false;
+                                  break;
+                              }
 
-                            if (Error)
-                                continue;
+                          if (Error)
+                              continue;
 
-                            Counter = 0;
+                          Counter = 0;
 
-                            for (x = TunnelEntry.X - 2; x <= TunnelEntry.X + 2; ++x)
-                                for (y = TunnelEntry.Y - 2; y <= TunnelEntry.Y + 2;
-                                        ++y, ++Counter)
-                                    if (Counter != 0 && Counter != 4
-                                            && Counter != 20 && Counter != 24)
-                                        AltitudeBuffer[x][y] /= 2;
+                          for (x = TunnelEntry.X - 2; x <= TunnelEntry.X + 2; ++x)
+                              for (y = TunnelEntry.Y - 2; y <= TunnelEntry.Y + 2;
+                                      ++y, ++Counter)
+                                  if (Counter != 0 && Counter != 4
+                                          && Counter != 20 && Counter != 24)
+                                      AltitudeBuffer[x][y] /= 2;
 
-                            AltitudeBuffer[TunnelEntry.X][TunnelEntry.Y] = 1 + RAND() % 50;
-                            TypeBuffer[TunnelEntry.X][TunnelEntry.Y] = JungleType;
-                            GetWSquare(TunnelEntry)->ChangeGWTerrain(jungle::Spawn());
-                            int NewAttnamIndex;
+                          AltitudeBuffer[TunnelEntry.X][TunnelEntry.Y] = 1 + RAND() % 50;
+                          TypeBuffer[TunnelEntry.X][TunnelEntry.Y] = JungleType;
+                          GetWSquare(TunnelEntry)->ChangeGWTerrain(jungle::Spawn());
+                          int NewAttnamIndex;
 
-                            for (NewAttnamIndex = RAND() & 7;
-                                    NewAttnamIndex == 7 - d1;
-                                    NewAttnamIndex = RAND() & 7);
+                          for (NewAttnamIndex = RAND() & 7;
+                                  NewAttnamIndex == 7 - d1;
+                                  NewAttnamIndex = RAND() & 7);
 
-                            NewAttnamPos = TunnelEntry
-                                           + game::GetMoveVector(NewAttnamIndex);
-                            static int DiagonalDir[4] = { 0, 2, 5, 7 };
-                            static int NotDiagonalDir[4] = { 1, 3, 4, 6 };
-                            static int AdjacentDir[4][2] = { { 0, 1 }, { 0, 2 },
-                                { 1, 3 }, { 2, 3 }
-                            };
-                            truth Raised[] = { false, false, false, false };
-                            int d2;
+                          NewAttnamPos = TunnelEntry
+                                         + game::GetMoveVector(NewAttnamIndex);
+                          static int DiagonalDir[4] = { 0, 2, 5, 7 };
+                          static int NotDiagonalDir[4] = { 1, 3, 4, 6 };
+                          static int AdjacentDir[4][2] = { { 0, 1 }, { 0, 2 },
+                              { 1, 3 }, { 2, 3 }
+                          };
+                          truth Raised[] = { false, false, false, false };
+                          int d2;
 
-                            for (d2 = 0; d2 < 4; ++d2)
-                                if (NotDiagonalDir[d2] != 7 - d1
-                                        && (NotDiagonalDir[d2] == NewAttnamIndex
-                                            || !(RAND() & 2)))
-                                {
-                                    v2 Pos = TunnelEntry
-                                             + game::GetMoveVector(NotDiagonalDir[d2]);
-                                    AltitudeBuffer[Pos.X][Pos.Y] = 1 + RAND() % 50;
-                                    TypeBuffer[Pos.X][Pos.Y] = JungleType;
-                                    GetWSquare(Pos)->ChangeGWTerrain(jungle::Spawn());
-                                    Raised[d2] = true;
-                                }
+                          for (d2 = 0; d2 < 4; ++d2)
+                              if (NotDiagonalDir[d2] != 7 - d1
+                                      && (NotDiagonalDir[d2] == NewAttnamIndex
+                                          || !(RAND() & 2)))
+                              {
+                                  v2 Pos = TunnelEntry
+                                           + game::GetMoveVector(NotDiagonalDir[d2]);
+                                  AltitudeBuffer[Pos.X][Pos.Y] = 1 + RAND() % 50;
+                                  TypeBuffer[Pos.X][Pos.Y] = JungleType;
+                                  GetWSquare(Pos)->ChangeGWTerrain(jungle::Spawn());
+                                  Raised[d2] = true;
+                              }
 
-                            for (d2 = 0; d2 < 4; ++d2)
-                                if (DiagonalDir[d2] != 7 - d1
-                                        && (DiagonalDir[d2] == NewAttnamIndex
-                                            || (Raised[AdjacentDir[d2][0]]
-                                                && Raised[AdjacentDir[d2][1]] && !(RAND() & 2))))
-                                {
-                                    v2 Pos = TunnelEntry
-                                             + game::GetMoveVector(DiagonalDir[d2]);
-                                    AltitudeBuffer[Pos.X][Pos.Y] = 1 + RAND() % 50;
-                                    TypeBuffer[Pos.X][Pos.Y] = JungleType;
-                                    GetWSquare(Pos)->ChangeGWTerrain(jungle::Spawn());
-                                }
+                          for (d2 = 0; d2 < 4; ++d2)
+                              if (DiagonalDir[d2] != 7 - d1
+                                      && (DiagonalDir[d2] == NewAttnamIndex
+                                          || (Raised[AdjacentDir[d2][0]]
+                                              && Raised[AdjacentDir[d2][1]] && !(RAND() & 2))))
+                              {
+                                  v2 Pos = TunnelEntry
+                                           + game::GetMoveVector(DiagonalDir[d2]);
+                                  AltitudeBuffer[Pos.X][Pos.Y] = 1 + RAND() % 50;
+                                  TypeBuffer[Pos.X][Pos.Y] = JungleType;
+                                  GetWSquare(Pos)->ChangeGWTerrain(jungle::Spawn());
+                              }
 
-                            Correct = true;
-                            break;
-                        }
-                    }
+                          Correct = true;
+                          break;
+                      }
+                  }
 
-                    if (Correct)
-                        break;
-                }
-            }
+                  if (Correct)
+                      break;
+              }
+          }
 
-            if (Correct)
-                break;
-        }
+          if (Correct)
+              break;
+      }
 
-        if (!Correct)
-            continue;
+      if (!Correct)
+          continue;
 
-        GetWSquare(AttnamPos)->ChangeOWTerrain(attnam::Spawn());
-        SetEntryPos(ATTNAM, AttnamPos);
-        RevealEnvironment(AttnamPos, 1);
-        GetWSquare(NewAttnamPos)->ChangeOWTerrain(newattnam::Spawn());
-        SetEntryPos(NEW_ATTNAM, NewAttnamPos);
-        SetEntryPos(ELPURI_CAVE, ElpuriCavePos);
-        SetEntryPos(MONDEDR, MondedrPos);
-        GetWSquare(TunnelEntry)->ChangeOWTerrain(underwatertunnel::Spawn());
-        SetEntryPos(UNDER_WATER_TUNNEL, TunnelEntry);
-        GetWSquare(TunnelExit)->ChangeOWTerrain(underwatertunnelexit::Spawn());
-        SetEntryPos(UNDER_WATER_TUNNEL_EXIT, TunnelExit);
-        PLAYER->PutTo(NewAttnamPos);
-        CalculateLuminances();
-        CalculateNeighbourBitmapPoses();
-        break;
-    }
+      GetWSquare(AttnamPos)->ChangeOWTerrain(attnam::Spawn());
+      SetEntryPos(ATTNAM, AttnamPos);
+      RevealEnvironment(AttnamPos, 1);
+      GetWSquare(NewAttnamPos)->ChangeOWTerrain(newattnam::Spawn());
+      SetEntryPos(NEW_ATTNAM, NewAttnamPos);
+      SetEntryPos(ELPURI_CAVE, ElpuriCavePos);
+      SetEntryPos(MONDEDR, MondedrPos);
+      GetWSquare(TunnelEntry)->ChangeOWTerrain(underwatertunnel::Spawn());
+      SetEntryPos(UNDER_WATER_TUNNEL, TunnelEntry);
+      GetWSquare(TunnelExit)->ChangeOWTerrain(underwatertunnelexit::Spawn());
+      SetEntryPos(UNDER_WATER_TUNNEL_EXIT, TunnelExit);
+      PLAYER->PutTo(NewAttnamPos);
+      CalculateLuminances();
+      CalculateNeighbourBitmapPoses();
+      break;
+  }
 
-    delete [] OldAltitudeBuffer;
-    delete [] OldTypeBuffer;
+  delete [] OldAltitudeBuffer;
+  delete [] OldTypeBuffer;
 }
 
 
