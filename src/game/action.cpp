@@ -9,30 +9,35 @@
  *  along with this file for more details
  *
  */
-
 /* Compiled through actset.cpp */
 
-actionprototype::actionprototype(actionspawner Spawner, cchar* ClassID) : Spawner(Spawner), ClassID(ClassID) { Index = protocontainer<action>::Add(this); }
 
-void action::Terminate(truth)
+actionprototype::actionprototype (actionspawner Spawner, cchar *ClassID) :
+  Spawner(Spawner),
+  ClassID(ClassID)
 {
+  Index = protocontainer<action>::Add(this);
+}
+
+
+void action::Terminate (truth) {
   GetActor()->SetAction(0);
   delete this;
 }
 
-void action::Save(outputfile& SaveFile) const
-{
+
+void action::Save (outputfile &SaveFile) const {
   SaveFile << (ushort)GetType() << Flags;
 }
 
-void action::Load(inputfile& SaveFile)
-{
+
+void action::Load (inputfile &SaveFile) {
   SaveFile >> Flags;
 }
 
-action* actionprototype::SpawnAndLoad(inputfile& SaveFile) const
-{
-  action* Action = Spawner(0);
+
+action *actionprototype::SpawnAndLoad (inputfile &SaveFile) const {
+  action *Action = Spawner(0);
   Action->Load(SaveFile);
   return Action;
 }

@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #define __FILE_OF_STATIC_ACTION_PROTOTYPE_DEFINITIONS__
 
 #include "proto.h"
