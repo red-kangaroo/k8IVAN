@@ -2,6 +2,7 @@ set-profile ;
 set-default-subdir-locates ;
 
 HAS_PCRE = [ lib-config-ex "pkg-config libpcre --libs" ] ;
+HAS_IMLIB2 = [ lib-config-ex "pkg-config imlib2 --libs" ] ;
 
 
 HDRS += $(TOP)/src/felib $(TOP)/src/game ;
@@ -24,6 +25,13 @@ if $(USE_SOUND) && $(HAS_PCRE) {
 } else {
   Echo "MSG: sound support disabled; USE_SOUND=1 will enable it" ;
   DEFINES += DISABLE_SOUND ;
+}
+
+
+if $(HAS_IMLIB2) {
+  Echo "MSG: imlib2 found" ;
+  lib-config "pkg-config imlib2" ;
+  DEFINES += HAVE_IMLIB2 ;
 }
 
 

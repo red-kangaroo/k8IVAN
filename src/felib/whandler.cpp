@@ -174,7 +174,12 @@ void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
           for (int f = 0; f < 1000; f++) {
             char buf[16];
             sprintf(buf, "%03d", f);
-            festring fn = dir+"/scrshot"+buf+".bmp";
+            festring fn = dir+"/scrshot"+buf;
+#ifdef HAVE_IMLIB2
+            fn << ".png";
+#else
+            fn << ".bmp";
+#endif
             FILE *fl = fopen(fn.CStr(), "r");
             if (fl) { fclose(fl); continue; }
             fprintf(stderr, "screenshot: %s\n", fn.CStr());

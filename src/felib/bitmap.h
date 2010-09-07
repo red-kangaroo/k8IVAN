@@ -91,7 +91,7 @@ public:
   void MaskedPriorityBlit (cblitdata &) const;
   void AlphaPriorityBlit (cblitdata &) const;
   void FastBlitAndCopyAlpha (bitmap *) const;
-  v2 GetSize () const { return Size; }
+  v2 GetSize () const { return mSize; }
   void DrawPolygon (int, int, int, int, col16, truth = true, truth = false, double = 0);
   void CreateAlphaMap (alpha);
   truth Fade (long &, packalpha &, int);
@@ -102,8 +102,8 @@ public:
   void Outline (col16, alpha, priority);
   void FadeToScreen (bitmapeditor = 0);
   void CreateFlames (rawbitmap *, v2, ulong, int);
-  truth IsValidPos (v2 What) const { return What.X >= 0 && What.Y >= 0 && What.X < Size.X && What.Y < Size.Y; }
-  truth IsValidPos (int X, int Y) const { return X >= 0 && Y >= 0 && X < Size.X && Y < Size.Y; }
+  truth IsValidPos (v2 What) const { return What.X >= 0 && What.Y >= 0 && What.X < mSize.X && What.Y < mSize.Y; }
+  truth IsValidPos (int X, int Y) const { return X >= 0 && Y >= 0 && X < mSize.X && Y < mSize.Y; }
   void CreateSparkle (v2, int);
   void CreateFlies (ulong, int, int);
   void CreateLightning (ulong, col16);
@@ -132,7 +132,7 @@ public:
   void InterLace ();
 
 protected:
-  v2 Size;
+  v2 mSize;
   ulong XSizeTimesYSize : 31;
   ulong FastFlag : 1;
   packcol16 **Image;
@@ -143,7 +143,7 @@ protected:
 
 
 inline void bitmap::SafeUpdateRandMap (v2 Pos, truth What) {
-  if (RandMap) UpdateRandMap(Pos.Y*Size.X+Pos.X, What);
+  if (RandMap) UpdateRandMap(Pos.Y*mSize.X+Pos.X, What);
 }
 
 
@@ -160,8 +160,8 @@ inline void bitmap::FastBlit (bitmap *Bitmap) const {
 inline void bitmap::FastBlit (bitmap *Bitmap, v2 Pos) const {
   packcol16 **SrcImage = Image;
   packcol16 **DestImage = Bitmap->Image;
-  cint Bytes = Size.X*sizeof(packcol16);
-  cint Height = Size.Y;
+  cint Bytes = mSize.X*sizeof(packcol16);
+  cint Height = mSize.Y;
   for (int y = 0; y < Height; ++y) memcpy(&DestImage[Pos.Y+y][Pos.X], SrcImage[y], Bytes);
 }
 
@@ -171,7 +171,7 @@ inline void bitmap::NormalBlit (bitmap *Bitmap, int Flags) const {
     Bitmap,
     { 0, 0 },
     { 0, 0 },
-    { Size.X, Size.Y },
+    { mSize.X, mSize.Y },
     { Flags },
     0,
     0

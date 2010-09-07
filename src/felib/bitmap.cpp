@@ -12,6 +12,10 @@
 #include <cmath>
 #include <ctime>
 
+#ifdef HAVE_IMLIB2
+# include <Imlib2.h>
+#endif
+
 #include "bitmap.h"
 #include "graphics.h"
 #include "save.h"
@@ -87,16 +91,16 @@ bitmap::bitmap (cfestring &FileName) : FastFlag(0), AlphaMap(0), PriorityMap(0),
   File.SeekPosEnd(-768);
   File.Read(reinterpret_cast<char*>(Palette), 768);
   File.SeekPosBegin(8);
-  Size.X  =  File.Get();
-  Size.X += (File.Get() << 8) + 1;
-  Size.Y  =  File.Get();
-  Size.Y += (File.Get() << 8) + 1;
-  XSizeTimesYSize = Size.X * Size.Y;
+  mSize.X  =  File.Get();
+  mSize.X += (File.Get() << 8) + 1;
+  mSize.Y  =  File.Get();
+  mSize.Y += (File.Get() << 8) + 1;
+  XSizeTimesYSize = mSize.X * mSize.Y;
   File.SeekPosBegin(128);
-  Alloc2D(Image, Size.Y, Size.X);
+  Alloc2D(Image, mSize.Y, mSize.X);
   packcol16 *Buffer = Image[0];
-  for (int y = 0; y < Size.Y; ++y) {
-    for (int x = 0; x < Size.X; ++x) {
+  for (int y = 0; y < mSize.Y; ++y) {
+    for (int x = 0; x < mSize.X; ++x) {
       int Char1 = File.Get();
       if (Char1 > 192) {
         --x;
@@ -105,7 +109,7 @@ bitmap::bitmap (cfestring &FileName) : FastFlag(0), AlphaMap(0), PriorityMap(0),
         int Color = int(Palette[Char3] >> 3) << 11 | int(Palette[Char3 + 1] >> 2) << 5 | int(Palette[Char3 + 2] >> 3);
         for (; Char1 > 192; --Char1) {
           *Buffer++ = Color;
-          if (++x == Size.X) { x = 0; ++y; }
+          if (++x == mSize.X) { x = 0; ++y; }
         }
       } else {
         int Char3 = Char1 + (Char1 << 1);
@@ -117,15 +121,15 @@ bitmap::bitmap (cfestring &FileName) : FastFlag(0), AlphaMap(0), PriorityMap(0),
 
 
 bitmap::bitmap (cbitmap *Bitmap, int Flags, truth CopyAlpha) :
-  Size(Bitmap->Size),
+  mSize(Bitmap->mSize),
   XSizeTimesYSize(Bitmap->XSizeTimesYSize),
   FastFlag(0),
   PriorityMap(0),
   RandMap(0)
 {
-  Alloc2D(Image, Size.Y, Size.X);
+  Alloc2D(Image, mSize.Y, mSize.X);
   if (CopyAlpha && Bitmap->AlphaMap) {
-    Alloc2D(AlphaMap, Size.Y, Size.X);
+    Alloc2D(AlphaMap, mSize.Y, mSize.X);
     Bitmap->BlitAndCopyAlpha(this, Flags);
   } else {
     AlphaMap = 0;
@@ -134,27 +138,27 @@ bitmap::bitmap (cbitmap *Bitmap, int Flags, truth CopyAlpha) :
 }
 
 
-bitmap::bitmap (v2 Size) :
-  Size(Size),
-  XSizeTimesYSize(Size.X * Size.Y),
+bitmap::bitmap (v2 aSize) :
+  mSize(aSize),
+  XSizeTimesYSize(mSize.X * mSize.Y),
   FastFlag(0),
   AlphaMap(0),
   PriorityMap(0),
   RandMap(0)
 {
-  Alloc2D(Image, Size.Y, Size.X);
+  Alloc2D(Image, mSize.Y, mSize.X);
 }
 
 
-bitmap::bitmap (v2 Size, col16 Color) :
-  Size(Size),
-  XSizeTimesYSize(Size.X*Size.Y),
+bitmap::bitmap (v2 aSize, col16 Color) :
+  mSize(aSize),
+  XSizeTimesYSize(mSize.X*mSize.Y),
   FastFlag(0),
   AlphaMap(0),
   PriorityMap(0),
   RandMap(0)
 {
-  Alloc2D(Image, Size.Y, Size.X);
+  Alloc2D(Image, mSize.Y, mSize.X);
   ClearToColor(Color);
 }
 
@@ -188,11 +192,11 @@ void bitmap::Save (outputfile &SaveFile) const {
 void bitmap::Load (inputfile &SaveFile) {
   SaveFile.Read(reinterpret_cast<char *>(Image[0]), XSizeTimesYSize*sizeof(packcol16));
   if (SaveFile.Get()) {
-    Alloc2D(AlphaMap, Size.Y, Size.X);
+    Alloc2D(AlphaMap, mSize.Y, mSize.X);
     SaveFile.Read(reinterpret_cast<char *>(AlphaMap[0]), XSizeTimesYSize*sizeof(packalpha));
   }
   if (SaveFile.Get()) {
-    Alloc2D(PriorityMap, Size.Y, Size.X);
+    Alloc2D(PriorityMap, mSize.Y, mSize.X);
     SaveFile.Read(reinterpret_cast<char *>(PriorityMap[0]), XSizeTimesYSize*sizeof(packpriority));
   }
   FastFlag = ReadType<uchar>(SaveFile);
@@ -200,6 +204,28 @@ void bitmap::Load (inputfile &SaveFile) {
 
 
 void bitmap::Save (cfestring &FileName) const {
+#ifdef HAVE_IMLIB2
+  if (mSize.X < 1 || mSize.Y < 1) return;
+  Imlib_Image img = imlib_create_image(mSize.X, mSize.Y);
+  imlib_context_set_image(img);
+  DATA32 *raw = imlib_image_get_data(); //brga
+  unsigned char *pp = (unsigned char *)raw;
+  for (int y = 0; y < mSize.Y; y++) {
+    for (int x = 0; x < mSize.X; x++) {
+      col16 Pixel = GetPixel(x, y);
+      unsigned char b = (Pixel << 3)&0xff;
+      unsigned char g = ((Pixel >> 5) << 2)&0xff;
+      unsigned char r = ((Pixel >> 11) << 3)&0xff;
+      *pp++ = b;
+      *pp++ = g;
+      *pp++ = r;
+      *pp++ = 255; //0?
+    }
+  }
+  imlib_image_set_format("png");
+  imlib_save_image(FileName.CStr());
+  imlib_free_image();
+#else
   static char BMPHeader[] = {
     char(0x42), char(0x4D), char(0xB6), char(0x4F), char(0x12), char(0x00),
     char(0x00), char(0x00), char(0x00), char(0x00), char(0x36), char(0x00),
@@ -212,17 +238,18 @@ void bitmap::Save (cfestring &FileName) const {
     char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00)
   };
   outputfile SaveFile(FileName);
-  BMPHeader[0x12] =  Size.X       & 0xFF;
-  BMPHeader[0x13] = (Size.X >> 8) & 0xFF;
-  BMPHeader[0x16] =  Size.Y       & 0xFF;
-  BMPHeader[0x17] = (Size.Y >> 8) & 0xFF;
+  BMPHeader[0x12] =  mSize.X       & 0xFF;
+  BMPHeader[0x13] = (mSize.X >> 8) & 0xFF;
+  BMPHeader[0x16] =  mSize.Y       & 0xFF;
+  BMPHeader[0x17] = (mSize.Y >> 8) & 0xFF;
   SaveFile.Write(BMPHeader, 0x36);
-  for (int y = Size.Y - 1; y >= 0; --y) {
-    for (int x = 0; x < Size.X; ++x) {
+  for (int y = mSize.Y - 1; y >= 0; --y) {
+    for (int x = 0; x < mSize.X; ++x) {
       col16 Pixel = GetPixel(x, y);
       SaveFile << char(Pixel << 3) << char((Pixel >> 5) << 2) << char((Pixel >> 11) << 3);
     }
   }
+#endif
 }
 
 
@@ -231,9 +258,9 @@ void bitmap::Fill (int X, int Y, v2 FillSize, col16 Color) { Fill(X, Y, FillSize
 void bitmap::Fill (v2 TopLeft, v2 FillSize, col16 Color) { Fill(TopLeft.X, TopLeft.Y, FillSize.X, FillSize.Y, Color); }
 
 void bitmap::Fill (int X, int Y, int Width, int Height, col16 Color) {
-  if (X >= Size.X || Y >= Size.Y) return;
-  if (X + Width > Size.X) Width = Size.X - X;
-  if (Y + Height > Size.Y) Height = Size.Y - Y;
+  if (X >= mSize.X || Y >= mSize.Y) return;
+  if (X + Width > mSize.X) Width = mSize.X - X;
+  if (Y + Height > mSize.Y) Height = mSize.Y - Y;
   if (Color >> 8 == (Color & 0xFF)) {
     Width <<= 1;
     for (int y = 0; y < Height; ++y) memset(&Image[Y + y][X], Color, Width);
@@ -263,14 +290,14 @@ void bitmap::NormalBlit (cblitdata &BlitData) const {
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap blit attempt detected!");
     if (B.Flags & ROTATE && B.Border.X != B.Border.Y) ABORT("Blit error: FeLib supports only square rotating!");
-    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, Size.X, Size.Y, B.Bitmap->Size.X, B.Bitmap->Size.Y)) return;
+    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
   packcol16 **SrcImage = Image;
   packcol16 **DestImage = B.Bitmap->Image;
   switch (B.Flags & 7) {
     case NONE: {
-      if (!B.Src.X && !B.Src.Y && !B.Dest.X && !B.Dest.Y && B.Border.X == Size.X && B.Border.Y == Size.Y &&
-          B.Border.X == B.Bitmap->Size.X && B.Border.Y == B.Bitmap->Size.Y) {
+      if (!B.Src.X && !B.Src.Y && !B.Dest.X && !B.Dest.Y && B.Border.X == mSize.X && B.Border.Y == mSize.Y &&
+          B.Border.X == B.Bitmap->mSize.X && B.Border.Y == B.Bitmap->mSize.Y) {
         memcpy(DestImage[0], SrcImage[0], XSizeTimesYSize * sizeof(packcol16));
       } else {
         cint Bytes = B.Border.X * sizeof(packcol16);
@@ -303,7 +330,7 @@ void bitmap::NormalBlit (cblitdata &BlitData) const {
       break; }
     case ROTATE: {
       B.Dest.X += B.Border.X - 1;
-      int TrueDestXMove = B.Bitmap->Size.X;
+      int TrueDestXMove = B.Bitmap->mSize.X;
       packcol16 *DestBase = &DestImage[B.Dest.Y][B.Dest.X];
       for (int y = 0; y < B.Border.Y; ++y) {
         cpackcol16 *SrcPtr = &SrcImage[B.Src.Y + y][B.Src.X];
@@ -313,7 +340,7 @@ void bitmap::NormalBlit (cblitdata &BlitData) const {
       }
       break; }
     case (MIRROR | ROTATE): {
-      int TrueDestXMove = B.Bitmap->Size.X;
+      int TrueDestXMove = B.Bitmap->mSize.X;
       packcol16 *DestBase = &DestImage[B.Dest.Y][B.Dest.X];
       for (int y = 0; y < B.Border.Y; ++y) {
         cpackcol16 *SrcPtr = &SrcImage[B.Src.Y + y][B.Src.X];
@@ -325,7 +352,7 @@ void bitmap::NormalBlit (cblitdata &BlitData) const {
     case (FLIP | ROTATE): {
       B.Dest.X += B.Border.X - 1;
       B.Dest.Y += B.Border.Y - 1;
-      int TrueDestXMove = B.Bitmap->Size.X;
+      int TrueDestXMove = B.Bitmap->mSize.X;
       packcol16 *DestBase = &DestImage[B.Dest.Y][B.Dest.X];
       for (int y = 0; y < B.Border.Y; ++y) {
         cpackcol16 *SrcPtr = &SrcImage[B.Src.Y + y][B.Src.X];
@@ -336,7 +363,7 @@ void bitmap::NormalBlit (cblitdata &BlitData) const {
       break; }
     case (MIRROR | FLIP | ROTATE): {
       B.Dest.Y += B.Border.Y - 1;
-      int TrueDestXMove = B.Bitmap->Size.X;
+      int TrueDestXMove = B.Bitmap->mSize.X;
       packcol16 *DestBase = &DestImage[B.Dest.Y][B.Dest.X];
       for (int y = 0; y < B.Border.Y; ++y) {
         cpackcol16 *SrcPtr = &SrcImage[B.Src.Y + y][B.Src.X];
@@ -358,7 +385,7 @@ void bitmap::LuminanceBlit (cblitdata &BlitData) const {
   }
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap blit attempt detected!");
-    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, Size.X, Size.Y, B.Bitmap->Size.X, B.Bitmap->Size.Y)) return;
+    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
   packcol16 **SrcImage = Image;
   packcol16 **DestImage = B.Bitmap->Image;
@@ -385,7 +412,7 @@ void bitmap::NormalMaskedBlit (cblitdata &BlitData) const {
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap masked blit attempt detected!");
     if (B.Flags & ROTATE && B.Border.X != B.Border.Y) ABORT("MaskedBlit error: FeLib supports only square rotating!");
-    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, Size.X, Size.Y, B.Bitmap->Size.X, B.Bitmap->Size.Y)) return;
+    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
   packcol16 **SrcImage = Image;
   packcol16 **DestImage = B.Bitmap->Image;
@@ -429,7 +456,7 @@ void bitmap::NormalMaskedBlit (cblitdata &BlitData) const {
       break; }
     case ROTATE: {
       B.Dest.X += B.Border.X - 1;
-      int TrueDestXMove = B.Bitmap->Size.X;
+      int TrueDestXMove = B.Bitmap->mSize.X;
       packcol16 *DestBase = &DestImage[B.Dest.Y][B.Dest.X];
       for (int y = 0; y < B.Border.Y; ++y) {
         cpackcol16 *SrcPtr = &SrcImage[B.Src.Y + y][B.Src.X];
@@ -439,7 +466,7 @@ void bitmap::NormalMaskedBlit (cblitdata &BlitData) const {
       }
       break; }
     case (MIRROR | ROTATE): {
-      int TrueDestXMove = B.Bitmap->Size.X;
+      int TrueDestXMove = B.Bitmap->mSize.X;
       packcol16 *DestBase = &DestImage[B.Dest.Y][B.Dest.X];
       for (int y = 0; y < B.Border.Y; ++y) {
         cpackcol16 *SrcPtr = &SrcImage[B.Src.Y + y][B.Src.X];
@@ -451,7 +478,7 @@ void bitmap::NormalMaskedBlit (cblitdata &BlitData) const {
     case (FLIP | ROTATE): {
       B.Dest.X += B.Border.X - 1;
       B.Dest.Y += B.Border.Y - 1;
-      int TrueDestXMove = B.Bitmap->Size.X;
+      int TrueDestXMove = B.Bitmap->mSize.X;
       packcol16 *DestBase = &DestImage[B.Dest.Y][B.Dest.X];
       for (int y = 0; y < B.Border.Y; ++y) {
         cpackcol16 *SrcPtr = &SrcImage[B.Src.Y + y][B.Src.X];
@@ -462,7 +489,7 @@ void bitmap::NormalMaskedBlit (cblitdata &BlitData) const {
       break; }
     case (MIRROR | FLIP | ROTATE): {
       B.Dest.Y += B.Border.Y - 1;
-      int TrueDestXMove = B.Bitmap->Size.X;
+      int TrueDestXMove = B.Bitmap->mSize.X;
       packcol16 *DestBase = &DestImage[B.Dest.Y][B.Dest.X];
       for (int y = 0; y < B.Border.Y; ++y) {
         cpackcol16 *SrcPtr = &SrcImage[B.Src.Y + y][B.Src.X];
@@ -484,7 +511,7 @@ void bitmap::LuminanceMaskedBlit (cblitdata &BlitData) const {
   }
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap masked blit attempt detected!");
-    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, Size.X, Size.Y, B.Bitmap->Size.X, B.Bitmap->Size.Y)) return;
+    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
   packcol16 **SrcImage = Image;
   packcol16 **DestImage = B.Bitmap->Image;
@@ -514,7 +541,7 @@ void bitmap::SimpleAlphaBlit (bitmap *Bitmap, alpha Alpha, col16 MaskColor) cons
       Bitmap,
       { 0, 0 },
       { 0, 0 },
-      { Size.X, Size.Y },
+      { mSize.X, mSize.Y },
       { 0 },
       MaskColor,
       0
@@ -522,7 +549,7 @@ void bitmap::SimpleAlphaBlit (bitmap *Bitmap, alpha Alpha, col16 MaskColor) cons
     NormalMaskedBlit(B);
     return;
   }
-  if (!FastFlag && (Size.X != Bitmap->Size.X || Size.Y != Bitmap->Size.Y)) ABORT("Fast simple alpha blit attempt of noncongruent bitmaps detected!");
+  if (!FastFlag && (mSize.X != Bitmap->mSize.X || mSize.Y != Bitmap->mSize.Y)) ABORT("Fast simple alpha blit attempt of noncongruent bitmaps detected!");
   cpackcol16 *SrcPtr = Image[0];
   cpackcol16 *EndPtr = SrcPtr + XSizeTimesYSize;
   packcol16 *DestPtr = Bitmap->Image[0];
@@ -548,7 +575,7 @@ void bitmap::AlphaMaskedBlit (cblitdata &BlitData) const {
   }
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap alpha blit attempt detected!");
-    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, Size.X, Size.Y, B.Bitmap->Size.X, B.Bitmap->Size.Y)) return;
+    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
 
   packcol16 **SrcImage = Image;
@@ -607,7 +634,7 @@ void bitmap::DrawLine (int OrigFromX, int OrigFromY, int OrigToX, int OrigToY, c
       x = X1;
       c2 = DeltaX;
       PtrXChange = XChange = X1 < X2 ? 1 : -1;
-      PtrYChange = Y1 < Y2 ? Size.X : -Size.X;
+      PtrYChange = Y1 < Y2 ? mSize.X : -mSize.X;
       DoubleDeltaX = DeltaX << 1;
       DoubleDeltaY = DeltaY << 1;
       End = X2;
@@ -615,7 +642,7 @@ void bitmap::DrawLine (int OrigFromX, int OrigFromY, int OrigToX, int OrigToY, c
       x = Y1;
       c2 = DeltaY;
       XChange = Y1 < Y2 ? 1 : -1;
-      PtrXChange = Y1 < Y2 ? Size.X : -Size.X;
+      PtrXChange = Y1 < Y2 ? mSize.X : -mSize.X;
       PtrYChange = X1 < X2 ? 1 : -1;
       DoubleDeltaX = DeltaY << 1;
       DoubleDeltaY = DeltaX << 1;
@@ -649,11 +676,11 @@ void bitmap::DrawVerticalLine (int OrigX, int OrigFromY, int OrigToY, col16 Colo
       --FromY;
       ++ToY;
     }
-    if (X < 0 || X >= Size.X || ToY < 0 || FromY >= Size.Y) continue;
+    if (X < 0 || X >= mSize.X || ToY < 0 || FromY >= mSize.Y) continue;
     FromY = Max(FromY, 0);
-    ToY = Min(ToY, Size.Y-1);
+    ToY = Min(ToY, mSize.Y-1);
     packcol16 *Ptr = &Image[FromY][X];
-    for (int y = FromY; y <= ToY; ++y, Ptr += Size.X) *Ptr = Color;
+    for (int y = FromY; y <= ToY; ++y, Ptr += mSize.X) *Ptr = Color;
   }
 }
 
@@ -670,9 +697,9 @@ void bitmap::DrawHorizontalLine(int OrigFromX, int OrigToX, int OrigY, col16 Col
       --FromX;
       ++ToX;
     }
-    if (Y < 0 || Y >= Size.Y || ToX < 0 || FromX >= Size.X) continue;
+    if (Y < 0 || Y >= mSize.Y || ToX < 0 || FromX >= mSize.X) continue;
     FromX = Max(FromX, 0);
-    ToX = Min(ToX, Size.X-1);
+    ToX = Min(ToX, mSize.X-1);
     packcol16 *Ptr = &Image[Y][FromX];
     for (int x = FromX; x <= ToX; ++x, ++Ptr) *Ptr = Color;
   }
@@ -710,7 +737,7 @@ void bitmap::DrawPolygon (int CenterX, int CenterY, int Radius, int NumberOfSide
 
 void bitmap::CreateAlphaMap (alpha InitialValue) {
   if (AlphaMap) ABORT("Alpha leak detected!");
-  Alloc2D(AlphaMap, Size.Y, Size.X);
+  Alloc2D(AlphaMap, mSize.Y, mSize.X);
   memset(AlphaMap[0], InitialValue, XSizeTimesYSize);
 }
 
@@ -745,8 +772,8 @@ truth bitmap::Fade (long &AlphaSum, packalpha& AlphaAverage, int Amount) {
 void bitmap::Outline (col16 Color, alpha Alpha, priority Priority) {
   if (!AlphaMap) CreateAlphaMap(255);
   col16 LastColor, NextColor;
-  int XMax = Size.X;
-  int YMax = Size.Y - 1;
+  int XMax = mSize.X;
+  int YMax = mSize.Y - 1;
   for (int x = 0; x < XMax; ++x) {
     packcol16 *Buffer = &Image[0][x];
     LastColor = *Buffer;
@@ -824,7 +851,7 @@ void bitmap::StretchBlit (cblitdata &BlitData) const {
   blitdata B = BlitData;
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap stretch blit attempt detected!");
-    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, Size.X, Size.Y, B.Bitmap->Size.X, B.Bitmap->Size.Y)) return;
+    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
   if (B.Stretch > 1) {
     int tx = B.Dest.X;
@@ -904,7 +931,7 @@ void bitmap::AlphaLuminanceBlit (cblitdata &BlitData) const {
   blitdata B = BlitData;
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap alpha blit attempt detected!");
-    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, Size.X, Size.Y, B.Bitmap->Size.X, B.Bitmap->Size.Y)) return;
+    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
   packcol16 **SrcImage = Image;
   packalpha **SrcAlphaMap = AlphaMap;
@@ -1019,19 +1046,19 @@ void bitmap::CreateLightning (ulong Seed, col16 Color) {
           StartPos.X = 0;
           Direction.X = 1;
         } else {
-          StartPos.X = Size.X - 1;
+          StartPos.X = mSize.X - 1;
           Direction.X = -1;
         }
-        StartPos.Y = RAND() % Size.Y;
+        StartPos.Y = RAND() % mSize.Y;
       } else {
         if (RAND() & 1) {
           StartPos.Y = 0;
           Direction.Y = 1;
         } else {
-          StartPos.Y = Size.Y - 1;
+          StartPos.Y = mSize.Y - 1;
           Direction.Y = -1;
         }
-        StartPos.X = RAND() % Size.X;
+        StartPos.X = RAND() % mSize.X;
       }
     } while (GetPixel(StartPos) != TRANSPARENT_COLOR);
   } while (!CreateLightning(StartPos, Direction, NO_LIMIT, Color));
@@ -1066,8 +1093,8 @@ truth bitmap::CreateLightning (v2 StartPos, v2 Direction, int MaxLength, col16 C
     v2 Move(1 + (RAND() & 3), 1 + (RAND() & 3));
     if (Direction.X < 0 || (!Direction.X && RAND() & 1)) Move.X = -Move.X;
     if (Direction.Y < 0 || (!Direction.Y && RAND() & 1)) Move.Y = -Move.Y;
-    LimitRef(Move.X, -StartPos.X, Size.X - StartPos.X - 1);
-    LimitRef(Move.Y, -StartPos.Y, Size.X - StartPos.Y - 1);
+    LimitRef(Move.X, -StartPos.X, mSize.X - StartPos.X - 1);
+    LimitRef(Move.Y, -StartPos.Y, mSize.X - StartPos.Y - 1);
     if (Counter < 10 && ((!Move.Y && !LastMove.Y) || (Move.Y && LastMove.Y && (Move.X << 10) / Move.Y == (LastMove.X << 10) / LastMove.Y))) {
       ++Counter;
       continue;
@@ -1084,7 +1111,7 @@ truth bitmap::CreateLightning (v2 StartPos, v2 Direction, int MaxLength, col16 C
     }
     StartPos += Move;
     LastMove = Move;
-    if ((Direction.X && (!StartPos.X || StartPos.X == Size.X - 1)) || (Direction.Y && (!StartPos.Y || StartPos.Y == Size.X - 1))) {
+    if ((Direction.X && (!StartPos.X || StartPos.X == mSize.X - 1)) || (Direction.Y && (!StartPos.Y || StartPos.Y == mSize.X - 1))) {
       PixelVector.clear();
       return false;
     }
@@ -1095,8 +1122,8 @@ truth bitmap::CreateLightning (v2 StartPos, v2 Direction, int MaxLength, col16 C
 void bitmap::BlitAndCopyAlpha (bitmap *Bitmap, int Flags) const {
   if (!FastFlag) {
     if (!AlphaMap || !Bitmap->AlphaMap) ABORT("Attempt to blit and copy alpha without an alpha map detected!");
-    if (Flags & ROTATE && Size.X != Size.Y) ABORT("Blit and copy alpha error: FeLib supports only square rotating!");
-    if (Size.X != Bitmap->Size.X || Size.Y != Bitmap->Size.Y) ABORT("Blit and copy alpha attempt of noncongruent bitmaps detected!");
+    if (Flags & ROTATE && mSize.X != mSize.Y) ABORT("Blit and copy alpha error: FeLib supports only square rotating!");
+    if (mSize.X != Bitmap->mSize.X || mSize.Y != Bitmap->mSize.Y) ABORT("Blit and copy alpha attempt of noncongruent bitmaps detected!");
   }
   packcol16 **SrcImage = Image;
   packalpha **SrcAlphaMap = AlphaMap;
@@ -1108,8 +1135,8 @@ void bitmap::BlitAndCopyAlpha (bitmap *Bitmap, int Flags) const {
       memcpy(DestAlphaMap[0], SrcAlphaMap[0], XSizeTimesYSize * sizeof(packalpha));
       break; }
     case MIRROR: {
-      int Width = Size.X;
-      int Height = Size.Y;
+      int Width = mSize.X;
+      int Height = mSize.Y;
       int DestX = Width - 1;
       cpackcol16 *SrcPtr = SrcImage[0];
       cpackalpha *SrcAlphaPtr = SrcAlphaMap[0];
@@ -1124,8 +1151,8 @@ void bitmap::BlitAndCopyAlpha (bitmap *Bitmap, int Flags) const {
       }
       break; }
     case FLIP: {
-      int Height = Size.Y;
-      int Width = Size.X;
+      int Height = mSize.Y;
+      int Width = mSize.X;
       int DestY = Height - 1;
       for (int y = 0; y < Height; ++y) {
         memcpy(DestImage[DestY - y], SrcImage[y], Width * sizeof(packcol16));
@@ -1136,15 +1163,15 @@ void bitmap::BlitAndCopyAlpha (bitmap *Bitmap, int Flags) const {
       cpackcol16 *SrcPtr = SrcImage[0];
       cpackcol16 *EndPtr = SrcPtr + XSizeTimesYSize;
       cpackalpha *SrcAlphaPtr = SrcAlphaMap[0];
-      packcol16 *DestPtr = &DestImage[Size.Y - 1][Size.X - 1];
-      packalpha *DestAlphaPtr = &DestAlphaMap[Size.Y - 1][Size.X - 1];
+      packcol16 *DestPtr = &DestImage[mSize.Y - 1][mSize.X - 1];
+      packalpha *DestAlphaPtr = &DestAlphaMap[mSize.Y - 1][mSize.X - 1];
       for (; SrcPtr != EndPtr; ++SrcPtr, --DestPtr, ++SrcAlphaPtr, --DestAlphaPtr) {
         *DestPtr = *SrcPtr;
         *DestAlphaPtr = *SrcAlphaPtr;
       }
       break; }
     case ROTATE: {
-      cint Width = Size.X;
+      cint Width = mSize.X;
       cpackcol16 *SrcPtr = SrcImage[0];
       cpackalpha *SrcAlphaPtr = SrcAlphaMap[0];
       packcol16 *DestBase = &DestImage[0][Width - 1];
@@ -1160,7 +1187,7 @@ void bitmap::BlitAndCopyAlpha (bitmap *Bitmap, int Flags) const {
       }
       break; }
     case (MIRROR | ROTATE): {
-      cint Width = Size.X;
+      cint Width = mSize.X;
       cpackcol16 *SrcPtr = SrcImage[0];
       cpackalpha *SrcAlphaPtr = SrcAlphaMap[0];
       packcol16 *DestBase = DestImage[0];
@@ -1176,7 +1203,7 @@ void bitmap::BlitAndCopyAlpha (bitmap *Bitmap, int Flags) const {
       }
       break; }
     case (FLIP | ROTATE): {
-      cint Width = Size.X;
+      cint Width = mSize.X;
       cpackcol16 *SrcPtr = SrcImage[0];
       cpackalpha *SrcAlphaPtr = SrcAlphaMap[0];
       packcol16 *DestBase = &DestImage[Width - 1][Width - 1];
@@ -1192,7 +1219,7 @@ void bitmap::BlitAndCopyAlpha (bitmap *Bitmap, int Flags) const {
       }
       break; }
     case (MIRROR | FLIP | ROTATE): {
-      cint Width = Size.X;
+      cint Width = mSize.X;
       cpackcol16 *SrcPtr = SrcImage[0];
       cpackalpha *SrcAlphaPtr = SrcAlphaMap[0];
       packcol16 *DestBase = DestImage[Width - 1];
@@ -1217,7 +1244,7 @@ void bitmap::FillAlpha (alpha Alpha) {
 
 
 void bitmap::PowerPutPixel (int X, int Y, col16 Color, alpha Alpha, priority Priority) {
-  if (X >= 0 && Y >= 0 && X < Size.X && Y < Size.Y) {
+  if (X >= 0 && Y >= 0 && X < mSize.X && Y < mSize.Y) {
     Image[Y][X] = Color;
     if (AlphaMap) {
       AlphaMap[Y][X] = Alpha;
@@ -1238,7 +1265,7 @@ void bitmap::MaskedPriorityBlit (cblitdata &BlitData) const {
   blitdata B = BlitData;
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap masked priority blit attempt detected!");
-    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, Size.X, Size.Y, B.Bitmap->Size.X, B.Bitmap->Size.Y)) return;
+    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
   packcol16 **SrcImage = Image;
   packpriority **SrcPriorityMap = PriorityMap;
@@ -1283,7 +1310,7 @@ void bitmap::AlphaPriorityBlit (cblitdata &BlitData) const {
   blitdata B = BlitData;
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap alpha priority blit attempt detected!");
-    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, Size.X, Size.Y, B.Bitmap->Size.X, B.Bitmap->Size.Y)) return;
+    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
   packcol16 **SrcImage = Image;
   packalpha **SrcAlphaMap = AlphaMap;
@@ -1324,7 +1351,7 @@ void bitmap::AlphaPriorityBlit (cblitdata &BlitData) const {
 
 
 void bitmap::InitPriorityMap (priority InitialValue) {
-  if (!PriorityMap) Alloc2D(PriorityMap, Size.Y, Size.X);
+  if (!PriorityMap) Alloc2D(PriorityMap, mSize.Y, mSize.X);
   memset(PriorityMap[0], InitialValue, XSizeTimesYSize);
 }
 
@@ -1337,7 +1364,7 @@ void bitmap::FillPriority (priority Priority) {
 void bitmap::FastBlitAndCopyAlpha (bitmap *Bitmap) const {
   if (!FastFlag) {
     if (!AlphaMap || !Bitmap->AlphaMap) ABORT("Attempt to fast blit and copy alpha without an alpha map detected!");
-    if (Size.X != Bitmap->Size.X || Size.Y != Bitmap->Size.Y) ABORT("Fast blit and copy alpha attempt of noncongruent bitmaps detected!");
+    if (mSize.X != Bitmap->mSize.X || mSize.Y != Bitmap->mSize.Y) ABORT("Fast blit and copy alpha attempt of noncongruent bitmaps detected!");
   }
   memcpy(Bitmap->Image[0], Image[0], XSizeTimesYSize * sizeof(packcol16));
   memcpy(Bitmap->AlphaMap[0], AlphaMap[0], XSizeTimesYSize * sizeof(packalpha));
@@ -1367,7 +1394,7 @@ v2 bitmap::RandomizePixel () const {
   ulong MapSize = XSizeTimesYSize << 1;
   for (c = 2; c < MapSize; c <<= 1) if (RandMap[c + 1] && (!RandMap[c] || Rand & (RandMask <<= 1))) ++c;
   c = (c - MapSize) >> 1;
-  return v2(c % Size.X, c / Size.X);
+  return v2(c % mSize.X, c / mSize.X);
 }
 
 
@@ -1409,18 +1436,18 @@ alpha bitmap::CalculateAlphaAverage () const {
 }
 
 
-cachedfont::cachedfont (v2 Size) : bitmap(Size) {
-  Alloc2D(MaskMap, Size.Y, Size.X);
+cachedfont::cachedfont (v2 aSize) : bitmap(aSize) {
+  Alloc2D(MaskMap, mSize.Y, mSize.X);
 }
 
 
-cachedfont::cachedfont (v2 Size, col16 Color) : bitmap(Size, Color) {
-  Alloc2D(MaskMap, Size.Y, Size.X);
+cachedfont::cachedfont (v2 aSize, col16 Color) : bitmap(aSize, Color) {
+  Alloc2D(MaskMap, mSize.Y, mSize.X);
 }
 
 
 void cachedfont::PrintCharacter (cblitdata B) const {
-  if (B.Dest.X < 0 || B.Dest.Y < 0 || B.Dest.X + 10 >= B.Bitmap->Size.X || B.Dest.Y + 9 >= B.Bitmap->Size.Y) {
+  if (B.Dest.X < 0 || B.Dest.Y < 0 || B.Dest.X + 10 >= B.Bitmap->mSize.X || B.Dest.Y + 9 >= B.Bitmap->mSize.Y) {
     NormalMaskedBlit(B);
     return;
   }
@@ -1458,9 +1485,9 @@ cint WaveDelta[] = { 1, 2, 2, 2, 1, 0, -1, -2, -2, -2, -1 };
 void bitmap::Wobble (int Frame, int SpeedShift, truth Horizontally) {
   int WavePos = (Frame << SpeedShift >> 1) - 14;
   if (Horizontally) {
-    for (int c = 0; c < 11; ++c) if (WavePos + c >= 0 && WavePos + c < Size.Y) MoveLineHorizontally(WavePos + c, WaveDelta[c]);
+    for (int c = 0; c < 11; ++c) if (WavePos + c >= 0 && WavePos + c < mSize.Y) MoveLineHorizontally(WavePos + c, WaveDelta[c]);
   } else {
-    for (int c = 0; c < 11; ++c) if (WavePos + c >= 0 && WavePos + c < Size.X) MoveLineVertically(WavePos + c, WaveDelta[c]);
+    for (int c = 0; c < 11; ++c) if (WavePos + c >= 0 && WavePos + c < mSize.X) MoveLineVertically(WavePos + c, WaveDelta[c]);
   }
 }
 
@@ -1468,12 +1495,12 @@ void bitmap::Wobble (int Frame, int SpeedShift, truth Horizontally) {
 void bitmap::MoveLineVertically (int X, int Delta) {
   int y;
   if (Delta < 0) {
-    for (y = 0; y < Size.Y + Delta; ++y)
+    for (y = 0; y < mSize.Y + Delta; ++y)
       PowerPutPixel(X, y, GetPixel(X, y - Delta), AlphaMap ? GetAlpha(X, y - Delta) : 255, AVERAGE_PRIORITY);
     for (int y = -1; y >= Delta; --y)
-      PowerPutPixel(X, Size.Y + y, TRANSPARENT_COLOR, 255, AVERAGE_PRIORITY);
+      PowerPutPixel(X, mSize.Y + y, TRANSPARENT_COLOR, 255, AVERAGE_PRIORITY);
   } else if (Delta > 0) {
-    for (y = Size.Y - 1; y >= Delta; --y)
+    for (y = mSize.Y - 1; y >= Delta; --y)
       PowerPutPixel(X, y, GetPixel(X, y - Delta), AlphaMap ? GetAlpha(X, y - Delta) : 255, AVERAGE_PRIORITY);
     for (y = 0; y < Delta; ++y)
       PowerPutPixel(X, y, TRANSPARENT_COLOR, 255, AVERAGE_PRIORITY);
@@ -1484,12 +1511,12 @@ void bitmap::MoveLineVertically (int X, int Delta) {
 void bitmap::MoveLineHorizontally (int Y, int Delta) {
   int x;
   if (Delta < 0) {
-    for (x = 0; x < Size.X + Delta; ++x)
+    for (x = 0; x < mSize.X + Delta; ++x)
       PowerPutPixel(x, Y, GetPixel(x - Delta, Y), AlphaMap ? GetAlpha(x - Delta, Y) : 255, AVERAGE_PRIORITY);
     for (x = -1; x >= Delta; --x)
-      PowerPutPixel(Size.X + x, Y, TRANSPARENT_COLOR, 255, AVERAGE_PRIORITY);
+      PowerPutPixel(mSize.X + x, Y, TRANSPARENT_COLOR, 255, AVERAGE_PRIORITY);
   } else if (Delta > 0) {
-    for (x = Size.X - 1; x >= Delta; --x)
+    for (x = mSize.X - 1; x >= Delta; --x)
       PowerPutPixel(x, Y, GetPixel(x - Delta, Y), AlphaMap ? GetAlpha(x - Delta, Y) : 255, AVERAGE_PRIORITY);
     for (x = 0; x < Delta; ++x)
       PowerPutPixel(x, Y, TRANSPARENT_COLOR, 255, AVERAGE_PRIORITY);
@@ -1498,7 +1525,7 @@ void bitmap::MoveLineHorizontally (int Y, int Delta) {
 
 
 void bitmap::InterLace () {
-  for (int y = 0; y < Size.Y; ++y) {
-    if (!(y % 3)) for (int x = 0; x < Size.X; ++x) if (Image[y][x] != 0) Image[y][x] = 1;
+  for (int y = 0; y < mSize.Y; ++y) {
+    if (!(y % 3)) for (int x = 0; x < mSize.X; ++x) if (Image[y][x] != 0) Image[y][x] = 1;
   }
 }
