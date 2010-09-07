@@ -349,6 +349,5 @@ void soundsystem::initSound () {}
 int soundsystem::addFile (const festring &filename) {}
 SoundFile *soundsystem::findMatchingSound (const festring &Buffer) {}
 void soundsystem::playSound (const festring &Buffer) {}
-SoundFile *soundsystem::findMatchingSound (const festring &Buffer) {}
 
 #endif

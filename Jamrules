@@ -1,21 +1,28 @@
+set-profile ;
+set-default-subdir-locates ;
+
+HAS_PCRE = [ lib-config-ex "pkg-config libpcre --libs" ] ;
+
+
 HDRS += $(TOP)/src/felib $(TOP)/src/game ;
+
 
 DEFINES += WIZARD ;
 
-ALL_LOCATE_TARGET = $(TOP)/_build ;
-ALL_LOCATE_LIB = $(TOP)/_build/libs ;
-ALL_LOCATE_BIN = $(TOP) ;
-
 
 if ! $(GLOBAL_SAVES) {
+  Echo "MSG: using local saves" ;
   DEFINES += LOCAL_SAVES ;
 }
 
-if ! $(NO_SOUND) {
+
+if $(USE_SOUND) && $(HAS_PCRE) {
+  Echo "MSG: sound support enabled" ;
   lib-config "pkg-config libpcre" ;
   LINKLIBS += -lSDL_mixer ;
   C++LINKLIBS += -lSDL_mixer ;
 } else {
+  Echo "MSG: sound support disabled; USE_SOUND=1 will enable it" ;
   DEFINES += DISABLE_SOUND ;
 }
 
@@ -23,19 +30,19 @@ if ! $(NO_SOUND) {
 #C++ = g++ ;
 #CC = gcc ;
 
-if $(DEBUG) {
-  OPTIM = -O0 -g ;
-  ECHO "MSG: DEBUG" ;
-} else if $(SIZE) {
-  OPTIM = -Os -fno-strict-aliasing ;
-  ECHO "MSG: optimizing for minimal size." ;
-} else if $(SPEED) {
-  OPTIM = -O3 -march=native -mtune=native -mfpmath=sse -fno-strict-aliasing ;
-  ECHO "MSG: optimizing for maximum speed." ;
-} else {
-  OPTIM = -O2 -fno-strict-aliasing ;
-  #ECHO "MSG: nooptimize build." ;
-}
+##if $(DEBUG) {
+##  OPTIM = -O0 -g ;
+##  ECHO "MSG: DEBUG" ;
+##} else if $(SIZE) {
+##  OPTIM = -Os -fno-strict-aliasing ;
+##  ECHO "MSG: optimizing for minimal size." ;
+##} else if $(SPEED) {
+##  OPTIM = -O3 -march=native -mtune=native -mfpmath=sse -fno-strict-aliasing ;
+##  ECHO "MSG: optimizing for maximum speed." ;
+##} else {
+##  OPTIM = -O2 -fno-strict-aliasing ;
+##  #ECHO "MSG: nooptimize build." ;
+##}
 
 if ! $(NOGDB) {
   OPTIM += -g ;
@@ -49,5 +56,8 @@ lib-config "sdl-config" ;
 
 #CCFLAGS += -DNDEBUG ;
 #C++FLAGS += -DNDEBUG ;
-CCFLAGS += -Wall ;
-C++FLAGS += -Wall ;
+#CCFLAGS += -Wall ;
+#C++FLAGS += -Wall ;
+
+OPTIM += -Wall ;
+OPTIM += -fno-strict-aliasing ;
