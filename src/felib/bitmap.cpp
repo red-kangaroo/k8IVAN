@@ -253,6 +253,37 @@ void bitmap::Save (cfestring &FileName) const {
 }
 
 
+#ifdef HAVE_IMLIB2
+void bitmap::SaveScaled (cfestring &fileName, double scale) const {
+  Imlib_Image img = imlib_create_image(mSize.X, mSize.Y);
+  imlib_context_set_image(img);
+  DATA32 *raw = imlib_image_get_data(); //brga
+  unsigned char *pp = (unsigned char *)raw;
+  for (int y = 0; y < mSize.Y; y++) {
+    for (int x = 0; x < mSize.X; x++) {
+      col16 Pixel = GetPixel(x, y);
+      unsigned char b = (Pixel << 3)&0xff;
+      unsigned char g = ((Pixel >> 5) << 2)&0xff;
+      unsigned char r = ((Pixel >> 11) << 3)&0xff;
+      *pp++ = b;
+      *pp++ = g;
+      *pp++ = r;
+      *pp++ = 255; //0?
+    }
+  }
+  //
+  int newW = (int)(scale*mSize.X);
+  int newH = (int)(scale*mSize.Y);
+  Imlib_Image i2 = imlib_create_cropped_scaled_image(0, 0, mSize.X, mSize.Y, newW, newH);
+  imlib_free_image();
+  imlib_context_set_image(i2);
+  imlib_image_set_format("png");
+  imlib_save_image(fileName.CStr());
+  imlib_free_image();
+}
+#endif
+
+
 void bitmap::Fill (v2 TopLeft, int Width, int Height, col16 Color) { Fill(TopLeft.X, TopLeft.Y, Width, Height, Color); }
 void bitmap::Fill (int X, int Y, v2 FillSize, col16 Color) { Fill(X, Y, FillSize.X, FillSize.Y, Color); }
 void bitmap::Fill (v2 TopLeft, v2 FillSize, col16 Color) { Fill(TopLeft.X, TopLeft.Y, FillSize.X, FillSize.Y, Color); }

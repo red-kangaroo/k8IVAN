@@ -21,6 +21,16 @@
 rawbitmap::rawbitmap (cfestring &FileName) {
   inputfile File(FileName.CStr(), 0, false);
   if (!File.IsOpen()) ABORT("Bitmap %s not found!", FileName.CStr());
+  // simple checks
+  // http://www.qzx.com/pc-gpe/pcx.txt
+  if (File.Get() != 10) ABORT("Invalid bitmap format: %s!", FileName.CStr());
+  switch (File.Get()) {
+    case 4: case 5: break;
+    default: ABORT("Invalid bitmap version: %s!", FileName.CStr());
+  }
+  if (File.Get() != 1) ABORT("Invalid bitmap encoding: %s!", FileName.CStr());
+  if (File.Get() != 8) ABORT("Invalid bitmap BPP: %s!", FileName.CStr());
+  // FIXME: bytes-per-scanline is even, fix the loader
   File.SeekPosEnd(-768);
   Palette = new uchar[768];
   File.Read(reinterpret_cast<char *>(Palette), 768);
@@ -31,8 +41,8 @@ rawbitmap::rawbitmap (cfestring &FileName) {
   Size.Y += (File.Get()<<8)+1;
   File.SeekPosBegin(128);
   Alloc2D(PaletteBuffer, Size.Y, Size.X);
-  paletteindex* Buffer = PaletteBuffer[0];
-  paletteindex* End = &PaletteBuffer[Size.Y-1][Size.X];
+  paletteindex *Buffer = PaletteBuffer[0];
+  paletteindex *End = &PaletteBuffer[Size.Y-1][Size.X];
   while (Buffer != End) {
     int Char1 = File.Get();
     if (Char1 > 192) {
