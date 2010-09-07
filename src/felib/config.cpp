@@ -182,7 +182,7 @@ void stringoption::LoadValue (inputfile &SaveFile) {
 
 
 /* ??? */
-void numberoption::SaveValue(std::ofstream &SaveFile) const { SaveFile << Value; }
+void numberoption::SaveValue (std::ofstream &SaveFile) const { SaveFile << Value; }
 void numberoption::LoadValue (inputfile &SaveFile) { Value = SaveFile.ReadNumber(); }
 void truthoption::SaveValue (std::ofstream &SaveFile) const { SaveFile << Value; }
 void truthoption::LoadValue (inputfile &SaveFile) { Value = SaveFile.ReadNumber(); }

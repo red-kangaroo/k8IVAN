@@ -23,8 +23,7 @@
 
 
 /* Shouldn't be initialized here! */
-cchar *globalerrorhandler::BugMsg =
-  "\n\nPlease don't send your bug reports, i don't give a shit.\n";
+cchar *globalerrorhandler::BugMsg = "\n\nPlease don't send your bug reports, i don't give a shit.\n";
 
 void (*globalerrorhandler::OldNewHandler) () = 0;
 

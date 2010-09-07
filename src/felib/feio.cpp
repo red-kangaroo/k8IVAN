@@ -205,186 +205,120 @@ int iosystem::Menu (cbitmap *BackGround, v2 Pos, cfestring &Topic, cfestring &sM
 
    The function returns ABORTED (when user aborts with esc) or
    NORMAL_EXIT. */
-
-int iosystem::StringQuestion(festring& Input,
-           cfestring& Topic,
-           v2 Pos, col16 Color,
-           festring::sizetype MinLetters,
-           festring::sizetype MaxLetters,
-           truth Fade, truth AllowExit,
-           stringkeyhandler StringKeyHandler)
+int iosystem::StringQuestion (festring &Input, cfestring &Topic, v2 Pos, col16 Color,
+  festring::sizetype MinLetters, festring::sizetype MaxLetters, truth Fade, truth AllowExit,
+  stringkeyhandler StringKeyHandler)
 {
   v2 V(RES.X, 9); ///???????????
   bitmap BackUp(V, 0);
-  blitdata B = { &BackUp,
-     { Pos.X, Pos.Y + 10 },
-     { 0, 0 },
-     { (MaxLetters << 3) + 9, 9 },
-     { 0 },
-     0,
-     0 };
-
-  if(Fade)
-  {
+  blitdata B = {
+    &BackUp,
+    { Pos.X, Pos.Y + 10 },
+    { 0, 0 },
+    { (MaxLetters << 3) + 9, 9 },
+    { 0 },
+    0,
+    0
+  };
+  if (Fade) {
     bitmap Buffer(RES, 0);
     Buffer.ActivateFastFlag();
     FONT->Printf(&Buffer, Pos, Color, "%s", Topic.CStr());
-    FONT->Printf(&Buffer, v2(Pos.X, Pos.Y + 10), Color, "%s_", Input.CStr());
+    FONT->Printf(&Buffer, v2(Pos.X, Pos.Y+10), Color, "%s_", Input.CStr());
     Buffer.FadeToScreen();
-  }
-  else
+  } else {
     DOUBLE_BUFFER->NormalBlit(B);
-
+  }
   truth TooShort = false;
   FONT->Printf(DOUBLE_BUFFER, Pos, Color, "%s", Topic.CStr());
   Swap(B.Src, B.Dest);
-
-  for(int LastKey = 0;; LastKey = 0)
-  {
+  for (int LastKey = 0;; LastKey = 0) {
     B.Bitmap = DOUBLE_BUFFER;
     BackUp.NormalBlit(B);
-    FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y + 10),
-     Color, "%s_", Input.CStr());
-
-    if(TooShort)
-    {
-      FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y + 30),
-       Color, "Too short!");
+    FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y+10), Color, "%s_", Input.CStr());
+    if (TooShort) {
+      FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y+30), Color, "Too short!");
       TooShort = false;
     }
-
     graphics::BlitDBToScreen();
-
-    if(TooShort)
-      DOUBLE_BUFFER->Fill(Pos.X, Pos.Y + 30, 81, 9, 0);
-
-    /* if LastKey is less than 20 it is a control
-       character not available in the font */
-
-    while(!(IsAcceptableForStringQuestion(LastKey)))
-    {
+    if (TooShort) DOUBLE_BUFFER->Fill(Pos.X, Pos.Y+30, 81, 9, 0);
+    /* if LastKey is less than 20 it is a control character not available in the font */
+    while (!(IsAcceptableForStringQuestion(LastKey))) {
       LastKey = GET_KEY(false);
-
-      if(StringKeyHandler != 0 && StringKeyHandler(LastKey, Input))
-      {
-  LastKey = 0;
-  break;
-      }
+      if (StringKeyHandler != 0 && StringKeyHandler(LastKey, Input)) { LastKey = 0; break; }
     }
-
-    if(!LastKey)
-      continue;
-
-    if(LastKey == KEY_ESC && AllowExit)
-      return ABORTED;
-
-    if(LastKey == KEY_BACK_SPACE)
-    {
-      if(!Input.IsEmpty())
-  Input.Resize(Input.GetSize() - 1);
-
+    if (!LastKey) continue;
+    if (LastKey == KEY_ESC && AllowExit) return ABORTED;
+    if (LastKey == KEY_BACK_SPACE) {
+      if (!Input.IsEmpty()) Input.Resize(Input.GetSize()-1);
       continue;
     }
-
     if (LastKey == KEY_ENTER) {
       if (Input.GetSize() >= MinLetters) break;
-      else {
-        TooShort = true;
-        continue;
-      }
+      TooShort = true;
+      continue;
     }
-
-    if(LastKey >= 0x20 && Input.GetSize() < MaxLetters
-       && (LastKey != ' ' || !Input.IsEmpty()))
-      Input << char(LastKey);
+    if (LastKey >= 0x20 && Input.GetSize() < MaxLetters && (LastKey != ' ' || !Input.IsEmpty())) Input << char(LastKey);
   }
-
   /* Delete all the trailing spaces */
-
   festring::sizetype LastAlpha = festring::NPos;
-
-  for(festring::sizetype c = 0; c < Input.GetSize(); ++c)
-    if(Input[c] != ' ')
-      LastAlpha = c;
-
+  for (festring::sizetype c = 0; c < Input.GetSize(); ++c) if (Input[c] != ' ') LastAlpha = c;
   /* note: festring::NPos + 1 == 0 */
-
-  Input.Resize(LastAlpha + 1);
-
+  Input.Resize(LastAlpha+1);
   return NORMAL_EXIT;
 }
+
 
 /* Ask a question defined by Topic. This function only accepts numbers.
    The question is drawn to cordinates given by Pos. All fonts are Color
    coled. If Fade is true the question is asked on a black background
    and the transition to that is a fade. */
-
-long iosystem::NumberQuestion(cfestring& Topic, v2 Pos, col16 Color,
-            truth Fade, truth ReturnZeroOnEsc)
-{
+long iosystem::NumberQuestion (cfestring &Topic, v2 Pos, col16 Color, truth Fade, truth ReturnZeroOnEsc) {
   v2 V(RES.X, 9); ///???????????
   bitmap BackUp(V, 0);
-  blitdata B = { &BackUp,
-     { Pos.X, Pos.Y + 10 },
-     { 0, 0 },
-     { 105, 9 },
-     { 0 },
-     0,
-     0 };
-
-  if(Fade)
-  {
+  blitdata B = {
+    &BackUp,
+    { Pos.X, Pos.Y + 10 },
+    { 0, 0 },
+    { 105, 9 },
+    { 0 },
+    0,
+    0
+  };
+  if (Fade) {
     bitmap Buffer(RES, 0);
     Buffer.ActivateFastFlag();
     FONT->Printf(&Buffer, Pos, Color, "%s", Topic.CStr());
-    FONT->Printf(&Buffer, v2(Pos.X, Pos.Y + 10), Color, "_");
+    FONT->Printf(&Buffer, v2(Pos.X, Pos.Y+10), Color, "_");
     Buffer.FadeToScreen();
-  }
-  else
+  } else {
     DOUBLE_BUFFER->NormalBlit(B);
-
+  }
   festring Input;
   FONT->Printf(DOUBLE_BUFFER, Pos, Color, "%s", Topic.CStr());
   Swap(B.Src, B.Dest);
-
-  for(int LastKey = 0;; LastKey = 0)
-  {
+  for (int LastKey = 0;; LastKey = 0) {
     B.Bitmap = DOUBLE_BUFFER;
     BackUp.NormalBlit(B);
-    FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y + 10),
-     Color, "%s_", Input.CStr());
+    FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y+10), Color, "%s_", Input.CStr());
     graphics::BlitDBToScreen();
-
-    while(!isdigit(LastKey) && LastKey != KEY_BACK_SPACE
-    && LastKey != KEY_ENTER && LastKey != KEY_ESC
-    && (LastKey != '-' || !Input.IsEmpty()))
+    while (!isdigit(LastKey) && LastKey != KEY_BACK_SPACE && LastKey != KEY_ENTER && LastKey != KEY_ESC &&
+           (LastKey != '-' || !Input.IsEmpty()))
       LastKey = GET_KEY(false);
-
-    if(LastKey == KEY_BACK_SPACE)
-    {
-      if(!Input.IsEmpty())
-  Input.Resize(Input.GetSize() - 1);
-
+    if (LastKey == KEY_BACK_SPACE) {
+      if (!Input.IsEmpty()) Input.Resize(Input.GetSize()-1);
       continue;
     }
-
-    if(LastKey == KEY_ENTER)
-      break;
-
-    if(LastKey == KEY_ESC)
-    {
-      if(ReturnZeroOnEsc)
-  return 0;
-
+    if (LastKey == KEY_ENTER) break;
+    if (LastKey == KEY_ESC) {
+      if (ReturnZeroOnEsc) return 0;
       break;
     }
-
-    if(Input.GetSize() < 12)
-      Input << char(LastKey);
+    if (Input.GetSize() < 12) Input << char(LastKey);
   }
-
   return atoi(Input.CStr());
 }
+
 
 /* Asks a question defined by Topic and the answer is numeric. The value is
    represented by a scroll bar. The topic is drawn to position Pos. Step is
@@ -395,226 +329,142 @@ long iosystem::NumberQuestion(cfestring& Topic, v2 Pos, col16 Color,
    the scrollbar. Although '<' and '>' also work always. If Fade is true
    the screen is faded to black before drawing th scrollbar. If Handler is
    set it is called always when the value of the scroll bar changes. */
-
-long iosystem::ScrollBarQuestion(cfestring& Topic, v2 Pos,
-         long StartValue, long Step,
-         long Min, long Max, long AbortValue,
-         col16 TopicColor, col16 Color1,
-         col16 Color2, int LeftKey, int RightKey,
-         truth Fade, void (*Handler)(long))
+long iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, long StartValue, long Step,
+  long Min, long Max, long AbortValue, col16 TopicColor, col16 Color1,
+  col16 Color2, int LeftKey, int RightKey, truth Fade, void (*Handler)(long))
 {
   long BarValue = StartValue;
   festring Input;
   truth FirstTime = true;
   v2 V(RES.X, 20); ///???????????
   bitmap BackUp(V, 0);
-
-  if(Fade)
-  {
+  if (Fade) {
     bitmap Buffer(RES, 0);
     Buffer.ActivateFastFlag();
-    FONT->Printf(&Buffer, Pos, TopicColor,
-     "%s %ld", Topic.CStr(), StartValue);
-    FONT->Printf(&Buffer, v2(Pos.X + (Topic.GetSize() << 3) + 8, Pos.Y + 1),
-     TopicColor, "_");
-    Buffer.DrawHorizontalLine(Pos.X + 1, Pos.X + 201,
-            Pos.Y + 15, Color2, false);
-    Buffer.DrawVerticalLine(Pos.X + 201, Pos.Y + 12,
-          Pos.Y + 18, Color2, false);
-    Buffer.DrawHorizontalLine(Pos.X + 1, Pos.X + 1
-            + (BarValue - Min) * 200 / (Max - Min),
-            Pos.Y + 15, Color1, true);
+    FONT->Printf(&Buffer, Pos, TopicColor, "%s %ld", Topic.CStr(), StartValue);
+    FONT->Printf(&Buffer, v2(Pos.X + (Topic.GetSize() << 3) + 8, Pos.Y + 1), TopicColor, "_");
+    Buffer.DrawHorizontalLine(Pos.X + 1, Pos.X + 201, Pos.Y + 15, Color2, false);
+    Buffer.DrawVerticalLine(Pos.X + 201, Pos.Y + 12, Pos.Y + 18, Color2, false);
+    Buffer.DrawHorizontalLine(Pos.X + 1, Pos.X + 1 + (BarValue - Min) * 200 / (Max - Min), Pos.Y + 15, Color1, true);
     Buffer.DrawVerticalLine(Pos.X + 1, Pos.Y + 12, Pos.Y + 18, Color1, true);
-    Buffer.DrawVerticalLine(Pos.X + 1 + (BarValue - Min)
-          * 200 / (Max - Min), Pos.Y + 12,
-          Pos.Y + 18, Color1, true);
+    Buffer.DrawVerticalLine(Pos.X + 1 + (BarValue - Min) * 200 / (Max - Min), Pos.Y + 12, Pos.Y + 18, Color1, true);
     Buffer.FadeToScreen();
-  }
-  else
-  {
-    blitdata B = { &BackUp,
-       { Pos.X, Pos.Y },
-       { 0, 0 },
-       { RES.X, 20 },
-       { 0 },
-       0,
-       0 };
-
+  } else {
+    blitdata B = {
+      &BackUp,
+      { Pos.X, Pos.Y },
+      { 0, 0 },
+      { RES.X, 20 },
+      { 0 },
+      0,
+      0
+    };
     DOUBLE_BUFFER->NormalBlit(B);
   }
-
-  blitdata B1 = { 0,
-      { 0, 0 },
-      { Pos.X, Pos.Y },
-      { ((Topic.GetSize() + 14) << 3) + 1, 10 },
-      { 0 },
-      0,
-      0 };
-  blitdata B2 = { 0,
-      { 0, 10 },
-      { Pos.X, Pos.Y + 10 },
-      { 203, 10 },
-      { 0 },
-      0,
-      0 };
-
-  for(int LastKey = 0;; LastKey = 0)
-  {
-    if(!FirstTime)
-      BarValue = Input.IsEmpty() ? Min : atoi(Input.CStr());
-
-    if(BarValue < Min)
-      BarValue = Min;
-
-    if(BarValue > Max)
-      BarValue = Max;
-
-    if(Handler)
-      Handler(BarValue);
-
+  blitdata B1 = {
+    0,
+    { 0, 0 },
+    { Pos.X, Pos.Y },
+    { ((Topic.GetSize() + 14) << 3) + 1, 10 },
+    { 0 },
+    0,
+    0
+  };
+  blitdata B2 = {
+    0,
+    { 0, 10 },
+    { Pos.X, Pos.Y + 10 },
+    { 203, 10 },
+    { 0 },
+    0,
+    0
+  };
+  for (int LastKey = 0;; LastKey = 0) {
+    if (!FirstTime) BarValue = Input.IsEmpty() ? Min : atoi(Input.CStr());
+    if (BarValue < Min) BarValue = Min;
+    if (BarValue > Max) BarValue = Max;
+    if (Handler) Handler(BarValue);
     B1.Bitmap = B2.Bitmap = DOUBLE_BUFFER;
     BackUp.NormalBlit(B1);
     BackUp.NormalBlit(B2);
-
-    if(FirstTime)
-    {
-      FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor,
-       "%s %ld", Topic.CStr(), StartValue);
-      FONT->Printf(DOUBLE_BUFFER,
-       v2(Pos.X + (Topic.GetSize() << 3) + 8, Pos.Y + 1),
-       TopicColor, "_");
+    if (FirstTime) {
+      FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor, "%s %ld", Topic.CStr(), StartValue);
+      FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + (Topic.GetSize() << 3) + 8, Pos.Y + 1), TopicColor, "_");
       FirstTime = false;
+    } else {
+      FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor, "%s %s", Topic.CStr(), Input.CStr());
+      FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + ((Topic.GetSize() + Input.GetSize()) << 3) + 8, Pos.Y + 1), TopicColor, "_");
     }
-    else
-    {
-      FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor,
-       "%s %s", Topic.CStr(), Input.CStr());
-      FONT->Printf(DOUBLE_BUFFER,
-       v2(Pos.X + ((Topic.GetSize() + Input.GetSize()) << 3) + 8,
-       Pos.Y + 1), TopicColor, "_");
-    }
-
-    DOUBLE_BUFFER->DrawHorizontalLine(Pos.X + 1, Pos.X + 201,
-              Pos.Y + 15, Color2, false);
-    DOUBLE_BUFFER->DrawVerticalLine(Pos.X + 201, Pos.Y + 12,
-            Pos.Y + 18, Color2, false);
-    DOUBLE_BUFFER->DrawHorizontalLine(Pos.X + 1, Pos.X + 1
-              + (BarValue - Min) * 200 / (Max - Min),
-              Pos.Y + 15, Color1, true);
-    DOUBLE_BUFFER->DrawVerticalLine(Pos.X + 1, Pos.Y + 12,
-            Pos.Y + 18, Color1, true);
-    DOUBLE_BUFFER->DrawVerticalLine(Pos.X + 1 + (BarValue - Min)
-            * 200 / (Max - Min), Pos.Y + 12,
-            Pos.Y + 18, Color1, true);
+    DOUBLE_BUFFER->DrawHorizontalLine(Pos.X + 1, Pos.X + 201, Pos.Y + 15, Color2, false);
+    DOUBLE_BUFFER->DrawVerticalLine(Pos.X + 201, Pos.Y + 12, Pos.Y + 18, Color2, false);
+    DOUBLE_BUFFER->DrawHorizontalLine(Pos.X + 1, Pos.X + 1 + (BarValue - Min) * 200 / (Max - Min), Pos.Y + 15, Color1, true);
+    DOUBLE_BUFFER->DrawVerticalLine(Pos.X + 1, Pos.Y + 12, Pos.Y + 18, Color1, true);
+    DOUBLE_BUFFER->DrawVerticalLine(Pos.X + 1 + (BarValue - Min) * 200 / (Max - Min), Pos.Y + 12, Pos.Y + 18, Color1, true);
     graphics::BlitDBToScreen();
-
-    while(!isdigit(LastKey) && LastKey != KEY_ESC
-    && LastKey != KEY_BACK_SPACE && LastKey != KEY_ENTER
-    && LastKey != KEY_SPACE && LastKey != '<'
-    && LastKey != '>' && LastKey != RightKey && LastKey != LeftKey)
+    while (!isdigit(LastKey) && LastKey != KEY_ESC && LastKey != KEY_BACK_SPACE && LastKey != KEY_ENTER &&
+           LastKey != KEY_SPACE && LastKey != '<' && LastKey != '>' && LastKey != RightKey && LastKey != LeftKey)
       LastKey = GET_KEY(false);
-
-    if(LastKey == KEY_ESC)
-    {
+    if (LastKey == KEY_ESC) {
       BarValue = AbortValue;
       break;
     }
-
-    if(LastKey == KEY_BACK_SPACE)
-    {
-      if(!Input.IsEmpty())
-  Input.Resize(Input.GetSize() - 1);
-
+    if (LastKey == KEY_BACK_SPACE) {
+      if (!Input.IsEmpty()) Input.Resize(Input.GetSize()-1);
       continue;
     }
-
-    if(LastKey == KEY_ENTER || LastKey == KEY_SPACE)
-      break;
-
-    if(LastKey == '<' || LastKey == LeftKey)
-    {
+    if (LastKey == KEY_ENTER || LastKey == KEY_SPACE) break;
+    if (LastKey == '<' || LastKey == LeftKey) {
       BarValue -= Step;
-
-      if(BarValue < Min)
-  BarValue = Min;
-
+      if (BarValue < Min) BarValue = Min;
       Input.Empty();
       Input << BarValue;
       continue;
     }
-
-    if(LastKey == '>' || LastKey == RightKey)
-    {
+    if (LastKey == '>' || LastKey == RightKey) {
       BarValue += Step;
-
-      if(BarValue > Max)
-  BarValue = Max;
-
+      if (BarValue > Max) BarValue = Max;
       Input.Empty();
       Input << BarValue;
       continue;
     }
-
-    if(Input.GetSize() < 12)
-      Input << char(LastKey);
+    if (Input.GetSize() < 12) Input << char(LastKey);
   }
-
   return BarValue;
 }
 
+
 /* DirectoryName is the directory where the savefiles are located. Returns
    the selected file or "" if an error occures or if no files are found. */
-
-festring iosystem::ContinueMenu(col16 TopicColor, col16 ListColor,
-        cfestring& DirectoryName)
-{
-  DIR* dp;
-  struct dirent* ep;
+festring iosystem::ContinueMenu (col16 TopicColor, col16 ListColor, cfestring &DirectoryName) {
+  DIR *dp;
+  struct dirent *ep;
   festring Buffer;
   felist List(CONST_S("Choose a file and be sorry:"), TopicColor);
   dp = opendir(DirectoryName.CStr());
-
-  if(dp)
-  {
-    while((ep = readdir(dp)))
-    {
+  if (dp) {
+    while ((ep = readdir(dp))) {
       /* Buffer = ep->d_name; Doesn't work because of a festring bug */
       Buffer.Empty();
       Buffer << ep->d_name;
       /* Add to List all save files */
-      if(Buffer.Find(".sav") != Buffer.NPos)
-  List.AddEntry(Buffer, ListColor);
+      if (Buffer.Find(".sav") != Buffer.NPos) List.AddEntry(Buffer, ListColor);
     }
-
-    if(List.IsEmpty())
-    {
+    if (List.IsEmpty()) {
       TextScreen(CONST_S("You don't have any previous saves."), ZERO_V2, TopicColor);
       return "";
-    }
-    else
-    {
+    } else {
       int Check = List.Draw();
-
-      if(Check & FELIST_ERROR_BIT)
-  return "";
-
+      if (Check & FELIST_ERROR_BIT) return "";
       return List.GetEntry(Check);
     }
-
   }
-
   return "";
 }
 
-truth iosystem::IsAcceptableForStringQuestion(char Key)
-{
-  if(Key == '|' || Key == '<' || Key == '>' || Key == '?' || Key == '*'
-     || Key == '/' || Key == '\\' || Key == ':')
-    return false;
 
-  if(Key < 0x20
-     && !(Key == KEY_BACK_SPACE || Key == KEY_ENTER || Key == KEY_ESC))
+truth iosystem::IsAcceptableForStringQuestion (char Key) {
+  if (Key == '|' || Key == '<' || Key == '>' || Key == '?' || Key == '*' || Key == '/' || Key == '\\' || Key == ':')
     return false;
-
+  if (Key < 0x20 && !(Key == KEY_BACK_SPACE || Key == KEY_ENTER || Key == KEY_ESC)) return false;
   return true;
 }

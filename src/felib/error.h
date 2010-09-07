@@ -14,19 +14,23 @@
 
 #include "felibdef.h"
 
-#define ABORT globalerrorhandler::Abort
+#define ABORT  globalerrorhandler::Abort
 
-class globalerrorhandler
-{
- public:
-  static void Install();
-  static void DeInstall();
-  static void NO_RETURN LIKE_PRINTF(1, 2) Abort(cchar*, ...);
-  static cchar* GetBugMsg() { return BugMsg; }
- private:
-  static cchar* BugMsg;
-  static void NewHandler();
-  static void (*OldNewHandler)();
+
+class globalerrorhandler {
+public:
+  static void Install ();
+  static void DeInstall ();
+  static void NO_RETURN LIKE_PRINTF(1, 2) Abort (cchar *, ...);
+  static cchar *GetBugMsg () { return BugMsg; }
+
+private:
+  static void NewHandler ();
+  static void (*OldNewHandler) ();
+
+private:
+  static cchar *BugMsg;
 };
+
 
 #endif
