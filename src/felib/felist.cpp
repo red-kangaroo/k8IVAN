@@ -74,6 +74,8 @@ struct felistdescription {
 
 
 felist::felist (cfestring &Topic, col16 TopicColor, uint Maximum) :
+  mSaveSelector(false),
+  mSaveDir(""),
   Maximum(Maximum),
   Selected(0),
   Pos(10, 10),
@@ -240,6 +242,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
   uint LastFillBottom = Pos.Y+23+Description.size()*10;
   DrawDescription(Buffer);
   uint c, i; // c == entry index, i == selectable index
+  int selIdx = -1;
   for (c = 0, i = 0; i != PageBegin; ++c) if (Entry[c]->Selectable) ++i;
   while (!Entry[c]->Selectable && Entry[c]->String.IsEmpty()) ++c;
   std::vector<festring> Chapter;
@@ -255,6 +258,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
     }
     Str << Entry[c]->String;
     bool selected = (Flags & SELECTABLE && Entry[c]->Selectable && Selected == i);
+    if (selected) selIdx = (int)c;
     if (Entry[c]->ImageKey != NO_IMAGE) {
       if (Str.GetSize() <= (Width-50)>>3) {
         Buffer->Fill(Pos.X+3, LastFillBottom, Width-6, 20, !selected ? BackColor : selBack);
@@ -307,6 +311,36 @@ truth felist::DrawPage (bitmap *Buffer) const {
       break;
     }
     if (Entry[c++]->Selectable) ++i;
+  }
+  if (selIdx != -1 && mSaveSelector) {
+#ifdef HAVE_IMLIB2
+    bitmap bmp(ZERO_V2);
+    festring imgName = Entry[selIdx]->String;
+    int pos = imgName.FindLast(".sav");
+    if (pos != festring::NPos) {
+      imgName.Erase(pos, 4);
+      imgName = mSaveDir+imgName+".png";
+      //fprintf(stderr, "sel=%d; img=%s\n", selIdx, imgName.CStr());
+      if (bmp.LoadImg(imgName)) {
+        //fprintf(stderr, " LOADED! %dx%d\n", bmp.GetSize().X, bmp.GetSize().Y);
+        int x = Buffer->GetSize().X-bmp.GetSize().X-2;
+        int y = Buffer->GetSize().Y-bmp.GetSize().Y-2;
+        int w = bmp.GetSize().X;
+        int h = bmp.GetSize().Y;
+        blitdata bd = {
+          Buffer,
+          {0, 0}, //src
+          {x, y}, //dest
+          {w, h}, //border
+          0, // luminance/flags
+          0xDEAD, // mask color
+          0 // custom data
+        };
+        bmp.NormalBlit(bd);
+        Buffer->DrawRectangle(x-2, y-2, x+w, y+h, DARK_GRAY, true);
+      }
+    }
+#endif
   }
   return c == Entry.size()-1;
 }

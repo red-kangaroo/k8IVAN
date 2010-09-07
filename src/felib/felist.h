@@ -15,6 +15,7 @@
 #include <vector>
 
 #include "v2.h"
+#include "festring.h"
 
 
 class outputfile;
@@ -67,10 +68,16 @@ public:
   static truth GetFastListMode ();
   static void SetFastListMode (truth modeon);
 
+  truth isSaveSelector () const { return mSaveSelector; }
+  void ResetSaveSelector () { mSaveSelector = false; }
+  void SetSaveSelector (cfestring &dir) { mSaveDir = dir; mSaveSelector = true; }
+
 private:
   void DrawDescription (bitmap *Bitmap) const;
 
 private:
+  truth mSaveSelector;
+  festring mSaveDir;
   std::vector<felistentry *> Entry;
   std::vector<felistdescription *> Description;
   uint PageBegin;

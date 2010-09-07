@@ -257,7 +257,7 @@ void bitmap::Save (cfestring &FileName) const {
 void bitmap::SaveScaled (cfestring &fileName, double scale) const {
   Imlib_Image img = imlib_create_image(mSize.X, mSize.Y);
   imlib_context_set_image(img);
-  DATA32 *raw = imlib_image_get_data(); //brga
+  DATA32 *raw = imlib_image_get_data(); //bgra
   unsigned char *pp = (unsigned char *)raw;
   for (int y = 0; y < mSize.Y; y++) {
     for (int x = 0; x < mSize.X; x++) {
@@ -268,7 +268,7 @@ void bitmap::SaveScaled (cfestring &fileName, double scale) const {
       *pp++ = b;
       *pp++ = g;
       *pp++ = r;
-      *pp++ = 255; //0?
+      *pp++ = 255;
     }
   }
   //
@@ -279,6 +279,37 @@ void bitmap::SaveScaled (cfestring &fileName, double scale) const {
   imlib_context_set_image(i2);
   imlib_image_set_format("png");
   imlib_save_image(fileName.CStr());
+  imlib_free_image();
+}
+
+
+truth bitmap::LoadImg (cfestring &fileName) {
+  Imlib_Image img = imlib_load_image(fileName.CStr());
+  if (!img) return false;
+  delete [] Image;
+  delete [] AlphaMap;
+  delete [] PriorityMap;
+  delete [] RandMap;
+  PriorityMap = 0;
+  RandMap = 0;
+  AlphaMap = 0;
+  imlib_context_set_image(img);
+  mSize.X = imlib_image_get_width();
+  mSize.Y = imlib_image_get_height();
+  Alloc2D(Image, mSize.Y, mSize.X);
+  //Alloc2D(AlphaMap, mSize.Y, mSize.X);
+  const DATA32 *raw = imlib_image_get_data_for_reading_only(); //bgra
+  const unsigned char *pp = (const unsigned char *)raw;
+  for (int y = 0; y < mSize.Y; y++) {
+    for (int x = 0; x < mSize.X; x++) {
+      unsigned char b = *pp++;
+      unsigned char g = *pp++;
+      unsigned char r = *pp++;
+      //unsigned char a = *pp++;
+      pp++; // alpha
+      PutPixel(x, y, MakeRGB16(r, g, b));
+    }
+  }
   imlib_free_image();
 }
 #endif

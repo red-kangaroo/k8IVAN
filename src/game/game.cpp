@@ -724,6 +724,10 @@ void game::DrawEverythingNoBlit (truth AnimationDraw) {
 
 
 truth game::Save (cfestring &SaveName) {
+#ifdef HAVE_IMLIB2
+  DrawEverythingNoBlit();
+  DOUBLE_BUFFER->SaveScaled(SaveName+".png", 0.8); //640; 320
+#endif
   outputfile SaveFile(SaveName+".sav");
   SaveFile << int(SAVE_FILE_VERSION);
   SaveFile << GameScript << CurrentDungeonIndex << CurrentLevelIndex << Camera;
@@ -898,9 +902,11 @@ void game::RemoveSaves (truth RealSavesAlso) {
   if (RealSavesAlso) {
     remove(festring(SaveName()+".sav").CStr());
     remove(festring(SaveName()+".wm").CStr());
+    remove(festring(SaveName()+".png").CStr());
   }
   remove(festring(AutoSaveFileName+".sav").CStr());
   remove(festring(AutoSaveFileName+".wm").CStr());
+  remove(festring(AutoSaveFileName+".png").CStr());
   festring File;
   for (int i = 1; i < Dungeons; ++i) {
     for (int c = 0; c < GetDungeon(i)->GetLevels(); ++c) {

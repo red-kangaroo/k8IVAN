@@ -50,6 +50,7 @@ public:
   void Save (cfestring &) const;
 #ifdef HAVE_IMLIB2
   void SaveScaled (cfestring &fileName, double scale) const;
+  truth LoadImg (cfestring &fileName);
 #endif
   void PutPixel (int X, int Y, col16 Color) { Image[Y][X] = Color; }
   void PutPixel (v2 Pos, col16 Color) { Image[Pos.Y][Pos.X] = Color; }

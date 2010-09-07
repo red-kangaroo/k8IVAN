@@ -440,6 +440,7 @@ festring iosystem::ContinueMenu (col16 TopicColor, col16 ListColor, cfestring &D
   struct dirent *ep;
   festring Buffer;
   felist List(CONST_S("Choose a file and be sorry:"), TopicColor);
+  List.SetSaveSelector(DirectoryName);
   dp = opendir(DirectoryName.CStr());
   if (dp) {
     while ((ep = readdir(dp))) {
