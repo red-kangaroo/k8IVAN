@@ -21,6 +21,7 @@
 #define GET_KEY   globalwindowhandler::GetKey
 #define READ_KEY  globalwindowhandler::ReadKey
 #define GET_TICK  globalwindowhandler::GetTick
+#define DELAY     globalwindowhandler::Delay
 
 
 class globalwindowhandler {
@@ -39,6 +40,8 @@ public:
   static void Init ();
   static void SetQuitMessageHandler (truth (*What)()) { QuitMessageHandler = What; }
   static ulong UpdateTick() { return Tick = SDL_GetTicks()/40; }
+
+  static void Delay (int ms);
 
 private:
   static void ProcessMessage (SDL_Event *Event);

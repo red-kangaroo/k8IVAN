@@ -2156,12 +2156,16 @@ void character::GoOn (go *Go, truth FirstStep) {
     if (Square && CanMoveOn(Square)) ++OKDirectionsCounter;
   }
 
+  truth doWait = false;
   if (!Go->IsWalkingInOpen()) {
     if (OKDirectionsCounter > 2) {
       Go->Terminate(false);
       return;
     }
-  } else if (OKDirectionsCounter <= 2) Go->SetIsWalkingInOpen(false);
+  } else {
+    if (OKDirectionsCounter <= 2) Go->SetIsWalkingInOpen(false);
+    doWait = IsPlayer();
+  }
 
   square *BeginSquare = GetSquareUnder();
 
@@ -2174,9 +2178,10 @@ void character::GoOn (go *Go, truth FirstStep) {
 
   if (GetStackUnder()->GetVisibleItems(this)) {
     Go->Terminate(false);
-    return;
+    doWait = false;
   }
 
+  if (doWait && ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
   game::DrawEverything();
 }
 

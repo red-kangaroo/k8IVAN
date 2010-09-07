@@ -356,7 +356,7 @@ truth commandsystem::Drink (character *Char) {
 }
 
 
-truth commandsystem::Consume(character* Char, cchar *ConsumeVerb, sorter Sorter) {
+truth commandsystem::Consume (character* Char, cchar *ConsumeVerb, sorter Sorter) {
   lsquare *Square = Char->GetLSquareUnder();
   stack *Inventory = Char->GetStack();
   stack *StackUnder = Square->GetStack();

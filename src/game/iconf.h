@@ -42,6 +42,8 @@ public:
   static void Initialize ();
   static void Show ();
 
+  static int GetGoingDelay ();
+
   static festring GetMyDir ();
 
 private:
@@ -58,6 +60,10 @@ private:
   static void FastListChanger (truthoption *, truth);
   static void ContrastHandler (long);
   static void BackGroundDrawer ();
+
+  static void GoingDelayDisplayer (const numberoption *O, festring &Entry);
+  static truth GoingDelayChangeInterface (numberoption *O);
+  static void GoingDelayChanger (numberoption *O, long What);
 
 private:
   static stringoption DefaultName;
@@ -77,6 +83,7 @@ private:
   static truthoption FastListMode;
   static truthoption PlaySounds;
   static truthoption ConfirmCorpses;
+  static numberoption GoingDelay;
   /*k8*/
   static col24 ContrastLuminance;
 };

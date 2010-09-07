@@ -171,12 +171,11 @@ Dungeon UNDER_WATER_TUNNEL;
         EntryIndex = STAIRS_UP;
       }
 
-      /*k8: you have to buy lantern first!
+      /*k8: you have to buy lantern first! */
       Square, Pos 2,1;
       {
         Items == lantern;
       }
-      */
       /*
       if @player_name == "_k8_"; {
         Square, Pos 2,1; { Items == holyhandgrenade; }

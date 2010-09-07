@@ -66,6 +66,29 @@ void globalwindowhandler::KSDLProcessEvents (truth dodelay) {
 }
 
 
+//FIXME
+void globalwindowhandler::Delay (int ms) {
+  while (ms > 0) {
+    SDL_Event event;
+    memset(&event, 0, sizeof(event)); /* some systems needs this fix */
+    if (SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_ALLEVENTS)) {
+      switch (event.active.type) {
+        case SDL_VIDEOEXPOSE:
+          SDL_PollEvent(&event); // remove event
+          ProcessMessage(&event);
+          break;
+        case SDL_QUIT:
+        case SDL_KEYDOWN:
+         return;
+      }
+    }
+    int dd = ms > 100 ? 100 : (ms > 50 ? 50 : ms);
+    SDL_Delay(dd);
+    ms -= dd;
+  }
+}
+
+
 void globalwindowhandler::KSDLWaitEvent (void) {
   SDL_Event Event;
   memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */

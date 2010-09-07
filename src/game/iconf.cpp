@@ -39,6 +39,7 @@ truthoption ivanconfig::AutoCenterMapOnLook("AutoCenterMapOnLook", "Automaticall
 truthoption ivanconfig::FastListMode("FastLists", "Instantly select list items with alpha keys", true, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FastListChanger);
 truthoption ivanconfig::PlaySounds("PlaySounds", "use sounds", false);
 truthoption ivanconfig::ConfirmCorpses("ConfirmCorpses", "confirm corpse pickup", true);
+numberoption ivanconfig::GoingDelay("GoingDelay", "delay betwen steps in 'go' command", 100, &GoingDelayDisplayer, &GoingDelayChangeInterface, &GoingDelayChanger);
 /*k8*/
 
 
@@ -147,6 +148,34 @@ void ivanconfig::CalculateContrastLuminance () {
 }
 
 
+void ivanconfig::GoingDelayDisplayer (const numberoption *O, festring &Entry) {
+  if (O->Value) {
+    Entry << O->Value << " ms";
+  } else {
+    Entry << "disabled";
+  }
+}
+
+
+truth ivanconfig::GoingDelayChangeInterface (numberoption *O) {
+  O->ChangeValue(iosystem::NumberQuestion(CONST_S("Set new 'go' delay (0-2000):"), GetQuestionPos(), WHITE, !game::IsRunning()));
+  if (game::IsRunning()) igraph::BlitBackGround(v2(16, 6), v2(game::GetScreenXSize() << 4, 23));
+  return false;
+}
+
+
+void ivanconfig::GoingDelayChanger (numberoption *O, long What) {
+  if (What < 0) What = 0;
+  if (What > 2000) What = 2000;
+  O->Value = What;
+}
+
+
+int ivanconfig::GetGoingDelay () {
+  return GoingDelay.Value;
+}
+
+
 festring ivanconfig::GetMyDir (void) { return inputfile::GetMyDir(); }
 
 
@@ -179,6 +208,7 @@ void ivanconfig::Initialize () {
   configsystem::AddOption(&FastListMode);
   configsystem::AddOption(&PlaySounds);
   configsystem::AddOption(&ConfirmCorpses);
+  configsystem::AddOption(&GoingDelay);
 /*k8*/
   configsystem::SetConfigFileName(getConfigPath()+"/.ivan.rc");
   configsystem::Load();
