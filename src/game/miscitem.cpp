@@ -107,8 +107,7 @@ void wand::Load(inputfile& SaveFile)
   SaveFile >> TimesUsed >> Charges;
 }
 
-void scrollofwishing::FinishReading(character* Reader)
-{
+void scrollofwishing::FinishReading (character *Reader) {
   if (game::Wish(Reader,
        "%s appears from nothing and the scroll burns!",
        "Two %s appear from nothing and the scroll burns!", true)) {
@@ -116,7 +115,10 @@ void scrollofwishing::FinishReading(character* Reader)
     SendToHell();
     Reader->EditExperience(INTELLIGENCE, 600, 1 << 12);
   } else {
+    RemoveFromSlot();
+    SendToHell();
     ADD_MESSAGE("You changed your mind, didn't you, %s?", game::Insult());
+    ADD_MESSAGE("Nevertheless, the scroll burns.", game::Insult());
   }
 }
 
