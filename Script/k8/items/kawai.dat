@@ -37,4 +37,11 @@ kawai /* meleeweapon-> */
   ElectricityResistance = 30;
   AcidResistance = 30;
   DamageFlags = SLASH|PIERCE;
+/*
+  Config BROKEN;
+  {
+    BitmapPos = 110, 225;
+    WieldedBitmapPos = 176, 80;
+  }
+*/
 }

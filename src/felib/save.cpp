@@ -27,6 +27,21 @@ truth inputfile::fileExists (const festring &fname) {
 }
 
 
+festring inputfile::GetMyDir (void) {
+  char buf[128], myDir[8192];
+  pid_t mypid = getpid();
+  memset(myDir, 0, sizeof(myDir));
+  sprintf(buf, "/proc/%u/exe", (unsigned int)mypid);
+  if (readlink(buf, myDir, sizeof(myDir)-1) < 0) strcpy(myDir, ".");
+  else {
+    char *p = (char *)strrchr(myDir, '/');
+    if (!p) strcpy(myDir, "."); else *p = '\0';
+  }
+  if (myDir[strlen(myDir)-1] == '/') myDir[strlen(myDir)-1] = '\0';
+  return myDir;
+}
+
+
 outputfile::outputfile (cfestring &FileName, truth AbortOnErr) :
   Buffer(fopen(FileName.CStr(), "wb")),
   FileName(FileName)

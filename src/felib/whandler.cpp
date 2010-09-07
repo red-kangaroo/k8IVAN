@@ -20,6 +20,7 @@
 #include "error.h"
 #include "bitmap.h"
 #include "festring.h"
+#include "save.h"
 
 
 truth (*globalwindowhandler::ControlLoop[MAX_CONTROLS])();
@@ -109,21 +110,6 @@ int globalwindowhandler::ReadKey () {
 }
 
 
-static festring GetMyDir (void) {
-  char buf[128], myDir[8192];
-  pid_t mypid = getpid();
-  memset(myDir, 0, sizeof(myDir));
-  sprintf(buf, "/proc/%u/exe", (unsigned int)mypid);
-  if (readlink(buf, myDir, sizeof(myDir)-1) < 0) strcpy(myDir, ".");
-  else {
-    char *p = (char *)strrchr(myDir, '/');
-    if (!p) strcpy(myDir, "."); else *p = '\0';
-  }
-  if (myDir[strlen(myDir)-1] == '/') myDir[strlen(myDir)-1] = '\0';
-  return myDir;
-}
-
-
 void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
   int KeyPressed;
   switch (Event->active.type) {
@@ -183,7 +169,7 @@ void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
           break;
         case SDLK_SYSREQ: case SDLK_PRINT: {
           /*DOUBLE_BUFFER->Save(festring(getenv("HOME")) + "/Scrshot.bmp");*/
-          festring dir = GetMyDir()+"/SShots";
+          festring dir = inputfile::GetMyDir()+"/SShots";
           mkdir(dir.CStr(), 0755);
           for (int f = 0; f < 1000; f++) {
             char buf[16];

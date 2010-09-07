@@ -11,6 +11,7 @@
  */
 #include "iconf.h"
 #include "game.h"
+#include "save.h"
 #include "feio.h"
 #include "area.h"
 #include "graphics.h"
@@ -146,21 +147,7 @@ void ivanconfig::CalculateContrastLuminance () {
 }
 
 
-/* k8 */
-festring ivanconfig::GetMyDir (void) {
-  char buf[128], myDir[8192];
-  pid_t mypid = getpid();
-  memset(myDir, 0, sizeof(myDir));
-  sprintf(buf, "/proc/%u/exe", (unsigned int)mypid);
-  if (readlink(buf, myDir, sizeof(myDir)-1) < 0) strcpy(myDir, ".");
-  else {
-    char *p = (char *)strrchr(myDir, '/');
-    if (!p) strcpy(myDir, "."); else *p = '\0';
-  }
-  if (myDir[strlen(myDir)-1] == '/') myDir[strlen(myDir)-1] = '\0';
-  return myDir;
-}
-/* k8 */
+festring ivanconfig::GetMyDir (void) { return inputfile::GetMyDir(); }
 
 
 static festring getConfigPath () {

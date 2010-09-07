@@ -15,10 +15,17 @@
 #include "felist.h"
 #include "feio.h"
 #include "femath.h"
+#include "save.h"
 
 
 highscore::highscore (cfestring &File) : LastAdd(0xFF), Version(HIGH_SCORE_VERSION) {
   Load(File);
+}
+
+
+festring highscore::genFileName (const festring &fname) const {
+  if (fname[0] != '/') return inputfile::GetMyDir()+'/'+fname;
+  return fname;
 }
 
 
@@ -79,7 +86,7 @@ void highscore::Draw () const {
 
 
 void highscore::Save (cfestring &File) const {
-  outputfile HighScore(File);
+  outputfile HighScore(genFileName(File));
   long CheckSum = HIGH_SCORE_VERSION+LastAdd;
   for (ushort c = 0; c < Score.size(); ++c) {
     CheckSum += Score[c]+Entry[c].GetCheckSum()+RandomID[c];
@@ -91,7 +98,7 @@ void highscore::Save (cfestring &File) const {
 /* This function needs much more error handling */
 void highscore::Load (cfestring &File) {
   {
-    inputfile HighScore(File, 0, false);
+    inputfile HighScore(genFileName(File), 0, false);
     if (!HighScore.IsOpen()) return;
     HighScore.Get();
     if (HighScore.Eof()) return;

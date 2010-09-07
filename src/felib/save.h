@@ -86,6 +86,7 @@ class inputfile {
   void Close () { fclose(Buffer); Buffer = 0; }
 
   static truth fileExists (const festring &fname);
+  static festring GetMyDir (void);
 
 private:
   festring ReadNumberIntr (int CallLevel, long *num, truth *isString, truth allowStr, truth PreserveTerminator);

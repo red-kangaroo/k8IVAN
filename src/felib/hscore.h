@@ -18,7 +18,7 @@
 #include "festring.h"
 
 
-#define HIGH_SCORE_FILENAME LOCAL_STATE_DIR "/ivan-highscore.scores"
+#define HIGH_SCORE_FILENAME  "ivan-highscore.scores"
 
 /* Increment this if changes make highscores incompatible */
 #define HIGH_SCORE_VERSION 121
@@ -51,6 +51,7 @@ public:
 
 private:
   truth Add (long NewScore, cfestring &NewEntry, time_t NewTime, long NewRandomID);
+  festring genFileName (const festring &fname) const;
 
 private:
   std::vector<festring> Entry;
