@@ -82,6 +82,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
   while (!infStack.empty()) {
     inputfile *inFile = infStack.top();
     infStack.pop();
+    inFile->setGetVarCB(game::ldrGetVar);
     //fprintf(stderr, "MAIN: %s\n", inFile->GetFileName().CStr());
     for (inFile->ReadWord(Word, false); !inFile->Eof(); inFile->ReadWord(Word, false)) {
       if (Word == "Include") {
@@ -91,6 +92,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
         inputfile *incf = new inputfile(game::GetGameDir()+"Script/"+Word, &game::GetGlobalValueMap());
         infStack.push(inFile);
         inFile = incf;
+        inFile->setGetVarCB(game::ldrGetVar);
         continue;
       }
       if (Word == "Message") {

@@ -87,10 +87,16 @@ festring inputfile::findVar (cfestring &name, truth *found) const {
 }
 
 
-festring inputfile::getVar (cfestring &name) const {
+festring inputfile::getVar (cfestring &name) {
   truth found;
   festring res = findVar(name, &found);
-  if (!found && mGetVar) res = mGetVar(name);
+  if (!found) {
+    if (mGetVar) res = mGetVar(name);
+    else {
+      festring s = "unknown variable: "+name;
+      die(s);
+    }
+  }
   return res;
 }
 

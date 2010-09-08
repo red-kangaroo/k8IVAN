@@ -1312,6 +1312,7 @@ truth game::AnimationController () {
 
 void game::LoadGlobalValueMap (inputfile &SaveFile) {
   festring Word;
+  SaveFile.setGetVarCB(game::ldrGetVar);
   for (SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false)) {
     if (Word == "Include") {
       Word = SaveFile.ReadWord();
@@ -1337,7 +1338,7 @@ void game::LoadGlobalValueMap (inputfile &SaveFile) {
 void game::InitGlobalValueMap () {
   inputfile SaveFile(GetGameDir()+"Script/define.dat", &GlobalValueMap);
   LoadGlobalValueMap(SaveFile);
-  { /* additional item files */
+  { /* additional files */
     for (int f = 0; f <= 99; f++) {
       char bnum[32];
       sprintf(bnum, "Script/define_%02d.dat", f);
@@ -2955,4 +2956,12 @@ int game::ListSelectorArray (int defsel, cfestring &title, const char *items[]) 
     cnt++;
   }
   return doListSelector(list, defsel, cnt);
+}
+
+
+festring game::ldrGetVar (cfestring &name) {
+  //fprintf(stderr, "GETVAR: [%s]\n", name.CStr());
+  if (name == "player_name") return "_k8_";
+  ABORT("unknown variable: %s", name.CStr());
+  return "";
 }

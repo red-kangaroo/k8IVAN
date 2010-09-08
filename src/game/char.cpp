@@ -2129,6 +2129,7 @@ truth character::MoveRandomlyInRoom () {
 void character::GoOn (go *Go, truth FirstStep) {
   v2 MoveVector = ApplyStateModification(game::GetMoveVector(Go->GetDirection()));
   lsquare *MoveToSquare[MAX_SQUARES_UNDER];
+
   int Squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
   if (!Squares || !CanMoveOn(MoveToSquare[0])) {
     Go->Terminate(false);
@@ -2164,8 +2165,9 @@ void character::GoOn (go *Go, truth FirstStep) {
     }
   } else {
     if (OKDirectionsCounter <= 2) Go->SetIsWalkingInOpen(false);
-    doWait = IsPlayer();
+    //doWait = IsPlayer();
   }
+  doWait = true;
 
   square *BeginSquare = GetSquareUnder();
 
@@ -2181,6 +2183,7 @@ void character::GoOn (go *Go, truth FirstStep) {
     doWait = false;
   }
 
+  //fprintf(stderr, "doWait: %s\n", doWait ? "tan" : "ona");
   if (doWait && ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
   game::DrawEverything();
 }

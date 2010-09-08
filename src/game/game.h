@@ -437,6 +437,8 @@ public:
   static char GetAbnormalMoveKey (int idx);
   static void SetAbnormalMoveKey (int idx, char ch);
 
+  static festring ldrGetVar (cfestring &name);
+
 private:
   static void UpdateCameraCoordinate(int&, int, int, int);
   static cchar* const Alignment[];

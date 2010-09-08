@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #include "dungeon.h"
 #include "level.h"
 #include "script.h"
@@ -19,189 +18,151 @@
 #include "femath.h"
 #include "bitmap.h"
 
-dungeon::dungeon() { }
 
-dungeon::dungeon(int Index) : Index(Index)
-{
-  Initialize();
-
-  for(int c = 0; c < GetLevels(); ++c)
-    Generated[c] = false;
+dungeon::dungeon () {
 }
 
-dungeon::~dungeon()
-{
-  for(int c = 0; c < GetLevels(); ++c)
-    delete Level[c];
 
+dungeon::dungeon(int Index) : Index(Index) {
+  Initialize();
+  for (int c = 0; c < GetLevels(); ++c) Generated[c] = false;
+}
+
+
+dungeon::~dungeon () {
+  for (int c = 0; c < GetLevels(); ++c) delete Level[c];
   delete [] Level;
   delete [] Generated;
 }
 
-void dungeon::Initialize()
-{
-  std::map<int, dungeonscript>::const_iterator DungeonIterator = game::GetGameScript()->GetDungeon().find(Index);
 
-  if(DungeonIterator != game::GetGameScript()->GetDungeon().end())
+void dungeon::Initialize () {
+  std::map<int, dungeonscript>::const_iterator DungeonIterator = game::GetGameScript()->GetDungeon().find(Index);
+  if (DungeonIterator != game::GetGameScript()->GetDungeon().end()) {
     DungeonScript = &DungeonIterator->second;
-  else
-  {
+  } else {
     ABORT("Unknown dungeon #%d requested!", int(Index));
     return;
   }
-
-  Level = new level*[GetLevels()];
+  Level = new level *[GetLevels()];
   Generated = new truth[GetLevels()];
-
-  for(int c = 0; c < GetLevels(); ++c)
-    Level[c] = 0;
+  for (int c = 0; c < GetLevels(); ++c) Level[c] = 0;
 }
 
-const levelscript* dungeon::GetLevelScript(int I)
-{
+
+const levelscript *dungeon::GetLevelScript (int I) {
   std::map<int, levelscript>::const_iterator LevelIterator = DungeonScript->GetLevel().find(I);
-
-  const levelscript* LevelScript;
-
-  if(LevelIterator != DungeonScript->GetLevel().end())
-    LevelScript = &LevelIterator->second;
-  else
-    LevelScript = DungeonScript->GetLevelDefault();
-
+  const levelscript *LevelScript;
+  if (LevelIterator != DungeonScript->GetLevel().end()) LevelScript = &LevelIterator->second;
+  else LevelScript = DungeonScript->GetLevelDefault();
   return LevelScript;
 }
 
-/* Returns whether the level has been visited before */
 
-truth dungeon::PrepareLevel(int Index, truth Visual)
-{
-  if(Generated[Index])
-  {
-    level* NewLevel = LoadLevel(game::SaveName(), Index);
+/* Returns whether the level has been visited before */
+truth dungeon::PrepareLevel (int Index, truth Visual) {
+  if (Generated[Index]) {
+    level *NewLevel = LoadLevel(game::SaveName(), Index);
     game::SetCurrentArea(NewLevel);
     game::SetCurrentLevel(NewLevel);
     game::SetCurrentLSquareMap(NewLevel->GetMap());
     return true;
   }
-  else
-  {
-    level* NewLevel = Level[Index] = new level;
-    NewLevel->SetDungeon(this);
-    NewLevel->SetIndex(Index);
-    const levelscript* LevelScript = GetLevelScript(Index);
-    NewLevel->SetLevelScript(LevelScript);
-
-    if(Visual)
-    {
-      if(LevelScript->GetEnterImage())
-      {
-  cbitmap* EnterImage = new bitmap(game::GetGameDir() + "Graphics/" + *LevelScript->GetEnterImage());
-  game::SetEnterImage(EnterImage);
-  v2 Displacement = *LevelScript->GetEnterTextDisplacement();
-  game::SetEnterTextDisplacement(Displacement);
-  game::TextScreen(CONST_S("Entering ") + GetLevelDescription(Index) + CONST_S("...\n\nThis may take some time, please wait."), Displacement, WHITE, false, true, &game::BusyAnimation);
-  game::TextScreen(CONST_S("Entering ") + GetLevelDescription(Index) + CONST_S("...\n\nPress any key to continue."), Displacement, WHITE, true, false, &game::BusyAnimation);
-  game::SetEnterImage(0);
-  delete EnterImage;
-      }
-      else
-  game::TextScreen(CONST_S("Entering ") + GetLevelDescription(Index) + CONST_S("...\n\nThis may take some time, please wait."), ZERO_V2, WHITE, false, true, &game::BusyAnimation);
+  level *NewLevel = Level[Index] = new level;
+  NewLevel->SetDungeon(this);
+  NewLevel->SetIndex(Index);
+  const levelscript *LevelScript = GetLevelScript(Index);
+  NewLevel->SetLevelScript(LevelScript);
+  if (Visual) {
+    if (LevelScript->GetEnterImage()) {
+      cbitmap *EnterImage = new bitmap(game::GetGameDir() + "Graphics/" + *LevelScript->GetEnterImage());
+      game::SetEnterImage(EnterImage);
+      v2 Displacement = *LevelScript->GetEnterTextDisplacement();
+      game::SetEnterTextDisplacement(Displacement);
+      game::TextScreen(CONST_S("Entering ")+GetLevelDescription(Index)+CONST_S("...\n\nThis may take some time, please wait."), Displacement, WHITE, false, true, &game::BusyAnimation);
+      game::TextScreen(CONST_S("Entering ")+GetLevelDescription(Index)+CONST_S("...\n\nPress any key to continue."), Displacement, WHITE, true, false, &game::BusyAnimation);
+      game::SetEnterImage(0);
+      delete EnterImage;
+    } else {
+      game::TextScreen(CONST_S("Entering ")+GetLevelDescription(Index)+CONST_S("...\n\nThis may take some time, please wait."), ZERO_V2, WHITE, false, true, &game::BusyAnimation);
     }
-
-    NewLevel->Generate(Index);
-    game::SetCurrentLSquareMap(NewLevel->GetMap());
-    Generated[Index] = true;
-    game::BusyAnimation();
-
-    if(*NewLevel->GetLevelScript()->GenerateMonsters())
-      NewLevel->GenerateNewMonsters(NewLevel->GetIdealPopulation(), false);
-
-    return false;
   }
+  NewLevel->Generate(Index);
+  game::SetCurrentLSquareMap(NewLevel->GetMap());
+  Generated[Index] = true;
+  game::BusyAnimation();
+  if (*NewLevel->GetLevelScript()->GenerateMonsters()) NewLevel->GenerateNewMonsters(NewLevel->GetIdealPopulation(), false);
+  return false;
 }
 
-void dungeon::SaveLevel(cfestring& SaveName, int Number, truth DeleteAfterwards)
-{
-  outputfile SaveFile(SaveName + '.' + Index + Number);
-  SaveFile << Level[Number];
 
-  if(DeleteAfterwards)
-  {
+void dungeon::SaveLevel (cfestring &SaveName, int Number, truth DeleteAfterwards) {
+  outputfile SaveFile(SaveName+'.'+Index+Number);
+  SaveFile << Level[Number];
+  if (DeleteAfterwards) {
     delete Level[Number];
     Level[Number] = 0;
   }
 }
 
-level* dungeon::LoadLevel(cfestring& SaveName, int Number)
-{
-  inputfile SaveFile(SaveName + '.' + Index + Number);
+
+level *dungeon::LoadLevel(cfestring &SaveName, int Number) {
+  inputfile SaveFile(SaveName+'.'+Index+Number);
   return LoadLevel(SaveFile, Number);
 }
 
-void dungeon::Save(outputfile& SaveFile) const
-{
-  SaveFile << Index << WorldMapPos;
 
-  for(int c = 0; c < GetLevels(); ++c)
-    SaveFile << Generated[c];
+void dungeon::Save (outputfile &SaveFile) const {
+  SaveFile << Index << WorldMapPos;
+  for (int c = 0; c < GetLevels(); ++c) SaveFile << Generated[c];
 }
 
-void dungeon::Load(inputfile& SaveFile)
-{
+
+void dungeon::Load (inputfile &SaveFile) {
   SaveFile >> Index >> WorldMapPos;
   Initialize();
-
-  for(int c = 0; c < GetLevels(); ++c)
-    SaveFile >> Generated[c];
+  for (int c = 0; c < GetLevels(); ++c) SaveFile >> Generated[c];
 }
 
-int dungeon::GetLevels() const
-{
+
+int dungeon::GetLevels () const {
   return *DungeonScript->GetLevels();
 }
 
-festring dungeon::GetLevelDescription(int I)
-{
-  if(GetLevel(I)->GetLevelScript()->GetDescription())
-    return *GetLevel(I)->GetLevelScript()->GetDescription();
-  else
-    return *DungeonScript->GetDescription() + " level " + (I + 1);
+
+festring dungeon::GetLevelDescription (int I) {
+  if (GetLevel(I)->GetLevelScript()->GetDescription()) return *GetLevel(I)->GetLevelScript()->GetDescription();
+  return *DungeonScript->GetDescription()+" level "+(I+1);
 }
 
-festring dungeon::GetShortLevelDescription(int I)
-{
-  if(GetLevel(I)->GetLevelScript()->GetShortDescription())
-    return *GetLevel(I)->GetLevelScript()->GetShortDescription();
-  else
-    return *DungeonScript->GetShortDescription() + " level " + (I + 1);
+
+festring dungeon::GetShortLevelDescription (int I) {
+  if (GetLevel(I)->GetLevelScript()->GetShortDescription()) return *GetLevel(I)->GetLevelScript()->GetShortDescription();
+  return *DungeonScript->GetShortDescription()+" level "+(I+1);
 }
 
-outputfile& operator<<(outputfile& SaveFile, const dungeon* Dungeon)
-{
-  if(Dungeon)
-  {
+
+outputfile &operator << (outputfile &SaveFile, const dungeon *Dungeon) {
+  if (Dungeon) {
     SaveFile.Put(1);
     Dungeon->Save(SaveFile);
-  }
-  else
+  } else {
     SaveFile.Put(0);
-
+  }
   return SaveFile;
 }
 
-inputfile& operator>>(inputfile& SaveFile, dungeon*& Dungeon)
-{
-  if(SaveFile.Get())
-  {
+
+inputfile &operator >> (inputfile &SaveFile, dungeon *&Dungeon) {
+  if (SaveFile.Get()) {
     Dungeon = new dungeon;
     Dungeon->Load(SaveFile);
   }
-
   return SaveFile;
 }
 
-level* dungeon::LoadLevel(inputfile& SaveFile, int Number)
-{
+
+level *dungeon::LoadLevel(inputfile &SaveFile, int Number) {
   SaveFile >> Level[Number];
   Level[Number]->SetDungeon(this);
   Level[Number]->SetIndex(Number);
@@ -209,32 +170,19 @@ level* dungeon::LoadLevel(inputfile& SaveFile, int Number)
   return Level[Number];
 }
 
-int dungeon::GetLevelTeleportDestination(int From) const
-{
+
+int dungeon::GetLevelTeleportDestination (int From) const {
   int To;
-
-  if(Index == ELPURI_CAVE)
-  {
-    if(RAND_2)
-    {
-      To = From + RAND_2 + RAND_2 + RAND_2 + RAND_2 + 1;
-
-      if(To > DARK_LEVEL)
-  To = From;
+  if (Index == ELPURI_CAVE) {
+    if (RAND_2) {
+      To = From+RAND_2+RAND_2+RAND_2+RAND_2+1;
+      if (To > DARK_LEVEL) To = From;
+    } else {
+      To = From-RAND_2-RAND_2-RAND_2-RAND_2-1;
+      if (To < 0) To = 0;
     }
-    else
-    {
-      To = From - RAND_2 - RAND_2 - RAND_2 - RAND_2 - 1;
-
-      if(To < 0)
-  To = 0;
-    }
-
     return To;
   }
-
-  if(Index == UNDER_WATER_TUNNEL)
-    return RAND_N(3);
-
+  if (Index == UNDER_WATER_TUNNEL) return RAND_N(3);
   return From;
 }

@@ -176,11 +176,9 @@ Dungeon UNDER_WATER_TUNNEL;
       {
         Items == lantern;
       }
-      /*
-      if @player_name == "_k8_"; {
+      if @player_name == "_k8_";
         Square, Pos 2,1; { Items == holyhandgrenade; }
-      }
-      */
+      endif
     }
   }
 

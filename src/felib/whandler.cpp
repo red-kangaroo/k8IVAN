@@ -70,7 +70,7 @@ void globalwindowhandler::KSDLProcessEvents (truth dodelay) {
 void globalwindowhandler::Delay (int ms) {
   while (ms > 0) {
     SDL_Event event;
-    memset(&event, 0, sizeof(event)); /* some systems needs this fix */
+    memset(&event, 0, sizeof(event)); // some systems needs this fix
     if (SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_ALLEVENTS)) {
       switch (event.active.type) {
         case SDL_VIDEOEXPOSE:
@@ -86,6 +86,7 @@ void globalwindowhandler::Delay (int ms) {
     SDL_Delay(dd);
     ms -= dd;
   }
+  //if (ms > 0) SDL_Delay(ms);
 }
 
 

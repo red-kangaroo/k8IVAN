@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #include "script.h"
 #include "fesave.h"
 #include "game.h"
@@ -33,13 +32,11 @@ script::datamap teamscript::DataMap;
 script::datamap gamescript::DataMap;
 template <class type, class contenttype> script::datamap contentmap<type, contenttype>::DataMap;
 
-template <class type> void scriptmember<type>::ReadFrom(inputfile& SaveFile)
-{
-  if(!Member)
-    Member = new type;
-
+template <class type> void scriptmember<type>::ReadFrom (inputfile &SaveFile) {
+  if (!Member) Member = new type;
   ReadData(*Member, SaveFile);
 }
+
 
 template <class type> void scriptmember<type>::Replace(scriptmemberbase& Base)
 {
@@ -1144,6 +1141,7 @@ void gamescript::InitDataMap () {
 
 void gamescript::ReadFrom (inputfile &SaveFile) {
   festring Word;
+  SaveFile.setGetVarCB(game::ldrGetVar);
   for (SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false)) {
     if (Word == "Dungeon") {
       int Index = SaveFile.ReadNumber();

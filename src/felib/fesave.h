@@ -91,7 +91,7 @@ class inputfile {
   static truth fileExists (const festring &fname);
   static festring GetMyDir (void);
 
-  festring getVar (cfestring &name) const;
+  festring getVar (cfestring &name);
   void setVar (cfestring &name, cfestring &value);
   void delVar (cfestring &name);
 
