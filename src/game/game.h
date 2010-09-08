@@ -13,19 +13,22 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include <map>
-#include <vector>
 #include <ctime>
+#include <map>
+#include <stack>
+#include <vector>
 
 #include "femath.h"
 #include "festring.h"
 #include "ivandef.h"
 
+
 #ifndef LIGHT_BORDER
-#define LIGHT_BORDER 80
+# define LIGHT_BORDER 80
 #endif
 
-#define PLAYER game::GetPlayer()
+#define PLAYER  game::GetPlayer()
+
 
 class area;
 class level;
@@ -56,8 +59,8 @@ typedef v2 (*positionkeyhandler)(v2, int);
 typedef void (*positionhandler)(v2);
 typedef void (*bitmapeditor)(bitmap*, truth);
 
-struct homedata
-{
+
+struct homedata {
   v2 Pos;
   int Dungeon;
   int Level;
@@ -67,11 +70,12 @@ struct homedata
 outputfile& operator<<(outputfile&, const homedata*);
 inputfile& operator>>(inputfile&, homedata*&);
 
-struct configid
-{
-  configid() { }
-  configid(int Type, int Config) : Type(Type), Config(Config) { }
-  bool operator<(const configid& CI) const { return memcmp(this, &CI, sizeof(configid)) < 0; }
+
+struct configid {
+  configid () {}
+  configid (int Type, int Config) : Type(Type), Config(Config) {}
+  bool operator < (const configid& CI) const { return memcmp(this, &CI, sizeof(configid)) < 0; }
+  //
   int Type NO_ALIGNMENT;
   int Config NO_ALIGNMENT;
 };
@@ -79,10 +83,10 @@ struct configid
 outputfile& operator<<(outputfile&, const configid&);
 inputfile& operator>>(inputfile&, configid&);
 
-struct dangerid
-{
-  dangerid() { }
-  dangerid(double NakedDanger, double EquippedDanger) : NakedDanger(NakedDanger), EquippedDanger(EquippedDanger) { }
+
+struct dangerid {
+  dangerid () {}
+  dangerid (double NakedDanger, double EquippedDanger) : NakedDanger(NakedDanger), EquippedDanger(EquippedDanger) {}
   double NakedDanger;
   double EquippedDanger;
 };
@@ -90,19 +94,19 @@ struct dangerid
 outputfile& operator<<(outputfile&, const dangerid&);
 inputfile& operator>>(inputfile&, dangerid&);
 
-struct ivantime
-{
+
+struct ivantime {
   int Day;
   int Hour;
   int Min;
 };
 
-struct massacreid
-{
-  massacreid() { }
-  massacreid(int Type, int Config, cfestring& Name)
-  : Type(Type), Config(Config), Name(Name) { }
-  bool operator<(const massacreid&) const;
+
+struct massacreid {
+  massacreid () {}
+  massacreid (int Type, int Config, cfestring &Name) : Type(Type), Config(Config), Name(Name) { }
+  bool operator < (const massacreid &) const;
+  //
   int Type;
   int Config;
   festring Name;
@@ -122,10 +126,11 @@ inline bool massacreid::operator<(const massacreid& MI) const
 outputfile& operator<<(outputfile&, const massacreid&);
 inputfile& operator>>(inputfile&, massacreid&);
 
-struct killreason
-{
-  killreason() { }
-  killreason(cfestring& String, int Amount) : String(String), Amount(Amount) { }
+
+struct killreason {
+  killreason () {}
+  killreason (cfestring &String, int Amount) : String(String), Amount(Amount) {}
+  //
   festring String;
   int Amount;
 };
@@ -133,9 +138,10 @@ struct killreason
 outputfile& operator<<(outputfile&, const killreason&);
 inputfile& operator>>(inputfile&, killreason&);
 
-struct killdata
-{
-  killdata(int Amount = 0, double DangerSum = 0) : Amount(Amount), DangerSum(DangerSum) { }
+
+struct killdata {
+  killdata (int Amount=0, double DangerSum=0) : Amount(Amount), DangerSum(DangerSum) {}
+  //
   int Amount;
   double DangerSum;
   std::vector<killreason> Reason;
@@ -143,6 +149,7 @@ struct killdata
 
 outputfile& operator<<(outputfile&, const killdata&);
 inputfile& operator>>(inputfile&, killdata&);
+
 
 typedef std::map<configid, dangerid> dangermap;
 typedef std::map<ulong, character*> characteridmap;
@@ -154,8 +161,26 @@ typedef std::vector<item*> itemvector;
 typedef std::vector<itemvector> itemvectorvector;
 typedef std::vector<character*> charactervector;
 
-class quitrequest { };
-class areachangerequest { };
+
+class quitrequest {};
+class areachangerequest {};
+
+
+enum ArgTypes {
+  FARG_UNDEFINED,
+  FARG_STRING,
+  FARG_NUMBER
+};
+
+struct FuncArg {
+  FuncArg () : type(FARG_UNDEFINED), sval(""), ival(0) {}
+  FuncArg (cfestring &aVal) : type(FARG_STRING), sval(aVal), ival(0) {}
+  FuncArg (long aVal) : type(FARG_NUMBER), sval(""), ival(aVal) {}
+  //
+  ArgTypes type;
+  festring sval;
+  long ival;
+};
 
 
 class game {
@@ -439,8 +464,15 @@ public:
 
   static festring ldrGetVar (cfestring &name);
 
+  static truth GetWord (festring &w);
+  static void RunOnEvent (cfestring &ename);
+  static int ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args);
+
 private:
   static void UpdateCameraCoordinate(int&, int, int, int);
+  static void DoOnEvent (truth brcEaten);
+
+private:
   static cchar* const Alignment[];
   static god** God;
   static int CurrentLevelIndex;
@@ -550,6 +582,8 @@ private:
   static truth PlayerHasReceivedAllGodsKnownBonus;
   static cbitmap* EnterImage;
   static v2 EnterTextDisplacement;
+  //
+  static std::stack<inputfile *> mFEStack;
 };
 
 inline void game::CombineLights(col24& L1, col24 L2)

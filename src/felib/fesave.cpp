@@ -9,6 +9,7 @@
  *  along with this file for more details
  *
  */
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -91,8 +92,9 @@ festring inputfile::getVar (cfestring &name) {
   truth found;
   festring res = findVar(name, &found);
   if (!found) {
-    if (mGetVar) res = mGetVar(name);
-    else {
+    if (mGetVar) {
+      res = mGetVar(name);
+    } else {
       festring s = "unknown variable: "+name;
       die(s);
     }
@@ -479,15 +481,37 @@ festring inputfile::ReadNumberIntr (int CallLevel, long *num, truth *isString, t
   festring res;
   for (;;) {
     ReadWord(Word);
+    if (Word == "@") {
+      // variable
+      ReadWord(Word, true);
+      //fprintf(stderr, "var: [%s]\n", Word.CStr());
+      Word = getVar(Word);
+      //fprintf(stderr, " value: [%s]\n", Word.CStr());
+      const char *s = Word.CStr();
+      char *e;
+      long l = strtoll(s, &e, 10);
+      if (*e == '\0') {
+        //fprintf(stderr, " number: [%ld]\n", l);
+        Value = l;
+        NumberCorrect = true;
+        continue;
+      }
+      if (firstWord && allowStr) {
+        *isString = true;
+        return Word;
+      } else {
+        ABORT("Number expected in file %s, line %ld!", FileName.CStr(), TellLine());
+      }
+    }
     if (firstWord) {
       if (allowStr && lastWordWasString) {
         *isString = true;
         ReadWord(res);
         if (res.GetSize() == 1) {
-          if (res[0] != ';') {
+          if (res[0] != ';' && res[0] != ',' && res[0] != ':') {
             ABORT("Invalid terminator in file %s, line %ld!", FileName.CStr(), TellLine());
-            if (PreserveTerminator) ungetc(res[0], Buffer);
           }
+          if (PreserveTerminator) ungetc(res[0], Buffer);
         } else {
           ABORT("Terminator expected in file %s, line %ld!", FileName.CStr(), TellLine());
         }

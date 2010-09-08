@@ -51,9 +51,12 @@
 #define SAVE_FILE_VERSION 120 // Increment this if changes make savefiles incompatible
 #define BONE_FILE_VERSION 106 // Increment this if changes make bonefiles incompatible
 
-#define LOADED 0
-#define NEW_GAME 1
-#define BACK 2
+#define LOADED    0
+#define NEW_GAME  1
+#define BACK      2
+
+
+std::stack<inputfile *> game::mFEStack;
 
 int game::CurrentLevelIndex;
 truth game::InWilderness = false;
@@ -348,7 +351,7 @@ truth game::Init (cfestring &Name) {
         Player->EditExperience(c, 500, 1<<11);
       }
       Player->SetMoney(Player->GetMoney()+RAND()%11);
-      if (PlayerName == "_k8_") Player->SetMoney(666666); //k8
+      //if (PlayerName == "_k8_") Player->SetMoney(666666); //k8
       GetTeam(0)->SetLeader(Player);
       InitDangerMap();
       Petrus = 0;
@@ -400,7 +403,7 @@ truth game::Init (cfestring &Name) {
       /*k8: damn! seems that this is field, not local! bool PlayerHasReceivedAllGodsKnownBonus = false; */
       PlayerHasReceivedAllGodsKnownBonus = false;
       ADD_MESSAGE("You commence your journey to Attnam. Use direction keys to move, '>' to enter an area and '?' to view other commands.");
-
+      RunOnEvent("game_start");
       if (IsXMas()) {
         item *Present = banana::Spawn();
         Player->GetStack()->AddItem(Present);
@@ -2959,10 +2962,171 @@ int game::ListSelectorArray (int defsel, cfestring &title, const char *items[]) 
 }
 
 
+int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args) {
+  festring s;
+  long n;
+  truth isStr;
+  inputfile *fl = mFEStack.top();
+  args.clear();
+  for (int f = 0; f < types.GetSize(); f++) {
+    switch (types[f]) {
+      case '.':
+        s = fl->ReadStringOrNumber(&n, &isStr, true);
+        if (isStr) args.push_back(FuncArg(s)); else args.push_back(FuncArg(n));
+        break;
+      case 'n':
+        n = fl->ReadNumber(0xFF, true);
+        args.push_back(FuncArg(n));
+        break;
+      case '*':
+        for (;;) {
+          s = fl->ReadStringOrNumber(&n, &isStr, true);
+          if (isStr) args.push_back(FuncArg(s)); else args.push_back(FuncArg(n));
+          fl->ReadWord(s, true);
+          if (s == ";") return args.size();
+          if (s != ",") ABORT("',' expected in file %s line %ld!", fl->GetFileName().CStr(), fl->TellLine());
+        }
+      case 's':
+      default:
+        s = fl->ReadWord(true);
+        args.push_back(FuncArg(s));
+        break;
+    }
+    fl->ReadWord(s, true);
+    if (s == ";") break;
+    if (s != ",") ABORT("',' expected in file %s line %ld!", fl->GetFileName().CStr(), fl->TellLine());
+  }
+  return args.size();
+}
+
+
+truth game::GetWord (festring &w) {
+  for (;;) {
+    inputfile *fl = mFEStack.top();
+    fl->ReadWord(w, false);
+    if (w == "" && fl->Eof()) {
+      delete fl;
+      mFEStack.pop();
+      if (mFEStack.empty()) return false;
+      continue;
+    }
+    if (w == "Include") {
+      fl->ReadWord(w, true);
+      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", fl->GetFileName().CStr(), fl->TellLine());
+      inputfile *fl = new inputfile(w);
+      fl->setGetVarCB(game::ldrGetVar);
+      mFEStack.push(fl);
+      continue;
+    }
+    if (w == "Message") {
+      fl->ReadWord(w, true);
+      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", fl->GetFileName().CStr(), fl->TellLine());
+      fprintf(stderr, "MESSAGE: %s\n", w.CStr());
+      continue;
+    }
+    return true;
+  }
+}
+
+
+void game::DoOnEvent (truth brcEaten) {
+  // do; only funcalls for now
+  festring w;
+  if (!brcEaten) {
+    mFEStack.top()->ReadWord(w, true);
+    if (w != "{") ABORT("'{' expected in file %s at line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+  }
+  for (;;) {
+    if (!GetWord(w)) ABORT("Unexpected end of file %s!", mFEStack.top()->GetFileName().CStr());
+    if (w == "}") break;
+    if (w == "@") {
+      mFEStack.top()->ReadWord(w, true);
+      if (mFEStack.top()->ReadWord(true) != "=") ABORT("'=' expected in file %s at line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+      if (w == "money") {
+        long n = mFEStack.top()->ReadNumber(false);
+        if (n < 0) n = 0;
+        PLAYER->SetMoney(n);
+        continue;
+      }
+    } else {
+      mFEStack.top()->ReadWord(w, true);
+      std::vector<FuncArg> args;
+      if (w == "SetMoney") {
+        ParseFuncArgs("n", args);
+        long n = args[0].ival;
+        if (n < 0) n = 0;
+        PLAYER->SetMoney(n);
+      } else if (w == "EditMoney") {
+        ParseFuncArgs("n", args);
+        long n = args[0].ival;
+        PLAYER->EditMoney(n);
+      } else if (w == "AddMessage") {
+        ParseFuncArgs("*", args);
+        festring s;
+        for (uint f = 0; f < args.size(); f++) {
+          const FuncArg &a = args[f];
+          if (a.type == FARG_STRING) s << a.sval; else s << a.ival;
+        }
+        ADD_MESSAGE(s.CStr());
+      }
+      //if (mFEStack.top()->ReadWord() != ";") ABORT("';' expected in file %s line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    }
+    //ABORT("Invalid term in file %s at line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+  }
+}
+
+
+void game::RunOnEvent (cfestring &ename) {
+  for (int fno = 99; fno >= -1; fno--) {
+    festring cfname;
+    cfname << game::GetGameDir() << "Script/onevent";
+    if (fno >= 0) {
+      char bnum[8];
+      sprintf(bnum, "_%02d", fno);
+      cfname << bnum;
+    }
+    cfname << ".dat";
+    if (!inputfile::fileExists(cfname)) continue;
+    inputfile *ifl = new inputfile(cfname, &game::GetGlobalValueMap(), false);
+    if (!ifl->IsOpen()) {
+      delete ifl;
+      continue;
+    }
+    ifl->setGetVarCB(game::ldrGetVar);
+    mFEStack.push(ifl);
+  }
+  festring w;
+  while (GetWord(w)) {
+    if (w != "on") ABORT("'on' expected in file %s line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    mFEStack.top()->ReadWord(w, true);
+    truth doIt = (w==ename);
+    if (doIt) {
+      DoOnEvent(false);
+    } else {
+      // skip
+      int cnt = 1;
+      for (;;) {
+        mFEStack.top()->ReadWord(w, true);
+        if (w == "{") cnt++;
+        else if (w == "}") {
+          if (--cnt < 1) break;
+        }
+      }
+    }
+  }
+}
+
+
 festring game::ldrGetVar (cfestring &name) {
   //fprintf(stderr, "GETVAR: [%s]\n", name.CStr());
   if (name == "player_name") {
     return game::GetPlayerName();
+  }
+  if (name == "money") {
+    festring res;
+    if (!PLAYER) return "0";
+    res << PLAYER->GetMoney();
+    return res;
   }
   ABORT("unknown variable: %s", name.CStr());
   return "";
