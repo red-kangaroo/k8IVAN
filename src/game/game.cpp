@@ -2961,7 +2961,9 @@ int game::ListSelectorArray (int defsel, cfestring &title, const char *items[]) 
 
 festring game::ldrGetVar (cfestring &name) {
   //fprintf(stderr, "GETVAR: [%s]\n", name.CStr());
-  if (name == "player_name") return "_k8_";
+  if (name == "player_name") {
+    return game::GetPlayerName();
+  }
   ABORT("unknown variable: %s", name.CStr());
   return "";
 }

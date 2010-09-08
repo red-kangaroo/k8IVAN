@@ -44,14 +44,14 @@ truth highscore::Add (long NewScore, cfestring &NewEntry, time_t NewTime, long N
       LastAdd = c;
       return true;
     }
-    if (Score.size() < MAX_HIGHSCORES) {
-      LastAdd = Score.size();
-      Entry.push_back(NewEntry);
-      Score.push_back(NewScore);
-      Time.push_back(NewTime);
-      RandomID.push_back(NewRandomID);
-      return true;
-    }
+  }
+  if (Score.size() < MAX_HIGHSCORES) {
+    LastAdd = Score.size();
+    Entry.push_back(NewEntry);
+    Score.push_back(NewScore);
+    Time.push_back(NewTime);
+    RandomID.push_back(NewRandomID);
+    return true;
   }
   LastAdd = MAX_HIGHSCORES;
   return false;
