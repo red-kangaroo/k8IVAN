@@ -11,7 +11,7 @@
  */
 
 #include "script.h"
-#include "save.h"
+#include "fesave.h"
 #include "game.h"
 #include "materia.h"
 #include "char.h"
@@ -580,7 +580,7 @@ item* contentscript<item>::Instantiate(int SpecialFlags) const
   return Instance;
 }
 
-truth IsValidScript(const fearray<contentscript<item> >* Array)
+truth IsValidScript(const fearray<contentscript<item> > *Array)
 {
   for(uint c = 0; c < Array->Size; ++c)
     if(IsValidScript(&Array->Data[c]))

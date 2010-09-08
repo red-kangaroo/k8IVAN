@@ -27,7 +27,7 @@
 #include "materias.h"
 #include "bitmap.h"
 #include "lterras.h"
-#include "save.h"
+#include "fesave.h"
 #include "traps.h"
 #include "iloops.h"
 #include "balance.h"

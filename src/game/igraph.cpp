@@ -17,7 +17,7 @@
 #include "iconf.h"
 #include "rawbit.h"
 #include "game.h"
-#include "save.h"
+#include "fesave.h"
 #include "object.h"
 #include "allocate.h"
 #include "whandler.h"

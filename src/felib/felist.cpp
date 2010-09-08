@@ -16,7 +16,7 @@
 #include "bitmap.h"
 #include "whandler.h"
 #include "rawbit.h"
-#include "save.h"
+#include "fesave.h"
 #include "festring.h"
 
 

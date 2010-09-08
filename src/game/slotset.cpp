@@ -22,7 +22,7 @@
 #include "bitmap.h"
 #include "proto.h"
 #include "action.h"
-#include "save.h"
+#include "fesave.h"
 #include "materias.h"
 
 #include "slot.cpp"

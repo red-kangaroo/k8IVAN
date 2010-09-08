@@ -34,7 +34,7 @@
 #include "game.h"
 #include "graphics.h"
 #include "bitmap.h"
-#include "save.h"
+#include "fesave.h"
 #include "miscitem.h"
 #include "room.h"
 #include "materias.h"

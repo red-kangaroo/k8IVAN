@@ -20,7 +20,7 @@
 #include "error.h"
 #include "bitmap.h"
 #include "festring.h"
-#include "save.h"
+#include "fesave.h"
 
 
 truth (*globalwindowhandler::ControlLoop[MAX_CONTROLS])();

@@ -44,7 +44,7 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(olterrain)(0, 0, "olterrain");
 #include "fluid.h"
 #include "nonhuman.h"
 #include "smoke.h"
-#include "save.h"
+#include "fesave.h"
 #include "allocate.h"
 #include "whandler.h"
 #include "rain.h"

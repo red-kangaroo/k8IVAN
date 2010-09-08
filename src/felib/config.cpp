@@ -10,7 +10,7 @@
  *
  */
 #include "config.h"
-#include "save.h"
+#include "fesave.h"
 #include "felist.h"
 #include "feio.h"
 

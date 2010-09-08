@@ -18,7 +18,7 @@
 
 #include "bitmap.h"
 #include "graphics.h"
-#include "save.h"
+#include "fesave.h"
 #include "allocate.h"
 #include "femath.h"
 #include "rawbit.h"

@@ -24,7 +24,7 @@ SYSTEM_SPECIALIZATIONS(action)
 #include "char.h"
 #include "materia.h"
 #include "game.h"
-#include "save.h"
+#include "fesave.h"
 #include "iconf.h"
 #include "stack.h"
 

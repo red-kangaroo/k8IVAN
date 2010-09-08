@@ -70,6 +70,9 @@ public:
   festring &operator << (long Int) { return Append(Int); }
   festring &operator << (ulong Int) { return Append(Int); }
   bool operator < (cfestring &) const;
+  bool operator <= (cfestring &) const;
+  bool operator > (cfestring &) const;
+  bool operator >= (cfestring &) const;
   truth operator == (cfestring &) const;
   truth operator != (cfestring &) const;
   truth operator == (cchar*) const;
@@ -178,6 +181,39 @@ inline bool festring::operator < (cfestring &Str) const {
   if (ThisSize && StrSize) {
     int Comp = memcmp(Data, Str.Data, StrSize > ThisSize ? ThisSize : StrSize);
     return Comp < 0 || (!Comp && StrSize > ThisSize);
+  }
+  return !ThisSize && StrSize;
+}
+
+
+inline bool festring::operator <= (cfestring &Str) const {
+  sizetype ThisSize = Size;
+  sizetype StrSize = Str.Size;
+  if (ThisSize && StrSize) {
+    int Comp = memcmp(Data, Str.Data, StrSize > ThisSize ? ThisSize : StrSize);
+    return Comp <= 0 || (StrSize > ThisSize);
+  }
+  return !ThisSize && StrSize;
+}
+
+
+inline bool festring::operator > (cfestring &Str) const {
+  sizetype ThisSize = Size;
+  sizetype StrSize = Str.Size;
+  if (ThisSize && StrSize) {
+    int Comp = memcmp(Data, Str.Data, StrSize > ThisSize ? ThisSize : StrSize);
+    return Comp > 0 || (!Comp && ThisSize > StrSize);
+  }
+  return !ThisSize && StrSize;
+}
+
+
+inline bool festring::operator >= (cfestring &Str) const {
+  sizetype ThisSize = Size;
+  sizetype StrSize = Str.Size;
+  if (ThisSize && StrSize) {
+    int Comp = memcmp(Data, Str.Data, StrSize > ThisSize ? ThisSize : StrSize);
+    return Comp >= 0 || (ThisSize > StrSize);
   }
   return !ThisSize && StrSize;
 }

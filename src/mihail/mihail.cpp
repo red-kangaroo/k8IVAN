@@ -15,7 +15,7 @@
 #include <string>
 
 #include "hscore.h"
-#include "save.h"
+#include "fesave.h"
 
 
 static truth DebugDraw (festring Filename) {

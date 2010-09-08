@@ -15,7 +15,7 @@ felibsources =
   graphics.cpp
   hscore.cpp
   rawbit.cpp
-  save.cpp
+  fesave.cpp
   whandler.cpp
 ;
 

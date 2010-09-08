@@ -30,7 +30,7 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(character)(0, 0, 0, "character");
 #include "error.h"
 #include "game.h"
 #include "message.h"
-#include "save.h"
+#include "fesave.h"
 #include "stack.h"
 #include "wsquare.h"
 #include "actions.h"

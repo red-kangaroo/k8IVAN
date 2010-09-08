@@ -22,7 +22,7 @@
 #include "felist.h"
 #include "game.h"
 #include "graphics.h"
-#include "save.h"
+#include "fesave.h"
 #include "bitmap.h"
 #include "igraph.h"
 #include "iconf.h"

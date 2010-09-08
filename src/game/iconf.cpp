@@ -11,7 +11,7 @@
  */
 #include "iconf.h"
 #include "game.h"
-#include "save.h"
+#include "fesave.h"
 #include "feio.h"
 #include "area.h"
 #include "graphics.h"

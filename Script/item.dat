@@ -2305,7 +2305,7 @@ ring
     Possibility = 5;
     PostFix = "of polymorph control";
     MainMaterialConfig == SAPPHIRE;
-    GearStates == POLYMORPH_CONTROL;
+    GearStates = POLYMORPH_CONTROL;
     Price = 750;
     AttachedGod = SCABIES;
     Alias == "polycontrol";

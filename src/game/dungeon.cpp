@@ -15,7 +15,7 @@
 #include "script.h"
 #include "error.h"
 #include "game.h"
-#include "save.h"
+#include "fesave.h"
 #include "femath.h"
 #include "bitmap.h"
 

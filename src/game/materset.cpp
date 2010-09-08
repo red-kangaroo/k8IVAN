@@ -25,7 +25,7 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(material)(0, 0, 0, "material");
 #include "char.h"
 #include "confdef.h"
 #include "message.h"
-#include "save.h"
+#include "fesave.h"
 #include "fluid.h"
 #include "smoke.h"
 #include "bitmap.h"

@@ -40,7 +40,7 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(item)(0, 0, 0, "item");
 #include "god.h"
 #include "team.h"
 #include "smoke.h"
-#include "save.h"
+#include "fesave.h"
 #include "whandler.h"
 #include "bitmap.h"
 #include "fluid.h"

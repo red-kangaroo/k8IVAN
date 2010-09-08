@@ -16,7 +16,7 @@
 #include "bitmap.h"
 #include "terra.h"
 #include "proto.h"
-#include "save.h"
+#include "fesave.h"
 #include "team.h"
 
 #include "area.cpp"

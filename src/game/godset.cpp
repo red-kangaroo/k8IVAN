@@ -33,7 +33,7 @@ SYSTEM_SPECIALIZATIONS(god)
 #include "miscitem.h"
 #include "confdef.h"
 #include "materias.h"
-#include "save.h"
+#include "fesave.h"
 #include "team.h"
 
 #include "god.cpp"

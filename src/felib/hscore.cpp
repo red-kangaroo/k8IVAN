@@ -11,11 +11,10 @@
  */
 
 #include "hscore.h"
-#include "save.h"
+#include "fesave.h"
 #include "felist.h"
 #include "feio.h"
 #include "femath.h"
-#include "save.h"
 
 
 highscore::highscore (cfestring &File) : LastAdd(0xFF), Version(HIGH_SCORE_VERSION) {

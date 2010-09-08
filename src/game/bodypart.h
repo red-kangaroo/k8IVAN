@@ -14,7 +14,7 @@
 #define __BODYPART_H__
 
 #include "item.h"
-#include "save.h"
+#include "fesave.h"
 
 class humanoid;
 class sweaponskill;

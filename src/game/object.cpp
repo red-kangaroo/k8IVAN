@@ -18,7 +18,7 @@
 #include "proto.h"
 #include "game.h"
 #include "bitmap.h"
-#include "save.h"
+#include "fesave.h"
 
 v2 RightArmSparkleValidityArray[128];
 v2 LeftArmSparkleValidityArray[128];

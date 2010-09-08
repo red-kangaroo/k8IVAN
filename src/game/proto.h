@@ -17,7 +17,7 @@
 #include <vector>
 
 #include "ivandef.h"
-#include "save.h"
+#include "fesave.h"
 
 class character;
 class item;

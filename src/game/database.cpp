@@ -138,12 +138,12 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
         TempConfig[0] = DataBase;
         Configs = 1;
       }
-      if (inFile->ReadWord() != "{") ABORT("Bracket missing in %s datafile %s line %ld!", protocontainer<type>::GetMainClassID(), inFile->GetFileName().CStr(), inFile->TellLine());
+      if (inFile->ReadWord() != "{") ABORT("'{' missing in %s datafile %s line %ld!", protocontainer<type>::GetMainClassID(), inFile->GetFileName().CStr(), inFile->TellLine());
       //for (inFile->ReadWord(Word); Word != "}"; inFile->ReadWord(Word))
       for (;;) {
         inFile->ReadWord(Word, false);
         if (Word == "" && inFile->Eof()) {
-          if (infStack.empty()) ABORT("Bracket missing in %s datafile %s line %ld!", protocontainer<type>::GetMainClassID(), inFile->GetFileName().CStr(), inFile->TellLine());
+          if (infStack.empty()) ABORT("'}' missing in %s datafile %s line %ld!", protocontainer<type>::GetMainClassID(), inFile->GetFileName().CStr(), inFile->TellLine());
           delete inFile;
           inFile = infStack.top();
           infStack.pop();
@@ -168,7 +168,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
             database *ConfigDataBase = new database(*Proto->ChooseBaseForConfig(TempConfig, Configs, ConfigNumber));
             ConfigDataBase->InitDefaults(Proto, ConfigNumber);
             TempConfig[Configs++] = ConfigDataBase;
-            if (inFile->ReadWord() != "{") ABORT("Bracket missing in %s datafile %s line %ld!", protocontainer<type>::GetMainClassID(), inFile->GetFileName().CStr(), inFile->TellLine());
+            if (inFile->ReadWord() != "{") ABORT("'{' missing in %s datafile %s line %ld!", protocontainer<type>::GetMainClassID(), inFile->GetFileName().CStr(), inFile->TellLine());
             for (inFile->ReadWord(Word); Word != "}"; inFile->ReadWord(Word)) {
               if (!AnalyzeData(*inFile, Word, *ConfigDataBase)) ABORT("Illegal datavalue %s found while building up %s config #%ld, file %s, line %ld!", Word.CStr(), Proto->GetClassID(), ConfigNumber, inFile->GetFileName().CStr(), inFile->TellLine());
             }
@@ -252,7 +252,7 @@ template int databasecreator<olterrain>::CreateDivineConfigurations (const proto
 
 
 template <class database, class member> struct databasemember : public databasememberbase<database> {
-  databasemember (member Member) : Member(Member) { }
+  databasemember (member Member) : Member(Member) {}
   virtual void ReadData (database &DataBase, inputfile &SaveFile) { ::ReadData(DataBase.*Member, SaveFile); }
   member Member;
 };
@@ -306,11 +306,10 @@ INST_ADD_MEMBER(material, col24);
 INST_ADD_MEMBER(material, festring);
 INST_ADD_MEMBER(material, contentscript<item>);
 
-#define ADD_MEMBER(data) AddMember(Map, #data, &database::data);
+#define ADD_MEMBER(data)  AddMember(Map, #data, &database::data);
 
-template<> void databasecreator<character>::CreateDataBaseMemberMap()
-{
-  databasemembermap& Map = GetDataBaseMemberMap();
+template<> void databasecreator<character>::CreateDataBaseMemberMap () {
+  databasemembermap &Map = GetDataBaseMemberMap();
   ADD_MEMBER(DefaultArmStrength);
   ADD_MEMBER(DefaultLegStrength);
   ADD_MEMBER(DefaultDexterity);
@@ -486,9 +485,9 @@ template<> void databasecreator<character>::CreateDataBaseMemberMap()
   ADD_MEMBER(IsImmuneToWhipOfThievery);
 }
 
-template<> void databasecreator<item>::CreateDataBaseMemberMap()
-{
-  databasemembermap& Map = GetDataBaseMemberMap();
+
+template<> void databasecreator<item>::CreateDataBaseMemberMap () {
+  databasemembermap &Map = GetDataBaseMemberMap();
   ADD_MEMBER(Possibility);
   ADD_MEMBER(IsDestroyable);
   ADD_MEMBER(CanBeWished);
@@ -595,9 +594,9 @@ template<> void databasecreator<item>::CreateDataBaseMemberMap()
   ADD_MEMBER(IsSadistWeapon);
 }
 
-template <class type> void databasecreator<type>::CreateLTerrainDataBaseMemberMap()
-{
-  databasemembermap& Map = GetDataBaseMemberMap();
+
+template <class type> void databasecreator<type>::CreateLTerrainDataBaseMemberMap () {
+  databasemembermap &Map = GetDataBaseMemberMap();
   ADD_MEMBER(BitmapPos);
   ADD_MEMBER(UsesLongArticle);
   ADD_MEMBER(Adjective);
@@ -623,15 +622,15 @@ template <class type> void databasecreator<type>::CreateLTerrainDataBaseMemberMa
   ADD_MEMBER(BorderTilePriority);
 }
 
-template<> void databasecreator<glterrain>::CreateDataBaseMemberMap()
-{
+
+template<> void databasecreator<glterrain>::CreateDataBaseMemberMap () {
   CreateLTerrainDataBaseMemberMap();
 }
 
-template<> void databasecreator<olterrain>::CreateDataBaseMemberMap()
-{
+
+template<> void databasecreator<olterrain>::CreateDataBaseMemberMap () {
   CreateLTerrainDataBaseMemberMap();
-  databasemembermap& Map = GetDataBaseMemberMap();
+  databasemembermap &Map = GetDataBaseMemberMap();
   ADD_MEMBER(CreateDivineConfigurations);
   ADD_MEMBER(DigMessage);
   ADD_MEMBER(CanBeDestroyed);
@@ -651,9 +650,9 @@ template<> void databasecreator<olterrain>::CreateDataBaseMemberMap()
   ADD_MEMBER(IsWall);
 }
 
-template<> void databasecreator<material>::CreateDataBaseMemberMap()
-{
-  databasemembermap& Map = GetDataBaseMemberMap();
+
+template<> void databasecreator<material>::CreateDataBaseMemberMap () {
+  databasemembermap &Map = GetDataBaseMemberMap();
   ADD_MEMBER(CommonFlags);
   ADD_MEMBER(NameFlags);
   ADD_MEMBER(CategoryFlags);
@@ -691,15 +690,15 @@ template<> void databasecreator<material>::CreateDataBaseMemberMap()
   ADD_MEMBER(DisablesPanicWhenConsumed);
 }
 
+
 #define ADD_BASE_VALUE(name)\
-if(Word == #name)\
-  game::GetGlobalValueMap()[CONST_S("Base")]\
-  = DataBase.*static_cast<databasemember<database, ulong database::*>*>(Data)->Member;
+  if (Word == #name) game::GetGlobalValueMap()[CONST_S("Base")] = DataBase.*static_cast<databasemember<database, ulong database::*>*>(Data)->Member;
 
-template <class type>
-void databasecreator<type>::SetBaseValue(cfestring&, databasememberbase<database>*, database&) { }
 
-template<> void databasecreator<material>::SetBaseValue(cfestring& Word, databasememberbase<materialdatabase>* Data, materialdatabase& DataBase)
+template <class type> void databasecreator<type>::SetBaseValue(cfestring &, databasememberbase<database> *, database &) {}
+
+template<> void databasecreator<material>::SetBaseValue(cfestring &Word, databasememberbase<materialdatabase> *Data,
+  materialdatabase &DataBase)
 {
   ADD_BASE_VALUE(CommonFlags);
   ADD_BASE_VALUE(NameFlags);
@@ -807,8 +806,7 @@ template <class type> void databasecreator<type>::InstallDataBase (type *Instanc
   }
 }
 
-#define INST_INSTALL_DATABASE(type)\
-template void databasecreator<type>::InstallDataBase(type*, int)
+#define INST_INSTALL_DATABASE(type)  template void databasecreator<type>::InstallDataBase(type *, int)
 
 INST_INSTALL_DATABASE(material);
 INST_INSTALL_DATABASE(character);

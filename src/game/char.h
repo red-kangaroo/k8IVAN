@@ -15,7 +15,7 @@
 #include "bodypart.h"
 #include "script.h"
 #include "wskill.h"
-#include "save.h"
+#include "fesave.h"
 
 
 #define CHAR_PERSONAL_PRONOUN  GetPersonalPronoun(true).CStr()
