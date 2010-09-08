@@ -533,9 +533,9 @@ void game::Run () {
       pool::BurnHell();
       IncreaseTick();
       ApplyDivineTick();
-    } catch(quitrequest) {
+    } catch (quitrequest) {
       break;
-    } catch(areachangerequest) {
+    } catch (areachangerequest) {
     }
   }
 }

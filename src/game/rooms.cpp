@@ -133,26 +133,31 @@ truth shop::PickupItem(character* Customer, item* ForSale, int Amount)
       return false;
 }
 
-truth shop::DropItem(character* Customer, item* ForSale, int Amount)
-{
-  if(!MasterIsActive() || Customer == GetMaster()
-     || GetMaster()->GetRelation(Customer) == HOSTILE)
-    return true;
-
-  if(GetMaster()->GetConfig() == NEW_ATTNAM)
-  {
-    ADD_MESSAGE("\"Sorry, I'm only allowed to buy from "
-    "Decos Bananas Co. if I wish to stay here.\"");
+truth shop::DropItem (character *Customer, item *ForSale, int Amount) {
+  if (!MasterIsActive() || Customer == GetMaster() || GetMaster()->GetRelation(Customer) == HOSTILE) return true;
+  if (GetMaster()->GetConfig() == NEW_ATTNAM) {
+    ADD_MESSAGE("\"Sorry, I'm only allowed to buy from Decos Bananas Co. if I wish to stay here.\"");
     return false;
   }
 
-  long Price = ForSale->GetTruePrice() * Amount
-         * (100 + Customer->GetAttribute(CHARISMA)) / 400;
+  long Price = ForSale->GetTruePrice()*Amount*(100+Customer->GetAttribute(CHARISMA))/400;
+  if (ForSale->IsMoneyBag()) {
+    // BUGBUGBUG? don't allow to give more that one bag
+    if (Amount > 1) {
+      ADD_MESSAGE("You can't give more that one of it!");
+      return false;
+    }
+    Price = ForSale->GetTruePrice()*Amount;
+  }
 
   if (!Customer->IsPlayer()) {
+    if (ForSale->IsMoneyBag()) {
+      ADD_MESSAGE("%s gives %s to the shopkeeper.", Customer->CHAR_NAME(DEFINITE), ForSale->GetName(INDEFINITE, Amount).CStr());
+      GetMaster()->EditMoney(Price);
+      return true;
+    }
     if (Price && Customer->CanBeSeenByPlayer() && GetMaster()->GetMoney() >= Price) {
-      ADD_MESSAGE("%s sells %s.", Customer->CHAR_NAME(DEFINITE),
-      ForSale->GetName(INDEFINITE, Amount).CStr());
+      ADD_MESSAGE("%s sells %s.", Customer->CHAR_NAME(DEFINITE), ForSale->GetName(INDEFINITE, Amount).CStr());
       Customer->EditMoney(Price);
       GetMaster()->EditMoney(-Price);
       Customer->EditDealExperience(Price);
@@ -160,73 +165,51 @@ truth shop::DropItem(character* Customer, item* ForSale, int Amount)
     }
     return false;
   }
-  if(Customer->CanBeSeenBy(GetMaster()))
-  {
-    if(ForSale->IsHeadOfElpuri() || ForSale->IsGoldenEagleShirt()
-       || ForSale->IsPetrussNut() || ForSale->IsTheAvatar()
-       || ForSale->IsEncryptedScroll())
-    {
+
+  if (Customer->CanBeSeenBy(GetMaster())) {
+    if (ForSale->IsHeadOfElpuri() || ForSale->IsGoldenEagleShirt() ||
+        ForSale->IsPetrussNut() || ForSale->IsTheAvatar() || ForSale->IsEncryptedScroll()) {
       ADD_MESSAGE("\"Oh no! You need it far more than I!\"");
       return false;
     }
 
-    if(ForSale->WillExplodeSoon())
-    {
+    if (ForSale->WillExplodeSoon()) {
       ADD_MESSAGE("\"Hey that %s is primed! Take it out! OUT, I SAY!\"",
       ForSale->CHAR_NAME(UNARTICLED));
       return false;
     }
 
-    if(!Price)
-    {
-      ADD_MESSAGE("\"Hah! I wouldn't take %s even "
-      "if you paid me for it!\"",
-      Amount == 1 ? "that" : "those");
+    if (!Price) {
+      ADD_MESSAGE("\"Hah! I wouldn't take %s even if you paid me for it!\"", Amount == 1 ? "that" : "those");
       return false;
     }
 
-    if(GetMaster()->GetMoney())
-    {
-      if(GetMaster()->GetMoney() < Price)
-  Price = GetMaster()->GetMoney();
+    if (ForSale->IsMoneyBag()) {
+      if (!game::TruthQuestion(CONST_S("Do you want to give it to the shopkeeper? [y/N]"))) return false;
+      ADD_MESSAGE("You gives %s to the shopkeeper.", ForSale->GetName(INDEFINITE, Amount).CStr());
+      GetMaster()->EditMoney(Price);
+      return true;
+    }
 
-      if(Amount == 1)
-  ADD_MESSAGE("\"What a fine %s. I'll pay "
-        "%ld gold pieces for it.\"",
-        ForSale->CHAR_NAME(UNARTICLED), Price);
-      else
-  ADD_MESSAGE("\"What a fine pile of %d %s. I'll "
-        "pay %ld gold pieces for them.\"",
-        Amount, ForSale->CHAR_NAME(PLURAL), Price);
-
-      if(game::TruthQuestion(CONST_S("Do you accept this deal? [y/N]")))
-      {
-  Customer->SetMoney(Customer->GetMoney() + Price);
-  GetMaster()->SetMoney(GetMaster()->GetMoney() - Price);
-  Customer->EditDealExperience(Price);
-  return true;
+    if (GetMaster()->GetMoney()) {
+      if (GetMaster()->GetMoney() < Price) Price = GetMaster()->GetMoney();
+      if (Amount == 1) ADD_MESSAGE("\"What a fine %s. I'll pay %ld gold pieces for it.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
+      else ADD_MESSAGE("\"What a fine pile of %d %s. I'll pay %ld gold pieces for them.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
+      if (game::TruthQuestion(CONST_S("Do you accept this deal? [y/N]"))) {
+        Customer->SetMoney(Customer->GetMoney() + Price);
+        GetMaster()->SetMoney(GetMaster()->GetMoney() - Price);
+        Customer->EditDealExperience(Price);
+        return true;
       }
-      else
-  return false;
-    }
-    else
-    {
-      ADD_MESSAGE("\"I would pay you %ld gold pieces "
-      "for %s, but I'm temporarily "
-      "short of cash. Sorry.\"",
-      Price, Amount == 1 ? "it" : "them");
       return false;
     }
+    ADD_MESSAGE("\"I would pay you %ld gold pieces for %s, but I'm temporarily short of cash. Sorry.\"", Price, Amount == 1 ? "it" : "them");
+    return false;
   }
-  else
-  {
-    ADD_MESSAGE("The shopkeeper doesn't see you, "
-    "so you cannot trade with him.");
-    return game::TruthQuestion(CONST_S("Still drop ")
-             + (Amount == 1 ? "this item" : "these items")
-             + "? [y/N]");
-  }
+  ADD_MESSAGE("The shopkeeper doesn't see you, so you cannot trade with him.");
+  return game::TruthQuestion(CONST_S("Still drop ")+(Amount == 1 ? "this item" : "these items")+"? [y/N]");
 }
+
 
 void shop::KickSquare(character* Infidel, lsquare* Square)
 {

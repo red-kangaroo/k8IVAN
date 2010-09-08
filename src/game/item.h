@@ -236,6 +236,7 @@ class item : public object
   virtual truth IsHeadOfElpuri() const { return false; }
   virtual truth IsPetrussNut() const { return false; }
   virtual truth IsGoldenEagleShirt() const { return false; }
+  virtual truth IsMoneyBag () const { return false; }
   virtual truth CanBeRead(character*) const { return false; }
   virtual truth Read(character*);
   virtual void FinishReading(character*) { }

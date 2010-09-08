@@ -652,4 +652,26 @@ protected:
   virtual alpha GetOutlineAlpha (int) const;
 };
 
+
+ITEM(moneybag, item)
+{
+public:
+  moneybag () : moneyAmount(1+RAND_N(300)) {
+    if (RAND_N(100) < 10) moneyAmount += 1000;
+  }
+  virtual truth Apply (character *beggar);
+  virtual void Save (outputfile &) const;
+  virtual void Load (inputfile &);
+  virtual truth IsConsumable () const { return false; }
+  virtual truth IsAppliable (ccharacter *beggar) const;
+  virtual truth CanBeHardened (ccharacter *) const { return false; }
+  virtual truth IsMoneyBag () const { return true; }
+
+  virtual long GetTruePrice () const { return moneyAmount; }
+
+protected:
+  int moneyAmount;
+};
+
+
 #endif

@@ -1290,43 +1290,28 @@ truth wand::Zap(character* Zapper, v2, int Direction)
   return true;
 }
 
-void wand::AddInventoryEntry(ccharacter*, festring& Entry, int, truth ShowSpecialInfo) const // never piled
-{
+void wand::AddInventoryEntry (ccharacter*, festring& Entry, int, truth ShowSpecialInfo) const { // never piled
   AddName(Entry, INDEFINITE);
-
-  if(ShowSpecialInfo)
-  {
+  if (ShowSpecialInfo) {
     Entry << " [" << GetWeight();
-
-    if(TimesUsed == 1)
-      Entry << "g, used 1 time]";
-    else if(TimesUsed)
-      Entry << "g, used " << TimesUsed << " times]";
-    else
-      Entry << "g]";
+    if (TimesUsed == 1) Entry << "g, used 1 time]";
+    else if (TimesUsed) Entry << "g, used " << TimesUsed << " times]";
+    else Entry << "g]";
   }
 }
 
-void materialcontainer::SignalSpoil(material* Material)
-{
-  if(!Exists())
-    return;
 
-  if(Material == MainMaterial)
-  {
-    if(CanBeSeenByPlayer())
-      ADD_MESSAGE("%s becomes so spoiled that it cannot hold its contents anymore.", CHAR_NAME(DEFINITE));
-
+void materialcontainer::SignalSpoil (material *Material) {
+  if (!Exists()) return;
+  if (Material == MainMaterial) {
+    if (CanBeSeenByPlayer()) ADD_MESSAGE("%s becomes so spoiled that it cannot hold its contents anymore.", CHAR_NAME(DEFINITE));
     RemoveMainMaterial();
-  }
-  else
-  {
-    if(CanBeSeenByPlayer())
-      ADD_MESSAGE("The contents of %s spoil completely.", CHAR_NAME(DEFINITE));
-
+  } else {
+    if (CanBeSeenByPlayer()) ADD_MESSAGE("The contents of %s spoil completely.", CHAR_NAME(DEFINITE));
     delete RemoveSecondaryMaterial();
   }
 }
+
 
 truth materialcontainer::CanBePiledWith(citem* Item, ccharacter* Viewer) const
 {
@@ -2948,4 +2933,32 @@ void mondedrpass::FinishReading (character *Reader) {
   RemoveFromSlot();
   SendToHell();
   Reader->EditExperience(INTELLIGENCE, 3000, 1 << 12);
+}
+
+
+truth moneybag::IsAppliable (ccharacter *beggar) const {
+  return beggar->IsPlayer();
+}
+
+
+truth moneybag::Apply (character *beggar) {
+  if (!beggar->IsPlayer()) return false;
+  if (!game::TruthQuestion(CONST_S("Are you sure you want to open ")+GetName(DEFINITE)+"? [y/N]")) return false;
+  ADD_MESSAGE("You opens %s and found %i gold coins", CHAR_NAME(DEFINITE), moneyAmount);
+  beggar->EditMoney(moneyAmount);
+  RemoveFromSlot();
+  SendToHell();
+  return true;
+}
+
+
+void moneybag::Save (outputfile &saveFile) const {
+  item::Save(saveFile);
+  saveFile << moneyAmount;
+}
+
+
+void moneybag::Load (inputfile &saveFile) {
+  item::Load(saveFile);
+  saveFile >> moneyAmount;
 }
