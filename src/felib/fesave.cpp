@@ -256,7 +256,7 @@ void inputfile::ReadWord (festring &str, truth AbortOnEOF, truth skipIt) {
         // skiping
         mIfStack.push(-3);
       } else {
-        mIfStack.push(res!="" ? 1 : -2);
+        mIfStack.push(res!="" ? 1 : -1);
       }
       continue;
     }
@@ -342,6 +342,14 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
             if (!--CommentLevel) break;
             OldChar = 0;
           }
+        }
+        return PUNCT_CONTINUE;
+      }
+      if (Char == '/') {
+        // comment (to eol)
+        while (!feof(Buffer)) {
+          int ch = fgetc(Buffer);
+          if (ch == '\n') break;
         }
         return PUNCT_CONTINUE;
       }
