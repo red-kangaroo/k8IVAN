@@ -57,6 +57,10 @@
 
 
 std::stack<inputfile *> game::mFEStack;
+character *game::mChar = 0;
+ccharacter *game::mActor = 0;
+item *game::mItem = 0;
+
 
 int game::CurrentLevelIndex;
 truth game::InWilderness = false;
@@ -3013,6 +3017,7 @@ truth game::GetWord (festring &w) {
     if (w == "Include") {
       fl->ReadWord(w, true);
       if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", fl->GetFileName().CStr(), fl->TellLine());
+      w = game::GetGameDir()+"Script/"+w;
       inputfile *fl = new inputfile(w);
       fl->setGetVarCB(game::ldrGetVar);
       mFEStack.push(fl);
@@ -3029,6 +3034,23 @@ truth game::GetWord (festring &w) {
 }
 
 
+void game::SkipBlock (truth brcEaten) {
+  festring w;
+  if (!brcEaten) {
+    mFEStack.top()->ReadWord(w, true);
+    if (w != "{") ABORT("'{' expected in file %s at line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+  }
+  int cnt = 1;
+  for (;;) {
+    mFEStack.top()->ReadWord(w, true);
+    if (w == "{") cnt++;
+    else if (w == "}") {
+      if (--cnt < 1) break;
+    }
+  }
+}
+
+
 void game::DoOnEvent (truth brcEaten) {
   // do; only funcalls for now
   festring w;
@@ -3038,29 +3060,36 @@ void game::DoOnEvent (truth brcEaten) {
   }
   for (;;) {
     if (!GetWord(w)) ABORT("Unexpected end of file %s!", mFEStack.top()->GetFileName().CStr());
+    //fprintf(stderr, "  :[%s]\n", w.CStr());
     if (w == "}") break;
+    if (w == ";") continue;
     if (w == "@") {
       mFEStack.top()->ReadWord(w, true);
       if (mFEStack.top()->ReadWord(true) != "=") ABORT("'=' expected in file %s at line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+      //fprintf(stderr, "setvar: %s\n", w.CStr());
       if (w == "money") {
-        long n = mFEStack.top()->ReadNumber(false);
+        long n = mFEStack.top()->ReadNumber(true);
         if (n < 0) n = 0;
-        PLAYER->SetMoney(n);
+        if (mChar) mChar->SetMoney(n);
         continue;
       }
+      ABORT("Unknown var [%s] in file %s at line %ld!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
     } else {
-      mFEStack.top()->ReadWord(w, true);
+      //mFEStack.top()->ReadWord(w, true);
       std::vector<FuncArg> args;
+      //fprintf(stderr, "funcall: %s\n", w.CStr());
       if (w == "SetMoney") {
         ParseFuncArgs("n", args);
         long n = args[0].ival;
         if (n < 0) n = 0;
-        PLAYER->SetMoney(n);
-      } else if (w == "EditMoney") {
+        if (mChar) mChar->SetMoney(n);
+        continue;
+      } if (w == "EditMoney") {
         ParseFuncArgs("n", args);
         long n = args[0].ival;
-        PLAYER->EditMoney(n);
-      } else if (w == "AddMessage") {
+        if (mChar) mChar->EditMoney(n);
+        continue;
+      } if (w == "AddMessage") {
         ParseFuncArgs("*", args);
         festring s;
         for (uint f = 0; f < args.size(); f++) {
@@ -3068,15 +3097,20 @@ void game::DoOnEvent (truth brcEaten) {
           if (a.type == FARG_STRING) s << a.sval; else s << a.ival;
         }
         ADD_MESSAGE(s.CStr());
+        continue;
       }
+      ABORT("Unknown function [%s] in file %s at line %ld!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
       //if (mFEStack.top()->ReadWord() != ";") ABORT("';' expected in file %s line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
     }
     //ABORT("Invalid term in file %s at line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
   }
+  //fprintf(stderr, "------------\n");
 }
 
 
 void game::RunOnEvent (cfestring &ename) {
+  character *old = mChar;
+  mChar = PLAYER;
   for (int fno = 99; fno >= -1; fno--) {
     festring cfname;
     cfname << game::GetGameDir() << "Script/onevent";
@@ -3104,16 +3138,57 @@ void game::RunOnEvent (cfestring &ename) {
       DoOnEvent(false);
     } else {
       // skip
-      int cnt = 1;
-      for (;;) {
-        mFEStack.top()->ReadWord(w, true);
-        if (w == "{") cnt++;
-        else if (w == "}") {
-          if (--cnt < 1) break;
-        }
-      }
+      SkipBlock(false);
     }
   }
+  mChar = old;
+}
+
+
+void game::RunOnEventStr (cfestring &ename, cfestring &str) {
+  if (str.GetSize() < 1) return;
+  //fprintf(stderr, "=============\n%s=============\n", str.CStr());
+  inputfile *ifl = new meminputfile(str);
+  ifl->setGetVarCB(game::ldrGetVar);
+  mFEStack.push(ifl);
+  festring w;
+  //fprintf(stderr, "=============\n", str.CStr());
+  //fprintf(stderr, "event: [%s]\n", ename.CStr());
+  //fprintf(stderr, "---\n%s---\n", str.CStr());
+  while (GetWord(w)) {
+    if (w != "on") ABORT("'on' expected in file %s line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    mFEStack.top()->ReadWord(w, true);
+    //fprintf(stderr, "on: [%s]\n", w.CStr());
+    truth doIt = (w==ename);
+    if (doIt) {
+      //fprintf(stderr, "  do it\n");
+      DoOnEvent(false);
+    } else {
+      // skip
+      //fprintf(stderr, "  skip it\n");
+      SkipBlock(false);
+    }
+  }
+}
+
+
+void game::RunOnCharEvent (character *who, cfestring &ename) {
+  if (!who) return;
+  character *old = mChar;
+  mChar = who;
+  RunOnEventStr(ename, who->mOnEvents);
+  RunOnEventStr(ename, who->GetProtoType()->mOnEvents);
+  mChar = old;
+}
+
+
+void game::RunOnItemEvent (item *what, cfestring &ename) {
+  if (!what) return;
+  item *old = mItem;
+  mItem = what;
+  RunOnEventStr(ename, what->mOnEvents);
+  RunOnEventStr(ename, what->GetProtoType()->mOnEvents);
+  mItem = old;
 }
 
 
@@ -3124,10 +3199,32 @@ festring game::ldrGetVar (cfestring &name) {
   }
   if (name == "money") {
     festring res;
-    if (!PLAYER) return "0";
-    res << PLAYER->GetMoney();
+    if (!mChar) return "0";
+    res << mChar->GetMoney();
     return res;
   }
+  if (name == "name") {
+    if (!mChar) return "";
+    return mChar->GetAssignedName();
+  }
+  if (name == "team") {
+    festring res;
+    if (!mChar) return "";
+    res << mChar->GetTeam()->GetID();
+    return res;
+  }
+  if (name == "friendly") {
+    festring res;
+    if (!mChar || !PLAYER || mChar->GetRelation(PLAYER) != HOSTILE) return "tan";
+    return "";
+  }
+  if (name == "hostile") {
+    festring res;
+    if (!mChar || !PLAYER) return "";
+    if (mChar->GetRelation(PLAYER) == HOSTILE) return "tan";
+    return "";
+  }
+  //if (name == "type") return mVarType;
   ABORT("unknown variable: %s", name.CStr());
   return "";
 }

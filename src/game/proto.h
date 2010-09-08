@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #ifndef __PROTO_H__
 #define __PROTO_H__
 
@@ -18,6 +17,8 @@
 
 #include "ivandef.h"
 #include "fesave.h"
+#include "festring.h"
+
 
 class character;
 class item;
@@ -26,14 +27,15 @@ class god;
 template <class type> class databasecreator;
 struct itemdatabase;
 
+
 typedef std::map<festring, long> valuemap;
 typedef std::vector<item*> itemvector;
 typedef std::vector<itemvector> itemvectorvector;
 typedef std::vector<character*> charactervector;
 typedef std::vector<material*> materialvector;
 
-template <class type> class protocontainer
-{
+
+template <class type> class protocontainer {
  public:
   friend class protosystem;
   friend class databasecreator<type>;
@@ -49,12 +51,9 @@ template <class type> class protocontainer
   static int& GetSizeRef();
 };
 
-template <class type>
-inline int protocontainer<type>::Add(prototype* Proto)
-{
-  if(!GetSize())
-    (GetProtoData() = new prototype*[1024])[GetSizeRef()++] = 0;
 
+template <class type> inline int protocontainer<type>::Add (prototype *Proto) {
+  if (!GetSize()) (GetProtoData() = new prototype*[1024])[GetSizeRef()++] = 0;
   int Index = GetSizeRef()++;
   GetProtoData()[Index] = Proto;
   std::pair<festring, long> Pair(Proto->GetClassID(), Index);
@@ -62,16 +61,15 @@ inline int protocontainer<type>::Add(prototype* Proto)
   return Index;
 }
 
-template <class type>
-inline int protocontainer<type>::SearchCodeName(cfestring& Name)
-{
+
+template <class type> inline int protocontainer<type>::SearchCodeName (cfestring &Name) {
   valuemap::iterator I = GetCodeNameMap().find(Name);
   return I != GetCodeNameMap().end() ? I->second : 0;
 }
 
-class protosystem
-{
- public:
+
+class protosystem {
+public:
   static character* BalancedCreateMonster();
   static item* BalancedCreateItem(long = 0, long = MAX_PRICE, long = ANY_CATEGORY, int = 0, int = 0, int = 0, truth = false);
   static character* CreateMonster(int = 1, int = 999999, int = 0);
@@ -99,22 +97,19 @@ class protosystem
   static long TotalItemPossibility;
 };
 
-template <class type> inline outputfile& operator<<(outputfile& SaveFile, const type* Class)
-{
-  if(Class)
-    Class->Save(SaveFile);
-  else
-    SaveFile << ushort(0);
 
+template <class type> inline outputfile &operator << (outputfile &SaveFile, const type *Class) {
+  if (Class) Class->Save(SaveFile); else SaveFile << ushort(0);
   return SaveFile;
 }
 
-template <class type> inline inputfile& operator>>(inputfile& SaveFile, type*& Class)
-{
+
+template <class type> inline inputfile &operator >> (inputfile &SaveFile, type *&Class) {
   ushort Type = 0;
   SaveFile >> Type;
   Class = Type ? protocontainer<type>::GetProto(Type)->SpawnAndLoad(SaveFile) : 0;
   return SaveFile;
 }
+
 
 #endif

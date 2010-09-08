@@ -65,7 +65,7 @@ typedef festring (*InputFileGetVarFn) (cfestring &name);
 class inputfile {
  public:
   inputfile (cfestring &FileName, const valuemap *ValueMap=0, truth AbortOnErr=true);
-  ~inputfile ();
+  virtual ~inputfile ();
 
   festring ReadWord (truth AbortOnEOF=true);
   void ReadWord (festring &str, truth AbortOnEOF=true, truth skipIt=false);
@@ -99,7 +99,7 @@ class inputfile {
 
   void die (cfestring &msg);
 
-private:
+protected:
   festring ReadNumberIntr (int CallLevel, long *num, truth *isString, truth allowStr, truth PreserveTerminator);
   int HandlePunct (festring &String, int Char, int Mode);
 
@@ -108,7 +108,7 @@ private:
 
   festring readCondition (festring &token, int prio, truth skipIt);
 
-private:
+protected:
   FILE *Buffer;
   festring FileName;
   const valuemap *ValueMap;
@@ -116,6 +116,17 @@ private:
   std::vector<std::pair<festring, festring> > mVars;
   InputFileGetVarFn mGetVar;
   std::stack<int> mIfStack;
+};
+
+
+class meminputfile : public inputfile {
+public:
+  meminputfile (cfestring &str);
+  virtual ~meminputfile () { if (buf) free(buf); }
+
+protected:
+  void *buf;
+  int bufSize;
 };
 
 

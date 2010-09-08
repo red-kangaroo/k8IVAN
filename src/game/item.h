@@ -19,6 +19,8 @@
 #include "lsquare.h"
 #include "slot.h"
 #include "lock.h"
+#include "festring.h"
+
 
 class felist;
 class head;
@@ -219,6 +221,9 @@ class itemprototype
   itemspawner Spawner;
   itemcloner Cloner;
   cchar* ClassID;
+
+public:
+  festring mOnEvents;
 };
 
 class item : public object

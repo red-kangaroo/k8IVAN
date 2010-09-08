@@ -13,7 +13,7 @@
 #include <stack>
 
 
-int CreateConfigTable(databasebase ***ConfigTable, databasebase ***TempTable,
+int CreateConfigTable (databasebase ***ConfigTable, databasebase ***TempTable,
   databasebase **ConfigArray, long *TempTableInfo, int Type, int Configs, int TempTables)
 {
   memset(ConfigTable, 0, CONFIG_TABLE_SIZE*sizeof(databasebase **));
@@ -39,6 +39,44 @@ int CreateConfigTable(databasebase ***ConfigTable, databasebase ***TempTable,
     }
   }
   return TempTables;
+}
+
+
+static void collectHandler (festring &dest, std::stack<inputfile *> &infStack, inputfile **iff) {
+  inputfile *inFile = *iff;
+  festring Word = inFile->ReadWord(true);
+  dest << "on " << Word << "\n{\n";
+  if (inFile->ReadWord() != "{") ABORT("'{' missing in datafile %s line %ld!", inFile->GetFileName().CStr(), inFile->TellLine());
+  int cnt = 1;
+  truth inStr = false;
+  for (;;) {
+    int ch = inFile->Get();
+    if (ch == EOF) {
+      if (infStack.empty()) ABORT("'}' missing in datafile %s line %ld!", inFile->GetFileName().CStr(), inFile->TellLine());
+      delete inFile;
+      *iff = inFile = infStack.top();
+      infStack.pop();
+      continue;
+    }
+    dest << (char)ch;
+    if (inStr) {
+      if (ch == '"') inStr = false;
+      else if (ch == '\\') {
+        ch = inFile->Get();
+        if (ch == EOF) ABORT("Unexpected end of file %s!", inFile->GetFileName().CStr());
+        dest << (char)ch;
+      }
+      continue;
+    }
+    if (ch == '}') {
+      if (--cnt < 1) break;
+    } else if (ch == '{') {
+      cnt++;
+    } else if (ch == '"') {
+      inStr = true;
+    }
+  }
+  dest << "\n";
 }
 
 
@@ -154,6 +192,22 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
         //fprintf(stderr, "D: %d; <%s>\n", (int)infStack.size(), Word.CStr());
         if (Word == "}") break;
         //
+        if (Word == "Include") {
+          Word = inFile->ReadWord();
+          if (inFile->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", inFile->GetFileName().CStr(), inFile->TellLine());
+          //fprintf(stderr, "loading: %s\n", Word.CStr());
+          inputfile *incf = new inputfile(game::GetGameDir()+"Script/"+Word, &game::GetGlobalValueMap());
+          infStack.push(inFile);
+          inFile = incf;
+          inFile->setGetVarCB(game::ldrGetVar);
+          continue;
+        }
+        if (Word == "Message") {
+          Word = inFile->ReadWord();
+          if (inFile->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", inFile->GetFileName().CStr(), inFile->TellLine());
+          fprintf(stderr, "MESSAGE: %s\n", Word.CStr());
+          continue;
+        }
         if (Word == "Config") {
           long ConfigNumber = -1;
           truth isString = false;
@@ -172,16 +226,18 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
             TempConfig[Configs++] = ConfigDataBase;
             if (inFile->ReadWord() != "{") ABORT("'{' missing in %s datafile %s line %ld!", protocontainer<type>::GetMainClassID(), inFile->GetFileName().CStr(), inFile->TellLine());
             for (inFile->ReadWord(Word); Word != "}"; inFile->ReadWord(Word)) {
+              if (Word == "on") {
+                collectHandler(Proto->mOnEvents, infStack, &inFile);
+                continue;
+              }
               if (!AnalyzeData(*inFile, Word, *ConfigDataBase)) ABORT("Illegal datavalue %s found while building up %s config #%ld, file %s, line %ld!", Word.CStr(), Proto->GetClassID(), ConfigNumber, inFile->GetFileName().CStr(), inFile->TellLine());
             }
             ConfigDataBase->PostProcess();
           }
           continue;
         }
-        if (Word == "Message") {
-          Word = inFile->ReadWord();
-          if (inFile->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", inFile->GetFileName().CStr(), inFile->TellLine());
-          fprintf(stderr, "MESSAGE: %s\n", Word.CStr());
+        if (Word == "on") {
+          collectHandler(Proto->mOnEvents, infStack, &inFile);
           continue;
         }
         if (!AnalyzeData(*inFile, Word, *DataBase)) ABORT("Illegal datavalue %s found while building up %s, file %s, line %ld!", Word.CStr(), Proto->GetClassID(), inFile->GetFileName().CStr(), inFile->TellLine());

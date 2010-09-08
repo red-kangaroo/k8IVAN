@@ -462,15 +462,19 @@ public:
   static char GetAbnormalMoveKey (int idx);
   static void SetAbnormalMoveKey (int idx, char ch);
 
+  static void RunOnEvent (cfestring &ename);
+  static void RunOnCharEvent (character *who, cfestring &ename);
+  static void RunOnItemEvent (item *what, cfestring &ename);
+
   static festring ldrGetVar (cfestring &name);
 
-  static truth GetWord (festring &w);
-  static void RunOnEvent (cfestring &ename);
-  static int ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args);
-
 private:
+  static void RunOnEventStr (cfestring &name, cfestring &str);
+  static truth GetWord (festring &w);
+  static void SkipBlock (truth brcEaten);
   static void UpdateCameraCoordinate(int&, int, int, int);
   static void DoOnEvent (truth brcEaten);
+  static int ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args);
 
 private:
   static cchar* const Alignment[];
@@ -584,6 +588,11 @@ private:
   static v2 EnterTextDisplacement;
   //
   static std::stack<inputfile *> mFEStack;
+
+public:
+  static character *mChar;
+  static ccharacter *mActor;
+  static item *mItem;
 };
 
 inline void game::CombineLights(col24& L1, col24 L2)

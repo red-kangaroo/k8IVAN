@@ -9,6 +9,11 @@
  *  along with this file for more details
  *
  */
+#ifndef _GNU_SOURCE
+# define _GNU_SOURCE
+#endif
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -375,6 +380,23 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
     for (;;) {
       if (feof(Buffer)) ABORT("Unterminated string in file %s, beginning at line %ld!", FileName.CStr(), TellLineOfPos(StartPos));
       Char = fgetc(Buffer);
+      if (Char == '\\') {
+        Char = fgetc(Buffer);
+        if (Char == EOF) ABORT("Unterminated string in file %s, beginning at line %ld!", FileName.CStr(), TellLineOfPos(StartPos));
+        switch (Char) {
+          case 't': String << '\t'; break;
+          case 'n': String << '\n'; break;
+          case 'r': String << '\r'; break;
+          case '"': String << '"'; break;
+          default:
+            ABORT("Invalid escape in string in file %s at line %ld!", FileName.CStr(), TellLine());
+        }
+      } else if (Char == '"') {
+        return PUNCT_RETURN;
+      } else {
+        String << char(Char);
+      }
+      /*
       if (Char != '"') {
         String << char(Char);
         OldChar = Char;
@@ -382,6 +404,7 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
         String[String.GetSize()-1] = '"';
         OldChar = 0;
       } else return PUNCT_RETURN;
+      */
     }
   }
   String << char(Char);
@@ -786,4 +809,16 @@ ulong inputfile::TellLineOfPos (long Pos) {
   while (TellPos() != Pos) { if (fgetc(Buffer) == '\n') ++Line; }
   if (TellPos() != BackupPos) SeekPosBegin(BackupPos);
   return Line;
+}
+
+
+meminputfile::meminputfile (cfestring &str) :
+  inputfile("", 0, false)
+{
+  if (Buffer) fclose(Buffer);
+  bufSize = str.GetSize();
+  buf = malloc(bufSize+1);
+  memcpy(buf, str.CStr(), bufSize);
+  Buffer = fmemopen(buf, bufSize, "rb");
+  FileName = "<memory>";
 }

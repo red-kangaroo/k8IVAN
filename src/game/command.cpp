@@ -695,12 +695,14 @@ truth commandsystem::Kick (character *Char) {
   lsquare *Square = Char->GetNearLSquare(Char->GetPos()+game::GetMoveVector(Dir));
   if (!Square->CheckKick(Char)) return false;
   character *Enemy = Square->GetCharacter();
-  if (Enemy && !(Enemy->IsMasochist() && Char->GetRelation(Enemy) == FRIEND) && Char->GetRelation(Enemy) != HOSTILE && !game::TruthQuestion(CONST_S("This might cause a hostile reaction. Are you sure? [y/N]"))) return false;
-  /*if(Square->GetCharacter() && Char->GetRelation(Square->GetCharacter()) != HOSTILE)
-    if(!game::TruthQuestion(CONST_S("This might cause a hostile reaction. Are you sure? [y/N]")))
-      return false;
-    else
-      */
+  if (Enemy && !(Enemy->IsMasochist() && Char->GetRelation(Enemy) == FRIEND) && Char->GetRelation(Enemy) != HOSTILE) {
+    if (!game::TruthQuestion(CONST_S("This might cause a hostile reaction. Are you sure? [y/N]"))) return false;
+  }
+  game::mActor = Square->GetCharacter();
+  game::RunOnCharEvent(Char, CONST_S("before_kick"));
+  game::mActor = 0;
+  game::RunOnCharEvent(Square->GetCharacter(), CONST_S("before_kicked_by"));
+  game::mActor = 0;
   Char->Hostility(Square->GetCharacter());
   Char->Kick(Square, Dir);
   return true;

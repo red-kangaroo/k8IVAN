@@ -21,34 +21,36 @@
 class outputfile;
 class inputfile;
 
-class continent
-{
- public:
+
+class continent {
   friend class worldmap;
-  continent();
-  continent(int);
-  void AttachTo(continent*);
-  void Add(v2);
-  void Save(outputfile&) const;
-  void Load(inputfile&);
-  long GetSize() const;
-  int GetIndex() const { return Index; }
-  void GenerateInfo();
-  festring GetName() const { return Name; }
-  int GetGTerrainAmount(int) const;
-  v2 GetRandomMember(int);
-  v2 GetMember(int) const;
- private:
-  static uchar** TypeBuffer;
-  static short** AltitudeBuffer;
-  static uchar** ContinentBuffer;
+public:
+  continent ();
+  continent (int);
+  void AttachTo (continent *);
+  void Add (v2);
+  void Save (outputfile &) const;
+  void Load (inputfile &);
+  long GetSize () const;
+  int GetIndex () const { return Index; }
+  void GenerateInfo ();
+  festring GetName () const { return Name; }
+  int GetGTerrainAmount (int) const;
+  v2 GetRandomMember (int);
+  v2 GetMember (int) const;
+
+private:
+  static uchar **TypeBuffer;
+  static short **AltitudeBuffer;
+  static uchar **ContinentBuffer;
   festring Name;
   std::vector<v2> Member;
   std::vector<long> GTerrainAmount;
   int Index;
 };
 
-outputfile& operator<<(outputfile&, const continent*);
-inputfile& operator>>(inputfile&, continent*&);
+outputfile &operator << (outputfile &, const continent *);
+inputfile &operator >> (inputfile &, continent *&);
+
 
 #endif

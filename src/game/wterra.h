@@ -14,6 +14,7 @@
 
 #include "terra.h"
 #include "wsquare.h"
+#include "festring.h"
 
 
 struct blitdata;
@@ -58,6 +59,9 @@ private:
   int Index;
   gwterrainspawner Spawner;
   cchar *ClassID;
+
+public:
+  festring mOnEvents;
 };
 
 
@@ -105,6 +109,9 @@ public:
   virtual int GetAttachedEntry () const;
   virtual truth Enter (truth) const;
   virtual int GetWalkability () const;
+
+public:
+  festring mOnEvents;
 };
 
 

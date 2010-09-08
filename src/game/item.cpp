@@ -19,7 +19,7 @@ itemprototype::itemprototype(const itemprototype* Base, itemspawner Spawner, ite
 
 truth itemdatabase::AllowRandomInstantiation() const { return !(Config & S_LOCK_ID); }
 
-item::item() : Slot(0), CloneMotherID(0), Fluid(0), LifeExpectancy(0), ItemFlags(0) { }
+item::item() : object(), Slot(0), CloneMotherID(0), Fluid(0), LifeExpectancy(0), ItemFlags(0) { }
 truth item::IsOnGround() const { return Slot[0]->IsOnGround(); }
 truth item::IsSimiliarTo(item* Item) const { return Item->GetType() == GetType() && Item->GetConfig() == GetConfig(); }
 double item::GetBaseDamage() const { return sqrt(5e-5 * GetWeaponStrength()) + GetDamageBonus(); }

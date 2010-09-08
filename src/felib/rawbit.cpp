@@ -298,8 +298,10 @@ void rawbitmap::Printf (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, 
       0
     };
     for (int c = 0; Buffer[c]; ++c, B.Dest.X += 8) {
-      B.Src.X = ((Buffer[c] - 0x20) & 0xF) << 4;
-      B.Src.Y = (Buffer[c] - 0x20) & 0xF0;
+      unsigned char ch = (unsigned char)Buffer[c];
+      if (ch < ' ' || ch >= '\x7f') ch = ' ';
+      B.Src.X = ((ch-0x20) & 0xF) << 4;
+      B.Src.Y = (ch-0x20) & 0xF0;
       Font->PrintCharacter(B);
     }
   }
@@ -330,8 +332,10 @@ void rawbitmap::PrintfUnshaded (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *
       0
     };
     for (int c = 0; Buffer[c]; ++c, B.Dest.X += 8) {
-      B.Src.X = ((Buffer[c] - 0x20) & 0xF) << 4;
-      B.Src.Y = (Buffer[c] - 0x20) & 0xF0;
+      unsigned char ch = (unsigned char)Buffer[c];
+      if (ch < ' ' || ch >= '\x7f') ch = ' ';
+      B.Src.X = ((ch-0x20) & 0xF) << 4;
+      B.Src.Y = (ch-0x20) & 0xF0;
       Font->PrintCharacter(B);
     }
   }

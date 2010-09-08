@@ -9,13 +9,14 @@
  *  along with this file for more details
  *
  */
-
 #ifndef __LTERRA_H__
 #define __LTERRA_H__
 
 #include "object.h"
 #include "terra.h"
 #include "script.h"
+#include "festring.h"
+
 
 class glterrain;
 class olterrain;
@@ -144,6 +145,9 @@ class glterrainprototype
   int ConfigSize;
   glterrainspawner Spawner;
   cchar* ClassID;
+
+public:
+  festring mOnEvents;
 };
 
 class glterrain : public lterrain, public gterrain
@@ -241,6 +245,9 @@ class olterrainprototype
   int ConfigSize;
   olterrainspawner Spawner;
   cchar* ClassID;
+
+public:
+  festring mOnEvents;
 };
 
 class olterrain : public lterrain, public oterrain
@@ -362,5 +369,6 @@ class name : public name##sysbase
 
 #define GLTERRAIN(name, base) LTERRAIN(name, base, glterrain)
 #define OLTERRAIN(name, base) LTERRAIN(name, base, olterrain)
+
 
 #endif

@@ -16,6 +16,7 @@
 #include "script.h"
 #include "wskill.h"
 #include "fesave.h"
+#include "festring.h"
 
 
 #define CHAR_PERSONAL_PRONOUN  GetPersonalPronoun(true).CStr()
@@ -273,6 +274,9 @@ private:
   characterspawner Spawner;
   charactercloner Cloner;
   cchar *ClassID;
+
+public:
+  festring mOnEvents;
 };
 
 
@@ -322,7 +326,7 @@ public:
   void AddWeaponHitMessage (ccharacter *, citem *, int, truth = false) const;
   virtual void BeTalkedTo ();
   void ReceiveDarkness (long);
-  void Die (ccharacter * = 0, cfestring & = CONST_S(""), ulong = 0);
+  void Die (ccharacter *Killer=0, cfestring &Msg=CONST_S(""), ulong DeathFlags=0);
   void HasBeenHitByItem (character *, item *, int, double, int);
   void Hunger ();
   void Move (v2, truth, truth = false);

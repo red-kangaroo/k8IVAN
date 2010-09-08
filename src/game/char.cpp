@@ -477,6 +477,10 @@ void character::Hunger () {
 int character::TakeHit (character *Enemy, item *Weapon, bodypart *EnemyBodyPart, v2 HitPos, double Damage,
   double ToHitValue, int Success, int Type, int GivenDir, truth Critical, truth ForceHit)
 {
+  //FIXME: args
+  game::mActor = Enemy;
+  game::RunOnCharEvent(this, CONST_S("take_hit"));
+  game::mActor = 0;
   int Dir = Type == BITE_ATTACK ? YOURSELF : GivenDir;
   double DodgeValue = GetDodgeValue();
   if (!Enemy->IsPlayer() && GetAttackWisdomLimit() != NO_LIMIT) Enemy->EditExperience(WISDOM, 75, 1 << 13);
@@ -1029,6 +1033,9 @@ void character::Die (ccharacter *Killer, cfestring &Msg, ulong DeathFlags) {
   /* Note: This function musn't delete any objects, since one of these may be
      the one currently processed by pool::Be()! */
   if (!IsEnabled()) return;
+  game::mActor = Killer;
+  game::RunOnCharEvent(this, CONST_S("die"));
+  game::mActor = 0;
   RemoveTraps();
   if (IsPlayer()) {
     ADD_MESSAGE("You die.");
@@ -1662,6 +1669,7 @@ truth character::Polymorph (character *NewForm, int Counter) {
   NewForm->Flags |= C_IN_NO_MSG_MODE;
   NewForm->ChangeTeam(GetTeam());
   NewForm->GenerationDanger = GenerationDanger;
+  NewForm->mOnEvents = this->mOnEvents;
 
   if (GetTeam()->GetLeader() == this) GetTeam()->SetLeader(NewForm);
 
@@ -1704,6 +1712,10 @@ truth character::Polymorph (character *NewForm, int Counter) {
 void character::BeKicked (character *Kicker, item *Boot, bodypart *Leg, v2 HitPos, double KickDamage,
   double ToHitValue, int Success, int Direction, truth Critical, truth ForceHit)
 {
+  //FIXME: other args
+  game::mActor = Kicker;
+  game::RunOnCharEvent(this, CONST_S("before_be_kicked"));
+  game::mActor = 0;
   switch (TakeHit(Kicker, Boot, Leg, HitPos, KickDamage, ToHitValue, Success, KICK_ATTACK, Direction, Critical, ForceHit)) {
     case HAS_HIT:
     case HAS_BLOCKED:
@@ -1711,9 +1723,9 @@ void character::BeKicked (character *Kicker, item *Boot, bodypart *Leg, v2 HitPo
       if (IsEnabled() && !CheckBalance(KickDamage)) {
         if (IsPlayer()) ADD_MESSAGE("The kick throws you off balance.");
         else if (Kicker->IsPlayer()) ADD_MESSAGE("The kick throws %s off balance.", CHAR_DESCRIPTION(DEFINITE));
-      v2 FallToPos = GetPos()+game::GetMoveVector(Direction);
-      FallTo(Kicker, FallToPos);
-    }
+        v2 FallToPos = GetPos()+game::GetMoveVector(Direction);
+        FallTo(Kicker, FallToPos);
+      }
   }
 }
 

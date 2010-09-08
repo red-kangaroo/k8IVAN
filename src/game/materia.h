@@ -15,6 +15,7 @@
 
 #include "script.h"
 #include "ivandef.h"
+#include "festring.h"
 
 #define MAKE_MATERIAL material::MakeMaterial
 
@@ -91,6 +92,9 @@ class materialprototype
   materialspawner Spawner;
   materialcloner Cloner;
   cchar* ClassID;
+
+public:
+  festring mOnEvents;
 };
 
 class material

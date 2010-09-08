@@ -9,25 +9,27 @@
  *  along with this file for more details
  *
  */
-
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
 #include <list>
 
 #include "ivandef.h"
+#include "festring.h"
 
-#define EXISTS 1
-#define HAS_BE 2
-#define ENTITY_FLAGS 3
+
+#define EXISTS        1
+#define HAS_BE        2
+#define ENTITY_FLAGS  3
+
 
 class square;
 struct v2;
 
-class entity
-{
- public:
+
+class entity {
   friend class pool;
+public:
   entity(int);
   entity(const entity&);
   virtual ~entity();
@@ -64,12 +66,18 @@ class entity
   void RemoveFlags(ulong What) { Flags &= ~What; }
   virtual truth IsStuckTo(ccharacter*) const { return false; }
   virtual ccharacter* FindCarrier() const { return 0; }
- protected:
+
+protected:
   col24 Emitation;
   ulong Flags;
- private:
-  entity* Last;
-  entity* Next;
+
+private:
+  entity *Last;
+  entity *Next;
+
+public:
+  festring mOnEvents;
 };
+
 
 #endif

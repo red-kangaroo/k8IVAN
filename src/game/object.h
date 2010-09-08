@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #ifndef __OBJECT_H__
 #define __OBJECT_H__
 
@@ -17,51 +16,58 @@
 #include "entity.h"
 #include "id.h"
 #include "fearray.h"
+#include "festring.h"
+
 
 class god;
 class object;
 
+
 typedef v2 (object::*bposretriever)(int) const;
 
-class object : public entity, public id
-{
- public:
-  object();
-  object(const object&);
-  virtual ~object();
-  virtual void Save(outputfile&) const;
-  virtual void Load(inputfile&);
-  virtual void UpdatePictures();
-  material* GetMainMaterial() const { return MainMaterial; }
-  virtual material* GetSecondaryMaterial() const { return 0; }
-  virtual void SetSecondaryMaterial(material*, int = 0) { }
-  virtual void ChangeSecondaryMaterial(material*, int = 0) { }
-  virtual int GetMaterials() const { return 1; }
-  virtual material* GetMaterial(int) const { return MainMaterial; }
-  cbitmap*const* GetPicture() const;
-  virtual col24 GetBaseEmitation() const { return 0; }
-  virtual void SetParameters(int) { }
-  virtual int GetOKVisualEffects() const { return 0; }
-  int GetVisualEffects() const { return VisualEffects; }
-  void SetVisualEffects(int What) { VisualEffects = What; }
-  virtual int GetForcedVisualEffects() const { return 0; }
-  int GetAnimationFrames() const { return GraphicData.AnimationFrames; }
-  virtual truth IsAnimated() const { return GraphicData.AnimationFrames > 1; }
-  virtual void CalculateEmitation();
-  void LoadMaterial(inputfile&, material*&);
-  virtual const fearray<long>& GetMaterialConfigChances() const = 0;
-  virtual long GetMaterialConfigChanceSum() const = 0;
-  virtual void CalculateAll() = 0;
-  virtual int GetSpoilLevel() const { return 0; }
-  void CreateWieldedBitmap(graphicid&) const;
-  virtual int GetSpecialFlags() const;
-  static void InitSparkleValidityArrays();
-  void UpdatePictures(graphicdata&, v2, int, alpha, int, bposretriever) const;
-  void InitMaterial(material*&, material*, long);
-  virtual truth DetectMaterial(cmaterial*) const;
-  virtual int GetSparkleFlags() const;
-  virtual void SignalMaterialChange() { }
- protected:
+
+class object : public entity, public id {
+public:
+  object ();
+  object (const object &);
+  virtual ~object ();
+  virtual void Save (outputfile &) const;
+  virtual void Load (inputfile &);
+  virtual void UpdatePictures ();
+  material *GetMainMaterial () const { return MainMaterial; }
+  virtual material *GetSecondaryMaterial () const { return 0; }
+  virtual void SetSecondaryMaterial (material *, int = 0) { }
+  virtual void ChangeSecondaryMaterial (material *, int = 0) { }
+  virtual int GetMaterials () const { return 1; }
+  virtual material *GetMaterial (int) const { return MainMaterial; }
+  cbitmap* const *GetPicture () const;
+  virtual col24 GetBaseEmitation () const { return 0; }
+  virtual void SetParameters (int) { }
+  virtual int GetOKVisualEffects () const { return 0; }
+  int GetVisualEffects () const { return VisualEffects; }
+  void SetVisualEffects (int What) { VisualEffects = What; }
+  virtual int GetForcedVisualEffects () const { return 0; }
+  int GetAnimationFrames () const { return GraphicData.AnimationFrames; }
+  virtual truth IsAnimated () const { return GraphicData.AnimationFrames > 1; }
+  virtual void CalculateEmitation ();
+  void LoadMaterial (inputfile &, material *&);
+  virtual const fearray<long> &GetMaterialConfigChances () const = 0;
+  virtual long GetMaterialConfigChanceSum () const = 0;
+  virtual void CalculateAll () = 0;
+  virtual int GetSpoilLevel () const { return 0; }
+  void CreateWieldedBitmap (graphicid &) const;
+  virtual int GetSpecialFlags () const;
+  static void InitSparkleValidityArrays ();
+  void UpdatePictures (graphicdata &, v2, int, alpha, int, bposretriever) const;
+  void InitMaterial (material *&, material *, long);
+  virtual truth DetectMaterial (cmaterial *) const;
+  virtual int GetSparkleFlags () const;
+  virtual void SignalMaterialChange () {}
+
+public:
+  festring mOnEvents;
+
+protected:
   void CopyMaterial(material* const&, material*&);
   void ObjectInitMaterials(material*&, material*, long, material*&, material*, long, truth);
   material* SetMaterial(material*&, material*, long, int);
@@ -98,9 +104,13 @@ class object : public entity, public id
   virtual truth AllowRegularColors() const { return true; }
   virtual int GetWobbleData() const { return 0; }
   truth RandomizeSparklePos(v2&, v2, int&, ulong, int, int) const;
+
+protected:
+  festring mDefFile;
   graphicdata GraphicData;
-  material* MainMaterial;
+  material *MainMaterial;
   int VisualEffects;
 };
+
 
 #endif
