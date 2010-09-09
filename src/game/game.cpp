@@ -3018,7 +3018,7 @@ truth game::GetWord (festring &w) {
       fl->ReadWord(w, true);
       if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", fl->GetFileName().CStr(), fl->TellLine());
       w = game::GetGameDir()+"Script/"+w;
-      inputfile *fl = new inputfile(w);
+      inputfile *fl = new inputfile(w, &game::GetGlobalValueMap(), true);
       fl->setGetVarCB(game::ldrGetVar);
       mFEStack.push(fl);
       continue;
@@ -3148,7 +3148,7 @@ void game::RunOnEvent (cfestring &ename) {
 void game::RunOnEventStr (cfestring &ename, cfestring &str) {
   if (str.GetSize() < 1) return;
   //fprintf(stderr, "=============\n%s=============\n", str.CStr());
-  inputfile *ifl = new meminputfile(str);
+  inputfile *ifl = new meminputfile(str, &game::GetGlobalValueMap());
   ifl->setGetVarCB(game::ldrGetVar);
   mFEStack.push(ifl);
   festring w;

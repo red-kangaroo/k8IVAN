@@ -812,8 +812,8 @@ ulong inputfile::TellLineOfPos (long Pos) {
 }
 
 
-meminputfile::meminputfile (cfestring &str) :
-  inputfile("", 0, false)
+meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
+  inputfile("", ValueMap, false)
 {
   if (Buffer) fclose(Buffer);
   bufSize = str.GetSize();

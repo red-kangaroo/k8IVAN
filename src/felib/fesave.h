@@ -121,7 +121,7 @@ protected:
 
 class meminputfile : public inputfile {
 public:
-  meminputfile (cfestring &str);
+  meminputfile (cfestring &str, const valuemap *ValueMap=0);
   virtual ~meminputfile () { if (buf) free(buf); }
 
 protected:
