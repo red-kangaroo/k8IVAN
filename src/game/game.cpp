@@ -386,15 +386,17 @@ truth game::Init (cfestring &Name) {
       DefaultChangeMaterial.Empty();
       DefaultDetectMaterial.Empty();
       Player->GetStack()->AddItem(encryptedscroll::Spawn());
-      character *Doggie = dog::Spawn();
-      Doggie->SetTeam(GetTeam(0));
-      GetWorldMap()->GetPlayerGroup().push_back(Doggie);
-      Doggie->SetAssignedName(ivanconfig::GetDefaultPetName());
+      if (ivanconfig::GetDefaultPetName() != "_none_") {
+        character *Doggie = dog::Spawn();
+        Doggie->SetTeam(GetTeam(0));
+        GetWorldMap()->GetPlayerGroup().push_back(Doggie);
+        Doggie->SetAssignedName(ivanconfig::GetDefaultPetName());
+      }
       WizardMode = false;
       SeeWholeMapCheatMode = MAP_HIDDEN;
       GoThroughWallsCheat = false;
       SumoWrestling = false;
-      GlobalRainTimeModifier = 2048 - (RAND() & 4095);
+      GlobalRainTimeModifier = 2048-(RAND()&4095);
       PlayerSumoChampion = false;
       protosystem::InitCharacterDataBaseFlags();
       memset(EquipmentMemory, 0, sizeof(EquipmentMemory));
