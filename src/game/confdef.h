@@ -85,6 +85,14 @@
 #define DARK_GRASS (SOLID_ID + 64)
 #define LEAD (SOLID_ID + 65)
 #define BLACK_GRANITE (SOLID_ID + 66)
+#define BLACK_LEATHER (SOLID_ID + 67)
+#define FLAWLESS_DIAMOND (SOLID_ID + 68)
+#define EMERALD (SOLID_ID + 69)
+#define SUN_CRYSTAL (SOLID_ID + 70)
+#define BLACK_DIAMOND (SOLID_ID + 71)
+#define PSYPHER (SOLID_ID + 72)
+#define EXTRA_HARD_BASALT (SOLID_ID + 73)
+#define WEAK_GLASS (SOLID_ID + 74)
 
 #define ORGANIC_ID (2 << 12)
 
@@ -192,6 +200,7 @@
 #define BLINK_DOG_FLESH (FLESH_ID + 42)
 #define MAGIC_MUSHROOM_FLESH (FLESH_ID + 43)
 #define SICK_SPIDER_FLESH (FLESH_ID + 44)
+#define MIND_WORM_FLESH (FLESH_ID + 45)
 
 #define POWDER_ID (6 << 12)
 
@@ -205,6 +214,7 @@
 #define STEEL (IRON_ALLOY_ID + 2)
 #define METEORIC_STEEL (IRON_ALLOY_ID + 3)
 #define ADAMANT (IRON_ALLOY_ID + 4)
+#define DAMASCUS_STEEL (IRON_ALLOY_ID + 5)
 
 #define LONG_SWORD 1
 #define TWO_HANDED_SWORD 2
@@ -222,6 +232,12 @@
 #define SCYTHE 14
 #define QUARTER_STAFF 15
 #define HAMMER 16
+#define KNIGHT_SWORD 17
+#define KATANA 18
+#define SPETUM 19
+#define TIP_SWORD 20
+#define KNUCKLE 21
+#define RAPIER 22
 
 #define GOROVITS_HAMMER 1
 #define GOROVITS_SICKLE 2
@@ -230,6 +246,8 @@
 #define CHAIN_MAIL 1
 #define PLATE_MAIL 2
 #define ARMOR_OF_GREAT_HEALTH 3
+#define DRAGON_CUIRASS 4
+#define ARMOR_OF_THE_OMMEL 5
 
 #define CHEAP 1
 #define EXPENSIVE 2
@@ -257,6 +275,7 @@
 #define CLOAK_OF_FIRE_RESISTANCE 2
 #define CLOAK_OF_ELECTRICITY_RESISTANCE 3
 #define CLOAK_OF_ACID_RESISTANCE 4
+#define CLOAK_OF_WERE_WOLF_FUR 5
 
 #define BOOT_OF_STRENGTH 1
 #define BOOT_OF_AGILITY 2
@@ -276,6 +295,7 @@
 #define RING_OF_ELECTRICITY_RESISTANCE 9
 #define RING_OF_SEARCHING 10
 #define RING_OF_ACID_RESISTANCE 11
+#define RING_OF_THIEVES 12
 
 #define AMULET_OF_LIFE_SAVING 1
 #define AMULET_OF_ESP 2
@@ -306,6 +326,9 @@
 #define ELITE 6
 #define MASTER 7
 #define GRAND_MASTER 8
+#define MONDEDR_GUARD 9
+#define DWARVEN_GUARD 10
+#define ENQUIOX 128
 
 #define DARK 1
 #define GREATER_DARK 2
@@ -327,6 +350,7 @@
 
 #define LARGE 1
 #define GIANT 2
+#define ARANEA 3
 
 #define BLACK_BEAR 1
 #define GRIZZLY_BEAR 2
@@ -345,7 +369,7 @@
 #define PATRIARCH 3
 
 #define GREATER 1
-#define GIANT 2
+#define GIANT 2 /*FIXME: two GIANTs! */
 
 #define SLAUGHTERER 1
 #define SQUAD_LEADER 2
@@ -371,6 +395,12 @@
 #define HUSBAND 1
 #define WIFE 2
 #define CHILD 3
+
+#define LIGHT_ASIAN_SIREN  1
+#define DARK_ASIAN_SIREN   2
+#define CAUCASIAN_SIREN    3
+#define DARK_SIREN         4
+#define GREEN_SIREN        5
 
 #define PARQUET 1
 #define FLOOR 2
@@ -432,5 +462,6 @@
 #define ROOM_LIBRARY 4
 #define ROOM_BANANA_DROP_AREA 5
 #define ROOM_SUMO_ARENA 6
+
 
 #endif

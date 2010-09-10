@@ -322,6 +322,18 @@ festring inputfile::ReadWord (truth AbortOnEOF) {
 }
 
 
+void inputfile::SkipSpaces () {
+  while (!feof(Buffer)) {
+    int ch = fgetc(Buffer);
+    if (ch == EOF) break;
+    if (ch&0xff > ' ') {
+      ungetc(ch, Buffer);
+      break;
+    }
+  }
+}
+
+
 #define MODE_WORD 1
 #define MODE_NUMBER 2
 
@@ -631,6 +643,13 @@ festring inputfile::ReadNumberIntr (int CallLevel, long *num, truth *isString, t
         return res;
       }
     }
+    /*
+    if (Word == "enum" || Word == "bitenum") {
+      if (CallLevel != HIGHEST || PreserveTerminator) ungetc(';', Buffer);
+      *num = Value;
+      return res;
+    }
+    */
     if (Word == "rgb") {
       int Bits = ReadNumber();
       if (Bits == 16) {

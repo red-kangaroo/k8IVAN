@@ -1319,27 +1319,68 @@ truth game::AnimationController () {
 }
 
 
-void game::LoadGlobalValueMap (inputfile &SaveFile) {
-  festring Word;
-  SaveFile.setGetVarCB(game::ldrGetVar);
-  for (SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false)) {
-    if (Word == "Include") {
-      Word = SaveFile.ReadWord();
-      if (SaveFile.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
-      //fprintf(stderr, "loading: %s\n", Word.CStr());
-      inputfile incf(game::GetGameDir()+"Script/"+Word, &game::GetGlobalValueMap());
+void game::LoadGlobalValueMap (inputfile &fl) {
+  festring word;
+  fl.setGetVarCB(game::ldrGetVar);
+  for (fl.ReadWord(word, false); !fl.Eof(); fl.ReadWord(word, false)) {
+    if (word == "Include") {
+      word = fl.ReadWord();
+      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+      //fprintf(stderr, "loading: %s\n", word.CStr());
+      inputfile incf(game::GetGameDir()+"Script/"+word, &game::GetGlobalValueMap());
       LoadGlobalValueMap(incf);
       continue;
     }
-    if (Word == "Message") {
-      Word = SaveFile.ReadWord();
-      if (SaveFile.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
-      fprintf(stderr, "MESSAGE: %s\n", Word.CStr());
+    if (word == "Message") {
+      word = fl.ReadWord();
+      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+      fprintf(stderr, "MESSAGE: %s\n", word.CStr());
       continue;
     }
-    if (Word != "#" || SaveFile.ReadWord() != "define") ABORT("Illegal datafile define in file %s on line %ld!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
-    SaveFile.ReadWord(Word);
-    GlobalValueMap.insert(std::make_pair(Word, SaveFile.ReadNumber()));
+    if (word != "#") ABORT("Illegal datafile define in file %s on line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+    fl.ReadWord(word, true);
+    if (word == "enum" || word == "bitenum") {
+      truth isBit = word == "bitenum";
+      long idx = 0;
+      if (fl.ReadWord() != "{") ABORT("'{' expected in file %s at line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+      festring idName;
+      truth done = false;
+      while (!done) {
+        fl.ReadWord(word, true);
+        if (word == "}") break;
+        if (word == "=") {
+          idName.Empty();
+        } else {
+          idName = word;
+          fl.ReadWord(word, true);
+        }
+        if (word == "=") {
+          // set current index
+          idx = fl.ReadNumber();
+        } else {
+          if (word != "," && word != ";" && word != "}") ABORT("',' expected in file %s at line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+          if (word == "}") done = true;
+        }
+        if (idName.GetSize() > 0) {
+          long i = idx;
+          if (isBit) i = 1<<i;
+          GlobalValueMap.insert(std::make_pair(idName, i));
+          idx++;
+        }
+      }
+      fl.SkipSpaces();
+      int ch = fl.Get();
+      if (ch != EOF && ch != ';') fl.Unget(ch);
+      //if (fl.ReadWord() != ";") ABORT("';' expected in file %s at line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+      continue;
+    }
+    if (word == "define") {
+      fl.ReadWord(word);
+      long v = fl.ReadNumber();
+      GlobalValueMap.insert(std::make_pair(word, v));
+      continue;
+    }
+    ABORT("Illegal datafile define in file %s on line %ld!", fl.GetFileName().CStr(), fl.TellLine());
   }
 }
 
@@ -1351,7 +1392,10 @@ void game::InitGlobalValueMap () {
     for (int f = 0; f <= 99; f++) {
       char bnum[32];
       sprintf(bnum, "Script/define_%02d.dat", f);
-      inputfile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
+      festring fn = game::GetGameDir();
+      fn << bnum;
+      if (inputfile::fileExists(fn)) return;
+      inputfile ifl(fn, &game::GetGlobalValueMap(), false);
       if (ifl.IsOpen()) {
         LoadGlobalValueMap(ifl);
         ifl.Close();

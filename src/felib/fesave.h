@@ -67,6 +67,8 @@ class inputfile {
   inputfile (cfestring &FileName, const valuemap *ValueMap=0, truth AbortOnErr=true);
   virtual ~inputfile ();
 
+  void SkipSpaces ();
+
   festring ReadWord (truth AbortOnEOF=true);
   void ReadWord (festring &str, truth AbortOnEOF=true, truth skipIt=false);
   char ReadLetter (truth AbortOnEOF=true);
@@ -75,6 +77,7 @@ class inputfile {
   v2 ReadVector2d ();
   rect ReadRect ();
   int Get () { return fgetc(Buffer); }
+  int Unget (int ch) { return ungetc(ch, Buffer); }
   void Read (char *Offset, long Size) { fread(Offset, 1, Size, Buffer); }
   truth IsOpen () { return truth(Buffer); }
   truth Eof () { return feof(Buffer); }
