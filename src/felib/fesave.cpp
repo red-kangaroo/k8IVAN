@@ -326,7 +326,7 @@ void inputfile::SkipSpaces () {
   while (!feof(Buffer)) {
     int ch = fgetc(Buffer);
     if (ch == EOF) break;
-    if (ch&0xff > ' ') {
+    if ((unsigned char)ch > ' ') {
       ungetc(ch, Buffer);
       break;
     }
@@ -388,7 +388,6 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
     // string
     lastWordWasString = true;
     long StartPos = TellPos();
-    int OldChar = 0;
     for (;;) {
       if (feof(Buffer)) ABORT("Unterminated string in file %s, beginning at line %ld!", FileName.CStr(), TellLineOfPos(StartPos));
       Char = fgetc(Buffer);
@@ -786,7 +785,7 @@ void ReadData (fearray<long> &Array, inputfile &SaveFile) {
     Array.Data[0] = SaveFile.ReadNumber();
     return;
   }
-  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %ld!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   SaveFile.ReadWord(Word);
   if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   fearray<long>::sizetype Size = SaveFile.ReadNumber();
@@ -807,7 +806,7 @@ void ReadData (fearray<festring> &Array, inputfile &SaveFile) {
     if (SaveFile.ReadWord() != ";") ABORT("Array syntax error \"%s\" found in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
     return;
   }
-  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %ld!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   SaveFile.ReadWord(Word);
   if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   fearray<festring>::sizetype Size = SaveFile.ReadNumber();

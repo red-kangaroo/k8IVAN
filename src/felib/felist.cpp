@@ -316,7 +316,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
 #ifdef HAVE_IMLIB2
     bitmap bmp(ZERO_V2);
     festring imgName = Entry[selIdx]->String;
-    int pos = imgName.FindLast(".sav");
+    festring::sizetype pos = imgName.FindLast(".sav");
     if (pos != festring::NPos) {
       imgName.Erase(pos, 4);
       imgName = mSaveDir+imgName+".png";
@@ -332,7 +332,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
           {0, 0}, //src
           {x, y}, //dest
           {w, h}, //border
-          0, // luminance/flags
+          {0}, // luminance/flags
           0xDEAD, // mask color
           0 // custom data
         };

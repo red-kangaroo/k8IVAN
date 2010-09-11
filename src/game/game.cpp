@@ -3018,7 +3018,7 @@ int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args) {
   truth isStr;
   inputfile *fl = mFEStack.top();
   args.clear();
-  for (int f = 0; f < types.GetSize(); f++) {
+  for (unsigned int f = 0; f < types.GetSize(); f++) {
     switch (types[f]) {
       case '.':
         s = fl->ReadStringOrNumber(&n, &isStr, true);

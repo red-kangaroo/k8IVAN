@@ -74,8 +74,10 @@ rawbitmap::~rawbitmap () {
 /* a lousy bitmap saver that uses the pcx format but doesn't do any compression */
 void rawbitmap::Save (cfestring &FileName) {
   char PCXHeader[128];
+  ulong hv = 0x0801050ALU;
   memset(PCXHeader, 0, 128);
-  *((ulong*)PCXHeader) = 0x0801050A;
+  //*((ulong*)PCXHeader) = 0x0801050A;
+  memcpy(PCXHeader, &hv, 4); //FIXME: endianness
   PCXHeader[65] = 0x01;
   PCXHeader[66] = Size.X & 0xFF;
   PCXHeader[67] = (Size.X >> 8) & 0xFF;

@@ -1079,7 +1079,6 @@ void character::Die (ccharacter *Killer, cfestring &Msg, ulong DeathFlags) {
   }
 
   square *SquareUnder[MAX_SQUARES_UNDER];
-  lsquare **LSquareUnder = reinterpret_cast<lsquare **>(SquareUnder); /* warning; wtf? */
   memset(SquareUnder, 0, sizeof(SquareUnder));
   Disable();
   if (IsPlayer() || !game::IsInWilderness()) {
@@ -1089,7 +1088,10 @@ void character::Die (ccharacter *Killer, cfestring &Msg, ulong DeathFlags) {
     charactervector& V = game::GetWorldMap()->GetPlayerGroup();
     V.erase(std::find(V.begin(), V.end(), this));
   }
-
+  //lsquare **LSquareUnder = reinterpret_cast<lsquare **>(SquareUnder); /* warning; wtf? */
+  lsquare *LSquareUnder[MAX_SQUARES_UNDER];
+  memcpy(LSquareUnder, SquareUnder, sizeof(SquareUnder));
+  //
   if (!game::IsInWilderness()) {
     if (!StateIsActivated(POLYMORPHED)) {
       if (!IsPlayer() && !IsTemporary() && !Msg.IsEmpty()) game::SignalDeath(this, Killer, Msg);

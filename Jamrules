@@ -68,4 +68,5 @@ lib-config "sdl-config" ;
 #C++FLAGS += -Wall ;
 
 OPTIM += -Wall ;
-OPTIM += -fno-strict-aliasing ;
+#OPTIM += -fno-strict-aliasing ;
+C++OPTIM += -Wall ;

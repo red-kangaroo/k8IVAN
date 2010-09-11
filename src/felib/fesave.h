@@ -167,7 +167,7 @@ template <class type> inline void ReadData (fearray<type> &Array, inputfile &Sav
     ReadData(Array.Data[0], SaveFile);
     return;
   }
-  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %ld!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   SaveFile.ReadWord(Word);
   if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   typedef typename fearray<type>::sizetype sizetype;

@@ -117,8 +117,7 @@ void scrollofwishing::FinishReading (character *Reader) {
   } else {
     RemoveFromSlot();
     SendToHell();
-    ADD_MESSAGE("You changed your mind, didn't you, %s?", game::Insult());
-    ADD_MESSAGE("Nevertheless, the scroll burns.", game::Insult());
+    ADD_MESSAGE("You changed your mind, didn't you, %s? Nevertheless, the scroll burns.", game::Insult());
   }
 }
 

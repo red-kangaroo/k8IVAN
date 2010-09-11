@@ -311,6 +311,7 @@ truth bitmap::LoadImg (cfestring &fileName) {
     }
   }
   imlib_free_image();
+  return true;
 }
 #endif
 
