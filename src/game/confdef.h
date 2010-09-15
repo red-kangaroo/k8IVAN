@@ -110,6 +110,7 @@
 #define OMMEL_CERUMEN (ORGANIC_ID + 12)
 #define OMMEL_BONE (ORGANIC_ID + 13)
 #define OMMEL_TOOTH (ORGANIC_ID + 14)
+#define RYE_BREAD (ORGANIC_ID + 15)
 
 #define GAS_ID (3 << 12)
 
@@ -153,6 +154,7 @@
 #define YELLOW_SLIME (LIQUID_ID + 24)
 #define SICK_BLOOD (LIQUID_ID + 25)
 #define MUSTARD_GAS_LIQUID (LIQUID_ID + 26)
+#define OMMEL_VOMIT (LIQUID_ID + 27)
 
 #define FLESH_ID (5 << 12)
 

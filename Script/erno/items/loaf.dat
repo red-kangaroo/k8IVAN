@@ -1,0 +1,4 @@
+Extend loaf {
+  MainMaterialConfig = { 4, BEEF, PORK, BREAD, RYE_BREAD; }
+  MaterialConfigChances = { 4, 50, 50, 200, 300; }
+}

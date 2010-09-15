@@ -860,7 +860,7 @@ template <class type> void databasecreator<type>::InstallDataBase (type *Instanc
   FindDataBase(Instance->DataBase, Proto, Config);
   if (!Instance->DataBase) {
     //*((int *)0) = 0;
-    ABORT("Undefined %s configuration #%d sought!", Proto->GetClassID(), Config);
+    ABORT("Undefined %s configuration #%08x sought!", Proto->GetClassID(), (unsigned int)Config);
   }
 }
 
