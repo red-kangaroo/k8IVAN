@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #include <iostream>
 
 #include "game.h"
@@ -87,3 +86,14 @@ int Main (int argc, char **argv) {
     }
   }
 }
+
+
+#ifdef WIN32
+# include <windows.h>
+int PASCAL WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow) {
+  //return Main(argc, argv);
+  //FIXME:
+  static char *argv[2] = { "ivan.exe", NULL };
+  return Main(1, argv);
+}
+#endif

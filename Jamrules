@@ -1,14 +1,26 @@
 set-profile ;
 set-default-subdir-locates ;
 
-HAS_PCRE = [ lib-config-ex "pkg-config libpcre --libs" ] ;
-HAS_IMLIB2 = [ lib-config-ex "pkg-config imlib2 --libs" ] ;
+
+if $(WINDOZE) {
+  Echo "MSG: windoze build" ;
+  HAVE_PCRE = ;
+  HAVE_IMLIB2 = ;
+} else {
+  lib-config "sdl-config" ;
+  HAVE_PCRE = [ lib-config-ex "pkg-config libpcre --libs" ] ;
+  HAVE_IMLIB2 = [ lib-config-ex "pkg-config imlib2 --libs" ] ;
+}
 
 
 HDRS += $(TOP)/src/felib $(TOP)/src/game ;
 
 
 DEFINES += WIZARD ;
+
+if $(DEBUG) {
+  DEFINES += DEBUG_BUILD ;
+}
 
 
 if ! $(GLOBAL_SAVES) {
@@ -17,7 +29,7 @@ if ! $(GLOBAL_SAVES) {
 }
 
 
-if $(USE_SOUND) && $(HAS_PCRE) {
+if $(USE_SOUND) && $(HAVE_PCRE) {
   Echo "MSG: sound support enabled" ;
   lib-config "pkg-config libpcre" ;
   LINKLIBS += -lSDL_mixer ;
@@ -28,29 +40,63 @@ if $(USE_SOUND) && $(HAS_PCRE) {
 }
 
 
-if $(HAS_IMLIB2) {
+if $(HAVE_IMLIB2) {
   Echo "MSG: imlib2 found" ;
   lib-config "pkg-config imlib2" ;
   DEFINES += HAVE_IMLIB2 ;
 }
 
 
-#C++ = g++ ;
-#CC = gcc ;
+#####################################################################
+if $(WINDOZE) {
+  WINE = "wine" ;
+  MGPATH = "wine c:\\\\mingw\\\\bin\\\\" ;
+  MGCC = "mingw32-gcc.exe" ;
 
-##if $(DEBUG) {
-##  OPTIM = -O0 -g ;
-##  ECHO "MSG: DEBUG" ;
-##} else if $(SIZE) {
-##  OPTIM = -Os -fno-strict-aliasing ;
-##  ECHO "MSG: optimizing for minimal size." ;
-##} else if $(SPEED) {
-##  OPTIM = -O3 -march=native -mtune=native -mfpmath=sse -fno-strict-aliasing ;
-##  ECHO "MSG: optimizing for maximum speed." ;
-##} else {
-##  OPTIM = -O2 -fno-strict-aliasing ;
-##  #ECHO "MSG: nooptimize build." ;
-##}
+  CC = $(MGPATH)$(MGCC) -mthreads ;
+  LINK = $(MGPATH)$(MGCC) -mthreads ;
+  AR = $(MGPATH)ar.exe -ru ;
+  RANLIB = $(MGPATH)ranlib.exe ;
+  C++ = "wine c:\\\\mingw\\\\bin\\\\mingw32-g++.exe" ;
+  C++LINK = "wine c:\\\\mingw\\\\bin\\\\mingw32-g++.exe -static-libgcc" ;
+
+  rule UserObject {
+    switch $(>) {
+      case *.rc : ResourceCompiler $(<) : $(>) ;
+      #case *.o : DEPENDS $(<) : $(>) ;
+      case *.o : DummyRule $(<) : $(>) ;
+      case * : ECHO "unknown suffix on" $(>) ;
+    }
+  }
+  rule DummyRule {
+  }
+  rule ResourceCompiler {
+    DEPENDS $(<) : $(>) ;
+    Clean clean : $(<) ;
+  }
+  actions ResourceCompiler {
+    $(MGPATH)windres.exe -i $(>) -o $(<)
+  }
+
+  LINKLIBS += -lkernel32 -luser32 -ladvapi32 ;
+  #if $(DO_MAP) {
+  #  LINKFLAGS += -Wl,-Map,zpx2.map ;
+  #}
+  #WINSUBSYS = "windows" ;
+  WINSUBSYS = "console" ;
+  #LINKFLAGS += -Wl,-subsystem,console ;
+  SUFEXE = .exe ;
+  if $(DO_MAP) {
+    LINKFLAGS += "-Wl,-Map,ivan.map,-subsystem,$(WINSUBSYS)" ;
+  } else {
+    LINKFLAGS += "-Wl,-subsystem,$(WINSUBSYS)" ;
+  }
+
+  HDRS += wininc/SDL ;
+  LINKLIBS += -Lwinlib -lm -lSDL ;
+  C++LINKLIBS += -Lwinlib -lm -lSDL ;
+}
+#####################################################################
 
 if ! $(NOGDB) {
   OPTIM += -g ;
@@ -60,13 +106,13 @@ if ! $(NOGDB) {
   LINKFLAGS += -s ;
 }
 
-lib-config "sdl-config" ;
-
 #CCFLAGS += -DNDEBUG ;
 #C++FLAGS += -DNDEBUG ;
 #CCFLAGS += -Wall ;
 #C++FLAGS += -Wall ;
 
 OPTIM += -Wall ;
-#OPTIM += -fno-strict-aliasing ;
 C++OPTIM += -Wall ;
+
+LINKLIBS += -lm ;
+C++LINKLIBS += -lm ;

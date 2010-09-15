@@ -35,24 +35,24 @@ struct v2 {
   v2 () {}
   v2 (int X, int Y) : X(X), Y(Y) {}
   v2 operator + (v2 V) const { return v2(X+V.X, Y+V.Y); }
-  v2& operator += (v2 V) { X += V.X; Y += V.Y; return *this; }
+  v2 &operator += (v2 V) { X += V.X; Y += V.Y; return *this; }
   v2 operator - (v2 V) const { return v2(X-V.X, Y-V.Y); }
-  v2& operator -= (v2 V) { X -= V.X; Y -= V.Y; return *this; }
-  v2 operator - ()const { return v2(-X, -Y); }
+  v2 &operator -= (v2 V) { X -= V.X; Y -= V.Y; return *this; }
+  v2 operator - () const { return v2(-X, -Y); }
   v2 operator * (int I) const { return v2(X*I, Y*I); }
-  v2& operator *= (int I) { X *= I; Y *= I; return *this; }
+  v2 &operator *= (int I) { X *= I; Y *= I; return *this; }
   v2 operator / (int I) const { return v2(X/I, Y/I); }
-  v2& operator /= (int I) { X /= I; Y /= I; return *this; }
+  v2 &operator /= (int I) { X /= I; Y /= I; return *this; }
   v2 operator * (double D) const { return v2(int(X*D), int(Y*D)); }
-  v2& operator *= (double D) { X = int(X*D); Y = int(Y*D); return *this; }
+  v2 &operator *= (double D) { X = int(X*D); Y = int(Y*D); return *this; }
   v2 operator / (double D) const { return v2(int(X/D), int(Y/D)); }
-  v2& operator /= (double D) { X = int(X/D); Y = int(Y/D); return *this; }
+  v2 &operator /= (double D) { X = int(X/D); Y = int(Y/D); return *this; }
   truth operator == (v2 V) const { return X == V.X && Y == V.Y; }
   truth operator != (v2 V) const { return X != V.X || Y != V.Y; }
   v2 operator << (int S) const { return v2(X << S, Y << S); }
-  v2& operator <<= (int S) { X <<= S; Y <<= S; return *this; }
+  v2 &operator <<= (int S) { X <<= S; Y <<= S; return *this; }
   v2 operator >> (int S) const { return v2(X >> S, Y >> S); }
-  v2& operator >>= (int S) { X >>= S; Y >>= S; return *this; }
+  v2 &operator >>= (int S) { X >>= S; Y >>= S; return *this; }
   bool operator < (v2 V) const { return X < V.X || (X == V.X && Y < V.Y); }
   int GetLengthSquare() const { return X*X+Y*Y; }
   /* Also returns true if V == *this */

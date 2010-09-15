@@ -9,6 +9,10 @@
  *  along with this file for more details
  *
  */
+#ifdef WIN32
+# include <windows.h>
+#endif
+
 #include <iostream>
 #include <cstdlib>
 
@@ -32,3 +36,15 @@ int main (int argc, char *argv[]) {
   }
   exit(0);*/
 }
+
+
+/*
+#ifdef WIN32
+int PASCAL WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow) {
+  //return Main(argc, argv);
+  //FIXME:
+  static char *argv[2] = { "ivan.exe", NULL };
+  return Main(1, argv);
+}
+#endif
+*/

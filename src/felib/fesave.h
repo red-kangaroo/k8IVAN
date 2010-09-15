@@ -125,11 +125,14 @@ protected:
 class meminputfile : public inputfile {
 public:
   meminputfile (cfestring &str, const valuemap *ValueMap=0);
-  virtual ~meminputfile () { if (buf) free(buf); }
+  virtual ~meminputfile ();
 
 protected:
   void *buf;
   int bufSize;
+#ifdef WIN32
+  festring tfname;
+#endif
 };
 
 

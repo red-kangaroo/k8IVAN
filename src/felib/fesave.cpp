@@ -21,20 +21,32 @@
 
 #include <cctype>
 
+#ifdef WIN32
+# include <windows.h>
+#endif
+
 #include "fesave.h"
 #include "femath.h"
 
 
 truth inputfile::fileExists (const festring &fname) {
+#ifndef WIN32
   struct stat st;
   if (stat(fname.CStr(), &st)) return false;
   if (!S_ISREG(st.st_mode)) return false;
   return access(fname.CStr(), R_OK) == 0;
+#else
+  FILE *fl = fopen(fname.CStr(), "rb");
+  if (fl) fclose(fl);
+  return fl != 0;
+#endif
 }
 
 
 festring inputfile::GetMyDir (void) {
-  char buf[128], myDir[8192];
+  char myDir[8192];
+#ifndef WIN32
+  char buf[128];
   pid_t mypid = getpid();
   memset(myDir, 0, sizeof(myDir));
   sprintf(buf, "/proc/%u/exe", (unsigned int)mypid);
@@ -44,6 +56,13 @@ festring inputfile::GetMyDir (void) {
     if (!p) strcpy(myDir, "."); else *p = '\0';
   }
   if (myDir[strlen(myDir)-1] == '/') myDir[strlen(myDir)-1] = '\0';
+#else
+  char *p;
+  memset(myDir, 0, sizeof(myDir));
+  GetModuleFileName(GetModuleHandle(NULL), myDir, sizeof(myDir)-1);
+  p = strrchr(myDir, '\\');
+  if (!p) strcpy(myDir, "."); else *p = '\0';
+#endif
   return myDir;
 }
 
@@ -834,9 +853,28 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
   inputfile("", ValueMap, false)
 {
   if (Buffer) fclose(Buffer);
+#ifdef WIN32
+  char nbuf[MAX_PATH+1], tfn[MAX_PATH+1];
+  GetTempPath(MAX_PATH, nbuf);
+  GetTempFileName(nbuf, "ivan", 0, tfn);
+  tfname = tfn;
+  FILE *fl = fopen(tfn, "wb");
+  fwrite(str.CStr(), str.GetSize(), 1, fl);
+  fclose(fl);
+  Buffer = fopen(tfn, "rb");
+#else
   bufSize = str.GetSize();
   buf = malloc(bufSize+1);
   memcpy(buf, str.CStr(), bufSize);
   Buffer = fmemopen(buf, bufSize, "rb");
+#endif
   FileName = "<memory>";
+}
+
+meminputfile::~meminputfile () {
+  if (buf) free(buf);
+#ifdef WIN32
+  if (Buffer) fclose(Buffer);
+  unlink(tfname.CStr());
+#endif
 }

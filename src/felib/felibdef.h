@@ -37,8 +37,8 @@ culong SquarePartTickMask[4] = { 0xFF, 0xFF00, 0xFF0000, 0xFF000000 };
 /* Btw, both __attribute__ ((regparm(3))) and __fastcall SUCK! */
 
 #define NO_ALIGNMENT         __attribute__ ((packed))
-#define NO_RETURN            __attribute__ ((noreturn))
-#define LIKE_PRINTF(p1, p2)  __attribute__ ((format(printf, p1, p2)))
+#define NO_RETURN            __attribute__((noreturn))
+#define LIKE_PRINTF(p1, p2)  __attribute__((format(printf, p1, p2)))
 
 template <class type> inline type Max (type X, type Y) { return X >= Y ? X : Y; }
 template <class type> inline type Max (type X, type Y, type Z) { return X >= Y ? (X >= Z ? X : Z) : (Y >= Z ? Y : Z); }
