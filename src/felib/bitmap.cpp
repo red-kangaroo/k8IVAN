@@ -12,8 +12,10 @@
 #include <cmath>
 #include <ctime>
 
-#ifdef HAVE_IMLIB2
+#if defined(HAVE_IMLIB2)
 # include <Imlib2.h>
+#elif defined(HAVE_PNGLIB)
+# include <png.h>
 #endif
 
 #include "bitmap.h"
@@ -203,8 +205,16 @@ void bitmap::Load (inputfile &SaveFile) {
 }
 
 
+#if defined(HAVE_PNGLIB)
+static void pngWrite (png_structp png_ptr, png_bytep data, png_size_t length) {
+  FILE *fp = (FILE *)png_get_io_ptr(png_ptr);
+  fwrite(data, length, 1, fp);
+}
+#endif
+
+
 void bitmap::Save (cfestring &FileName) const {
-#ifdef HAVE_IMLIB2
+#if defined(HAVE_IMLIB2)
   if (mSize.X < 1 || mSize.Y < 1) return;
   Imlib_Image img = imlib_create_image(mSize.X, mSize.Y);
   imlib_context_set_image(img);
@@ -225,6 +235,69 @@ void bitmap::Save (cfestring &FileName) const {
   imlib_image_set_format("png");
   imlib_save_image(FileName.CStr());
   imlib_free_image();
+#elif defined(HAVE_PNGLIB)
+  png_structp png_ptr;
+  png_infop info_ptr;
+  int ret;
+  png_colorp palette;
+  png_byte **row_pointers = NULL;
+  png_ptr = NULL;
+  info_ptr = NULL;
+  palette = NULL;
+  ret = -1;
+  FILE *fp = fopen(FileName.CStr(), "wb");
+  if (fp == 0) return;
+  row_pointers = (png_byte **)malloc(mSize.Y*sizeof(png_byte *));
+  //if (!row_pointers);
+  png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL,NULL,NULL);
+  //if (!png_ptr);
+  info_ptr = png_create_info_struct(png_ptr);
+  //if (!info_ptr);
+  // setup custom writer function
+  png_set_write_fn(png_ptr, (voidp)fp, pngWrite, NULL);
+  if (setjmp(png_jmpbuf(png_ptr))) {
+    ABORT("err");
+  }
+  /*
+  if (compression > Z_BEST_COMPRESSION) compression = Z_BEST_COMPRESSION;
+  if (compression == Z_NO_COMPRESSION) {
+    // No compression
+    png_set_filter(png_ptr, 0, PNG_FILTER_NONE);
+    png_set_compression_level(png_ptr, Z_NO_COMPRESSION);
+  } else if (compression < 0) {
+    png_set_compression_level(png_ptr, Z_DEFAULT_COMPRESSION);
+  } else {
+    png_set_compression_level(png_ptr, compression);
+  }
+  */
+  png_set_filter(png_ptr, 0, PNG_FILTER_NONE);
+  png_set_compression_level(png_ptr, Z_BEST_COMPRESSION);
+  //png_set_compression_level(png_ptr, Z_NO_COMPRESSION);
+  png_set_IHDR(png_ptr, info_ptr, mSize.X, mSize.Y, 8,
+    PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+  png_write_info(png_ptr, info_ptr);
+  unsigned char *tcImg = (unsigned char *)malloc((mSize.X*3)*mSize.Y), *tc = tcImg;
+
+  for (int y = 0; y < mSize.Y; y++) {
+    row_pointers[y] = (png_bytep)tc;
+    for (int x = 0; x < mSize.X; x++) {
+      col16 Pixel = GetPixel(x, y);
+      unsigned char b = (Pixel << 3)&0xff;
+      unsigned char g = ((Pixel >> 5) << 2)&0xff;
+      unsigned char r = ((Pixel >> 11) << 3)&0xff;
+      *tc++ = r;
+      *tc++ = g;
+      *tc++ = b;
+      //*tc++ = 255; //0?
+    }
+  }
+  png_write_image(png_ptr, row_pointers);
+  png_write_end(png_ptr, NULL);
+  fclose(fp);
+  free(tcImg);
+//savedone: /* clean up and return */
+  png_destroy_write_struct(&png_ptr, &info_ptr);
+  if (row_pointers) free(row_pointers);
 #else
   static char BMPHeader[] = {
     char(0x42), char(0x4D), char(0xB6), char(0x4F), char(0x12), char(0x00),

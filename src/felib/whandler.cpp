@@ -203,7 +203,7 @@ void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
             char buf[16];
             sprintf(buf, "%03d", f);
             festring fn = dir+"/scrshot"+buf;
-#ifdef HAVE_IMLIB2
+#if defined(HAVE_IMLIB2) || defined(HAVE_PNGLIB)
             fn << ".png";
 #else
             fn << ".bmp";
