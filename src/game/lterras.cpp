@@ -933,11 +933,12 @@ void coffin::Break () {
 
 
 void coffin::GenerateGhost (lsquare *Square) {
-  v2 Pos = Square->GetPos();
-  character *Char = ghost::Spawn();
-  Char->SetTeam(game::GetTeam(MONSTER_TEAM));
   if ((!Square->GetRoomIndex() || !Square->GetRoom()->DontGenerateMonsters())) {
-    Char->PutTo(Pos);
+    v2 Pos = Square->GetPos();
+    character *Char = ghost::Spawn();
+    Char->SetTeam(game::GetTeam(MONSTER_TEAM));
+    //k8:Char->PutTo(Pos);
+    Char->PutToOrNear(Pos);
     Char->SignalGeneration();
     if (Char->CanBeSeenByPlayer()) ADD_MESSAGE("%s appears.", Char->CHAR_NAME(DEFINITE));
   }
