@@ -872,6 +872,7 @@ truth commandsystem::Go (character *Char) {
   if (Dir == DIR_ERROR) return false;
   go *Go = go::Spawn(Char);
   Go->SetDirection(Dir);
+  Go->SetPrevWasTurn(false);
   int OKDirectionsCounter = 0;
   for (int d = 0; d < Char->GetNeighbourSquares(); ++d) {
     lsquare *Square = Char->GetNeighbourLSquare(d);

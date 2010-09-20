@@ -2165,40 +2165,128 @@ void character::GoOn (go *Go, truth FirstStep) {
     }
   }
 
-  int OKDirectionsCounter = 0;
+/*
+  0: up-left
+  1: up
+  2: up-right
+  3: left
+  4: right
+  5: down-left
+  6: down
+  7: down-right
+  8: stand still
+*/
+  static const int revDir[8] = { 7, 6, 5, 4, 3, 3, 1, 0 };
+  static const bool orthoDir[8] = { false, true, false, true, true, false, true, false };
+
+  int OKDirectionsCounter = 0, gd = Go->GetDirection(), odc = 0;
   for (int d = 0; d < GetNeighbourSquares(); ++d) {
     lsquare *Square = GetNeighbourLSquare(d);
     if (Square && CanMoveOn(Square)) ++OKDirectionsCounter;
   }
 
-  truth doWait = false;
+  int nDir = -1;
+  if (orthoDir[gd] && !Go->IsWalkingInOpen()) {
+    // check if there is dead end forward and we have only one turn
+    v2 nxy = GetPos()+MoveVector;
+    v2 nxyff = nxy+MoveVector;
+    odc = 0;
+    lsquare *sqf = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxy));
+    lsquare *sqff = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxyff));
+    if (sqf && CanMoveOn(sqf) && (!sqff || !CanMoveOn(sqff))) {
+      // dead end found
+      for (int d = 0; d < GetNeighbourSquares(); ++d) {
+        if (d == gd || d == revDir[gd] || !orthoDir[d]) continue;
+        v2 sqxy = nxy+game::GetMoveVector(d);
+        lsquare *sq = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(sqxy));
+        if (sq && CanMoveOn(sq)) {
+          nDir = d;
+          odc++;
+        }
+      }
+    }
+    //fprintf(stderr, "*: %d\n", odc);
+  }
+
   if (!Go->IsWalkingInOpen()) {
-    if (OKDirectionsCounter > 2) {
+    // in the corridor
+    //fprintf(stderr, "dc: %d\n", OKDirectionsCounter);
+    if (Go->prevWasTurn()) {
+      Go->SetPrevWasTurn(false);
+    } else if (odc == 1) {
+      // follow the turn; 3: back, forward and turn
+      int newDir = -1;
+      switch (nDir) {
+        case 1: // up
+          if (gd == 3) newDir = 0;
+          else if (gd == 4) newDir = 2;
+          break;
+        case 3: // left
+          if (gd == 1) newDir = 0;
+          else if (gd == 6) newDir = 5;
+          break;
+        case 4: // right
+          if (gd == 1) newDir = 2;
+          else if (gd == 6) newDir = 7;
+          break;
+        case 6: // down
+          if (gd == 3) newDir = 5;
+          else if (gd == 4) newDir = 7;
+          break;
+      }
+      //if (newDir < 0) ABORT("go error");
+      if (newDir < 0) { Go->Terminate(false); return; }
+      lsquare *Square = GetNeighbourLSquare(newDir);
+      if (Square && CanMoveOn(Square)) {
+        // fuckin' copypasta
+        MoveVector = ApplyStateModification(game::GetMoveVector(newDir));
+        int squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
+        if (squares) {
+          for (int c = 0; c < squares; ++c) {
+            if ((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) || MoveToSquare[c]->IsDangerous(this)) {
+              newDir = -1;
+              break;
+            }
+          }
+        } else newDir = -1;
+      }
+      if (newDir < 0) { Go->Terminate(false); return; }
+      newDir = nDir;
+      //fprintf(stderr, "newDir: %d\n", newDir);
+      Go->SetDirection(newDir);
+      Go->SetPrevWasTurn(true);
+      v2 nxyf = GetPos()+MoveVector+game::GetMoveVector(newDir);
+      v2 nxyff = nxyf+game::GetMoveVector(newDir);
+      lsquare *sqf = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxyf));
+      lsquare *sqff = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxyff));
+      if (sqf && CanMoveOn(sqf)) {
+        Go->SetPrevWasTurn(sqff && CanMoveOn(sqff));
+      }
+      // dead end found
+    } else if (OKDirectionsCounter > 2) {
       Go->Terminate(false);
       return;
     }
   } else {
+    Go->SetPrevWasTurn(false);
     if (OKDirectionsCounter <= 2) Go->SetIsWalkingInOpen(false);
-    //doWait = IsPlayer();
   }
-  doWait = true;
 
   square *BeginSquare = GetSquareUnder();
 
-  if (!TryMove(MoveVector, true, game::PlayerIsRunning()) ||
-      BeginSquare == GetSquareUnder() ||
-      (CurrentRoomIndex && (OldRoomIndex != CurrentRoomIndex))) {
+  truth moveOk = TryMove(MoveVector, true, game::PlayerIsRunning());
+  if (!moveOk || BeginSquare == GetSquareUnder() || (CurrentRoomIndex && (OldRoomIndex != CurrentRoomIndex))) {
+    if (moveOk) {
+      if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
+      game::DrawEverything();
+    }
     Go->Terminate(false);
     return;
   }
 
-  if (GetStackUnder()->GetVisibleItems(this)) {
-    Go->Terminate(false);
-    doWait = false;
-  }
+  if (GetStackUnder()->GetVisibleItems(this)) Go->Terminate(false);
+  if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
 
-  //fprintf(stderr, "doWait: %s\n", doWait ? "tan" : "ona");
-  if (doWait && ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
   game::DrawEverything();
 }
 

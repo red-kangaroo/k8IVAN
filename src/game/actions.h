@@ -113,9 +113,13 @@ public:
   virtual cchar *GetDescription () const;
   virtual truth ShowEnvironment () const { return false; }
 
+  inline truth prevWasTurn () const { return mPrevWasTurn; }
+  inline void SetPrevWasTurn (truth v) { mPrevWasTurn = v; }
+
 protected:
   int Direction;
   truth WalkingInOpen;
+  truth mPrevWasTurn;
 };
 
 
