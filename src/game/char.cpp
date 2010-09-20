@@ -2140,12 +2140,47 @@ truth character::MoveRandomlyInRoom () {
 }
 
 
+truth character::IsPassableSquare (int x, int y) const {
+  lsquare *sq = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(x, y));
+  return sq && CanMoveOn(sq);
+}
+
+
+truth character::IsInCorridor () const { return IsInCorridor(GetPos().X, GetPos().Y); }
+
+truth character::IsInCorridor (int x, int y) const {
+  if (!IsPassableSquare(x, y-1) && !IsPassableSquare(x, y+1)) return true;
+  if (!IsPassableSquare(x-1, y) && !IsPassableSquare(x+1, y)) return true;
+  if (IsPassableSquare(x, y-1) && IsPassableSquare(x, y+1) &&
+      (IsPassableSquare(x-1, y) || IsPassableSquare(x+1, y))) return false;
+  if (IsPassableSquare(x-1, y) && IsPassableSquare(x+1, y) &&
+      (IsPassableSquare(x, y-1) || IsPassableSquare(x, y+1))) return false;
+  if (!IsPassableSquare(x-1, y-1) && !IsPassableSquare(x+1, y-1) &&
+      !IsPassableSquare(x-1, y+1) && !IsPassableSquare(x+1, y+1)) return true;
+  return false;
+}
+
+
+truth character::IsInCorridor (const v2 dir) const {
+  v2 nxy = GetPos()+dir;
+  return IsInCorridor(nxy.X, nxy.Y);
+}
+
+
 void character::GoOn (go *Go, truth FirstStep) {
+  //fprintf(stderr, "corridor: %s\n", IsInCorridor() ? "tan" : "ona");
+  if (FirstStep) Go->SetIsWalkingInOpen(!IsInCorridor());
+
   v2 MoveVector = ApplyStateModification(game::GetMoveVector(Go->GetDirection()));
   lsquare *MoveToSquare[MAX_SQUARES_UNDER];
 
   int Squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
   if (!Squares || !CanMoveOn(MoveToSquare[0])) {
+    Go->Terminate(false);
+    return;
+  }
+
+  if (!FirstStep && !Go->IsWalkingInOpen() && !IsInCorridor(MoveVector)) {
     Go->Terminate(false);
     return;
   }
@@ -2205,7 +2240,7 @@ void character::GoOn (go *Go, truth FirstStep) {
         }
       }
     }
-    //fprintf(stderr, "*: %d\n", odc);
+    //fprintf(stderr, "*: %d; nDir: %d\n", odc, nDir);
   }
 
   if (!Go->IsWalkingInOpen()) {
@@ -2262,14 +2297,14 @@ void character::GoOn (go *Go, truth FirstStep) {
       if (sqf && CanMoveOn(sqf)) {
         Go->SetPrevWasTurn(sqff && CanMoveOn(sqff));
       }
-      // dead end found
-    } else if (OKDirectionsCounter > 2) {
+    } else if (!IsInCorridor()) {
       Go->Terminate(false);
       return;
     }
   } else {
     Go->SetPrevWasTurn(false);
-    if (OKDirectionsCounter <= 2) Go->SetIsWalkingInOpen(false);
+    //if (OKDirectionsCounter <= 2) Go->SetIsWalkingInOpen(false);
+    Go->SetIsWalkingInOpen(!IsInCorridor());
   }
 
   square *BeginSquare = GetSquareUnder();

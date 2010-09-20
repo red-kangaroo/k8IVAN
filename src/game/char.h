@@ -1,5 +1,4 @@
 /*
- *
  *  Iter Vehemens ad Necem (IVAN)
  *  Copyright (C) Timo Kiviluoto
  *  Released under the GNU General
@@ -417,6 +416,11 @@ public:
   virtual void SwitchToDig (item *, v2) {}
   virtual void SetRightWielded (item *) {}
   virtual void SetLeftWielded (item *) {}
+  truth IsPassableSquare (const v2 xy) const { return IsPassableSquare(xy.X, xy.Y); }
+  truth IsPassableSquare (int x, int y) const;
+  truth IsInCorridor () const;
+  truth IsInCorridor (int x, int y) const;
+  truth IsInCorridor (const v2 dir) const;
   void GoOn (go *, truth = false);
   virtual truth CheckKick () const;
   virtual int OpenMultiplier () const { return 2; }
