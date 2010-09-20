@@ -378,12 +378,25 @@ truth object::AddRustLevelDescription(festring& String, truth Articled) const
   return MainMaterial->AddRustLevelDescription(String, Articled);
 }
 
-truth object::AddMaterialDescription(festring& String, truth Articled) const
-{
-  MainMaterial->AddName(String, Articled);
+
+truth object::AddMaterialDescription(festring& String, truth Articled) const {
+  //FIXME: gum solution
+  if (isBone()) {
+    festring s(MainMaterial->GetName(Articled));
+    festring::sizetype pos = s.FindLast("bone");
+    if (pos != festring::NPos && pos == s.GetSize()-4) {
+      while (pos > 0 && s[pos-1] == ' ') pos--;
+      s.Erase(pos, s.GetSize()-pos);
+      if (s.GetSize() == 0) return true; // no name left
+    }
+    String << s;
+  } else {
+    MainMaterial->AddName(String, Articled);
+  }
   String << ' ';
   return true;
 }
+
 
 void object::AddContainerPostFix(festring& String) const
 {

@@ -91,7 +91,7 @@ public:
   sizetype FindLast (const char *CStr, sizetype Pos=NPos) const { return FindLast(CStr, Pos, strlen(CStr)); }
   sizetype FindLast (const char *, sizetype, sizetype) const;
   sizetype FindLast (const festring& S, sizetype Pos=NPos) const { return FindLast(S.Data, Pos, S.Size); }
-  void Erase (sizetype, sizetype);
+  void Erase (sizetype Pos, sizetype Length);
   void Insert (sizetype Pos, cchar *CStr) { Insert(Pos, CStr, strlen(CStr)); }
   void Insert (sizetype, cchar *, sizetype);
   void Insert (sizetype Pos, cfestring& S) { Insert(Pos, S.Data, S.Size); }

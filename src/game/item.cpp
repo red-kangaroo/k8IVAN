@@ -9,279 +9,247 @@
  *  along with this file for more details
  *
  */
-
 /* Compiled through itemset.cpp */
 
-cchar* ToHitValueDescription[] = { "unbelievably inaccurate", "extremely inaccurate", "inaccurate", "decently accurate", "accurate", "highly accurate", "extremely accurate", "unbelievably accurate" };
-cchar* StrengthValueDescription[] = { "fragile", "rather sturdy", "sturdy", "strong", "very strong", "extremely strong", "almost unbreakable" };
+cchar *ToHitValueDescription[] = {
+  "unbelievably inaccurate",
+  "extremely inaccurate",
+  "inaccurate",
+  "decently accurate",
+  "accurate",
+  "highly accurate",
+  "extremely accurate",
+  "unbelievably accurate"
+};
 
-itemprototype::itemprototype(const itemprototype* Base, itemspawner Spawner, itemcloner Cloner, cchar* ClassID) : Base(Base), Spawner(Spawner), Cloner(Cloner), ClassID(ClassID) { Index = protocontainer<item>::Add(this); }
+cchar *StrengthValueDescription[] = {
+  "fragile",
+  "rather sturdy",
+  "sturdy",
+  "strong",
+  "very strong",
+  "extremely strong",
+  "almost unbreakable"
+};
 
-truth itemdatabase::AllowRandomInstantiation() const { return !(Config & S_LOCK_ID); }
 
-item::item() : object(), Slot(0), CloneMotherID(0), Fluid(0), LifeExpectancy(0), ItemFlags(0) { }
-truth item::IsOnGround() const { return Slot[0]->IsOnGround(); }
-truth item::IsSimiliarTo(item* Item) const { return Item->GetType() == GetType() && Item->GetConfig() == GetConfig(); }
-double item::GetBaseDamage() const { return sqrt(5e-5 * GetWeaponStrength()) + GetDamageBonus(); }
-int item::GetBaseMinDamage() const { return int(GetBaseDamage() * 0.75); }
-int item::GetBaseMaxDamage() const { return int(GetBaseDamage() * 1.25) + 1; }
-int item::GetBaseToHitValue() const { return int(10000. / (1000 + GetWeight()) + GetTHVBonus()); }
-int item::GetBaseBlockValue() const { return int((10000. / (1000 + GetWeight()) + GetTHVBonus()) * GetBlockModifier() / 10000.); }
-truth item::IsInCorrectSlot(int I) const { return I == RIGHT_WIELDED_INDEX || I == LEFT_WIELDED_INDEX; }
-truth item::IsInCorrectSlot() const { return IsInCorrectSlot(static_cast<gearslot*>(*Slot)->GetEquipmentIndex()); }
-int item::GetEquipmentIndex() const { return static_cast<gearslot*>(*Slot)->GetEquipmentIndex(); }
-int item::GetGraphicsContainerIndex() const { return GR_ITEM; }
-truth item::IsBroken() const { return GetConfig() & BROKEN; }
-cchar* item::GetBreakVerb() const { return "breaks"; }
-square* item::GetSquareUnderEntity(int I) const { return GetSquareUnder(I); }
-square* item::GetSquareUnder(int I) const { return Slot[I] ? Slot[I]->GetSquareUnder() : 0; }
-lsquare* item::GetLSquareUnder(int I) const { return static_cast<lsquare*>(Slot[I]->GetSquareUnder()); }
-void item::SignalStackAdd(stackslot* StackSlot, void (stack::*)(item*, truth)) { Slot[0] = StackSlot; }
-truth item::IsAnimated() const { return GraphicData.AnimationFrames > 1 || (Fluid && ShowFluids()); }
-truth item::IsRusted() const { return MainMaterial->GetRustLevel() != NOT_RUSTED; }
-truth item::IsEatable(ccharacter* Eater) const { return GetConsumeMaterial(Eater, &material::IsSolid) && IsConsumable(); }
-truth item::IsDrinkable(ccharacter* Eater) const { return GetConsumeMaterial(Eater, &material::IsLiquid) && IsConsumable(); }
-pixelpredicate item::GetFluidPixelAllowedPredicate() const { return &rawbitmap::IsTransparent; }
-void item::Cannibalize() { Flags |= CANNIBALIZED; }
-void item::SetMainMaterial(material* NewMaterial, int SpecialFlags) { SetMaterial(MainMaterial, NewMaterial, GetDefaultMainVolume(), SpecialFlags); }
-void item::ChangeMainMaterial(material* NewMaterial, int SpecialFlags) { ChangeMaterial(MainMaterial, NewMaterial, GetDefaultMainVolume(), SpecialFlags); }
-void item::InitMaterials(const materialscript* M, const materialscript*, truth CUP) { InitMaterials(M->Instantiate(), CUP); }
-int item::GetMainMaterialRustLevel() const { return MainMaterial->GetRustLevel(); }
+itemprototype::itemprototype (const itemprototype *Base, itemspawner Spawner, itemcloner Cloner, cchar *ClassID) :
+  Base(Base),
+  Spawner(Spawner),
+  Cloner(Cloner),
+  ClassID(ClassID)
+{
+  Index = protocontainer<item>::Add(this);
+}
 
-item::item(citem& Item) : object(Item), Slot(0), Size(Item.Size), DataBase(Item.DataBase), Volume(Item.Volume), Weight(Item.Weight), Fluid(0), SquaresUnder(Item.SquaresUnder), LifeExpectancy(Item.LifeExpectancy), ItemFlags(Item.ItemFlags)
+
+truth itemdatabase::AllowRandomInstantiation () const { return !(Config & S_LOCK_ID); }
+
+item::item () :
+  object(),
+  Slot(0),
+  CloneMotherID(0),
+  Fluid(0),
+  LifeExpectancy(0),
+  ItemFlags(0)
+{
+}
+
+
+truth item::IsOnGround () const { return Slot[0]->IsOnGround(); }
+truth item::IsSimiliarTo (item *Item) const { return Item->GetType() == GetType() && Item->GetConfig() == GetConfig(); }
+double item::GetBaseDamage () const { return sqrt(5e-5*GetWeaponStrength())+GetDamageBonus(); }
+int item::GetBaseMinDamage () const { return int(GetBaseDamage()*0.75); }
+int item::GetBaseMaxDamage () const { return int(GetBaseDamage()*1.25)+1; }
+int item::GetBaseToHitValue () const { return int(10000.0/(1000+GetWeight())+GetTHVBonus()); }
+int item::GetBaseBlockValue () const { return int((10000.0/(1000+GetWeight())+GetTHVBonus())*GetBlockModifier()/10000.0); }
+truth item::IsInCorrectSlot (int I) const { return I == RIGHT_WIELDED_INDEX || I == LEFT_WIELDED_INDEX; }
+truth item::IsInCorrectSlot () const { return IsInCorrectSlot(static_cast<gearslot *>(*Slot)->GetEquipmentIndex()); }
+int item::GetEquipmentIndex () const { return static_cast<gearslot *>(*Slot)->GetEquipmentIndex(); }
+int item::GetGraphicsContainerIndex () const { return GR_ITEM; }
+truth item::IsBroken () const { return GetConfig () & BROKEN; }
+cchar *item::GetBreakVerb () const { return "breaks"; }
+square *item::GetSquareUnderEntity (int I) const { return GetSquareUnder(I); }
+square *item::GetSquareUnder (int I) const { return Slot[I] ? Slot[I]->GetSquareUnder () : 0; }
+lsquare *item::GetLSquareUnder (int I) const { return static_cast<lsquare *>(Slot[I]->GetSquareUnder ()); }
+void item::SignalStackAdd (stackslot *StackSlot, void (stack::*)(item*, truth)) { Slot[0] = StackSlot; }
+truth item::IsAnimated () const { return GraphicData.AnimationFrames > 1 || (Fluid && ShowFluids ()); }
+truth item::IsRusted () const { return MainMaterial->GetRustLevel () != NOT_RUSTED; }
+truth item::IsEatable (ccharacter *Eater) const { return GetConsumeMaterial(Eater, &material::IsSolid) && IsConsumable (); }
+truth item::IsDrinkable (ccharacter *Eater) const { return GetConsumeMaterial(Eater, &material::IsLiquid) && IsConsumable (); }
+pixelpredicate item::GetFluidPixelAllowedPredicate () const { return &rawbitmap::IsTransparent; }
+void item::Cannibalize () { Flags |= CANNIBALIZED; }
+void item::SetMainMaterial (material *NewMaterial, int SpecialFlags) { SetMaterial(MainMaterial, NewMaterial, GetDefaultMainVolume (), SpecialFlags); }
+void item::ChangeMainMaterial (material *NewMaterial, int SpecialFlags) { ChangeMaterial(MainMaterial, NewMaterial, GetDefaultMainVolume (), SpecialFlags); }
+void item::InitMaterials (const materialscript *M, const materialscript *, truth CUP) { InitMaterials(M->Instantiate  (), CUP); }
+int item::GetMainMaterialRustLevel () const { return MainMaterial->GetRustLevel(); }
+
+
+item::item (citem &Item) :
+  object(Item),
+  Slot(0),
+  Size(Item.Size),
+  DataBase(Item.DataBase),
+  Volume(Item.Volume),
+  Weight(Item.Weight),
+  Fluid(0),
+  SquaresUnder(Item.SquaresUnder),
+  LifeExpectancy(Item.LifeExpectancy),
+  ItemFlags(Item.ItemFlags)
 {
   Flags &= ENTITY_FLAGS|SQUARE_POSITION_BITS;
   ID = game::CreateNewItemID(this);
   CloneMotherID = new idholder(Item.ID);
   idholder* TI = CloneMotherID;
 
-  for(idholder* II = Item.CloneMotherID; II; II = II->Next)
-    TI = TI->Next = new idholder(II->ID);
-
+  for (idholder* II = Item.CloneMotherID; II; II = II->Next) TI = TI->Next = new idholder(II->ID);
   TI->Next = 0;
   Slot = new slot*[SquaresUnder];
-
-  for(int c = 0; c < SquaresUnder; ++c)
-    Slot[c] = 0;
+  for (int c = 0; c < SquaresUnder; ++c) Slot[c] = 0;
 }
 
-item::~item()
-{
+
+item::~item () {
   delete [] Slot;
   game::RemoveItemID(ID);
-
-  fluid** FP = Fluid;
-
-  if(FP)
-  {
-    for(int c = 0; c < SquaresUnder; ++c)
-      for(fluid* F = FP[c]; F;)
-      {
-  fluid* ToDel = F;
-  F = F->Next;
-  delete ToDel;
+  fluid **FP = Fluid;
+  if (FP) {
+    for (int c = 0; c < SquaresUnder; ++c) {
+      for (fluid* F = FP[c]; F;) {
+        fluid *ToDel = F;
+        F = F->Next;
+        delete ToDel;
       }
-
+    }
     delete [] FP;
   }
 }
 
-void item::Fly(character* Thrower, int Direction, int Force)
-{
-  int Range = Force * 25 / Max(long(sqrt(GetWeight())), 1L);
 
-  lsquare* LSquareUnder = GetLSquareUnder();
+void item::Fly (character *Thrower, int Direction, int Force) {
+  int Range = Force*25/Max(long(sqrt(GetWeight())), 1L);
+  lsquare *LSquareUnder = GetLSquareUnder();
   RemoveFromSlot();
   LSquareUnder->GetStack()->AddItem(this, false);
-
-  if(!Range || GetSquaresUnder() != 1)
-  {
-    if(GetLSquareUnder()->GetRoom())
-      GetLSquareUnder()->GetRoom()->AddItemEffect(this);
-
+  if (!Range || GetSquaresUnder() != 1) {
+    if (GetLSquareUnder()->GetRoom()) GetLSquareUnder()->GetRoom()->AddItemEffect(this);
     return;
   }
-
-  if(Direction == RANDOM_DIR)
-    Direction = RAND() & 7;
-
+  if (Direction == RANDOM_DIR) Direction = RAND()&7;
   v2 StartingPos = GetPos();
   v2 Pos = StartingPos;
   v2 DirVector = game::GetMoveVector(Direction);
   truth Breaks = false;
   double BaseDamage, BaseToHitValue;
-
   /*** check ***/
-
-  if(Thrower)
-  {
+  if (Thrower) {
     int Bonus = Thrower->IsHumanoid() ? Thrower->GetCWeaponSkill(GetWeaponCategory())->GetBonus() : 1000;
     BaseDamage = sqrt(5e-12 * GetWeaponStrength() * Force / Range) * Bonus;
     BaseToHitValue = 10 * Bonus * Thrower->GetMoveEase() / (500 + GetWeight()) * Thrower->GetAttribute(DEXTERITY) * sqrt(2.5e-8 * Thrower->GetAttribute(PERCEPTION)) / Range;
-  }
-  else
-  {
+  } else {
     BaseDamage = sqrt(5e-6 * GetWeaponStrength() * Force / Range);
     BaseToHitValue = 10 * 100 / (500 + GetWeight()) / Range;
   }
-
   int RangeLeft;
-
-  for(RangeLeft = Range; RangeLeft; --RangeLeft)
-  {
-    if(!GetLevel()->IsValidPos(Pos + DirVector))
-      break;
-
-    lsquare* JustHit = GetNearLSquare(Pos + DirVector);
-
-    if(!JustHit->IsFlyable())
-    {
+  for (RangeLeft = Range; RangeLeft; --RangeLeft) {
+    if (!GetLevel()->IsValidPos(Pos+DirVector)) break;
+    lsquare *JustHit = GetNearLSquare(Pos+DirVector);
+    if (!JustHit->IsFlyable()) {
       Breaks = true;
-      JustHit->GetOLTerrain()->HasBeenHitByItem(Thrower, this, int(BaseDamage * sqrt(RangeLeft)));
+      JustHit->GetOLTerrain()->HasBeenHitByItem(Thrower, this, int(BaseDamage*sqrt(RangeLeft)));
       break;
-    }
-    else
-    {
+    } else {
       clock_t StartTime = clock();
       Pos += DirVector;
       RemoveFromSlot();
       JustHit->GetStack()->AddItem(this, false);
       truth Draw = game::OnScreen(JustHit->GetPos()) && JustHit->CanBeSeenByPlayer();
-
-      if(Draw)
-  game::DrawEverything();
-
-      if(JustHit->GetCharacter())
-      {
-  int Damage = int(BaseDamage * sqrt(RangeLeft));
-  double ToHitValue = BaseToHitValue * RangeLeft;
-  int Returned = HitCharacter(Thrower, JustHit->GetCharacter(), Damage, ToHitValue, Direction);
-
-  if(Returned == HIT)
-    Breaks = true;
-
-  if(Returned != MISSED)
-    break;
+      if (Draw) game::DrawEverything();
+      if (JustHit->GetCharacter()) {
+        int Damage = int(BaseDamage * sqrt(RangeLeft));
+        double ToHitValue = BaseToHitValue*RangeLeft;
+        int Returned = HitCharacter(Thrower, JustHit->GetCharacter(), Damage, ToHitValue, Direction);
+        if (Returned == HIT) Breaks = true;
+        if (Returned != MISSED) break;
       }
-
-      if(Draw)
-  while(clock() - StartTime < 0.03 * CLOCKS_PER_SEC);
+      if (Draw) { while (clock()-StartTime < 0.03 * CLOCKS_PER_SEC); } //FIXME
     }
   }
-
-  if(Breaks)
-    ReceiveDamage(Thrower, int(sqrt(GetWeight() * RangeLeft) / 10), THROW|PHYSICAL_DAMAGE, Direction);
-
-  if(Exists() && GetLSquareUnder()->GetRoom())
-    GetLSquareUnder()->GetRoom()->AddItemEffect(this);
+  if (Breaks) ReceiveDamage(Thrower, int(sqrt(GetWeight()*RangeLeft) / 10), THROW|PHYSICAL_DAMAGE, Direction);
+  if (Exists() && GetLSquareUnder()->GetRoom()) GetLSquareUnder()->GetRoom()->AddItemEffect(this);
 }
 
-int item::HitCharacter(character* Thrower, character* Dude, int Damage, double ToHitValue, int Direction)
-{
-  if(Dude->Catches(this))
-    return CATCHED;
 
-  if(Thrower && !EffectIsGood())
-    Thrower->Hostility(Dude);
-
-  if(Dude->DodgesFlyingItem(this, ToHitValue))
-  {
-    if(Dude->IsPlayer())
-      ADD_MESSAGE("%s misses you.", CHAR_NAME(DEFINITE));
-    else if(Dude->CanBeSeenByPlayer())
-      ADD_MESSAGE("%s misses %s.", CHAR_NAME(DEFINITE), Dude->CHAR_NAME(DEFINITE));
-
+int item::HitCharacter (character *Thrower, character *Dude, int Damage, double ToHitValue, int Direction) {
+  if (Dude->Catches(this)) return CATCHED;
+  if (Thrower && !EffectIsGood()) Thrower->Hostility(Dude);
+  if (Dude->DodgesFlyingItem(this, ToHitValue)) {
+    if (Dude->IsPlayer()) ADD_MESSAGE("%s misses you.", CHAR_NAME(DEFINITE));
+    else if (Dude->CanBeSeenByPlayer()) ADD_MESSAGE("%s misses %s.", CHAR_NAME(DEFINITE), Dude->CHAR_NAME(DEFINITE));
     return MISSED;
   }
-
   Dude->HasBeenHitByItem(Thrower, this, Damage, ToHitValue, Direction);
   return HIT;
 }
 
-double item::GetWeaponStrength() const
-{
+
+double item::GetWeaponStrength () const {
   return GetFormModifier() * GetMainMaterial()->GetStrengthValue() * sqrt(GetMainMaterial()->GetWeight());
 }
 
-int item::GetStrengthRequirement() const
-{
+
+int item::GetStrengthRequirement () const {
   double WeightTimesSize = GetWeight() * GetSize();
   return int(1.25e-10 * WeightTimesSize * WeightTimesSize);
 }
 
-truth item::Apply(character* Applier)
-{
-  if(Applier->IsPlayer())
-    ADD_MESSAGE("You can't apply this!");
 
+truth item::Apply (character *Applier) {
+  if (Applier->IsPlayer()) ADD_MESSAGE("You can't apply this!");
   return false;
 }
 
+
 /* Returns truth that tells whether the Polymorph really happened */
-
-truth item::Polymorph(character* Polymorpher, stack* CurrentStack)
-{
-  if(!IsPolymorphable())
-    return false;
-  else
-  {
-    if(Polymorpher && IsOnGround())
-    {
-      room* Room = GetRoom();
-
-      if(Room)
-  Room->HostileAction(Polymorpher);
-    }
-
-    if(GetSquarePosition() != CENTER)
-    {
-      stack* Stack = CurrentStack->GetLSquareUnder()->GetStackOfAdjacentSquare(GetSquarePosition());
-
-      if(Stack)
-  CurrentStack = Stack;
-    }
-
-    CurrentStack->AddItem(protosystem::BalancedCreateItem(0, MAX_PRICE, ANY_CATEGORY, 0, 0, 0, true));
-    RemoveFromSlot();
-    SendToHell();
-    return true;
+truth item::Polymorph (character *Polymorpher, stack *CurrentStack) {
+  if (!IsPolymorphable()) return false;
+  if (Polymorpher && IsOnGround()) {
+    room *Room = GetRoom();
+    if (Room) Room->HostileAction(Polymorpher);
   }
+  if (GetSquarePosition() != CENTER) {
+    stack *Stack = CurrentStack->GetLSquareUnder()->GetStackOfAdjacentSquare(GetSquarePosition());
+    if (Stack) CurrentStack = Stack;
+  }
+  CurrentStack->AddItem(protosystem::BalancedCreateItem(0, MAX_PRICE, ANY_CATEGORY, 0, 0, 0, true));
+  RemoveFromSlot();
+  SendToHell();
+  return true;
 }
 
+
 /* Returns whether the Eater must stop eating the item */
-
-truth item::Consume(character* Eater, long Amount)
-{
-  material* ConsumeMaterial = GetConsumeMaterial(Eater);
-
-  if(!ConsumeMaterial)
-    return true;
-
-  if(Eater->IsPlayer() && !(Flags & CANNIBALIZED) && Eater->CheckCannibalism(ConsumeMaterial))
-  {
+truth item::Consume (character *Eater, long Amount) {
+  material *ConsumeMaterial = GetConsumeMaterial(Eater);
+  if (!ConsumeMaterial) return true;
+  if (Eater->IsPlayer() && !(Flags & CANNIBALIZED) && Eater->CheckCannibalism(ConsumeMaterial)) {
     game::DoEvilDeed(25);
     ADD_MESSAGE("You feel that this was an evil deed.");
     Cannibalize();
   }
-
   ulong ID = GetID();
-  material* Garbage = ConsumeMaterial->EatEffect(Eater, Amount);
-  item* NewConsuming = GetID() ? this : game::SearchItem(ID);
-  material* NewConsumeMaterial = NewConsuming->GetConsumeMaterial(Eater);
-
-  if(!NewConsuming->Exists()
-     || !NewConsumeMaterial
-     || !NewConsumeMaterial->IsSameAs(ConsumeMaterial))
+  material *Garbage = ConsumeMaterial->EatEffect(Eater, Amount);
+  item *NewConsuming = GetID() ? this : game::SearchItem(ID);
+  material *NewConsumeMaterial = NewConsuming->GetConsumeMaterial(Eater);
+  if (!NewConsuming->Exists() || !NewConsumeMaterial || !NewConsumeMaterial->IsSameAs(ConsumeMaterial))
     ConsumeMaterial->FinishConsuming(Eater);
-
   delete Garbage;
   return !NewConsuming->Exists() || !NewConsumeMaterial;
 }
 
-truth item::CanBeEatenByAI(ccharacter* Eater) const
-{
-  material* ConsumeMaterial = GetConsumeMaterial(Eater);
 
+truth item::CanBeEatenByAI (ccharacter *Eater) const {
+  material *ConsumeMaterial = GetConsumeMaterial(Eater);
   return (!Eater->IsPet()
     || !(Eater->GetCommandFlags() & DONT_CONSUME_ANYTHING_VALUABLE)
     || !IsValuable())
@@ -289,202 +257,170 @@ truth item::CanBeEatenByAI(ccharacter* Eater) const
     && ConsumeMaterial && ConsumeMaterial->CanBeEatenByAI(Eater);
 }
 
-void item::Save(outputfile& SaveFile) const
-{
+
+void item::Save (outputfile &SaveFile) const {
   SaveFile << (ushort)GetType();
   object::Save(SaveFile);
   SaveFile << (ushort)GetConfig();
   SaveFile << (ushort)Flags;
   SaveFile << Size << ID << LifeExpectancy << ItemFlags;
   SaveLinkedList(SaveFile, CloneMotherID);
-
-  if(Fluid)
-  {
+  if (Fluid) {
     SaveFile.Put(true);
-
-    for(int c = 0; c < SquaresUnder; ++c)
-      SaveLinkedList(SaveFile, Fluid[c]);
-  }
-  else
+    for (int c = 0; c < SquaresUnder; ++c) SaveLinkedList(SaveFile, Fluid[c]);
+  } else {
     SaveFile.Put(false);
+  }
 }
 
-void item::Load(inputfile& SaveFile)
-{
+
+void item::Load (inputfile &SaveFile) {
   object::Load(SaveFile);
   databasecreator<item>::InstallDataBase(this, ReadType<ushort>(SaveFile));
   Flags |= ReadType<ushort>(SaveFile) & ~ENTITY_FLAGS;
   SaveFile >> Size >> ID >> LifeExpectancy >> ItemFlags;
   LoadLinkedList(SaveFile, CloneMotherID);
-
-  if(LifeExpectancy)
-    Enable();
-
+  if (LifeExpectancy) Enable();
   game::AddItemID(this, ID);
-
-  if(SaveFile.Get())
-  {
+  if (SaveFile.Get()) {
     Fluid = new fluid*[SquaresUnder];
-
-    for(int c = 0; c < SquaresUnder; ++c)
-    {
+    for (int c = 0; c < SquaresUnder; ++c) {
       LoadLinkedList(SaveFile, Fluid[c]);
-
-      for(fluid* F = Fluid[c]; F; F = F->Next)
-  F->SetMotherItem(this);
+      for (fluid *F = Fluid[c]; F; F = F->Next) F->SetMotherItem(this);
     }
   }
 }
 
-void item::TeleportRandomly()
-{
-  if(GetSquaresUnder() == 1) // gum solution
-  {
-    lsquare* Square = GetNearLSquare(GetLevel()->GetRandomSquare());
-    MoveTo(Square->GetStack());
 
-    if(Square->CanBeSeenByPlayer())
-      ADD_MESSAGE("Suddenly %s appears!", CHAR_NAME(INDEFINITE));
+void item::TeleportRandomly () {
+  if (GetSquaresUnder() == 1) {
+    // gum solution
+    lsquare *Square = GetNearLSquare(GetLevel()->GetRandomSquare());
+    MoveTo(Square->GetStack());
+    if (Square->CanBeSeenByPlayer()) ADD_MESSAGE("Suddenly %s appears!", CHAR_NAME(INDEFINITE));
   }
 }
 
-int item::GetStrengthValue() const
-{
+
+int item::GetStrengthValue () const {
   return long(GetStrengthModifier()) * GetMainMaterial()->GetStrengthValue() / 2000;
 }
 
-void item::RemoveFromSlot()
-{
-  for(int c = 0; c < SquaresUnder; ++c)
-    if(Slot[c])
-    {
-      try
-      {
-  Slot[c]->Empty();
-      }
-      catch(quitrequest)
-      {
-  SendToHell();
-  throw;
-      }
 
+void item::RemoveFromSlot () {
+  for (int c = 0; c < SquaresUnder; ++c) {
+    if (Slot[c]) {
+      try {
+        Slot[c]->Empty();
+      } catch (quitrequest) {
+        SendToHell();
+        throw;
+      }
       Slot[c] = 0;
     }
+  }
 }
 
-void item::MoveTo(stack* Stack)
-{
+
+void item::MoveTo (stack *Stack) {
   RemoveFromSlot();
   Stack->AddItem(this);
 }
 
-cchar* item::GetItemCategoryName(long Category) // convert to array
-{
-  switch(Category)
-  {
-   case HELMET: return "Helmets";
-   case AMULET: return "Amulets";
-   case CLOAK: return "Cloaks";
-   case BODY_ARMOR: return "Body armors";
-   case WEAPON: return "Weapons";
-   case SHIELD: return "Shields";
-   case RING: return "Rings";
-   case GAUNTLET: return "Gauntlets";
-   case BELT: return "Belts";
-   case BOOT: return "Boots";
-   case FOOD: return "Food";
-   case POTION: return "Potions";
-   case SCROLL: return "Scrolls";
-   case BOOK: return "Books";
-   case WAND: return "Wands";
-   case TOOL: return "Tools";
-   case VALUABLE: return "Valuables";
-   case MISC: return "Miscellaneous items";
-  }
 
+cchar *item::GetItemCategoryName (long Category) {
+  // convert to array
+  switch (Category) {
+    case HELMET: return "Helmets";
+    case AMULET: return "Amulets";
+    case CLOAK: return "Cloaks";
+    case BODY_ARMOR: return "Body armors";
+    case WEAPON: return "Weapons";
+    case SHIELD: return "Shields";
+    case RING: return "Rings";
+    case GAUNTLET: return "Gauntlets";
+    case BELT: return "Belts";
+    case BOOT: return "Boots";
+    case FOOD: return "Food";
+    case POTION: return "Potions";
+    case SCROLL: return "Scrolls";
+    case BOOK: return "Books";
+    case WAND: return "Wands";
+    case TOOL: return "Tools";
+    case VALUABLE: return "Valuables";
+    case MISC: return "Miscellaneous items";
+  }
   return "Warezzz";
 }
 
-int item::GetResistance(int Type) const
-{
-  switch(Type&0xFFF)
-  {
-   case PHYSICAL_DAMAGE: return GetStrengthValue();
-   case SOUND:
-   case ENERGY:
-   case DRAIN:
-   case MUSTARD_GAS_DAMAGE:
-    return 0;
-   case FIRE: return GetFireResistance();
-   case POISON: return GetPoisonResistance();
-   case ELECTRICITY: return GetElectricityResistance();
-   case ACID: return GetAcidResistance();
-  }
 
+int item::GetResistance (int Type) const {
+  switch (Type&0xFFF) {
+    case PHYSICAL_DAMAGE: return GetStrengthValue();
+    case SOUND:
+    case ENERGY:
+    case DRAIN:
+    case MUSTARD_GAS_DAMAGE:
+      return 0;
+    case FIRE: return GetFireResistance();
+    case POISON: return GetPoisonResistance();
+    case ELECTRICITY: return GetElectricityResistance();
+    case ACID: return GetAcidResistance();
+  }
   ABORT("Resistance lack detected!");
   return 0;
 }
 
-truth item::Open(character* Char)
-{
-  if(Char->IsPlayer())
-    ADD_MESSAGE("You can't open %s.", CHAR_NAME(DEFINITE));
 
+truth item::Open (character *Char) {
+  if (Char->IsPlayer()) ADD_MESSAGE("You can't open %s.", CHAR_NAME(DEFINITE));
   return false;
 }
 
-item* itemprototype::SpawnAndLoad(inputfile& SaveFile) const
-{
-  item* Item = Spawner(0, LOAD);
+
+item *itemprototype::SpawnAndLoad (inputfile &SaveFile) const {
+  item *Item = Spawner(0, LOAD);
   Item->Load(SaveFile);
   Item->CalculateAll();
   return Item;
 }
 
-void item::LoadDataBaseStats()
-{
+
+void item::LoadDataBaseStats () {
   SetSize(GetDefaultSize());
 }
 
-void item::Initialize(int NewConfig, int SpecialFlags)
-{
+
+void item::Initialize (int NewConfig, int SpecialFlags) {
   CalculateSquaresUnder();
   Slot = new slot*[SquaresUnder];
-
-  for(int c = 0; c < SquaresUnder; ++c)
-    Slot[c] = 0;
-
-  if(!(SpecialFlags & LOAD))
-  {
+  for (int c = 0; c < SquaresUnder; ++c) Slot[c] = 0;
+  if (!(SpecialFlags & LOAD)) {
     ID = game::CreateNewItemID(this);
     databasecreator<item>::InstallDataBase(this, NewConfig);
     LoadDataBaseStats();
     RandomizeVisualEffects();
     Flags |= CENTER << SQUARE_POSITION_SHIFT;
-
-    if(!(SpecialFlags & NO_MATERIALS))
-      GenerateMaterials();
+    if (!(SpecialFlags & NO_MATERIALS)) GenerateMaterials();
   }
-
-  if(!(SpecialFlags & LOAD))
-    PostConstruct();
-
-  if(!(SpecialFlags & (LOAD|NO_MATERIALS)))
-  {
+  if (!(SpecialFlags & LOAD)) PostConstruct();
+  if (!(SpecialFlags & (LOAD|NO_MATERIALS))) {
     CalculateAll();
-
-    if(!(SpecialFlags & NO_PIC_UPDATE))
-      UpdatePictures();
+    if (!(SpecialFlags & NO_PIC_UPDATE)) UpdatePictures();
   }
 }
 
-truth item::ShowMaterial() const
-{
-  if(GetMainMaterialConfig().Size == 1)
-    return GetMainMaterial()->GetConfig() != GetMainMaterialConfig()[0];
-  else
-    return true;
+
+truth item::ShowMaterial () const {
+  if (GetMainMaterialConfig().Size == 1) return GetMainMaterial()->GetConfig() != GetMainMaterialConfig()[0];
+  //FIXME: gum solution
+  if (isBone()) {
+    // never show the material for 'bone bone'
+    if (GetMainMaterial()->GetConfig() == BONE) return false;
+  }
+  return true;
 }
+
 
 long item::GetBlockModifier() const
 {

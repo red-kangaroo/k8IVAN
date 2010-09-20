@@ -178,7 +178,7 @@ Dungeon UNDER_WATER_TUNNEL;
       }
       if @player_name == "_k8_";
         Square, Pos 2,1; { Items == holyhandgrenade; }
-        Square, Pos 2,3; { Items == moneybag; }
+        Square, Pos 2,3; { Items = { 3, moneybag, BONE bone, OMMEL_BONE bone; } }
       endif
     }
   }

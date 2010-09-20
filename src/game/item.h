@@ -86,6 +86,9 @@ struct itemdatabase : public databasebase
   void InitDefaults(const prototype*, int);
   truth AllowRandomInstantiation() const;
   void PostProcess() { }
+
+  inline truth isBone () const { return NameSingular == "bone"; } // gum solution
+
   const prototype* ProtoType;
   /* Maintained by configcontainer */
   long PartialPossibilitySum;

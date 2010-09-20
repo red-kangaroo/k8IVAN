@@ -1,0 +1,4 @@
+SubDir TOP src vasya ;
+
+
+Library libvasya.a : vasya.cpp ;

@@ -1,5 +1,4 @@
 Extend organic {
-  Message "RB";
   Config RYE_BREAD;
   {
     StrengthValue = 6;

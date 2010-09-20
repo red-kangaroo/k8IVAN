@@ -203,8 +203,9 @@ ITEM(leftnutofpetrus, nut)
 
 ITEM(bone, item)
 {
- public:
+public:
   virtual truth DogWillCatchAndConsume(ccharacter*) const;
+  virtual truth isBone () const { return true; }
 };
 
 ITEM(loaf, item)
