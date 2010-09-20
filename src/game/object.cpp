@@ -99,51 +99,33 @@ void object::ChangeMaterial(material*& Material, material* NewMaterial, long Def
   delete SetMaterial(Material, NewMaterial, DefaultVolume, SpecialFlags);
 }
 
-material* object::SetMaterial(material*& Material, material* NewMaterial, long DefaultVolume, int SpecialFlags)
-{
-  material* OldMaterial = Material;
+material *object::SetMaterial (material *&Material, material *NewMaterial, long DefaultVolume, int SpecialFlags) {
+  material *OldMaterial = Material;
   Material = NewMaterial;
 
-  if((!OldMaterial || !OldMaterial->HasBe())
-     && NewMaterial && NewMaterial->HasBe())
+  if ((!OldMaterial || !OldMaterial->HasBe()) && NewMaterial && NewMaterial->HasBe()) {
     Enable();
-  else if(OldMaterial && OldMaterial->HasBe()
-    && (!NewMaterial || !NewMaterial->HasBe())
-    && !CalculateHasBe())
+  } else if (OldMaterial && OldMaterial->HasBe() && (!NewMaterial || !NewMaterial->HasBe()) && !CalculateHasBe()) {
     Disable();
-
-  if(NewMaterial)
-  {
-    if(!NewMaterial->GetVolume())
-    {
-      if(OldMaterial)
-  NewMaterial->SetVolume(OldMaterial->GetVolume());
-      else if(DefaultVolume)
-  NewMaterial->SetVolume(DefaultVolume);
-      else
-  ABORT("Singularity spawn detected!");
-    }
-
-    NewMaterial->SetMotherEntity(this);
-
-    if(!(SpecialFlags & NO_SIGNALS))
-      SignalEmitationIncrease(NewMaterial->GetEmitation());
   }
-
-  if(!(SpecialFlags & NO_SIGNALS))
-  {
-    if(OldMaterial)
-      SignalEmitationDecrease(OldMaterial->GetEmitation());
-
+  if (NewMaterial) {
+    if (!NewMaterial->GetVolume()) {
+      if (OldMaterial) NewMaterial->SetVolume(OldMaterial->GetVolume());
+      else if (DefaultVolume) NewMaterial->SetVolume(DefaultVolume);
+      else ABORT("Singularity spawn detected!");
+    }
+    NewMaterial->SetMotherEntity(this);
+    if (!(SpecialFlags & NO_SIGNALS)) SignalEmitationIncrease(NewMaterial->GetEmitation());
+  }
+  if (!(SpecialFlags & NO_SIGNALS)) {
+    if (OldMaterial) SignalEmitationDecrease(OldMaterial->GetEmitation());
     SignalVolumeAndWeightChange();
     SignalMaterialChange();
   }
-
-  if(!(SpecialFlags & NO_PIC_UPDATE))
-    UpdatePictures();
-
+  if (!(SpecialFlags & NO_PIC_UPDATE)) UpdatePictures();
   return OldMaterial;
 }
+
 
 void object::UpdatePictures()
 {
