@@ -590,6 +590,7 @@ class item : public object
   void SendMemorizedUpdateRequest() const;
 
   virtual truth IsCorpse () const { return false; } //FIXME:k8: is there such function already?
+  virtual truth IsBodyPart () const { return false; } //FIXME:k8: is there such function already?
 
 protected:
   virtual cchar* GetBreakVerb() const;

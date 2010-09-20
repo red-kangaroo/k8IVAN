@@ -206,6 +206,7 @@ ITEM(bone, item)
 public:
   virtual truth DogWillCatchAndConsume(ccharacter*) const;
   virtual truth isBone () const { return true; }
+  virtual truth IsBodyPart () const { return true; }
 };
 
 ITEM(loaf, item)
@@ -490,6 +491,7 @@ ITEM(scrollofenchantarmor, scroll)
 
 ITEM(skull, item)
 {
+  virtual truth IsBodyPart () const { return true; }
 };
 
 ITEM(scrollofrepair, scroll)

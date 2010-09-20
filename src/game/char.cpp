@@ -2325,7 +2325,7 @@ void character::GoOn (go *Go, truth FirstStep) {
       std::vector<item *> vi;
       PLAYER->GetStackUnder()->GetVisibleItemsV(PLAYER, vi);
       for (unsigned int f = 0; f < vi.size(); f++) {
-        if (vi[f]->CanBePickedUp() && !vi[f]->IsCorpse()) {
+        if (vi[f]->CanBePickedUp() && !vi[f]->IsCorpse() && !vi[f]->IsBodyPart()) {
           doStop = true;
           break;
         }

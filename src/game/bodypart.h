@@ -157,6 +157,7 @@ ITEM(bodypart, item)
   static truth DamageTypeCanScar(int);
   void GenerateScar(int, int);
   int CalculateScarAttributePenalty(int) const;
+  virtual truth IsBodyPart () const { return true; }
 
 protected:
   virtual alpha GetMaxAlpha() const;
