@@ -39,6 +39,7 @@ truthoption ivanconfig::AutoCenterMapOnLook("AutoCenterMapOnLook", "Automaticall
 truthoption ivanconfig::FastListMode("FastLists", "Instantly select list items with alpha keys", true, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FastListChanger);
 truthoption ivanconfig::PlaySounds("PlaySounds", "use sounds", false);
 truthoption ivanconfig::ConfirmCorpses("ConfirmCorpses", "confirm corpse pickup", true);
+truthoption ivanconfig::StopOnCorpses("StopOnCorpses", "abort going on corpses", false);
 numberoption ivanconfig::GoingDelay("GoingDelay", "delay betwen steps in 'go' command", 100, &GoingDelayDisplayer, &GoingDelayChangeInterface, &GoingDelayChanger);
 /*k8*/
 
@@ -171,11 +172,6 @@ void ivanconfig::GoingDelayChanger (numberoption *O, long What) {
 }
 
 
-int ivanconfig::GetGoingDelay () {
-  return GoingDelay.Value;
-}
-
-
 festring ivanconfig::GetMyDir (void) { return inputfile::GetMyDir(); }
 
 
@@ -208,6 +204,7 @@ void ivanconfig::Initialize () {
   configsystem::AddOption(&FastListMode);
   configsystem::AddOption(&PlaySounds);
   configsystem::AddOption(&ConfirmCorpses);
+  configsystem::AddOption(&StopOnCorpses);
   configsystem::AddOption(&GoingDelay);
 /*k8*/
   configsystem::SetConfigFileName(getConfigPath()+"/.ivan.rc");

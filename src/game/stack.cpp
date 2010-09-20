@@ -469,6 +469,23 @@ int stack::GetVisibleItems (ccharacter *Viewer) const {
 }
 
 
+void stack::GetVisibleItemsV (ccharacter *Viewer, std::vector<item *> &vi) {
+  for (stackiterator i = GetBottom(); i.HasItem(); ++i) {
+    if (i->GetSquarePosition() == CENTER && i->CanBeSeenBy(Viewer)) vi.push_back(*i);
+  }
+  lsquare *Square = GetLSquareUnder();
+  for (int c = 0; c < 4; ++c) {
+    stack *Stack = Square->GetStackOfAdjacentSquare(c);
+    if (Stack) {
+      //VisibleItems += Stack->GetVisibleSideItems(Viewer, 3-c);
+      for (stackiterator i = GetBottom(); i.HasItem(); ++i) {
+        if (i->GetSquarePosition() == (3-c) && i->CanBeSeenBy(Viewer)) vi.push_back(*i);
+      }
+    }
+  }
+}
+
+
 int stack::GetNativeVisibleItems (ccharacter *Viewer) const {
   if (Flags & HIDDEN) return Items;
   int VisibleItems = 0;

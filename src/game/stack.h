@@ -12,6 +12,8 @@
 #ifndef __STACK_H__
 #define __STACK_H__
 
+#include <vector>
+
 #include "lsquare.h"
 #include "slot.h"
 
@@ -73,6 +75,7 @@ public:
   void AddItem (item *, truth = true);
   void RemoveItem (stackslot *);
   item *GetItem (int) const;
+  void GetVisibleItemsV (ccharacter *Viewer, std::vector<item *> &vi);
   stackiterator GetBottom () const { return stackiterator(Bottom); }
   stackiterator GetTop () const { return stackiterator(Top); }
   int GetItems () const { return Items; }
@@ -110,7 +113,7 @@ public:
   long GetWeight (ccharacter *, int) const;
   entity *GetMotherEntity () const { return MotherEntity; }
   void SetMotherEntity (entity *What) { MotherEntity = What; }
-  area* GetArea () const { return GetSquareUnder()->GetArea(); }
+  area *GetArea () const { return GetSquareUnder()->GetArea(); }
   lsquare *GetNearLSquare (v2 Pos) const { return GetLSquareUnder()->GetLevel()->GetLSquare(Pos); }
   col24 GetEmitation () const { return Emitation; }
   void SignalEmitationIncrease (int, col24);

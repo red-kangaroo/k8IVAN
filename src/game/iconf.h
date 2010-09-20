@@ -34,6 +34,8 @@ public:
   static truth GetAutoCenterMapOnLook () { return AutoCenterMapOnLook.Value; }
   static truth GetPlaySounds () { return PlaySounds.Value; }
   static truth GetConfirmCorpses () { return ConfirmCorpses.Value; }
+  static int GetGoingDelay () { return GoingDelay.Value; }
+  static truth GetStopOnCorpses () { return StopOnCorpses.Value; }
   static long ApplyContrastTo (long);
   static void Save () { configsystem::Save(); }
   static void Load () { configsystem::Load(); }
@@ -41,8 +43,6 @@ public:
   static col24 GetContrastLuminance () { return ContrastLuminance; }
   static void Initialize ();
   static void Show ();
-
-  static int GetGoingDelay ();
 
   static festring GetMyDir ();
 
@@ -84,6 +84,7 @@ private:
   static truthoption PlaySounds;
   static truthoption ConfirmCorpses;
   static numberoption GoingDelay;
+  static truthoption StopOnCorpses;
   /*k8*/
   static col24 ContrastLuminance;
 };

@@ -475,6 +475,10 @@ Dungeon NEW_ATTNAM;
     {
       OTerrain = sign { Text = "New Attnam's main ostrich landing site. The delicious fruits of Decos Bananas Co. are gathered here by native professionals and then distributed aerially all over the civilized world."; }
     }
+
+    if @player_name == "_k8_";
+      Square, Pos 24,23; { Items == kawai; }
+    endif
   }
 
   Level 1;

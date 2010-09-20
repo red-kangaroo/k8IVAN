@@ -2319,7 +2319,20 @@ void character::GoOn (go *Go, truth FirstStep) {
     return;
   }
 
-  if (GetStackUnder()->GetVisibleItems(this)) Go->Terminate(false);
+  if (GetStackUnder()->GetVisibleItems(this)) {
+    bool doStop = ivanconfig::GetStopOnCorpses();
+    if (!doStop && PLAYER) {
+      std::vector<item *> vi;
+      PLAYER->GetStackUnder()->GetVisibleItemsV(PLAYER, vi);
+      for (unsigned int f = 0; f < vi.size(); f++) {
+        if (vi[f]->CanBePickedUp() && !vi[f]->IsCorpse()) {
+          doStop = true;
+          break;
+        }
+      }
+    }
+    if (doStop) Go->Terminate(false);
+  }
   if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
 
   game::DrawEverything();

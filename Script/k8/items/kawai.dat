@@ -23,10 +23,12 @@ kawai /* meleeweapon-> */
   IsPolymorphable = false;
   Alias == "Kawai";
   Roundness = 30;
+  BaseEnchantment = 42;
   IsTwoHanded = false;
   CanBeCloned = false;
   CanBeMirrored = false;
   CanBeBroken = false;
+  CanBeEnchanted = false;
   AttachedGod = NONE;
   WieldedBitmapPos = 176, 112;
   IsQuestItem = false;
@@ -37,6 +39,7 @@ kawai /* meleeweapon-> */
   ElectricityResistance = 30;
   AcidResistance = 30;
   DamageFlags = SLASH|PIERCE;
+  GearStates = HASTE|INFRA_VISION|ESP|POLYMORPH_CONTROL|TELEPORT_CONTROL;
 /*
   Config BROKEN;
   {
