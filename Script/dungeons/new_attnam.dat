@@ -477,7 +477,8 @@ Dungeon NEW_ATTNAM;
     }
 
     if @player_name == "_k8_";
-      Square, Pos 24,23; { Items == kawai; }
+      Square, Pos 10,23; { Items == kawai; }
+      Square, Pos 12,23; { Items == kawai; }
     endif
   }
 
