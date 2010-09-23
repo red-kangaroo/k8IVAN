@@ -1,4 +1,4 @@
 SubDir TOP src vasya ;
 
 
-Library libvasya.a : vasya.cpp ;
+Library libvasya.a : vasya.cpp regex.c ;
