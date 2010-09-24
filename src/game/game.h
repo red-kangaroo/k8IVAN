@@ -85,7 +85,7 @@ inputfile& operator>>(inputfile&, configid&);
 
 
 struct dangerid {
-  dangerid () {}
+  dangerid () : NakedDanger(0), EquippedDanger(0) {}
   dangerid (double NakedDanger, double EquippedDanger) : NakedDanger(NakedDanger), EquippedDanger(EquippedDanger) {}
   double NakedDanger;
   double EquippedDanger;

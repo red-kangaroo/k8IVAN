@@ -19,7 +19,7 @@ if $(WINDOZE) {
 }
 
 
-HDRS += $(TOP)/src/felib $(TOP)/src/vasya $(TOP)/src/game ;
+HDRS += $(TOP)/src/felib $(TOP)/src/vasya/src/vasya $(TOP)/src/game ;
 
 
 DEFINES += WIZARD ;
