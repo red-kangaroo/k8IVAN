@@ -2,7 +2,7 @@ SubDir TOP src ;
 
 
 SubIncludeOnce JAM_IVAN_INC_SRC_FELIB : TOP src felib ;
-#SubIncludeOnce JAM_IVAN_INC_SRC_VASYA : TOP src vasya src vasya ;
+SubIncludeOnce JAM_IVAN_INC_SRC_VASYA : TOP src vasya ;
 SubIncludeOnce JAM_IVAN_INC_SRC_GAME : TOP src game ;
 if ! $(WINDOZE) {
   SubIncludeOnce JAM_IVAN_INC_SRC_IGOR : TOP src igor ;
