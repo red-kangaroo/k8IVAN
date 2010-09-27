@@ -4,12 +4,12 @@ set-default-subdir-locates ;
 
 if $(WINDOZE) {
   Echo "MSG: windoze build" ;
-  HAVE_PCRE = ;
+  #HAVE_PCRE = ;
   HAVE_IMLIB2 = ;
   HAVE_LIBPNG = ;
 } else {
   lib-config "sdl-config" ;
-  HAVE_PCRE = [ lib-config-ex "pkg-config libpcre --libs" ] ;
+  #HAVE_PCRE = [ lib-config-ex "pkg-config libpcre --libs" ] ;
   HAVE_IMLIB2 = [ lib-config-ex "pkg-config imlib2 --libs" ] ;
   if $(FORCE_LIBPNG) || ! $(HAVE_IMLIB2) {
     HAVE_LIBPNG = [ lib-config-ex "pkg-config libpng --libs" ] ;
@@ -36,7 +36,7 @@ if $(DISABLE_LIBPNG) {
 }
 
 
-HDRS += $(TOP)/src/felib $(TOP)/src/vasya $(TOP)/src/game ;
+HDRS += $(TOP)/src/felib $(TOP)/src/vasya $(TOP)/src/regex $(TOP)/src/game ;
 
 
 DEFINES += WIZARD ;
@@ -52,9 +52,10 @@ if ! $(GLOBAL_SAVES) {
 }
 
 
-if $(USE_SOUND) && $(HAVE_PCRE) {
+#if $(USE_SOUND) && $(HAVE_PCRE)
+if $(USE_SOUND) {
   Echo "MSG: sound support enabled" ;
-  lib-config "pkg-config libpcre" ;
+  #lib-config "pkg-config libpcre" ;
   LINKLIBS += -lSDL_mixer ;
   C++LINKLIBS += -lSDL_mixer ;
 } else {

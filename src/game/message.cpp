@@ -13,7 +13,7 @@
 #include <cctype>
 
 #ifndef DISABLE_SOUND
-# include <pcre.h>
+# include "regex.h"
 # include <SDL/SDL_mixer.h>
 #endif
 
@@ -232,8 +232,9 @@ struct SoundFile {
 
 
 struct SoundInfo {
-  pcre *re;
-  pcre_extra *extra;
+  //pcre *re;
+  //pcre_extra *extra;
+  SEE_RegExpr *re;
   std::vector<int> sounds;
 };
 
@@ -271,8 +272,8 @@ static festring getstr (FILE *f, truth word) {
 
 
 void soundsystem::initSound () {
-  const char *error;
-  int erroffset;
+  //const char *error;
+  //int erroffset;
   if (SoundState == 0) {
     //FILE *debf = fopen("snddebug.txt", "wt");
     FILE *debf = NULL;
@@ -292,12 +293,18 @@ void soundsystem::initSound () {
       festring Pattern, File;
       while ((Pattern = getstr(f, false)) != "") {
         SoundInfo si;
+        /*
         si.re = pcre_compile(Pattern.CStr(), 0, &error, &erroffset, NULL);
         if (!si.re) {
           if (debf) fprintf(debf, "PCRE compilation failed at expression offset %d: %s\n", erroffset, error);
           ADD_MESSAGE("PCRE compilation failed at expression offset %d: %s", erroffset, error);
         } else {
           si.extra = pcre_study(si.re, 0, &error);
+        }
+        */
+        si.re = SEE_regex_parse(Pattern.CStr(), Pattern.GetSize(), SEERX_FLAG_IGNORECASE);
+        if (!si.re) {
+          ADD_MESSAGE("Sound RegExpr compilation failed: %s", Pattern.CStr());
         }
         eol = false;
         while ((File = getstr(f, true)) != "") si.sounds.push_back(addFile(File));
@@ -314,9 +321,14 @@ void soundsystem::initSound () {
 
 SoundFile *soundsystem::findMatchingSound (const festring &Buffer) {
   for (int i = patterns.size() - 1; i >= 0; i--)
-  if (patterns[i].re)
+  if (patterns[i].re) {
+    /*
     if (pcre_exec(patterns[i].re, patterns[i].extra, Buffer.CStr(), Buffer.GetSize(), 0, 0, NULL, 0) >= 0)
       return &files[patterns[i].sounds[rand()%patterns[i].sounds.size()]];
+    */
+    if (SEE_regex_match(patterns[i].re, Buffer.CStr(), Buffer.GetSize(), 0, NULL))
+      return &files[patterns[i].sounds[rand()%patterns[i].sounds.size()]];
+  }
   return NULL;
 }
 
