@@ -2192,7 +2192,9 @@ truth character::MoveRandomlyInRoom () {
 
 
 truth character::IsPassableSquare (int x, int y) const {
-  lsquare *sq = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(x, y));
+  area *ca = GetSquareUnder()->GetArea();
+  if (x < 0 || y < 0 || x >= ca->GetXSize() || y >= ca->GetYSize()) return false;
+  lsquare *sq = static_cast<lsquare *>(ca->GetSquare(x, y));
   return sq && CanMoveOn(sq);
 }
 

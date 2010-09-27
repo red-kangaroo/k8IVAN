@@ -744,6 +744,10 @@ void game::DrawEverythingNoBlit (truth AnimationDraw) {
 
 
 truth game::Save (cfestring &SaveName) {
+  if (!GetCurrentArea()->GetSquare(Player->GetPos())->GetCharacter()) {
+    Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, can't save due to I.V.A.N. bug.\r"), CONST_S("Continue\r"), LIGHT_GRAY);
+    return false;
+  }
   DrawEverythingNoBlit();
 #if defined(SGAME_SHOTS_IPU) || !defined(HAVE_IMLIB2)
   DOUBLE_BUFFER->SaveScaledIPU(SaveName+".ipu", 0.8); //640; 320
@@ -2149,11 +2153,11 @@ void game::CreateBone () {
     festring BoneName;
     for (BoneIndex = 0; BoneIndex < 1000; ++BoneIndex) {
       BoneName = GetBoneDir()+"bon"+CurrentDungeonIndex+CurrentLevelIndex+BoneIndex;
-      inputfile BoneFile(BoneName, 0, false);
-      if (!BoneFile.IsOpen()) break;
+      if (!inputfile::fileExists(BoneName)) break;
     }
     if (BoneIndex != 1000) {
-      festring BoneName = GetBoneDir()+"bon"+CurrentDungeonIndex+CurrentLevelIndex+BoneIndex;
+      //festring BoneName = GetBoneDir()+"bon"+CurrentDungeonIndex+CurrentLevelIndex+BoneIndex;
+      fprintf(stderr, "creating bone file: [%s]\n", BoneName.CStr());
       outputfile BoneFile(BoneName);
       BoneFile << int(BONE_FILE_VERSION) << PlayerName << CurrentLevel;
     }
