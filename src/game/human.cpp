@@ -1509,11 +1509,6 @@ playerkind::playerkind() : SoulID(0), IsBonePlayer(false), IsClone(false)
 {
 }
 
-petrus::petrus() : LastHealed(0)
-{
-  game::SetPetrus(this);
-}
-
 shopkeeper::shopkeeper()
 {
   if(!game::IsLoading())
@@ -3284,12 +3279,6 @@ void humanoid::FinalProcessForBone()
   }
 }
 
-void petrus::FinalProcessForBone()
-{
-  humanoid::FinalProcessForBone();
-  LastHealed = 0;
-}
-
 void angel::FinalProcessForBone()
 {
   humanoid::FinalProcessForBone();
@@ -4918,8 +4907,19 @@ void assassin::BeTalkedTo () {
 
 
 ///////////////////////////////////////////////////////////////////////////////
+petrus::petrus () : LastHealed(0) {
+  game::SetPetrus(this);
+}
+
+
 petrus::~petrus () {
   game::SetPetrus(0);
+}
+
+
+void petrus::FinalProcessForBone () {
+  humanoid::FinalProcessForBone();
+  LastHealed = 0;
 }
 
 
@@ -5041,7 +5041,7 @@ void petrus::BeTalkedTo () {
       game::TextScreen(CONST_S(
         "The Holy Shirt is returned to its old owner and you kneel down to receive your reward.\n"
         "Petrus taps your shoulder with the Justifier and raises you to nobility."));
-      if (game::TruthQuestion(CONST_S("Do you want to become a duke? [y/n]"), REQUIRES_ANSWER)) {
+      if (true || game::TruthQuestion(CONST_S("Do you want to become a duke? [y/n]"), REQUIRES_ANSWER)) {
         game::TextScreen(CONST_S(
           "Later you receive a small dukedom in the middle of tundra\n"
           "where you rule with justice till the end of your content life.\n\n"
@@ -5072,7 +5072,7 @@ void petrus::BeTalkedTo () {
     game::TextScreen(CONST_S(
       "You have slain Elpuri, and Petrus grants you the freedom you desire.\n"
       "You spend the next months in Attnam as an honored hero."));
-    if (game::TruthQuestion(CONST_S("Do you want to sail beyond the sunset? [y/n]"), REQUIRES_ANSWER)) {
+    if (true || game::TruthQuestion(CONST_S("Do you want to sail beyond the sunset? [y/n]"), REQUIRES_ANSWER)) {
       game::TextScreen(CONST_S(
         "When the sea finally melts, you board the first ship,\n"
         "leaving your past forever behind.\n\n"

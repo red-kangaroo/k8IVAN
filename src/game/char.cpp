@@ -4422,7 +4422,7 @@ void character::WeaponSkillHit (item *Weapon, int Type, int Hits) {
     case KICK_ATTACK: Category = KICK; break;
     case BITE_ATTACK: Category = BITE; break;
     case THROW_ATTACK:
-      if(!IsHumanoid()) return;
+      if (!IsHumanoid()) return;
       Category = Weapon->GetWeaponCategory();
       break;
     default:
