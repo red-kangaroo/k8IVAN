@@ -33,6 +33,7 @@ public:
   static truth GetAutoCenterMap () { return AutoCenterMap.Value; }
   static truth GetAutoCenterMapOnLook () { return AutoCenterMapOnLook.Value; }
   static truth GetPlaySounds () { return PlaySounds.Value; }
+  static long GetSoundVolume () { return SoundVolume.Value; }
   static truth GetConfirmCorpses () { return ConfirmCorpses.Value; }
   static int GetGoingDelay () { return GoingDelay.Value; }
   static truth GetStopOnCorpses () { return StopOnCorpses.Value; }
@@ -61,6 +62,11 @@ private:
   static void ContrastHandler (long);
   static void BackGroundDrawer ();
 
+  static void SoundVolumeDisplayer (const numberoption *, festring &);
+  static truth SoundVolumeChangeInterface (numberoption *);
+  static void SoundVolumeChanger (numberoption *, long);
+  static void SoundVolumeHandler (long);
+
   static void GoingDelayDisplayer (const numberoption *O, festring &Entry);
   static truth GoingDelayChangeInterface (numberoption *O);
   static void GoingDelayChanger (numberoption *O, long What);
@@ -82,6 +88,7 @@ private:
   static truthoption AutoCenterMapOnLook;
   static truthoption FastListMode;
   static truthoption PlaySounds;
+  static scrollbaroption SoundVolume;
   static truthoption ConfirmCorpses;
   static numberoption GoingDelay;
   static truthoption StopOnCorpses;

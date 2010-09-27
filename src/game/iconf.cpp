@@ -19,6 +19,7 @@
 #include "igraph.h"
 #include "felist.h"
 
+#include "message.h"
 #include "command.h"
 
 
@@ -33,14 +34,41 @@ truthoption ivanconfig::UseAlternativeKeys("UseAlternativeKeys", "use alternativ
 truthoption ivanconfig::BeNice("BeNice", "be nice to pets", true);
 truthoption ivanconfig::FullScreenMode("FullScreenMode", "run the game in full screen mode", false, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FullScreenModeChanger);
 /*k8*/
-truthoption ivanconfig::KickDownDoors("KickDownDoors", "Kick down doors by default", false);
-truthoption ivanconfig::AutoCenterMap("AutoCenterMap", "Automatically center map when player moves", true);
-truthoption ivanconfig::AutoCenterMapOnLook("AutoCenterMapOnLook", "Automatically center map when player looks", true);
-truthoption ivanconfig::FastListMode("FastLists", "Instantly select list items with alpha keys", true, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FastListChanger);
+truthoption ivanconfig::KickDownDoors("KickDownDoors", "kick down doors by default", false);
+truthoption ivanconfig::AutoCenterMap("AutoCenterMap", "automatically center map when player moves", true);
+truthoption ivanconfig::AutoCenterMapOnLook("AutoCenterMapOnLook", "automatically center map when player looks", true);
+truthoption ivanconfig::FastListMode("FastLists", "instantly select list items with alpha keys", true, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FastListChanger);
 truthoption ivanconfig::PlaySounds("PlaySounds", "use sounds", false);
+scrollbaroption ivanconfig::SoundVolume("SoundVolume", "sound volume", 128, &SoundVolumeDisplayer, &SoundVolumeChangeInterface, &ContrastChanger, &SoundVolumeHandler);
 truthoption ivanconfig::ConfirmCorpses("ConfirmCorpses", "confirm corpse pickup", true);
 truthoption ivanconfig::StopOnCorpses("StopOnCorpses", "abort going on corpses", false);
 numberoption ivanconfig::GoingDelay("GoingDelay", "delay betwen steps in 'go' command", 100, &GoingDelayDisplayer, &GoingDelayChangeInterface, &GoingDelayChanger);
+
+
+void ivanconfig::SoundVolumeDisplayer (const numberoption *O, festring &Entry) {
+  Entry << O->Value << "/128";
+}
+
+
+truth ivanconfig::SoundVolumeChangeInterface (numberoption *O) {
+  iosystem::ScrollBarQuestion(CONST_S("Set new sound volume (0-128, '<' and '>' move the slider):"),
+    GetQuestionPos(), O->Value, 16, 0, 128, O->Value, WHITE, LIGHT_GRAY, DARK_GRAY, game::GetMoveCommandKey(KEY_LEFT_INDEX), game::GetMoveCommandKey(KEY_RIGHT_INDEX), !game::IsRunning(), static_cast<scrollbaroption*>(O)->BarHandler);
+  if (game::IsRunning()) igraph::BlitBackGround(v2(16, 6), v2(game::GetScreenXSize() << 4, 23));
+  return false;
+}
+
+
+void ivanconfig::SoundVolumeChanger (numberoption *O, long What) {
+  if (What < 0) What = 0;
+  if (What > 128) What = 128;
+  O->Value = What;
+  soundsystem::setVolume(What);
+}
+
+
+void ivanconfig::SoundVolumeHandler (long Value) {
+  SoundVolumeChanger(&SoundVolume, Value);
+}
 /*k8*/
 
 
@@ -203,6 +231,7 @@ void ivanconfig::Initialize () {
   configsystem::AddOption(&AutoCenterMapOnLook);
   configsystem::AddOption(&FastListMode);
   configsystem::AddOption(&PlaySounds);
+  configsystem::AddOption(&SoundVolume);
   configsystem::AddOption(&ConfirmCorpses);
   configsystem::AddOption(&StopOnCorpses);
   configsystem::AddOption(&GoingDelay);

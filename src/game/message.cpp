@@ -285,6 +285,7 @@ void soundsystem::initSound () {
       return;
     }
     Mix_AllocateChannels(16);
+    setVolume(ivanconfig::GetSoundVolume());
     SoundState = -2;
     festring cfgfile = game::GetGameDir()+"Sound/config.txt";
     FILE *f = fopen(cfgfile.CStr(), "r");
@@ -333,6 +334,14 @@ SoundFile *soundsystem::findMatchingSound (const festring &Buffer) {
 }
 
 
+void soundsystem::setVolume (long vol) {
+  if (vol < 0) vol = 0; else if (vol > 128) vol = 128;
+  if (SoundState == 1) {
+    for (int f = 0; f < 16; f++) Mix_Volume(f, vol);
+  }
+}
+
+
 void soundsystem::playSound (const festring &Buffer) {
   if (!ivanconfig::GetPlaySounds()) return;
   initSound();
@@ -346,6 +355,7 @@ void soundsystem::playSound (const festring &Buffer) {
     if (sf->chunk) {
       for (int i = 0; i < 16; i++) {
         if (!Mix_Playing(i)) {
+          Mix_Volume(i, ivanconfig::GetSoundVolume());
           Mix_PlayChannel(i, sf->chunk, 0);
           //Mix_SetPosition(i, angle, dist);
           return;
@@ -361,5 +371,6 @@ void soundsystem::initSound () {}
 int soundsystem::addFile (const festring &filename) { return 0; }
 SoundFile *soundsystem::findMatchingSound (const festring &Buffer) { return NULL; }
 void soundsystem::playSound (const festring &Buffer) {}
+void soundsystem::setVolume (long vol) {}
 
 #endif
