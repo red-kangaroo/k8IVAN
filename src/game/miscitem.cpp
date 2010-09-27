@@ -666,8 +666,7 @@ void mine::StepOnEffect(character* Stepper)
   SetIsActive(false);
   SendNewDrawAndMemorizedUpdateRequest();
 
-  if(Stepper->IsPlayer())
-    game::AskForEscPress(CONST_S("Trap activated!"));
+  if (Stepper->IsPlayer()) game::AskForEscPress(CONST_S("Trap activated!"));
 
   lsquare* Square = GetLSquareUnder();
   RemoveFromSlot();

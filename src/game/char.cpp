@@ -6915,8 +6915,7 @@ truth character::TryToUnStickTraps (v2 Dir) {
       entity *Trap = game::SearchTrap(TrapVector[c].TrapID);
       /*k8:??? if(!Trap->Exists()) int esko = esko = 2; */
       if (!Trap->Exists()) continue; /*k8: ??? added by me; what this means? */
-      if (Trap->GetVictimID() == GetID() && Trap->TryToUnStick(this, Dir))
-      break;
+      if (Trap->GetVictimID() == GetID() && Trap->TryToUnStick(this, Dir)) break;
     }
   }
   return !TrapData && IsEnabled();

@@ -5388,6 +5388,13 @@ void exiledpriest::healDeseases () {
       PLAYER->DeActivateTemporaryState(POISONED);
     }
   }
+  if (PLAYER->TemporaryStateIsActivated(PARASITIZED)) {
+    ADD_MESSAGE("\"You seem to have something inside you. I could give you a small dose of antidote.\"");
+    if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      ADD_MESSAGE("You feel better.");
+      PLAYER->DeActivateTemporaryState(PARASITIZED);
+    }
+  }
   if (PLAYER->TemporaryStateIsActivated(LEPROSY)) {
     ADD_MESSAGE("\"You seem to have contracted the vile disease of leprosy. I could give you a small dose of medicince.\"");
     if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
