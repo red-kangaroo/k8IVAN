@@ -6,6 +6,7 @@ if $(WINDOZE) {
   Echo "MSG: windoze build" ;
   HAVE_PCRE = ;
   HAVE_IMLIB2 = ;
+  HAVE_LIBPNG = ;
 } else {
   lib-config "sdl-config" ;
   HAVE_PCRE = [ lib-config-ex "pkg-config libpcre --libs" ] ;

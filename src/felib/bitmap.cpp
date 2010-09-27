@@ -395,20 +395,12 @@ void bitmap::SaveScaled (cfestring &fileName, double scale) const {
   int newX = (int)((double)mSize.X*scale);
   int newY = (int)((double)mSize.Y*scale);
   if (newX < 1 || newY < 1) return;
-  unsigned char *nb = new unsigned char[newX*newY*3];
-  unsigned char *pp = nb;
-  double cy = 0.0, cx = 0.0;
-  double sx = (double)mSize.X/(double)newX;
-  double sy = (double)mSize.Y/(double)newY;
-  //fprintf(stderr, "sx=%.15g; sy=%.15g\n", sx, sy);
-  for (int y = 0; y < newY; y++, cy += sy) {
-    int yy = (int)cy;
-    if (yy >= mSize.Y) yy = mSize.Y-1;
-    cx = 0;
-    for (int x = 0; x < newX; x++, cx += sx) {
-      int xx = (int)cx;
-      if (xx >= mSize.X) xx = mSize.X-1;
-      col16 Pixel = GetPixel(xx, yy);
+  unsigned char *unp = new unsigned char[mSize.X*mSize.Y*3];
+  // unpack image
+  unsigned char *pp = unp;
+  for (int y = 0; y < mSize.Y; y++) {
+    for (int x = 0; x < mSize.X; x++) {
+      col16 Pixel = GetPixel(x, y);
       unsigned char b = (Pixel << 3)&0xff;
       unsigned char g = ((Pixel >> 5) << 2)&0xff;
       unsigned char r = ((Pixel >> 11) << 3)&0xff;
@@ -417,7 +409,78 @@ void bitmap::SaveScaled (cfestring &fileName, double scale) const {
       *pp++ = b;
     }
   }
-  //
+  // now scale
+  unsigned char *nbx = new unsigned char[newX*mSize.Y*3];
+  unsigned char *nb = new unsigned char[newX*newY*3];
+  double sx = (double)mSize.X/(double)newX;
+  double sy = (double)mSize.Y/(double)newY;
+#define GETRGB(x, y, r, g, b) \
+  r = unp[((y)*mSize.X+(x))*3+0]; \
+  g = unp[((y)*mSize.X+(x))*3+1]; \
+  b = unp[((y)*mSize.X+(x))*3+2];
+  // first X
+  {
+    double cx;
+    unsigned char *dst = nbx;
+    for (int y = 0; y < mSize.Y; y++) {
+      cx = 0;
+      for (int x = 0; x < newX; x++, cx += sx) {
+        double ix, rx;
+        int px, r0 = 0, g0 = 0, b0 = 0, r1, g1, b1;
+        rx = modf(cx, &ix);
+        px = (int)ix;
+        if (px >= 0 && px < mSize.X) { GETRGB(px, y, r0, g0, b0) }
+        if (px >= 0 && px < mSize.X-1) {
+          GETRGB(px+1, y, r1, g1, b1)
+          r0 = (int)((double)r0*(1.0-rx)+(double)r1*rx);
+          g0 = (int)((double)g0*(1.0-rx)+(double)g1*rx);
+          b0 = (int)((double)b0*(1.0-rx)+(double)b1*rx);
+        }
+        if (r0 < 0) r0 = 0; else if (r0 > 255) r0 = 255;
+        if (g0 < 0) g0 = 0; else if (g0 > 255) g0 = 255;
+        if (b0 < 0) b0 = 0; else if (b0 > 255) b0 = 255;
+        *dst++ = r0&0xff;
+        *dst++ = g0&0xff;
+        *dst++ = b0&0xff;
+      }
+    }
+  }
+#undef GETRGB
+#define GETRGB1(x, y, r, g, b) \
+  r = nbx[((y)*newX+(x))*3+0]; \
+  g = nbx[((y)*newX+(x))*3+1]; \
+  b = nbx[((y)*newX+(x))*3+2];
+  // now Y
+  {
+    double cx, cy = 0.0;
+    unsigned char *dst = nb;
+    for (int y = 0; y < newY; y++, cy += sy) {
+      cx = 0;
+      for (int x = 0; x < newX; x++, cx += sx) {
+        double iy, ry;
+        int py, r0 = 0, g0 = 0, b0 = 0, r1, g1, b1;
+        ry = modf(cy, &iy);
+        py = (int)iy;
+        if (py >= 0 && py < mSize.Y) { GETRGB1(x, py, r0, g0, b0) }
+        if (py >= 0 && py < mSize.Y-1) {
+          GETRGB1(x, py+1, r1, g1, b1)
+          r0 = (int)((double)r0*(1.0-ry)+(double)r1*ry);
+          g0 = (int)((double)g0*(1.0-ry)+(double)g1*ry);
+          b0 = (int)((double)b0*(1.0-ry)+(double)b1*ry);
+        }
+        if (r0 < 0) r0 = 0; else if (r0 > 255) r0 = 255;
+        if (g0 < 0) g0 = 0; else if (g0 > 255) g0 = 255;
+        if (b0 < 0) b0 = 0; else if (b0 > 255) b0 = 255;
+        *dst++ = r0&0xff;
+        *dst++ = g0&0xff;
+        *dst++ = b0&0xff;
+      }
+    }
+  }
+#undef GETRGB1
+  delete [] nbx;
+  delete [] unp;
+  // and save it
   FILE *fo = fopen(fileName.CStr(), "wb");
   if (fo) {
     uint16_t ii;

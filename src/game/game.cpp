@@ -924,10 +924,12 @@ void game::RemoveSaves (truth RealSavesAlso) {
     remove(festring(SaveName()+".sav").CStr());
     remove(festring(SaveName()+".wm").CStr());
     remove(festring(SaveName()+".png").CStr());
+    remove(festring(SaveName()+".ipu").CStr());
   }
   remove(festring(AutoSaveFileName+".sav").CStr());
   remove(festring(AutoSaveFileName+".wm").CStr());
   remove(festring(AutoSaveFileName+".png").CStr());
+  remove(festring(AutoSaveFileName+".ipu").CStr());
   festring File;
   for (int i = 1; i < Dungeons; ++i) {
     for (int c = 0; c < GetDungeon(i)->GetLevels(); ++c) {
