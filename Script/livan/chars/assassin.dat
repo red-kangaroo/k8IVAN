@@ -34,4 +34,6 @@ assassin
   IsSadist = true;
   ClassStates = INFRA_VISION;
   Frequency = 1000;
+  TotalVolume = 45000;
+  //TotalSize = 225;
 }
