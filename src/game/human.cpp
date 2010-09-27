@@ -4246,38 +4246,8 @@ void tourist::GetAICommand()
   humanoid::GetAICommand();
 }
 
-void imperialist::BeTalkedTo()
-{
-  decosadshirt* Shirt = static_cast<decosadshirt*>(PLAYER->SearchForItem(this, &item::IsDecosAdShirt));
 
-  if(Shirt)
-  {
-    ulong Reward = Shirt->GetEquippedTicks() / 500;
-
-    if(Reward)
-    {
-      ADD_MESSAGE("%s smiles. \"I see you have advertised our company diligently. Here's %ldgp as a token of my gratitude.\"", CHAR_NAME(DEFINITE), Reward);
-      PLAYER->EditMoney(Reward);
-      Shirt->SetEquippedTicks(0);
-      return;
-    }
-    else if(!(RAND() % 5))
-    {
-      ADD_MESSAGE("\"Come back when you've worn the shirt for some time and I'll reward you generously!\"");
-      return;
-    }
-  }
-
-  static long Said;
-
-  if(GetRelation(PLAYER) == HOSTILE)
-    ProcessAndAddMessage(GetHostileReplies()[RandomizeReply(Said, GetHostileReplies().Size)]);
-  else if(!game::PlayerIsSumoChampion())
-    ProcessAndAddMessage(GetFriendlyReplies()[RandomizeReply(Said, GetFriendlyReplies().Size)]);
-  else
-    ProcessAndAddMessage(GetFriendlyReplies()[RandomizeReply(Said, GetFriendlyReplies().Size - 1)]);
-}
-
+///////////////////////////////////////////////////////////////////////////////
 character* humanoid::CreateZombie() const
 {
   if(!TorsoIsAlive())
@@ -5066,11 +5036,6 @@ void kamikazedwarf::SingRandomSong()
     ADD_MESSAGE("You hear someone sing: \"%s\"", Song.CStr());
 }
 
-void imperialist::DisplayStethoscopeInfo(character*) const
-{
-  ADD_MESSAGE("You hear coins clinking inside.");
-}
-
 void humanoid::ApplySpecialAttributeBonuses()
 {
   if(GetHead())
@@ -5301,18 +5266,16 @@ void raven::BeTalkedTo () {
       game::GetGod(INFUSCOR)->AdjustRelation(50);
       game::GetGod(CRUENTUS)->AdjustRelation(50);
       game::GetGod(MORTIFER)->AdjustRelation(50);
-      meleeweapon* Weapon = whipofthievery::Spawn();
+      meleeweapon *Weapon = whipofthievery::Spawn();
       Weapon->InitMaterials(MAKE_MATERIAL(SPIDER_SILK), MAKE_MATERIAL(EBONY_WOOD), true);
       PLAYER->GetGiftStack()->AddItem(Weapon);
       GetArea()->SendNewDrawRequest();
       ADD_MESSAGE("A whip materializes near your feet.");
-
       game::SetRingOfThieves(1);
     } else {
       ADD_MESSAGE("\"Mondedr's most important artifact, the Ring of Thieves, has been stolen by Vulcan-Loki; residing at the deepest floor of the underground temple, he awaits Oree to receive it and reward him with incredible power.\"");
     }
-  }
-  else {
+  } else {
     /* StoryState == 100 */
     ADD_MESSAGE("\"I must thank you again, I hope you make good use of that whip.\"");
   }
@@ -5352,3 +5315,30 @@ void mysteryman::BeTalkedTo () {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+void imperialist::BeTalkedTo () {
+  decosadshirt *Shirt = static_cast<decosadshirt *>(PLAYER->SearchForItem(this, &item::IsDecosAdShirt));
+  if (Shirt) {
+    ulong Reward = Shirt->GetEquippedTicks()/500;
+    if (Reward) {
+      ADD_MESSAGE("%s smiles. \"I see you have advertised our company diligently. Here's %ldgp as a token of my gratitude.\"", CHAR_NAME(DEFINITE), Reward);
+      PLAYER->EditMoney(Reward);
+      Shirt->SetEquippedTicks(0);
+    } else if (!(RAND()%5)) {
+      ADD_MESSAGE("\"Come back when you've worn the shirt for some time and I'll reward you generously!\"");
+    }
+    return;
+  }
+  static long Said;
+  if (GetRelation(PLAYER) == HOSTILE)
+    ProcessAndAddMessage(GetHostileReplies()[RandomizeReply(Said, GetHostileReplies().Size)]);
+  else if (!game::PlayerIsSumoChampion())
+    ProcessAndAddMessage(GetFriendlyReplies()[RandomizeReply(Said, GetFriendlyReplies().Size)]);
+  else
+    ProcessAndAddMessage(GetFriendlyReplies()[RandomizeReply(Said, GetFriendlyReplies().Size-1)]);
+}
+
+
+void imperialist::DisplayStethoscopeInfo (character *) const {
+  ADD_MESSAGE("You hear coins clinking inside.");
+}

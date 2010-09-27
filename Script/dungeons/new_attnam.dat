@@ -482,6 +482,7 @@ Dungeon NEW_ATTNAM;
       Square, Pos 1,33; { Items == kawai; }
       Square, Pos 2,33; { Items == kawai; }
       //Square, Pos 9, 23; { Character = assassin { Team = MONSTER_TEAM; } }
+      //Square, Pos 9, 23; { Character = cossack { Team = COLONIST_TEAM; } }
       //Square, Pos 11,8; { Items == kawai; }
       //Square, Pos 13,8; { Items == kawai; }
     endif
