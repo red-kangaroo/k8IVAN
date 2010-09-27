@@ -219,11 +219,11 @@ festring::sizetype festring::Find (char Char, sizetype Pos) const {
 
 
 festring::sizetype festring::Find (cchar *CStr, sizetype Pos, sizetype N) const {
-  if (N) {
+  if (N && Pos < Size) {
     char *Ptr = Data;
     if (Ptr) {
       char Char = CStr[0];
-      for (;;) {
+      while (Size-Pos >= N) {
         if (Size-Pos < N) return NPos;
         char *Result = static_cast<char *>(memchr(Ptr+Pos, Char, Size-Pos));
         if (!Result) return NPos;
