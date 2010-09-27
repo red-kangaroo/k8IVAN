@@ -252,7 +252,7 @@ Dungeon ELPURI_CAVE;
 
         Types
         {
-          g = guard(DWARVEN_GUARD) { Team = 5; }
+          g = guard(DWARVEN_GUARD) { Team = GC_SHOPKEEPER_TEAM; }
         }
       }
       {
@@ -266,7 +266,7 @@ Dungeon ELPURI_CAVE;
         OTerrain = stairs(STAIRS_DOWN) { AttachedArea = KHARAZ_ARAD; }
         EntryIndex = STAIRS_DOWN;
       }
-                        Square, Pos 3,0;
+      Square, Pos 3,0;
       {
         OTerrain = 0;
         AttachRequired = true;
@@ -294,8 +294,8 @@ Dungeon ELPURI_CAVE;
 
         Types
         {
-          g = guard(SHOP) { Team = 5; }
-          s = shopkeeper(ELPURI_CAVE) { Team = 5; Flags = IS_MASTER; }
+          g = guard(SHOP) { Team = GC_SHOPKEEPER_TEAM; }
+          s = shopkeeper(ELPURI_CAVE) { Team = GC_SHOPKEEPER_TEAM; Flags = IS_MASTER; }
         }
       }
       {
@@ -1894,7 +1894,7 @@ Dungeon ELPURI_CAVE;
 
         Types
         {
-          g = guard(ELITE) { Team = 5; }
+          g = guard(ELITE) { Team = KHARAZ_ARAD_TEAM; }
         }
       }
       {
@@ -1927,8 +1927,8 @@ Dungeon ELPURI_CAVE;
 
         Types
         {
-          g = guard(SHOP) { Team = 5; }
-          s = shopkeeper(KHARAZ_ARAD_SHOP) { Team = 5; Flags = IS_MASTER; }
+          g = guard(SHOP) { Team = KHARAZ_ARAD_TEAM; }
+          s = shopkeeper(KHARAZ_ARAD_SHOP) { Team = KHARAZ_ARAD_TEAM; Flags = IS_MASTER; }
         }
       }
       {

@@ -13,7 +13,7 @@ Dungeon MONDEDR;
     Rooms = 40;
     Items = 0;
     IsOnGround = false;
-    TeamDefault = ATTNAM_TEAM;
+    TeamDefault = MONDEDR_TEAM; //ATTNAM_TEAM;
     LOSModifier = 16;
     IgnoreDefaultSpecialSquares = false;
     CanGenerateBone = false;
