@@ -489,6 +489,7 @@ truth bananadroparea::PickupItem (character *Hungry, item *Item, int) {
   if (game::GetTeam(NEW_ATTNAM_TEAM)->GetRelation(Hungry->GetTeam()) == HOSTILE) return true;
   if (Hungry->IsPlayer()) {
     if (!Item->IsBanana() && !Item->IsLanternOnWall()) return true;
+    if (game::GetLiberator()) return true;
     ADD_MESSAGE("That would be stealing.");
     if (game::TruthQuestion(CONST_S("Do you still want to do this? [y/N]"))) {
       Hungry->GetTeam()->Hostility(game::GetTeam(NEW_ATTNAM_TEAM));

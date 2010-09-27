@@ -642,139 +642,105 @@ void petrus::BeTalkedTo()
   }
 }
 
-void priest::BeTalkedTo()
-{
-  if(GetRelation(PLAYER) == HOSTILE)
-  {
+
+void priest::BeTalkedTo () {
+  if (GetRelation(PLAYER) == HOSTILE) {
     ADD_MESSAGE("\"Sinner! My hands shall pour Dinive Wrath upon thee!\"");
     return;
   }
-
-  for(int c = 0; c < PLAYER->GetBodyParts(); ++c)
-    if(!PLAYER->GetBodyPart(c) && PLAYER->CanCreateBodyPart(c))
-    {
+  for (int c = 0; c < PLAYER->GetBodyParts(); ++c) {
+    if (!PLAYER->GetBodyPart(c) && PLAYER->CanCreateBodyPart(c)) {
       truth HasOld = false;
-
-      for(std::list<ulong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i)
-      {
-  bodypart* OldBodyPart = static_cast<bodypart*>(PLAYER->SearchForItem(*i));
-
-  if(OldBodyPart)
-  {
-    HasOld = true;
-    long Price = GetConfig() == VALPURUS ? 50 : 10;
-
-    if(PLAYER->GetMoney() >= Price)
-    {
-      if(!OldBodyPart->CanRegenerate())
-        ADD_MESSAGE("\"Sorry, I cannot put back bodyparts made of %s, not even your severed %s.\"", OldBodyPart->GetMainMaterial()->GetName(false, false).CStr(), PLAYER->GetBodyPartName(c).CStr());
-      else
-      {
-        ADD_MESSAGE("\"I could put your old %s back in exchange for %ld gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
-
-        if(game::TruthQuestion(CONST_S("Do you agree? [y/N]")))
-        {
-    OldBodyPart->SetHP(1);
-    PLAYER->SetMoney(PLAYER->GetMoney() - Price);
-    SetMoney(GetMoney() + Price);
-    OldBodyPart->RemoveFromSlot();
-    PLAYER->AttachBodyPart(OldBodyPart);
-    return;
+      for (std::list<ulong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
+        bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
+        if (OldBodyPart) {
+          HasOld = true;
+          long Price = GetConfig() == VALPURUS ? 50 : 10;
+          if (PLAYER->GetMoney() >= Price) {
+            if (!OldBodyPart->CanRegenerate())
+              ADD_MESSAGE("\"Sorry, I cannot put back bodyparts made of %s, not even your severed %s.\"", OldBodyPart->GetMainMaterial()->GetName(false, false).CStr(), PLAYER->GetBodyPartName(c).CStr());
+            else {
+              ADD_MESSAGE("\"I could put your old %s back in exchange for %ld gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+              if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+                OldBodyPart->SetHP(1);
+                PLAYER->SetMoney(PLAYER->GetMoney()-Price);
+                SetMoney(GetMoney()+Price);
+                OldBodyPart->RemoveFromSlot();
+                PLAYER->AttachBodyPart(OldBodyPart);
+                return;
+              }
+            }
+          } else {
+            ADD_MESSAGE("\"Your %s is severed. Help yourself and get %ldgp and I'll help you too.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+          }
         }
       }
-    }
-    else
-      ADD_MESSAGE("\"Your %s is severed. Help yourself and get %ldgp and I'll help you too.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
-  }
-      }
-
       long Price = GetConfig() == VALPURUS ? 100 : 20;
-
-      if(PLAYER->GetMoney() >= Price)
-      {
-  if(HasOld)
-    ADD_MESSAGE("\"I could still summon up a new one for %ld gold.\"", Price);
-  else
-    ADD_MESSAGE("\"Since you don't seem to have your original %s with you, I could summon up a new one for %ld gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
-
-  if(game::TruthQuestion(CONST_S("Agreed? [y/N]")))
-  {
-    PLAYER->SetMoney(PLAYER->GetMoney() - Price);
-    SetMoney(GetMoney() + Price);
-    PLAYER->CreateBodyPart(c);
-    PLAYER->GetBodyPart(c)->SetHP(1);
-    return;
-  }
+      if (PLAYER->GetMoney() >= Price) {
+        if (HasOld)
+          ADD_MESSAGE("\"I could still summon up a new one for %ld gold.\"", Price);
+        else
+          ADD_MESSAGE("\"Since you don't seem to have your original %s with you, I could summon up a new one for %ld gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+        if (game::TruthQuestion(CONST_S("Agreed? [y/N]"))) {
+          PLAYER->SetMoney(PLAYER->GetMoney()-Price);
+          SetMoney(GetMoney()+Price);
+          PLAYER->CreateBodyPart(c);
+          PLAYER->GetBodyPart(c)->SetHP(1);
+          return;
+        }
+      } else if (!HasOld) {
+        ADD_MESSAGE("\"You don't have your original %s with you. I could create you a new one, but my Divine Employer is not a communist and you need %ldgp first.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
       }
-      else if(!HasOld)
-  ADD_MESSAGE("\"You don't have your original %s with you. I could create you a new one, but my Divine Employer is not a communist and you need %ldgp first.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
     }
-
-  if(PLAYER->TemporaryStateIsActivated(POISONED))
-  {
+  }
+  if (PLAYER->TemporaryStateIsActivated(POISONED)) {
     long Price = GetConfig() == VALPURUS ? 25 : 5;
-
-    if(PLAYER->GetMoney() >= Price)
-    {
+    if (PLAYER->GetMoney() >= Price) {
       ADD_MESSAGE("\"You seem to be rather ill. I could give you a small dose of antidote for %ld gold pieces.\"", Price);
-
-      if(game::TruthQuestion(CONST_S("Do you agree? [y/N]")))
-      {
-  ADD_MESSAGE("You feel better.");
-  PLAYER->DeActivateTemporaryState(POISONED);
-  PLAYER->SetMoney(PLAYER->GetMoney() - Price);
-  SetMoney(GetMoney() + Price);
-  return;
+      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+        ADD_MESSAGE("You feel better.");
+        PLAYER->DeActivateTemporaryState(POISONED);
+        PLAYER->SetMoney(PLAYER->GetMoney()-Price);
+        SetMoney(GetMoney()+Price);
+        return;
       }
-    }
-    else
+    } else {
       ADD_MESSAGE("\"You seem to be rather ill. Get %ld gold pieces and I'll fix that.\"", Price);
+    }
   }
-
-  if(PLAYER->TemporaryStateIsActivated(LEPROSY))
-  {
+  if (PLAYER->TemporaryStateIsActivated(LEPROSY)) {
     long Price = GetConfig() == VALPURUS ? 100 : 20;
-
-    if(PLAYER->GetMoney() >= Price)
-    {
+    if (PLAYER->GetMoney() >= Price) {
       ADD_MESSAGE("\"You seem to have contracted the vile disease of leprosy. I could give you a small dose of medicince for %ld gold pieces.\"", Price);
-
-      if(game::TruthQuestion(CONST_S("Do you agree? [y/N]")))
-      {
-  ADD_MESSAGE("You feel better.");
-  PLAYER->DeActivateTemporaryState(LEPROSY);
-  PLAYER->SetMoney(PLAYER->GetMoney() - Price);
-  SetMoney(GetMoney() + Price);
-  return;
+      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+        ADD_MESSAGE("You feel better.");
+        PLAYER->DeActivateTemporaryState(LEPROSY);
+        PLAYER->SetMoney(PLAYER->GetMoney()-Price);
+        SetMoney(GetMoney()+Price);
+        return;
       }
-    }
-    else
+    } else {
       ADD_MESSAGE("\"You seem to be falling apart. Get %ld gold pieces and I'll fix that.\"", Price);
-  }
-
-  if(PLAYER->TemporaryStateIsActivated(LYCANTHROPY))
-  {
-    long Price = GetConfig() == VALPURUS ? 100 : 20;
-
-    if(PLAYER->GetMoney() >= Price)
-    {
-      ADD_MESSAGE("\"You seem to be turning into a werewolf quite frequently. Well, everyone has right to little secret habits, but if you wish to donate %ldgp to %s, maybe I could pray %s to remove the canine blood from your veins, just so you don't scare our blessed youth.\"", Price, GetMasterGod()->GetName(), GetMasterGod()->GetObjectPronoun());
-
-      if(game::TruthQuestion(CONST_S("Do you agree? [y/N]")))
-      {
-  ADD_MESSAGE("You feel better.");
-  PLAYER->DeActivateTemporaryState(LYCANTHROPY);
-  PLAYER->SetMoney(PLAYER->GetMoney() - Price);
-  SetMoney(GetMoney() + Price);
-  return;
-      }
     }
-    else
-      ADD_MESSAGE("\"You seem to be lycanthropic. I might be able to do something for that but I need %ldgp for the ritual materials first.\"", Price);
   }
-
+  if (PLAYER->TemporaryStateIsActivated(LYCANTHROPY)) {
+    long Price = GetConfig() == VALPURUS ? 100 : 20;
+    if (PLAYER->GetMoney() >= Price) {
+      ADD_MESSAGE("\"You seem to be turning into a werewolf quite frequently. Well, everyone has right to little secret habits, but if you wish to donate %ldgp to %s, maybe I could pray %s to remove the canine blood from your veins, just so you don't scare our blessed youth.\"", Price, GetMasterGod()->GetName(), GetMasterGod()->GetObjectPronoun());
+      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+        ADD_MESSAGE("You feel better.");
+        PLAYER->DeActivateTemporaryState(LYCANTHROPY);
+        PLAYER->SetMoney(PLAYER->GetMoney()-Price);
+        SetMoney(GetMoney()+Price);
+        return;
+      }
+    } else {
+      ADD_MESSAGE("\"You seem to be lycanthropic. I might be able to do something for that but I need %ldgp for the ritual materials first.\"", Price);
+    }
+  }
   humanoid::BeTalkedTo();
 }
+
 
 void skeleton::BeTalkedTo()
 {
@@ -5350,4 +5316,151 @@ void imperialist::CreateCorpse (lsquare *Square) {
     ADD_MESSAGE("You liberate citizens of New Attnam!");
   }
   imperialistsysbase::CreateCorpse(Square);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+exiledpriest::exiledpriest () :
+  exiledpriestsysbase(),
+  mAtHome(false)
+{
+}
+
+
+exiledpriest::~exiledpriest () {
+}
+
+
+void exiledpriest::Save (outputfile &saveFile) const {
+  priest::Save(saveFile);
+  saveFile << mAtHome;
+}
+
+
+void exiledpriest::Load (inputfile &saveFile) {
+  priest::Load(saveFile);
+  saveFile >> mAtHome;
+}
+
+
+void exiledpriest::healBodyParts () {
+  for (int c = 0; c < PLAYER->GetBodyParts(); ++c) {
+    if (!PLAYER->GetBodyPart(c) && PLAYER->CanCreateBodyPart(c)) {
+      truth HasOld = false;
+      for (std::list<ulong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
+        bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
+        if (OldBodyPart) {
+          HasOld = true;
+          if (!OldBodyPart->CanRegenerate())
+            ADD_MESSAGE("\"Sorry, I cannot put back bodyparts made of %s, not even your severed %s.\"", OldBodyPart->GetMainMaterial()->GetName(false, false).CStr(), PLAYER->GetBodyPartName(c).CStr());
+          else {
+            ADD_MESSAGE("\"I will put your old %s back.\"", PLAYER->GetBodyPartName(c).CStr());
+            if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+              OldBodyPart->SetHP(1);
+              OldBodyPart->RemoveFromSlot();
+              PLAYER->AttachBodyPart(OldBodyPart);
+              healBodyParts(); //FIXME
+              return;
+            }
+          }
+        }
+      }
+      if (HasOld)
+        ADD_MESSAGE("\"I could summon up a new %s.\"", PLAYER->GetBodyPartName(c).CStr());
+      else
+        ADD_MESSAGE("\"Since you don't seem to have your original %s with you, I could summon up a new one.\"", PLAYER->GetBodyPartName(c).CStr());
+      if (game::TruthQuestion(CONST_S("Agreed? [y/N]"))) {
+        PLAYER->CreateBodyPart(c);
+        PLAYER->GetBodyPart(c)->SetHP(1);
+        healBodyParts(); //FIXME
+        return;
+      }
+    }
+  }
+}
+
+
+void exiledpriest::healDeseases () {
+  if (PLAYER->TemporaryStateIsActivated(POISONED)) {
+    ADD_MESSAGE("\"You seem to be rather ill. I could give you a small dose of antidote.\"");
+    if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      ADD_MESSAGE("You feel better.");
+      PLAYER->DeActivateTemporaryState(POISONED);
+    }
+  }
+  if (PLAYER->TemporaryStateIsActivated(LEPROSY)) {
+    ADD_MESSAGE("\"You seem to have contracted the vile disease of leprosy. I could give you a small dose of medicince.\"");
+    if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      ADD_MESSAGE("You feel better.");
+      PLAYER->DeActivateTemporaryState(LEPROSY);
+    }
+  }
+  if (PLAYER->TemporaryStateIsActivated(LYCANTHROPY)) {
+    ADD_MESSAGE("\"You seem to be turning into a werewolf quite frequently. Well, everyone has right to little secret habits, but I could pray %s to remove the canine blood from your veins, just so you don't scare our blessed youth.\"", GetMasterGod()->GetName());
+    if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      ADD_MESSAGE("You feel better.");
+      PLAYER->DeActivateTemporaryState(LYCANTHROPY);
+    }
+  }
+}
+
+
+void exiledpriest::healAll () {
+  healBodyParts();
+  healDeseases();
+}
+
+
+//FIXME: GENDER!
+void exiledpriest::BeTalkedTo () {
+  if (GetRelation(PLAYER) != HOSTILE && game::GetLiberator()) {
+    if (!mAtHome) {
+      ADD_MESSAGE(
+        "Priestess says: "
+        "\"Let %s bless you! I can return to my temple now! "
+        "Get this things and remember how kind %s is!\"",
+        GetMasterGod()->GetName(), GetMasterGod()->GetName());
+      //GetMasterGod()->GetObjectPronoun());
+      mAtHome = true;
+      //GetGiftStack()
+      {
+        potion *bottle = potion::Spawn(0, NO_MATERIALS);
+        bottle->InitMaterials(MAKE_MATERIAL(GLASS), MAKE_MATERIAL(HEALING_LIQUID));
+        PLAYER->GetStack()->AddItem(bottle);
+        ADD_MESSAGE("Priestess gives %s to you.", bottle->CHAR_DESCRIPTION(DEFINITE));
+      }
+      {
+        potion *bottle = potion::Spawn(0, NO_MATERIALS);
+        bottle->InitMaterials(MAKE_MATERIAL(GLASS), MAKE_MATERIAL(ANTIDOTE_LIQUID));
+        PLAYER->GetStack()->AddItem(bottle);
+        ADD_MESSAGE("Priestess gives %s to you.", bottle->CHAR_DESCRIPTION(DEFINITE));
+      }
+      if (RAND_N(100) >= 90) {
+        potion *bottle = potion::Spawn(0, NO_MATERIALS);
+        bottle->InitMaterials(MAKE_MATERIAL(GLASS), MAKE_MATERIAL(VODKA));
+        PLAYER->GetStack()->AddItem(bottle);
+        ADD_MESSAGE("Priestess gives %s to you.", bottle->CHAR_DESCRIPTION(DEFINITE));
+      }
+    }
+    ADD_MESSAGE("I will heal you for free.");
+    healAll();
+    return;
+  }
+  priest::BeTalkedTo();
+}
+
+
+truth exiledpriest::MoveTowardsHomePos () {
+  if (!mAtHome) return false;
+  v2 homePos(12, 10);
+  if (GetPos() != homePos) {
+    SetGoingTo(homePos);
+    return MoveTowardsTarget(false) || (!GetPos().IsAdjacent(homePos) && MoveRandomly());
+  }
+  return false;
+}
+
+
+void exiledpriest::GetAICommand () {
+  priest::GetAICommand();
 }

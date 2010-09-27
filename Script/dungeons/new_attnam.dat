@@ -336,7 +336,7 @@ Dungeon NEW_ATTNAM;
 
       Square, Pos 2, 1;
       {
-        Character = priest(SILVA) { Flags = IS_MASTER; }
+        Character = exiledpriest(SILVA) { Flags = IS_MASTER; }
       }
 
       OTerrainMap

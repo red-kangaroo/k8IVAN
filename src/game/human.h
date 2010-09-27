@@ -17,49 +17,50 @@
 
 CHARACTER(humanoid, character)
 {
- public:
+public:
   friend class rightarm;
   friend class leftarm;
-  humanoid() : CurrentRightSWeaponSkill(0), CurrentLeftSWeaponSkill(0) { }
-  humanoid(const humanoid&);
-  virtual ~humanoid();
-  virtual truth CanWield() const;
-  virtual truth Hit(character*, v2, int, int = 0);
-  virtual int GetSize() const;
-  head* GetHead() const { return static_cast<head*>(*BodyPartSlot[HEAD_INDEX]); }
-  arm* GetRightArm() const { return static_cast<arm*>(*BodyPartSlot[RIGHT_ARM_INDEX]); }
-  arm* GetLeftArm() const { return static_cast<arm*>(*BodyPartSlot[LEFT_ARM_INDEX]); }
-  groin* GetGroin() const { return static_cast<groin*>(*BodyPartSlot[GROIN_INDEX]); }
-  leg* GetRightLeg() const { return static_cast<leg*>(*BodyPartSlot[RIGHT_LEG_INDEX]); }
-  leg* GetLeftLeg() const { return static_cast<leg*>(*BodyPartSlot[LEFT_LEG_INDEX]); }
-  item* GetHelmet() const { return GetHead() ? GetHead()->GetHelmet() : 0; }
-  item* GetAmulet() const { return GetHead() ? GetHead()->GetAmulet() : 0; }
-  item* GetCloak() const { return GetHumanoidTorso() ? GetHumanoidTorso()->GetCloak() : 0; }
-  item* GetBodyArmor() const { return GetHumanoidTorso() ? GetHumanoidTorso()->GetBodyArmor() : 0; }
-  item* GetBelt() const { return GetHumanoidTorso() ? GetHumanoidTorso()->GetBelt() : 0; }
-  item* GetRightWielded() const { return GetRightArm() ? GetRightArm()->GetWielded() : 0; }
-  item* GetLeftWielded() const { return GetLeftArm() ? GetLeftArm()->GetWielded() : 0; }
-  item* GetRightRing() const { return GetRightArm() ? GetRightArm()->GetRing() : 0; }
-  item* GetLeftRing() const { return GetLeftArm() ? GetLeftArm()->GetRing() : 0; }
-  item* GetRightGauntlet() const { return GetRightArm() ? GetRightArm()->GetGauntlet() : 0; }
-  item* GetLeftGauntlet() const { return GetLeftArm() ? GetLeftArm()->GetGauntlet() : 0; }
-  item* GetRightBoot() const { return GetRightLeg() ? GetRightLeg()->GetBoot() : 0; }
-  item* GetLeftBoot() const { return GetLeftLeg() ? GetLeftLeg()->GetBoot() : 0; }
-  void SetHelmet(item* What) { GetHead()->SetHelmet(What); }
-  void SetAmulet(item* What) { GetHead()->SetAmulet(What); }
-  void SetCloak(item* What) { GetHumanoidTorso()->SetCloak(What); }
-  void SetBodyArmor(item* What) { GetHumanoidTorso()->SetBodyArmor(What); }
-  void SetBelt(item* What) { GetHumanoidTorso()->SetBelt(What); }
-  void SetRightWielded(item* What) { GetRightArm()->SetWielded(What); }
-  void SetLeftWielded(item* What) { GetLeftArm()->SetWielded(What); }
-  void SetRightRing(item* What) { GetRightArm()->SetRing(What); }
-  void SetLeftRing(item* What) { GetLeftArm()->SetRing(What); }
-  void SetRightGauntlet(item* What) { GetRightArm()->SetGauntlet(What); }
-  void SetLeftGauntlet(item* What) { GetLeftArm()->SetGauntlet(What); }
-  void SetRightBoot(item* What) { GetRightLeg()->SetBoot(What); }
-  void SetLeftBoot(item* What) { GetLeftLeg()->SetBoot(What); }
-  arm* GetMainArm() const;
-  arm* GetSecondaryArm() const;
+public:
+  humanoid () : CurrentRightSWeaponSkill(0), CurrentLeftSWeaponSkill(0) { }
+  humanoid (const humanoid &);
+  virtual ~humanoid ();
+  virtual truth CanWield () const;
+  virtual truth Hit (character *, v2, int, int = 0);
+  virtual int GetSize () const;
+  head *GetHead () const { return static_cast<head*>(*BodyPartSlot[HEAD_INDEX]); }
+  arm *GetRightArm () const { return static_cast<arm*>(*BodyPartSlot[RIGHT_ARM_INDEX]); }
+  arm *GetLeftArm () const { return static_cast<arm*>(*BodyPartSlot[LEFT_ARM_INDEX]); }
+  groin *GetGroin () const { return static_cast<groin*>(*BodyPartSlot[GROIN_INDEX]); }
+  leg *GetRightLeg () const { return static_cast<leg*>(*BodyPartSlot[RIGHT_LEG_INDEX]); }
+  leg *GetLeftLeg () const { return static_cast<leg*>(*BodyPartSlot[LEFT_LEG_INDEX]); }
+  item *GetHelmet () const { return GetHead() ? GetHead()->GetHelmet() : 0; }
+  item *GetAmulet () const { return GetHead() ? GetHead()->GetAmulet() : 0; }
+  item *GetCloak () const { return GetHumanoidTorso() ? GetHumanoidTorso()->GetCloak() : 0; }
+  item *GetBodyArmor () const { return GetHumanoidTorso() ? GetHumanoidTorso()->GetBodyArmor() : 0; }
+  item *GetBelt () const { return GetHumanoidTorso() ? GetHumanoidTorso()->GetBelt() : 0; }
+  item *GetRightWielded () const { return GetRightArm() ? GetRightArm()->GetWielded() : 0; }
+  item *GetLeftWielded () const { return GetLeftArm() ? GetLeftArm()->GetWielded() : 0; }
+  item *GetRightRing () const { return GetRightArm() ? GetRightArm()->GetRing() : 0; }
+  item *GetLeftRing () const { return GetLeftArm() ? GetLeftArm()->GetRing() : 0; }
+  item *GetRightGauntlet () const { return GetRightArm() ? GetRightArm()->GetGauntlet() : 0; }
+  item *GetLeftGauntlet () const { return GetLeftArm() ? GetLeftArm()->GetGauntlet() : 0; }
+  item *GetRightBoot () const { return GetRightLeg() ? GetRightLeg()->GetBoot() : 0; }
+  item *GetLeftBoot () const { return GetLeftLeg() ? GetLeftLeg()->GetBoot() : 0; }
+  void SetHelmet (item *What) { GetHead()->SetHelmet(What); }
+  void SetAmulet (item *What) { GetHead()->SetAmulet(What); }
+  void SetCloak (item *What) { GetHumanoidTorso()->SetCloak(What); }
+  void SetBodyArmor (item *What) { GetHumanoidTorso()->SetBodyArmor(What); }
+  void SetBelt (item *What) { GetHumanoidTorso()->SetBelt(What); }
+  void SetRightWielded (item *What) { GetRightArm()->SetWielded(What); }
+  void SetLeftWielded (item *What) { GetLeftArm()->SetWielded(What); }
+  void SetRightRing (item *What) { GetRightArm()->SetRing(What); }
+  void SetLeftRing (item *What) { GetLeftArm()->SetRing(What); }
+  void SetRightGauntlet (item *What) { GetRightArm()->SetGauntlet(What); }
+  void SetLeftGauntlet (item *What) { GetLeftArm()->SetGauntlet(What); }
+  void SetRightBoot (item *What) { GetRightLeg()->SetBoot(What); }
+  void SetLeftBoot (item *What) { GetLeftLeg()->SetBoot(What); }
+  arm *GetMainArm () const;
+  arm *GetSecondaryArm () const;
   virtual truth ReceiveDamage(character*, int, int, int = ALL, int = 8, truth = false, truth = false, truth = false, truth = true);
   virtual truth BodyPartIsVital(int) const;
   virtual truth BodyPartCanBeSevered(int) const;
@@ -275,9 +276,27 @@ CHARACTER(shopkeeper, humanoid)
 
 CHARACTER(priest, humanoid)
 {
- protected:
-  virtual void GetAICommand() { StandIdleAI(); }
-  virtual void BeTalkedTo();
+protected:
+  virtual void GetAICommand () { StandIdleAI(); }
+  virtual void BeTalkedTo ();
+};
+
+CHARACTER(exiledpriest, priest)
+{
+public:
+  exiledpriest ();
+  virtual ~exiledpriest ();
+  virtual void Save (outputfile &) const;
+  virtual void Load (inputfile &);
+  virtual void BeTalkedTo ();
+  virtual truth MoveTowardsHomePos ();
+protected:
+  virtual void GetAICommand ();
+  void healBodyParts ();
+  void healDeseases ();
+  void healAll ();
+protected:
+  truth mAtHome;
 };
 
 CHARACTER(oree, humanoid)
