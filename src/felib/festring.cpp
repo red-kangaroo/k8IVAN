@@ -211,7 +211,7 @@ void festring::Resize (sizetype N, char C) {
 festring::sizetype festring::Find (char Char, sizetype Pos) const {
   char *Ptr = Data;
   if (Ptr) {
-    char *Result = static_cast<char*>(memchr(Ptr+Pos, Char, Size-Pos));
+    char *Result = static_cast<char *>(memchr(Ptr+Pos, Char, Size-Pos));
     if (Result) return Result-Ptr;
   }
   return NPos;
@@ -224,7 +224,8 @@ festring::sizetype festring::Find (cchar *CStr, sizetype Pos, sizetype N) const 
     if (Ptr) {
       char Char = CStr[0];
       for (;;) {
-        char *Result = static_cast<char*>(memchr(Ptr+Pos, Char, Size-Pos));
+        if (Size-Pos < N) return NPos;
+        char *Result = static_cast<char *>(memchr(Ptr+Pos, Char, Size-Pos));
         if (!Result) return NPos;
         if (!memcmp(Result, CStr, N)) return Result-Ptr;
         Pos = Result-Ptr+1;
