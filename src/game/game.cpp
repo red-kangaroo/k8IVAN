@@ -53,7 +53,7 @@
 #define SAVE_FILE_VERSION 119 // Increment this if changes make savefiles incompatible
 #define BONE_FILE_VERSION 106 // Increment this if changes make bonefiles incompatible
 */
-#define SAVE_FILE_VERSION 120 // Increment this if changes make savefiles incompatible
+#define SAVE_FILE_VERSION 121 // Increment this if changes make savefiles incompatible
 #define BONE_FILE_VERSION 106 // Increment this if changes make bonefiles incompatible
 
 #define LOADED    0
@@ -95,6 +95,7 @@ int game::RingOfThieves;
 int game::Masamune;
 int game::Muramasa;
 int game::LoricatusHammer;
+int game::Liberator;
 /* */
 massacremap game::PlayerMassacreMap;
 massacremap game::PetMassacreMap;
@@ -365,7 +366,6 @@ truth game::Init (cfestring &Name) {
         Player->EditExperience(c, 500, 1<<11);
       }
       Player->SetMoney(Player->GetMoney()+RAND()%11);
-      //if (PlayerName == "_k8_") Player->SetMoney(666666); //k8
       GetTeam(0)->SetLeader(Player);
       InitDangerMap();
       Petrus = 0;
@@ -385,6 +385,7 @@ truth game::Init (cfestring &Name) {
       Masamune = 0;
       Muramasa = 0;
       LoricatusHammer = 0;
+      Liberator = 0;
       /* */
       PlayerMassacreMap.clear();
       PetMassacreMap.clear();
@@ -763,7 +764,7 @@ truth game::Save (cfestring &SaveName) {
   SaveFile << AveragePlayerDexterityExperience;
   SaveFile << AveragePlayerAgilityExperience;
   SaveFile << Teams << Dungeons << StoryState << PlayerRunning;
-  SaveFile << MondedrPass << RingOfThieves << Masamune << Muramasa << LoricatusHammer;
+  SaveFile << MondedrPass << RingOfThieves << Masamune << Muramasa << LoricatusHammer << Liberator;
   SaveFile << PlayerMassacreMap << PetMassacreMap << MiscMassacreMap;
   SaveFile << PlayerMassacreAmount << PetMassacreAmount << MiscMassacreAmount;
   SaveArray(SaveFile, EquipmentMemory, MAX_EQUIPMENT_SLOTS);
@@ -793,10 +794,12 @@ int game::Load (cfestring &SaveName) {
   int Version;
   SaveFile >> Version;
   if (Version != SAVE_FILE_VERSION) {
-    if(!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is incompatible with the new version.\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY))
-      return NEW_GAME;
-    else
-      return BACK;
+    if (Version != 120) {
+      if (!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is incompatible with the new version.\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY))
+        return NEW_GAME;
+      else
+        return BACK;
+    }
   }
   SaveFile >> GameScript >> CurrentDungeonIndex >> CurrentLevelIndex >> Camera;
   SaveFile >> WizardMode >> SeeWholeMapCheatMode >> GoThroughWallsCheat;
@@ -809,6 +812,11 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> AveragePlayerAgilityExperience;
   SaveFile >> Teams >> Dungeons >> StoryState >> PlayerRunning;
   SaveFile >> MondedrPass >> RingOfThieves >> Masamune >> Muramasa >> LoricatusHammer;
+  if (Version == SAVE_FILE_VERSION) {
+    SaveFile >> Liberator;
+  } else {
+    Liberator = 0;
+  }
   SaveFile >> PlayerMassacreMap >> PetMassacreMap >> MiscMassacreMap;
   SaveFile >> PlayerMassacreAmount >> PetMassacreAmount >> MiscMassacreAmount;
   LoadArray(SaveFile, EquipmentMemory, MAX_EQUIPMENT_SLOTS);

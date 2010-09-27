@@ -546,6 +546,8 @@ public:
   virtual void GetAICommand () { StandIdleAI(); }
   virtual void BeTalkedTo ();
   virtual void DisplayStethoscopeInfo (character *) const;
+protected:
+  virtual void CreateCorpse (lsquare *);
 };
 
 CHARACTER(smith, humanoid)

@@ -5342,3 +5342,12 @@ void imperialist::BeTalkedTo () {
 void imperialist::DisplayStethoscopeInfo (character *) const {
   ADD_MESSAGE("You hear coins clinking inside.");
 }
+
+
+void imperialist::CreateCorpse (lsquare *Square) {
+  if (!game::GetLiberator()) {
+    game::SetLiberator(1);
+    ADD_MESSAGE("You liberate citizens of New Attnam!");
+  }
+  imperialistsysbase::CreateCorpse(Square);
+}
