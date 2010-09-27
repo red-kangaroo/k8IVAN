@@ -743,9 +743,11 @@ void game::DrawEverythingNoBlit (truth AnimationDraw) {
 
 
 truth game::Save (cfestring &SaveName) {
-#ifdef HAVE_IMLIB2
   DrawEverythingNoBlit();
+#ifdef HAVE_IMLIB2
   DOUBLE_BUFFER->SaveScaled(SaveName+".png", 0.8); //640; 320
+#else
+  DOUBLE_BUFFER->SaveScaled(SaveName+".ipu", 0.8); //640; 320
 #endif
   outputfile SaveFile(SaveName+".sav");
   SaveFile << int(SAVE_FILE_VERSION);

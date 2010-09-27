@@ -313,13 +313,17 @@ truth felist::DrawPage (bitmap *Buffer) const {
     if (Entry[c++]->Selectable) ++i;
   }
   if (selIdx != -1 && mSaveSelector) {
-#ifdef HAVE_IMLIB2
+//#ifdef HAVE_IMLIB2
     bitmap bmp(ZERO_V2);
     festring imgName = Entry[selIdx]->String;
     festring::sizetype pos = imgName.FindLast(".sav");
     if (pos != festring::NPos) {
       imgName.Erase(pos, 4);
+#ifdef HAVE_IMLIB2
       imgName = mSaveDir+imgName+".png";
+#else
+      imgName = mSaveDir+imgName+".ipu";
+#endif
       //fprintf(stderr, "sel=%d; img=%s\n", selIdx, imgName.CStr());
       if (bmp.LoadImg(imgName)) {
         //fprintf(stderr, " LOADED! %dx%d\n", bmp.GetSize().X, bmp.GetSize().Y);
@@ -340,7 +344,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
         Buffer->DrawRectangle(x-2, y-2, x+w, y+h, DARK_GRAY, true);
       }
     }
-#endif
+//#endif
   }
   return c == Entry.size()-1;
 }

@@ -9,12 +9,13 @@
  *  along with this file for more details
  *
  */
+#include <stdint.h>
 #include <cmath>
 #include <ctime>
 
 #if defined(HAVE_IMLIB2)
 # include <Imlib2.h>
-#elif defined(HAVE_PNGLIB)
+#elif defined(HAVE_LIBPNG)
 # include <png.h>
 #endif
 
@@ -205,7 +206,7 @@ void bitmap::Load (inputfile &SaveFile) {
 }
 
 
-#if defined(HAVE_PNGLIB)
+#if defined(HAVE_LIBPNG)
 static void pngWrite (png_structp png_ptr, png_bytep data, png_size_t length) {
   FILE *fp = (FILE *)png_get_io_ptr(png_ptr);
   fwrite(data, length, 1, fp);
@@ -235,7 +236,7 @@ void bitmap::Save (cfestring &FileName) const {
   imlib_image_set_format("png");
   imlib_save_image(FileName.CStr());
   imlib_free_image();
-#elif defined(HAVE_PNGLIB)
+#elif defined(HAVE_LIBPNG)
   png_structp png_ptr;
   png_infop info_ptr;
   int ret;
@@ -384,6 +385,90 @@ truth bitmap::LoadImg (cfestring &fileName) {
     }
   }
   imlib_free_image();
+  return true;
+}
+
+#else
+
+//TODO: write normal scaler
+void bitmap::SaveScaled (cfestring &fileName, double scale) const {
+  int newX = (int)((double)mSize.X*scale);
+  int newY = (int)((double)mSize.Y*scale);
+  if (newX < 1 || newY < 1) return;
+  unsigned char *nb = new unsigned char[newX*newY*3];
+  unsigned char *pp = nb;
+  double cy = 0.0, cx = 0.0;
+  double sx = (double)mSize.X/(double)newX;
+  double sy = (double)mSize.Y/(double)newY;
+  //fprintf(stderr, "sx=%.15g; sy=%.15g\n", sx, sy);
+  for (int y = 0; y < newY; y++, cy += sy) {
+    int yy = (int)cy;
+    if (yy >= mSize.Y) yy = mSize.Y-1;
+    cx = 0;
+    for (int x = 0; x < newX; x++, cx += sx) {
+      int xx = (int)cx;
+      if (xx >= mSize.X) xx = mSize.X-1;
+      col16 Pixel = GetPixel(xx, yy);
+      unsigned char b = (Pixel << 3)&0xff;
+      unsigned char g = ((Pixel >> 5) << 2)&0xff;
+      unsigned char r = ((Pixel >> 11) << 3)&0xff;
+      *pp++ = r;
+      *pp++ = g;
+      *pp++ = b;
+    }
+  }
+  //
+  FILE *fo = fopen(fileName.CStr(), "wb");
+  if (fo) {
+    uint16_t ii;
+    ii = 0x29a; fwrite(&ii, sizeof(ii), 1, fo);
+    ii = newX; fwrite(&ii, sizeof(ii), 1, fo);
+    ii = newY; fwrite(&ii, sizeof(ii), 1, fo);
+    fwrite(nb, newX*newY*3, 1, fo);
+    fclose(fo);
+  }
+  delete [] nb;
+}
+
+
+truth bitmap::LoadImg (cfestring &fileName) {
+  uint16_t ii = 0;
+  int wdt = 0, hgt = 0;
+  FILE *fi = fopen(fileName.CStr(), "rb");
+  if (!fi) return false;
+  if (fread(&ii, sizeof(ii), 1, fi) != 1) { fclose(fi); return false; }
+  if (ii != 0x29a) { fclose(fi); return false; }
+  if (fread(&ii, sizeof(ii), 1, fi) != 1) { fclose(fi); return false; }
+  if (ii < 1 || ii > 4096) { fclose(fi); return false; }
+  wdt = ii;
+  if (fread(&ii, sizeof(ii), 1, fi) != 1) { fclose(fi); return false; }
+  if (ii < 1 || ii > 4096) { fclose(fi); return false; }
+  hgt = ii;
+  //fprintf(stderr, "%dx%d\n", wdt, hgt);
+  unsigned char *nb = new unsigned char[wdt*hgt*3];
+  if (fread(nb, wdt*hgt*3, 1, fi) != 1) { delete [] nb; fclose(fi); return false; }
+  fclose(fi);
+  delete [] Image;
+  delete [] AlphaMap;
+  delete [] PriorityMap;
+  delete [] RandMap;
+  PriorityMap = 0;
+  RandMap = 0;
+  AlphaMap = 0;
+  mSize.X = wdt;
+  mSize.Y = hgt;
+  Alloc2D(Image, mSize.Y, mSize.X);
+  //Alloc2D(AlphaMap, mSize.Y, mSize.X);
+  unsigned char *pp = nb;
+  for (int y = 0; y < mSize.Y; y++) {
+    for (int x = 0; x < mSize.X; x++) {
+      unsigned char r = *pp++;
+      unsigned char g = *pp++;
+      unsigned char b = *pp++;
+      PutPixel(x, y, MakeRGB16(r, g, b));
+    }
+  }
+  delete [] nb;
   return true;
 }
 #endif

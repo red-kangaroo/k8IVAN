@@ -10,11 +10,27 @@ if $(WINDOZE) {
   lib-config "sdl-config" ;
   HAVE_PCRE = [ lib-config-ex "pkg-config libpcre --libs" ] ;
   HAVE_IMLIB2 = [ lib-config-ex "pkg-config imlib2 --libs" ] ;
-  if $(FORCE_PNGLIB) || ! $(HAVE_IMLIB2) {
-    HAVE_PNGLIB = [ lib-config-ex "pkg-config libpng --libs" ] ;
+  if $(FORCE_LIBPNG) || ! $(HAVE_IMLIB2) {
+    HAVE_LIBPNG = [ lib-config-ex "pkg-config libpng --libs" ] ;
     HAVE_IMLIB2 = ;
   } else {
-    HAVE_PNGLIB = ;
+    HAVE_LIBPNG = ;
+  }
+}
+
+
+if $(DISABLE_IMLIB2) {
+  if ($HAVE_IMLIB2) {
+    Echo "MSG: disabling imlib2" ;
+    HAVE_IMLIB2 = ;
+  }
+}
+
+
+if $(DISABLE_LIBPNG) {
+  if ($HAVE_LIBPNG) {
+    Echo "MSG: disabling libpng" ;
+    HAVE_LIBPNG = ;
   }
 }
 
@@ -52,10 +68,10 @@ if $(HAVE_IMLIB2) {
   DEFINES += HAVE_IMLIB2 ;
 }
 
-if $(HAVE_PNGLIB) {
+if $(HAVE_LIBPNG) {
   Echo "MSG: libpng found" ;
   lib-config "pkg-config libpng" ;
-  DEFINES += HAVE_PNGLIB ;
+  DEFINES += HAVE_LIBPNG ;
 }
 
 
