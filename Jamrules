@@ -1,15 +1,21 @@
 set-profile ;
 set-default-subdir-locates ;
 
+HDRS += $(TOP)/src/felib $(TOP)/src/vasya $(TOP)/src/regex $(TOP)/src/game ;
+
+if $(USE_SOUND) = 0 || $(USE_SOUND) = "ona" || $(USE_SOUND) = "no" || $(USE_SOUND) = "n" {
+  USE_SOUND = ;
+} else {
+  USE_SOUND = 1 ;
+}
+
 
 if $(WINDOZE) {
   Echo "MSG: windoze build" ;
-  #HAVE_PCRE = ;
   HAVE_IMLIB2 = ;
   HAVE_LIBPNG = ;
 } else {
   lib-config "sdl-config" ;
-  #HAVE_PCRE = [ lib-config-ex "pkg-config libpcre --libs" ] ;
   HAVE_IMLIB2 = [ lib-config-ex "pkg-config imlib2 --libs" ] ;
   if $(FORCE_LIBPNG) || ! $(HAVE_IMLIB2) {
     HAVE_LIBPNG = [ lib-config-ex "pkg-config libpng --libs" ] ;
@@ -26,8 +32,6 @@ if $(DISABLE_IMLIB2) {
     HAVE_IMLIB2 = ;
   }
 }
-
-
 if $(DISABLE_LIBPNG) {
   if ($HAVE_LIBPNG) {
     Echo "MSG: disabling libpng" ;
@@ -36,14 +40,12 @@ if $(DISABLE_LIBPNG) {
 }
 
 
-HDRS += $(TOP)/src/felib $(TOP)/src/vasya $(TOP)/src/regex $(TOP)/src/game ;
-
-
+#####################################################################
+# game defines
 DEFINES += WIZARD ;
 
-if $(DEBUG) {
-  DEFINES += DEBUG_BUILD ;
-}
+
+if $(DEBUG) { DEFINES += DEBUG_BUILD ; }
 
 
 if ! $(GLOBAL_SAVES) {
@@ -52,10 +54,8 @@ if ! $(GLOBAL_SAVES) {
 }
 
 
-#if $(USE_SOUND) && $(HAVE_PCRE)
 if $(USE_SOUND) {
   Echo "MSG: sound support enabled" ;
-  #lib-config "pkg-config libpcre" ;
   LINKLIBS += -lSDL_mixer ;
   C++LINKLIBS += -lSDL_mixer ;
 } else {
@@ -74,6 +74,15 @@ if $(HAVE_LIBPNG) {
   Echo "MSG: libpng found" ;
   lib-config "pkg-config libpng" ;
   DEFINES += HAVE_LIBPNG ;
+}
+
+if $(HAVE_IMLIB2) || $(HAVE_LIBPNG) {
+  if $(ENABLE_PNG_SHOTS) {
+    Echo "MSG: savegame screenshots will be in PNG format" ;
+  } else {
+    Echo "MSG: savegame screenshots will be in internal format" ;
+    DEFINES += SGAME_SHOTS_IPU ;
+  }
 }
 
 
@@ -122,7 +131,7 @@ if $(WINDOZE) {
     LINKFLAGS += "-Wl,-subsystem,$(WINSUBSYS)" ;
   }
 
-  HDRS += wininc/SDL ;
+  HDRS += wininc wininc/SDL ;
   LINKLIBS += -Lwinlib -lm -lSDL ;
   C++LINKLIBS += -Lwinlib -lm -lSDL ;
 }
