@@ -9,8 +9,12 @@
  *  along with this file for more details
  *
  */
-
 /* Compiled through charset.cpp */
+#include <time.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 
 /* These statedata structs contain functions and values used for handling
  * states. Remember to update them. All normal states must have
@@ -22,7 +26,6 @@
  * control whether the state can be randomly activated in certain situations.
  * These flags can be found in ivandef.h. RANDOMIZABLE sets all source
  * & duration flags at once. */
-
 struct statedata {
   const char *Description;
   int Flags;
@@ -1039,6 +1042,54 @@ void character::Die (ccharacter *Killer, cfestring &Msg, ulong DeathFlags) {
   RemoveTraps();
   if (IsPlayer()) {
     ADD_MESSAGE("You die.");
+    game::DrawEverything();
+    if (game::TruthQuestion(CONST_S("Do you want to save screenshot? [y/n]"), REQUIRES_ANSWER)) {
+      festring dir = inputfile::GetMyDir()+"/DeathShots";
+#ifndef WIN32
+      mkdir(dir.CStr(), 0755);
+#else
+      mkdir(dir.CStr());
+#endif
+      festring timestr;
+      time_t t = time(NULL);
+      struct tm *ts = localtime(&t);
+      if (ts) {
+        timestr << (int)(ts->tm_year%100);
+        int t = ts->tm_mon+1;
+        if (t < 10) timestr << '0'; timestr << t;
+        t = ts->tm_mday; if (t < 10) timestr << '0'; timestr << t;
+        timestr << '_';
+        t = ts->tm_hour; if (t < 10) timestr << '0'; timestr << t;
+        t = ts->tm_min; if (t < 10) timestr << '0'; timestr << t;
+        t = ts->tm_sec; if (t < 10) timestr << '0'; timestr << t;
+      } else {
+        timestr = "heh";
+      }
+#if defined(HAVE_IMLIB2) || defined(HAVE_LIBPNG)
+      festring ext = ".png";
+#else
+      festring ext = ".bmp";
+#endif
+      festring fname = dir+"/deathshot_"+timestr;
+      if (inputfile::fileExists(fname+ext)) {
+        for (int f = 0; f < 1000; f++) {
+          char buf[16];
+          sprintf(buf, "%03d", f);
+          festring fn = fname+buf;
+          if (!inputfile::fileExists(fn+ext)) {
+            fname = fn;
+            break;
+          }
+        }
+      }
+      fname << ext;
+      fprintf(stderr, "deathshot: %s\n", fname.CStr());
+#if defined(HAVE_IMLIB2) || defined(HAVE_LIBPNG)
+      DOUBLE_BUFFER->SavePNG(fname);
+#else
+      DOUBLE_BUFFER->SaveBMP(fname);
+#endif
+    }
     if (game::WizardModeIsActive()) {
       game::DrawEverything();
       if (!game::TruthQuestion(CONST_S("Do you want to do this, cheater? [y/n]"), REQUIRES_ANSWER)) {

@@ -104,6 +104,7 @@ public:
   static truth GetScroll (character *);
   static truth WizardWish (character *);
   static truth OpenMondedr (character *);
+  static truth ShowCoords (character *);
 #endif
   static truth ToggleRunning (character *);
   static truth IssueCommand (character *);

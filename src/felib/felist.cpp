@@ -313,19 +313,23 @@ truth felist::DrawPage (bitmap *Buffer) const {
     if (Entry[c++]->Selectable) ++i;
   }
   if (selIdx != -1 && mSaveSelector) {
-//#ifdef HAVE_IMLIB2
     bitmap bmp(ZERO_V2);
     festring imgName = Entry[selIdx]->String;
     festring::sizetype pos = imgName.FindLast(".sav");
     if (pos != festring::NPos) {
-      imgName.Erase(pos, 4);
-#ifdef HAVE_IMLIB2
-      imgName = mSaveDir+imgName+".png";
-#else
+      imgName.Erase(pos, 4); // remove '.sav'
+#if defined(SGAME_SHOTS_IPU) || !defined(HAVE_IMLIB2)
       imgName = mSaveDir+imgName+".ipu";
+#else
+      imgName = mSaveDir+imgName+".png";
 #endif
       //fprintf(stderr, "sel=%d; img=%s\n", selIdx, imgName.CStr());
-      if (bmp.LoadImg(imgName)) {
+#if defined(SGAME_SHOTS_IPU) || !defined(HAVE_IMLIB2)
+      if (bmp.LoadIPU(imgName))
+#else
+      if (bmp.LoadPNG(imgName))
+#endif
+      {
         //fprintf(stderr, " LOADED! %dx%d\n", bmp.GetSize().X, bmp.GetSize().Y);
         int x = Buffer->GetSize().X-bmp.GetSize().X-2;
         int y = Buffer->GetSize().Y-bmp.GetSize().Y-2;
@@ -344,7 +348,6 @@ truth felist::DrawPage (bitmap *Buffer) const {
         Buffer->DrawRectangle(x-2, y-2, x+w, y+h, DARK_GRAY, true);
       }
     }
-//#endif
   }
   return c == Entry.size()-1;
 }

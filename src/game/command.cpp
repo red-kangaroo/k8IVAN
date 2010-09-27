@@ -220,6 +220,7 @@ command *commandsystem::Command[] = {
   new command(&Polymorph, "polymorph", '[', '[', true, true),
   new command(&GetScroll, "get scroll", 'R', 'R', true, true),
   new command(&OpenMondedr, "open Mondedr", 'm', 'm', true, true),
+  new command(&ShowCoords, "show current coordinates", '(', '(', true, true),
 #endif
   0
 };
@@ -1313,6 +1314,13 @@ truth commandsystem::OpenMondedr (character *Char) {
   } else {
     ADD_MESSAGE("Mondedr already opened.");
   }
+  return false;
+}
+
+
+truth commandsystem::ShowCoords (character *Char) {
+  v2 xy = Char->GetPos();
+  ADD_MESSAGE("Coordinates: X=%d; Y=%d", xy.X, xy.Y);
   return false;
 }
 #endif

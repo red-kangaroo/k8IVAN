@@ -211,7 +211,11 @@ void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
             FILE *fl = fopen(fn.CStr(), "r");
             if (fl) { fclose(fl); continue; }
             fprintf(stderr, "screenshot: %s\n", fn.CStr());
-            DOUBLE_BUFFER->Save(fn);
+#if defined(HAVE_IMLIB2) || defined(HAVE_LIBPNG)
+            DOUBLE_BUFFER->SavePNG(fn);
+#else
+            DOUBLE_BUFFER->SaveBMP(fn);
+#endif
             break;
           }
           return; }

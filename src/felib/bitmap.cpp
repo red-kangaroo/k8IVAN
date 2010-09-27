@@ -214,7 +214,8 @@ static void pngWrite (png_structp png_ptr, png_bytep data, png_size_t length) {
 #endif
 
 
-void bitmap::Save (cfestring &FileName) const {
+#if defined(HAVE_IMLIB2) || defined(HAVE_LIBPNG)
+void bitmap::SavePNG (cfestring &FileName) const {
 #if defined(HAVE_IMLIB2)
   if (mSize.X < 1 || mSize.Y < 1) return;
   Imlib_Image img = imlib_create_image(mSize.X, mSize.Y);
@@ -300,6 +301,13 @@ void bitmap::Save (cfestring &FileName) const {
   png_destroy_write_struct(&png_ptr, &info_ptr);
   if (row_pointers) free(row_pointers);
 #else
+  BUG!
+#endif
+}
+#endif
+
+
+void bitmap::SaveBMP (cfestring &FileName) const {
   static char BMPHeader[] = {
     char(0x42), char(0x4D), char(0xB6), char(0x4F), char(0x12), char(0x00),
     char(0x00), char(0x00), char(0x00), char(0x00), char(0x36), char(0x00),
@@ -323,12 +331,11 @@ void bitmap::Save (cfestring &FileName) const {
       SaveFile << char(Pixel << 3) << char((Pixel >> 5) << 2) << char((Pixel >> 11) << 3);
     }
   }
-#endif
 }
 
 
 #ifdef HAVE_IMLIB2
-void bitmap::SaveScaled (cfestring &fileName, double scale) const {
+void bitmap::SaveScaledPNG (cfestring &fileName, double scale) const {
   Imlib_Image img = imlib_create_image(mSize.X, mSize.Y);
   imlib_context_set_image(img);
   DATA32 *raw = imlib_image_get_data(); //bgra
@@ -357,7 +364,7 @@ void bitmap::SaveScaled (cfestring &fileName, double scale) const {
 }
 
 
-truth bitmap::LoadImg (cfestring &fileName) {
+truth bitmap::LoadPNG (cfestring &fileName) {
   Imlib_Image img = imlib_load_image(fileName.CStr());
   if (!img) return false;
   delete [] Image;
@@ -387,11 +394,10 @@ truth bitmap::LoadImg (cfestring &fileName) {
   imlib_free_image();
   return true;
 }
+#endif
 
-#else
 
-//TODO: write normal scaler
-void bitmap::SaveScaled (cfestring &fileName, double scale) const {
+void bitmap::SaveScaledIPU (cfestring &fileName, double scale) const {
   int newX = (int)((double)mSize.X*scale);
   int newY = (int)((double)mSize.Y*scale);
   if (newX < 1 || newY < 1) return;
@@ -494,7 +500,7 @@ void bitmap::SaveScaled (cfestring &fileName, double scale) const {
 }
 
 
-truth bitmap::LoadImg (cfestring &fileName) {
+truth bitmap::LoadIPU (cfestring &fileName) {
   uint16_t ii = 0;
   int wdt = 0, hgt = 0;
   FILE *fi = fopen(fileName.CStr(), "rb");
@@ -534,7 +540,6 @@ truth bitmap::LoadImg (cfestring &fileName) {
   delete [] nb;
   return true;
 }
-#endif
 
 
 void bitmap::Fill (v2 TopLeft, int Width, int Height, col16 Color) { Fill(TopLeft.X, TopLeft.Y, Width, Height, Color); }

@@ -47,11 +47,16 @@ public:
   ~bitmap ();
   void Save (outputfile &) const;
   void Load (inputfile &);
-  void Save (cfestring &) const;
-//#ifdef HAVE_IMLIB2
-  void SaveScaled (cfestring &fileName, double scale) const;
-  truth LoadImg (cfestring &fileName);
-//#endif
+  void SaveBMP (cfestring &) const;
+#if defined(HAVE_IMLIB2) || defined(HAVE_LIBPNG)
+  void SavePNG (cfestring &) const;
+#endif
+  void SaveScaledIPU (cfestring &fileName, double scale) const;
+  truth LoadIPU (cfestring &fileName);
+#if defined(HAVE_IMLIB2)
+  void SaveScaledPNG (cfestring &fileName, double scale) const;
+  truth LoadPNG (cfestring &fileName);
+#endif
   void PutPixel (int X, int Y, col16 Color) { Image[Y][X] = Color; }
   void PutPixel (v2 Pos, col16 Color) { Image[Pos.Y][Pos.X] = Color; }
   void PowerPutPixel (int, int, col16, alpha, priority);
