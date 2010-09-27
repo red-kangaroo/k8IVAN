@@ -80,8 +80,11 @@ character* protosystem::BalancedCreateMonster()
     ivantime Time;
     game::GetTime(Time);
 
-    if(PLAYER->GetMaxHP() < DataBase->HPRequirementForGeneration
-       && Time.Day < DataBase->DayRequirementForGeneration)
+    if (!PLAYER) {
+      fprintf(stderr, "WARNING: WTF?! (protosystem::BalancedCreateMonster)\n");
+      //continue;
+    }
+    if (PLAYER->GetMaxHP() < DataBase->HPRequirementForGeneration && Time.Day < DataBase->DayRequirementForGeneration)
       continue;
 
     Possible.push_back(ConfigID);

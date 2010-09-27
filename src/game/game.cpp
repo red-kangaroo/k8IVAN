@@ -301,7 +301,7 @@ truth game::Init (cfestring &Name) {
   LOSTick = 2;
   DangerFound = 0;
   CausePanicFlag = false;
-
+  //???
   switch (Load(SaveName(PlayerName))) {
     case LOADED: {
       globalwindowhandler::InstallControlLoop(AnimationController);
@@ -842,6 +842,12 @@ int game::Load (cfestring &SaveName) {
   v2 Pos;
   SaveFile >> Pos >> PlayerName;
   SetPlayer(GetCurrentArea()->GetSquare(Pos)->GetCharacter());
+  if (!PLAYER) {
+    if (!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is broken due to bug in I.V.A.N.\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY))
+      return NEW_GAME;
+    else
+      return BACK;
+  }
   msgsystem::Load(SaveFile);
   SaveFile >> DangerMap >> NextDangerIDType >> NextDangerIDConfigIndex;
   SaveFile >> DefaultPolymorphTo >> DefaultSummonMonster;

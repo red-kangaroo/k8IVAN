@@ -56,7 +56,7 @@ int Main (int argc, char **argv) {
     switch (Select) {
       case -1: return 0; // esc
       case 0:
-        if(game::Init()) {
+        if (game::Init()) {
           igraph::UnLoadMenu();
           game::Run();
           game::DeInit();
