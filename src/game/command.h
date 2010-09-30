@@ -105,6 +105,7 @@ public:
   static truth WizardWish (character *);
   static truth OpenMondedr (character *);
   static truth ShowCoords (character *);
+  static truth WizardHeal (character *);
 #endif
   static truth ToggleRunning (character *);
   static truth IssueCommand (character *);

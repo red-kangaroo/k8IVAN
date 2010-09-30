@@ -221,6 +221,7 @@ command *commandsystem::Command[] = {
   new command(&GetScroll, "get scroll", 'R', 'R', true, true),
   new command(&OpenMondedr, "open Mondedr", 'm', 'm', true, true),
   new command(&ShowCoords, "show current coordinates", '(', '(', true, true),
+  new command(&WizardHeal, "wizard healing", 'H', 'H', true, true),
 #endif
   0
 };
@@ -1321,6 +1322,30 @@ truth commandsystem::OpenMondedr (character *Char) {
 truth commandsystem::ShowCoords (character *Char) {
   v2 xy = Char->GetPos();
   ADD_MESSAGE("Coordinates: X=%d; Y=%d", xy.X, xy.Y);
+  return false;
+}
+
+
+truth commandsystem::WizardHeal (character *Char) {
+  for (int c = 0; c < Char->GetBodyParts(); ++c) {
+    if (!Char->GetBodyPart(c) && Char->CanCreateBodyPart(c)) {
+      for (std::list<ulong>::const_iterator i = Char->GetOriginalBodyPartID(c).begin(); i != Char->GetOriginalBodyPartID(c).end(); ++i) {
+        bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
+        if (OldBodyPart && OldBodyPart->CanRegenerate()) {
+          OldBodyPart->SetHP(1);
+          OldBodyPart->RemoveFromSlot();
+          Char->AttachBodyPart(OldBodyPart);
+        } else {
+          Char->CreateBodyPart(c);
+          Char->GetBodyPart(c)->SetHP(1);
+        }
+      }
+    }
+  }
+  if (Char->TemporaryStateIsActivated(POISONED)) Char->DeActivateTemporaryState(POISONED);
+  if (Char->TemporaryStateIsActivated(PARASITIZED)) Char->DeActivateTemporaryState(PARASITIZED);
+  if (Char->TemporaryStateIsActivated(LEPROSY)) Char->DeActivateTemporaryState(LEPROSY);
+  if (Char->TemporaryStateIsActivated(LYCANTHROPY)) Char->DeActivateTemporaryState(LYCANTHROPY);
   return false;
 }
 #endif
