@@ -1326,12 +1326,41 @@ truth commandsystem::ShowCoords (character *Char) {
 }
 
 
+/*
+static void dbp (character *Char, int idx) {
+  if (Char->GetBodyPart(idx)) {
+    festring NameOfDropped = Char->GetBodyPart(idx)->GetBodyPartName();
+    item *dropped = Char->SevereBodyPart(idx);
+    if (dropped) {
+      //Char->GetStack()->AddItem(dropped);
+      dropped->DropEquipment();
+      dropped->SendToHell();
+      ADD_MESSAGE("Suddenly, %s snaps off.", NameOfDropped.CStr());
+    }
+  }
+}
+*/
+
+
 truth commandsystem::WizardHeal (character *Char) {
+  /*
+  truth newbp = game::TruthQuestion(CONST_S("Do you want completely new body? [y/N]"));
+  if (newbp) {
+    dbp(Char, LEFT_ARM_INDEX);
+    //dbp(Char, RIGHT_ARM_INDEX);
+    //dbp(Char, LEFT_LEG_INDEX);
+    //dbp(Char, RIGHT_LEG_INDEX);
+    //dbp(Char, HEAD_INDEX);
+    //dbp(Char, TORSO_INDEX);
+  }
+  */
   for (int c = 0; c < Char->GetBodyParts(); ++c) {
+    if (Char->GetBodyPart(c)) Char->GetBodyPart(c)->RemoveAllFluids();
     if (!Char->GetBodyPart(c) && Char->CanCreateBodyPart(c)) {
       for (std::list<ulong>::const_iterator i = Char->GetOriginalBodyPartID(c).begin(); i != Char->GetOriginalBodyPartID(c).end(); ++i) {
         bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
         if (OldBodyPart && OldBodyPart->CanRegenerate()) {
+          OldBodyPart->RemoveAllFluids();
           OldBodyPart->SetHP(1);
           OldBodyPart->RemoveFromSlot();
           Char->AttachBodyPart(OldBodyPart);

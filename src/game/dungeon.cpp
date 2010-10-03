@@ -106,7 +106,7 @@ void dungeon::SaveLevel (cfestring &SaveName, int Number, truth DeleteAfterwards
 }
 
 
-level *dungeon::LoadLevel(cfestring &SaveName, int Number) {
+level *dungeon::LoadLevel (cfestring &SaveName, int Number) {
   inputfile SaveFile(SaveName+'.'+Index+Number);
   return LoadLevel(SaveFile, Number);
 }
@@ -162,7 +162,7 @@ inputfile &operator >> (inputfile &SaveFile, dungeon *&Dungeon) {
 }
 
 
-level *dungeon::LoadLevel(inputfile &SaveFile, int Number) {
+level *dungeon::LoadLevel (inputfile &SaveFile, int Number) {
   SaveFile >> Level[Number];
   Level[Number]->SetDungeon(this);
   Level[Number]->SetIndex(Number);

@@ -1123,6 +1123,24 @@ void item::RemoveFluid(fluid* ToBeRemoved)
   SignalVolumeAndWeightChange();
 }
 
+
+void item::RemoveAllFluids () {
+  if (Fluid) {
+    for (int c = 0; c < SquaresUnder; ) {
+      //fprintf(stderr, "c: %d; SquaresUnder: %d\n", c, SquaresUnder);
+      fluid *F = Fluid[c];
+      if (F) {
+        RemoveFluid(F);
+        c = 0;
+        if (!Fluid) break;
+      } else {
+        ++c;
+      }
+    }
+  }
+}
+
+
 void item::AddFluid(liquid* ToBeAdded, festring LocationName, int SquareIndex, truth IsInside)
 {
   truth WasAnimated = IsAnimated();

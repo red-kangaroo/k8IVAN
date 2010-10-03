@@ -2296,59 +2296,75 @@ void character::GoOn (go *Go, truth FirstStep) {
     //fprintf(stderr, "*: %d; nDir: %d\n", odc, nDir);
   }
 
+  bool doStop = false;
   if (!Go->IsWalkingInOpen()) {
     // in the corridor
     //fprintf(stderr, "dc: %d\n", OKDirectionsCounter);
     if (Go->prevWasTurn()) {
       Go->SetPrevWasTurn(false);
     } else if (odc == 1) {
+      // if we will step on something, do it
+      for (int d = 0; d < GetNeighbourSquares(); ++d) {
+        lsquare *Square = GetNeighbourLSquare(d);
+        if (Square && Square->GetStack()->HasSomethingPickable(this, ivanconfig::GetStopOnCorpses())) {
+          //newDir = -1;
+          doStop = true;
+          break;
+        }
+      }
       // follow the turn; 3: back, forward and turn
-      int newDir = -1;
-      switch (nDir) {
-        case 1: // up
-          if (gd == 3) newDir = 0;
-          else if (gd == 4) newDir = 2;
-          break;
-        case 3: // left
-          if (gd == 1) newDir = 0;
-          else if (gd == 6) newDir = 5;
-          break;
-        case 4: // right
-          if (gd == 1) newDir = 2;
-          else if (gd == 6) newDir = 7;
-          break;
-        case 6: // down
-          if (gd == 3) newDir = 5;
-          else if (gd == 4) newDir = 7;
-          break;
-      }
-      //if (newDir < 0) ABORT("go error");
-      if (newDir < 0) { Go->Terminate(false); return; }
-      lsquare *Square = GetNeighbourLSquare(newDir);
-      if (Square && CanMoveOn(Square)) {
-        // fuckin' copypasta
-        MoveVector = ApplyStateModification(game::GetMoveVector(newDir));
-        int squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
-        if (squares) {
-          for (int c = 0; c < squares; ++c) {
-            if ((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) || MoveToSquare[c]->IsDangerous(this)) {
-              newDir = -1;
-              break;
+      if (!doStop) {
+        int newDir = -1;
+        switch (nDir) {
+          case 1: // up
+            if (gd == 3) newDir = 0;
+            else if (gd == 4) newDir = 2;
+            break;
+          case 3: // left
+            if (gd == 1) newDir = 0;
+            else if (gd == 6) newDir = 5;
+            break;
+          case 4: // right
+            if (gd == 1) newDir = 2;
+            else if (gd == 6) newDir = 7;
+            break;
+          case 6: // down
+            if (gd == 3) newDir = 5;
+            else if (gd == 4) newDir = 7;
+            break;
+        }
+        //if (newDir < 0) ABORT("go error");
+        if (newDir < 0) { Go->Terminate(false); return; }
+        lsquare *Square = GetNeighbourLSquare(newDir);
+        if (Square && CanMoveOn(Square)) {
+          // fuckin' copypasta
+          MoveVector = ApplyStateModification(game::GetMoveVector(newDir));
+          int squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
+          if (squares) {
+            for (int c = 0; c < squares; ++c) {
+              if ((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) || MoveToSquare[c]->IsDangerous(this)) {
+                newDir = -1;
+                break;
+              }
             }
+            if (newDir != -1) {
+            }
+          } else {
+            newDir = -1;
           }
-        } else newDir = -1;
-      }
-      if (newDir < 0) { Go->Terminate(false); return; }
-      newDir = nDir;
-      //fprintf(stderr, "newDir: %d\n", newDir);
-      Go->SetDirection(newDir);
-      Go->SetPrevWasTurn(true);
-      v2 nxyf = GetPos()+MoveVector+game::GetMoveVector(newDir);
-      v2 nxyff = nxyf+game::GetMoveVector(newDir);
-      lsquare *sqf = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxyf));
-      lsquare *sqff = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxyff));
-      if (sqf && CanMoveOn(sqf)) {
-        Go->SetPrevWasTurn(sqff && CanMoveOn(sqff));
+        }
+        if (newDir < 0) { Go->Terminate(false); return; }
+        newDir = nDir;
+        //fprintf(stderr, "newDir: %d\n", newDir);
+        Go->SetDirection(newDir);
+        Go->SetPrevWasTurn(true);
+        v2 nxyf = GetPos()+MoveVector+game::GetMoveVector(newDir);
+        v2 nxyff = nxyf+game::GetMoveVector(newDir);
+        lsquare *sqf = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxyf));
+        lsquare *sqff = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxyff));
+        if (sqf && CanMoveOn(sqf)) {
+          Go->SetPrevWasTurn(sqff && CanMoveOn(sqff));
+        }
       }
     } else if (!IsInCorridor()) {
       Go->Terminate(false);
@@ -2372,19 +2388,8 @@ void character::GoOn (go *Go, truth FirstStep) {
     return;
   }
 
-  if (GetStackUnder()->GetVisibleItems(this)) {
-    bool doStop = ivanconfig::GetStopOnCorpses();
-    if (!doStop && PLAYER) {
-      std::vector<item *> vi;
-      PLAYER->GetStackUnder()->GetVisibleItemsV(PLAYER, vi);
-      for (unsigned int f = 0; f < vi.size(); f++) {
-        if (vi[f]->CanBePickedUp() && !vi[f]->IsCorpse() && !vi[f]->IsBodyPart()) {
-          doStop = true;
-          break;
-        }
-      }
-    }
-    if (doStop) Go->Terminate(false);
+  if (doStop || GetStackUnder()->HasSomethingPickable(this, ivanconfig::GetStopOnCorpses())) {
+    Go->Terminate(false);
   }
   if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
 

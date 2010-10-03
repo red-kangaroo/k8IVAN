@@ -529,6 +529,7 @@ class item : public object
   virtual void SpillFluid(character*, liquid*, int = 0);
   virtual void TryToRust(long);
   void RemoveFluid(fluid*);
+  void RemoveAllFluids ();
   void AddFluid(liquid*, festring, int, truth);
   virtual truth IsAnimated() const;
   const rawbitmap* GetRawPicture() const;

@@ -76,6 +76,7 @@ public:
   void RemoveItem (stackslot *);
   item *GetItem (int) const;
   void GetVisibleItemsV (ccharacter *Viewer, std::vector<item *> &vi);
+  truth HasSomethingPickable (ccharacter *Viewer, truth seeCorpses=false);
   stackiterator GetBottom () const { return stackiterator(Bottom); }
   stackiterator GetTop () const { return stackiterator(Top); }
   int GetItems () const { return Items; }

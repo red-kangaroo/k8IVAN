@@ -486,6 +486,19 @@ void stack::GetVisibleItemsV (ccharacter *Viewer, std::vector<item *> &vi) {
 }
 
 
+truth stack::HasSomethingPickable (ccharacter *Viewer, truth seeCorpses) {
+  std::vector<item *> vi;
+  GetVisibleItemsV(Viewer, vi);
+  //ivanconfig::GetStopOnCorpses();
+  for (unsigned int f = 0; f < vi.size(); f++) {
+    if (vi[f]->CanBePickedUp()) {
+      if (seeCorpses || (!vi[f]->IsCorpse() && !vi[f]->IsBodyPart())) return true;
+    }
+  }
+  return false;
+}
+
+
 int stack::GetNativeVisibleItems (ccharacter *Viewer) const {
   if (Flags & HIDDEN) return Items;
   int VisibleItems = 0;

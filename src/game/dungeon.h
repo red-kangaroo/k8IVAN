@@ -25,27 +25,27 @@ class festring;
 class dungeon {
 public:
   dungeon ();
-  dungeon (int);
+  dungeon (int Index);
   ~dungeon ();
 
-  truth PrepareLevel (int, truth = true);
-  void SaveLevel (cfestring&, int, truth = true);
-  level *LoadLevel (cfestring&, int);
-  level *GetLevel (int I) const { return Level[I]; }
+  truth PrepareLevel (int Index, truth Visual=true); // returns whether the level has been visited before
+  void SaveLevel (cfestring &SaveName, int Number, truth DeleteAfterwards=true);
+  level *LoadLevel (cfestring &SaveName, int Number);
+  inline level *GetLevel (int I) const { return Level[I]; }
   int GetLevels () const;
-  void Save (outputfile &) const;
-  void Load (inputfile &);
-  void SetIndex (int What) { Index = What; }
-  int GetIndex () const { return Index; }
-  const levelscript *GetLevelScript (int);
+  void Save (outputfile &SaveFile) const;
+  void Load (inputfile &SaveFile);
+  inline void SetIndex (int What) { Index = What; }
+  inline int GetIndex () const { return Index; }
+  const levelscript *GetLevelScript (int I);
   v2 GetWorldMapPos () { return WorldMapPos; }
-  void SetWorldMapPos (v2 What) { WorldMapPos = What; }
-  festring GetLevelDescription (int);
-  festring GetShortLevelDescription (int);
-  level *LoadLevel (inputfile &, int);
-  truth IsGenerated (int I) const { return Generated[I]; }
-  void SetIsGenerated (int I, truth What) { Generated[I] = What; }
-  int GetLevelTeleportDestination (int) const;
+  inline void SetWorldMapPos (v2 What) { WorldMapPos = What; }
+  festring GetLevelDescription (int I);
+  festring GetShortLevelDescription (int I);
+  level *LoadLevel (inputfile &SaveFile, int Number);
+  inline truth IsGenerated (int I) const { return Generated[I]; }
+  inline void SetIsGenerated (int I, truth What) { Generated[I] = What; }
+  int GetLevelTeleportDestination (int From) const;
 
 private:
   void Initialize ();
@@ -59,8 +59,8 @@ private:
 };
 
 
-outputfile &operator << (outputfile &, const dungeon *);
-inputfile &operator >> (inputfile &, dungeon *&);
+outputfile &operator << (outputfile &SaveFile, const dungeon *Dungeon);
+inputfile &operator >> (inputfile &SaveFile, dungeon *&Dungeon);
 
 
 #endif
