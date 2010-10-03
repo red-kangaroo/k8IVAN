@@ -37,6 +37,7 @@ public:
   static truth GetConfirmCorpses () { return ConfirmCorpses.Value; }
   static int GetGoingDelay () { return GoingDelay.Value; }
   static truth GetStopOnCorpses () { return StopOnCorpses.Value; }
+  static truth GetStopOnSeenItems () { return StopOnSeenItems.Value; }
   static long ApplyContrastTo (long);
   static void Save () { configsystem::Save(); }
   static void Load () { configsystem::Load(); }
@@ -92,6 +93,7 @@ private:
   static truthoption ConfirmCorpses;
   static numberoption GoingDelay;
   static truthoption StopOnCorpses;
+  static truthoption StopOnSeenItems;
   /*k8*/
   static col24 ContrastLuminance;
 };

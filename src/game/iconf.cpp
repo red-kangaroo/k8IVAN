@@ -42,6 +42,7 @@ truthoption ivanconfig::PlaySounds("PlaySounds", "use sounds", false);
 scrollbaroption ivanconfig::SoundVolume("SoundVolume", "sound volume", 128, &SoundVolumeDisplayer, &SoundVolumeChangeInterface, &ContrastChanger, &SoundVolumeHandler);
 truthoption ivanconfig::ConfirmCorpses("ConfirmCorpses", "confirm corpse pickup", true);
 truthoption ivanconfig::StopOnCorpses("StopOnCorpses", "abort going on corpses", false);
+truthoption ivanconfig::StopOnSeenItems("StopOnSeenItems", "abort going on seen items", false);
 numberoption ivanconfig::GoingDelay("GoingDelay", "delay betwen steps in 'go' command", 100, &GoingDelayDisplayer, &GoingDelayChangeInterface, &GoingDelayChanger);
 
 
@@ -234,6 +235,7 @@ void ivanconfig::Initialize () {
   configsystem::AddOption(&SoundVolume);
   configsystem::AddOption(&ConfirmCorpses);
   configsystem::AddOption(&StopOnCorpses);
+  configsystem::AddOption(&StopOnSeenItems);
   configsystem::AddOption(&GoingDelay);
 /*k8*/
   configsystem::SetConfigFileName(getConfigPath()+"/.ivan.rc");

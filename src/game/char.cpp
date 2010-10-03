@@ -738,7 +738,10 @@ void character::Move (v2 MoveTo, truth TeleportMove, truth Run) {
         EditExperience(AGILITY, 75, ED << 7);
       }
     }
-    if (IsPlayer()) ShowNewPosInfo();
+    if (IsPlayer()) {
+      GetStackUnder()->SetSteppedOn(true);
+      ShowNewPosInfo();
+    }
     if (!game::IsInWilderness()) SignalStepFrom(OldSquareUnder);
   } else {
     if (IsPlayer()) {
@@ -2306,7 +2309,7 @@ void character::GoOn (go *Go, truth FirstStep) {
       // if we will step on something, do it
       for (int d = 0; d < GetNeighbourSquares(); ++d) {
         lsquare *Square = GetNeighbourLSquare(d);
-        if (Square && Square->GetStack()->HasSomethingPickable(this, ivanconfig::GetStopOnCorpses())) {
+        if (Square && Square->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
           //newDir = -1;
           doStop = true;
           break;
@@ -2388,7 +2391,7 @@ void character::GoOn (go *Go, truth FirstStep) {
     return;
   }
 
-  if (doStop || GetStackUnder()->HasSomethingPickable(this, ivanconfig::GetStopOnCorpses())) {
+  if (doStop || GetStackUnder()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
     Go->Terminate(false);
   }
   if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());

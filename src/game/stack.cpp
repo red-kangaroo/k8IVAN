@@ -486,16 +486,35 @@ void stack::GetVisibleItemsV (ccharacter *Viewer, std::vector<item *> &vi) {
 }
 
 
-truth stack::HasSomethingPickable (ccharacter *Viewer, truth seeCorpses) {
+truth stack::HasSomethingFunny (ccharacter *Viewer, truth seeCorpses, truth seeUnstepped) {
   std::vector<item *> vi;
   GetVisibleItemsV(Viewer, vi);
-  //ivanconfig::GetStopOnCorpses();
   for (unsigned int f = 0; f < vi.size(); f++) {
+    if (!seeUnstepped && vi[f]->IsSteppedOn()) continue;
     if (vi[f]->CanBePickedUp()) {
+      //fprintf(stderr, "::%s %s\n", vi[f]->IsSteppedOn()?"T":"o", onlyUnstepped?"T":"o");
       if (seeCorpses || (!vi[f]->IsCorpse() && !vi[f]->IsBodyPart())) return true;
     }
   }
   return false;
+}
+
+
+void stack::SetSteppedOn (truth v) {
+  for (stackiterator i = GetBottom(); i.HasItem(); ++i) {
+    if (i->GetSquarePosition() == CENTER) i->SetSteppedOn(v);
+  }
+  lsquare *Square = GetLSquareUnder();
+  for (int c = 0; c < 4; ++c) {
+    stack *Stack = Square->GetStackOfAdjacentSquare(c);
+    if (Stack) {
+      //VisibleItems += Stack->GetVisibleSideItems(Viewer, 3-c);
+      for (stackiterator i = GetBottom(); i.HasItem(); ++i) {
+        if (i->GetSquarePosition() == (3-c)) i->SetSteppedOn(v);
+      }
+    }
+  }
+  //fprintf(stderr, "STON!\n");
 }
 
 

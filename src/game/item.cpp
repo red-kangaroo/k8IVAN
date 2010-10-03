@@ -51,7 +51,8 @@ item::item () :
   CloneMotherID(0),
   Fluid(0),
   LifeExpectancy(0),
-  ItemFlags(0)
+  ItemFlags(0),
+  mIsStepedOn(false)
 {
 }
 

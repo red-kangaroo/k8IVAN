@@ -238,6 +238,10 @@ class item : public object
   item();
   item(citem&);
   virtual ~item();
+
+  inline truth IsSteppedOn () const { return mIsStepedOn; }
+  inline void SetSteppedOn (truth v) { mIsStepedOn = v; }
+
   virtual double GetWeaponStrength() const;
   virtual truth Open(character*);
   truth Consume(character*, long);
@@ -617,6 +621,7 @@ protected:
   int SquaresUnder;
   int LifeExpectancy;
   ulong ItemFlags;
+  truth mIsStepedOn;
 };
 
 #ifdef __FILE_OF_STATIC_ITEM_PROTOTYPE_DEFINITIONS__
