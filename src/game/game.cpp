@@ -53,8 +53,8 @@
 #define SAVE_FILE_VERSION 119 // Increment this if changes make savefiles incompatible
 #define BONE_FILE_VERSION 106 // Increment this if changes make bonefiles incompatible
 */
-#define SAVE_FILE_VERSION 121 // Increment this if changes make savefiles incompatible
-#define BONE_FILE_VERSION 106 // Increment this if changes make bonefiles incompatible
+#define SAVE_FILE_VERSION 122 // Increment this if changes make savefiles incompatible
+#define BONE_FILE_VERSION 107 // Increment this if changes make bonefiles incompatible
 
 #define LOADED    0
 #define NEW_GAME  1
@@ -798,7 +798,7 @@ int game::Load (cfestring &SaveName) {
   int Version;
   SaveFile >> Version;
   if (Version != SAVE_FILE_VERSION) {
-    if (Version != 120) {
+    if (true || Version != 120) {
       if (!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is incompatible with the new version.\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY))
         return NEW_GAME;
       else
