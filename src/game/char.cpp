@@ -738,10 +738,8 @@ void character::Move (v2 MoveTo, truth TeleportMove, truth Run) {
         EditExperience(AGILITY, 75, ED << 7);
       }
     }
-    if (IsPlayer()) {
-      GetStackUnder()->SetSteppedOn(true);
-      ShowNewPosInfo();
-    }
+    if (IsPlayer()) ShowNewPosInfo();
+    if (IsPlayer() && !game::IsInWilderness()) GetStackUnder()->SetSteppedOn(true);
     if (!game::IsInWilderness()) SignalStepFrom(OldSquareUnder);
   } else {
     if (IsPlayer()) {
