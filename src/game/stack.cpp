@@ -490,11 +490,10 @@ truth stack::HasSomethingFunny (ccharacter *Viewer, truth seeCorpses, truth seeU
   std::vector<item *> vi;
   GetVisibleItemsV(Viewer, vi);
   for (unsigned int f = 0; f < vi.size(); f++) {
+    if (!vi[f]->CanBePickedUp()) continue;
+    //fprintf(stderr, "::%s %s\n", vi[f]->IsSteppedOn()?"T":"o", seeUnstepped?"T":"o");
     if (!seeUnstepped && vi[f]->IsSteppedOn()) continue;
-    if (vi[f]->CanBePickedUp()) {
-      //fprintf(stderr, "::%s %s\n", vi[f]->IsSteppedOn()?"T":"o", onlyUnstepped?"T":"o");
-      if (seeCorpses || (!vi[f]->IsCorpse() && !vi[f]->IsBodyPart())) return true;
-    }
+    if (seeCorpses || (!vi[f]->IsCorpse() && !vi[f]->IsBodyPart())) return true;
   }
   return false;
 }

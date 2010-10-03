@@ -2381,6 +2381,15 @@ void character::GoOn (go *Go, truth FirstStep) {
 
   square *BeginSquare = GetSquareUnder();
 
+  if (!doStop) {
+    for (int c = 0; c < Squares; ++c) {
+      if (MoveToSquare[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
+        doStop = true;
+        break;
+      }
+    }
+  }
+
   truth moveOk = TryMove(MoveVector, true, game::PlayerIsRunning());
   if (!moveOk || BeginSquare == GetSquareUnder() || (CurrentRoomIndex && (OldRoomIndex != CurrentRoomIndex))) {
     if (moveOk) {
@@ -2391,7 +2400,7 @@ void character::GoOn (go *Go, truth FirstStep) {
     return;
   }
 
-  if (doStop || GetStackUnder()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
+  if (doStop/* || GetStackUnder()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())*/) {
     Go->Terminate(false);
   }
   if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
