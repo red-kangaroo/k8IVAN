@@ -111,6 +111,7 @@ void consume::Terminate (truth Finished) {
   else if (Actor->CanBeSeenByPlayer()) ADD_MESSAGE("%s %s %s.", Actor->CHAR_NAME(DEFINITE), Finished ? "finishes" : "stops", Description.CStr());
   if (Finished) {
     if (Consuming->Exists() && !game::IsInWilderness() && (!Actor->IsPlayer() || game::CheckDropLeftover(Consuming))) {
+      ADD_MESSAGE("%s dropped.", Consuming->GetName(INDEFINITE, 1).CStr());
       Consuming->RemoveFromSlot();
       Actor->GetStackUnder()->AddItem(Consuming);
       Actor->DexterityAction(2);

@@ -324,7 +324,7 @@ truth commandsystem::Drop (character *Char) {
           ToDrop[c]->SendToHell();
         }
       }
-    } else if(!Char->GetRoom() || Char->GetRoom()->DropItem(Char, ToDrop[0], ToDrop.size())) {
+    } else if (!Char->GetRoom() || Char->GetRoom()->DropItem(Char, ToDrop[0], ToDrop.size())) {
       ADD_MESSAGE("%s dropped.", ToDrop[0]->GetName(INDEFINITE, ToDrop.size()).CStr());
       for (uint c = 0; c < ToDrop.size(); ++c) ToDrop[c]->MoveTo(Char->GetStackUnder());
       Success = true;
@@ -560,7 +560,21 @@ truth commandsystem::Dip (character *Char) {
         ADD_MESSAGE("Very funny...");
         return false;
       }
+      //fprintf(stderr, "BSM: %p\n", DipTo->GetSecondaryMaterial());
       Item->DipInto(DipTo->CreateDipLiquid(), Char);
+      //fprintf(stderr, "ASM: %p\n", DipTo->GetSecondaryMaterial());
+      if (!game::IsInWilderness() && !DipTo->GetSecondaryMaterial()) {
+        // container is empty
+        if ((DipTo->IsBottle() && ivanconfig::GetAutoDropBottles()) ||
+            (DipTo->IsCan() && ivanconfig::GetAutoDropCans())) {
+          // drop this item
+          if (!Char->GetRoom() || Char->GetRoom()->DropItem(Char, DipTo, 1)) {
+            ADD_MESSAGE("%s dropped.", DipTo->GetName(INDEFINITE, 1).CStr());
+            DipTo->MoveTo(Char->GetStackUnder());
+            Char->DexterityAction(2);
+          }
+        }
+      }
       return true;
     }
   }

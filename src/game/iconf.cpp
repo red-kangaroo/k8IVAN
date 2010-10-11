@@ -30,7 +30,7 @@ scrollbaroption ivanconfig::Contrast("Contrast", "contrast", 100, &ContrastDispl
 truthoption ivanconfig::WarnAboutDanger("WarnAboutVeryDangerousMonsters", "Warn about very dangerous monsters", true);
 truthoption ivanconfig::AutoDropLeftOvers("AutoDropLeftOvers", "drop food leftovers automatically", true);
 truthoption ivanconfig::AutoDropBottles("AutoDropBottles", "automatically drop empty bottles after drinking", true);
-truthoption ivanconfig::AutoDropCans("AutoDropCans", "automatically drop empty cans after drinking", false);
+truthoption ivanconfig::AutoDropCans("AutoDropCans", "automatically drop empty cans after eating/drinking", false);
 truthoption ivanconfig::LookZoom("LookZoom", "zoom feature in look mode", false);
 truthoption ivanconfig::UseAlternativeKeys("UseAlternativeKeys", "use alternative direction keys", false);
 truthoption ivanconfig::BeNice("BeNice", "be nice to pets", true);

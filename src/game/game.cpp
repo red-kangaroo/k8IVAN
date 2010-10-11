@@ -3309,8 +3309,8 @@ festring game::ldrGetVar (cfestring &name) {
 
 
 truth game::CheckDropLeftover (item *i) {
-  if (!ivanconfig::GetAutoDropLeftOvers()) return false;
   if (i->IsBottle() && !ivanconfig::GetAutoDropBottles()) return false;
   if (i->IsCan() && !ivanconfig::GetAutoDropCans()) return false;
+  if (!ivanconfig::GetAutoDropLeftOvers()) return false;
   return true;
 }
