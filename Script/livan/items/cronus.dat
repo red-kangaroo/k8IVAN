@@ -31,6 +31,5 @@ cronus
     BitmapPos = 48, 176;
     Price = 150;
     WieldedBitmapPos = 176, 240;
-
   }
 }
