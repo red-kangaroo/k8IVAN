@@ -594,8 +594,11 @@ class item : public object
   void Slow();
   void SendMemorizedUpdateRequest() const;
 
-  virtual truth IsCorpse () const { return false; } //FIXME:k8: is there such function already?
-  virtual truth IsBodyPart () const { return false; } //FIXME:k8: is there such function already?
+  //FIXME:k8: is there such function already?
+  virtual truth IsCorpse () const { return false; }
+  virtual truth IsBodyPart () const { return false; }
+  virtual truth IsBottle () const { return false; }
+  virtual truth IsCan () const { return false; }
 
 protected:
   virtual cchar* GetBreakVerb() const;

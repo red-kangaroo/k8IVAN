@@ -114,6 +114,7 @@ ITEM(can, materialcontainer)
   virtual truth AllowSpoil() const { return false; } // temporary
   virtual truth Spoils() const { return false; } // temporary
   virtual truth HasBetterVersion() const { return !SecondaryMaterial; }
+  virtual truth IsCan () const { return true; }
  protected:
   virtual void AddPostFix(festring& String, int) const { AddContainerPostFix(String); }
   virtual truth AddAdjective(festring&, truth) const;
@@ -142,6 +143,7 @@ ITEM(potion, materialcontainer)
   virtual truth HasBetterVersion() const { return !SecondaryMaterial; }
   virtual truth EffectIsGood() const;
   virtual truth IsKamikazeWeapon(ccharacter*) const { return IsExplosive(); }
+  virtual truth IsBottle () const { return true; }
  protected:
   virtual void AddPostFix(festring& String, int) const { AddContainerPostFix(String); }
   virtual truth AddAdjective(festring&, truth) const;
@@ -167,6 +169,7 @@ ITEM(brokenbottle, item)
   virtual void StepOnEffect(character*);
   virtual item* Fix();
   virtual truth IsDangerous(ccharacter*) const;
+  virtual truth IsBottle () const { return true; }
 };
 
 ITEM(scroll, item)

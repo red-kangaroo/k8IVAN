@@ -3306,3 +3306,11 @@ festring game::ldrGetVar (cfestring &name) {
   ABORT("unknown variable: %s", name.CStr());
   return "";
 }
+
+
+truth game::CheckDropLeftover (item *i) {
+  if (!ivanconfig::GetAutoDropLeftOvers()) return false;
+  if (i->IsBottle() && !ivanconfig::GetAutoDropBottles()) return false;
+  if (i->IsCan() && !ivanconfig::GetAutoDropCans()) return false;
+  return true;
+}

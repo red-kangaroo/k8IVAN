@@ -29,6 +29,8 @@ numberoption ivanconfig::AutoSaveInterval("AutoSaveInterval", "autosave interval
 scrollbaroption ivanconfig::Contrast("Contrast", "contrast", 100, &ContrastDisplayer, &ContrastChangeInterface, &ContrastChanger, &ContrastHandler);
 truthoption ivanconfig::WarnAboutDanger("WarnAboutVeryDangerousMonsters", "Warn about very dangerous monsters", true);
 truthoption ivanconfig::AutoDropLeftOvers("AutoDropLeftOvers", "drop food leftovers automatically", true);
+truthoption ivanconfig::AutoDropBottles("AutoDropBottles", "automatically drop empty bottles after drinking", true);
+truthoption ivanconfig::AutoDropCans("AutoDropCans", "automatically drop empty cans after drinking", false);
 truthoption ivanconfig::LookZoom("LookZoom", "zoom feature in look mode", false);
 truthoption ivanconfig::UseAlternativeKeys("UseAlternativeKeys", "use alternative direction keys", false);
 truthoption ivanconfig::BeNice("BeNice", "be nice to pets", true);
@@ -222,6 +224,8 @@ void ivanconfig::Initialize () {
   configsystem::AddOption(&Contrast);
   configsystem::AddOption(&WarnAboutDanger);
   configsystem::AddOption(&AutoDropLeftOvers);
+  configsystem::AddOption(&AutoDropBottles);
+  configsystem::AddOption(&AutoDropCans);
   configsystem::AddOption(&LookZoom);
   configsystem::AddOption(&UseAlternativeKeys);
   configsystem::AddOption(&BeNice);

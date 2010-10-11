@@ -110,7 +110,7 @@ void consume::Terminate (truth Finished) {
   if (Actor->IsPlayer()) ADD_MESSAGE("You %s %s.", Finished ? "finish" : "stop", Description.CStr());
   else if (Actor->CanBeSeenByPlayer()) ADD_MESSAGE("%s %s %s.", Actor->CHAR_NAME(DEFINITE), Finished ? "finishes" : "stops", Description.CStr());
   if (Finished) {
-    if (Consuming->Exists() && !game::IsInWilderness() && (!Actor->IsPlayer() || ivanconfig::GetAutoDropLeftOvers())) {
+    if (Consuming->Exists() && !game::IsInWilderness() && (!Actor->IsPlayer() || game::CheckDropLeftover(Consuming))) {
       Consuming->RemoveFromSlot();
       Actor->GetStackUnder()->AddItem(Consuming);
       Actor->DexterityAction(2);

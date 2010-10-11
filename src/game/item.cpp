@@ -280,6 +280,7 @@ void item::Save (outputfile &SaveFile) const {
 void item::Load (inputfile &SaveFile) {
   object::Load(SaveFile);
   int ver = ReadType<ushort>(SaveFile);
+  if (ver != 0) ABORT("invalid item version in savefile: %d", ver);
   SaveFile >> mIsStepedOn;
   databasecreator<item>::InstallDataBase(this, ReadType<ushort>(SaveFile));
   Flags |= ReadType<ushort>(SaveFile) & ~ENTITY_FLAGS;
@@ -918,56 +919,46 @@ void item::AddMiscellaneousInfo(felist& List) const
 
 #endif
 
-void item::PreProcessForBone()
-{
-  if(IsQuestItem())
-  {
+
+void item::PreProcessForBone () {
+  if (IsQuestItem()) {
     RemoveFromSlot();
     SendToHell();
-  }
-  else
-  {
+  } else {
     game::RemoveItemID(ID);
     ID = -ID;
     game::AddItemID(this, ID);
+    SetSteppedOn(false);
   }
 }
 
-void item::PostProcessForBone()
-{
+
+void item::PostProcessForBone () {
   boneidmap::iterator BI = game::GetBoneItemIDMap().find(-ID);
   game::RemoveItemID(ID);
 
-  if(BI == game::GetBoneItemIDMap().end())
-  {
+  if (BI == game::GetBoneItemIDMap().end()) {
     ulong NewID = game::CreateNewItemID(this);
     game::GetBoneItemIDMap().insert(std::make_pair(-ID, NewID));
     ID = NewID;
-  }
-  else
-  {
-/*k8:???
-    if (game::SearchItem(BI->second)) int esko = esko = 2;
-  */ if (game::SearchItem(BI->second)) {
-    ID = BI->second;
-    game::AddItemID(this, ID);
+  } else {
+    if (game::SearchItem(BI->second)) {
+      ID = BI->second;
+      game::AddItemID(this, ID);
     }
   }
-
-  for(idholder* I = CloneMotherID; I; I = I->Next)
-  {
+  for (idholder* I = CloneMotherID; I; I = I->Next) {
     BI = game::GetBoneItemIDMap().find(I->ID);
-
-    if(BI == game::GetBoneItemIDMap().end())
-    {
+    if (BI == game::GetBoneItemIDMap().end()) {
       ulong NewCloneMotherID = game::CreateNewItemID(0);
       game::GetBoneItemIDMap().insert(std::make_pair(I->ID, NewCloneMotherID));
       I->ID = NewCloneMotherID;
-    }
-    else
+    } else {
       I->ID = BI->second;
+    }
   }
 }
+
 
 void item::SetConfig(int NewConfig, int SpecialFlags)
 {

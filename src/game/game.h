@@ -464,6 +464,8 @@ public:
   static char GetAbnormalMoveKey (int idx);
   static void SetAbnormalMoveKey (int idx, char ch);
 
+  static truth CheckDropLeftover (item *i);
+
   static void RunOnEvent (cfestring &ename);
   static void RunOnCharEvent (character *who, cfestring &ename);
   static void RunOnItemEvent (item *what, cfestring &ename);

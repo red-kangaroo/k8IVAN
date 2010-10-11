@@ -24,6 +24,8 @@ public:
   static long GetContrast () { return Contrast.Value; }
   static truth GetWarnAboutDanger () { return WarnAboutDanger.Value; }
   static truth GetAutoDropLeftOvers () { return AutoDropLeftOvers.Value; }
+  static truth GetAutoDropBottles () { return AutoDropBottles.Value; }
+  static truth GetAutoDropCans () { return AutoDropCans.Value; }
   static truth GetLookZoom () { return LookZoom.Value; }
   static truth GetUseAlternativeKeys () { return UseAlternativeKeys.Value; }
   static truth GetBeNice () { return BeNice.Value; }
@@ -79,6 +81,8 @@ private:
   static scrollbaroption Contrast;
   static truthoption WarnAboutDanger;
   static truthoption AutoDropLeftOvers;
+  static truthoption AutoDropBottles;
+  static truthoption AutoDropCans;
   static truthoption LookZoom;
   static truthoption UseAlternativeKeys;
   static truthoption BeNice;
