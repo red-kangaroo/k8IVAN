@@ -779,8 +779,8 @@ public:
   void PrintEndPanicMessage () const;
   void CheckPanic (int);
   character *DuplicateToNearestSquare (character *, ulong = 0);
-  void SignalSpoil ();
-  void SignalSpoilLevelChange ();
+  virtual void SignalSpoil (material *m = 0);
+  virtual void SignalSpoilLevelChange (material *m = 0);
   virtual truth UseMaterialAttributes () const = 0;
   truth IsPolymorphed () const { return Flags & C_POLYMORPHED; }
   truth IsInBadCondition () const { return HP * 3 < MaxHP; }

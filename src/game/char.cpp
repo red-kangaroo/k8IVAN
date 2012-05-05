@@ -4579,8 +4579,8 @@ character *character::DuplicateToNearestSquare (character *Cloner, ulong Flags) 
 }
 
 
-void character::SignalSpoil () {
-  if (GetMotherEntity()) GetMotherEntity()->SignalSpoil(0);
+void character::SignalSpoil (material *m) {
+  if (GetMotherEntity()) GetMotherEntity()->SignalSpoil(m);
   else Disappear(0, "spoil", &item::IsVeryCloseToSpoiling);
 }
 
@@ -4713,8 +4713,8 @@ truth character::IsDead () const {
 }
 
 
-void character::SignalSpoilLevelChange () {
-  if (GetMotherEntity()) GetMotherEntity()->SignalSpoilLevelChange(0); else UpdatePictures();
+void character::SignalSpoilLevelChange (material *m) {
+  if (GetMotherEntity()) GetMotherEntity()->SignalSpoilLevelChange(m); else UpdatePictures();
 }
 
 
