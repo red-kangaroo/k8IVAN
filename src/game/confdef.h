@@ -385,7 +385,9 @@
 #define PATRIARCH 3
 
 #define GREATER 1
-#define GIANT 2 /*FIXME: two GIANTs! */
+#define GIANTIC 2
+#define SHAMBLING 3
+#define LILY 4
 
 #define SLAUGHTERER 1
 #define SQUAD_LEADER 2

@@ -523,4 +523,16 @@ protected:
 };
 
 
+CHARACTER(noxiousorchid, nonhumanoid)
+{
+public:
+  virtual truth Hit(character*, v2, int, int = 0);
+protected:
+  virtual col16 GetTorsoSpecialColor() const;
+  virtual void GetAICommand();
+  virtual void CreateCorpse(lsquare*);
+  virtual void PostConstruct();
+};
+
+
 #endif

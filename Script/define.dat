@@ -838,7 +838,9 @@
 
 #enum {
   GREATER = 1,
-  GIANT,
+  GIANTIC,
+  SHAMBLING,
+  LILY,
 };
 
 

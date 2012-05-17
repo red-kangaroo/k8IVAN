@@ -223,7 +223,7 @@ Dungeon MUNTUO;
 
     Square, Random NOT_IN_ROOM;
     {
-      Character = carnivorousplant(GIANT) { Team = SOLICITUS_TEAM; }
+      Character = carnivorousplant(GIANTIC) { Team = SOLICITUS_TEAM; }
       Times = 1:2;
     }
 
