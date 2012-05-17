@@ -46,6 +46,7 @@ if $(DISABLE_LIBPNG) {
 
 include $(TOP)/Jamrules.defines ;
 softinclude $(TOP)/Jamrules.windoze ;
+softinclude $(TOP)/Jamrules.push ;
 
 
 if ! $(NOGDB) {
