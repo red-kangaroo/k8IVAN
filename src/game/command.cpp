@@ -1287,22 +1287,30 @@ truth commandsystem::GetScroll (character *Char) {
     );
     if (sel < 0) break;
     festring sname;
-    switch (sel) {
-      case 0: sname = "Wishing"; Char->GetStack()->AddItem(scrollofwishing::Spawn()); break;
-      case 1: sname = "Charging"; Char->GetStack()->AddItem(scrollofcharging::Spawn()); break;
-      case 2: sname = "Repair"; Char->GetStack()->AddItem(scrollofrepair::Spawn()); break;
-      case 3: sname = "Change Material"; Char->GetStack()->AddItem(scrollofchangematerial::Spawn()); break;
-      case 4: sname = "Enchant Weapon"; Char->GetStack()->AddItem(scrollofenchantweapon::Spawn()); break;
-      case 5: sname = "Enchant Armor"; Char->GetStack()->AddItem(scrollofenchantarmor::Spawn()); break;
-      case 6: sname = "Taming"; Char->GetStack()->AddItem(scrolloftaming::Spawn()); break;
-      case 7: sname = "Teleportation"; Char->GetStack()->AddItem(scrollofteleportation::Spawn()); break;
-      case 8: sname = "Detect Material"; Char->GetStack()->AddItem(scrollofdetectmaterial::Spawn()); break;
-      case 9: sname = "Harden Material"; Char->GetStack()->AddItem(scrollofhardenmaterial::Spawn()); break;
-      case 10: sname = "Golem Creation"; Char->GetStack()->AddItem(scrollofgolemcreation::Spawn()); break;
-      default: sel = 666; break;
+    sLong amount = game::NumberQuestion(CONST_S("How many scrolls do you want?"), WHITE, true);
+    if (amount < 1) amount = 1;
+    for (sLong f = amount; f > 0; --f) {
+      switch (sel) {
+        case 0: sname = "Wishing"; Char->GetStack()->AddItem(scrollofwishing::Spawn()); break;
+        case 1: sname = "Charging"; Char->GetStack()->AddItem(scrollofcharging::Spawn()); break;
+        case 2: sname = "Repair"; Char->GetStack()->AddItem(scrollofrepair::Spawn()); break;
+        case 3: sname = "Change Material"; Char->GetStack()->AddItem(scrollofchangematerial::Spawn()); break;
+        case 4: sname = "Enchant Weapon"; Char->GetStack()->AddItem(scrollofenchantweapon::Spawn()); break;
+        case 5: sname = "Enchant Armor"; Char->GetStack()->AddItem(scrollofenchantarmor::Spawn()); break;
+        case 6: sname = "Taming"; Char->GetStack()->AddItem(scrolloftaming::Spawn()); break;
+        case 7: sname = "Teleportation"; Char->GetStack()->AddItem(scrollofteleportation::Spawn()); break;
+        case 8: sname = "Detect Material"; Char->GetStack()->AddItem(scrollofdetectmaterial::Spawn()); break;
+        case 9: sname = "Harden Material"; Char->GetStack()->AddItem(scrollofhardenmaterial::Spawn()); break;
+        case 10: sname = "Golem Creation"; Char->GetStack()->AddItem(scrollofgolemcreation::Spawn()); break;
+        default: sel = 666; break;
+      }
     }
     if (sel != 666) {
-      ADD_MESSAGE("Got Scroll of %s.", sname.CStr());
+      if (amount == 1) {
+        ADD_MESSAGE("Got Scroll of %s.", sname.CStr());
+      } else {
+        ADD_MESSAGE("Got %d Scrolls of %s.", amount, sname.CStr());
+      }
       break;
     }
   }
@@ -1372,26 +1380,37 @@ truth commandsystem::WizardHeal (character *Char) {
   }
   */
   for (int c = 0; c < Char->GetBodyParts(); ++c) {
-    if (Char->GetBodyPart(c)) Char->GetBodyPart(c)->RemoveAllFluids();
-    if (!Char->GetBodyPart(c) && Char->CanCreateBodyPart(c)) {
-      for (std::list<uLong>::const_iterator i = Char->GetOriginalBodyPartID(c).begin(); i != Char->GetOriginalBodyPartID(c).end(); ++i) {
+    fprintf(stderr, "c=%d\n", c);
+    if (Char->GetBodyPart(c)) {
+      Char->GetBodyPart(c)->RemoveAllFluids();
+    } else if (Char->CanCreateBodyPart(c)) {
+      const std::list<uLong> &obp = Char->GetOriginalBodyPartID(c);
+      //
+      for (std::list<uLong>::const_iterator i = obp.begin(); i != obp.end(); ++i) {
         bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
+        //
         if (OldBodyPart && OldBodyPart->CanRegenerate()) {
           OldBodyPart->RemoveAllFluids();
           OldBodyPart->SetHP(1);
           OldBodyPart->RemoveFromSlot();
           Char->AttachBodyPart(OldBodyPart);
+          break;
         } else {
           Char->CreateBodyPart(c);
           Char->GetBodyPart(c)->SetHP(1);
+          break;
         }
       }
     }
   }
+  //
   if (Char->TemporaryStateIsActivated(POISONED)) Char->DeActivateTemporaryState(POISONED);
   if (Char->TemporaryStateIsActivated(PARASITIZED)) Char->DeActivateTemporaryState(PARASITIZED);
   if (Char->TemporaryStateIsActivated(LEPROSY)) Char->DeActivateTemporaryState(LEPROSY);
   if (Char->TemporaryStateIsActivated(LYCANTHROPY)) Char->DeActivateTemporaryState(LYCANTHROPY);
+  if (Char->TemporaryStateIsActivated(VAMPIRISM)) Char->DeActivateTemporaryState(VAMPIRISM);
+  //
+  ADD_MESSAGE("Wizard healing...");
   return false;
 }
 #endif
