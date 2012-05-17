@@ -546,7 +546,7 @@ ITEM(taiaha, meleeweapon)
   virtual alpha GetOutlineAlpha(int) const;
   virtual void PostConstruct();
   void BreakEffect(character*, cfestring&);
-  //ulong GetSpecialParameters() const;
+  //uLong GetSpecialParameters() const;
   int Charges;
   int TimesUsed;
 };

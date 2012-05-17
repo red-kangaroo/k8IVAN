@@ -423,7 +423,7 @@ festring &festring::Append (sLong Integer) {
 festring &festring::Append (int64_t Integer) {
   char buf[4096];
   //
-  snprintf(buf, sizeof(buf)-1, "%lld", Integer);
+  snprintf(buf, sizeof(buf)-1, LONG_LONG_PFORMAT, Integer);
   buf[sizeof(buf)-1] = 0;
   return Append(buf, strlen(buf));
 }

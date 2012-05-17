@@ -1573,12 +1573,10 @@ void taiaha::BreakEffect(character* Terrorist, cfestring& DeathMsg)
   v2 Pos = GetPos();
   level* Level = GetLevel();
   RemoveFromSlot();
-  ulong StackSize = Level->AddRadiusToSquareStack(Pos, 2); //hardcode, default is 2 for most wands, but zero for fireballs
+  uLong StackSize = Level->AddRadiusToSquareStack(Pos, 2); //hardcode, default is 2 for most wands, but zero for fireballs
   lsquare** SquareStack = Level->GetSquareStack();
-  ulong c;
 
-  for(c = 0; c < StackSize; ++c)
-    SquareStack[c]->RemoveFlags(IN_SQUARE_STACK);
+  for (unsigned int c = 0; c < StackSize; ++c) SquareStack[c]->RemoveFlags(IN_SQUARE_STACK);
 
   fearray<lsquare*> Stack(SquareStack, StackSize);
   (Level->*level::GetBeamEffectVisualizer(PARTICLE_BEAM))(Stack, YELLOW); //beamstyle
@@ -1591,8 +1589,7 @@ void taiaha::BreakEffect(character* Terrorist, cfestring& DeathMsg)
       0 //was GetSpecialParameters()
     );
 
-  for(c = 0; c < Stack.Size; ++c)
-    (Stack[c]->*lsquare::GetBeamEffect(BEAM_FIRE_BALL))(Beam); // beam effect
+  for (unsigned int c = 0; c < Stack.Size; ++c) (Stack[c]->*lsquare::GetBeamEffect(BEAM_FIRE_BALL))(Beam); // beam effect
 
   SendToHell(); //removes the taiaha from existence
 }

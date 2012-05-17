@@ -1,6 +1,6 @@
 set-profile ;
 set-default-locations ;
-OPTIM.all += -Wno-narrowing ;
+if ! $(WINDOZE) { OPTIM.all += -Wno-narrowing ; }
 
 HDRS += $(TOP)/src/felib ;
 HDRS += $(TOP)/src/vasya ;

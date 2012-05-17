@@ -100,7 +100,7 @@ class room
   int DivineMaster;
   uLong Flags;
   mutable olterrain* Ward;
-  mutable ulong LastWardSearchTick;
+  mutable uLong LastWardSearchTick;
 };
 
 #ifdef __FILE_OF_STATIC_ROOM_PROTOTYPE_DEFINITIONS__
