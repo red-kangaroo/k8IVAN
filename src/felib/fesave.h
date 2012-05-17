@@ -49,7 +49,7 @@ public:
 
   void Put (char What) { fputc(What, Buffer); }
   void Write (cchar *Offset, long Size) { fwrite(Offset, 1, Size, Buffer); }
-  truth IsOpen () { return truth(Buffer); }
+  truth IsOpen () { return (Buffer != 0); }
   void Close () { fclose(Buffer); Buffer = 0; }
   void Flush () { fflush(Buffer); }
   void ReOpen ();
@@ -63,7 +63,7 @@ private:
 typedef festring (*InputFileGetVarFn) (cfestring &name);
 
 class inputfile {
- public:
+public:
   inputfile (cfestring &FileName, const valuemap *ValueMap=0, truth AbortOnErr=true);
   virtual ~inputfile ();
 
@@ -79,7 +79,7 @@ class inputfile {
   int Get () { return fgetc(Buffer); }
   int Unget (int ch) { return ungetc(ch, Buffer); }
   void Read (char *Offset, long Size) { fread(Offset, 1, Size, Buffer); }
-  truth IsOpen () { return truth(Buffer); }
+  truth IsOpen () { return (Buffer != 0); }
   truth Eof () { return feof(Buffer); }
   void ClearFlags () { clearerr(Buffer); }
   void SeekPosBegin (long Offset) { fseek(Buffer, Offset, SEEK_SET); }
