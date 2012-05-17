@@ -1,0 +1,44 @@
+#####################################################################
+# game defines
+DEFINES += WIZARD ;
+
+
+if $(DEBUG) { DEFINES += DEBUG_BUILD ; }
+
+
+if ! $(GLOBAL_SAVES) {
+  Echo "MSG: using local saves" ;
+  DEFINES += LOCAL_SAVES ;
+}
+
+
+if $(USE_SOUND) {
+  Echo "MSG: sound support enabled" ;
+  LINKLIBS += -lSDL_mixer ;
+  C++LINKLIBS += -lSDL_mixer ;
+} else {
+  Echo "MSG: sound support disabled; USE_SOUND=1 will enable it" ;
+  DEFINES += DISABLE_SOUND ;
+}
+
+
+if $(HAVE_IMLIB2) {
+  Echo "MSG: imlib2 found" ;
+  lib-config "pkg-config imlib2" ;
+  DEFINES += HAVE_IMLIB2 ;
+}
+
+if $(HAVE_LIBPNG) {
+  Echo "MSG: libpng found" ;
+  lib-config "pkg-config libpng" ;
+  DEFINES += HAVE_LIBPNG ;
+}
+
+if $(HAVE_IMLIB2) || $(HAVE_LIBPNG) {
+  if $(ENABLE_PNG_SHOTS) {
+    Echo "MSG: savegame screenshots will be in PNG format" ;
+  } else {
+    Echo "MSG: savegame screenshots will be in internal format" ;
+    DEFINES += SGAME_SHOTS_IPU ;
+  }
+}

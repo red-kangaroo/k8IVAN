@@ -1,0 +1,48 @@
+if $(WINDOZE) {
+  WINE = "wine" ;
+  MGPATH = "wine c:\\\\mingw\\\\bin\\\\" ;
+  MGCC = "mingw32-gcc.exe" ;
+
+  CC = $(MGPATH)$(MGCC) -mthreads ;
+  LINK = $(MGPATH)$(MGCC) -mthreads ;
+  AR = $(MGPATH)ar.exe -ru ;
+  RANLIB = $(MGPATH)ranlib.exe ;
+  C++ = "wine c:\\\\mingw\\\\bin\\\\mingw32-g++.exe" ;
+  C++LINK = "wine c:\\\\mingw\\\\bin\\\\mingw32-g++.exe -static-libgcc" ;
+
+  rule UserObject {
+    switch $(>) {
+      case *.rc : ResourceCompiler $(<) : $(>) ;
+      #case *.o : DEPENDS $(<) : $(>) ;
+      case *.o : DummyRule $(<) : $(>) ;
+      case * : ECHO "unknown suffix on" $(>) ;
+    }
+  }
+  rule DummyRule {
+  }
+  rule ResourceCompiler {
+    DEPENDS $(<) : $(>) ;
+    Clean clean : $(<) ;
+  }
+  actions ResourceCompiler {
+    $(MGPATH)windres.exe -i $(>) -o $(<)
+  }
+
+  LINKLIBS += -lkernel32 -luser32 -ladvapi32 ;
+  #if $(DO_MAP) {
+  #  LINKFLAGS += -Wl,-Map,zpx2.map ;
+  #}
+  #WINSUBSYS = "windows" ;
+  WINSUBSYS = "console" ;
+  #LINKFLAGS += -Wl,-subsystem,console ;
+  SUFEXE = .exe ;
+  if $(DO_MAP) {
+    LINKFLAGS += "-Wl,-Map,ivan.map,-subsystem,$(WINSUBSYS)" ;
+  } else {
+    LINKFLAGS += "-Wl,-subsystem,$(WINSUBSYS)" ;
+  }
+
+  HDRS += wininc wininc/SDL ;
+  LINKLIBS += -Lwinlib -lm -lSDL ;
+  C++LINKLIBS += -Lwinlib -lm -lSDL ;
+}
