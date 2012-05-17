@@ -177,6 +177,7 @@ struct characterdatabase : public databasebase {
   int BaseKickStrength;
   int AttackStyle;
   sLong ClassStates;
+  sLong WhatThrowItemTypesToThrow;
   fearray<festring> Alias;
   contentscript<item> Helmet;
   contentscript<item> Amulet;
@@ -246,6 +247,8 @@ struct characterdatabase : public databasebase {
   truth IsAlcoholic;
   truth IsImmuneToWhipOfThievery;
   truth IsRangedAttacker;
+  int WhatCategoryToThrow;
+  int WhatWeaponConfigToThrow;
 };
 
 
@@ -533,6 +536,7 @@ public:
   DATA_BASE_TRUTH(CanTalk);
   DATA_BASE_TRUTH(CanBeWished);
   DATA_BASE_VALUE(sLong, ClassStates);
+  DATA_BASE_VALUE(sLong, WhatThrowItemTypesToThrow);
   DATA_BASE_VALUE(const fearray<festring>&, Alias);
   DATA_BASE_TRUTH(CreateGolemMaterialConfigurations);
   DATA_BASE_VALUE(const fearray<sLong>&, KnownCWeaponSkills);
@@ -612,6 +616,8 @@ public:
   DATA_BASE_TRUTH(IsAlcoholic);
   DATA_BASE_TRUTH(IsImmuneToWhipOfThievery);
   DATA_BASE_TRUTH(IsRangedAttacker);
+  DATA_BASE_VALUE(int, WhatCategoryToThrow);
+  DATA_BASE_VALUE(int, WhatWeaponConfigToThrow);
   int GetType () const { return GetProtoType()->GetIndex(); }
   void TeleportRandomly (truth = false);
   truth TeleportNear (character *);
@@ -1096,7 +1102,9 @@ public:
   truth CanTameWithScroll (const character *) const;
   truth IsCharmable () const { return GetTamingDifficulty() != NO_TAMING; }
   truth CheckSadism ();
-  truth CheckThrowItemOpportunity ();
+  virtual truth CheckThrowItemOpportunity ();
+  virtual truth CheckAIZapOpportunity ();
+  virtual truth CheckInventoryForItemToThrow (item *);
   virtual truth HasSadistAttackMode () const { return IsUsingLegs(); }
   truth CheckForBeverage ();
   void Haste ();

@@ -871,8 +871,14 @@ col16 axethrowerdwarf::GetLegMainColor () const {
 
 
 truth humanoid::CheckThrowItemOpportunity () {
-  if(!HasAUsableArm()) return false;
+  if (!HasAUsableArm()) return false;
   return character::CheckThrowItemOpportunity();
+}
+
+
+truth humanoid::CheckAIZapOpportunity () {
+  if (!HasAUsableArm() || !CanZap()) return false;
+  return character::CheckAIZapOpportunity();
 }
 
 

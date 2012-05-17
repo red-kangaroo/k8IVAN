@@ -122,6 +122,7 @@ item
   FlexibilityIsEssential = false;
   IsSadistWeapon = false;
   IsThrowingWeapon = false;
+  ThrowItemTypes = NONE; /*Possibilities: THROW_BONE|THROW_POTION|THROW_AXE|THROW_GAS_GRENADE|THROW_WAND;*/
 }
 
 materialcontainer
@@ -365,6 +366,7 @@ meleeweapon
     EnchantmentPlusChance = 15;
     DamageFlags = SLASH;
     IsThrowingWeapon = true;
+    ThrowItemTypes = THROW_AXE;
   }
 
   Config BROKEN|AXE;
@@ -1073,6 +1075,7 @@ potion /* materialcontainer-> */
   WieldedBitmapPos = 176, 144;
   IsValuable = false;
   TeleportPriority = 200;
+  ThrowItemTypes = THROW_POTION;
 }
 
 bananapeels
@@ -3634,6 +3637,8 @@ gasgrenade
   MaterialConfigChances = { 4, 50, 10, 1, 10; }
   Adjective = "dwarven";
   Alias == "gas grenade";
+  IsThrowingWeapon = true;
+  ThrowItemTypes = THROW_GAS_GRENADE;
 }
 
 holyhandgrenade

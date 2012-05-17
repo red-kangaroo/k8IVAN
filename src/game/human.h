@@ -78,6 +78,7 @@ public:
   virtual int CloseMultiplier() const;
   virtual truth CheckThrow() const;
   virtual truth CheckThrowItemOpportunity();
+  virtual truth CheckAIZapOpportunity();
   virtual truth CheckOffer() const;
   virtual sorter EquipmentSorter(int) const;
   virtual void SetEquipment(int, item*);

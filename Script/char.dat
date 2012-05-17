@@ -287,6 +287,9 @@ character
   IsAlcoholic = false;
   IsImmuneToWhipOfThievery = false;
   IsRangedAttacker = false;
+  WhatCategoryToThrow = NONE;
+  WhatWeaponConfigToThrow = NONE;
+  WhatThrowItemTypesToThrow = NONE;
 }
 
 humanoid
@@ -348,6 +351,10 @@ playerkind
   DisplacePriority = 2;
   Inventory == amulet(AMULET_OF_LIFE_SAVING) { Times = BONUS_LIVES; }
   UndeadVersions = false;
+  IsRangedAttacker = false; /* AI only */
+  WhatCategoryToThrow = NONE;
+  WhatWeaponConfigToThrow = NONE;
+  WhatThrowItemTypesToThrow = NONE;
 }
 
 petrus
@@ -3316,7 +3323,7 @@ axethrowerdwarf
   CanRead = true;
   NameSingular = "axethrower dwarf";
   NamePlural = "axethrower dwarves";
-  CanBeGenerated = true;
+  CanBeGenerated = true; //false
   CreateDivineConfigurations = true;
   IsAbstract = true;
   /* Equipment initialization is overridden */
@@ -3325,7 +3332,9 @@ axethrowerdwarf
   FleshMaterial = DWARF_FLESH;
   DeathMessage = "@Dd dies in agony.";
   IgnoreDanger = true;
-  Frequency = 300;
+  //HPRequirementForGeneration = 60;
+  //DayRequirementForGeneration = 6;
+  Frequency = 300; //0
   HostileReplies == "\"In the name of @Gd I will slash you to pieces!\"";
   AttachedGod = NONE;
   UndeadVersions = false;
@@ -3343,6 +3352,9 @@ axethrowerdwarf
   CWeaponSkillHits == 100;
   RightSWeaponSkillHits = 50;
   UsesLongArticle = true;
+  WhatCategoryToThrow = WEAPON;
+  WhatWeaponConfigToThrow = AXE;
+  WhatThrowItemTypesToThrow = THROW_AXE;
 }
 
 mammoth

@@ -542,6 +542,9 @@ template<> void databasecreator<character>::CreateDataBaseMemberMap () {
   ADD_MEMBER(IsAlcoholic);
   ADD_MEMBER(IsImmuneToWhipOfThievery);
   ADD_MEMBER(IsRangedAttacker);
+  ADD_MEMBER(WhatCategoryToThrow);
+  ADD_MEMBER(WhatWeaponConfigToThrow);
+  ADD_MEMBER(WhatThrowItemTypesToThrow);
 }
 
 
@@ -652,6 +655,7 @@ template<> void databasecreator<item>::CreateDataBaseMemberMap () {
   ADD_MEMBER(BreakMsg);
   ADD_MEMBER(IsSadistWeapon);
   ADD_MEMBER(IsThrowingWeapon);
+  ADD_MEMBER(ThrowItemTypes);
 }
 
 

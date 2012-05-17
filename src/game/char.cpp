@@ -1969,7 +1969,7 @@ truth character::CheckForUsefulItemsOnGround (truth CheckFood) {
     if (ItemVector[c]->CanBeSeenBy(this) && ItemVector[c]->IsPickable(this)) {
       if (!(CommandFlags & DONT_CHANGE_EQUIPMENT) && TryToEquip(ItemVector[c])) return true;
       if (CheckFood && UsesNutrition() && !CheckIfSatiated() && TryToConsume(ItemVector[c])) return true;
-      if ((ItemVector[c])->IsThrowingWeapon() && IsRangedAttacker() && TryToAddToInventory(ItemVector[c])) return true;
+      if (IsRangedAttacker() && (ItemVector[c])->GetThrowItemTypes() && TryToAddToInventory(ItemVector[c])) return true;
     }
   }
   return false;
@@ -1989,12 +1989,16 @@ truth character::TryToAddToInventory (item *Item) {
 }
 
 
+truth character::CheckInventoryForItemToThrow (item *ToBeChecked) {
+  return (ToBeChecked->GetThrowItemTypes() & GetWhatThrowItemTypesToThrow()) ? true : false; //hehe
+}
+
+
 truth character::CheckThrowItemOpportunity () {
   if (!IsRangedAttacker() || !CanThrow() || !IsHumanoid() || !IsSmall() || !IsEnabled()) return false; // total gum
   // Steps:
   // (1) - Acquire target as nearest enemy
-  // (2) - Check that this enemy is in range, and is in appropriate direction
-  //       No friendly fire!
+  // (2) - Check that this enemy is in range, and is in appropriate direction; no friendly fire!
   // (3) - check inventory for throwing weapon, select this weapon
   // (4) - throw item in direction where the enemy is
   //
@@ -2007,11 +2011,10 @@ truth character::CheckThrowItemOpportunity () {
   int CandidateDirections[7] = {0, 0, 0, 0, 0, 0, 0};
   int HostileFound = 0;
   item *ToBeThrown = 0;
-  itemvector ItemVector;
+  level *Level = GetLevel();
   //
   for (int r = 1; r <= RangeMax; ++r) {
     for (int dir = 0; dir < 8; ++dir) {
-      level *Level = GetLevel();
       //
       switch (dir) {
         case 0: TestPos = v2(Pos.X-r, Pos.Y-r); break;
@@ -2027,13 +2030,13 @@ truth character::CheckThrowItemOpportunity () {
         square *TestSquare = GetNearSquare(TestPos);
         character *Dude = TestSquare->GetCharacter();
         //
-        if (Dude && Dude->IsEnabled() && GetRelation(Dude) != HOSTILE && Dude->CanBeSeenBy(this, false, true)) {
-          CandidateDirections[dir] = BLOCKED;
-        }
-        if (Dude && Dude->IsEnabled() && GetRelation(Dude) == HOSTILE && Dude->CanBeSeenBy(this, false, true) && CandidateDirections[dir] != BLOCKED) {
-          //then load this candidate position direction into the vector of possible throw directions
-          CandidateDirections[dir] = SUCCESS;
-          HostileFound = 1;
+        if (Dude && Dude->IsEnabled() && Dude->CanBeSeenBy(this, false, true)) {
+          if (GetRelation(Dude) != HOSTILE) CandidateDirections[dir] = BLOCKED;
+          else if (GetRelation(Dude) == HOSTILE && CandidateDirections[dir] != BLOCKED) {
+            //then load this candidate position direction into the vector of possible throw directions
+            CandidateDirections[dir] = SUCCESS;
+            HostileFound = 1;
+          }
         }
       }
     }
@@ -2044,13 +2047,15 @@ truth character::CheckThrowItemOpportunity () {
       if (CandidateDirections[dir] == SUCCESS && !TargetFound) {
         ThrowDirection = dir;
         TargetFound = 1;
+        break;
       }
     }
     if (!TargetFound) return false;
   } else {
     return false;
   }
-  //check inventory for throwing weapon
+  // check inventory for throwing weapon
+  itemvector ItemVector;
   GetStack()->FillItemVector(ItemVector);
   for (uInt c = 0; c < ItemVector.size(); ++c) {
     if (ItemVector[c]->IsThrowingWeapon()) {
@@ -2061,11 +2066,95 @@ truth character::CheckThrowItemOpportunity () {
   if (!ToBeThrown) return false;
   if (CanBeSeenByPlayer()) ADD_MESSAGE("%s throws %s.", CHAR_NAME(DEFINITE), ToBeThrown->CHAR_NAME(INDEFINITE));
   ThrowItem(ThrowDirection, ToBeThrown);
-  EditExperience(ARM_STRENGTH, 75, 1 << 8);
-  EditExperience(DEXTERITY, 75, 1 << 8);
-  EditExperience(PERCEPTION, 75, 1 << 8);
+  EditExperience(ARM_STRENGTH, 75, 1<<8);
+  EditExperience(DEXTERITY, 75, 1<<8);
+  EditExperience(PERCEPTION, 75, 1<<8);
   EditNP(-50);
   DexterityAction(5);
+  TerminateGoingTo();
+  return true;
+}
+
+
+truth character::CheckAIZapOpportunity () {
+  if (/*!IsRangedAttacker() || */ !CanZap() || !IsHumanoid() || !IsSmall() || !IsEnabled()) return false; // total gum
+  // Steps:
+  // (1) - Acquire target as nearest enemy
+  // (2) - Check that this enemy is in range, and is in appropriate direction; no friendly fire!
+  // (3) - check inventory for zappable item
+  // (4) - zap item in direction where the enemy is
+  //Check the rest of the visible area for hostiles
+  v2 Pos = GetPos();
+  v2 TestPos;
+  int SensibleRange = 5;
+  int RangeMax = GetLOSRange();
+  if (RangeMax < SensibleRange) SensibleRange = RangeMax;
+  int CandidateDirections[7] = {0, 0, 0, 0, 0, 0, 0};
+  int HostileFound = 0;
+  int ZapDirection = 0;
+  int TargetFound = 0;
+  item *ToBeZapped = 0;
+  level *Level = GetLevel();
+  //
+  for (int r = 2; r <= SensibleRange; ++r) {
+    for (int dir = 0; dir < 8; ++dir) {
+      switch (dir) {
+        case 0: TestPos = v2(Pos.X-r, Pos.Y-r); break;
+        case 1: TestPos = v2(Pos.X, Pos.Y-r); break;
+        case 2: TestPos = v2(Pos.X+r, Pos.Y-r); break;
+        case 3: TestPos = v2(Pos.X-r, Pos.Y); break;
+        case 4: TestPos = v2(Pos.X+r, Pos.Y); break;
+        case 5: TestPos = v2(Pos.X-r, Pos.Y+r); break;
+        case 6: TestPos = v2(Pos.X, Pos.Y+r); break;
+        case 7: TestPos = v2(Pos.X+r, Pos.Y+r); break;
+      }
+      if (Level->IsValidPos(TestPos)) {
+        square *TestSquare = GetNearSquare(TestPos);
+        character *Dude = TestSquare->GetCharacter();
+        //
+        if (Dude && Dude->IsEnabled() && Dude->CanBeSeenBy(this, false, true)) {
+          if (GetRelation(Dude) != HOSTILE) CandidateDirections[dir] = BLOCKED;
+          else if (GetRelation(Dude) == HOSTILE && CandidateDirections[dir] != BLOCKED) {
+            //then load this candidate position direction into the vector of possible zap directions
+            CandidateDirections[dir] = SUCCESS;
+            HostileFound = 1;
+          }
+        }
+      }
+    }
+  }
+
+  if (HostileFound) {
+    for (int dir = 0; dir < 8; ++dir) {
+      if (CandidateDirections[dir] == SUCCESS && !TargetFound) {
+        ZapDirection = dir;
+        TargetFound = 1;
+        break;
+      }
+    }
+    if (!TargetFound) return false;
+  } else {
+    return false;
+  }
+  // check inventory for zappable item
+  itemvector ItemVector;
+  GetStack()->FillItemVector(ItemVector);
+  for (unsigned int c = 0; c < ItemVector.size(); ++c) {
+    if (ItemVector[c]->GetMinCharges() > 0 && ItemVector[c]->GetPrice()) {
+      // bald-faced gum solution for choosing zappables that have shots left.
+      // MinCharges needs to be replaced. Empty wands have zero price!
+      ToBeZapped = ItemVector[c];
+      break;
+    }
+  }
+  if (!ToBeZapped) return false;
+  if (CanBeSeenByPlayer()) ADD_MESSAGE("%s zaps %s.", CHAR_NAME(DEFINITE), ToBeZapped->CHAR_NAME(INDEFINITE));
+  if (ToBeZapped->Zap(this, GetPos(), ZapDirection)) {
+    EditAP(-100000/APBonus(GetAttribute(PERCEPTION)));
+    return true;
+  } else {
+    return false;
+  }
   TerminateGoingTo();
   return true;
 }
