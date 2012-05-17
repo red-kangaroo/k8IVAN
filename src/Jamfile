@@ -1,11 +1,11 @@
 SubDir TOP src ;
 
 
-SubIncludeOnce JAM_IVAN_INC_SRC_FELIB : TOP src felib ;
-SubIncludeOnce JAM_IVAN_INC_SRC_VASYA : TOP src vasya ;
-SubIncludeOnce JAM_IVAN_INC_SRC_REGEX : TOP src regex ;
-SubIncludeOnce JAM_IVAN_INC_SRC_GAME : TOP src game ;
-if ! $(WINDOZE) {
-  SubIncludeOnce JAM_IVAN_INC_SRC_IGOR : TOP src igor ;
-  SubIncludeOnce JAM_IVAN_INC_SRC_MIH : TOP src mihail ;
+SubInclude TOP src felib ;
+SubInclude TOP src vasya ;
+SubInclude TOP src regex ;
+SubInclude TOP src game ;
+if ! $(WINDOZE) && $(BUILD_TOOLS) {
+  SubInclude TOP src igor ;
+  SubInclude TOP src mihail ;
 }
