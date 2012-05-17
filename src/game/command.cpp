@@ -212,7 +212,7 @@ command *commandsystem::Command[] = {
   new command(&WizardWish, "wish something", '=', '=', true, true),
   new command(&GainDivineKnowledge, "gain knowledge of all gods", '\"', '\"', true, true),
   new command(&GainAllItems, "gain all items", '$', '$', true, true),
-  new command(&SecretKnowledge, "reveal secret knowledge", '*', '*', true, false),
+  new command(&SecretKnowledge, "reveal secret knowledge", '*', '*', true, true),
   new command(&DetachBodyPart, "detach a limb", '0', '0', true, true),
   new command(&SummonMonster, "summon monster", '&', '&', false, true),
   new command(&LevelTeleport, "level teleport", '|', '|', false, true),
