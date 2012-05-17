@@ -111,6 +111,8 @@
 #define OMMEL_BONE (ORGANIC_ID + 13)
 #define OMMEL_TOOTH (ORGANIC_ID + 14)
 #define RYE_BREAD (ORGANIC_ID + 15)
+#define MANGO_FLESH (ORGANIC_ID + 16)
+#define HOLY_MANGO_FLESH (ORGANIC_ID + 17)
 
 #define GAS_ID (3 << 12)
 
@@ -155,6 +157,10 @@
 #define SICK_BLOOD (LIQUID_ID + 25)
 #define MUSTARD_GAS_LIQUID (LIQUID_ID + 26)
 #define OMMEL_VOMIT (LIQUID_ID + 27)
+#define LIQUID_HORROR (LIQUID_ID + 28)
+#define VINEGAR (LIQUID_ID + 29)
+#define OMMEL_BLOOD (LIQUID_ID + 30)
+#define CURDLED_OMMEL_BLOOD (LIQUID_ID + 31)
 
 #define FLESH_ID (5 << 12)
 
@@ -319,6 +325,7 @@
 
 #define BRAVERY 1
 #define FEAR 2
+#define CONFUSION 3
 
 #define ROOKIE 1
 #define VETERAN 2
@@ -383,6 +390,13 @@
 #define BATTLE_MAGE 2
 #define ELDER 3
 #define ARCH_MAGE 4
+
+#define FIELD_MOUSE 1
+#define LABORATORY_MOUSE 2
+
+#define THIN_PIG 1
+
+#define STARVED_OX 1
 
 /* Least significant bit defines sex */
 

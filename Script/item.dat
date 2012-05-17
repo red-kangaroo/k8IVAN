@@ -1076,6 +1076,7 @@ potion /* materialcontainer-> */
   IsValuable = false;
   TeleportPriority = 200;
   ThrowItemTypes = THROW_POTION;
+  IsThrowingWeapon = true; //FIXME: k8: shaman can't throw potions without this
 }
 
 bananapeels
@@ -3381,6 +3382,12 @@ horn
   {
     MainMaterialConfig == OBSIDIAN;
     PostFix = "of fear";
+  }
+
+  Config CONFUSION;
+  {
+    MainMaterialConfig == JASPER;
+    PostFix = "of confusion";
   }
 }
 

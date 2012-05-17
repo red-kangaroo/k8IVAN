@@ -1,0 +1,366 @@
+/* CLIVAN extensions */
+mouse
+{
+  DefaultArmStrength = 2;
+  DefaultAgility = 20;
+  DefaultEndurance = 10;
+  DefaultPerception = 10;
+  DefaultIntelligence = 12;
+  DefaultWisdom = 5;
+  DefaultCharisma = 4;
+  DefaultMana = 0;
+  CanOpen = false;
+  TotalVolume = 200;
+  TorsoBitmapPos = 272, 96;
+  HostileReplies == "The @du squeaks haughtily.";
+  FriendlyReplies == "@Dd squeaks contentedly.";
+  TotalSize = 30;
+  NameSingular = "mouse";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 350;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  ClassStates = INFRA_VISION;
+  FleshMaterial = MOUSE_FLESH;
+  AttachedGod = SILVA;
+  MoveType = WALK|SWIM;
+  IsCatacombCreature = true;
+  IsAbstract = true;
+
+  Config FIELD_MOUSE;
+  {
+    Adjective = "field";
+    SkinColor = rgb16(180, 100, 40);
+    TotalVolume = 250;
+    TotalSize = 35;
+    AttributeBonus = 0;
+  }
+
+  Config LABORATORY_MOUSE;
+  {
+    Adjective = "laboratory";
+    SkinColor = rgb16(250, 250, 250);
+    TotalVolume = 300;
+    TotalSize = 30;
+    AttributeBonus = 15;
+    DefaultIntelligence = 50;
+    DefaultWisdom = 50;
+    CanBeGenerated = false;
+    FriendlyReplies == "The @du squeaks: \"Do you know, we lab-mice are really a race of hyper-intelligent pan-dimensional beings?\"";
+    ScienceTalkPossibility = 33;
+    ScienceTalkIntelligenceModifier = 10;
+    ScienceTalkWisdomModifier = 5;
+    ScienceTalkIntelligenceRequirement = 45;
+    ScienceTalkWisdomRequirement = 45;
+    ScienceTalkName =
+    {
+      10,
+      "Life", "the Universe", "Everything", "5D chat shows", "computer architectonics",
+      "cheese", "experiments", "Ultimate Questions", "pan-dimensionality", "On-Turning";
+    }
+  }
+}
+
+pig
+{
+  DefaultArmStrength = 25;
+  DefaultAgility = 8;
+  DefaultEndurance = 15;
+  DefaultPerception = 15;
+  DefaultIntelligence = 15;
+  DefaultWisdom = 5;
+  DefaultCharisma = 12;
+  DefaultMana = 0;
+  TotalVolume = 40000;
+  TorsoBitmapPos = 304, 96;
+  HostileReplies == "@Dd grunts angrily.";
+  FriendlyReplies == "@Dd grunts cheerfully.";
+  TotalSize = 150;
+  NameSingular = "pig";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 400;
+  CanBeGenerated = false;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  FleshMaterial = PORK;
+  DeathMessage = "@Dd dies squealing forlornly.";
+  AttachedGod = SILVA;
+  AutomaticallySeen = true;
+  IsAbstract = true;
+
+  Config THIN_PIG;
+  {
+    Adjective = "thin";
+    SkinColor = rgb16(255, 196, 255);
+    TotalVolume = 30000;
+    TotalSize = 100;
+    AttributeBonus = -15;
+  }
+}
+
+ox
+{
+  DefaultArmStrength = 40;
+  DefaultAgility = 25;
+  DefaultEndurance = 20;
+  DefaultPerception = 24;
+  DefaultIntelligence = 5;
+  DefaultWisdom = 5;
+  DefaultCharisma = 5;
+  DefaultMana = 0;
+  TotalVolume = 200000;
+  TorsoBitmapPos = 288, 96;
+  HostileReplies == "@Dd bawls furiously.";
+  FriendlyReplies == "@Dd moos happily.";
+  TotalSize = 240;
+  NameSingular = "ox";
+  NamePlural = "oxen";
+  AttackStyle = USE_LEGS|USE_HEAD;
+  CanBeGenerated = false;
+  FleshMaterial = BEEF;
+  DeathMessage = "@Dd moos mournfully and dies.";
+  AttachedGod = SILVA;
+  WillCarryItems = true;
+  CanKick = true;
+  KnownCWeaponSkills = { 2, KICK, BITE; }
+  CWeaponSkillHits = { 2, 50, 50; }
+  PanicLevel = 10;
+  BaseKickStrength = 500;
+  BaseBiteStrength = 250;
+  IsAbstract = true;
+
+  Config STARVED_OX;
+  {
+    Adjective = "starved";
+    SkinColor = rgb16(155, 70, 42);
+    TorsoMainColor = rgb16(215, 215, 215); /* the horns */
+    TotalVolume = 100000;
+    TotalSize = 150;
+    AttributeBonus = -20;
+  }
+}
+
+shaman
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 12;
+  DefaultDexterity = 10;
+  DefaultAgility = 20;
+  DefaultEndurance = 15;
+  DefaultPerception = 18;
+  DefaultIntelligence = 15;
+  DefaultWisdom = 10;
+  DefaultCharisma = 4;
+  DefaultMana = 20;
+  SkinColor = rgb16(48, 48, 48);
+  EyeColor = rgb16(200, 200, 0);
+  ClothColor = rgb16(180, 120, 80);
+  BeltColor = rgb16(72, 60, 24);
+  LegMainColor = rgb16(96, 80, 48);
+  HeadBitmapPos = 112, 192;
+  TorsoBitmapPos = 48, 0;
+  ArmBitmapPos = 80, 32;
+  LegBitmapPos = 0, 240;
+  TotalVolume = 70000;
+  TotalSize = 180;
+  Adjective = "orc";
+  NameSingular = "shaman";
+  CanBeGenerated = true;
+  Sex = UNDEFINED;
+  CanRead = true;
+  CanBeGenerated = true;
+  HostileReplies == "@Dd growls: \"Me make you feel pain!\"";
+  FriendlyReplies == "\"What do you want me to kill?\"";
+  IgnoreDanger = true;
+  AttachedGod = INFUSCOR;
+  KnownCWeaponSkills == POLE_ARMS;
+  Cloak = LEATHER cloak { Enchantment = -1; }
+  BodyArmor = TROLL_HIDE bodyarmor(PLATE_MAIL) { Enchantment = -2; }
+  RightWielded = BRONZE BRONZE meleeweapon(QUARTER_STAFF);
+  CWeaponSkillHits == 50;
+  RightSWeaponSkillHits = 20;
+  LeftSWeaponSkillHits = 20;
+  ClassStates = GAS_IMMUNITY|INFRA_VISION;
+  PanicLevel = 50;
+  FleshMaterial = ORC_FLESH;
+  WieldedPosition = -1, -1;
+  DangerModifier = 200;
+  UsesLongAdjectiveArticle = true;
+  HPRequirementForGeneration = 50;
+  DayRequirementForGeneration = 3;
+  Frequency = 1500;
+  PolymorphIntelligenceRequirement = 5;
+  ScienceTalkPossibility = 10;
+  ScienceTalkIntelligenceModifier = 1;
+  ScienceTalkWisdomModifier = 1;
+  ScienceTalkIntelligenceRequirement = 10;
+  ScienceTalkWisdomRequirement = 5;
+  IsRangedAttacker = true;
+  WhatCategoryToThrow = POTION;
+  WhatWeaponConfigToThrow = DAGGER;
+  WhatThrowItemTypesToThrow = THROW_POTION;
+  IsAlcoholic = true;
+  ScienceTalkName =
+  {
+    10,
+    "killing", "murder", "rape", "torture", "burns",
+    "cannibalism", "slaughtering", "malice", "axes", "blood";
+  }
+  Inventory = {4, GLASS POISON_LIQUID potion, GLASS VINEGAR potion, GLASS LIQUID_HORROR potion, horn(CONFUSION); }
+}
+
+warlock
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 10;
+  DefaultDexterity = 10;
+  DefaultAgility = 15;
+  DefaultEndurance = 12;
+  DefaultPerception = 20;
+  DefaultIntelligence = 15;
+  DefaultWisdom = 10;
+  DefaultCharisma = 5;
+  DefaultMana = 25;
+  SkinColor = rgb16(0, 96, 0);
+  EyeColor = rgb16(180, 100, 0);
+  ClothColor = rgb16(48, 32, 16);
+  HeadBitmapPos = 96, 528;
+  TorsoBitmapPos = 32, 112;
+  ArmBitmapPos = 64, 144;
+  LegBitmapPos = 16, 64;
+  TotalVolume = 25000;
+  TotalSize = 100;
+  NameSingular = "warlock";
+  CanBeGenerated = true;
+  Sex = UNDEFINED;
+  Adjective = "goblin";
+  CanRead = true;
+  ClassStates = INFRA_VISION;
+  IgnoreDanger = true;
+  AttachedGod = INFUSCOR;
+  /*IsAbstract = true;*/
+  KnownCWeaponSkills == POLE_ARMS;
+  Cloak = LEATHER cloak { Enchantment = 2; }
+  Helmet = LEATHER helmet;
+  BodyArmor = HARDENED_LEATHER bodyarmor(PLATE_MAIL) { Enchantment = 1; }
+  RightWielded = BONE BONE meleeweapon(QUARTER_STAFF) { Enchantment = 1; }
+  CWeaponSkillHits == 20;
+  RightSWeaponSkillHits = 10;
+  LeftSWeaponSkillHits = 10;
+  DangerModifier = 150;
+  HPRequirementForGeneration = 50;
+  DayRequirementForGeneration = 3;
+  Frequency = 1500;
+  PolymorphIntelligenceRequirement = -5;
+  PanicLevel = 66;
+  HostileReplies == "@Dd yells goblin spells at you.";
+  FriendlyReplies == "@Dd laughs: \"Humie friend. Many mommo we teleport. Many spider we polymorph.\"";
+  FleshMaterial = GOBLINOID_FLESH;
+  WieldedPosition = 0, -2;
+  Inventory = { 3, wand(WAND_OF_TELEPORTATION), wand(WAND_OF_DOOR_CREATION), wand(WAND_OF_ACID_RAIN); }
+  IsAlcoholic = true;
+}
+
+alchemist
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 10;
+  DefaultDexterity = 12;
+  DefaultAgility = 18;
+  DefaultEndurance = 10;
+  DefaultPerception = 18;
+  DefaultIntelligence = 15;
+  DefaultWisdom = 10;
+  DefaultCharisma = 4;
+  DefaultMana = 20;
+  SkinColor = rgb16(60, 120, 120);
+  EyeColor = rgb16(180, 180, 0);
+  HairColor = rgb16(35, 35, 35);
+  ClothColor = rgb16(48, 48, 48);
+  LegMainColor = rgb16(111, 74, 37);
+  HeadBitmapPos = 112, 208;
+  TorsoBitmapPos = 48, 176;
+  ArmBitmapPos = 64, 176;
+  LegBitmapPos = 16, 112;
+  TotalVolume = 30000;
+  TotalSize = 90;
+  Adjective = "kobold";
+  NameSingular = "alchemist";
+  CanBeGenerated = true;
+  Sex = UNDEFINED;
+  RightWielded = BALSA_WOOD BALSA_WOOD meleeweapon(QUARTER_STAFF) { Enchantment = 1; }
+  KnownCWeaponSkills == POLE_ARMS;
+  CWeaponSkillHits == 20;
+  RightSWeaponSkillHits = 10;
+  PanicLevel = 50;
+  FleshMaterial = KOBOLD_FLESH;
+  DeathMessage = "@Dd dies yelling like a tortured hyena.";
+  WieldedPosition = 0, -1;
+  IsExtraFragile = true;
+  CanRead = true;
+  /*ClassStates = INFRA_VISION;*/
+  AttachedGod = INFUSCOR;
+  Cloak = LEATHER cloak;
+  Helmet = LEATHER helmet;
+  BodyArmor = LEATHER bodyarmor(PLATE_MAIL) { Enchantment = -1; }
+  DangerModifier = 100;
+  HPRequirementForGeneration = 50;
+  DayRequirementForGeneration = 2;
+  Frequency = 1000;
+  PolymorphIntelligenceRequirement = -10;
+  IsAlcoholic = true;
+}
+
+doctor
+{
+  DefaultArmStrength = 7;
+  DefaultLegStrength = 10;
+  DefaultDexterity = 7;
+  DefaultAgility = 15;
+  DefaultEndurance = 7;
+  DefaultPerception = 21;
+  DefaultIntelligence = 25;
+  DefaultWisdom = 40;
+  DefaultCharisma = 20;
+  DefaultMana = 20;
+  TotalVolume = 70000;
+  TotalSize = 160;
+  NameSingular = "bare-hands doctor";
+  SkinColor = rgb16(128, 80, 48);
+  HairColor = rgb16(32, 32, 32);
+  ClothColor = rgb16(56, 48, 20);
+  HeadBitmapPos = 96, 224;
+  TorsoBitmapPos = 32, 0;
+  ArmBitmapPos = 64, 0;
+  LegBitmapPos = 0, 288;
+  /*IsUnique = true;*/
+  TamingDifficulty = 15;
+  AttachedGod = SEGES;
+  CanRead = true;
+  HostileReplies == "\"Bacillus! I surgically detach your every limb!\"";
+  DeathMessage = "@Dd is dead before he hits the ground.";
+  FriendlyReplies =
+  {
+    4,
+    "\"I can re-attach limb, chop limb, cure disease or perform acupuncture, yes yes. But first we make payment to Party. \"",
+    "\"Who need god when scalpel does same job? \"",
+    "\"I once was employed by great-frog priest to make eunuch for Attnam cathedral. You want be eunuch?\"",
+    "\"First, I was butcher, then Party offer me doctor job, yes yes. \"";
+  }
+  AutomaticallySeen = true;
+  ScienceTalkPossibility = 75;
+  ScienceTalkIntelligenceModifier = 50;
+  ScienceTalkWisdomModifier = 100;
+  ScienceTalkIntelligenceRequirement = 25;
+  ScienceTalkWisdomRequirement = 30;
+  IsExtraFragile = true;
+  IsSadist = true;
+  IsMasochist = true;
+  CanBeCloned = false;
+  Inventory == potion { Times = 2; SecondaryMaterial = WATER; }
+  CanBeGenerated = true;
+  PanicLevel = 0;
+  Cloak = LEATHER cloak;
+  Frequency = 2000;
+}

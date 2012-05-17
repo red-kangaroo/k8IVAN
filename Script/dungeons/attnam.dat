@@ -707,6 +707,11 @@ Dungeon ATTNAM;
       FloorSquare = solidterrain(FLOOR), 0;
       WallSquare = solidterrain(SNOW_TERRAIN), FIR_WOOD wall(BRICK_FINE);
       DoorSquare = solidterrain(FLOOR), door;
+
+      Square, Pos 1, 1;
+      {
+        Character = doctor { Team = ATTNAM_TEAM; }
+      }
     }
 
     Room

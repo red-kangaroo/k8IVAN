@@ -496,4 +496,17 @@ protected:
 };
 
 
+CHARACTER(mouse, nonhumanoid)
+{
+};
+
+CHARACTER(pig, nonhumanoid)
+{
+};
+
+CHARACTER(ox, nonhumanoid)
+{
+};
+
+
 #endif

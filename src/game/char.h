@@ -1109,6 +1109,7 @@ public:
   truth CheckForBeverage ();
   void Haste ();
   void Slow ();
+  virtual void SurgicallyDetachBodyPart ();
 
  protected:
   static truth DamageTypeDestroysBodyPart (int);

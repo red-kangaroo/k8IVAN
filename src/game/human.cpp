@@ -1875,6 +1875,33 @@ truth humanoid::EquipmentEasilyRecognized(int I) const
   return true;
 }
 
+void humanoid::SurgicallyDetachBodyPart () {
+  int ToBeDetached;
+  //
+  switch (game::KeyQuestion(CONST_S("What limb? (l)eft arm, (r)ight arm, (L)eft leg, (R)ight leg, (h)ead?"), KEY_ESC, 5, 'l','r','L','R', 'h')) {
+    case 'l': ToBeDetached = LEFT_ARM_INDEX; break;
+    case 'r': ToBeDetached = RIGHT_ARM_INDEX; break;
+    case 'L': ToBeDetached = LEFT_LEG_INDEX; break;
+    case 'R': ToBeDetached = RIGHT_LEG_INDEX; break;
+    case 'h': ToBeDetached = HEAD_INDEX; break; // maybe no head, should be up to the player to decide.
+    default: return;
+  }
+  //
+  if (GetBodyPart(ToBeDetached)) {
+    item *ToDrop = SevereBodyPart(ToBeDetached);
+    SendNewDrawRequest();
+    if (ToDrop) {
+      GetStack()->AddItem(ToDrop);
+      ToDrop->DropEquipment();
+    }
+    ADD_MESSAGE("Bodypart detached!");
+  } else {
+    ADD_MESSAGE("That bodypart has already been detached.");
+  }
+  CheckDeath(CONST_S("had one of his vital bodyparts surgically removed"), 0);
+}
+
+
 void humanoid::SignalEquipmentAdd(int EquipmentIndex)
 {
   character::SignalEquipmentAdd(EquipmentIndex);
@@ -5485,4 +5512,420 @@ truth exiledpriest::MoveTowardsHomePos () {
 
 void exiledpriest::GetAICommand () {
   priest::GetAICommand();
+}
+
+
+void doctor::BeTalkedTo () {
+  if (GetRelation(PLAYER) == HOSTILE) {
+    ADD_MESSAGE("\"Bacillus! I surgically detach your every limb!\"");
+    return;
+  }
+  //
+  for (int c = 0; c < PLAYER->GetBodyParts(); ++c) {
+    if (!PLAYER->GetBodyPart(c) && PLAYER->CanCreateBodyPart(c)) {
+      truth HasOld = false;
+      for (std::list<uLong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
+        bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
+        if (OldBodyPart) {
+          HasOld = true;
+          sLong Price = (2*GetAttribute(CHARISMA)) < PLAYER->GetAttribute(CHARISMA) ? 5 : (2*GetAttribute(CHARISMA)-PLAYER->GetAttribute(CHARISMA));
+          if (PLAYER->GetMoney() >= Price) {
+            if (GetAttribute(INTELLIGENCE) < OldBodyPart->GetMainMaterial()->GetIntelligenceRequirement() && !OldBodyPart->CanRegenerate()) {
+              ADD_MESSAGE("\"I no smart enough to put back bodyparts made of %s, especially not your severed %s.\"", OldBodyPart->GetMainMaterial()->GetName(false, false).CStr(), PLAYER->GetBodyPartName(c).CStr());
+            } else {
+              ADD_MESSAGE("\"I could put your old %s back in exchange for %d gold pieces, yes yes.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+              if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+                OldBodyPart->SetHP(1);
+                PLAYER->SetMoney(PLAYER->GetMoney()-Price);
+                SetMoney(GetMoney()+Price);
+                OldBodyPart->RemoveFromSlot();
+                PLAYER->AttachBodyPart(OldBodyPart);
+                return;
+              }
+            }
+          } else {
+            ADD_MESSAGE("\"Oh my! Your %s severed! Help yourself and get %dgp and Party help you too.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+          }
+        }
+      }
+      // okay, doctors cannot summon limbs
+      if (!HasOld) {
+        ADD_MESSAGE("\"You don't have your original %s with you. A priest or priestess might summon you a new one with the right rituals.\"", PLAYER->GetBodyPartName(c).CStr());
+      }
+    }
+  }
+  // remove limb looks like this:
+  // first, select limb to detach (ask player this)
+  // then detach limb
+  // then make player scream, according to endurance level. above 25 endurance, no scream, nor panic
+  // if scream, then panic for a duration according to (25 - Endurance)*4 or zero
+  // if state confused is activated, then no scream, no panic (makes vodka handy)
+  // hand over 5 gold
+  if (PLAYER->GetMoney() >= 5) {
+    ADD_MESSAGE("\"I can surgically remove one of your limbs in exchange for 5 gold. Flat rate, genuine bargain!\"");
+    if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      PLAYER->SetMoney(PLAYER->GetMoney()-5);
+      SetMoney(GetMoney()+5);
+      PLAYER->SurgicallyDetachBodyPart();
+      if ((PLAYER->GetAttribute(ENDURANCE) <= 24) && !PLAYER->StateIsActivated(CONFUSED)) {
+        PLAYER->BeginTemporaryState(PANIC, 500+RAND()%4*(25-PLAYER->GetAttribute(ENDURANCE)));
+        ADD_MESSAGE("You let out a gut-wrenching scream of agony!");
+      }
+      return;
+    }
+  }
+  // cure poison
+  if (PLAYER->TemporaryStateIsActivated(POISONED)) {
+    sLong Price = GetAttribute(CHARISMA) < PLAYER->GetAttribute(CHARISMA) ? 5 : (GetAttribute(CHARISMA)-PLAYER->GetAttribute(CHARISMA));
+    if (PLAYER->GetMoney() >= Price) {
+      ADD_MESSAGE("\"You seem to be rather ill, yes yes. I give you small dose of antidote for %d gold pieces.\"", Price);
+      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+        ADD_MESSAGE("You feel better.");
+        PLAYER->DeActivateTemporaryState(POISONED);
+        PLAYER->SetMoney(PLAYER->GetMoney()-Price);
+        SetMoney(GetMoney()+Price);
+        return;
+      }
+    } else {
+      ADD_MESSAGE("\"You seem to be rather ill. Get %d gold pieces and I fix that.\"", Price);
+    }
+  }
+  // cure leprosy
+  if (PLAYER->TemporaryStateIsActivated(LEPROSY)) {
+    sLong Price = GetAttribute(CHARISMA) < PLAYER->GetAttribute(CHARISMA) ? 5 : (GetAttribute(CHARISMA)-PLAYER->GetAttribute(CHARISMA));
+    if (PLAYER->GetMoney() >= Price) {
+      ADD_MESSAGE("\"You seem to have contracted vile disease of leprosy, yes yes. I can give you small dose of medicince for %d gold pieces.\"", Price);
+      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+        ADD_MESSAGE("You feel better.");
+        PLAYER->DeActivateTemporaryState(LEPROSY);
+        PLAYER->SetMoney(PLAYER->GetMoney()-Price);
+        SetMoney(GetMoney()+Price);
+        return;
+      }
+    } else {
+      ADD_MESSAGE("\"You seem to be falling apart. Get %d gold pieces and I fix that.\"", Price);
+    }
+  }
+  // cure lycanthropy
+  if (PLAYER->TemporaryStateIsActivated(LYCANTHROPY)) {
+    sLong Price = GetAttribute(CHARISMA) < PLAYER->GetAttribute(CHARISMA) ? 5 : (GetAttribute(CHARISMA)-PLAYER->GetAttribute(CHARISMA));
+    if (PLAYER->GetMoney() >= Price) {
+      ADD_MESSAGE("\"You seem to be turning into a werewolf quite frequently. Party must crush epidemic, special priority! If you wish to pay %dgp, I can remove the canine blood from your veins with acupucnture, yes yes.\"", Price);
+      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+        ADD_MESSAGE("You feel better.");
+        PLAYER->DeActivateTemporaryState(LYCANTHROPY);
+        PLAYER->SetMoney(PLAYER->GetMoney()-Price);
+        SetMoney(GetMoney()+Price);
+        return;
+      }
+    } else {
+      ADD_MESSAGE("\"You seem to be lycanthropic. I might be able to do something for that but I need %dgp for the Party first.\"", Price);
+    }
+  }
+  // cure vampirism
+  if (PLAYER->TemporaryStateIsActivated(VAMPIRISM)) {
+    sLong Price = GetAttribute(CHARISMA) < PLAYER->GetAttribute(CHARISMA) ? 5 : (GetAttribute(CHARISMA)-PLAYER->GetAttribute(CHARISMA));
+    if (PLAYER->GetMoney() >= Price) {
+      ADD_MESSAGE("\"You seem to have addiction to drinking blood. Party must crush epidemic, special priority! If you wish to pay %dgp, I can remove vampiric urges with acupucnture, yes yes.\"", Price);
+      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+        ADD_MESSAGE("You feel better.");
+        PLAYER->DeActivateTemporaryState(VAMPIRISM);
+        PLAYER->SetMoney(PLAYER->GetMoney()-Price);
+        SetMoney(GetMoney()+Price);
+        return;
+      }
+    } else {
+      ADD_MESSAGE("\"You seem to be vampiric. I might be able to do something for that but I need %dgp for the Party first.\"", Price);
+    }
+  }
+  humanoid::BeTalkedTo();
+}
+
+
+void shaman::GetAICommand() {
+  //SeekLeader(GetLeader());
+  ////
+  //if (FollowLeader(GetLeader())) return;
+  character *NearestEnemy = 0;
+  sLong NearestEnemyDistance = 0x7FFFFFFF;
+  v2 Pos = GetPos();
+  //
+  for (int c = 0; c < game::GetTeams(); ++c) {
+    if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
+      for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
+        if ((*i)->IsEnabled()) {
+          sLong ThisDistance = Max<sLong>(abs((*i)->GetPos().X-Pos.X), abs((*i)->GetPos().Y-Pos.Y));
+          //
+          if ((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND()%3))) && (*i)->CanBeSeenBy(this)) {
+            NearestEnemy = *i;
+            NearestEnemyDistance = ThisDistance;
+          }
+        }
+      }
+    }
+  }
+  //
+  beamdata Beam (
+    this,
+    CONST_S("killed by the spells of ")+GetName(INDEFINITE),
+    YOURSELF,
+    0
+  );
+  //
+  if (NearestEnemy && !StateIsActivated(CONFUSED) && !(RAND()%3)) {
+    lsquare *Square = NearestEnemy->GetLSquareUnder();
+    EditAP(-GetSpellAPCost());
+    if (CanBeSeenByPlayer()) ADD_MESSAGE("%s invokes a spell!", CHAR_NAME(DEFINITE));
+    switch (RAND()%33) {
+     case 0: case 1: case 2: Square->DrawParticles(RED); Square->Parasitize(Beam); break;
+     case 3: case 4: case 5: case 6: Square->DrawParticles(RED); Square->Slow(Beam); break;
+     case 7: Square->DrawParticles(RED); Square->Confuse(Beam); break;
+     case 8: case 9: case 10: Square->DrawParticles(RED); Square->InstillPanic(Beam); break;
+     default: break;
+    }
+    if (CanBeSeenByPlayer()) {
+      NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell of ")+GetName(DEFINITE)+CONST_S(" interrupts you."));
+    } else {
+      NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell interrupts you."));
+    }
+    return;
+  }
+  //
+  //fprintf(stderr, "shaman tries to throw...\n");
+  if (!StateIsActivated(CONFUSED) && CheckThrowItemOpportunity()) return;
+  //fprintf(stderr, "shaman can't throw...\n");
+  character::GetAICommand();
+}
+
+
+int shaman::GetSpellAPCost () const {
+  //switch (GetConfig()) {
+  //  case APPRENTICE_NECROMANCER: return 2000;
+  //  case MASTER_NECROMANCER: return 1000;
+  //}
+  return 2000;
+}
+
+
+/*
+void shaman::CreateInitialEquipment(int SpecialFlags)
+{
+  //SetRightWielded(meleeweapon::Spawn(AXE, SpecialFlags));
+  //SetLeftWielded(meleeweapon::Spawn(AXE, SpecialFlags));
+  GetStack()->AddItem(potion::Spawn(GLASS, POISON_LIQUID));
+
+  if(RAND() & 2)
+    GetStack()->AddItem(potion::Spawn(GLASS, VINEGAR));
+
+  if(RAND() & 2)
+    GetStack()->AddItem(potion::Spawn(GLASS, LIQUID_HORROR));
+
+  if(RAND() & 5)
+    GetStack()->AddItem(potion::Spawn(GLASS, SULPHURIC_ACID));
+
+  GetStack()->AddItem(lantern::Spawn());
+  //GetCWeaponSkill(AXES)->AddHit(GetWSkillHits());
+  //GetCurrentRightSWeaponSkill()->AddHit(GetWSkillHits());
+}*/
+
+
+void shaman::PostConstruct () {
+  if (!RAND_N(25)) GainIntrinsic(LEPROSY);
+}
+
+
+void warlock::GetAICommand () {
+  SeekLeader(GetLeader());
+  if (FollowLeader(GetLeader())) return;
+  //
+  character *NearestEnemy = 0;
+  sLong NearestEnemyDistance = 0x7FFFFFFF;
+  v2 Pos = GetPos();
+  //
+  for (int c = 0; c < game::GetTeams(); ++c) {
+    if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
+      for (std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
+        if ((*i)->IsEnabled()) {
+          sLong ThisDistance = Max<sLong>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
+          //
+          if ((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND()%3))) && (*i)->CanBeSeenBy(this)) {
+            NearestEnemy = *i;
+            NearestEnemyDistance = ThisDistance;
+          }
+        }
+      }
+    }
+  }
+  //
+  if (NearestEnemy && NearestEnemy->GetPos().IsAdjacent(Pos)) {
+    if (/*GetConfig() == MASTER_NECROMANCER && */!StateIsActivated(CONFUSED) && !(RAND()&3)) {
+      if (CanBeSeenByPlayer()) ADD_MESSAGE("%s invokes a spell and disappears.", CHAR_NAME(DEFINITE));
+      TeleportRandomly(true);
+      EditAP(-GetSpellAPCost());
+      return;
+    } else if (NearestEnemy->IsSmall() && GetAttribute(WISDOM) < NearestEnemy->GetAttackWisdomLimit() && !(RAND()&3) &&
+               Hit(NearestEnemy, NearestEnemy->GetPos(), game::GetDirectionForVector(NearestEnemy->GetPos()-GetPos()))) {
+      return;
+    }
+  }
+  //
+  if (NearestEnemy && (NearestEnemyDistance < 10 || StateIsActivated(PANIC)) && (RAND()&3)) {
+    SetGoingTo((Pos << 1)-NearestEnemy->GetPos());
+    if (MoveTowardsTarget(true)) return;
+  }
+  //
+  if (!StateIsActivated(CONFUSED) && CheckAIZapOpportunity()) return;
+  if (CheckForUsefulItemsOnGround()) return;
+  if (CheckForDoors()) return;
+  if (CheckSadism()) return;
+  if (MoveRandomly()) return;
+  EditAP(-1000);
+}
+
+
+int warlock::GetSpellAPCost () const {
+  //switch(GetConfig()) {
+  //  case APPRENTICE_NECROMANCER: return 2000;
+  //  case MASTER_NECROMANCER: return 1000;
+  //}
+  return 2000;
+}
+
+
+void alchemist::GetAICommand () {
+  SeekLeader(GetLeader());
+  if (FollowLeader(GetLeader())) return;
+  //
+  character *NearestEnemy = 0;
+  sLong NearestEnemyDistance = 0x7FFFFFFF;
+  v2 Pos = GetPos();
+  //
+  for (int c = 0; c < game::GetTeams(); ++c) {
+    if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
+      for (std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
+        if ((*i)->IsEnabled()) {
+          sLong ThisDistance = Max<sLong>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y-Pos.Y));
+          //
+          if ((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND()%3))) && (*i)->CanBeSeenBy(this)) {
+            NearestEnemy = *i;
+            NearestEnemyDistance = ThisDistance;
+          }
+        }
+      }
+    }
+  }
+  //
+  truth Interrupt = false;
+  // here we insert code for the alchemy
+  if (NearestEnemy && !StateIsActivated(CONFUSED) && !(RAND()%2)) {
+    if (NearestEnemy->IsHumanoid()) {
+      beamdata Beam(
+        this,
+        CONST_S("killed by the spells of ") + GetName(INDEFINITE),
+        YOURSELF,
+        0
+      );
+      lsquare *Square = NearestEnemy->GetLSquareUnder();
+      EditAP(-GetSpellAPCost());
+      if (CanBeSeenByPlayer()) ADD_MESSAGE("%s invokes a spell!", CHAR_NAME(DEFINITE));
+      Square->DrawParticles(RED);
+      Square->SoftenMaterial(Beam);
+      Interrupt = true;
+    }
+    if (Interrupt) {
+      if (CanBeSeenByPlayer()) {
+        NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell of ")+GetName(DEFINITE)+CONST_S(" interrupts you."));
+      } else {
+        NearestEnemy->DeActivateVoluntaryAction(CONST_S("The spell interrupts you."));
+      }
+    }
+    return;
+  }
+  /*
+  truth Changed = false;
+  item* MainArmor = 0;
+
+    int BodyPartToHit = NearestEnemy->GetRandomBodyPart();
+
+    switch(BodyPartToHit) // okay, this is broken because it seg-faults, it needs to be replaced by a BEAM, in lsquare.cpp, as per mage: LowerEnchantment(), say
+    {
+      case TORSO_INDEX:
+      MainArmor = NearestEnemy->GetEquipment(BODY_ARMOR_INDEX);
+      break;
+      case HEAD_INDEX:
+      MainArmor = NearestEnemy->GetEquipment(HELMET_INDEX);
+      break;
+      case RIGHT_ARM_INDEX:
+      MainArmor = NearestEnemy->GetEquipment(RIGHT_GAUNTLET_INDEX);
+      break;
+      case LEFT_ARM_INDEX:
+      MainArmor = NearestEnemy->GetEquipment(LEFT_GAUNTLET_INDEX);
+      break;
+      case GROIN_INDEX:
+      MainArmor = NearestEnemy->GetEquipment(BELT_INDEX);
+      break;
+      case RIGHT_LEG_INDEX:
+      MainArmor = NearestEnemy->GetEquipment(RIGHT_BOOT_INDEX);
+      break;
+      case LEFT_LEG_INDEX:
+      MainArmor = NearestEnemy->GetEquipment(LEFT_BOOT_INDEX);
+      break;
+      case NONE_INDEX:
+      MainArmor = 0;
+      break;
+    }
+
+    if(MainArmor)
+    {
+      festring Desc;
+      MainArmor->AddName(Desc, UNARTICLED);
+
+      if((MainArmor->GetMainMaterial()->GetCategoryFlags() & IS_METAL) && (MainArmor->GetMainMaterial()->GetConfig() != TIN))
+      {
+        MainArmor->ChangeMainMaterial(MAKE_MATERIAL(TIN));
+        Changed = true;
+        Interrupt = true;
+      }
+      else if((MainArmor->GetMainMaterial()->GetCategoryFlags() & CAN_BE_TAILORED) && (MainArmor->GetMainMaterial()->GetConfig() != CLOTH))
+      {
+        MainArmor->ChangeMainMaterial(MAKE_MATERIAL(CLOTH));
+        Changed = true;
+        Interrupt = true;
+      }
+
+      if(Changed && NearestEnemy->IsPlayer())
+      {
+        ADD_MESSAGE("Your %s softens into %s!", Desc.CStr(), MainArmor->GetMainMaterial()->GetName(false, false).CStr());
+      }
+      else if(Changed)
+        ADD_MESSAGE("%s's %s softens into %s!", NearestEnemy->CHAR_DESCRIPTION(DEFINITE), Desc.CStr(), MainArmor->GetMainMaterial()->GetName(false, false).CStr());
+    }
+    if(!Changed) //may not need this message
+      if(NearestEnemy->IsPlayer())
+      {
+        ADD_MESSAGE("Your %s vibrates slightly but remains unchanged.", MainArmor->CHAR_NAME(UNARTICLED) );
+      }
+      else
+        ADD_MESSAGE("%s's %s vibrates slightly but remains unchanged.", NearestEnemy->CHAR_DESCRIPTION(DEFINITE), MainArmor->CHAR_NAME(UNARTICLED) );
+  */
+  //
+  if (NearestEnemy && (NearestEnemyDistance < 10 || StateIsActivated(PANIC)) && (RAND()&3)) {
+    SetGoingTo((Pos << 1)-NearestEnemy->GetPos());
+    if (MoveTowardsTarget(true)) return;
+  }
+  //
+  if (CheckForUsefulItemsOnGround()) return;
+  if (CheckForDoors()) return;
+  if (CheckSadism()) return;
+  if (MoveRandomly()) return;
+  EditAP(-1000);
+}
+
+
+int alchemist::GetSpellAPCost () const {
+  //switch (GetConfig()) {
+  //  case APPRENTICE_NECROMANCER: return 2000;
+  //  case MASTER_NECROMANCER: return 1000;
+  //}
+  return 2000;
 }

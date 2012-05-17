@@ -1,0 +1,165 @@
+/* CLIVAN extensions */
+
+Extend flesh
+{
+  Config MOUSE_FLESH;
+  {
+    NameStem = "mouse flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config FOX_FLESH;
+  {
+    NameStem = "fox flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config KABOUTER_FLESH;
+  {
+    NameStem = "kabouter flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config ULDRA_FLESH;
+  {
+    NameStem = "uldra flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config VAMPIRE_FLESH;
+  {
+    NameStem = "vampire flesh";
+    Effect = EFFECT_VAMPIRISM;
+    EffectStrength = 10;
+    ConsumeWisdomLimit = 10;
+    AttachedGod = MORTIFER;
+  }
+
+  Config EAGLE_FLESH;
+  {
+    NameStem = "eagle flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config OKAPI_FLESH;
+  {
+    NameStem = "raw okapi flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config THUNDER_BIRD_FLESH;
+  {
+    NameStem = "thunderbird flesh";
+    AttachedGod = MORTIFER;
+  }
+}
+
+
+Extend organic
+{
+  Config MANGO_FLESH;
+  {
+    StrengthValue = 3;
+    Density = 1200;
+    ConsumeType = CT_FRUIT;
+    NutritionValue = 1000;
+    Color = rgb16(250, 158, 74);
+    PriceModifier = 3000;
+    NameStem = "mango flesh";
+    Flexibility = 5;
+    AttachedGod = SILVA;
+  }
+
+  Config HOLY_MANGO_FLESH;
+  {
+    StrengthValue = 3;
+    Density = 1200;
+    ConsumeType = CT_FRUIT;
+    NutritionValue = 20000;
+    Color = rgb16(250, 158, 74);
+    PriceModifier = 10000;
+    NameStem = "holy mango flesh";
+    Flexibility = 10;
+    AttachedGod = SILVA;
+    Effect = EFFECT_HOLY_MANGO;
+    ConsumeEndMessage = CEM_HOLY_MANGO;
+    CommonFlags = Base|IS_VALUABLE&~(CAN_BE_WISHED|CAN_BE_MIRRORED);
+    BodyFlags = Base|IS_WARM;
+  }
+}
+
+
+Extend liquid
+{
+  Config VINEGAR;
+  {
+    StrengthValue = 1;
+    NutritionValue = 1000;
+    Color = rgb16(100, 100, 0);
+    NameStem = "vinegar";
+    Alpha = 150;
+    Flexibility = 45;
+    AttachedGod = SCABIES;
+    RustModifier = 50;
+    Acidicity = 50;
+    ConsumeWisdomLimit = 6;
+    PriceModifier = 100;
+    InteractionFlags = Base|AFFECT_INSIDE;
+    StepInWisdomLimit = 10;
+  }
+
+  Config LIQUID_HORROR;
+  {
+    StrengthValue = 1;
+    Density = 2500;
+    NutritionValue = 50;
+    Color = rgb16(40, 80, 40);
+    ConsumeWisdomLimit = 2;
+    NameStem = "liquified fear";
+    Effect = EFFECT_PANIC;
+    ConsumeEndMessage = CEM_LIQUID_HORROR;
+    /*HitMessage = NONE;*/
+    AttachedGod = SOLICITU;
+    RustModifier = 0;
+    Acidicity = 0;
+    PriceModifier = 50;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_MIRRORED;
+    StepInWisdomLimit = 20;
+  }
+
+  Config OMMEL_BLOOD;
+  {
+    StrengthValue = 1;
+    NutritionValue = 250;
+    Color = rgb16(180, 20, 20);
+    NameStem = "ommel blood";
+    Alpha = 175;
+    Flexibility = 40;
+    AttachedGod = CRUENTUS;
+    Acidicity = 5000:
+    RustModifier = 5000;
+    ConsumeWisdomLimit = 1;
+    CategoryFlags = IS_BLOOD;
+    InteractionFlags = Base|AFFECT_INSIDE;
+    StepInWisdomLimit = 1;
+    NameFlags = Base|USE_AN;
+    PriceModifier = 5000;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_MIRRORED;
+    ConsumeEndMessage = CEM_OMMEL;
+  }
+
+  Config CURDLED_OMMEL_BLOOD;
+  {
+    StrengthValue = 1;
+    Color = rgb16(180, 60, 60);
+    NutritionValue = 250;
+    PriceModifier = 10000;
+    NameStem = "curdled ommel blood";
+    Effect = EFFECT_OMMEL_SWEAT;
+    ConsumeEndMessage = CEM_OMMEL;
+    HitMessage = HM_OMMEL;
+    AttachedGod = SCABIES;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_MIRRORED;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+  }
+}

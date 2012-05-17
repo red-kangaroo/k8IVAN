@@ -749,6 +749,7 @@ template<> void databasecreator<material>::CreateDataBaseMemberMap () {
   ADD_MEMBER(Acidicity);
   ADD_MEMBER(NaturalForm);
   ADD_MEMBER(HardenedMaterial);
+  ADD_MEMBER(SoftenedMaterial);
   ADD_MEMBER(IntelligenceRequirement);
   ADD_MEMBER(Stickiness);
   ADD_MEMBER(DisablesPanicWhenConsumed);

@@ -391,6 +391,16 @@ Dungeon NEW_ATTNAM;
       Character = mysteryman { Team = MONDEDR_TEAM; }
     }
 
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = pig(THIN_PIG) { Team = NEW_ATTNAM_TEAM; }
+    }
+
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = ox(STARVED_OX) { Team = NEW_ATTNAM_TEAM; }
+    }
+
     Square, Pos 0, 45;
     {
       Character = bananagrower;

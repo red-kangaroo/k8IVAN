@@ -170,6 +170,7 @@ public:
   virtual truth MindWormCanPenetrateSkull(mindworm*) const;
   truth HasSadistWeapon() const;
   virtual truth HasSadistAttackMode() const;
+  virtual void SurgicallyDetachBodyPart();
  protected:
   virtual v2 GetBodyPartBitmapPos(int, truth = false) const;
   virtual col16 GetBodyPartColorB(int, truth = false) const;
@@ -746,6 +747,37 @@ public:
 
 CHARACTER(reaper, genie)
 {
+};
+
+CHARACTER(shaman, humanoid)
+{
+protected:
+  virtual void GetAICommand ();
+  virtual void PostConstruct ();
+  int GetSpellAPCost () const;
+};
+
+
+CHARACTER(warlock, humanoid)
+{
+protected:
+  virtual void GetAICommand ();
+  int GetSpellAPCost() const;
+};
+
+
+CHARACTER(alchemist, humanoid)
+{
+protected:
+  virtual void GetAICommand ();
+  int GetSpellAPCost () const;
+};
+
+
+CHARACTER(doctor, humanoid)
+{
+protected:
+  virtual void BeTalkedTo ();
 };
 
 

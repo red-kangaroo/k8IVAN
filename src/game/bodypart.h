@@ -111,6 +111,7 @@ ITEM(bodypart, item)
   truth IsWarm() const;
   truth UseMaterialAttributes() const;
   truth CanRegenerate() const;
+  truth CanHaveParasite() const;
   virtual square* GetSquareUnder(int = 0) const;
   virtual lsquare* GetLSquareUnder(int = 0) const;
   virtual item* GetArmorToReceiveFluid(truth) const { return 0; }

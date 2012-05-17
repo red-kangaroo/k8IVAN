@@ -20,6 +20,7 @@ col16 bodypart::GetMaterialColorA(int) const { return GetMainMaterial()->GetSkin
 truth bodypart::IsWarm() const { return MainMaterial->GetBodyFlags() & IS_WARM; }
 truth bodypart::UseMaterialAttributes() const { return MainMaterial->GetBodyFlags() & USE_MATERIAL_ATTRIBUTES || !Master || Master->AlwaysUseMaterialAttributes(); }
 truth bodypart::CanRegenerate() const { return MainMaterial->GetBodyFlags() & CAN_REGENERATE; }
+truth bodypart::CanHaveParasite() const { return MainMaterial->GetBodyFlags() & CAN_HAVE_PARASITE; }
 square* bodypart::GetSquareUnder(int I) const { return Master ? Slot[0]->GetSquareUnder(I) : Slot[I]->GetSquareUnder(); }
 lsquare* bodypart::GetLSquareUnder(int I) const { return static_cast<lsquare*>(Master ? Slot[0]->GetSquareUnder(I) : Slot[I]->GetSquareUnder()); }
 item* bodypart::GetExternalBodyArmor() const { return GetHumanoidMaster()->GetBodyArmor(); }

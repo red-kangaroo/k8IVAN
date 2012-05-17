@@ -11,6 +11,7 @@ Extend ironalloy /* metals that rust */
     AttachedGod = LORICATUS;
     RustModifier = 5;
     HardenedMaterial = VALPURIUM;
+    SoftenedMaterial = METEORIC_STEEL;
     IntelligenceRequirement = 60;
     CommonFlags = Base|IS_VALUABLE;
   }

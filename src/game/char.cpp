@@ -1996,6 +1996,7 @@ truth character::CheckInventoryForItemToThrow (item *ToBeChecked) {
 
 truth character::CheckThrowItemOpportunity () {
   if (!IsRangedAttacker() || !CanThrow() || !IsHumanoid() || !IsSmall() || !IsEnabled()) return false; // total gum
+  //fprintf(stderr, "character::CheckThrowItemOpportunity...\n");
   // Steps:
   // (1) - Acquire target as nearest enemy
   // (2) - Check that this enemy is in range, and is in appropriate direction; no friendly fire!
@@ -2054,6 +2055,7 @@ truth character::CheckThrowItemOpportunity () {
   } else {
     return false;
   }
+  //fprintf(stderr, "throw: has target.\n");
   // check inventory for throwing weapon
   itemvector ItemVector;
   GetStack()->FillItemVector(ItemVector);
@@ -2064,6 +2066,7 @@ truth character::CheckThrowItemOpportunity () {
     }
   }
   if (!ToBeThrown) return false;
+  //fprintf(stderr, "throw: has throwing weapon.\n");
   if (CanBeSeenByPlayer()) ADD_MESSAGE("%s throws %s.", CHAR_NAME(DEFINITE), ToBeThrown->CHAR_NAME(INDEFINITE));
   ThrowItem(ThrowDirection, ToBeThrown);
   EditExperience(ARM_STRENGTH, 75, 1<<8);
@@ -7675,4 +7678,9 @@ void character::Slow () {
   doforequipments()(this, &item::Slow);
   //BeginTemporaryState(HASTE, 500 + RAND() % 1000); // this seems to be a bug
   BeginTemporaryState(SLOW, 500 + RAND() % 1000);
+}
+
+
+void character::SurgicallyDetachBodyPart () {
+  ADD_MESSAGE("You haven't got any extra bodyparts.");
 }

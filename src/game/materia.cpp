@@ -390,23 +390,30 @@ item* material::CreateNaturalForm(sLong Volume) const
   return Item;
 }
 
-int material::GetHardenedMaterial(citem* Item) const
-{
-  const materialdatabase* DB = DataBase;
 
-  if(!Item->FlexibilityIsEssential())
-    return DB->HardenedMaterial;
-
-  while(DB->HardenedMaterial != NONE)
-  {
+int material::GetHardenedMaterial (citem *Item) const {
+  const materialdatabase *DB = DataBase;
+  //
+  if (!Item->FlexibilityIsEssential()) return DB->HardenedMaterial;
+  while (DB->HardenedMaterial != NONE) {
     DB = material::GetDataBase(DB->HardenedMaterial);
-
-    if(DataBase->Flexibility <= DB->Flexibility)
-      return DB->Config;
+    if (DataBase->Flexibility <= DB->Flexibility) return DB->Config;
   }
-
   return DB->HardenedMaterial;
 }
+
+
+int material::GetSoftenedMaterial (citem *Item) const {
+  const materialdatabase *DB = DataBase;
+  //
+  if (!Item->FlexibilityIsEssential()) return DB->SoftenedMaterial;
+  while (DB->SoftenedMaterial != NONE) {
+    DB = material::GetDataBase(DB->SoftenedMaterial);
+    if (DataBase->Flexibility <= DB->Flexibility) return DB->Config;
+  }
+  return DB->SoftenedMaterial;
+}
+
 
 int material::GetHardenModifier(citem* Item) const
 {

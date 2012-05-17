@@ -1572,6 +1572,39 @@ truth lsquare::Slow(const beamdata& Beam)
   return false;
 }
 
+truth lsquare::Confuse (const beamdata &Beam) {
+  character *Dude = GetCharacter();
+  //
+  if (Dude && Dude->CanBeConfused()) {
+    if (Beam.Owner) Beam.Owner->Hostility(Dude);
+    Dude->BeginTemporaryState(CONFUSED, 50+RAND()%50);
+  }
+  return false;
+}
+
+
+truth lsquare::Parasitize (const beamdata &Beam) {
+  character *Dude = GetCharacter();
+  //
+  if (Dude && Dude->GetTorso()->CanHaveParasite()) {
+    if (Beam.Owner) Beam.Owner->Hostility(Dude);
+    Dude->GainIntrinsic(PARASITIZED);
+  }
+  return false;
+}
+
+
+truth lsquare::InstillPanic (const beamdata &Beam) {
+  character* Dude = GetCharacter();
+  //
+  if (Dude && Dude->CanPanic()) {
+    if (Beam.Owner) Beam.Owner->Hostility(Dude);
+    Dude->BeginTemporaryState(PANIC, 50+RAND()%50);
+  }
+  return false;
+}
+
+
 truth lsquare::Resurrect(const beamdata& Beam)
 {
   if(GetCharacter())
@@ -1759,6 +1792,53 @@ void lsquare::SortAllItems(const sortdata& SortData)
 
   GetStack()->SortAllItems(SortData);
 }
+
+truth lsquare::SoftenMaterial (const beamdata &Beam) {
+  character *Char = GetCharacter();
+  item *RandomItem;
+  itemvector AllItems;
+  //
+  sortdata SortData(AllItems, Beam.Owner, true, &item::IsEnchantable);
+  SortAllItems(SortData);
+  //sortdata SortData2(AllItems, Beam.Owner, true, &item::MaterialIsChangeable);
+  //SortAllItems(SortData2);
+  if (AllItems.empty()) return false;
+  RandomItem = AllItems[RAND() % AllItems.size()];
+  if (Char) {
+    if (Char->IsPlayer()) ADD_MESSAGE("Your %s glows yellow for a moment!", RandomItem->CHAR_NAME(UNARTICLED));
+    if (Beam.Owner) Beam.Owner->Hostility(Char);
+  }
+  //
+  truth Changed = 0;
+  festring Desc;
+  //
+  RandomItem->AddName(Desc, UNARTICLED);
+  material *OldMaterial = RandomItem->GetMainMaterial();
+  int NewMaterial = RandomItem->GetMainMaterial()->GetSoftenedMaterial(RandomItem);
+  //
+  if (NewMaterial != NONE) {
+    /* Don't Forget! It is an ugly thing, I know, but removal = seg-fault since cannot have NONE material */
+    RandomItem->ChangeMainMaterial(MAKE_MATERIAL(NewMaterial)); /*->SpawnMore()*/
+    if (OldMaterial->GetConfig() != NewMaterial) Changed = 1;
+  }
+  if (Char) {
+    if (Changed && Char->IsPlayer()) {
+      ADD_MESSAGE("Your %s softens into %s!", Desc.CStr(), RandomItem->GetMainMaterial()->GetName(false, false).CStr());
+    } else if (Changed) {
+      ADD_MESSAGE("%s's %s softens into %s!", Char->CHAR_DESCRIPTION(DEFINITE), Desc.CStr(), RandomItem->GetMainMaterial()->GetName(false, false).CStr());
+    }
+    if (!Changed) {
+      //may not need this message
+      if (Char->IsPlayer()) {
+        ADD_MESSAGE("Your %s vibrates slightly but remains unchanged.", RandomItem->CHAR_NAME(UNARTICLED) );
+      } else {
+        ADD_MESSAGE("%s's %s vibrates slightly but remains unchanged.", Char->CHAR_DESCRIPTION(DEFINITE), RandomItem->CHAR_NAME(UNARTICLED) );
+      }
+    }
+  }
+  return true;
+}
+
 
 void lsquare::RemoveSmoke(smoke* ToBeRemoved)
 {

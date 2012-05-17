@@ -48,6 +48,7 @@ material
   Acidicity = 0;
   NaturalForm = lump;
   HardenedMaterial = NONE;
+  SoftenedMaterial = NONE;
   IntelligenceRequirement = 0;
   CommonFlags = IS_ABSTRACT|CAN_BE_WISHED|CAN_BE_MIRRORED;
   NameFlags = 0;
@@ -156,6 +157,7 @@ solid
     Flexibility = 2;
     AttachedGod = SOPHOS;
     HardenedMaterial = OCTIRON;
+    SoftenedMaterial = ARCANITE;
     IntelligenceRequirement = 25;
     CommonFlags = Base|IS_VALUABLE;
     CategoryFlags = Base|IS_METAL|IS_SPARKLING|IS_GOLEM_MATERIAL;
@@ -188,6 +190,7 @@ solid
     Flexibility = 3;
     AttachedGod = MELLIS;
     HardenedMaterial = RUBY;
+    SoftenedMaterial = LEAD;
     IntelligenceRequirement = 30;
     CommonFlags = Base|IS_VALUABLE;
     CategoryFlags = Base|IS_METAL|IS_SPARKLING|IS_GOLEM_MATERIAL;
@@ -260,6 +263,7 @@ solid
     Flexibility = 10;
     AttachedGod = SILVA;
     HardenedMaterial = NYMPH_HAIR;
+    SoftenedMaterial = LEAF;
     CategoryFlags = Base|CAN_BE_TAILORED|IS_GOLEM_MATERIAL;
     InteractionFlags = CAN_BURN;
   }
@@ -368,6 +372,7 @@ solid
     NameStem = "bronze";
     AttachedGod = LORICATUS;
     HardenedMaterial = IRON;
+    SoftenedMaterial = COPPER;
     CategoryFlags = Base|IS_METAL|IS_GOLEM_MATERIAL;
   }
 
@@ -381,6 +386,7 @@ solid
     NameStem = "copper";
     AttachedGod = LORICATUS;
     HardenedMaterial = BRONZE;
+    SoftenedMaterial = TIN;
     CategoryFlags = Base|IS_METAL|IS_GOLEM_MATERIAL;
   }
 
@@ -436,6 +442,7 @@ solid
     Flexibility = 15;
     AttachedGod = SILVA;
     HardenedMaterial = PHOENIX_FEATHER;
+    SoftenedMaterial = TROLL_HIDE;
     IntelligenceRequirement = 10;
     CommonFlags = Base|IS_VALUABLE;
     NameFlags = Base|USE_AN;
@@ -454,6 +461,7 @@ solid
     AttachedGod = SOPHOS;
     IntelligenceRequirement = 5;
     HardenedMaterial = TROLL_HIDE;
+    SoftenedMaterial = LEATHER;
     CategoryFlags = Base|CAN_BE_TAILORED|IS_GOLEM_MATERIAL;
     InteractionFlags = CAN_BURN;
   }
@@ -468,6 +476,7 @@ solid
     Flexibility = 5;
     AttachedGod = SILVA;
     HardenedMaterial = OMMEL_HAIR;
+    SoftenedMaterial = HARDENED_LEATHER;
     IntelligenceRequirement = 5;
     CategoryFlags = Base|CAN_BE_TAILORED;
     InteractionFlags = CAN_BURN;
@@ -514,6 +523,7 @@ solid
     Flexibility = 30;
     AttachedGod = SILVA;
     HardenedMaterial = DRAGON_HIDE;
+    SoftenedMaterial = OMMEL_HAIR;
     IntelligenceRequirement = 20;
     CommonFlags = Base|IS_VALUABLE;
     CategoryFlags = Base|CAN_BE_TAILORED|IS_GOLEM_MATERIAL;
@@ -558,6 +568,7 @@ solid
     Flexibility = 5;
     AttachedGod = SILVA;
     IntelligenceRequirement = 35;
+    SoftenedMaterial = PHOENIX_FEATHER;
     CommonFlags = Base|IS_VALUABLE;
     CategoryFlags = Base|CAN_BE_TAILORED|IS_GOLEM_MATERIAL;
     InteractionFlags = Base&~CAN_DISSOLVE;
@@ -621,6 +632,7 @@ solid
     AttachedGod = SILVA;
     NaturalForm = stick;
     HardenedMaterial = FIR_WOOD;
+    SoftenedMaterial = BALSA_WOOD;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -634,6 +646,7 @@ solid
     AttachedGod = SILVA;
     NaturalForm = stick;
     HardenedMaterial = BIRCH_WOOD;
+    SoftenedMaterial = PINE_WOOD;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -647,6 +660,7 @@ solid
     AttachedGod = SILVA;
     NaturalForm = stick;
     HardenedMaterial = OAK_WOOD;
+    SoftenedMaterial = FIR_WOOD;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -660,6 +674,7 @@ solid
     AttachedGod = SILVA;
     NaturalForm = stick;
     HardenedMaterial = TEAK_WOOD;
+    SoftenedMaterial = BIRCH_WOOD;
     IntelligenceRequirement = 5;
     NameFlags = Base|USE_AN;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
@@ -675,6 +690,7 @@ solid
     AttachedGod = SILVA;
     NaturalForm = stick;
     HardenedMaterial = EBONY_WOOD;
+    SoftenedMaterial = OAK_WOOD;
     IntelligenceRequirement = 5;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
@@ -689,6 +705,7 @@ solid
     AttachedGod = SILVA;
     NaturalForm = stick;
     IntelligenceRequirement = 10;
+    SoftenedMaterial = TEAK_WOOD;
     CommonFlags = Base|IS_VALUABLE;
     NameFlags = Base|USE_AN;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
@@ -705,6 +722,7 @@ solid
     AttachedGod = SOPHOS;
     Flexibility = 2;
     IntelligenceRequirement = 40;
+    SoftenedMaterial = MITHRIL;
     CommonFlags = Base|IS_VALUABLE;
     NameFlags = Base|USE_AN;
     CategoryFlags = Base|IS_METAL|IS_GOLEM_MATERIAL;
@@ -725,6 +743,7 @@ solid
     NaturalForm = stone;
     PriceModifier = 8000;
     HardenedMaterial = GREEN_CRYSTAL;
+    SoftenedMaterial = PURPLE_CRYSTAL;
     IntelligenceRequirement = 20;
     CommonFlags = Base|IS_VALUABLE;
     CategoryFlags = Base|IS_SPARKLING|IS_GOLEM_MATERIAL;
@@ -765,6 +784,7 @@ solid
     NaturalForm = stone;
     PriceModifier = 8000;
     IntelligenceRequirement = 20;
+    SoftenedMaterial = BLUE_CRYSTAL;
     CommonFlags = Base|IS_VALUABLE;
     CategoryFlags = Base|IS_SPARKLING|IS_GOLEM_MATERIAL;
     InteractionFlags = Base&~CAN_DISSOLVE;
@@ -793,6 +813,7 @@ solid
     AttachedGod = TERRA;
     NaturalForm = stone;
     HardenedMaterial = CALCITE;
+    SoftenedMaterial = SAND_STONE;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -806,6 +827,7 @@ solid
     AttachedGod = TERRA;
     NaturalForm = stone;
     HardenedMaterial = OBSIDIAN;
+    SoftenedMaterial = LIME_STONE;
     Alpha = 140;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
@@ -820,6 +842,7 @@ solid
     AttachedGod = TERRA;
     NaturalForm = stone;
     HardenedMaterial = GNEISS;
+    SoftenedMaterial = CALCITE;
     NameFlags = Base|USE_AN;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
@@ -834,6 +857,7 @@ solid
     AttachedGod = TERRA;
     NaturalForm = stone;
     HardenedMaterial = SLATE;
+    SoftenedMaterial = OBSIDIAN;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -847,6 +871,7 @@ solid
     AttachedGod = TERRA;
     NaturalForm = stone;
     HardenedMaterial = GRANITE;
+    SoftenedMaterial = GNEISS;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -860,6 +885,7 @@ solid
     AttachedGod = TERRA;
     NaturalForm = stone;
     HardenedMaterial = BASALT;
+    SoftenedMaterial = SLATE;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -873,6 +899,7 @@ solid
     AttachedGod = TERRA;
     NaturalForm = stone;
     HardenedMaterial = MILKY_QUARTZ;
+    SoftenedMaterial = GRANITE;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -886,6 +913,7 @@ solid
     AttachedGod = TERRA;
     NaturalForm = stone;
     HardenedMaterial = QUARTZITE;
+    SoftenedMaterial = BASALT;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -912,6 +940,7 @@ solid
     AttachedGod = TERRA;
     NaturalForm = stone;
     HardenedMaterial = PURPLE_CRYSTAL;
+    SoftenedMaterial = MILKY_QUARTZ;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -1037,6 +1066,7 @@ solid
     AttachedGod = TERRA;
     NaturalForm = stone;
     HardenedMaterial = MILKY_QUARTZ;
+    SoftenedMaterial = GRANITE;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -2021,6 +2051,10 @@ flesh
     ConsumeWisdomLimit = 8;
     AttachedGod = MORTIFER;
     InteractionFlags = Base&~CAN_DISSOLVE;
+    SpoilModifier = 100000;
+    StrengthValue = 50;
+    Density = 600;
+    Flexibility = 30;
   }
 
   Config MAMMOTH_FLESH;
@@ -2135,6 +2169,9 @@ flesh
   {
     NameStem = "moose flesh";
     AttachedGod = MORTIFER;
+    Effect = EFFECT_DETECTING;
+    EffectStrength = 1;
+    ConsumeWisdomLimit = 1;
   }
 
   Config MAGPIE_FLESH;
@@ -2268,6 +2305,7 @@ ironalloy /* metals that rust */
     NameStem = "iron";
     RustModifier = 100;
     HardenedMaterial = STEEL;
+    SoftenedMaterial = BRONZE;
     IntelligenceRequirement = 5;
     NameFlags = Base|USE_AN;
   }
@@ -2283,6 +2321,7 @@ ironalloy /* metals that rust */
     AttachedGod = LORICATUS;
     RustModifier = 75;
     HardenedMaterial = METEORIC_STEEL;
+    SoftenedMaterial = IRON;
     IntelligenceRequirement = 10;
     CommonFlags = Base|IS_VALUABLE;
   }
@@ -2298,6 +2337,7 @@ ironalloy /* metals that rust */
     AttachedGod = LORICATUS;
     RustModifier = 50;
     HardenedMaterial = ADAMANT;
+    SoftenedMaterial = STEEL;
     IntelligenceRequirement = 15;
     CommonFlags = Base|IS_VALUABLE;
   }
@@ -2314,6 +2354,7 @@ ironalloy /* metals that rust */
     AttachedGod = LORICATUS;
     RustModifier = 25;
     IntelligenceRequirement = 40;
+    HardenedMaterial = VALPURIUM;
     CommonFlags = Base|IS_VALUABLE;
     NameFlags = Base|USE_AN;
     CategoryFlags = Base|IS_SPARKLING;

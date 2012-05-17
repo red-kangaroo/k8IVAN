@@ -173,6 +173,9 @@ class lsquare : public square
   truth Teleport(const beamdata&);
   truth Haste(const beamdata&);
   truth Slow(const beamdata&);
+  truth Confuse(const beamdata&);
+  truth Parasitize(const beamdata&);
+  truth InstillPanic(const beamdata&);
   truth Resurrect(const beamdata&);
   truth Invisibility(const beamdata&);
   truth Duplicate(const beamdata&);
@@ -188,6 +191,7 @@ class lsquare : public square
   int GetSpoiledItems() const;
   void SortAllItems(const sortdata&);
   truth LowerEnchantment(const beamdata&);
+  truth SoftenMaterial(const beamdata&);
   void RemoveSmoke(smoke*);
   void AddSmoke(gas*);
   truth IsFlyable() const { return !OLTerrain || (OLTerrain->GetWalkability() & FLY); }

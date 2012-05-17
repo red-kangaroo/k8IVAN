@@ -588,7 +588,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define CRUENTUS 14
 #define MORTIFER 15
 #define ATHEIST 16
-//#define SOLICITU 16
+#define SOLICITU 17
 
 #define MAX_PRICE  (2147483647)
 
