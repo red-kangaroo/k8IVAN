@@ -159,7 +159,7 @@ int iosystem::Menu (cbitmap *BackGround, v2 Pos, cfestring &Topic, cfestring &sM
         { 0, 0 },
         { 0, 0 },
         { RES.X, RES.Y },
-        { MakeRGB24(Element, Element, Element) },
+        { (int)MakeRGB24(Element, Element, Element) },
         0,
         0
       };
@@ -215,7 +215,7 @@ int iosystem::StringQuestion (festring &Input, cfestring &Topic, v2 Pos, col16 C
     &BackUp,
     { Pos.X, Pos.Y + 10 },
     { 0, 0 },
-    { (MaxLetters << 3) + 9, 9 },
+    { (int)((MaxLetters << 3) + 9), 9 },
     { 0 },
     0,
     0
@@ -365,7 +365,7 @@ long iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, long StartValue, lon
     0,
     { 0, 0 },
     { Pos.X, Pos.Y },
-    { ((Topic.GetSize() + 14) << 3) + 1, 10 },
+    { (int)(((Topic.GetSize() + 14) << 3) + 1), 10 },
     { 0 },
     0,
     0

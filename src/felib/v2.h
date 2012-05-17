@@ -60,7 +60,7 @@ struct v2 {
   int GetManhattanLength () const { return Max(abs(X), abs(Y)); }
   truth Is0 () const { return X == 0 && Y == 0; }
   operator packv2 () const {
-    packv2 V = { X, Y };
+    packv2 V = { (short)X, (short)Y };
     return V;
   }
   operator podv2 () const {
