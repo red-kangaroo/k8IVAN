@@ -236,57 +236,59 @@ template <class type> std::pair<int, int> CountCorrectNameLetters(const typename
   return Result;
 }
 
-template <class type> std::pair<const typename type::prototype*, int> SearchForProto(cfestring& What, truth Output)
-{
+
+template <class type> std::pair<const typename type::prototype *, int> SearchForProto(cfestring &What, truth Output) {
   typedef typename type::prototype prototype;
   typedef typename type::database database;
-
+  //
   festring Identifier;
   Identifier << ' ' << What << ' ';
   truth Illegal = false, Conflict = false;
-  std::pair<const prototype*, int> ID(0, 0);
+  truth BrokenRequested = (festring::IgnoreCaseFind(Identifier, " broken ") != festring::NPos);
+  std::pair<const prototype *, int> ID(0, 0);
   std::pair<int, int> Best(0, 0);
-
+  //
   for (int c = 1; c < protocontainer<type>::GetSize(); ++c) {
-    const prototype* Proto = protocontainer<type>::GetProto(c);
-    const database*const* ConfigData = Proto->GetConfigData();
+    const prototype *Proto = protocontainer<type>::GetProto(c);
+    const database *const *ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
-
-    for (int c = 0; c < ConfigSize; ++c)
+    //
+    for (int c = 0; c < ConfigSize; ++c) {
       if (!ConfigData[c]->IsAbstract) {
-        truth BrokenRequested = festring::IgnoreCaseFind(Identifier, " broken ") != festring::NPos;
         if (BrokenRequested == !(ConfigData[c]->Config & BROKEN)) continue;
         std::pair<int, int> Correct = CountCorrectNameLetters<type>(ConfigData[c], Identifier);
-        if (Correct == Best) Conflict = true;
-        else if (Correct.first > Best.first || (Correct.first == Best.first && Correct.second < Best.second)) {
+        if (Correct == Best) {
+          Conflict = true;
+        } else if (Correct.first > Best.first || (Correct.first == Best.first && Correct.second < Best.second)) {
           if (ConfigData[c]->CanBeWished || game::WizardModeIsActive()) {
             ID.first = Proto;
             ID.second = ConfigData[c]->Config;
             Best = Correct;
             Conflict = false;
-          } else Illegal = true;
+          } else {
+            Illegal = true;
+          }
         }
       }
-  }
-
-  if(Output)
-  {
-    if(!Best.first)
-    {
-      if(Illegal)
-  ADD_MESSAGE("You hear a booming voice: \"No, mortal! This will not be done!\"");
-      else
-  ADD_MESSAGE("What a strange wish!");
     }
-    else if(Conflict)
-    {
+  }
+  //
+  if (Output) {
+    if (!Best.first) {
+      if (Illegal) {
+        ADD_MESSAGE("You hear a booming voice: \"No, mortal! This will not be done!\"");
+      } else {
+        ADD_MESSAGE("What a strange wish!");
+      }
+    } else if (Conflict) {
       ADD_MESSAGE("Be more precise!");
       return std::pair<const prototype*, int>(0, 0);
     }
   }
-
+  //
   return ID;
 }
+
 
 character* protosystem::CreateMonster(cfestring& What, int SpecialFlags, truth Output)
 {
