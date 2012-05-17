@@ -264,7 +264,7 @@ Dungeon ELPURI_CAVE;
       Square, Pos 3,2;
       {
         OTerrain = stairs(STAIRS_DOWN) { AttachedArea = KHARAZ_ARAD; }
-        EntryIndex = STAIRS_DOWN;
+        EntryIndex = STAIRS_DOWN + 1; //STAIRS_DOWN; fix from http://www.attnam.com/topics/953/Bugfix_for_LIVAN_GC5_to_GC4_stairs
       }
       Square, Pos 3,0;
       {
@@ -1905,7 +1905,7 @@ Dungeon ELPURI_CAVE;
       }
       Square, Pos 3,2;
       {
-        OTerrain = stairs(STAIRS_UP) { AttachedArea = 3; }
+        OTerrain = stairs(STAIRS_UP) { AttachedArea = 3; AttachedEntry = STAIRS_DOWN + 1; } // fix from http://www.attnam.com/topics/953/Bugfix_for_LIVAN_GC5_to_GC4_stairs
         EntryIndex = STAIRS_UP;
       }
     }
