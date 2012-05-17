@@ -22,7 +22,7 @@ int configsystem::Options;
 
 void configsystem::AddOption (configoption *O) { Option[Options++] = O; }
 void configsystem::NormalStringChanger (stringoption *O, cfestring &What) { O->Value = What; }
-void configsystem::NormalNumberChanger (numberoption *O, long What) { O->Value = What; }
+void configsystem::NormalNumberChanger (numberoption *O, sLong What) { O->Value = What; }
 void configsystem::NormalTruthChanger (truthoption *O, truth What) { O->Value = What; }
 
 
@@ -46,10 +46,10 @@ stringoption::stringoption (cchar *Name, cchar *Desc, cfestring &Value,
 }
 
 
-numberoption::numberoption (cchar *Name, cchar *Desc, long Value,
+numberoption::numberoption (cchar *Name, cchar *Desc, sLong Value,
   void (*ValueDisplayer)(const numberoption *, festring &),
   truth (*ChangeInterface)(numberoption *),
-  void (*ValueChanger)(numberoption*, long))
+  void (*ValueChanger)(numberoption*, sLong))
 : configoption(Name, Desc),
   Value(Value),
   ValueDisplayer(ValueDisplayer),
@@ -59,11 +59,11 @@ numberoption::numberoption (cchar *Name, cchar *Desc, long Value,
 }
 
 
-scrollbaroption::scrollbaroption (cchar *Name, cchar *Desc, long Value,
+scrollbaroption::scrollbaroption (cchar *Name, cchar *Desc, sLong Value,
   void (*ValueDisplayer)(const numberoption *, festring &),
   truth (*ChangeInterface)(numberoption *),
-  void (*ValueChanger)(numberoption *, long),
-  void (*BarHandler)(long))
+  void (*ValueChanger)(numberoption *, sLong),
+  void (*BarHandler)(sLong))
 : numberoption(Name, Desc, Value, ValueDisplayer, ChangeInterface, ValueChanger),
   BarHandler(BarHandler)
 {

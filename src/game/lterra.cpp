@@ -41,29 +41,29 @@ void lterrain::Load(inputfile& SaveFile)
 
 void glterrain::Save(outputfile& SaveFile) const
 {
-  SaveFile << (ushort)GetType();
+  SaveFile << (uShort)GetType();
   lterrain::Save(SaveFile);
-  SaveFile << (ushort)GetConfig();
+  SaveFile << (uShort)GetConfig();
 }
 
 void glterrain::Load(inputfile& SaveFile)
 {
   lterrain::Load(SaveFile);
-  databasecreator<glterrain>::InstallDataBase(this, ReadType<ushort>(SaveFile));
+  databasecreator<glterrain>::InstallDataBase(this, ReadType<uShort>(SaveFile));
 }
 
 void olterrain::Save(outputfile& SaveFile) const
 {
-  SaveFile << (ushort)GetType();
+  SaveFile << (uShort)GetType();
   lterrain::Save(SaveFile);
-  SaveFile << (ushort)GetConfig();
+  SaveFile << (uShort)GetConfig();
   SaveFile << HP;
 }
 
 void olterrain::Load(inputfile& SaveFile)
 {
   lterrain::Load(SaveFile);
-  databasecreator<olterrain>::InstallDataBase(this, ReadType<ushort>(SaveFile));
+  databasecreator<olterrain>::InstallDataBase(this, ReadType<uShort>(SaveFile));
   SaveFile >> HP;
 }
 
@@ -89,7 +89,7 @@ void olterrain::Break()
   lsquare* Square = GetLSquareUnder();
   const fearray<contentscript<item> >& ItemArray = GetLeftOverItems();
 
-  for(uint c1 = 0; c1 < ItemArray.Size; ++c1)
+  for(uInt c1 = 0; c1 < ItemArray.Size; ++c1)
     if(ItemArray[c1].IsValid())
     {
       const interval* TimesPtr = ItemArray[c1].GetTimes();
@@ -256,7 +256,7 @@ int olterrain::CalculateMaxHP()
 {
   if(GetMainMaterial())
   {
-    long SV = GetMainMaterial()->GetStrengthValue();
+    sLong SV = GetMainMaterial()->GetStrengthValue();
     return SV * SV * GetHPModifier() / 6000;
   }
   else
@@ -479,7 +479,7 @@ void olterrain::SignalRustLevelChange()
   HP = Min(HP, CalculateMaxHP());
 }
 
-void lterrain::TryToRust (long LiquidModifier) {
+void lterrain::TryToRust (sLong LiquidModifier) {
   if (MainMaterial->TryToRust(LiquidModifier*10, 10000)) {
     if (CanBeSeenByPlayer()) {
       if (MainMaterial->GetRustLevel() == NOT_RUSTED) ADD_MESSAGE("%s rusts.", CHAR_NAME(DEFINITE));
@@ -489,7 +489,7 @@ void lterrain::TryToRust (long LiquidModifier) {
   }
 }
 
-void olterrain::ReceiveAcid(material*, long Modifier)
+void olterrain::ReceiveAcid(material*, sLong Modifier)
 {
   if(GetMainMaterial()->GetInteractionFlags() & CAN_DISSOLVE)
   {
@@ -515,7 +515,7 @@ void lterrain::InitMaterials(material* FirstMaterial, truth CallUpdatePictures)
 void lterrain::GenerateMaterials()
 {
   int Chosen = RandomizeMaterialConfiguration();
-  const fearray<long>& MMC = GetMainMaterialConfig();
+  const fearray<sLong>& MMC = GetMainMaterialConfig();
   InitMaterial(MainMaterial,
          MAKE_MATERIAL(MMC.Data[MMC.Size == 1 ? 0 : Chosen]),
          0);

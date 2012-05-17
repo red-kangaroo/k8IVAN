@@ -15,8 +15,8 @@ itemdatabase **protosystem::ItemConfigData;
 int protosystem::ItemConfigDataSize;
 itemdatabase **protosystem::ItemCategoryData[ITEM_CATEGORIES];
 int protosystem::ItemCategorySize[ITEM_CATEGORIES];
-long protosystem::ItemCategoryPossibility[ITEM_CATEGORIES];
-long protosystem::TotalItemPossibility;
+sLong protosystem::ItemCategoryPossibility[ITEM_CATEGORIES];
+sLong protosystem::TotalItemPossibility;
 
 
 character *protosystem::BalancedCreateMonster () {
@@ -79,14 +79,14 @@ character *protosystem::BalancedCreateMonster () {
 }
 
 
-item *protosystem::BalancedCreateItem (long MinPrice, long MaxPrice, long RequiredCategory, int SpecialFlags, int ConfigFlags, int RequiredGod, truth Polymorph) {
+item *protosystem::BalancedCreateItem (sLong MinPrice, sLong MaxPrice, sLong RequiredCategory, int SpecialFlags, int ConfigFlags, int RequiredGod, truth Polymorph) {
   typedef item::database database;
   database **PossibleCategory[ITEM_CATEGORIES];
   int PossibleCategorySize[ITEM_CATEGORIES];
-  long PartialCategoryPossibilitySum[ITEM_CATEGORIES];
+  sLong PartialCategoryPossibilitySum[ITEM_CATEGORIES];
   int PossibleCategories = 0;
-  long TotalPossibility = 0;
-  long database::*PartialPossibilitySumPtr;
+  sLong TotalPossibility = 0;
+  sLong database::*PartialPossibilitySumPtr;
   if (RequiredCategory == ANY_CATEGORY) {
     PartialPossibilitySumPtr = &database::PartialPossibilitySum;
     PossibleCategory[0] = ItemConfigData;
@@ -96,7 +96,7 @@ item *protosystem::BalancedCreateItem (long MinPrice, long MaxPrice, long Requir
     PossibleCategories = 1;
   } else {
     PartialPossibilitySumPtr = &database::PartialCategoryPossibilitySum;
-    for (long CategoryIndex = 0, Category = 1; CategoryIndex < ITEM_CATEGORIES; ++CategoryIndex, Category <<= 1) {
+    for (sLong CategoryIndex = 0, Category = 1; CategoryIndex < ITEM_CATEGORIES; ++CategoryIndex, Category <<= 1) {
       if (Category & RequiredCategory) {
         PossibleCategory[PossibleCategories] = ItemCategoryData[CategoryIndex];
         PossibleCategorySize[PossibleCategories] = ItemCategorySize[CategoryIndex];
@@ -109,7 +109,7 @@ item *protosystem::BalancedCreateItem (long MinPrice, long MaxPrice, long Requir
 
   for (int c0 = 0;; ++c0) {
     for (int c1 = 0; c1 < BALANCED_CREATE_ITEM_ITERATIONS; ++c1) {
-      long Rand = RAND_GOOD(TotalPossibility);
+      sLong Rand = RAND_GOOD(TotalPossibility);
       int Category;
       if (RequiredCategory == ANY_CATEGORY) Category = 0;
       else {
@@ -120,10 +120,10 @@ item *protosystem::BalancedCreateItem (long MinPrice, long MaxPrice, long Requir
       const database *ChosenDataBase;
       if (ChosenCategory[0]->PartialCategoryPossibilitySum > Rand) ChosenDataBase = ChosenCategory[0];
       else {
-        long A = 0;
-        long B = PossibleCategorySize[Category] - 1;
+        sLong A = 0;
+        sLong B = PossibleCategorySize[Category] - 1;
         for (;;) {
-          long C = (A + B) >> 1;
+          sLong C = (A + B) >> 1;
           if (A != C) {
             if(ChosenCategory[C]->*PartialPossibilitySumPtr > Rand) B = C; else A = C;
           } else {
@@ -138,7 +138,7 @@ item *protosystem::BalancedCreateItem (long MinPrice, long MaxPrice, long Requir
         truth GodOK = !RequiredGod || Item->GetAttachedGod() == RequiredGod;
         /* Optimization, GetTruePrice() may be rather slow */
         if (((MinPrice == 0 && MaxPrice == MAX_PRICE) || (Config & BROKEN && ConfigFlags & IGNORE_BROKEN_PRICE)) && GodOK) return Item;
-        long Price = Item->GetTruePrice();
+        sLong Price = Item->GetTruePrice();
         if (Item->HandleInPairs()) Price <<= 1;
         if (Price >= MinPrice && Price <= MaxPrice && GodOK) return Item;
         delete Item;
@@ -229,7 +229,7 @@ template <class type> std::pair<int, int> CountCorrectNameLetters(const typename
   if(DataBase->PostFix.GetSize() && festring::IgnoreCaseFind(Identifier, " " + DataBase->PostFix + ' ') != festring::NPos)
     Result.first += DataBase->PostFix.GetSize();
 
-  for(uint c = 0; c < DataBase->Alias.Size; ++c)
+  for(uInt c = 0; c < DataBase->Alias.Size; ++c)
     if(festring::IgnoreCaseFind(Identifier, " " + DataBase->Alias[c] + ' ') != festring::NPos)
       Result.first += DataBase->Alias[c].GetSize();
 
@@ -332,7 +332,7 @@ item* protosystem::CreateItem(cfestring& What, truth Output)
     return 0;
 }
 
-material* protosystem::CreateMaterial(cfestring& What, long Volume, truth Output)
+material* protosystem::CreateMaterial(cfestring& What, sLong Volume, truth Output)
 {
   for(int c1 = 1; c1 < protocontainer<material>::GetSize(); ++c1)
   {
@@ -456,7 +456,7 @@ void protosystem::Initialize()
 
   for(int CategoryIndex = 0, Category = 1; CategoryIndex < ITEM_CATEGORIES; ++CategoryIndex, Category <<= 1)
   {
-    long TotalPossibility = 0;
+    sLong TotalPossibility = 0;
     int CSize = 0;
 
     for(int c = 0; c < ItemConfigDataSize; ++c)

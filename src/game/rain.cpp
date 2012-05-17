@@ -12,7 +12,7 @@
 
 /* Compiled through materset.cpp */
 
-rain::rain(liquid* Liquid, lsquare* LSquareUnder, v2 Speed, int Team, truth OwnLiquid) : entity(OwnLiquid ? HAS_BE : 0), Next(0), Drop(0), Liquid(Liquid), LSquareUnder(LSquareUnder), Speed(Speed), SpeedAbs(long(sqrt(Speed.GetLengthSquare()))), Drops(0), OwnLiquid(OwnLiquid), Team(Team)
+rain::rain(liquid* Liquid, lsquare* LSquareUnder, v2 Speed, int Team, truth OwnLiquid) : entity(OwnLiquid ? HAS_BE : 0), Next(0), Drop(0), Liquid(Liquid), LSquareUnder(LSquareUnder), Speed(Speed), SpeedAbs(sLong(sqrt(Speed.GetLengthSquare()))), Drops(0), OwnLiquid(OwnLiquid), Team(Team)
 {
   Emitation = Liquid->GetEmitation();
   BeCounter = RAND_N(50);
@@ -28,7 +28,7 @@ rain::~rain()
 
 void rain::Draw(blitdata& BlitData) const
 {
-  long Volume = Liquid->GetVolume();
+  sLong Volume = Liquid->GetVolume();
   int Drops = this->Drops;
 
   if(!Volume && !Drops)
@@ -74,7 +74,7 @@ void rain::Draw(blitdata& BlitData) const
   for(c = 0; c < Drops; ++c)
     if(Drop[c].MaxAge)
     {
-      ulong Age = ushort(GET_TICK()) - Drop[c].StartTick;
+      uLong Age = uShort(GET_TICK()) - Drop[c].StartTick;
 
       if(Age > Drop[c].MaxAge)
       {
@@ -121,12 +121,12 @@ void rain::RandomizeDropPos(int I) const
 void rain::Be () {
   if (++BeCounter < 50) return;
   BeCounter = 0;
-  long Volume = Liquid->GetVolume();
+  sLong Volume = Liquid->GetVolume();
   if (Volume && !Liquid->IsPowder()) { // gum
-    long Rand = 5000000/(Volume*SpeedAbs);
+    sLong Rand = 5000000/(Volume*SpeedAbs);
     if (OwnLiquid) Rand >>= 3;
     if (Rand < 1 || !(RAND() % Rand)) {
-      long DropVolume = Min(Volume, 50L);
+      sLong DropVolume = Min(Volume, 50);
       /* Gum */
       LSquareUnder->SpillFluid(Team == PLAYER_TEAM ? PLAYER : 0, Liquid->SpawnMoreLiquid(DropVolume), true, OwnLiquid);
       if (OwnLiquid) {
@@ -143,7 +143,7 @@ void rain::Be () {
 
 void rain::Save(outputfile& SaveFile) const
 {
-  SaveFile << Liquid << Speed << (uchar)Team;
+  SaveFile << Liquid << Speed << (uChar)Team;
 }
 
 void rain::Load(inputfile& SaveFile)
@@ -154,8 +154,8 @@ void rain::Load(inputfile& SaveFile)
   Liquid->SetMotherEntity(this);
   Emitation = Liquid->GetEmitation();
   SaveFile >> Speed;
-  Team = ReadType<uchar>(SaveFile);
-  SpeedAbs = long(sqrt(Speed.GetLengthSquare()));
+  Team = ReadType<uChar>(SaveFile);
+  SpeedAbs = sLong(sqrt(Speed.GetLengthSquare()));
 }
 
 outputfile& operator<<(outputfile& SaveFile, const rain* Rain)

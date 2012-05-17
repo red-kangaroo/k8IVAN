@@ -55,7 +55,7 @@ smoke::smoke(gas* Gas, lsquare* LSquareUnder) : entity(HAS_BE), Next(0), Gas(Gas
 
 smoke::~smoke()
 {
-  for(uint c = 0; c < Picture.size(); ++c)
+  for(uInt c = 0; c < Picture.size(); ++c)
     delete Picture[c];
 
   delete Gas;

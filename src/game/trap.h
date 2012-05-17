@@ -31,14 +31,14 @@ typedef trap *(*trapspawner) ();
 
 
 struct trapdata {
-  trapdata (ulong TrapID, ulong VictimID, ulong BodyParts) :
+  trapdata (uLong TrapID, uLong VictimID, uLong BodyParts) :
     Next(0), TrapID(TrapID), VictimID(VictimID), BodyParts(BodyParts) {}
   trapdata () : Next(0) {}
 
   trapdata *Next;
-  ulong TrapID;
-  ulong VictimID;
-  ulong BodyParts;
+  uLong TrapID;
+  uLong VictimID;
+  uLong BodyParts;
 };
 
 

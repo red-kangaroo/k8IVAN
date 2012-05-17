@@ -90,7 +90,7 @@
 bitmap::bitmap (cfestring &FileName) : FastFlag(0), AlphaMap(0), PriorityMap(0), RandMap(0) {
   inputfile File(FileName.CStr(), 0, false);
   if (!File.IsOpen()) ABORT("Bitmap %s not found!", FileName.CStr());
-  uchar Palette[768];
+  uChar Palette[768];
   File.SeekPosEnd(-768);
   File.Read(reinterpret_cast<char*>(Palette), 768);
   File.SeekPosBegin(8);
@@ -188,7 +188,7 @@ void bitmap::Save (outputfile &SaveFile) const {
   } else {
     SaveFile.Put(false);
   }
-  SaveFile << uchar(FastFlag);
+  SaveFile << uChar(FastFlag);
 }
 
 
@@ -202,7 +202,7 @@ void bitmap::Load (inputfile &SaveFile) {
     Alloc2D(PriorityMap, mSize.Y, mSize.X);
     SaveFile.Read(reinterpret_cast<char *>(PriorityMap[0]), XSizeTimesYSize*sizeof(packpriority));
   }
-  FastFlag = ReadType<uchar>(SaveFile);
+  FastFlag = ReadType<uChar>(SaveFile);
 }
 
 
@@ -1031,13 +1031,13 @@ void bitmap::CreateAlphaMap (alpha InitialValue) {
 }
 
 
-truth bitmap::Fade (long &AlphaSum, packalpha& AlphaAverage, int Amount) {
+truth bitmap::Fade (sLong &AlphaSum, packalpha& AlphaAverage, int Amount) {
   if (!AlphaMap) ABORT("No alpha map to fade.");
   truth Changes = false;
-  long Alphas = 0;
-  long NewAlphaSum = 0;
-  long Size = XSizeTimesYSize;
-  for (long c = 0; c < Size; ++c) {
+  sLong Alphas = 0;
+  sLong NewAlphaSum = 0;
+  sLong Size = XSizeTimesYSize;
+  for (sLong c = 0; c < Size; ++c) {
     packalpha *AlphaPtr = &AlphaMap[0][c];
     if (*AlphaPtr) {
       if (*AlphaPtr > Amount) {
@@ -1252,7 +1252,7 @@ void bitmap::AlphaLuminanceBlit (cblitdata &BlitData) const {
 
 
 /* Only works for 16x16 pictures :( */
-void bitmap::CreateFlames (rawbitmap *RawBitmap, v2 RawPos, ulong SeedNFlags, int Frame) {
+void bitmap::CreateFlames (rawbitmap *RawBitmap, v2 RawPos, uLong SeedNFlags, int Frame) {
   femath::SaveSeed();
   femath::SetSeed(SeedNFlags);
   int FlameTop[16], FlameBottom[16], FlamePhase[16];
@@ -1306,7 +1306,7 @@ void bitmap::CreateSparkle (v2 SparklePos, int Frame) {
 }
 
 
-void bitmap::CreateFlies (ulong Seed, int Frame, int FlyAmount) {
+void bitmap::CreateFlies (uLong Seed, int Frame, int FlyAmount) {
   femath::SaveSeed();
   femath::SetSeed(Seed);
   for (int c = 0; c < FlyAmount; ++c) {
@@ -1323,7 +1323,7 @@ void bitmap::CreateFlies (ulong Seed, int Frame, int FlyAmount) {
 }
 
 
-void bitmap::CreateLightning (ulong Seed, col16 Color) {
+void bitmap::CreateLightning (uLong Seed, col16 Color) {
   femath::SaveSeed();
   femath::SetSeed(Seed);
   v2 StartPos;
@@ -1389,7 +1389,7 @@ truth bitmap::CreateLightning (v2 StartPos, v2 Direction, int MaxLength, col16 C
       continue;
     }
     Counter = 0;
-    if (!mapmath<pixelvectorcontroller>::DoLine(StartPos.X, StartPos.Y, StartPos.X + Move.X, StartPos.Y + Move.Y) || ulong(MaxLength) <= PixelVector.size()) {
+    if (!mapmath<pixelvectorcontroller>::DoLine(StartPos.X, StartPos.Y, StartPos.X + Move.X, StartPos.Y + Move.Y) || uLong(MaxLength) <= PixelVector.size()) {
       int Limit = Min<int>(PixelVector.size(), MaxLength);
       for (int c = 0; c < Limit; ++c) {
         PutPixel(PixelVector[c], Color);
@@ -1660,10 +1660,10 @@ void bitmap::FastBlitAndCopyAlpha (bitmap *Bitmap) const {
 }
 
 
-void bitmap::UpdateRandMap (long Index, truth Value) {
-  long c1 = XSizeTimesYSize + Index;
+void bitmap::UpdateRandMap (sLong Index, truth Value) {
+  sLong c1 = XSizeTimesYSize + Index;
   RandMap[c1] = Value;
-  for (long c2 = c1 >> 1; c2; c1 = c2, c2 >>= 1) {
+  for (sLong c2 = c1 >> 1; c2; c1 = c2, c2 >>= 1) {
     Value |= RandMap[c1 ^ 1];
     if (!RandMap[c2] != !Value) RandMap[c2] = Value; else return;
   }
@@ -1678,9 +1678,9 @@ void bitmap::InitRandMap () {
 
 v2 bitmap::RandomizePixel () const {
   if (!RandMap[1]) return ERROR_V2;
-  long Rand = RAND();
-  ulong c, RandMask = 1;
-  ulong MapSize = XSizeTimesYSize << 1;
+  sLong Rand = RAND();
+  uLong c, RandMask = 1;
+  uLong MapSize = XSizeTimesYSize << 1;
   for (c = 2; c < MapSize; c <<= 1) if (RandMap[c + 1] && (!RandMap[c] || Rand & (RandMask <<= 1))) ++c;
   c = (c - MapSize) >> 1;
   return v2(c % mSize.X, c / mSize.X);
@@ -1689,8 +1689,8 @@ v2 bitmap::RandomizePixel () const {
 
 void bitmap::CalculateRandMap () {
   if (!AlphaMap) ABORT("Alpha map needed to calculate random map.");
-  ulong Size = XSizeTimesYSize;
-  for (ulong c = 0; c < Size; ++c) UpdateRandMap(c, AlphaMap[0][c]);
+  uLong Size = XSizeTimesYSize;
+  for (uLong c = 0; c < Size; ++c) UpdateRandMap(c, AlphaMap[0][c]);
 }
 
 
@@ -1711,10 +1711,10 @@ void bitmap::AlphaPutPixel (int x, int y, col16 SrcCol, col24 Luminance, alpha A
 
 alpha bitmap::CalculateAlphaAverage () const {
   if (!AlphaMap) ABORT("Alpha map needed to calculate alpha average!");
-  long Alphas = 0;
-  long AlphaSum = 0;
-  ulong Size = XSizeTimesYSize;
-  for (ulong c = 0; c < Size; ++c) {
+  sLong Alphas = 0;
+  sLong AlphaSum = 0;
+  uLong Size = XSizeTimesYSize;
+  for (uLong c = 0; c < Size; ++c) {
     packalpha *AlphaPtr = &AlphaMap[0][c];
     if (*AlphaPtr) {
       AlphaSum += *AlphaPtr;
@@ -1736,19 +1736,19 @@ cachedfont::cachedfont (v2 aSize, col16 Color) : bitmap(aSize, Color) {
 
 
 void cachedfont::PrintCharacter (cblitdata B) const {
-  if (B.Dest.X < 0 || B.Dest.Y < 0 || B.Dest.X + 10 >= B.Bitmap->mSize.X || B.Dest.Y + 9 >= B.Bitmap->mSize.Y) {
+  if (B.Dest.X < 0 || B.Dest.Y < 0 || B.Dest.X+10 >= B.Bitmap->mSize.X || B.Dest.Y+9 >= B.Bitmap->mSize.Y) {
     NormalMaskedBlit(B);
     return;
   }
   packcol16 **SrcLine = &Image[B.Src.Y];
-  packcol16 **EndLine = SrcLine + 9;
+  packcol16 **EndLine = SrcLine+9;
   packcol16 **SrcMaskLine = &MaskMap[B.Src.Y];
   packcol16 **DestLine = &B.Bitmap->Image[B.Dest.Y];
   for (; SrcLine != EndLine; ++SrcLine, ++SrcMaskLine, ++DestLine) {
-    culong *FontPtr = reinterpret_cast<culong*>(*SrcLine + B.Src.X);
-    culong *EndPtr = FontPtr + 5;
-    culong *MaskPtr = reinterpret_cast<culong*>(*SrcMaskLine + B.Src.X);
-    ulong *DestPtr = reinterpret_cast<ulong*>(*DestLine + B.Dest.X);
+    culong *FontPtr = reinterpret_cast<culong *>(*SrcLine + B.Src.X);
+    culong *EndPtr = FontPtr+5;
+    culong *MaskPtr = reinterpret_cast<culong *>(*SrcMaskLine + B.Src.X);
+    uLong *DestPtr = reinterpret_cast<uLong *>(*DestLine + B.Dest.X);
     for (; FontPtr != EndPtr; ++DestPtr, ++MaskPtr, ++FontPtr) *DestPtr = (*DestPtr & *MaskPtr) | *FontPtr;
   }
 }
@@ -1756,7 +1756,7 @@ void cachedfont::PrintCharacter (cblitdata B) const {
 
 void cachedfont::CreateMaskMap () {
   packcol16 *SrcPtr = Image[0];
-  packcol16 *EndPtr = SrcPtr + XSizeTimesYSize;
+  packcol16 *EndPtr = SrcPtr+XSizeTimesYSize;
   packcol16 *MaskPtr = MaskMap[0];
   for (; SrcPtr != EndPtr; ++SrcPtr, ++MaskPtr) {
     if (*SrcPtr == TRANSPARENT_COLOR) {
@@ -1769,7 +1769,7 @@ void cachedfont::CreateMaskMap () {
 }
 
 
-cint WaveDelta[] = { 1, 2, 2, 2, 1, 0, -1, -2, -2, -2, -1 };
+static const cint WaveDelta[] = { 1, 2, 2, 2, 1, 0, -1, -2, -2, -2, -1 };
 
 void bitmap::Wobble (int Frame, int SpeedShift, truth Horizontally) {
   int WavePos = (Frame << SpeedShift >> 1) - 14;

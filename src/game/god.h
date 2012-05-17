@@ -44,7 +44,7 @@ class god
   virtual void PrayGoodEffect() = 0;
   virtual void PrayBadEffect() = 0;
   int Relation, LastPray;
-  long Timer;
+  sLong Timer;
   truth Known;
  public:
   typedef godprototype prototype;
@@ -60,11 +60,11 @@ class god
   void ApplyDivineTick();
   void AdjustRelation(god*, int, truth);
   void AdjustRelation(int);
-  void AdjustTimer(long);
+  void AdjustTimer(sLong);
   void Save(outputfile&) const;
   void Load(inputfile&);
   void SetRelation(int Value) { Relation = Value; }
-  void SetTimer(long Value) { Timer = Value; }
+  void SetTimer(sLong Value) { Timer = Value; }
   truth ReceiveOffer(item*);
   virtual int GetBasicAlignment() const;
   int GetRelation() const { return Relation; }

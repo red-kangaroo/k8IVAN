@@ -20,7 +20,7 @@ truth powder::IsExplosive() const { return !Wetness && material::IsExplosive(); 
 
 truth ironalloy::IsSparkling() const { return material::IsSparkling() && GetRustLevel() == NOT_RUSTED; }
 
-void organic::Be(ulong Flags)
+void organic::Be(uLong Flags)
 {
   if(SpoilCheckCounter++ >= 50)
   {
@@ -94,7 +94,7 @@ void flesh::Load(inputfile& SaveFile)
   SaveFile >> SkinColor >> SkinColorSparkling >> InfectedByLeprosy;
 }
 
-void powder::Be(ulong)
+void powder::Be(uLong)
 {
   if(Wetness > 0)
     --Wetness;
@@ -112,7 +112,7 @@ void powder::Load(inputfile& SaveFile)
   SaveFile >> Wetness;
 }
 
-material* organic::EatEffect(character* Eater, long Amount)
+material* organic::EatEffect(character* Eater, sLong Amount)
 {
   Amount = Volume > Amount ? Amount : Volume;
   GetMotherEntity()->SpecialEatEffect(Eater, Amount);
@@ -274,14 +274,14 @@ void liquid::TouchEffect(character* Char, int BodyPartIndex)
 
 /* Doesn't do the actual rusting, just returns whether it should happen */
 
-truth ironalloy::TryToRust(long Modifier, long Volume)
+truth ironalloy::TryToRust(sLong Modifier, sLong Volume)
 {
   if(GetRustLevel() != VERY_RUSTED)
   {
     if(!Volume)
       Volume = GetVolume();
 
-    long Chance = long(30000000. * sqrt(Volume) / (Modifier * GetRustModifier()));
+    sLong Chance = sLong(30000000. * sqrt(Volume) / (Modifier * GetRustModifier()));
 
     if(Chance <= 1 || !(RAND() % Chance))
       return true;

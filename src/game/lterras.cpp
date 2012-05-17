@@ -587,9 +587,9 @@ truth door::TryKey (item *Thingy, character *Applier) {
 
 void fountain::GenerateMaterials () {
   int Chosen = RandomizeMaterialConfiguration();
-  const fearray<long> &MMC = GetMainMaterialConfig();
+  const fearray<sLong> &MMC = GetMainMaterialConfig();
   InitMaterial(MainMaterial, MAKE_MATERIAL(MMC.Data[MMC.Size == 1 ? 0 : Chosen]), 0);
-  const fearray<long> &SMC = GetSecondaryMaterialConfig();
+  const fearray<sLong> &SMC = GetSecondaryMaterialConfig();
   InitMaterial(SecondaryMaterial, MAKE_MATERIAL(SMC.Data[SMC.Size == 1 ? 0 : Chosen]), 0);
 }
 
@@ -733,7 +733,7 @@ truth olterraincontainer::Open (character *Opener) {
 
 void olterraincontainer::SetItemsInside (const fearray<contentscript<item> > &ItemArray, int SpecialFlags) {
   GetContained()->Clean();
-  for (uint c1 = 0; c1 < ItemArray.Size; ++c1) {
+  for (uInt c1 = 0; c1 < ItemArray.Size; ++c1) {
     if (ItemArray[c1].IsValid()) {
       const interval *TimesPtr = ItemArray[c1].GetTimes();
       int Times = TimesPtr ? TimesPtr->Randomize() : 1;

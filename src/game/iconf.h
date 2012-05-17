@@ -20,8 +20,8 @@ class ivanconfig {
 public:
   static cfestring &GetDefaultName () { return DefaultName.Value; }
   static cfestring &GetDefaultPetName () { return DefaultPetName.Value; }
-  static long GetAutoSaveInterval () { return AutoSaveInterval.Value; }
-  static long GetContrast () { return Contrast.Value; }
+  static sLong GetAutoSaveInterval () { return AutoSaveInterval.Value; }
+  static sLong GetContrast () { return Contrast.Value; }
   static truth GetWarnAboutDanger () { return WarnAboutDanger.Value; }
   static truth GetAutoDropLeftOvers () { return AutoDropLeftOvers.Value; }
   static truth GetAutoDropBottles () { return AutoDropBottles.Value; }
@@ -35,12 +35,12 @@ public:
   static truth GetAutoCenterMap () { return AutoCenterMap.Value; }
   static truth GetAutoCenterMapOnLook () { return AutoCenterMapOnLook.Value; }
   static truth GetPlaySounds () { return PlaySounds.Value; }
-  static long GetSoundVolume () { return SoundVolume.Value; }
+  static sLong GetSoundVolume () { return SoundVolume.Value; }
   static truth GetConfirmCorpses () { return ConfirmCorpses.Value; }
   static int GetGoingDelay () { return GoingDelay.Value; }
   static truth GetStopOnCorpses () { return StopOnCorpses.Value; }
   static truth GetStopOnSeenItems () { return StopOnSeenItems.Value; }
-  static long ApplyContrastTo (long);
+  static sLong ApplyContrastTo (sLong);
   static void Save () { configsystem::Save(); }
   static void Load () { configsystem::Load(); }
   static void CalculateContrastLuminance ();
@@ -58,21 +58,21 @@ private:
   static truth DefaultPetNameChangeInterface (stringoption *);
   static truth AutoSaveIntervalChangeInterface (numberoption *);
   static truth ContrastChangeInterface (numberoption *);
-  static void AutoSaveIntervalChanger (numberoption *, long);
-  static void ContrastChanger (numberoption *, long);
+  static void AutoSaveIntervalChanger (numberoption *, sLong);
+  static void ContrastChanger (numberoption *, sLong);
   static void FullScreenModeChanger (truthoption *, truth);
   static void FastListChanger (truthoption *, truth);
-  static void ContrastHandler (long);
+  static void ContrastHandler (sLong);
   static void BackGroundDrawer ();
 
   static void SoundVolumeDisplayer (const numberoption *, festring &);
   static truth SoundVolumeChangeInterface (numberoption *);
-  static void SoundVolumeChanger (numberoption *, long);
-  static void SoundVolumeHandler (long);
+  static void SoundVolumeChanger (numberoption *, sLong);
+  static void SoundVolumeHandler (sLong);
 
   static void GoingDelayDisplayer (const numberoption *O, festring &Entry);
   static truth GoingDelayChangeInterface (numberoption *O);
-  static void GoingDelayChanger (numberoption *O, long What);
+  static void GoingDelayChanger (numberoption *O, sLong What);
 
 private:
   static stringoption DefaultName;
@@ -103,8 +103,8 @@ private:
 };
 
 
-inline long ivanconfig::ApplyContrastTo (long L) {
-  long C = Contrast.Value;
+inline sLong ivanconfig::ApplyContrastTo (sLong L) {
+  sLong C = Contrast.Value;
   if (C == 100) return L;
   return MakeRGB24(41*GetRed24(L)*C>>12, 41*GetGreen24(L)*C>>12, 41*GetBlue24(L)*C>>12);
 }

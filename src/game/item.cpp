@@ -128,7 +128,7 @@ item::~item () {
 
 
 void item::Fly (character *Thrower, int Direction, int Force) {
-  int Range = Force*25/Max(long(sqrt(GetWeight())), 1L);
+  int Range = Force*25/Max(sLong(sqrt(GetWeight())), 1);
   lsquare *LSquareUnder = GetLSquareUnder();
   RemoveFromSlot();
   LSquareUnder->GetStack()->AddItem(this, false);
@@ -230,7 +230,7 @@ truth item::Polymorph (character *Polymorpher, stack *CurrentStack) {
 
 
 /* Returns whether the Eater must stop eating the item */
-truth item::Consume (character *Eater, long Amount) {
+truth item::Consume (character *Eater, sLong Amount) {
   material *ConsumeMaterial = GetConsumeMaterial(Eater);
   if (!ConsumeMaterial) return true;
   if (Eater->IsPlayer() && !(Flags & CANNIBALIZED) && Eater->CheckCannibalism(ConsumeMaterial)) {
@@ -238,7 +238,7 @@ truth item::Consume (character *Eater, long Amount) {
     ADD_MESSAGE("You feel that this was an evil deed.");
     Cannibalize();
   }
-  ulong ID = GetID();
+  uLong ID = GetID();
   material *Garbage = ConsumeMaterial->EatEffect(Eater, Amount);
   item *NewConsuming = GetID() ? this : game::SearchItem(ID);
   material *NewConsumeMaterial = NewConsuming->GetConsumeMaterial(Eater);
@@ -260,12 +260,12 @@ truth item::CanBeEatenByAI (ccharacter *Eater) const {
 
 
 void item::Save (outputfile &SaveFile) const {
-  SaveFile << (ushort)GetType();
+  SaveFile << (uShort)GetType();
   object::Save(SaveFile);
-  SaveFile << (ushort)0;
+  SaveFile << (uShort)0;
   SaveFile << mIsStepedOn;
-  SaveFile << (ushort)GetConfig();
-  SaveFile << (ushort)Flags;
+  SaveFile << (uShort)GetConfig();
+  SaveFile << (uShort)Flags;
   SaveFile << Size << ID << LifeExpectancy << ItemFlags;
   SaveLinkedList(SaveFile, CloneMotherID);
   if (Fluid) {
@@ -279,11 +279,11 @@ void item::Save (outputfile &SaveFile) const {
 
 void item::Load (inputfile &SaveFile) {
   object::Load(SaveFile);
-  int ver = ReadType<ushort>(SaveFile);
+  int ver = ReadType<uShort>(SaveFile);
   if (ver != 0) ABORT("invalid item version in savefile: %d", ver);
   SaveFile >> mIsStepedOn;
-  databasecreator<item>::InstallDataBase(this, ReadType<ushort>(SaveFile));
-  Flags |= ReadType<ushort>(SaveFile) & ~ENTITY_FLAGS;
+  databasecreator<item>::InstallDataBase(this, ReadType<uShort>(SaveFile));
+  Flags |= ReadType<uShort>(SaveFile) & ~ENTITY_FLAGS;
   SaveFile >> Size >> ID >> LifeExpectancy >> ItemFlags;
   LoadLinkedList(SaveFile, CloneMotherID);
   if (LifeExpectancy) Enable();
@@ -309,7 +309,7 @@ void item::TeleportRandomly () {
 
 
 int item::GetStrengthValue () const {
-  return long(GetStrengthModifier()) * GetMainMaterial()->GetStrengthValue() / 2000;
+  return sLong(GetStrengthModifier()) * GetMainMaterial()->GetStrengthValue() / 2000;
 }
 
 
@@ -334,7 +334,7 @@ void item::MoveTo (stack *Stack) {
 }
 
 
-cchar *item::GetItemCategoryName (long Category) {
+cchar *item::GetItemCategoryName (sLong Category) {
   // convert to array
   switch (Category) {
     case HELMET: return "Helmets";
@@ -428,7 +428,7 @@ truth item::ShowMaterial () const {
 }
 
 
-long item::GetBlockModifier() const
+sLong item::GetBlockModifier() const
 {
   if(!IsShield(0))
     return GetSize() * GetRoundness() << 1;
@@ -525,7 +525,7 @@ void item::WeaponSkillHit(int Hits)
 
 /* Returns 0 if item cannot be cloned */
 
-item* item::Duplicate(ulong Flags)
+item* item::Duplicate(uLong Flags)
 {
   if(!(Flags & IGNORE_PROHIBITIONS)
      && ((!(Flags & MIRROR_IMAGE) && !CanBeCloned())
@@ -633,9 +633,9 @@ void itemdatabase::InitDefaults(const itemprototype* NewProtoType, int NewConfig
   }
 }
 
-long item::GetNutritionValue() const
+sLong item::GetNutritionValue() const
 {
-  long NV = 0;
+  sLong NV = 0;
 
   for(int c = 0; c < GetMaterials(); ++c)
     if(GetMaterial(c))
@@ -659,7 +659,7 @@ void item::SignalSpoil(material*)
     game::AskForEscPress(CONST_S("Equipment destroyed!"));
 }
 
-item* item::DuplicateToStack(stack* CurrentStack, ulong Flags)
+item* item::DuplicateToStack(stack* CurrentStack, uLong Flags)
 {
   item* Duplicated = Duplicate(Flags);
 
@@ -747,7 +747,7 @@ void item::SignalEnchantmentChange()
       Slot[c]->SignalEnchantmentChange();
 }
 
-long item::GetEnchantedPrice(int Enchantment) const
+sLong item::GetEnchantedPrice(int Enchantment) const
 {
   return !PriceIsProportionalToEnchantment() ? item::GetPrice() : Max<int>(item::GetPrice() * Enchantment * Enchantment, 0);
 }
@@ -873,17 +873,17 @@ int item::GetAttachedGod() const
   return DataBase->AttachedGod ? DataBase->AttachedGod : MainMaterial->GetAttachedGod();
 }
 
-long item::GetMaterialPrice() const
+sLong item::GetMaterialPrice() const
 {
   return MainMaterial->GetRawPrice();
 }
 
-long item::GetTruePrice() const
+sLong item::GetTruePrice() const
 {
   if(LifeExpectancy)
     return 0;
 
-  long Price = Max(GetPrice(), GetMaterialPrice());
+  sLong Price = Max(GetPrice(), GetMaterialPrice());
 
   if(Spoils())
     Price = Price * (100 - GetMaxSpoilPercentage()) / 500;
@@ -938,7 +938,7 @@ void item::PostProcessForBone () {
   game::RemoveItemID(ID);
 
   if (BI == game::GetBoneItemIDMap().end()) {
-    ulong NewID = game::CreateNewItemID(this);
+    uLong NewID = game::CreateNewItemID(this);
     game::GetBoneItemIDMap().insert(std::make_pair(-ID, NewID));
     ID = NewID;
   } else {
@@ -950,7 +950,7 @@ void item::PostProcessForBone () {
   for (idholder* I = CloneMotherID; I; I = I->Next) {
     BI = game::GetBoneItemIDMap().find(I->ID);
     if (BI == game::GetBoneItemIDMap().end()) {
-      ulong NewCloneMotherID = game::CreateNewItemID(0);
+      uLong NewCloneMotherID = game::CreateNewItemID(0);
       game::GetBoneItemIDMap().insert(std::make_pair(I->ID, NewCloneMotherID));
       I->ID = NewCloneMotherID;
     } else {
@@ -1225,7 +1225,7 @@ void item::SpillFluid(character*, liquid* Liquid, int SquareIndex)
     delete Liquid;
 }
 
-void item::TryToRust (long LiquidModifier) {
+void item::TryToRust (sLong LiquidModifier) {
   if (MainMaterial->TryToRust(LiquidModifier)) {
     if (CanBeSeenByPlayer()) {
       if (MainMaterial->GetRustLevel() == NOT_RUSTED) ADD_MESSAGE("%s rusts.", CHAR_NAME(DEFINITE));
@@ -1264,7 +1264,7 @@ void item::DrawFluids(blitdata& BlitData) const
     F->Draw(BlitData);
 }
 
-void item::ReceiveAcid(material*, cfestring&, long Modifier)
+void item::ReceiveAcid(material*, cfestring&, sLong Modifier)
 {
   if(GetMainMaterial()->GetInteractionFlags() & CAN_DISSOLVE)
   {
@@ -1362,7 +1362,7 @@ void item::InitMaterials(material* FirstMaterial, truth CallUpdatePictures)
 void item::GenerateMaterials()
 {
   int Chosen = RandomizeMaterialConfiguration();
-  const fearray<long>& MMC = GetMainMaterialConfig();
+  const fearray<sLong>& MMC = GetMainMaterialConfig();
   InitMaterial(MainMaterial,
          MAKE_MATERIAL(MMC.Data[MMC.Size == 1 ? 0 : Chosen]),
          GetDefaultMainVolume());
@@ -1434,14 +1434,14 @@ int item::GetHinderVisibilityBonus(ccharacter* Char) const
   return Bonus;
 }
 
-long item::GetFixPrice() const
+sLong item::GetFixPrice() const
 {
   item* Clone = GetProtoType()->Clone(this);
   Clone = Clone->Fix();
   Clone->RemoveRust();
-  long FixPrice = Clone->GetTruePrice();
+  sLong FixPrice = Clone->GetTruePrice();
   Clone->SendToHell();
-  return Max(long(3.5 * sqrt(FixPrice)), 10L);
+  return Max(sLong(3.5 * sqrt(FixPrice)), 10);
 }
 
 void item::AddTrapName(festring& String, int Amount) const
@@ -1502,7 +1502,7 @@ outputfile& operator<<(outputfile& SaveFile, const idholder* IdHolder)
 
 inputfile& operator>>(inputfile& SaveFile, idholder*& IdHolder)
 {
-  IdHolder = new idholder(ReadType<ulong>(SaveFile));
+  IdHolder = new idholder(ReadType<uLong>(SaveFile));
   return SaveFile;
 }
 

@@ -29,7 +29,7 @@ bitmap* igraph::FlagBuffer;
 cchar* igraph::RawGraphicFileName[] = { "Graphics/GLTerra.pcx", "Graphics/OLTerra.pcx", "Graphics/Item.pcx", "Graphics/Char.pcx", "Graphics/Humanoid.pcx", "Graphics/Effect.pcx", "Graphics/Cursor.pcx" };
 cchar* igraph::GraphicFileName[] = { "Graphics/WTerra.pcx", "Graphics/FOW.pcx", "Graphics/Symbol.pcx", "Graphics/Smiley.pcx" };
 tilemap igraph::TileMap;
-uchar igraph::RollBuffer[256];
+uChar igraph::RollBuffer[256];
 int** igraph::BodyBitmapValidityMap;
 bitmap* igraph::Menu;
 bitmap* igraph::SilhouetteCache[HUMANOID_BODYPARTS][CONDITION_COLORS][SILHOUETTE_TYPES];
@@ -234,7 +234,7 @@ tilemap::iterator igraph::AddUser(const graphicid& GI)
 
     if(SpecialFlags & ST_FLAMES)
     {
-      ulong SeedNFlags = (SpecialFlags >> ST_FLAME_SHIFT & 3) | (GI.Seed << 4);
+      uLong SeedNFlags = (SpecialFlags >> ST_FLAME_SHIFT & 3) | (GI.Seed << 4);
       Bitmap->CreateFlames(RawBitmap, RawPos - GI.Position, SeedNFlags, Frame);
     }
 

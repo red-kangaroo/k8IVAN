@@ -24,14 +24,14 @@ MATERIAL(solid, material)
 MATERIAL(organic, solid)
 {
  public:
-  virtual void Be(ulong);
+  virtual void Be(uLong);
   virtual truth HasBe() const { return true; }
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual truth IsVeryCloseToSpoiling() const { return SpoilLevel == 8; }
   virtual int GetSpoilLevel() const { return SpoilLevel; }
   virtual void ResetSpoiling();
-  virtual material* EatEffect(character*, long);
+  virtual material* EatEffect(character*, sLong);
   virtual void AddConsumeEndMessage(character*) const;
   virtual void SetSpoilCounter(int);
   virtual truth CanSpoil() const { return true; }
@@ -39,9 +39,9 @@ MATERIAL(organic, solid)
   virtual truth Spoils() const { return true; }
  protected:
   virtual void PostConstruct();
-  ushort SpoilCounter;
-  uchar SpoilCheckCounter;
-  uchar SpoilLevel;
+  uShort SpoilCounter;
+  uChar SpoilCheckCounter;
+  uChar SpoilLevel;
 };
 
 MATERIAL(gas, material)
@@ -56,7 +56,7 @@ MATERIAL(liquid, material)
   void TouchEffect(item*, cfestring&);
   void TouchEffect(character*, int);
   void TouchEffect(lterrain*);
-  liquid* SpawnMoreLiquid(long Volume) const { return static_cast<liquid*>(SpawnMore(Volume)); }
+  liquid* SpawnMoreLiquid(sLong Volume) const { return static_cast<liquid*>(SpawnMore(Volume)); }
 };
 
 MATERIAL(flesh, organic)
@@ -84,13 +84,13 @@ MATERIAL(powder, liquid)
   powder() : Wetness(0) { }
   virtual truth IsPowder() const { return true; }
   virtual truth IsExplosive() const;
-  virtual void AddWetness(long What) { Wetness += What; }
-  virtual void Be(ulong);
+  virtual void AddWetness(sLong What) { Wetness += What; }
+  virtual void Be(uLong);
   virtual truth HasBe() const { return true; }
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
  protected:
-  long Wetness;
+  sLong Wetness;
 };
 
 /* Materials that can rust */
@@ -106,7 +106,7 @@ MATERIAL(ironalloy, solid)
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual int GetRustData() const { return RustData; }
-  virtual truth TryToRust(long, long = 0);
+  virtual truth TryToRust(sLong, sLong = 0);
   virtual truth AddRustLevelDescription(festring&, truth) const;
  protected:
   int RustData;

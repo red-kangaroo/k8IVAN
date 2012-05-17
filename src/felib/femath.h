@@ -39,34 +39,34 @@ template <class type> struct fearray;
 
 class femath {
 public:
-  static long Rand ();
-  static void SetSeed (ulong);
-  static long RandN (long N) { return long(double(N)*Rand()/0x80000000); }
-  static long RandGood (long N) { return long(double(N)*Rand()/0x80000000); }
-  static int WeightedRand (long *Possibility, long TotalPossibility);
-  static int WeightedRand (const std::vector<long> &Possibility, long TotalPossibility);
+  static sLong Rand ();
+  static void SetSeed (uLong);
+  static sLong RandN (sLong N) { return sLong(double(N)*Rand()/0x80000000); }
+  static sLong RandGood (sLong N) { return sLong(double(N)*Rand()/0x80000000); }
+  static int WeightedRand (sLong *Possibility, sLong TotalPossibility);
+  static int WeightedRand (const std::vector<sLong> &Possibility, sLong TotalPossibility);
   static double CalculateAngle (v2 Direction);
   static void CalculateEnvironmentRectangle (rect &Rect, const rect &MotherRect, v2 Origo, int Radius);
   static truth Clip (int &SourceX, int &SourceY, int &DestX, int &DestY, int &Width, int &Height,
     int XSize, int YSize, int DestXSize, int DestYSize);
   static void SaveSeed ();
   static void LoadSeed ();
-  static long SumArray (const fearray<long> &Vector);
+  static sLong SumArray (const fearray<sLong> &Vector);
   static int LoopRoll (int ContinueChance, int Max);
   static void GenerateFractalMap (int **Map, int Side, int StartStep, int Randomness);
 
 protected:
-  static ulong mt[];
-  static long mti;
-  static ulong mtb[];
-  static long mtib;
+  static uLong mt[];
+  static sLong mti;
+  static uLong mtb[];
+  static sLong mtib;
 };
 
 
 struct interval {
-  long Randomize () const { return Min < Max ? Min + RAND() % (Max - Min + 1) : Min; }
-  long Min;
-  long Max;
+  sLong Randomize () const { return Min < Max ? Min + RAND() % (Max - Min + 1) : Min; }
+  sLong Min;
+  sLong Max;
 };
 
 
@@ -158,7 +158,7 @@ template <class controller> struct quadricontroller : public basequadricontrolle
 template <class controller> truth quadricontroller<controller>::Handler (int x, int y) {
   cint HalfX = x>>1, HalfY = y>>1;
   if (HalfX >= 0 && HalfY >= 0 && HalfX < XSize && HalfY < YSize) {
-    ulong& SquareTick = controller::GetTickReference(HalfX, HalfY);
+    uLong& SquareTick = controller::GetTickReference(HalfX, HalfY);
     cint SquarePartIndex = (x&1)+((y&1)<<1);
     culong Mask = SquarePartTickMask[SquarePartIndex];
     if ((SquareTick & Mask) < controller::ShiftedTick[SquarePartIndex]) {

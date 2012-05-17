@@ -13,7 +13,7 @@
 
 /* Used to determine how pixels are distributed when fluid over bodyarmors is shown */
 
-const long fluid::BodyArmorPartPixels[] = { 34, 7, 7, 8, 6, 6 };
+const sLong fluid::BodyArmorPartPixels[] = { 34, 7, 7, 8, 6, 6 };
 
 fluid::fluid () : entity(HAS_BE), Next(0), MotherItem(0), GearImage(0)
 {
@@ -71,8 +71,8 @@ fluid::~fluid () {
 }
 
 
-void fluid::AddLiquid (long Volume) {
-  long Pixels = Volume>>2;
+void fluid::AddLiquid (sLong Volume) {
+  sLong Pixels = Volume>>2;
   if (Pixels && UseImage()) {
     col16 Col = Liquid->GetColor();
     if (MotherItem) {
@@ -94,14 +94,14 @@ void fluid::AddLiquid (long Volume) {
 }
 
 
-void fluid::AddLiquidAndVolume (long Volume) {
+void fluid::AddLiquidAndVolume (sLong Volume) {
   AddLiquid(Volume);
   Liquid->SetVolumeNoSignals(Liquid->GetVolume()+Volume);
 }
 
 
 void fluid::Be () {
-  long Rand = RAND();
+  sLong Rand = RAND();
   if (!(Rand & 7)) {
     if (MotherItem) {
       if (MotherItem->Exists() && MotherItem->AllowFluidBe()) Liquid->TouchEffect(MotherItem, LocationName);
@@ -112,8 +112,8 @@ void fluid::Be () {
     }
   }
   if (MotherItem ? !(Rand & 15) && MotherItem->Exists() && MotherItem->AllowFluidBe() : !(Rand & 63)) {
-    long OldVolume = Liquid->GetVolume();
-    long NewVolume = ((OldVolume<<6)-OldVolume)>>6;
+    sLong OldVolume = Liquid->GetVolume();
+    sLong NewVolume = ((OldVolume<<6)-OldVolume)>>6;
     Liquid->SetVolumeNoSignals(NewVolume);
     if (UseImage()) {
       while(NewVolume < Image.AlphaSum >> 6 && FadePictures());
@@ -197,7 +197,7 @@ inputfile &operator >> (inputfile &SaveFile, fluid *&Fluid) {
 
 /* If fluid has decreased, fade, otherwise add new pixels */
 void fluid::SignalVolumeAndWeightChange () {
-  long Volume = Liquid->GetVolume();
+  sLong Volume = Liquid->GetVolume();
   if (UseImage()) {
     if (Volume < Image.AlphaSum >> 6) {
       while (FadePictures() && Volume < Image.AlphaSum>>6);
@@ -285,7 +285,7 @@ void fluid::CheckGearPicture (v2 ShadowPos, int SpecialFlags, truth BodyArmor) {
     GearImage = 0;
   }
   imagedata *ImagePtr;
-  long Pixels;
+  sLong Pixels;
   if (BodyArmor) {
     int Index = (SpecialFlags & 0x38) >> 3;
     if (Index >= BODY_ARMOR_PARTS) Index = 0;
@@ -375,7 +375,7 @@ void fluid::imagedata::Animate (blitdata &BlitData, int CurrentFlags) const {
       ++TrueDripPos.Y;
       BlitData.Bitmap->AlphaPutPixel(TrueDripPos+BlitData.Dest, DripColor, BlitData.Luminance, DripAlpha);
     } else {
-      DripTimer = Min<long>(RAND()%(500000/AlphaSum), 25000);
+      DripTimer = Min<sLong>(RAND()%(500000/AlphaSum), 25000);
     }
   }
   --DripTimer;
@@ -417,7 +417,7 @@ void fluid::imagedata::Load (inputfile &SaveFile) {
    pixels will be on average AlphaSuggestion. PixelPredicate is used
    to determine whether pixels of the Shadow are allowed to be covered
    by the fluid. It is not used if Shadow == 0. */
-void fluid::imagedata::AddLiquidToPicture (const rawbitmap *Shadow, long Pixels, long AlphaSuggestion, col16 Color, pixelpredicate PixelPredicate) {
+void fluid::imagedata::AddLiquidToPicture (const rawbitmap *Shadow, sLong Pixels, sLong AlphaSuggestion, col16 Color, pixelpredicate PixelPredicate) {
   if (ShadowPos == ERROR_V2) return;
   DripTimer = 0;
   cint *ValidityMap = igraph::GetBodyBitmapValidityMap(SpecialFlags);
@@ -434,18 +434,18 @@ void fluid::imagedata::AddLiquidToPicture (const rawbitmap *Shadow, long Pixels,
     if (!PixelsAllowed) return;
   }
 
-  long Lumps = Pixels-(Pixels<<3)/9; // ceil[Pixels/9]
-  long RoomForPixels = (Lumps<<3)+Lumps;
+  sLong Lumps = Pixels-(Pixels<<3)/9; // ceil[Pixels/9]
+  sLong RoomForPixels = (Lumps<<3)+Lumps;
   int Red = GetRed16(Color);
   int Green = GetGreen16(Color);
   int Blue = GetBlue16(Color);
   if (AlphaSuggestion < 25) AlphaSuggestion = 25;
-  for (long c = 0; c < Lumps; ++c) {
+  for (sLong c = 0; c < Lumps; ++c) {
     v2 Cords;
     if (Shadow) Cords = PixelAllowed[RAND()%PixelsAllowed];
     else Cords = v2(1+RAND()%14, 1+RAND()%14);
     Picture->PutPixel(Cords, Color);
-    long Alpha = Limit<long>(AlphaSuggestion-25+RAND()%50, 0, 0xFF);
+    sLong Alpha = Limit<sLong>(AlphaSuggestion-25+RAND()%50, 0, 0xFF);
     AlphaSum += Alpha-Picture->GetAlpha(Cords);
     Picture->SetAlpha(Cords, Alpha);
     Picture->SafeUpdateRandMap(Cords, true);
@@ -459,7 +459,7 @@ void fluid::imagedata::AddLiquidToPicture (const rawbitmap *Shadow, long Pixels,
           Picture->PutPixel(Pos, MakeRGB16(Limit<int>(Red - 25 + RAND() % 51, 0, 0xFF),
             Limit<int>(Green - 25 + RAND() % 51, 0, 0xFF),
             Limit<int>(Blue - 25 + RAND() % 51, 0, 0xFF)));
-          long Alpha = Limit<long>(AlphaSuggestion - 25 + RAND() % 50, 0, 0xFF);
+          sLong Alpha = Limit<sLong>(AlphaSuggestion - 25 + RAND() % 50, 0, 0xFF);
           AlphaSum += Alpha - Picture->GetAlpha(Pos);
           Picture->SetAlpha(Pos, Alpha);
           Picture->SafeUpdateRandMap(Pos, true);
@@ -529,7 +529,7 @@ void fluid::AddTrapName (festring &String, int) const {
 
 
 truth fluid::TryToUnStick (character *Victim, v2) {
-  ulong TrapID = GetTrapID();
+  uLong TrapID = GetTrapID();
   int Sum = Victim->GetAttribute(ARM_STRENGTH) + Victim->GetAttribute(LEG_STRENGTH) + Victim->GetAttribute(DEXTERITY) + Victim->GetAttribute(AGILITY);
   int Modifier = Liquid->GetStickiness() * Liquid->GetVolume() / (Max(Sum, 1) * 500);
   if (!RAND_N(Max(Modifier, 2))) {

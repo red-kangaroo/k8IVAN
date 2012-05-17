@@ -61,7 +61,7 @@ truth ivanconfig::SoundVolumeChangeInterface (numberoption *O) {
 }
 
 
-void ivanconfig::SoundVolumeChanger (numberoption *O, long What) {
+void ivanconfig::SoundVolumeChanger (numberoption *O, sLong What) {
   if (What < 0) What = 0;
   if (What > 128) What = 128;
   O->Value = What;
@@ -69,7 +69,7 @@ void ivanconfig::SoundVolumeChanger (numberoption *O, long What) {
 }
 
 
-void ivanconfig::SoundVolumeHandler (long Value) {
+void ivanconfig::SoundVolumeHandler (sLong Value) {
   SoundVolumeChanger(&SoundVolume, Value);
 }
 /*k8*/
@@ -127,14 +127,14 @@ truth ivanconfig::ContrastChangeInterface (numberoption *O) {
 }
 
 
-void ivanconfig::AutoSaveIntervalChanger (numberoption *O, long What) {
+void ivanconfig::AutoSaveIntervalChanger (numberoption *O, sLong What) {
   if (What < 0) What = 0;
   if (What > 50000) What = 50000;
   O->Value = What;
 }
 
 
-void ivanconfig::ContrastChanger (numberoption *O, long What) {
+void ivanconfig::ContrastChanger (numberoption *O, sLong What) {
   if (What < 0) What = 0;
   if (What > 200) What = 200;
   O->Value = What;
@@ -159,7 +159,7 @@ void ivanconfig::Show () {
 }
 
 
-void ivanconfig::ContrastHandler (long Value) {
+void ivanconfig::ContrastHandler (sLong Value) {
   ContrastChanger(&Contrast, Value);
   if (game::IsRunning()) {
     game::GetCurrentArea()->SendNewDrawRequest();
@@ -175,7 +175,7 @@ void ivanconfig::SwitchModeHandler () {
 
 
 void ivanconfig::CalculateContrastLuminance () {
-  int Element = Min<long>((GetContrast() << 7) / 100, 255);
+  int Element = Min<sLong>((GetContrast() << 7) / 100, 255);
   ContrastLuminance = MakeRGB24(Element, Element, Element);
 }
 
@@ -196,7 +196,7 @@ truth ivanconfig::GoingDelayChangeInterface (numberoption *O) {
 }
 
 
-void ivanconfig::GoingDelayChanger (numberoption *O, long What) {
+void ivanconfig::GoingDelayChanger (numberoption *O, sLong What) {
   if (What < 0) What = 0;
   if (What > 2000) What = 2000;
   O->Value = What;

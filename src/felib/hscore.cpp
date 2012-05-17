@@ -28,8 +28,8 @@ festring highscore::genFileName (const festring &fname) const {
 }
 
 
-truth highscore::Add (long NewScore, cfestring &NewEntry, time_t NewTime, long NewRandomID) {
-  for (uint c = 0; c < Score.size(); ++c) {
+truth highscore::Add (sLong NewScore, cfestring &NewEntry, time_t NewTime, sLong NewRandomID) {
+  for (uInt c = 0; c < Score.size(); ++c) {
     if (Score[c] < NewScore) {
       Entry.insert(Entry.begin()+c, NewEntry);
       Score.insert(Score.begin()+c, NewScore);
@@ -69,14 +69,14 @@ void highscore::Draw () const {
   }
   felist List(CONST_S("Adventurers' Hall of Fame"));
   festring Desc;
-  for (uint c = 0; c < Score.size(); ++c) {
+  for (uInt c = 0; c < Score.size(); ++c) {
     Desc.Empty();
     Desc << c+1;
     Desc.Resize(5, ' ');
     Desc << Score[c];
     Desc.Resize(13, ' ');
     Desc << Entry[c];
-    List.AddEntry(Desc, c == uint(LastAdd) ? WHITE : LIGHT_GRAY, 13);
+    List.AddEntry(Desc, c == uInt(LastAdd) ? WHITE : LIGHT_GRAY, 13);
   }
   List.SetFlags(FADE);
   List.SetPageLength(40);
@@ -86,11 +86,18 @@ void highscore::Draw () const {
 
 void highscore::Save (cfestring &File) const {
   outputfile HighScore(genFileName(File));
-  long CheckSum = HIGH_SCORE_VERSION+LastAdd;
-  for (ushort c = 0; c < Score.size(); ++c) {
+  sLong CheckSum = HIGH_SCORE_VERSION+LastAdd;
+  for (uShort c = 0; c < Score.size(); ++c) {
     CheckSum += Score[c]+Entry[c].GetCheckSum()+RandomID[c];
   }
-  HighScore << ushort(HIGH_SCORE_VERSION) << Score << Entry << Time << RandomID << LastAdd << CheckSum;
+  HighScore <<
+    uShort(HIGH_SCORE_VERSION)
+    << Score
+    << Entry
+    << Time
+    << RandomID
+    << LastAdd
+    << CheckSum;
 }
 
 
@@ -110,7 +117,7 @@ void highscore::Load (cfestring &File) {
 
 truth highscore::MergeToFile (highscore *To) const {
   truth MergedSomething = false;
-  for (uint c = 0; c < Score.size(); ++c) {
+  for (uInt c = 0; c < Score.size(); ++c) {
     if (!To->Find(Score[c], Entry[c], Time[c], RandomID[c])) {
       To->Add(Score[c], Entry[c], Time[c], RandomID[c]);
       MergedSomething = true;
@@ -120,14 +127,14 @@ truth highscore::MergeToFile (highscore *To) const {
 }
 
 
-truth highscore::Add (long NewScore, cfestring &NewEntry) {
+truth highscore::Add (sLong NewScore, cfestring &NewEntry) {
   return Add(NewScore, NewEntry, time(0), RAND());
 }
 
 
 /* Because of major stupidity this return the number of NEXT from the right entry, 0 = not found */
-int highscore::Find (long AScore, cfestring &AEntry, time_t ATime, long ARandomID) {
-  for (uint c = 0; c < Score.size(); ++c) {
+int highscore::Find (sLong AScore, cfestring &AEntry, time_t ATime, sLong ARandomID) {
+  for (uInt c = 0; c < Score.size(); ++c) {
     if (AScore == Score[c] && Entry[c] == AEntry && ATime == Time[c] && ARandomID == RandomID[c])
       return c+1;
   }

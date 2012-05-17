@@ -51,15 +51,15 @@ public:
   virtual truth IsAnimated () const { return GraphicData.AnimationFrames > 1; }
   virtual void CalculateEmitation ();
   void LoadMaterial (inputfile &, material *&);
-  virtual const fearray<long> &GetMaterialConfigChances () const = 0;
-  virtual long GetMaterialConfigChanceSum () const = 0;
+  virtual const fearray<sLong> &GetMaterialConfigChances () const = 0;
+  virtual sLong GetMaterialConfigChanceSum () const = 0;
   virtual void CalculateAll () = 0;
   virtual int GetSpoilLevel () const { return 0; }
   void CreateWieldedBitmap (graphicid &) const;
   virtual int GetSpecialFlags () const;
   static void InitSparkleValidityArrays ();
   void UpdatePictures (graphicdata &, v2, int, alpha, int, bposretriever) const;
-  void InitMaterial (material *&, material *, long);
+  void InitMaterial (material *&, material *, sLong);
   virtual truth DetectMaterial (cmaterial *) const;
   virtual int GetSparkleFlags () const;
   virtual void SignalMaterialChange () {}
@@ -69,9 +69,9 @@ public:
 
 protected:
   void CopyMaterial(material* const&, material*&);
-  void ObjectInitMaterials(material*&, material*, long, material*&, material*, long, truth);
-  material* SetMaterial(material*&, material*, long, int);
-  void ChangeMaterial(material*&, material*, long, int);
+  void ObjectInitMaterials(material*&, material*, sLong, material*&, material*, sLong, truth);
+  material* SetMaterial(material*&, material*, sLong, int);
+  void ChangeMaterial(material*&, material*, sLong, int);
   virtual truth CalculateHasBe() const;
   virtual int GetGraphicsContainerIndex() const = 0;
   virtual col16 GetMaterialColorA(int) const;
@@ -103,7 +103,7 @@ protected:
   virtual truth AllowSparkling() const { return true; }
   virtual truth AllowRegularColors() const { return true; }
   virtual int GetWobbleData() const { return 0; }
-  truth RandomizeSparklePos(v2&, v2, int&, ulong, int, int) const;
+  truth RandomizeSparklePos(v2&, v2, int&, uLong, int, int) const;
 
   virtual truth isBone () const { return false; }
 

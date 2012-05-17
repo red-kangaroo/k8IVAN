@@ -32,7 +32,7 @@ rawbitmap::rawbitmap (cfestring &FileName) {
   if (File.Get() != 8) ABORT("Invalid bitmap BPP: %s!", FileName.CStr());
   // FIXME: bytes-per-scanline is even, fix the loader
   File.SeekPosEnd(-768);
-  Palette = new uchar[768];
+  Palette = new uChar[768];
   File.Read(reinterpret_cast<char *>(Palette), 768);
   File.SeekPosBegin(8);
   Size.X  =  File.Get();
@@ -56,7 +56,7 @@ rawbitmap::rawbitmap (cfestring &FileName) {
 
 
 rawbitmap::rawbitmap (v2 Size) : Size(Size) {
-  Palette = new uchar[768];
+  Palette = new uChar[768];
   Alloc2D(PaletteBuffer, Size.Y, Size.X);
 }
 
@@ -74,9 +74,9 @@ rawbitmap::~rawbitmap () {
 /* a lousy bitmap saver that uses the pcx format but doesn't do any compression */
 void rawbitmap::Save (cfestring &FileName) {
   char PCXHeader[128];
-  ulong hv = 0x0801050ALU;
+  uLong hv = 0x0801050ALU;
   memset(PCXHeader, 0, 128);
-  //*((ulong*)PCXHeader) = 0x0801050A;
+  //*((uLong*)PCXHeader) = 0x0801050A;
   memcpy(PCXHeader, &hv, 4); //FIXME: endianness
   PCXHeader[65] = 0x01;
   PCXHeader[66] = Size.X & 0xFF;
@@ -108,7 +108,7 @@ void rawbitmap::MaskedBlit (bitmap *Bitmap, v2 Src, v2 Dest, v2 Border, packcol1
   paletteindex *Buffer = &PaletteBuffer[Src.Y][Src.X];
   packcol16 *DestBuffer = &Bitmap->GetImage()[Dest.Y][Dest.X];
   int BitmapXSize = Bitmap->GetSize().X;
-  uchar *Palette = this->Palette; // eliminate the efficiency cost of dereferencing
+  uChar *Palette = this->Palette; // eliminate the efficiency cost of dereferencing
   for (int y = 0; y < Border.Y; ++y) {
     for (int x = 0; x < Border.X; ++x) {
       int PaletteElement = Buffer[x];
@@ -141,7 +141,7 @@ cachedfont *rawbitmap::Colorize (cpackcol16 *Color, alpha BaseAlpha, cpackalpha 
   cachedfont *Bitmap = new cachedfont(Size);
   paletteindex *Buffer = PaletteBuffer[0];
   packcol16 *DestBuffer = Bitmap->GetImage()[0];
-  uchar *Palette = this->Palette; // eliminate the efficiency cost of dereferencing
+  uChar *Palette = this->Palette; // eliminate the efficiency cost of dereferencing
   packalpha *AlphaMap;
   truth UseAlpha;
   if (BaseAlpha != 255 || (Alpha && (Alpha[0] != 255 || Alpha[1] != 255 || Alpha[2] != 255 || Alpha[3] != 255))) {
@@ -213,7 +213,7 @@ bitmap *rawbitmap::Colorize (v2 Pos, v2 Border, v2 Move, cpackcol16 *Color, alph
   paletteindex *Buffer = &PaletteBuffer[Pos.Y][Pos.X];
   packcol16 *DestBuffer = &Bitmap->GetImage()[TargetPos.Y][TargetPos.X];
   int BitmapXSize = Bitmap->GetSize().X;
-  uchar *Palette = this->Palette; // eliminate the efficiency cost of dereferencing
+  uChar *Palette = this->Palette; // eliminate the efficiency cost of dereferencing
   packalpha *AlphaMap;
   truth UseAlpha;
   if (BaseAlpha != 255 || (Alpha && (Alpha[0] != 255 || Alpha[1] != 255 || Alpha[2] != 255 || Alpha[3] != 255))) {
@@ -225,7 +225,7 @@ bitmap *rawbitmap::Colorize (v2 Pos, v2 Border, v2 Move, cpackcol16 *Color, alph
     UseAlpha = false;
   }
   truth Rusted = RustData && (RustData[0] || RustData[1] || RustData[2] || RustData[3]);
-  ulong RustSeed[4];
+  uLong RustSeed[4];
   if (Rusted) {
     RustSeed[0] = (RustData[0]&0xFC)>>2;
     RustSeed[1] = (RustData[1]&0xFC)>>2;

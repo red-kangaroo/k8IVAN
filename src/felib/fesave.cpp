@@ -103,7 +103,7 @@ inputfile::~inputfile () {
 
 festring inputfile::findVar (cfestring &name, truth *found) const {
   if (found) *found = true;
-  for (uint f = 0; f < mVars.size(); f++) {
+  for (uInt f = 0; f < mVars.size(); f++) {
     std::pair<festring, festring> v = mVars[f];
     if (v.first == name) return v.second;
   }
@@ -128,7 +128,7 @@ festring inputfile::getVar (cfestring &name) {
 
 
 void inputfile::setVar (cfestring &name, cfestring &value) {
-  for (uint f = 0; f < mVars.size(); f++) {
+  for (uInt f = 0; f < mVars.size(); f++) {
     std::pair<festring, festring> v = mVars[f];
     if (v.first == name) {
       v.second = value;
@@ -145,7 +145,7 @@ void inputfile::delVar (cfestring &name) {
 
 
 void inputfile::die (cfestring &msg) {
-  ABORT("ERROR in file %s, line %ld: %s", GetFileName().CStr(), TellLine(), msg.CStr());
+  ABORT("ERROR in file %s, line %d: %s", GetFileName().CStr(), TellLine(), msg.CStr());
 }
 
 
@@ -365,10 +365,10 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
     if (!feof(Buffer)) {
       Char = fgetc(Buffer);
       if (Char == '*') {
-        long StartPos = TellPos();
+        sLong StartPos = TellPos();
         int OldChar = 0, CommentLevel = 1;
         for (;;) {
-          if (feof(Buffer)) ABORT("Unterminated comment in file %s, beginning at line %ld!", FileName.CStr(), TellLineOfPos(StartPos));
+          if (feof(Buffer)) ABORT("Unterminated comment in file %s, beginning at line %d!", FileName.CStr(), TellLineOfPos(StartPos));
           Char = fgetc(Buffer);
           if (OldChar != '*' || Char != '/') {
             if (OldChar != '/' || Char != '*') OldChar = Char;
@@ -406,20 +406,20 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
   if (Char == '"') {
     // string
     lastWordWasString = true;
-    long StartPos = TellPos();
+    sLong StartPos = TellPos();
     for (;;) {
-      if (feof(Buffer)) ABORT("Unterminated string in file %s, beginning at line %ld!", FileName.CStr(), TellLineOfPos(StartPos));
+      if (feof(Buffer)) ABORT("Unterminated string in file %s, beginning at line %d!", FileName.CStr(), TellLineOfPos(StartPos));
       Char = fgetc(Buffer);
       if (Char == '\\') {
         Char = fgetc(Buffer);
-        if (Char == EOF) ABORT("Unterminated string in file %s, beginning at line %ld!", FileName.CStr(), TellLineOfPos(StartPos));
+        if (Char == EOF) ABORT("Unterminated string in file %s, beginning at line %d!", FileName.CStr(), TellLineOfPos(StartPos));
         switch (Char) {
           case 't': String << '\t'; break;
           case 'n': String << '\n'; break;
           case 'r': String << '\r'; break;
           case '"': String << '"'; break;
           default:
-            ABORT("Invalid escape in string in file %s at line %ld!", FileName.CStr(), TellLine());
+            ABORT("Invalid escape in string in file %s at line %d!", FileName.CStr(), TellLine());
         }
       } else if (Char == '"') {
         return PUNCT_RETURN;
@@ -490,10 +490,10 @@ char inputfile::ReadLetter (truth AbortOnEOF) {
         if (!feof(Buffer)) {
           Char = fgetc(Buffer);
           if (Char == '*') {
-            long StartPos = TellPos();
+            sLong StartPos = TellPos();
             int OldChar = 0, CommentLevel = 1;
             for (;;) {
-              if (feof(Buffer)) ABORT("Unterminated comment in file %s, beginning at line %ld!", FileName.CStr(), TellLineOfPos(StartPos));
+              if (feof(Buffer)) ABORT("Unterminated comment in file %s, beginning at line %d!", FileName.CStr(), TellLineOfPos(StartPos));
               Char = fgetc(Buffer);
               if (OldChar != '*' || Char != '/') {
                 if (OldChar != '/' || Char != '*') OldChar = Char;
@@ -523,9 +523,9 @@ char inputfile::ReadLetter (truth AbortOnEOF) {
 
 /* Reads a number or a formula from inputfile. Valid values could be for
    instance "3", "5 * 4+5", "2+Variable%4" etc. */
-//long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
-festring inputfile::ReadNumberIntr (int CallLevel, long *num, truth *isString, truth allowStr, truth PreserveTerminator) {
-  long Value = 0;
+//sLong inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
+festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator) {
+  sLong Value = 0;
   festring Word;
   truth NumberCorrect = false;
   truth firstWord = true;
@@ -542,9 +542,9 @@ festring inputfile::ReadNumberIntr (int CallLevel, long *num, truth *isString, t
       //fprintf(stderr, " value: [%s]\n", Word.CStr());
       const char *s = Word.CStr();
       char *e;
-      long l = strtoll(s, &e, 10);
+      sLong l = strtoll(s, &e, 10);
       if (*e == '\0') {
-        //fprintf(stderr, " number: [%ld]\n", l);
+        //fprintf(stderr, " number: [%d]\n", l);
         Value = l;
         NumberCorrect = true;
         continue;
@@ -553,7 +553,7 @@ festring inputfile::ReadNumberIntr (int CallLevel, long *num, truth *isString, t
         *isString = true;
         return Word;
       } else {
-        ABORT("Number expected in file %s, line %ld!", FileName.CStr(), TellLine());
+        ABORT("Number expected in file %s, line %d!", FileName.CStr(), TellLine());
       }
     }
     if (firstWord) {
@@ -562,11 +562,11 @@ festring inputfile::ReadNumberIntr (int CallLevel, long *num, truth *isString, t
         ReadWord(res);
         if (res.GetSize() == 1) {
           if (res[0] != ';' && res[0] != ',' && res[0] != ':') {
-            ABORT("Invalid terminator in file %s, line %ld!", FileName.CStr(), TellLine());
+            ABORT("Invalid terminator in file %s, line %d!", FileName.CStr(), TellLine());
           }
           if (PreserveTerminator) ungetc(res[0], Buffer);
         } else {
-          ABORT("Terminator expected in file %s, line %ld!", FileName.CStr(), TellLine());
+          ABORT("Terminator expected in file %s, line %d!", FileName.CStr(), TellLine());
         }
         return Word;
       }
@@ -681,7 +681,7 @@ festring inputfile::ReadNumberIntr (int CallLevel, long *num, truth *isString, t
         int Blue = ReadNumber();
         Value = MakeRGB24(Red, Green, Blue);
       } else {
-        ABORT("Illegal RGB bit size %d in file %s, line %ld!", Bits, FileName.CStr(), TellLine());
+        ABORT("Illegal RGB bit size %d in file %s, line %d!", Bits, FileName.CStr(), TellLine());
       }
       NumberCorrect = true;
       continue;
@@ -704,21 +704,21 @@ festring inputfile::ReadNumberIntr (int CallLevel, long *num, truth *isString, t
         continue;
       }
     }
-    ABORT("Odd numeric value \"%s\" encountered in file %s, line %ld!",
+    ABORT("Odd numeric value \"%s\" encountered in file %s, line %d!",
     Word.CStr(), FileName.CStr(), TellLine());
   }
 }
 
 
-long inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
-  long num = 0;
+sLong inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
+  sLong num = 0;
   truth isString = false;
   ReadNumberIntr(CallLevel, &num, &isString, false, PreserveTerminator);
   return num;
 }
 
 
-festring inputfile::ReadStringOrNumber (long *num, truth *isString, truth PreserveTerminator) {
+festring inputfile::ReadStringOrNumber (sLong *num, truth *isString, truth PreserveTerminator) {
   return ReadNumberIntr(0xFF, num, isString, true, PreserveTerminator);
 }
 
@@ -742,7 +742,7 @@ rect inputfile::ReadRect () {
 
 
 outputfile &operator << (outputfile &SaveFile, cfestring &String) {
-  ushort Length = String.GetSize();
+  uShort Length = String.GetSize();
   SaveFile << Length;
   if (Length) SaveFile.Write(String.CStr(), Length);
   return SaveFile;
@@ -751,7 +751,7 @@ outputfile &operator << (outputfile &SaveFile, cfestring &String) {
 
 inputfile &operator >> (inputfile &SaveFile, festring &String) {
   char *RealBuffer, StackBuffer[1024];
-  ushort Length;
+  uShort Length;
   SaveFile >> Length;
   RealBuffer = Length < 1024 ? StackBuffer : new char[Length+1];
   String.Empty();
@@ -766,7 +766,7 @@ inputfile &operator >> (inputfile &SaveFile, festring &String) {
 
 
 outputfile &operator << (outputfile &SaveFile, cchar *String) {
-  ushort Length = String ? strlen(String) : 0;
+  uShort Length = String ? strlen(String) : 0;
   SaveFile << Length;
   if (Length) SaveFile.Write(String, Length);
   return SaveFile;
@@ -774,7 +774,7 @@ outputfile &operator << (outputfile &SaveFile, cchar *String) {
 
 
 inputfile &operator >> (inputfile &SaveFile, char *&String) {
-  ushort Length;
+  uShort Length;
   SaveFile >> Length;
   if (Length) {
     String = new char[Length+1];
@@ -794,7 +794,7 @@ void ReadData (festring &String, inputfile &SaveFile) {
 }
 
 
-void ReadData (fearray<long> &Array, inputfile &SaveFile) {
+void ReadData (fearray<sLong> &Array, inputfile &SaveFile) {
   Array.Clear();
   festring Word;
   SaveFile.ReadWord(Word);
@@ -804,13 +804,13 @@ void ReadData (fearray<long> &Array, inputfile &SaveFile) {
     Array.Data[0] = SaveFile.ReadNumber();
     return;
   }
-  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %ld!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %d!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   SaveFile.ReadWord(Word);
-  if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
-  fearray<long>::sizetype Size = SaveFile.ReadNumber();
+  if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  fearray<sLong>::sizetype Size = SaveFile.ReadNumber();
   Array.Allocate(Size);
-  for (fearray<long>::sizetype c = 0; c < Size; ++c) Array.Data[c] = SaveFile.ReadNumber();
-  if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  for (fearray<sLong>::sizetype c = 0; c < Size; ++c) Array.Data[c] = SaveFile.ReadNumber();
+  if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
 }
 
 
@@ -822,26 +822,26 @@ void ReadData (fearray<festring> &Array, inputfile &SaveFile) {
   if (Word == "==") {
     Array.Allocate(1);
     SaveFile.ReadWord(Array.Data[0]);
-    if (SaveFile.ReadWord() != ";") ABORT("Array syntax error \"%s\" found in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+    if (SaveFile.ReadWord() != ";") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
     return;
   }
-  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %ld!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %d!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   SaveFile.ReadWord(Word);
-  if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   fearray<festring>::sizetype Size = SaveFile.ReadNumber();
   Array.Allocate(Size);
   for (fearray<festring>::sizetype c = 0; c < Size; ++c) {
     SaveFile.ReadWord(Array.Data[c]);
     SaveFile.ReadWord(Word);
-    if (Word != "," && Word != ";") ABORT("Array syntax error \"%s\" found in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+    if (Word != "," && Word != ";") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   }
-  if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
 }
 
 
-ulong inputfile::TellLineOfPos (long Pos) {
-  ulong Line = 1;
-  long BackupPos = TellPos();
+uLong inputfile::TellLineOfPos (sLong Pos) {
+  uLong Line = 1;
+  sLong BackupPos = TellPos();
   SeekPosBegin(0);
   while (TellPos() != Pos) { if (fgetc(Buffer) == '\n') ++Line; }
   if (TellPos() != BackupPos) SeekPosBegin(BackupPos);

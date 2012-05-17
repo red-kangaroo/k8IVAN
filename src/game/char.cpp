@@ -268,9 +268,9 @@ characterprototype::characterprototype (const characterprototype *Base, characte
 std::list<character *>::iterator character::GetTeamIterator () { return TeamIterator; }
 void character::SetTeamIterator (std::list<character *>::iterator What) { TeamIterator = What; }
 void character::CreateInitialEquipment (int SpecialFlags) { AddToInventory(DataBase->Inventory, SpecialFlags); }
-void character::EditAP (long What) { AP = Limit<long>(AP+What, -12000, 1200); }
+void character::EditAP (sLong What) { AP = Limit<sLong>(AP+What, -12000, 1200); }
 int character::GetRandomStepperBodyPart () const { return TORSO_INDEX; }
-void character::GainIntrinsic (long What) { BeginTemporaryState(What, PERMANENT); }
+void character::GainIntrinsic (sLong What) { BeginTemporaryState(What, PERMANENT); }
 truth character::IsUsingArms () const { return GetAttackStyle() & USE_ARMS; }
 truth character::IsUsingLegs () const { return GetAttackStyle() & USE_LEGS; }
 truth character::IsUsingHead () const { return GetAttackStyle() & USE_HEAD; }
@@ -303,7 +303,7 @@ cchar *character::UnarmedHitNoun () const { return "attack"; }
 cchar *character::KickNoun () const { return "kick"; }
 cchar *character::BiteNoun () const { return "attack"; }
 cchar *character::GetEquipmentName (int) const { return ""; }
-const std::list<ulong> &character::GetOriginalBodyPartID (int I) const { return OriginalBodyPartID[I]; }
+const std::list<uLong> &character::GetOriginalBodyPartID (int I) const { return OriginalBodyPartID[I]; }
 square *character::GetNeighbourSquare (int I) const { return GetSquareUnder()->GetNeighbourSquare(I); }
 lsquare *character::GetNeighbourLSquare (int I) const { return static_cast<lsquare *>(GetSquareUnder())->GetNeighbourLSquare(I); }
 wsquare *character::GetNeighbourWSquare (int I) const { return static_cast<wsquare *>(GetSquareUnder())->GetNeighbourWSquare(I); }
@@ -380,7 +380,7 @@ character::character (ccharacter &Char) :
   if (Team) TeamIterator = Team->Add(this);
   for (c = 0; c < BASE_ATTRIBUTES; ++c) BaseExperience[c] = Char.BaseExperience[c];
   BodyPartSlot = new bodypartslot[BodyParts];
-  OriginalBodyPartID = new std::list<ulong>[BodyParts];
+  OriginalBodyPartID = new std::list<uLong>[BodyParts];
   CWeaponSkill = new cweaponskill[AllowedWeaponSkillCategories];
   SquareUnder = new square *[SquaresUnder];
   if (SquaresUnder == 1) *SquareUnder = 0; else memset(SquareUnder, 0, SquaresUnder*sizeof(square *));
@@ -1000,7 +1000,7 @@ truth character::TryMove (v2 MoveVector, truth Important, truth Run) {
       if (!game::GoThroughWallsCheatIsActive()) {
         charactervector &V = game::GetWorldMap()->GetPlayerGroup();
         truth Discard = false;
-        for (uint c = 0; c < V.size(); ++c) {
+        for (uInt c = 0; c < V.size(); ++c) {
           if (!V[c]->CanMoveOn(GetNearWSquare(MoveTo))) {
             if (!Discard) {
               ADD_MESSAGE("One or more of your team members cannot cross this terrain.");
@@ -1033,7 +1033,7 @@ void character::CreateCorpse (lsquare *Square) {
 }
 
 
-void character::Die (ccharacter *Killer, cfestring &Msg, ulong DeathFlags) {
+void character::Die (ccharacter *Killer, cfestring &Msg, uLong DeathFlags) {
   /* Note: This function musn't delete any objects, since one of these may be
      the one currently processed by pool::Be()! */
   if (!IsEnabled()) return;
@@ -1405,8 +1405,8 @@ truth character::ReadItem (item *ToBeRead) {
 
 void character::CalculateBurdenState () {
   int OldBurdenState = BurdenState;
-  long SumOfMasses = GetCarriedWeight();
-  long CarryingStrengthUnits = long(GetCarryingStrength())*2500;
+  sLong SumOfMasses = GetCarriedWeight();
+  sLong CarryingStrengthUnits = sLong(GetCarryingStrength())*2500;
   if (SumOfMasses > (CarryingStrengthUnits << 1) + CarryingStrengthUnits) BurdenState = OVER_LOADED;
   else if (SumOfMasses > CarryingStrengthUnits << 1) BurdenState = STRESSED;
   else if (SumOfMasses > CarryingStrengthUnits) BurdenState = BURDENED;
@@ -1416,7 +1416,7 @@ void character::CalculateBurdenState () {
 
 
 void character::Save (outputfile &SaveFile) const {
-  SaveFile << (ushort)GetType();
+  SaveFile << (uShort)GetType();
   Stack->Save(SaveFile);
   SaveFile << ID;
   for (int c = 0; c < BASE_ATTRIBUTES; ++c) SaveFile << BaseExperience[c];
@@ -1426,7 +1426,7 @@ void character::Save (outputfile &SaveFile) const {
   SaveFile << TemporaryState << EquipmentState << Money << GoingTo << RegenerationCounter << Route << Illegal;
   SaveFile.Put(!!IsEnabled());
   SaveFile << HomeData << BlocksSinceLastTurn << CommandFlags;
-  SaveFile << WarnFlags << (ushort)Flags;
+  SaveFile << WarnFlags << (uShort)Flags;
 
   for (int c = 0; c < BodyParts; ++c) SaveFile << BodyPartSlot[c] << OriginalBodyPartID[c];
 
@@ -1437,7 +1437,7 @@ void character::Save (outputfile &SaveFile) const {
 
   if (GetTeam()) {
     SaveFile.Put(true);
-    SaveFile << Team->GetID(); // ulong
+    SaveFile << Team->GetID(); // uLong
   } else {
     SaveFile.Put(false);
   }
@@ -1448,7 +1448,7 @@ void character::Save (outputfile &SaveFile) const {
 
   for (int c = 0; c < AllowedWeaponSkillCategories; ++c) SaveFile << CWeaponSkill[c];
 
-  SaveFile << (ushort)GetConfig();
+  SaveFile << (uShort)GetConfig();
 }
 
 
@@ -1469,7 +1469,7 @@ void character::Load (inputfile &SaveFile) {
   SaveFile >> HomeData >> BlocksSinceLastTurn >> CommandFlags;
   SaveFile >> WarnFlags;
   WarnFlags &= ~WARNED;
-  Flags |= ReadType<ushort>(SaveFile) & ~ENTITY_FLAGS;
+  Flags |= ReadType<uShort>(SaveFile) & ~ENTITY_FLAGS;
 
   for (int c = 0; c < BodyParts; ++c) {
     SaveFile >> BodyPartSlot[c] >> OriginalBodyPartID[c];
@@ -1484,7 +1484,7 @@ void character::Load (inputfile &SaveFile) {
 
   for (int c = 0; c < STATES; ++c) SaveFile >> TemporaryStateCounter[c];
 
-  if (SaveFile.Get()) SetTeam(game::GetTeam(ReadType<ulong>(SaveFile)));
+  if (SaveFile.Get()) SetTeam(game::GetTeam(ReadType<uLong>(SaveFile)));
 
   if (SaveFile.Get()) GetTeam()->SetLeader(this);
 
@@ -1492,7 +1492,7 @@ void character::Load (inputfile &SaveFile) {
 
   for (int c = 0; c < AllowedWeaponSkillCategories; ++c) SaveFile >> CWeaponSkill[c];
 
-  databasecreator<character>::InstallDataBase(this, ReadType<ushort>(SaveFile));
+  databasecreator<character>::InstallDataBase(this, ReadType<uShort>(SaveFile));
 
   if (IsEnabled() && !game::IsInWilderness()) {
     for (int c = 1; c < GetSquaresUnder(); ++c) GetSquareUnder(c)->SetCharacter(this);
@@ -1534,13 +1534,13 @@ void character::AddScoreEntry (cfestring &Description, double Multiplier, truth 
     festring Desc = game::GetPlayerName();
     Desc << ", " << Description;
     if (AddEndLevel) Desc << " in "+(game::IsInWilderness() ? "the world map" : game::GetCurrentDungeon()->GetLevelDescription(game::GetCurrentLevelIndex()));
-    HScore.Add(long(game::GetScore()*Multiplier), Desc);
+    HScore.Add(sLong(game::GetScore()*Multiplier), Desc);
     HScore.Save();
   }
 }
 
 
-truth character::CheckDeath (cfestring &Msg, ccharacter *Murderer, ulong DeathFlags) {
+truth character::CheckDeath (cfestring &Msg, ccharacter *Murderer, uLong DeathFlags) {
   if (!IsEnabled()) return true;
   if (game::IsSumoWrestling() && IsDead()) {
     game::EndSumoWrestling(!!IsPlayer());
@@ -1582,7 +1582,7 @@ truth character::CheckDeath (cfestring &Msg, ccharacter *Murderer, ulong DeathFl
       SEARCH_N_REPLACE(NewMsg, "@k", CONST_S("by ") + Murderer->GetName(INDEFINITE));
     }
     if (SpecifierParts) NewMsg << " while" << SpecifierMsg;
-    if (IsPlayer() && game::WizardModeIsActive()) ADD_MESSAGE("Death message: %s. Score: %ld.", NewMsg.CStr(), game::GetScore());
+    if (IsPlayer() && game::WizardModeIsActive()) ADD_MESSAGE("Death message: %s. Score: %d.", NewMsg.CStr(), game::GetScore());
     Die(Murderer, NewMsg, DeathFlags);
     return true;
   }
@@ -1701,7 +1701,7 @@ void character::Vomit (v2 Pos, int Amount, truth ShowMsg) {
     DeActivateTemporaryState(PARASITIZED);
   }
   if (!game::IsInWilderness()) {
-    GetNearLSquare(Pos)->ReceiveVomit(this, liquid::Spawn(GetVomitMaterial(), long(sqrt(GetBodyVolume())*Amount/1000)));
+    GetNearLSquare(Pos)->ReceiveVomit(this, liquid::Spawn(GetVomitMaterial(), sLong(sqrt(GetBodyVolume())*Amount/1000)));
   }
 }
 
@@ -1893,14 +1893,14 @@ truth character::CheckForEnemies (truth CheckDoors, truth CheckGround, truth May
   if (!IsEnabled()) return false;
   truth HostileCharsNear = false;
   character *NearestChar = 0;
-  long NearestDistance = 0x7FFFFFFF;
+  sLong NearestDistance = 0x7FFFFFFF;
   v2 Pos = GetPos();
   for (int c = 0; c < game::GetTeams(); ++c) {
     if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
       for (std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
         character *ch = *i;
         if (ch->IsEnabled() && GetAttribute(WISDOM) < ch->GetAttackWisdomLimit()) {
-          long ThisDistance = Max<long>(abs(ch->GetPos().X - Pos.X), abs(ch->GetPos().Y - Pos.Y));
+          sLong ThisDistance = Max<sLong>(abs(ch->GetPos().X - Pos.X), abs(ch->GetPos().Y - Pos.Y));
           if (ThisDistance <= GetLOSRangeSquare()) HostileCharsNear = true;
           if ((ThisDistance < NearestDistance || (ThisDistance == NearestDistance && !(RAND() % 3))) &&
               ch->CanBeSeenBy(this, false, IsGoingSomeWhere()) &&
@@ -1965,7 +1965,7 @@ truth character::CheckForUsefulItemsOnGround (truth CheckFood) {
   if (StateIsActivated(PANIC) || !IsEnabled()) return false;
   itemvector ItemVector;
   GetStackUnder()->FillItemVector(ItemVector);
-  for (uint c = 0; c < ItemVector.size(); ++c) {
+  for (uInt c = 0; c < ItemVector.size(); ++c) {
     if (ItemVector[c]->CanBeSeenBy(this) && ItemVector[c]->IsPickable(this)) {
       if (!(CommandFlags & DONT_CHANGE_EQUIPMENT) && TryToEquip(ItemVector[c])) return true;
       if (CheckFood && UsesNutrition() && !CheckIfSatiated() && TryToConsume(ItemVector[c])) return true;
@@ -2052,7 +2052,7 @@ truth character::CheckThrowItemOpportunity () {
   }
   //check inventory for throwing weapon
   GetStack()->FillItemVector(ItemVector);
-  for (uint c = 0; c < ItemVector.size(); ++c) {
+  for (uInt c = 0; c < ItemVector.size(); ++c) {
     if (ItemVector[c]->IsThrowingWeapon()) {
       ToBeThrown = ItemVector[c];
       break;
@@ -2185,7 +2185,7 @@ truth character::Displace (character *Who, truth Forced) {
 }
 
 
-void character::SetNP (long What) {
+void character::SetNP (sLong What) {
   int OldState = GetHungerState();
   NP = What;
   if (IsPlayer()) {
@@ -2227,7 +2227,7 @@ void character::ShowNewPosInfo () const {
         else ADD_MESSAGE("%s %s lying here.", PileVector[0][0]->GetName(INDEFINITE, PileVector[0].size()).CStr(), PileVector[0].size() == 1 ? "is" : "are");
       } else {
         int Items = 0;
-        for (uint c = 0; c < PileVector.size(); ++c) {
+        for (uInt c = 0; c < PileVector.size(); ++c) {
           if ((Items += PileVector[c].size()) > 3) break;
         }
         if (Items > 3) {
@@ -2335,8 +2335,8 @@ void character::GoOn (go *Go, truth FirstStep) {
     return;
   }
 
-  uint OldRoomIndex = GetLSquareUnder()->GetRoomIndex();
-  uint CurrentRoomIndex = MoveToSquare[0]->GetRoomIndex();
+  uInt OldRoomIndex = GetLSquareUnder()->GetRoomIndex();
+  uInt CurrentRoomIndex = MoveToSquare[0]->GetRoomIndex();
 
   if ((OldRoomIndex && (CurrentRoomIndex != OldRoomIndex)) && !FirstStep) {
     Go->Terminate(false);
@@ -2527,7 +2527,7 @@ truth character::ChangeRandomAttribute (int HowMuch) {
 }
 
 
-int character::RandomizeReply (long &Said, int Replies) {
+int character::RandomizeReply (sLong &Said, int Replies) {
   truth NotSaid = false;
   for (int c = 0; c < Replies; ++c) {
     if (!(Said & (1 << c))) {
@@ -2536,7 +2536,7 @@ int character::RandomizeReply (long &Said, int Replies) {
     }
   }
   if (!NotSaid) Said = 0;
-  long ToSay;
+  sLong ToSay;
   while (Said & 1 << (ToSay = RAND() % Replies));
   Said |= 1 << ToSay;
   return ToSay;
@@ -2913,21 +2913,21 @@ truth character::CanConsume (material *Material) const {
 }
 
 
-void character::SetTemporaryStateCounter (long State, int What) {
+void character::SetTemporaryStateCounter (sLong State, int What) {
   for (int c = 0; c < STATES; ++c) {
     if ((1 << c) & State) TemporaryStateCounter[c] = What;
   }
 }
 
 
-void character::EditTemporaryStateCounter (long State, int What) {
+void character::EditTemporaryStateCounter (sLong State, int What) {
   for (int c = 0; c < STATES; ++c) {
     if ((1 << c) & State) TemporaryStateCounter[c] += What;
   }
 }
 
 
-int character::GetTemporaryStateCounter (long State) const {
+int character::GetTemporaryStateCounter (sLong State) const {
   for (int c = 0; c < STATES; ++c) {
     if ((1 << c) & State) return TemporaryStateCounter[c];
   }
@@ -2966,7 +2966,7 @@ int character::GetResistance (int Type) const {
 
 void character::Regenerate () {
   if (HP == MaxHP) return;
-  long RegenerationBonus = 0;
+  sLong RegenerationBonus = 0;
   truth NoHealableBodyParts = true;
   for (int c = 0; c < BodyParts; ++c) {
     bodypart *BodyPart = GetBodyPart(c);
@@ -3065,14 +3065,14 @@ void character::SetSize (int Size) {
 }
 
 
-long character::GetBodyPartSize (int I, int TotalSize) const {
+sLong character::GetBodyPartSize (int I, int TotalSize) const {
   if (I == TORSO_INDEX) return TotalSize;
   ABORT("Weird bodypart size request for a character!");
   return 0;
 }
 
 
-long character::GetBodyPartVolume (int I) const {
+sLong character::GetBodyPartVolume (int I) const {
   if (I == TORSO_INDEX) return GetTotalVolume();
   ABORT("Weird bodypart volume request for a character!");
   return 0;
@@ -3150,15 +3150,15 @@ void character::LoadDataBaseStats () {
     if (BaseExperience[c]) LimitRef(BaseExperience[c], MIN_EXP, MAX_EXP);
   }
   SetMoney(GetDefaultMoney());
-  const fearray<long> &Skills = GetKnownCWeaponSkills();
+  const fearray<sLong> &Skills = GetKnownCWeaponSkills();
   if (Skills.Size) {
-    const fearray<long> &Hits = GetCWeaponSkillHits();
+    const fearray<sLong> &Hits = GetCWeaponSkillHits();
     if (Hits.Size == 1) {
-      for (uint c = 0; c < Skills.Size; ++c) {
+      for (uInt c = 0; c < Skills.Size; ++c) {
         if (Skills[c] < AllowedWeaponSkillCategories) CWeaponSkill[Skills[c]].AddHit(Hits[0]*100);
       }
     } else if (Hits.Size == Skills.Size) {
-      for (uint c = 0; c < Skills.Size; ++c) {
+      for (uInt c = 0; c < Skills.Size; ++c) {
         if (Skills[c] < AllowedWeaponSkillCategories) CWeaponSkill[Skills[c]].AddHit(Hits[c]*100);
       }
     } else {
@@ -3182,7 +3182,7 @@ void character::Initialize (int NewConfig, int SpecialFlags) {
   CalculateAllowedWeaponSkillCategories();
   CalculateSquaresUnder();
   BodyPartSlot = new bodypartslot[BodyParts];
-  OriginalBodyPartID = new std::list<ulong>[BodyParts];
+  OriginalBodyPartID = new std::list<uLong>[BodyParts];
   CWeaponSkill = new cweaponskill[AllowedWeaponSkillCategories];
   SquareUnder = new square*[SquaresUnder];
 
@@ -3229,7 +3229,7 @@ truth character::TeleportNear (character *Caller) {
 }
 
 
-void character::ReceiveHeal (long Amount) {
+void character::ReceiveHeal (sLong Amount) {
   int c;
   for (c = 0; c < Amount / 10; ++c) if (!HealHitPoint()) break;
   Amount -= c*10;
@@ -3250,7 +3250,7 @@ void character::AddHealingLiquidConsumeEndMessage () const {
 }
 
 
-void character::ReceiveSchoolFood (long SizeOfEffect) {
+void character::ReceiveSchoolFood (sLong SizeOfEffect) {
   SizeOfEffect += RAND()%SizeOfEffect;
   if (SizeOfEffect >= 250) VomitAtRandomDirection(SizeOfEffect);
   if (!(RAND() % 3) && SizeOfEffect >= 500 && EditAttribute(ENDURANCE, SizeOfEffect/500)) {
@@ -3271,26 +3271,26 @@ void character::AddSchoolFoodHitMessage () const {
 }
 
 
-void character::ReceiveNutrition (long SizeOfEffect) {
+void character::ReceiveNutrition (sLong SizeOfEffect) {
   EditNP(SizeOfEffect);
 }
 
 
-void character::ReceiveOmmelUrine (long Amount) {
+void character::ReceiveOmmelUrine (sLong Amount) {
   EditExperience(ARM_STRENGTH, 500, Amount<<4);
   EditExperience(LEG_STRENGTH, 500, Amount<<4);
   if (IsPlayer()) game::DoEvilDeed(Amount/25);
 }
 
 
-void character::ReceiveOmmelCerumen (long Amount) {
+void character::ReceiveOmmelCerumen (sLong Amount) {
   EditExperience(INTELLIGENCE, 500, Amount << 5);
   EditExperience(WISDOM, 500, Amount << 5);
   if (IsPlayer()) game::DoEvilDeed(Amount / 25);
 }
 
 
-void character::ReceiveOmmelSweat (long Amount) {
+void character::ReceiveOmmelSweat (sLong Amount) {
   EditExperience(AGILITY, 500, Amount << 4);
   EditExperience(DEXTERITY, 500, Amount << 4);
   RestoreStamina();
@@ -3298,21 +3298,21 @@ void character::ReceiveOmmelSweat (long Amount) {
 }
 
 
-void character::ReceiveOmmelTears (long Amount) {
+void character::ReceiveOmmelTears (sLong Amount) {
   EditExperience(PERCEPTION, 500, Amount << 4);
   EditExperience(CHARISMA, 500, Amount << 4);
   if (IsPlayer()) game::DoEvilDeed(Amount / 25);
 }
 
 
-void character::ReceiveOmmelSnot (long Amount) {
+void character::ReceiveOmmelSnot (sLong Amount) {
   EditExperience(ENDURANCE, 500, Amount << 5);
   RestoreLivingHP();
   if (IsPlayer()) game::DoEvilDeed(Amount / 25);
 }
 
 
-void character::ReceiveOmmelBone (long Amount) {
+void character::ReceiveOmmelBone (sLong Amount) {
   EditExperience(ARM_STRENGTH, 500, Amount << 6);
   EditExperience(LEG_STRENGTH, 500, Amount << 6);
   EditExperience(DEXTERITY, 500, Amount << 6);
@@ -3334,7 +3334,7 @@ void character::AddOmmelConsumeEndMessage () const {
 }
 
 
-void character::ReceivePepsi (long Amount) {
+void character::ReceivePepsi (sLong Amount) {
   ReceiveDamage(0, Amount / 100, POISON, TORSO);
   EditExperience(PERCEPTION, Amount, 1 << 14);
   if (CheckDeath(CONST_S("was poisoned by pepsi"), 0)) return;
@@ -3348,7 +3348,7 @@ void character::AddPepsiConsumeEndMessage () const {
 }
 
 
-void character::ReceiveDarkness (long Amount) {
+void character::ReceiveDarkness (sLong Amount) {
   EditExperience(INTELLIGENCE, -Amount / 5, 1 << 13);
   EditExperience(WISDOM, -Amount / 5, 1 << 13);
   EditExperience(CHARISMA, -Amount / 5, 1 << 13);
@@ -3362,7 +3362,7 @@ void character::AddFrogFleshConsumeEndMessage () const {
 }
 
 
-void character::ReceiveKoboldFlesh (long) {
+void character::ReceiveKoboldFlesh (sLong) {
   /* As it is commonly known, the possibility of fainting per 500 cubic
      centimeters of kobold flesh is exactly 5%. */
   if (!(RAND() % 20)) {
@@ -3414,7 +3414,7 @@ void character::DrawPanel (truth AnimationDraw) const {
   FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Siz  %d", GetSize());
   FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), IsInBadCondition() ? RED : WHITE, "HP %d/%d", GetHP(), GetMaxHP());
   ++PanelPosY;
-  FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Gold: %ld", GetMoney());
+  FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Gold: %d", GetMoney());
   ++PanelPosY;
 
   if (game::IsInWilderness())
@@ -3426,7 +3426,7 @@ void character::DrawPanel (truth AnimationDraw) const {
   game::GetTime(Time);
   FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Day %d", Time.Day);
   FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Time %d:%s%d", Time.Hour, Time.Min < 10 ? "0" : "", Time.Min);
-  FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Turn %ld", game::GetTurn());
+  FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Turn %d", game::GetTurn());
 
   ++PanelPosY;
 
@@ -3522,9 +3522,9 @@ int character::CheckForBlockWithArm (character *Enemy, item *Weapon, arm *Arm,
         case KICK_ATTACK: AddBlockMessage(Enemy, Blocker, Enemy->KickNoun(), NewDamage); break;
         case BITE_ATTACK: AddBlockMessage(Enemy, Blocker, Enemy->BiteNoun(), NewDamage); break;
       }
-      long Weight = Blocker->GetWeight();
-      long StrExp = Limit(15 * Weight / 200L, 75L, 300L);
-      long DexExp = Weight ? Limit(75000L / Weight, 75L, 300L) : 300;
+      sLong Weight = Blocker->GetWeight();
+      sLong StrExp = Limit(15 * Weight / 200, 75, 300);
+      sLong DexExp = Weight ? Limit(75000 / Weight, 75, 300) : 300;
       Arm->EditExperience(ARM_STRENGTH, StrExp, 1 << 8);
       Arm->EditExperience(DEXTERITY, DexExp, 1 << 8);
       EditStamina(-10000 / GetAttribute(ARM_STRENGTH), false);
@@ -3545,7 +3545,7 @@ int character::CheckForBlockWithArm (character *Enemy, item *Weapon, arm *Arm,
 }
 
 
-long character::GetStateAPGain (long BaseAPGain) const {
+sLong character::GetStateAPGain (sLong BaseAPGain) const {
   if (!StateIsActivated(HASTE) == !StateIsActivated(SLOW)) return BaseAPGain;
   if (StateIsActivated(HASTE)) return (BaseAPGain * 5) >> 2;
   return (BaseAPGain << 2) / 5;
@@ -3555,7 +3555,7 @@ long character::GetStateAPGain (long BaseAPGain) const {
 void character::SignalEquipmentAdd (int EquipmentIndex) {
   item *Equipment = GetEquipment(EquipmentIndex);
   if (Equipment->IsInCorrectSlot(EquipmentIndex)) {
-    long AddedStates = Equipment->GetGearStates();
+    sLong AddedStates = Equipment->GetGearStates();
     if (AddedStates) {
       for (int c = 0; c < STATES; ++c) {
         if (AddedStates & (1 << c)) {
@@ -3581,7 +3581,7 @@ void character::SignalEquipmentRemoval (int, citem *Item) {
 
 
 void character::CalculateEquipmentState () {
-  long Back = EquipmentState;
+  sLong Back = EquipmentState;
   EquipmentState = 0;
   for (int c = 0; c < GetEquipments(); ++c) {
     item *Equipment = GetEquipment(c);
@@ -3600,7 +3600,7 @@ void character::CalculateEquipmentState () {
 
 
 /* Counter = duration in ticks */
-void character::BeginTemporaryState (long State, int Counter) {
+void character::BeginTemporaryState (sLong State, int Counter) {
   if (!Counter) return;
   int Index;
   if (State == POLYMORPHED) ABORT("No Polymorphing with BeginTemporaryState!");
@@ -3861,7 +3861,7 @@ character *character::PolymorphRandomly (int MinDanger, int MaxDanger, int Time)
 
 
 /* In reality, the reading takes Time / (Intelligence * 10) turns */
-void character::StartReading (item *Item, long Time) {
+void character::StartReading (item *Item, sLong Time) {
   study *Read = study::Spawn(this);
   Read->SetLiteratureID(Item->GetID());
   if (game::WizardModeIsActive()) Time = 1;
@@ -4016,7 +4016,7 @@ bodypart *character::FindRandomOwnBodyPart (truth AllowNonLiving) const {
   itemvector LostAndFound;
   for (int c = 0; c < BodyParts; ++c) {
     if (!GetBodyPart(c)) {
-      for (std::list<ulong>::iterator i = OriginalBodyPartID[c].begin(); i != OriginalBodyPartID[c].end(); ++i) {
+      for (std::list<uLong>::iterator i = OriginalBodyPartID[c].begin(); i != OriginalBodyPartID[c].end(); ++i) {
         bodypart *Found = static_cast<bodypart *>(SearchForItem(*i));
         if (Found && (AllowNonLiving || Found->CanRegenerate())) LostAndFound.push_back(Found);
       }
@@ -4213,9 +4213,9 @@ void character::TeleportSomePartsAway (int NumberToTeleport) {
     if (RandomBodyPart == NONE_INDEX) {
       for (; c < NumberToTeleport; ++c) {
         GetTorso()->SetHP((GetTorso()->GetHP() << 2) / 5);
-        long TorsosVolume = GetTorso()->GetMainMaterial()->GetVolume() / 10;
+        sLong TorsosVolume = GetTorso()->GetMainMaterial()->GetVolume() / 10;
         if (!TorsosVolume) break;
-        long Amount = (RAND() % TorsosVolume)+1;
+        sLong Amount = (RAND() % TorsosVolume)+1;
         item *Lump = GetTorso()->GetMainMaterial()->CreateNaturalForm(Amount);
         GetTorso()->GetMainMaterial()->EditVolume(-Amount);
         Lump->MoveTo(GetNearLSquare(GetLevel()->GetRandomSquare())->GetStack());
@@ -4331,8 +4331,8 @@ void character::CalculateMaxHP () {
 }
 
 
-void character::CalculateBodyPartMaxHPs (ulong Flags) {
-  doforbodypartswithparam<ulong>()(this, &bodypart::CalculateMaxHP, Flags);
+void character::CalculateBodyPartMaxHPs (uLong Flags) {
+  doforbodypartswithparam<uLong>()(this, &bodypart::CalculateMaxHP, Flags);
   CalculateMaxHP();
   CalculateHP();
 }
@@ -4354,10 +4354,10 @@ truth character::EditAttribute (int Identifier, int Value) {
 }
 
 
-truth character::ActivateRandomState (int Flags, int Time, long Seed) {
+truth character::ActivateRandomState (int Flags, int Time, sLong Seed) {
   femath::SaveSeed();
   if (Seed) femath::SetSeed(Seed);
-  long ToBeActivated = GetRandomState(Flags|DUR_TEMPORARY);
+  sLong ToBeActivated = GetRandomState(Flags|DUR_TEMPORARY);
   femath::LoadSeed();
   if (!ToBeActivated) return false;
   BeginTemporaryState(ToBeActivated, Time);
@@ -4366,7 +4366,7 @@ truth character::ActivateRandomState (int Flags, int Time, long Seed) {
 
 
 truth character::GainRandomIntrinsic (int Flags) {
-  long ToBeActivated = GetRandomState(Flags|DUR_PERMANENT);
+  sLong ToBeActivated = GetRandomState(Flags|DUR_PERMANENT);
   if (!ToBeActivated) return false;
   GainIntrinsic(ToBeActivated);
   return true;
@@ -4374,8 +4374,8 @@ truth character::GainRandomIntrinsic (int Flags) {
 
 
 /* Returns 0 if state not found */
-long character::GetRandomState (int Flags) const {
-  long OKStates[STATES];
+sLong character::GetRandomState (int Flags) const {
+  sLong OKStates[STATES];
   int NumberOfOKStates = 0;
   for (int c = 0; c < STATES; ++c) {
     if (StateData[c].Flags & Flags & DUR_FLAGS && StateData[c].Flags & Flags & SRC_FLAGS) OKStates[NumberOfOKStates++] = 1 << c;
@@ -4499,8 +4499,8 @@ festring character::GetBodyPartName (int I, truth Articled) const {
 }
 
 
-item *character::SearchForItem(ulong ID) const {
-  item *Equipment = findequipment<ulong>()(this, &item::HasID, ID);
+item *character::SearchForItem(uLong ID) const {
+  item *Equipment = findequipment<uLong>()(this, &item::HasID, ID);
   if (Equipment) return Equipment;
   for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) if (i->GetID() == ID) return *i;
   return 0;
@@ -4548,7 +4548,7 @@ void character::WeaponSkillHit (item *Weapon, int Type, int Hits) {
 
 
 /* Returns 0 if character cannot be duplicated */
-character *character::Duplicate (ulong Flags) {
+character *character::Duplicate (uLong Flags) {
   if (!(Flags & IGNORE_PROHIBITIONS) && !CanBeCloned()) return 0;
   character *Char = GetProtoType()->Clone(this);
   if (Flags & MIRROR_IMAGE) {
@@ -4666,7 +4666,7 @@ void character::CheckPanic (int Ticks) {
 
 
 /* returns 0 if fails else the newly created character */
-character *character::DuplicateToNearestSquare (character *Cloner, ulong Flags) {
+character *character::DuplicateToNearestSquare (character *Cloner, uLong Flags) {
   character *NewlyCreated = Duplicate(Flags);
   if (!NewlyCreated) return 0;
   if (Flags & CHANGE_TEAM && Cloner) NewlyCreated->ChangeTeam(Cloner->GetTeam());
@@ -4768,7 +4768,7 @@ void character::ApplyEquipmentAttributeBonuses (item *Equipment) {
 }
 
 
-void character::ReceiveAntidote (long Amount) {
+void character::ReceiveAntidote (sLong Amount) {
   if (StateIsActivated(POISONED)) {
     if (GetTemporaryStateCounter(POISONED) > Amount) {
       EditTemporaryStateCounter(POISONED, -Amount);
@@ -4782,12 +4782,12 @@ void character::ReceiveAntidote (long Amount) {
   if ((Amount >= 100 || RAND_N(100) < Amount) && StateIsActivated(PARASITIZED)) {
     if (IsPlayer()) ADD_MESSAGE("Something in your belly didn't seem to like this stuff.");
     DeActivateTemporaryState(PARASITIZED);
-    Amount -= Min(100L, Amount);
+    Amount -= Min(100, Amount);
   }
   if ((Amount >= 100 || RAND_N(100) < Amount) && StateIsActivated(LEPROSY)) {
     if (IsPlayer()) ADD_MESSAGE("You are not falling to pieces anymore.");
     DeActivateTemporaryState(LEPROSY);
-    Amount -= Min(100L, Amount);
+    Amount -= Min(100, Amount);
   }
 }
 
@@ -4814,7 +4814,7 @@ void character::SignalSpoilLevelChange (material *m) {
 }
 
 
-void character::AddOriginalBodyPartID (int I, ulong What) {
+void character::AddOriginalBodyPartID (int I, uLong What) {
   if (std::find(OriginalBodyPartID[I].begin(), OriginalBodyPartID[I].end(), What) == OriginalBodyPartID[I].end()) {
     OriginalBodyPartID[I].push_back(What);
     if (OriginalBodyPartID[I].size() > 100) OriginalBodyPartID[I].erase(OriginalBodyPartID[I].begin());
@@ -4823,7 +4823,7 @@ void character::AddOriginalBodyPartID (int I, ulong What) {
 
 
 void character::AddToInventory (const fearray<contentscript<item> > &ItemArray, int SpecialFlags) {
-  for (uint c1 = 0; c1 < ItemArray.Size; ++c1) {
+  for (uInt c1 = 0; c1 < ItemArray.Size; ++c1) {
     if (ItemArray[c1].IsValid()) {
       const interval *TimesPtr = ItemArray[c1].GetTimes();
       int Times = TimesPtr ? TimesPtr->Randomize() : 1;
@@ -4877,7 +4877,7 @@ void character::ProcessAndAddMessage (festring Msg) const {
 
 
 void character::BeTalkedTo () {
-  static long Said;
+  static sLong Said;
   if (GetRelation(PLAYER) == HOSTILE)
     ProcessAndAddMessage(GetHostileReplies()[RandomizeReply(Said, GetHostileReplies().Size)]);
   else
@@ -4904,7 +4904,7 @@ void character::DamageAllItems (character *Damager, int Damage, int Type) {
 
 
 truth character::Equips (citem *Item) const {
-  return combineequipmentpredicateswithparam<ulong>()(this, &item::HasID, Item->GetID(), 1);
+  return combineequipmentpredicateswithparam<uLong>()(this, &item::HasID, Item->GetID(), 1);
 }
 
 
@@ -5009,7 +5009,7 @@ truth character::EquipsSomething (sorter Sorter) {
 }
 
 
-material *character::CreateBodyPartMaterial (int, long Volume) const {
+material *character::CreateBodyPartMaterial (int, sLong Volume) const {
   return MAKE_MATERIAL(GetFleshMaterial(), Volume);
 }
 
@@ -5085,7 +5085,7 @@ void character::PrintBeginParasitizedMessage () const {
 
 
 void character::PrintEndParasitizedMessage () const {
-  if (IsPlayer()) ADD_MESSAGE("A feeling of long welcome emptiness overwhelms you.");
+  if (IsPlayer()) ADD_MESSAGE("A feeling of sLong welcome emptiness overwhelms you.");
 }
 
 
@@ -5122,7 +5122,7 @@ festring character::GetPanelName () const {
 }
 
 
-long character::GetMoveAPRequirement (int Difficulty) const {
+sLong character::GetMoveAPRequirement (int Difficulty) const {
   return (!StateIsActivated(PANIC) ? 10000000 : 8000000) * Difficulty / (APBonus(GetAttribute(AGILITY)) * GetMoveEase());
 }
 
@@ -5413,7 +5413,7 @@ void character::DetachBodyPart () {
 #endif
 
 
-void character::ReceiveHolyBanana (long Amount) {
+void character::ReceiveHolyBanana (sLong Amount) {
   Amount <<= 1;
   EditExperience(ARM_STRENGTH, Amount, 1 << 13);
   EditExperience(LEG_STRENGTH, Amount, 1 << 13);
@@ -5478,7 +5478,7 @@ truth character::PostProcessForBone (double &DangerSum, int& Enemies) {
 
 
 truth character::PostProcessForBone () {
-  ulong NewID = game::CreateNewCharacterID(this);
+  uLong NewID = game::CreateNewCharacterID(this);
   game::GetBoneCharacterIDMap().insert(std::make_pair(-ID, NewID));
   game::RemoveCharacterID(ID);
   ID = NewID;
@@ -5499,10 +5499,10 @@ void character::FinalProcessForBone () {
   doforequipments()(this, &item::FinalProcessForBone);
   int c;
   for (c = 0; c < BodyParts; ++c) {
-    for (std::list<ulong>::iterator i = OriginalBodyPartID[c].begin(); i != OriginalBodyPartID[c].end();) {
+    for (std::list<uLong>::iterator i = OriginalBodyPartID[c].begin(); i != OriginalBodyPartID[c].end();) {
       boneidmap::iterator BI = game::GetBoneItemIDMap().find(*i);
       if (BI == game::GetBoneItemIDMap().end()) {
-        std::list<ulong>::iterator Dirt = i++;
+        std::list<uLong>::iterator Dirt = i++;
         OriginalBodyPartID[c].erase(Dirt);
       } else {
         *i = BI->second;
@@ -5513,13 +5513,13 @@ void character::FinalProcessForBone () {
 }
 
 
-void character::SetSoulID (ulong What) {
+void character::SetSoulID (uLong What) {
   if (GetPolymorphBackup()) GetPolymorphBackup()->SetSoulID(What);
 }
 
 
 truth character::SearchForItem (citem *Item) const {
-  if (combineequipmentpredicateswithparam<ulong>()(this, &item::HasID, Item->GetID(), 1)) return true;
+  if (combineequipmentpredicateswithparam<uLong>()(this, &item::HasID, Item->GetID(), 1)) return true;
   for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) if (*i == Item) return true;
   return false;
 }
@@ -5789,21 +5789,21 @@ double character::RandomizeBabyExperience (double SumE) {
 }
 
 
-liquid *character::CreateBlood (long Volume) const {
+liquid *character::CreateBlood (sLong Volume) const {
   return liquid::Spawn(GetBloodMaterial(), Volume);
 }
 
 
 void character::SpillFluid (character *Spiller, liquid *Liquid, int SquareIndex) {
-  long ReserveVolume = Liquid->GetVolume() >> 1;
+  sLong ReserveVolume = Liquid->GetVolume() >> 1;
   Liquid->EditVolume(-ReserveVolume);
-  GetStack()->SpillFluid(Spiller, Liquid, long(Liquid->GetVolume() * sqrt(double(GetStack()->GetVolume()) / GetVolume())));
+  GetStack()->SpillFluid(Spiller, Liquid, sLong(Liquid->GetVolume() * sqrt(double(GetStack()->GetVolume()) / GetVolume())));
   Liquid->EditVolume(ReserveVolume);
   int c;
-  long Modifier[MAX_BODYPARTS], ModifierSum = 0;
+  sLong Modifier[MAX_BODYPARTS], ModifierSum = 0;
   for (c = 0; c < BodyParts; ++c) {
     if (GetBodyPart(c)) {
-      Modifier[c] = long(sqrt(GetBodyPart(c)->GetVolume()));
+      Modifier[c] = sLong(sqrt(GetBodyPart(c)->GetVolume()));
       if (Modifier[c]) Modifier[c] *= 1 + (RAND() & 3);
       ModifierSum += Modifier[c];
     } else {
@@ -6011,7 +6011,7 @@ void characterdatabase::PostProcess () {
 }
 
 
-void character::EditDealExperience (long Price) {
+void character::EditDealExperience (sLong Price) {
   EditExperience(CHARISMA, sqrt(Price) / 5, 1 << 9);
 }
 
@@ -6095,7 +6095,7 @@ truth character::CanUseEquipment (int I) const {
 /* Target mustn't have any equipment */
 void character::DonateEquipmentTo (character *Character) {
   if (IsPlayer()) {
-    ulong *EquipmentMemory = game::GetEquipmentMemory();
+    uLong *EquipmentMemory = game::GetEquipmentMemory();
     for (int c = 0; c < MAX_EQUIPMENT_SLOTS; ++c) {
       item *Item = GetEquipment(c);
       if (Item) {
@@ -6136,7 +6136,7 @@ void character::DonateEquipmentTo (character *Character) {
 }
 
 
-void character::ReceivePeaSoup (long) {
+void character::ReceivePeaSoup (sLong) {
   lsquare *Square = GetLSquareUnder();
   if (Square->IsFlyable()) Square->AddSmoke(gas::Spawn(FART, 250));
 }
@@ -6191,7 +6191,7 @@ void character::RegenerateStamina () {
   if (GetTirednessState() != UNTIRED) {
     EditExperience(ENDURANCE, 50, 1);
     if (Sweats() && TorsoIsAlive() && !RAND_N(30) && !game::IsInWilderness()) {
-      long Volume = long(0.05 * sqrt(GetBodyVolume()));
+      sLong Volume = sLong(0.05 * sqrt(GetBodyVolume()));
       if (GetTirednessState() == FAINTING) Volume <<= 1;
       for (int c = 0; c < SquaresUnder; ++c) GetLSquareUnder(c)->SpillFluid(0, CreateSweat(Volume), false, false);
     }
@@ -6249,7 +6249,7 @@ int character::GetTirednessState () const {
 }
 
 
-void character::ReceiveBlackUnicorn (long Amount) {
+void character::ReceiveBlackUnicorn (sLong Amount) {
   if (!(RAND() % 160)) game::DoEvilDeed(Amount / 50);
   BeginTemporaryState(TELEPORT, Amount / 100);
   for (int c = 0; c < STATES; ++c) {
@@ -6264,7 +6264,7 @@ void character::ReceiveBlackUnicorn (long Amount) {
 }
 
 
-void character::ReceiveGrayUnicorn (long Amount) {
+void character::ReceiveGrayUnicorn (sLong Amount) {
   if (!(RAND() % 80)) game::DoEvilDeed(Amount / 50);
   BeginTemporaryState(TELEPORT, Amount / 100);
   for (int c = 0; c < STATES; ++c) {
@@ -6276,7 +6276,7 @@ void character::ReceiveGrayUnicorn (long Amount) {
 }
 
 
-void character::ReceiveWhiteUnicorn (long Amount) {
+void character::ReceiveWhiteUnicorn (sLong Amount) {
   if (!(RAND() % 40)) game::DoEvilDeed(Amount / 50);
   BeginTemporaryState(TELEPORT, Amount / 100);
   DecreaseStateCounter(LYCANTHROPY, -Amount / 100);
@@ -6287,7 +6287,7 @@ void character::ReceiveWhiteUnicorn (long Amount) {
 
 
 /* Counter should be negative. Removes intrinsics. */
-void character::DecreaseStateCounter (long State, int Counter) {
+void character::DecreaseStateCounter (sLong State, int Counter) {
   int Index;
   for (Index = 0; Index < STATES; ++Index) if (1 << Index == State) break;
   if (Index == STATES) ABORT("DecreaseTemporaryStateCounter works only when State == 2 ^ n!");
@@ -6324,7 +6324,7 @@ void character::LeprosyHandler () {
 
 bodypart *character::SearchForOriginalBodyPart (int I) const {
   for (stackiterator i1 = GetStackUnder()->GetBottom(); i1.HasItem(); ++i1) {
-    for (std::list<ulong>::iterator i2 = OriginalBodyPartID[I].begin(); i2 != OriginalBodyPartID[I].end(); ++i2)
+    for (std::list<uLong>::iterator i2 = OriginalBodyPartID[I].begin(); i2 != OriginalBodyPartID[I].end(); ++i2)
       if (i1->GetID() == *i2) return static_cast<bodypart*>(*i1);
   }
   return 0;
@@ -6345,7 +6345,7 @@ void character::SetLifeExpectancy (int Base, int RandPlus) {
 
 
 /* Receiver should be a fresh duplicate of this */
-void character::DuplicateEquipment (character *Receiver, ulong Flags) {
+void character::DuplicateEquipment (character *Receiver, uLong Flags) {
   for (int c = 0; c < GetEquipments(); ++c) {
     item *Equipment = GetEquipment(c);
     if (Equipment) {
@@ -6376,7 +6376,7 @@ void character::Disappear (corpse *Corpse, cchar *Verb, truth (item::*ClosePredi
     }
     itemvector ItemVector;
     GetStack()->FillItemVector(ItemVector);
-    for (uint c = 0; c < ItemVector.size(); ++c) {
+    for (uInt c = 0; c < ItemVector.size(); ++c) {
       if (ItemVector[c] && (ItemVector[c]->*ClosePredicate)()) {
         ItemVector[c]->RemoveFromSlot();
         ItemVector[c]->SendToHell();
@@ -6444,19 +6444,19 @@ truth character::IsSameAs (ccharacter *What) const {
 }
 
 
-ulong character::GetCommandFlags () const {
+uLong character::GetCommandFlags () const {
   return !StateIsActivated(PANIC) ? CommandFlags : CommandFlags|FLEE_FROM_ENEMIES;
 }
 
 
-ulong character::GetConstantCommandFlags () const {
+uLong character::GetConstantCommandFlags () const {
   return !StateIsActivated(PANIC) ? DataBase->ConstantCommandFlags : DataBase->ConstantCommandFlags|FLEE_FROM_ENEMIES;
 }
 
 
-ulong character::GetPossibleCommandFlags () const {
+uLong character::GetPossibleCommandFlags () const {
   int Int = GetAttribute(INTELLIGENCE);
-  ulong Flags = ALL_COMMAND_FLAGS;
+  uLong Flags = ALL_COMMAND_FLAGS;
   if (!CanMove() || Int < 4) Flags &= ~FOLLOW_LEADER;
   if (!CanMove() || Int < 6) Flags &= ~FLEE_FROM_ENEMIES;
   if (!CanUseEquipment() || Int < 8) Flags &= ~DONT_CHANGE_EQUIPMENT;
@@ -6476,7 +6476,7 @@ truth character::ChatMenu () {
     PLAYER->EditAP(-200);
     return true;
   }
-  ulong ManagementFlags = GetManagementFlags();
+  uLong ManagementFlags = GetManagementFlags();
   if (ManagementFlags == CHAT_IDLY || !IsPet()) return ChatIdly();
   static cchar *const ChatMenuEntry[CHAT_MENU_ENTRIES] = {
     "Change equipment",
@@ -6532,7 +6532,7 @@ truth character::TakePetItems () {
       GetVerbalBurdenStateColor(),
       REMEMBER_SELECTED);
     if (ToTake.empty()) break;
-    for (uint c = 0; c < ToTake.size(); ++c) ToTake[c]->MoveTo(PLAYER->GetStack());
+    for (uInt c = 0; c < ToTake.size(); ++c) ToTake[c]->MoveTo(PLAYER->GetStack());
     ADD_MESSAGE("You take %s.", ToTake[0]->GetName(DEFINITE, ToTake.size()).CStr());
     Success = true;
   }
@@ -6561,7 +6561,7 @@ truth character::GivePetItems () {
       GetVerbalBurdenStateColor(),
       REMEMBER_SELECTED);
     if (ToGive.empty()) break;
-    for (uint c = 0; c < ToGive.size(); ++c) ToGive[c]->MoveTo(GetStack());
+    for (uInt c = 0; c < ToGive.size(); ++c) ToGive[c]->MoveTo(GetStack());
     ADD_MESSAGE("You give %s to %s.", ToGive[0]->GetName(DEFINITE, ToGive.size()).CStr(), CHAR_DESCRIPTION(DEFINITE));
     Success = true;
   }
@@ -6578,13 +6578,13 @@ truth character::IssuePetCommands () {
     ADD_MESSAGE("%s is unconscious.", CHAR_DESCRIPTION(DEFINITE));
     return false;
   }
-  ulong PossibleC = GetPossibleCommandFlags();
+  uLong PossibleC = GetPossibleCommandFlags();
   if (!PossibleC) {
     ADD_MESSAGE("%s cannot be commanded.", CHAR_DESCRIPTION(DEFINITE));
     return false;
   }
-  ulong OldC = GetCommandFlags();
-  ulong NewC = OldC, VaryFlags = 0;
+  uLong OldC = GetCommandFlags();
+  uLong NewC = OldC, VaryFlags = 0;
   game::CommandScreen(CONST_S("Issue commands to ")+GetDescription(DEFINITE), PossibleC, GetConstantCommandFlags(), VaryFlags, NewC);
   if (NewC == OldC) return false;
   SetCommandFlags(NewC);
@@ -6649,8 +6649,8 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
 }
 
 
-ulong character::GetManagementFlags () const {
-  ulong Flags = ALL_MANAGEMENT_FLAGS;
+uLong character::GetManagementFlags () const {
+  uLong Flags = ALL_MANAGEMENT_FLAGS;
   if (!CanUseEquipment() || !AllowPlayerToChangeEquipment()) Flags &= ~CHANGE_EQUIPMENT;
   if (!GetStack()->GetItems()) Flags &= ~TAKE_ITEMS;
   if (!WillCarryItems()) Flags &= ~GIVE_ITEMS;
@@ -6735,7 +6735,7 @@ truth character::GetNewFormForPolymorphWithControl (character *&NewForm) {
 }
 
 
-liquid *character::CreateSweat(long Volume) const {
+liquid *character::CreateSweat(sLong Volume) const {
   return liquid::Spawn(GetSweatMaterial(), Volume);
 }
 
@@ -6743,7 +6743,7 @@ liquid *character::CreateSweat(long Volume) const {
 truth character::TeleportRandomItem (truth TryToHinderVisibility) {
   if (IsImmuneToItemTeleport()) return false;
   itemvector ItemVector;
-  std::vector<long> PossibilityVector;
+  std::vector<sLong> PossibilityVector;
   int TotalPossibility = 0;
   for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) {
     ItemVector.push_back(*i);
@@ -6997,7 +6997,7 @@ truth character::TryToTalkAboutScience () {
       ADD_MESSAGE("You are drawn into a heated argument regarding %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
       break;
     case 8:
-      ADD_MESSAGE("%s delivers a long monologue concerning eg. %s.", CHAR_DESCRIPTION(DEFINITE), Science.CStr());
+      ADD_MESSAGE("%s delivers a sLong monologue concerning eg. %s.", CHAR_DESCRIPTION(DEFINITE), Science.CStr());
       break;
     case 9:
       ADD_MESSAGE("You dive into a brief but thought-provoking debate over %s with %s", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
@@ -7021,7 +7021,7 @@ truth character::TryToUnStickTraps (v2 Dir) {
   if (!TrapData) return true;
   std::vector<trapdata> TrapVector;
   for (const trapdata *T = TrapData; T; T = T->Next) TrapVector.push_back(*TrapData);
-  for (uint c = 0; c < TrapVector.size(); ++c) {
+  for (uInt c = 0; c < TrapVector.size(); ++c) {
     if (IsEnabled()) {
       entity *Trap = game::SearchTrap(TrapVector[c].TrapID);
       /*k8:??? if(!Trap->Exists()) int esko = esko = 2; */
@@ -7034,20 +7034,20 @@ truth character::TryToUnStickTraps (v2 Dir) {
 
 
 struct trapidcomparer {
-  trapidcomparer (ulong ID) : ID(ID) {}
+  trapidcomparer (uLong ID) : ID(ID) {}
   truth operator () (const trapdata *T) const { return T->TrapID == ID; }
-  ulong ID;
+  uLong ID;
 };
 
 
-void character::RemoveTrap (ulong ID) {
+void character::RemoveTrap (uLong ID) {
   trapdata *&T = ListFind(TrapData, trapidcomparer(ID));
   T = T->Next;
   doforbodyparts()(this, &bodypart::SignalPossibleUsabilityChange);
 }
 
 
-void character::AddTrap (ulong ID, ulong BodyParts) {
+void character::AddTrap (uLong ID, uLong BodyParts) {
   trapdata *&T = ListFind(TrapData, trapidcomparer(ID));
   if (T) T->BodyParts |= BodyParts;
   else T = new trapdata(ID, GetID(), BodyParts);
@@ -7055,7 +7055,7 @@ void character::AddTrap (ulong ID, ulong BodyParts) {
 }
 
 
-truth character::IsStuckToTrap (ulong ID) const {
+truth character::IsStuckToTrap (uLong ID) const {
   for (const trapdata *T = TrapData; T; T = T->Next) if (T->TrapID == ID) return true;
   return false;
 }
@@ -7075,7 +7075,7 @@ void character::RemoveTraps () {
 
 
 void character::RemoveTraps (int BodyPartIndex) {
-  ulong Flag = 1 << BodyPartIndex;
+  uLong Flag = 1 << BodyPartIndex;
   for (trapdata **T = &TrapData; *T;) {
     if ((*T)->BodyParts & Flag) {
       entity *Trap = game::SearchTrap((*T)->TrapID);
@@ -7132,7 +7132,7 @@ festring character::GetTrapDescription () const {
 }
 
 
-int character::RandomizeHurtBodyPart (ulong BodyParts) const {
+int character::RandomizeHurtBodyPart (uLong BodyParts) const {
   int BodyPartIndex[MAX_BODYPARTS];
   int Index = 0;
   for (int c = 0; c < GetBodyParts(); ++c) {
@@ -7180,7 +7180,7 @@ truth character::CanPanic () const {
 }
 
 
-int character::GetRandomBodyPart (ulong Possible) const {
+int character::GetRandomBodyPart (uLong Possible) const {
   int OKBodyPart[MAX_BODYPARTS];
   int OKBodyParts = 0;
   for (int c = 0; c < BodyParts; ++c) if (1 << c & Possible && GetBodyPart(c)) OKBodyPart[OKBodyParts++] = c;
@@ -7188,7 +7188,7 @@ int character::GetRandomBodyPart (ulong Possible) const {
 }
 
 
-void character::EditNP (long What) {
+void character::EditNP (sLong What) {
   int OldState = GetHungerState();
   NP += What;
   int NewState = GetHungerState();
@@ -7345,21 +7345,21 @@ void character::ForcePutNear (v2 Pos) {
 }
 
 
-void character::ReceiveMustardGas (int BodyPart, long Volume) {
+void character::ReceiveMustardGas (int BodyPart, sLong Volume) {
   if (Volume) GetBodyPart(BodyPart)->AddFluid(liquid::Spawn(MUSTARD_GAS_LIQUID, Volume), CONST_S("skin"), 0, true);
 }
 
 
-void character::ReceiveMustardGasLiquid (int BodyPartIndex, long Modifier) {
+void character::ReceiveMustardGasLiquid (int BodyPartIndex, sLong Modifier) {
   bodypart *BodyPart = GetBodyPart(BodyPartIndex);
   if (BodyPart->GetMainMaterial()->GetInteractionFlags() & IS_AFFECTED_BY_MUSTARD_GAS) {
-    long Tries = Modifier;
+    sLong Tries = Modifier;
     Modifier -= Tries; //opt%?
     int Damage = 0;
-    for (long c = 0; c < Tries; ++c) if (!(RAND() % 100)) ++Damage;
+    for (sLong c = 0; c < Tries; ++c) if (!(RAND() % 100)) ++Damage;
     if (Modifier && !(RAND() % 1000 / Modifier)) ++Damage;
     if (Damage) {
-      ulong Minute = game::GetTotalMinutes();
+      uLong Minute = game::GetTotalMinutes();
       if (GetLastAcidMsgMin() != Minute && (CanBeSeenByPlayer() || IsPlayer())) {
         SetLastAcidMsgMin(Minute);
         if (IsPlayer()) ADD_MESSAGE("Mustard gas dissolves the skin of your %s.", BodyPart->GetBodyPartName().CStr());
@@ -7487,13 +7487,13 @@ void character::ReceiveItemAsPresent (item *Present) {
 /* returns 0 if no enemies in sight */
 character *character::GetNearestEnemy () const {
   character *NearestEnemy = 0;
-  long NearestEnemyDistance = 0x7FFFFFFF;
+  sLong NearestEnemyDistance = 0x7FFFFFFF;
   v2 Pos = GetPos();
   for (int c = 0; c < game::GetTeams(); ++c) {
     if (GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
       for (std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
         if ((*i)->IsEnabled()) {
-          long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
+          sLong ThisDistance = Max<sLong>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
           if ((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND() % 3))) && (*i)->CanBeSeenBy(this)) {
             NearestEnemy = *i;
             NearestEnemyDistance = ThisDistance;
@@ -7569,7 +7569,7 @@ truth character::CheckForBeverage () {
   if (StateIsActivated(PANIC) || !IsEnabled() || !UsesNutrition() || CheckIfSatiated()) return false;
   itemvector ItemVector;
   GetStack()->FillItemVector(ItemVector);
-  for (uint c = 0; c < ItemVector.size(); ++c) if (ItemVector[c]->IsBeverage(this) && TryToConsume(ItemVector[c])) return true;
+  for (uInt c = 0; c < ItemVector.size(); ++c) if (ItemVector[c]->IsBeverage(this) && TryToConsume(ItemVector[c])) return true;
   return false;
 }
 

@@ -12,13 +12,13 @@
 
 /* Compiled through wmapset.cpp */
 
-uchar** continent::TypeBuffer;
+uChar** continent::TypeBuffer;
 short** continent::AltitudeBuffer;
-uchar** continent::ContinentBuffer;
+uChar** continent::ContinentBuffer;
 
 continent::continent() { }
 continent::continent(int Index) : Index(Index) { }
-long continent::GetSize() const { return Member.size(); }
+sLong continent::GetSize() const { return Member.size(); }
 int continent::GetGTerrainAmount(int Type) const { return GTerrainAmount[Type]; }
 v2 continent::GetMember(int I) const { return Member[I]; }
 
@@ -34,7 +34,7 @@ void continent::Load(inputfile& SaveFile)
 
 void continent::AttachTo(continent* Continent)
 {
-  for(ulong c = 0; c < Member.size(); ++c)
+  for(uLong c = 0; c < Member.size(); ++c)
     ContinentBuffer[Member[c].X][Member[c].Y] = Continent->Index;
 
   if(!Continent->Member.size())
@@ -50,7 +50,7 @@ void continent::GenerateInfo()
 {
   GTerrainAmount.resize(protocontainer<gwterrain>::GetSize() + 1);
 
-  for(ulong c = 0; c < Member.size(); ++c)
+  for(uLong c = 0; c < Member.size(); ++c)
     ++GTerrainAmount[TypeBuffer[Member[c].X][Member[c].Y]];
 
   Name = CONST_S("number ");
@@ -63,9 +63,9 @@ v2 continent::GetRandomMember(int Type)
     ABORT("Shortage of terrain!");
 
   v2* TypeContainer = new v2[Member.size()];
-  long Index = 0;
+  sLong Index = 0;
 
-  for(ulong c = 0; c < Member.size(); ++c)
+  for(uLong c = 0; c < Member.size(); ++c)
     if(TypeBuffer[Member[c].X][Member[c].Y] == Type)
     {
       TypeContainer[Index++] = Member[c];

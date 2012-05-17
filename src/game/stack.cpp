@@ -17,7 +17,7 @@
 int stack::Selected;
 
 
-stack::stack (square *MotherSquare, entity* MotherEntity, ulong Flags) :
+stack::stack (square *MotherSquare, entity* MotherEntity, uLong Flags) :
   Bottom(0), Top(0), MotherSquare(MotherSquare), MotherEntity(MotherEntity),
   Volume(0), Weight(0), Emitation(0), Flags(Flags), Items(0)
 {
@@ -121,19 +121,19 @@ void stack::Clean (truth LastClean) {
 
 void stack::Save (outputfile &SaveFile) const {
   if (!Items) {
-    SaveFile << ushort(0);
+    SaveFile << uShort(0);
     return;
   }
   int SavedItems = 0;
   for (stackiterator i1 = GetBottom(); i1.HasItem(); ++i1) if (i1->IsMainSlot(&i1.GetSlot())) ++SavedItems;
-  SaveFile << (ushort)SavedItems;
+  SaveFile << (uShort)SavedItems;
   /* Save multitiled items only to one stack */
   for (stackiterator i2 = GetBottom(); i2.HasItem(); ++i2) if (i2->IsMainSlot(&i2.GetSlot())) SaveFile << i2.GetSlot();
 }
 
 
 void stack::Load (inputfile &SaveFile) {
-  ushort SavedItems = 0;
+  uShort SavedItems = 0;
   SaveFile >> SavedItems;
   for (int c = 0; c < SavedItems; ++c) {
     if (!c && !Items) Bottom = Top = new stackslot(this, 0);
@@ -183,7 +183,7 @@ void stack::Polymorph (character *Polymorpher) {
   itemvector ItemVector;
   FillItemVector(ItemVector);
   int p = 0;
-  for (uint c = 0; c < ItemVector.size(); ++c) {
+  for (uInt c = 0; c < ItemVector.size(); ++c) {
     if (ItemVector[c]->Exists() && ItemVector[c]->Polymorph(Polymorpher, this) && ++p == 5) break;
   }
 }
@@ -192,7 +192,7 @@ void stack::Polymorph (character *Polymorpher) {
 void stack::CheckForStepOnEffect (character *Stepper) {
   itemvector ItemVector;
   FillItemVector(ItemVector);
-  for (uint c = 0; c < ItemVector.size(); ++c) {
+  for (uInt c = 0; c < ItemVector.size(); ++c) {
     if (ItemVector[c]->Exists()) {
       ItemVector[c]->StepOnEffect(Stepper);
       if (!Stepper->IsEnabled()) return;
@@ -223,16 +223,16 @@ lsquare *stack::GetLSquareTrulyUnder (int SquarePosition) const {
 void stack::ReceiveDamage (character *Damager, int Damage, int Type, int Direction) {
   itemvector ItemVector;
   FillItemVector(ItemVector);
-  for (uint c = 0; c < ItemVector.size(); ++c)
+  for (uInt c = 0; c < ItemVector.size(); ++c)
     if (ItemVector[c]->Exists() && AllowDamage(Direction, ItemVector[c]->GetSquarePosition()))
       ItemVector[c]->ReceiveDamage(Damager, Damage, Type);
 }
 
 
-void stack::TeleportRandomly (uint Amount) {
+void stack::TeleportRandomly (uInt Amount) {
   itemvector ItemVector;
   FillItemVector(ItemVector);
-  for (uint c = 0; c < ItemVector.size() && c < Amount; ++c)
+  for (uInt c = 0; c < ItemVector.size() && c < Amount; ++c)
     if (ItemVector[c]->Exists()) {
       if (ItemVector[c]->CanBeSeenByPlayer()) ADD_MESSAGE("%s disappears!", ItemVector[c]->GetExtendedDescription().CStr());
       ItemVector[c]->TeleportRandomly();
@@ -297,7 +297,7 @@ int stack::DrawContents (itemvector &ReturnVector, stack *MergeStack,
   /*
   if (!(Flags & NO_SPECIAL_INFO)) {
     Contents.AddDescription(CONST_S(""));
-    long Weight = GetWeight(Viewer, CENTER);
+    sLong Weight = GetWeight(Viewer, CENTER);
     if (MergeStack) Weight += MergeStack->GetWeight(Viewer, CENTER);
     for (c = 0; c < 4; ++c)
       if (AdjacentStack[c])
@@ -369,9 +369,9 @@ void stack::AddContentsToList (felist &Contents, ccharacter *Viewer, cfestring &
   itemvectorvector PileVector;
   Pile(PileVector, Viewer, RequiredSquarePosition, SorterFunction);
   truth DrawDesc = Desc.GetSize();
-  long LastCategory = 0;
+  sLong LastCategory = 0;
   festring Entry;
-  for (uint p = 0; p < PileVector.size(); ++p) {
+  for (uInt p = 0; p < PileVector.size(); ++p) {
     if (DrawDesc) {
       if (!Contents.IsEmpty()) Contents.AddEntry(CONST_S(""), WHITE, 0, NO_IMAGE, false);
       Contents.AddEntry(Desc, WHITE, 0, NO_IMAGE, false);
@@ -401,7 +401,7 @@ int stack::SearchChosen (itemvector &ReturnVector, ccharacter *Viewer, int Pos, 
   /* Not really efficient... :( */
   itemvectorvector PileVector;
   Pile(PileVector, Viewer, RequiredSquarePosition, SorterFunction);
-  for (uint p = 0; p < PileVector.size(); ++p) {
+  for (uInt p = 0; p < PileVector.size(); ++p) {
     if (Pos++ == Chosen) {
       if (Flags & NO_MULTI_SELECT) {
         int Amount = (Flags & SELECT_PAIR && PileVector[p][0]->HandleInPairs() && PileVector[p].size() >= 2 ? 2 : 1);
@@ -426,7 +426,7 @@ int stack::SearchChosen (itemvector &ReturnVector, ccharacter *Viewer, int Pos, 
 truth stack::RaiseTheDead (character *Summoner) {
   itemvector ItemVector;
   FillItemVector(ItemVector);
-  for (uint c = 0; c < ItemVector.size(); ++c) if (ItemVector[c]->RaiseTheDead(Summoner)) return true;
+  for (uInt c = 0; c < ItemVector.size(); ++c) if (ItemVector[c]->RaiseTheDead(Summoner)) return true;
   return false;
 }
 
@@ -623,12 +623,12 @@ truth stack::IsDangerous (ccharacter *Stepper) const {
 
 /* Returns true if something was duplicated.
    Max is the cap of items to be affected */
-truth stack::Duplicate (int Max, ulong Flags) {
+truth stack::Duplicate (int Max, uLong Flags) {
   if (!GetItems()) return false;
   itemvector ItemVector;
   FillItemVector(ItemVector);
   int p = 0;
-  for (uint c = 0; c < ItemVector.size(); ++c)
+  for (uInt c = 0; c < ItemVector.size(); ++c)
     if (ItemVector[c]->Exists() && ItemVector[c]->DuplicateToStack(this, Flags) && ++p == Max) break;
   return p > 0;
 }
@@ -716,8 +716,8 @@ void stack::Pile (itemvectorvector &PileVector, ccharacter *Viewer,
 
 
 /* Total price of the stack */
-long stack::GetTruePrice () const {
-  long Price = 0;
+sLong stack::GetTruePrice () const {
+  sLong Price = 0;
   for (stackiterator i = GetBottom(); i.HasItem(); ++i) Price += i->GetTruePrice();
   return Price;
 }
@@ -739,7 +739,7 @@ truth stack::TakeSomethingFrom (character *Opener, cfestring &ContainerName) {
     DrawContents(ToTake, Opener, CONST_S("What do you want to take from ")+ContainerName+'?', REMEMBER_SELECTED);
     if (ToTake.empty()) break;
     if (!IsOnGround() || !Room || Room->PickupItem(Opener, ToTake[0], ToTake.size())) {
-      for (uint c = 0; c < ToTake.size(); ++c) ToTake[c]->MoveTo(Opener->GetStack());
+      for (uInt c = 0; c < ToTake.size(); ++c) ToTake[c]->MoveTo(Opener->GetStack());
       ADD_MESSAGE("You take %s from %s.", ToTake[0]->GetName(DEFINITE, ToTake.size()).CStr(), ContainerName.CStr());
       Success = true;
     }
@@ -750,7 +750,7 @@ truth stack::TakeSomethingFrom (character *Opener, cfestring &ContainerName) {
 
 /* GUI used for instance by chests and bookcases (use ContainerID == 0 if
    the container isn't an item). Returns whether anything was done. */
-truth stack::PutSomethingIn (character *Opener, cfestring &ContainerName, long StorageVolume, ulong ContainerID) {
+truth stack::PutSomethingIn (character *Opener, cfestring &ContainerName, sLong StorageVolume, uLong ContainerID) {
   if (!Opener->GetStack()->GetItems()) {
     ADD_MESSAGE("You have nothing to put in %s.", ContainerName.CStr());
     return false;
@@ -767,7 +767,7 @@ truth stack::PutSomethingIn (character *Opener, cfestring &ContainerName, long S
       ADD_MESSAGE("You can't put %s inside itself!", ContainerName.CStr());
       continue;
     }
-    uint Amount = Min<uint>((StorageVolume-GetVolume())/ToPut[0]->GetVolume(), ToPut.size());
+    uInt Amount = Min<uInt>((StorageVolume-GetVolume())/ToPut[0]->GetVolume(), ToPut.size());
     if (!Amount) {
       if (ToPut.size() == 1) ADD_MESSAGE("%s doesn't fit in %s.", ToPut[0]->CHAR_NAME(DEFINITE), ContainerName.CStr());
       else ADD_MESSAGE("None of the %d %s fit in %s.", int(ToPut.size()), ToPut[0]->CHAR_NAME(PLURAL), ContainerName.CStr());
@@ -776,7 +776,7 @@ truth stack::PutSomethingIn (character *Opener, cfestring &ContainerName, long S
     if (Amount != ToPut.size())
       ADD_MESSAGE("Only %d of the %d %s fit%s in %s.", Amount, int(ToPut.size()), ToPut[0]->CHAR_NAME(PLURAL), Amount == 1 ? "s" : "", ContainerName.CStr());
     if (!IsOnGround() || !Room || Room->DropItem(Opener, ToPut[0], Amount)) {
-      for (uint c = 0; c < Amount; ++c) ToPut[c]->MoveTo(this);
+      for (uInt c = 0; c < Amount; ++c) ToPut[c]->MoveTo(this);
       ADD_MESSAGE("You put %s in %s.", ToPut[0]->GetName(DEFINITE, Amount).CStr(), ContainerName.CStr());
       Success = true;
     }
@@ -823,7 +823,7 @@ void stack::PreProcessForBone () {
   if (Items) {
     itemvector ItemVector;
     FillItemVector(ItemVector);
-    for (uint c = 0; c < ItemVector.size(); ++c) ItemVector[c]->PreProcessForBone();
+    for (uInt c = 0; c < ItemVector.size(); ++c) ItemVector[c]->PreProcessForBone();
   }
 }
 
@@ -832,7 +832,7 @@ void stack::PostProcessForBone () {
   if (Items) {
     itemvector ItemVector;
     FillItemVector(ItemVector);
-    for (uint c = 0; c < ItemVector.size(); ++c) ItemVector[c]->PostProcessForBone();
+    for (uInt c = 0; c < ItemVector.size(); ++c) ItemVector[c]->PostProcessForBone();
   }
 }
 
@@ -846,17 +846,17 @@ void stack::FinalProcessForBone () {
 /* VolumeModifier increases the spilled liquid's volume.
    Note that the original liquid isn't placed anywhere nor deleted,
    but its volume is decreased (possibly to zero). */
-void stack::SpillFluid (character *Spiller, liquid *Liquid, long VolumeModifier) {
+void stack::SpillFluid (character *Spiller, liquid *Liquid, sLong VolumeModifier) {
   if (!Items) return;
   double ChanceMultiplier = 1.0/(300+sqrt(Volume));
   itemvector ItemVector;
   FillItemVector(ItemVector);
   for (int c = ItemVector.size()-1; c >= 0; --c) {
     if (ItemVector[c]->Exists() && ItemVector[c]->AllowFluids()) {
-      long ItemVolume = ItemVector[c]->GetVolume();
+      sLong ItemVolume = ItemVector[c]->GetVolume();
       double Root = sqrt(ItemVolume);
       if (Root > RAND() % 200 || Root > RAND() % 200) {
-        long SpillVolume = long(VolumeModifier*Root*ChanceMultiplier);
+        sLong SpillVolume = sLong(VolumeModifier*Root*ChanceMultiplier);
         if (SpillVolume) {
           Liquid->EditVolume(-Max(SpillVolume, Liquid->GetVolume()));
           ItemVector[c]->SpillFluid(Spiller, Liquid->SpawnMoreLiquid(SpillVolume), ItemVector[c]->GetSquareIndex(GetPos()));
@@ -869,14 +869,14 @@ void stack::SpillFluid (character *Spiller, liquid *Liquid, long VolumeModifier)
 
 
 void stack::AddItems (const itemvector &ItemVector) {
-  for (uint c = 0; c < ItemVector.size(); ++c) AddItem(ItemVector[c]);
+  for (uInt c = 0; c < ItemVector.size(); ++c) AddItem(ItemVector[c]);
 }
 
 
 void stack::MoveItemsTo (itemvector &ToVector, int RequiredSquarePosition) {
   itemvector ItemVector;
   FillItemVector(ItemVector);
-  for (uint c = 0; c < ItemVector.size(); ++c) {
+  for (uInt c = 0; c < ItemVector.size(); ++c) {
     if (ItemVector[c]->GetSquarePosition() == RequiredSquarePosition) {
       ItemVector[c]->RemoveFromSlot();
       ToVector.push_back(ItemVector[c]);
@@ -918,8 +918,8 @@ truth stack::AllowDamage (int Direction, int SquarePosition) {
 }
 
 
-long stack::GetWeight (ccharacter *Viewer, int SquarePosition) const {
-  long Weight = 0;
+sLong stack::GetWeight (ccharacter *Viewer, int SquarePosition) const {
+  sLong Weight = 0;
   for (stackiterator i = GetBottom(); i.HasItem(); ++i)
     if (i->GetSquarePosition() == SquarePosition && ((Flags & HIDDEN) || i->CanBeSeenBy(Viewer)))
       Weight += i->GetWeight();
@@ -941,7 +941,7 @@ void stack::SetLifeExpectancy (int Base, int RandPlus) {
 truth stack::Necromancy (character *Necromancer) {
   itemvector ItemVector;
   FillItemVector(ItemVector);
-  for (uint c = 0; c < ItemVector.size(); ++c) if (ItemVector[c]->Necromancy(Necromancer)) return true;
+  for (uInt c = 0; c < ItemVector.size(); ++c) if (ItemVector[c]->Necromancy(Necromancer)) return true;
   return false;
 }
 

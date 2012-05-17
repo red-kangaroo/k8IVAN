@@ -74,11 +74,11 @@ area* game::AreaInLoad;
 square* game::SquareInLoad;
 dungeon** game::Dungeon;
 int game::CurrentDungeonIndex;
-ulong game::NextCharacterID = 1;
-ulong game::NextItemID = 1;
-ulong game::NextTrapID = 1;
+uLong game::NextCharacterID = 1;
+uLong game::NextItemID = 1;
+uLong game::NextTrapID = 1;
 team** game::Team;
-ulong game::LOSTick;
+uLong game::LOSTick;
 v2 game::CursorPos(-1, -1);
 truth game::Zoom;
 truth game::Generating = false;
@@ -100,9 +100,9 @@ int game::Liberator;
 massacremap game::PlayerMassacreMap;
 massacremap game::PetMassacreMap;
 massacremap game::MiscMassacreMap;
-long game::PlayerMassacreAmount = 0;
-long game::PetMassacreAmount = 0;
-long game::MiscMassacreAmount = 0;
+sLong game::PlayerMassacreAmount = 0;
+sLong game::PetMassacreAmount = 0;
+sLong game::MiscMassacreAmount = 0;
 boneidmap game::BoneItemIDMap;
 boneidmap game::BoneCharacterIDMap;
 truth game::TooGreatDangerFoundTruth;
@@ -111,10 +111,10 @@ charactervector game::CharacterDrawVector;
 truth game::SumoWrestling;
 liquid* game::GlobalRainLiquid;
 v2 game::GlobalRainSpeed;
-long game::GlobalRainTimeModifier;
+sLong game::GlobalRainTimeModifier;
 truth game::PlayerSumoChampion;
-ulong game::SquarePartEmitationTick = 0;
-long game::Turn;
+uLong game::SquarePartEmitationTick = 0;
+sLong game::Turn;
 truth game::PlayerRunning;
 character* game::LastPetUnderCursor;
 charactervector game::PetVector;
@@ -149,11 +149,11 @@ cv2 game::LargeMoveVector[] = { v2(-1, -1), v2(0, -1), v2(1, -1), v2(2, -1), v2(
 cint game::LargeMoveDirection[] = { 0, 1, 1, 2, 3, 4, 3, 4, 5, 6, 6, 7, 8, 8, 8, 8 };
 
 truth game::LOSUpdateRequested = false;
-uchar ***game::LuxTable = 0;
+uChar ***game::LuxTable = 0;
 truth game::Running;
 character *game::Player;
 v2 game::Camera(0, 0);
-ulong game::Tick;
+uLong game::Tick;
 gamescript *game::GameScript = 0;
 valuemap game::GlobalValueMap;
 dangermap game::DangerMap;
@@ -178,7 +178,7 @@ truth game::GoThroughWallsCheat;
 int game::QuestMonstersFound;
 bitmap *game::BusyAnimationCache[32];
 festring game::PlayerName;
-ulong game::EquipmentMemory[MAX_EQUIPMENT_SLOTS];
+uLong game::EquipmentMemory[MAX_EQUIPMENT_SLOTS];
 olterrain *game::MonsterPortal;
 std::vector<v2> game::SpecialCursorPos;
 std::vector<int> game::SpecialCursorData;
@@ -197,56 +197,56 @@ void game::SetAbnormalMoveKey (int idx, char ch) {
 }
 
 
-void game::AddCharacterID (character *Char, ulong ID) {
+void game::AddCharacterID (character *Char, uLong ID) {
 /*k8:???  if (CharacterIDMap.find(ID) != CharacterIDMap.end())
     int esko = esko = 2;*/
   CharacterIDMap.insert(std::make_pair(ID, Char));
 }
 
 
-void game::RemoveCharacterID (ulong ID) {
+void game::RemoveCharacterID (uLong ID) {
 /*k8:???  if (CharacterIDMap.find(ID) == CharacterIDMap.end())
     int esko = esko = 2;*/
   CharacterIDMap.erase(CharacterIDMap.find(ID));
 }
 
 
-void game::AddItemID (item *Item, ulong ID) {
+void game::AddItemID (item *Item, uLong ID) {
 /*k8:???  if (ItemIDMap.find(ID) != ItemIDMap.end())
     int esko = esko = 2;*/
   ItemIDMap.insert(std::make_pair(ID, Item));
 }
 
 
-void game::RemoveItemID (ulong ID) {
+void game::RemoveItemID (uLong ID) {
 /*k8:???  if(ID && ItemIDMap.find(ID) == ItemIDMap.end())
     int esko = esko = 2;*/
   if (ID) ItemIDMap.erase(ItemIDMap.find(ID));
 }
 
 
-void game::UpdateItemID (item *Item, ulong ID) {
+void game::UpdateItemID (item *Item, uLong ID) {
 /*k8:???  if(ItemIDMap.find(ID) == ItemIDMap.end())
     int esko = esko = 2;*/
   ItemIDMap.find(ID)->second = Item;
 }
 
 
-void game::AddTrapID (entity *Trap, ulong ID) {
+void game::AddTrapID (entity *Trap, uLong ID) {
 /*k8:???  if(TrapIDMap.find(ID) != TrapIDMap.end())
     int esko = esko = 2;*/
   if (ID) TrapIDMap.insert(std::make_pair(ID, Trap));
 }
 
 
-void game::RemoveTrapID (ulong ID) {
+void game::RemoveTrapID (uLong ID) {
 /*k8:???  if(ID && TrapIDMap.find(ID) == TrapIDMap.end())
     int esko = esko = 2;*/
   if (ID) TrapIDMap.erase(TrapIDMap.find(ID));
 }
 
 
-void game::UpdateTrapID (entity *Trap, ulong ID) {
+void game::UpdateTrapID (entity *Trap, uLong ID) {
 /*k8:???  if(TrapIDMap.find(ID) == TrapIDMap.end())
     int esko = esko = 2;*/
   TrapIDMap.find(ID)->second = Trap;
@@ -484,8 +484,8 @@ void game::Run () {
       if (!(GetTick() % 1000)) CurrentLevel->CheckSunLight();
 
       if ((CurrentDungeonIndex == NEW_ATTNAM || CurrentDungeonIndex == ATTNAM) && CurrentLevelIndex == 0) {
-        long OldVolume = GlobalRainLiquid->GetVolume();
-        long NewVolume = Max(long(sin((Tick+GlobalRainTimeModifier)*0.0003)*300-150), 0L);
+        sLong OldVolume = GlobalRainLiquid->GetVolume();
+        sLong NewVolume = Max(sLong(sin((Tick+GlobalRainTimeModifier)*0.0003)*300-150), 0);
         if (NewVolume && !OldVolume) CurrentLevel->EnableGlobalRain();
         else if(!NewVolume && OldVolume) CurrentLevel->DisableGlobalRain();
         GlobalRainLiquid->SetVolumeNoSignals(NewVolume);
@@ -760,7 +760,7 @@ truth game::Save (cfestring &SaveName) {
   SaveFile << WizardMode << SeeWholeMapCheatMode << GoThroughWallsCheat;
   SaveFile << Tick << Turn << InWilderness << NextCharacterID << NextItemID << NextTrapID << NecroCounter;
   SaveFile << SumoWrestling << PlayerSumoChampion << GlobalRainTimeModifier;
-  long Seed = RAND();
+  sLong Seed = RAND();
   femath::SetSeed(Seed);
   SaveFile << Seed;
   SaveFile << AveragePlayerArmStrengthExperience;
@@ -777,8 +777,11 @@ truth game::Save (cfestring &SaveName) {
   for (c = 1; c < Dungeons; ++c) SaveFile << Dungeon[c];
   for (c = 1; c <= GODS; ++c) SaveFile << God[c];
   for (c = 0; c < Teams; ++c) SaveFile << Team[c];
-  if (InWilderness) SaveWorldMap(SaveName, false);
-  else GetCurrentDungeon()->SaveLevel(SaveName, CurrentLevelIndex, false);
+  if (InWilderness) {
+    SaveWorldMap(SaveName, false);
+  } else {
+    GetCurrentDungeon()->SaveLevel(SaveName, CurrentLevelIndex, false);
+  }
   SaveFile << Player->GetPos() << PlayerName;
   msgsystem::Save(SaveFile);
   SaveFile << DangerMap << NextDangerIDType << NextDangerIDConfigIndex;
@@ -809,7 +812,7 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> WizardMode >> SeeWholeMapCheatMode >> GoThroughWallsCheat;
   SaveFile >> Tick >> Turn >> InWilderness >> NextCharacterID >> NextItemID >> NextTrapID >> NecroCounter;
   SaveFile >> SumoWrestling >> PlayerSumoChampion >> GlobalRainTimeModifier;
-  femath::SetSeed(ReadType<long>(SaveFile));
+  femath::SetSeed(ReadType<sLong>(SaveFile));
   SaveFile >> AveragePlayerArmStrengthExperience;
   SaveFile >> AveragePlayerLegStrengthExperience;
   SaveFile >> AveragePlayerDexterityExperience;
@@ -899,7 +902,7 @@ v2 game::GetDirectionVectorForKey (int Key) {
 
 double game::GetMinDifficulty () {
   double Base = CurrentLevel->GetDifficulty()*0.2;
-  long MultiplierExponent = 0;
+  sLong MultiplierExponent = 0;
   ivantime Time;
   GetTime(Time);
   int Modifier = Time.Day-DANGER_PLUS_DAY_MIN;
@@ -1040,7 +1043,7 @@ void game::CreateTeams () {
   for (c = 0; c < Teams; ++c) if (c != 1) Team[1]->SetRelation(Team[c], HOSTILE);
   const std::list<std::pair<int, teamscript> >& TeamScript = GetGameScript()->GetTeam();
   for (std::list<std::pair<int, teamscript> >::const_iterator i = TeamScript.begin(); i != TeamScript.end(); ++i) {
-    for (uint c = 0; c < i->second.GetRelation().size(); ++c) {
+    for (uInt c = 0; c < i->second.GetRelation().size(); ++c) {
       GetTeam(i->second.GetRelation()[c].first)->SetRelation(GetTeam(i->first), i->second.GetRelation()[c].second);
     }
     cint *KillEvilness = i->second.GetKillEvilness();
@@ -1060,25 +1063,25 @@ festring game::StringQuestion (cfestring &Topic, col16 Color, festring::sizetype
 }
 
 
-long game::NumberQuestion (cfestring &Topic, col16 Color, truth ReturnZeroOnEsc) {
+sLong game::NumberQuestion (cfestring &Topic, col16 Color, truth ReturnZeroOnEsc) {
   DrawEverythingNoBlit();
   igraph::BlitBackGround(v2(16, 6), v2(GetScreenXSize() << 4, 23));
-  long Return = iosystem::NumberQuestion(Topic, v2(16, 6), Color, false, ReturnZeroOnEsc);
+  sLong Return = iosystem::NumberQuestion(Topic, v2(16, 6), Color, false, ReturnZeroOnEsc);
   igraph::BlitBackGround(v2(16, 6), v2(GetScreenXSize() << 4, 23));
   return Return;
 }
 
 
-long game::ScrollBarQuestion (cfestring &Topic, long BeginValue, long Step, long Min, long Max, long AbortValue, col16 TopicColor, col16 Color1, col16 Color2, void (*Handler)(long)) {
+sLong game::ScrollBarQuestion (cfestring &Topic, sLong BeginValue, sLong Step, sLong Min, sLong Max, sLong AbortValue, col16 TopicColor, col16 Color1, col16 Color2, void (*Handler)(sLong)) {
   DrawEverythingNoBlit();
   igraph::BlitBackGround(v2(16, 6), v2(GetScreenXSize() << 4, 23));
-  long Return = iosystem::ScrollBarQuestion(Topic, v2(16, 6), BeginValue, Step, Min, Max, AbortValue, TopicColor, Color1, Color2, GetMoveCommandKey(KEY_LEFT_INDEX), GetMoveCommandKey(KEY_RIGHT_INDEX), false, Handler);
+  sLong Return = iosystem::ScrollBarQuestion(Topic, v2(16, 6), BeginValue, Step, Min, Max, AbortValue, TopicColor, Color1, Color2, GetMoveCommandKey(KEY_LEFT_INDEX), GetMoveCommandKey(KEY_RIGHT_INDEX), false, Handler);
   igraph::BlitBackGround(v2(16, 6), v2(GetScreenXSize() << 4, 23));
   return Return;
 }
 
 
-ulong game::IncreaseLOSTick () {
+uLong game::IncreaseLOSTick () {
   if (LOSTick != 0xFE) return LOSTick += 2;
   CurrentLevel->InitLastSeen();
   return LOSTick = 4;
@@ -1128,7 +1131,7 @@ int game::GetDirectionForVector (v2 Vector) {
 
 
 cchar *game::GetVerbalPlayerAlignment () {
-  long Sum = 0;
+  sLong Sum = 0;
   for (int c = 1; c <= GODS; ++c) {
     if (GetGod(c)->GetRelation() > 0) Sum += GetGod(c)->GetRelation() * (5 - GetGod(c)->GetAlignment());
   }
@@ -1357,7 +1360,7 @@ void game::LoadGlobalValueMap (inputfile &fl) {
   for (fl.ReadWord(word, false); !fl.Eof(); fl.ReadWord(word, false)) {
     if (word == "Include") {
       word = fl.ReadWord();
-      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TellLine());
       //fprintf(stderr, "loading: %s\n", word.CStr());
       inputfile incf(game::GetGameDir()+"Script/"+word, &game::GetGlobalValueMap());
       LoadGlobalValueMap(incf);
@@ -1365,16 +1368,16 @@ void game::LoadGlobalValueMap (inputfile &fl) {
     }
     if (word == "Message") {
       word = fl.ReadWord();
-      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TellLine());
       fprintf(stderr, "MESSAGE: %s\n", word.CStr());
       continue;
     }
-    if (word != "#") ABORT("Illegal datafile define in file %s on line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+    if (word != "#") ABORT("Illegal datafile define in file %s on line %d!", fl.GetFileName().CStr(), fl.TellLine());
     fl.ReadWord(word, true);
     if (word == "enum" || word == "bitenum") {
       truth isBit = word == "bitenum";
-      long idx = 0;
-      if (fl.ReadWord() != "{") ABORT("'{' expected in file %s at line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+      sLong idx = 0;
+      if (fl.ReadWord() != "{") ABORT("'{' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TellLine());
       festring idName;
       truth done = false;
       while (!done) {
@@ -1390,11 +1393,11 @@ void game::LoadGlobalValueMap (inputfile &fl) {
           // set current index
           idx = fl.ReadNumber();
         } else {
-          if (word != "," && word != ";" && word != "}") ABORT("',' expected in file %s at line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+          if (word != "," && word != ";" && word != "}") ABORT("',' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TellLine());
           if (word == "}") done = true;
         }
         if (idName.GetSize() > 0) {
-          long i = idx;
+          sLong i = idx;
           if (isBit) i = 1<<i;
           GlobalValueMap.insert(std::make_pair(idName, i));
           idx++;
@@ -1403,16 +1406,16 @@ void game::LoadGlobalValueMap (inputfile &fl) {
       fl.SkipSpaces();
       int ch = fl.Get();
       if (ch != EOF && ch != ';') fl.Unget(ch);
-      //if (fl.ReadWord() != ";") ABORT("';' expected in file %s at line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+      //if (fl.ReadWord() != ";") ABORT("';' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TellLine());
       continue;
     }
     if (word == "define") {
       fl.ReadWord(word);
-      long v = fl.ReadNumber();
+      sLong v = fl.ReadNumber();
       GlobalValueMap.insert(std::make_pair(word, v));
       continue;
     }
-    ABORT("Illegal datafile define in file %s on line %ld!", fl.GetFileName().CStr(), fl.TellLine());
+    ABORT("Illegal datafile define in file %s on line %d!", fl.GetFileName().CStr(), fl.TellLine());
   }
 }
 
@@ -1665,7 +1668,7 @@ void game::EnterArea (charactervector &Group, int Area, int EntryIndex) {
       GetCurrentLevel()->GetLSquare(Pos)->KickAnyoneStandingHereAway();
       Player->PutToOrNear(Pos);
     } else SetPlayer(GetCurrentLevel()->GetLSquare(Pos)->GetCharacter());
-    uint c;
+    uInt c;
     for (c = 0; c < Group.size(); ++c) {
       v2 NPCPos = GetCurrentLevel()->GetNearestFreeSquare(Group[c], Pos);
       if (NPCPos == ERROR_V2) NPCPos = GetCurrentLevel()->GetRandomSquare(Group[c]);
@@ -1851,7 +1854,7 @@ void game::CallForAttention (v2 Pos, int RangeSquare) {
     if (GetTeam(c)->HasEnemy())
       for (std::list<character*>::const_iterator i = GetTeam(c)->GetMember().begin(); i != GetTeam(c)->GetMember().end(); ++i)
         if ((*i)->IsEnabled()) {
-          long ThisDistance = HypotSquare(long((*i)->GetPos().X) - Pos.X, long((*i)->GetPos().Y) - Pos.Y);
+          sLong ThisDistance = HypotSquare(sLong((*i)->GetPos().X) - Pos.X, sLong((*i)->GetPos().Y) - Pos.Y);
           if (ThisDistance <= RangeSquare && !(*i)->IsGoingSomeWhere()) (*i)->SetGoingTo(Pos);
         }
   }
@@ -1876,8 +1879,8 @@ inputfile &operator >> (inputfile &SaveFile, homedata *&HomeData) {
 }
 
 
-ulong game::CreateNewCharacterID (character *NewChar) {
-  ulong ID = NextCharacterID++;
+uLong game::CreateNewCharacterID (character *NewChar) {
+  uLong ID = NextCharacterID++;
 /*k8:???  if(CharacterIDMap.find(ID) != CharacterIDMap.end())
     int esko = esko = 2;*/
   CharacterIDMap.insert(std::make_pair(ID, NewChar));
@@ -1885,8 +1888,8 @@ ulong game::CreateNewCharacterID (character *NewChar) {
 }
 
 
-ulong game::CreateNewItemID (item *NewItem) {
-  ulong ID = NextItemID++;
+uLong game::CreateNewItemID (item *NewItem) {
+  uLong ID = NextItemID++;
 /*k8:???  if(ItemIDMap.find(ID) != ItemIDMap.end())
     int esko = esko = 2;*/
   if (NewItem) ItemIDMap.insert(std::make_pair(ID, NewItem));
@@ -1894,8 +1897,8 @@ ulong game::CreateNewItemID (item *NewItem) {
 }
 
 
-ulong game::CreateNewTrapID (entity *NewTrap) {
-  ulong ID = NextTrapID++;
+uLong game::CreateNewTrapID (entity *NewTrap) {
+  uLong ID = NextTrapID++;
 /*k8:???  if(TrapIDMap.find(ID) != TrapIDMap.end())
     int esko = esko = 2;*/
   if (NewTrap) TrapIDMap.insert(std::make_pair(ID, NewTrap));
@@ -1903,19 +1906,19 @@ ulong game::CreateNewTrapID (entity *NewTrap) {
 }
 
 
-character *game::SearchCharacter (ulong ID) {
+character *game::SearchCharacter (uLong ID) {
   characteridmap::iterator Iterator = CharacterIDMap.find(ID);
   return Iterator != CharacterIDMap.end() ? Iterator->second : 0;
 }
 
 
-item *game::SearchItem (ulong ID) {
+item *game::SearchItem (uLong ID) {
   itemidmap::iterator Iterator = ItemIDMap.find(ID);
   return Iterator != ItemIDMap.end() ? Iterator->second : 0;
 }
 
 
-entity *game::SearchTrap (ulong ID) {
+entity *game::SearchTrap (uLong ID) {
   trapidmap::iterator Iterator = TrapIDMap.find(ID);
   return Iterator != TrapIDMap.end() ? Iterator->second : 0;
 }
@@ -2023,7 +2026,7 @@ void game::SignalDeath (ccharacter *Ghost, ccharacter *Murderer, festring DeathM
     ++i->second.Amount;
     i->second.DangerSum += Ghost->GetGenerationDanger();
     std::vector<killreason>& Reason = i->second.Reason;
-    uint c;
+    uInt c;
     for (c = 0; c < Reason.size(); ++c) {
       if (Reason[c].String == DeathMsg) {
         ++Reason[c].Amount;
@@ -2051,7 +2054,7 @@ struct massacresetentry {
 };
 
 
-void game::DisplayMassacreList (const massacremap &MassacreMap, cchar *Reason, long Amount) {
+void game::DisplayMassacreList (const massacremap &MassacreMap, cchar *Reason, sLong Amount) {
   std::set<massacresetentry> MassacreSet;
   festring FirstPronoun;
   truth First = true;
@@ -2083,12 +2086,12 @@ void game::DisplayMassacreList (const massacremap &MassacreMap, cchar *Reason, l
       else Begin = "all ";
       Details.push_back(Begin + Reason[0].String);
     } else {
-      for (uint c = 0; c < Reason.size(); ++c) Details.push_back(CONST_S("")+Reason[c].Amount+' '+Reason[c].String);
+      for (uInt c = 0; c < Reason.size(); ++c) Details.push_back(CONST_S("")+Reason[c].Amount+' '+Reason[c].String);
       std::sort(Details.begin(), Details.end(), ignorecaseorderer());
     }
     MassacreSet.insert(Entry);
   }
-  long Total = PlayerMassacreAmount+PetMassacreAmount+MiscMassacreAmount;
+  sLong Total = PlayerMassacreAmount+PetMassacreAmount+MiscMassacreAmount;
   festring MainTopic;
   if (Total == 1) MainTopic << "One creature perished during your adventure.";
   else MainTopic << Total << " creatures perished during your adventure.";
@@ -2123,14 +2126,14 @@ void game::DisplayMassacreList (const massacremap &MassacreMap, cchar *Reason, l
     int Counter = 0;
     for (i2 = MassacreSet.begin(); i2 != MassacreSet.end(); ++i2, ++Counter) {
       if (Counter == Chosen) {
-        for (uint c = 0; c < i2->Details.size(); ++c) SubList.AddEntry(i2->Details[c], LIGHT_GRAY);
+        for (uInt c = 0; c < i2->Details.size(); ++c) SubList.AddEntry(i2->Details[c], LIGHT_GRAY);
         break;
       }
     }
     SubList.Draw();
   }
   ClearCharacterDrawVector();
-  for (uint c = 0; c < GraveYard.size(); ++c) delete GraveYard[c];
+  for (uInt c = 0; c < GraveYard.size(); ++c) delete GraveYard[c];
 }
 
 
@@ -2211,7 +2214,7 @@ truth game::PrepareRandomBone (int LevelIndex) {
 double game::CalculateAverageDanger (const charactervector &EnemyVector, character *Char) {
   double DangerSum = 0;
   int Enemies = 0;
-  for (uint c = 0; c < EnemyVector.size(); ++c) {
+  for (uInt c = 0; c < EnemyVector.size(); ++c) {
     DangerSum += EnemyVector[c]->GetRelativeDanger(Char, true);
     ++Enemies;
   }
@@ -2249,7 +2252,7 @@ character *game::CreateGhost () {
   Ghost->EditAllAttributes(-4);
   Player->SetSoulID(Ghost->GetID());
   while (CalculateAverageDanger(EnemyVector, Ghost) > AverageDanger && Ghost->EditAllAttributes(1));
-  for (uint c = 0; c < EnemyVector.size(); ++c) delete EnemyVector[c];
+  for (uInt c = 0; c < EnemyVector.size(); ++c) delete EnemyVector[c];
   return Ghost;
 }
 
@@ -2260,7 +2263,7 @@ int game::GetMoveCommandKey (int I) {
 }
 
 
-long game::GetScore () {
+sLong game::GetScore () {
   double Counter = 0;
   massacremap::const_iterator i;
   massacremap SumMap = PlayerMassacreMap;
@@ -2275,7 +2278,7 @@ long game::GetScore () {
     Counter += sqrt(i->second.DangerSum / DEFAULT_GENERATION_DANGER) * SumOfAttributes * SumOfAttributes;
     delete Char;
   }
-  return long(0.01*Counter);
+  return sLong(0.01*Counter);
 }
 
 
@@ -2308,7 +2311,7 @@ v2 ItemDisplacement[3][3] = {
 };
 
 
-void game::ItemEntryDrawer (bitmap *Bitmap, v2 Pos, uint I) {
+void game::ItemEntryDrawer (bitmap *Bitmap, v2 Pos, uInt I) {
   blitdata B = {
     Bitmap,
     { 0, 0 },
@@ -2344,7 +2347,7 @@ int game::AddToCharacterDrawVector (character *What) {
 }
 
 
-void game::CharacterEntryDrawer (bitmap *Bitmap, v2 Pos, uint I) {
+void game::CharacterEntryDrawer (bitmap *Bitmap, v2 Pos, uInt I) {
   if (CharacterDrawVector[I]) {
     blitdata B = {
       Bitmap,
@@ -2360,7 +2363,7 @@ void game::CharacterEntryDrawer (bitmap *Bitmap, v2 Pos, uint I) {
 }
 
 
-void game::GodEntryDrawer (bitmap *Bitmap, v2 Pos, uint I) {
+void game::GodEntryDrawer (bitmap *Bitmap, v2 Pos, uInt I) {
   blitdata B = {
     Bitmap,
     { I << 4, 0 },
@@ -2420,7 +2423,7 @@ truth game::TryToEnterSumoArena () {
   MirrorSumo->PutTo(SUMO_ARENA_POS+v2(6, 5));
   MirrorSumo->ChangeTeam(GetTeam(SUMO_TEAM));
   GetCurrentLevel()->GetLSquare(SUMO_ARENA_POS)->GetRoom()->SetMasterID(MirrorSumo->GetID());
-  for (uint c = 0; c < Spectators.size(); ++c) Spectators[c]->PutToOrNear(SUMO_ARENA_POS + v2(6, 10));
+  for (uInt c = 0; c < Spectators.size(); ++c) Spectators[c]->PutToOrNear(SUMO_ARENA_POS + v2(6, 10));
   throw areachangerequest();
   return true;
 }
@@ -2445,7 +2448,7 @@ truth game::TryToExitSumoArena () {
       if (Sumo && Sumo->GetRelation(Player) != HOSTILE && Player->CanBeSeenBy(Sumo)) ADD_MESSAGE("\"Don't leave anything there, please.\"");
     }
     v2 PlayerPos = Player->GetPos();
-    for (uint c = 0; c < CVector.size(); ++c) CVector[c]->PutNear(PlayerPos);
+    for (uInt c = 0; c < CVector.size(); ++c) CVector[c]->PutNear(PlayerPos);
     throw areachangerequest();
     return true;
   }
@@ -2475,7 +2478,7 @@ truth game::EndSumoWrestling (int Result) {
   SumoWrestling = false;
   Player->GetStackUnder()->AddItems(IVector);
   v2 PlayerPos = Player->GetPos();
-  for (uint c = 0; c < CVector.size(); ++c) CVector[c]->PutNear(PlayerPos);
+  for (uInt c = 0; c < CVector.size(); ++c) CVector[c]->PutNear(PlayerPos);
   if (Result == LOST) ADD_MESSAGE("\"I hope you've learned your lesson now!\"");
   else if (Result == DISQUALIFIED) ADD_MESSAGE("\"Don't do that again or I'll be really angry!\"");
   else {
@@ -2509,7 +2512,7 @@ truth game::EndSumoWrestling (int Result) {
     DrawEverything();
   }
   Player->EditNP(-25000);
-  Player->CheckStarvationDeath(CONST_S("exhausted after controlling a mirror image for too long"));
+  Player->CheckStarvationDeath(CONST_S("exhausted after controlling a mirror image for too sLong"));
   throw areachangerequest();
   return true;
 }
@@ -2554,7 +2557,7 @@ int game::CalculateMinimumEmitationRadius (col24 E) {
 }
 
 
-ulong game::IncreaseSquarePartEmitationTicks () {
+uLong game::IncreaseSquarePartEmitationTicks () {
   if ((SquarePartEmitationTick += 2) == 0x100) {
     CurrentLevel->InitSquarePartEmitationTicks();
     SquarePartEmitationTick = 2;
@@ -2619,7 +2622,7 @@ truth game::PolymorphControlKeyHandler (int Key, festring &String) {
     std::sort(CharacterDrawVector.begin(), CharacterDrawVector.end(), NameOrderer);
     List.SetEntryDrawer(CharacterEntryDrawer);
     std::vector<festring> StringVector;
-    uint c;
+    uInt c;
     for (c = 0; c < CharacterDrawVector.size(); ++c) {
       character *Char = CharacterDrawVector[c];
       if (Char->CanBeWished()) {
@@ -2745,7 +2748,7 @@ v2 game::CommandKeyHandler (v2 CursorPos, int Key) {
 
 truth game::SelectPet (int Key) {
   if (Key == '+') {
-    for (uint c = 0; c < PetVector.size(); ++c) {
+    for (uInt c = 0; c < PetVector.size(); ++c) {
       if (PetVector[c] == LastPetUnderCursor) {
         if (++c == PetVector.size()) c = 0;
         LastPetUnderCursor = PetVector[c];
@@ -2753,7 +2756,7 @@ truth game::SelectPet (int Key) {
       }
     }
   } else if (Key == '-') {
-    for (uint c = 0; c < PetVector.size(); ++c) {
+    for (uInt c = 0; c < PetVector.size(); ++c) {
       if (PetVector[c] == LastPetUnderCursor) {
         if (!c) c = PetVector.size();
         LastPetUnderCursor = PetVector[--c];
@@ -2765,7 +2768,7 @@ truth game::SelectPet (int Key) {
 }
 
 
-void game::CommandScreen (cfestring &Topic, ulong PossibleFlags, ulong ConstantFlags, ulong &VaryFlags, ulong &Flags) {
+void game::CommandScreen (cfestring &Topic, uLong PossibleFlags, uLong ConstantFlags, uLong &VaryFlags, uLong &Flags) {
   static cchar *CommandDescription[COMMAND_FLAGS] = {
     "Follow me",
     "Flee from enemies",
@@ -2812,12 +2815,12 @@ void game::CommandScreen (cfestring &Topic, ulong PossibleFlags, ulong ConstantF
 
 
 truth game::CommandAll () {
-  ulong PossibleFlags = 0, ConstantFlags = ALL_COMMAND_FLAGS, VaryFlags = 0, OldFlags = 0;
-  uint c1, c2;
+  uLong PossibleFlags = 0, ConstantFlags = ALL_COMMAND_FLAGS, VaryFlags = 0, OldFlags = 0;
+  uInt c1, c2;
   for (c1 = 0; c1 < PetVector.size(); ++c1) {
     ConstantFlags &= PetVector[c1]->GetConstantCommandFlags();
-    ulong C = PetVector[c1]->GetCommandFlags();
-    ulong ThisPossible = PetVector[c1]->GetPossibleCommandFlags();
+    uLong C = PetVector[c1]->GetCommandFlags();
+    uLong ThisPossible = PetVector[c1]->GetPossibleCommandFlags();
     for (c2 = 0; c2 < COMMAND_FLAGS; ++c2)
       if (1 << c2 & PossibleFlags & ThisPossible && (1 << c2 & C) != (1 << c2 & OldFlags)) VaryFlags |= 1 << c2;
     PossibleFlags |= ThisPossible;
@@ -2827,15 +2830,15 @@ truth game::CommandAll () {
     ADD_MESSAGE("Not a single creature in your visible team can be commanded.");
     return false;
   }
-  ulong NewFlags = OldFlags;
+  uLong NewFlags = OldFlags;
   CommandScreen(CONST_S("Issue commands to whole visible team"), PossibleFlags, ConstantFlags, VaryFlags, NewFlags);
   truth Change = false;
   for (c1 = 0; c1 < PetVector.size(); ++c1) {
     character *Char = PetVector[c1];
     if (!Char->IsConscious()) continue;
-    ulong OldC = Char->GetCommandFlags();
-    ulong ConstC = Char->GetConstantCommandFlags();
-    ulong ThisC = (NewFlags & Char->GetPossibleCommandFlags() & ~(ConstC|VaryFlags)) | (OldC & (ConstC|VaryFlags));
+    uLong OldC = Char->GetCommandFlags();
+    uLong ConstC = Char->GetConstantCommandFlags();
+    uLong ThisC = (NewFlags & Char->GetPossibleCommandFlags() & ~(ConstC|VaryFlags)) | (OldC & (ConstC|VaryFlags));
     if (ThisC != OldC) Change = true;
     Char->SetCommandFlags(ThisC);
   }
@@ -2927,7 +2930,7 @@ double game::GetGameSituationDanger () {
 }
 
 
-long game::GetTimeSpent () {
+sLong game::GetTimeSpent () {
   return time::TimeAdd(time::TimeDifference(time(0),LastLoad), TimePlayedBeforeLastLoad);
 }
 
@@ -3006,11 +3009,11 @@ static int doListSelector (felist &list, int defsel, int cnt) {
   game::SetStandardListAttributes(list);
   list.AddFlags(SELECTABLE | FELIST_NO_BADKEY_EXIT);
   if (defsel > 0) list.SetSelected(defsel);
-  uint sel = list.Draw();
+  uInt sel = list.Draw();
   list.Empty();
   list.RemoveFlags(SELECTABLE | FELIST_NO_BADKEY_EXIT);
   if (sel & FELIST_ERROR_BIT) return -1;
-  if (sel >= (uint)cnt) return -1;
+  if (sel >= (uInt)cnt) return -1;
   return (int)sel;
 }
 
@@ -3046,7 +3049,7 @@ int game::ListSelectorArray (int defsel, cfestring &title, const char *items[]) 
 
 int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args) {
   festring s;
-  long n;
+  sLong n;
   truth isStr;
   inputfile *fl = mFEStack.top();
   args.clear();
@@ -3066,7 +3069,7 @@ int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args) {
           if (isStr) args.push_back(FuncArg(s)); else args.push_back(FuncArg(n));
           fl->ReadWord(s, true);
           if (s == ";") return args.size();
-          if (s != ",") ABORT("',' expected in file %s line %ld!", fl->GetFileName().CStr(), fl->TellLine());
+          if (s != ",") ABORT("',' expected in file %s line %d!", fl->GetFileName().CStr(), fl->TellLine());
         }
       case 's':
       default:
@@ -3076,7 +3079,7 @@ int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args) {
     }
     fl->ReadWord(s, true);
     if (s == ";") break;
-    if (s != ",") ABORT("',' expected in file %s line %ld!", fl->GetFileName().CStr(), fl->TellLine());
+    if (s != ",") ABORT("',' expected in file %s line %d!", fl->GetFileName().CStr(), fl->TellLine());
   }
   return args.size();
 }
@@ -3094,7 +3097,7 @@ truth game::GetWord (festring &w) {
     }
     if (w == "Include") {
       fl->ReadWord(w, true);
-      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", fl->GetFileName().CStr(), fl->TellLine());
+      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TellLine());
       w = game::GetGameDir()+"Script/"+w;
       inputfile *fl = new inputfile(w, &game::GetGlobalValueMap(), true);
       fl->setGetVarCB(game::ldrGetVar);
@@ -3103,7 +3106,7 @@ truth game::GetWord (festring &w) {
     }
     if (w == "Message") {
       fl->ReadWord(w, true);
-      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %ld!", fl->GetFileName().CStr(), fl->TellLine());
+      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TellLine());
       fprintf(stderr, "MESSAGE: %s\n", w.CStr());
       continue;
     }
@@ -3116,7 +3119,7 @@ void game::SkipBlock (truth brcEaten) {
   festring w;
   if (!brcEaten) {
     mFEStack.top()->ReadWord(w, true);
-    if (w != "{") ABORT("'{' expected in file %s at line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    if (w != "{") ABORT("'{' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
   }
   int cnt = 1;
   for (;;) {
@@ -3134,7 +3137,7 @@ void game::DoOnEvent (truth brcEaten) {
   festring w;
   if (!brcEaten) {
     mFEStack.top()->ReadWord(w, true);
-    if (w != "{") ABORT("'{' expected in file %s at line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    if (w != "{") ABORT("'{' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
   }
   for (;;) {
     if (!GetWord(w)) ABORT("Unexpected end of file %s!", mFEStack.top()->GetFileName().CStr());
@@ -3143,44 +3146,44 @@ void game::DoOnEvent (truth brcEaten) {
     if (w == ";") continue;
     if (w == "@") {
       mFEStack.top()->ReadWord(w, true);
-      if (mFEStack.top()->ReadWord(true) != "=") ABORT("'=' expected in file %s at line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+      if (mFEStack.top()->ReadWord(true) != "=") ABORT("'=' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
       //fprintf(stderr, "setvar: %s\n", w.CStr());
       if (w == "money") {
-        long n = mFEStack.top()->ReadNumber(true);
+        sLong n = mFEStack.top()->ReadNumber(true);
         if (n < 0) n = 0;
         if (mChar) mChar->SetMoney(n);
         continue;
       }
-      ABORT("Unknown var [%s] in file %s at line %ld!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+      ABORT("Unknown var [%s] in file %s at line %d!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
     } else {
       //mFEStack.top()->ReadWord(w, true);
       std::vector<FuncArg> args;
       //fprintf(stderr, "funcall: %s\n", w.CStr());
       if (w == "SetMoney") {
         ParseFuncArgs("n", args);
-        long n = args[0].ival;
+        sLong n = args[0].ival;
         if (n < 0) n = 0;
         if (mChar) mChar->SetMoney(n);
         continue;
       } if (w == "EditMoney") {
         ParseFuncArgs("n", args);
-        long n = args[0].ival;
+        sLong n = args[0].ival;
         if (mChar) mChar->EditMoney(n);
         continue;
       } if (w == "AddMessage") {
         ParseFuncArgs("*", args);
         festring s;
-        for (uint f = 0; f < args.size(); f++) {
+        for (uInt f = 0; f < args.size(); f++) {
           const FuncArg &a = args[f];
           if (a.type == FARG_STRING) s << a.sval; else s << a.ival;
         }
         ADD_MESSAGE(s.CStr());
         continue;
       }
-      ABORT("Unknown function [%s] in file %s at line %ld!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
-      //if (mFEStack.top()->ReadWord() != ";") ABORT("';' expected in file %s line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+      ABORT("Unknown function [%s] in file %s at line %d!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+      //if (mFEStack.top()->ReadWord() != ";") ABORT("';' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
     }
-    //ABORT("Invalid term in file %s at line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    //ABORT("Invalid term in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
   }
   //fprintf(stderr, "------------\n");
 }
@@ -3209,7 +3212,7 @@ void game::RunOnEvent (cfestring &ename) {
   }
   festring w;
   while (GetWord(w)) {
-    if (w != "on") ABORT("'on' expected in file %s line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
     mFEStack.top()->ReadWord(w, true);
     truth doIt = (w==ename);
     if (doIt) {
@@ -3234,7 +3237,7 @@ void game::RunOnEventStr (cfestring &ename, cfestring &str) {
   //fprintf(stderr, "event: [%s]\n", ename.CStr());
   //fprintf(stderr, "---\n%s---\n", str.CStr());
   while (GetWord(w)) {
-    if (w != "on") ABORT("'on' expected in file %s line %ld!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
     mFEStack.top()->ReadWord(w, true);
     //fprintf(stderr, "on: [%s]\n", w.CStr());
     truth doIt = (w==ename);

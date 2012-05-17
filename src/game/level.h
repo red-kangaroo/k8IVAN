@@ -56,7 +56,7 @@ typedef std::priority_queue<nodepointerstorer> nodequeue;
 typedef std::vector<item*> itemvector;
 typedef std::vector<character*> charactervector;
 typedef std::vector<emitter> emittervector;
-typedef std::vector<ulong> sunemittervector;
+typedef std::vector<uLong> sunemittervector;
 typedef character* (*characterspawner)(int, int);
 
 struct node
@@ -66,17 +66,17 @@ struct node
   lsquare* Square;
   node* Last;
   v2 Pos;
-  long Distance;
-  long Remaining;
-  long TotalDistanceEstimate;
-  long Diagonals;
+  sLong Distance;
+  sLong Remaining;
+  sLong TotalDistanceEstimate;
+  sLong Diagonals;
   truth InNodeQueue;
   truth Processed;
   static node*** NodeMap;
   static int RequiredWalkability;
   static ccharacter* SpecialMover;
   static v2 To;
-  static uchar** WalkabilityMap;
+  static uChar** WalkabilityMap;
   static int XSize, YSize;
   static nodequeue* NodeQueue;
 };
@@ -86,7 +86,7 @@ struct explosion
   character* Terrorist;
   festring DeathMsg;
   v2 Pos;
-  ulong ID;
+  uLong ID;
   int Strength;
   int RadiusSquare;
   int Size;
@@ -95,8 +95,8 @@ struct explosion
 
 struct beamdata
 {
-  beamdata(character*, cfestring&, int, ulong);
-  beamdata(character*, cfestring&, v2, col16, int, int, int, ulong);
+  beamdata(character*, cfestring&, int, uLong);
+  beamdata(character*, cfestring&, v2, col16, int, int, int, uLong);
   character* Owner;
   festring DeathMsg;
   v2 StartPos;
@@ -104,7 +104,7 @@ struct beamdata
   int BeamEffect;
   int Direction;
   int Range;
-  ulong SpecialParameters;
+  uLong SpecialParameters;
 };
 
 inline beamdata::beamdata
@@ -112,7 +112,7 @@ inline beamdata::beamdata
   character* Owner,
   cfestring& DeathMsg,
   int Direction,
-  ulong SpecialParameters
+  uLong SpecialParameters
 ) :
 Owner(Owner),
 DeathMsg(DeathMsg),
@@ -129,7 +129,7 @@ inline beamdata::beamdata
   int BeamEffect,
   int Direction,
   int Range,
-  ulong SpecialParameters
+  uLong SpecialParameters
 ) :
 Owner(Owner),
 DeathMsg(DeathMsg),
@@ -220,7 +220,7 @@ class level : public area
   void InitSquarePartEmitationTicks();
   col24 GetAmbientLuminance() const { return AmbientLuminance; }
   void ForceEmitterNoxify(const emittervector&) const;
-  void ForceEmitterEmitation(const emittervector&, const sunemittervector&, ulong = 0) const;
+  void ForceEmitterEmitation(const emittervector&, const sunemittervector&, uLong = 0) const;
   void UpdateLOS();
   void EnableGlobalRain();
   void DisableGlobalRain();
@@ -230,7 +230,7 @@ class level : public area
   int DetectMaterial(cmaterial*);
   void BlurMemory();
   void CalculateLuminances();
-  int AddRadiusToSquareStack(v2, long) const;
+  int AddRadiusToSquareStack(v2, sLong) const;
   olterrain* GetRandomFountainWithWater(olterrain*) const;
   int GetEnchantmentMinusChance() { return EnchantmentMinusChance; }
   int GetEnchantmentPlusChance() { return EnchantmentPlusChance; }
@@ -243,7 +243,7 @@ class level : public area
   truth GenerateWindows(int, int) const;
   void CreateRoomSquare(glterrain*, olterrain*, int, int, int, int) const;
   void EmitSunBeams();
-  void EmitSunBeam(v2, ulong, int) const;
+  void EmitSunBeam(v2, uLong, int) const;
   void ChangeSunLight();
   void EmitSunLight(v2);
   lsquare*** Map;
@@ -259,14 +259,14 @@ class level : public area
   std::vector<explosion*> ExplosionQueue;
   std::vector<truth> PlayerHurt;
   node*** NodeMap;
-  uchar** WalkabilityMap;
+  uChar** WalkabilityMap;
   std::vector<v2> AttachQueue;
   liquid* GlobalRainLiquid;
   v2 GlobalRainSpeed;
   col24 SunLightEmitation;
   v2 SunLightDirection;
   col24 AmbientLuminance;
-  static ulong NextExplosionID;
+  static uLong NextExplosionID;
   lsquare** SquareStack;
   col24 NightAmbientLuminance;
   int EnchantmentMinusChance;

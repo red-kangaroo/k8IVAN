@@ -68,15 +68,15 @@ truth basequadricontroller::SectorCompletelyClear;
 #define TEMPERING_SHIFT_T(y) (y << 15)
 #define TEMPERING_SHIFT_L(y) (y >> 18)
 
-ulong femath::mt[N1]; /* the array for the state vector  */
-long femath::mti = N1+1; /* mti==N+1 means mt[N] is not initialized */
+uLong femath::mt[N1]; /* the array for the state vector  */
+sLong femath::mti = N1+1; /* mti==N+1 means mt[N] is not initialized */
 
 /* backups */
 
-ulong femath::mtb[N1];
-long femath::mtib;
+uLong femath::mtb[N1];
+sLong femath::mtib;
 
-void femath::SetSeed (ulong Seed) {
+void femath::SetSeed (uLong Seed) {
   /* setting initial seeds to mt[N] using         */
   /* the generator Line 25 of Table 1 in          */
   /* [KNUTH 1981, The Art of Computer Programming */
@@ -86,9 +86,9 @@ void femath::SetSeed (ulong Seed) {
 }
 
 
-long femath::Rand () {
-  ulong y;
-  static ulong mag01[2]={0x0, MATRIX_A};
+sLong femath::Rand () {
+  uLong y;
+  static uLong mag01[2]={0x0, MATRIX_A};
 
   /* mag01[x] = x * MATRIX_A  for x=0,1 */
 
@@ -122,8 +122,8 @@ long femath::Rand () {
 }
 
 
-int femath::WeightedRand (long *Possibility, long TotalPossibility) {
-  long Rand = RAND()%TotalPossibility, PartialSum = 0;
+int femath::WeightedRand (sLong *Possibility, sLong TotalPossibility) {
+  sLong Rand = RAND()%TotalPossibility, PartialSum = 0;
   for (int c = 0; ; ++c) {
     PartialSum += Possibility[c];
     if (PartialSum > Rand) return c;
@@ -131,8 +131,8 @@ int femath::WeightedRand (long *Possibility, long TotalPossibility) {
 }
 
 
-int femath::WeightedRand (const std::vector<long> &Possibility, long TotalPossibility) {
-  long Rand = RAND()%TotalPossibility, PartialSum = 0;
+int femath::WeightedRand (const std::vector<sLong> &Possibility, sLong TotalPossibility) {
+  sLong Rand = RAND()%TotalPossibility, PartialSum = 0;
   for (int c = 0;; ++c) {
     PartialSum += Possibility[c];
     if (PartialSum > Rand) return c;
@@ -216,7 +216,7 @@ void ReadData(interval &I, inputfile &SaveFile) {
   SaveFile.ReadWord(Word);
   if (Word == ";" || Word == ",") I.Max = I.Min;
   else if (Word == ":") I.Max = Max(SaveFile.ReadNumber(), I.Min);
-  else ABORT("Odd interval terminator %s detected, file %s line %ld!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  else ABORT("Odd interval terminator %s detected, file %s line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
 }
 
 
@@ -250,9 +250,9 @@ inputfile &operator >> (inputfile &SaveFile, region &R) {
 }
 
 
-long femath::SumArray (const fearray<long> &Vector) {
-  long Sum = 0;
-  for (uint c = 0; c < Vector.Size; ++c) Sum += Vector.Data[c];
+sLong femath::SumArray (const fearray<sLong> &Vector) {
+  sLong Sum = 0;
+  for (uInt c = 0; c < Vector.Size; ++c) Sum += Vector.Data[c];
   return Sum;
 }
 

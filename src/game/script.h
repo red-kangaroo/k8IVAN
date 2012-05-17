@@ -173,7 +173,7 @@ protected:
   static datamap DataMap;
   SCRIPT_MEMBER(rect, Borders);
   FAST_SCRIPT_MEMBER(packv2, Vector);
-  FAST_SCRIPT_MEMBER(uchar, Flags);
+  FAST_SCRIPT_MEMBER(uChar, Flags);
   truth Random;
 };
 
@@ -220,10 +220,10 @@ protected:
   static datamap DataMap;
   SCRIPT_MEMBER(materialscript, MainMaterial);
   SCRIPT_MEMBER(materialscript, SecondaryMaterial);
-  ushort ContentType : 15;
+  uShort ContentType : 15;
   truth Random : 1;
-  ushort Config;
-  FAST_SCRIPT_MEMBER(uchar, Parameters);
+  uShort Config;
+  FAST_SCRIPT_MEMBER(uChar, Parameters);
 };
 
 
@@ -254,14 +254,14 @@ protected:
   SCRIPT_MEMBER (fearray<contentscript<item> >, ItemsInside);
   SCRIPT_MEMBER (interval, Times);
   SCRIPT_MEMBER (interval, LifeExpectancy);
-  FAST_SCRIPT_MEMBER (ulong, Category);
-  FAST_SCRIPT_MEMBER (long, MinPrice);
-  FAST_SCRIPT_MEMBER (long, MaxPrice);
-  FAST_SCRIPT_MEMBER (uchar, Team);
-  FAST_SCRIPT_MEMBER (uchar, SquarePosition);
-  FAST_SCRIPT_MEMBER (uchar, Chance);
-  FAST_SCRIPT_MEMBER (uchar, ConfigFlags);
-  FAST_SCRIPT_MEMBER (uchar, SpoilPercentage);
+  FAST_SCRIPT_MEMBER (uLong, Category);
+  FAST_SCRIPT_MEMBER (sLong, MinPrice);
+  FAST_SCRIPT_MEMBER (sLong, MaxPrice);
+  FAST_SCRIPT_MEMBER (uChar, Team);
+  FAST_SCRIPT_MEMBER (uChar, SquarePosition);
+  FAST_SCRIPT_MEMBER (uChar, Chance);
+  FAST_SCRIPT_MEMBER (uChar, ConfigFlags);
+  FAST_SCRIPT_MEMBER (uChar, SpoilPercentage);
   FAST_SCRIPT_MEMBER (char, Enchantment);
   FAST_SCRIPT_TRUTH (IsActive);
 };
@@ -283,8 +283,8 @@ protected:
   static datamap DataMap;
   SCRIPT_MEMBER (fearray<contentscript<item> >, Inventory);
   SCRIPT_MEMBER (fearray<packv2>, WayPoint);
-  FAST_SCRIPT_MEMBER (uchar, Team);
-  FAST_SCRIPT_MEMBER (uchar, Flags);
+  FAST_SCRIPT_MEMBER (uChar, Team);
+  FAST_SCRIPT_MEMBER (uChar, Flags);
 };
 
 
@@ -315,9 +315,9 @@ class contentscript<olterrain> : public contentscripttemplate<olterrain>
   virtual cchar *GetClassID () const;
   SCRIPT_MEMBER (fearray<contentscript<item> >, ItemsInside);
   SCRIPT_MEMBER (festring, Text);
-  FAST_SCRIPT_MEMBER (uchar, VisualEffects);
-  FAST_SCRIPT_MEMBER (uchar, AttachedArea);
-  FAST_SCRIPT_MEMBER (uchar, AttachedEntry);
+  FAST_SCRIPT_MEMBER (uChar, VisualEffects);
+  FAST_SCRIPT_MEMBER (uChar, AttachedArea);
+  FAST_SCRIPT_MEMBER (uChar, AttachedEntry);
 };
 
 class squarescript : public script
@@ -336,7 +336,7 @@ class squarescript : public script
   SCRIPT_MEMBER (contentscript<glterrain>, GTerrain);
   SCRIPT_MEMBER (contentscript<olterrain>, OTerrain);
   SCRIPT_MEMBER (interval, Times);
-  FAST_SCRIPT_MEMBER (uchar, EntryIndex);
+  FAST_SCRIPT_MEMBER (uChar, EntryIndex);
   FAST_SCRIPT_TRUTH (AttachRequired);
 };
 
@@ -400,7 +400,7 @@ class roomscript : public scriptwithbase
   SCRIPT_TRUTH_WITH_BASE (IsInside);
   SCRIPT_TRUTH_WITH_BASE (GenerateWindows);
   SCRIPT_TRUTH_WITH_BASE (UseFillSquareWalls);
-  SCRIPT_MEMBER_WITH_BASE (ulong, Flags);
+  SCRIPT_MEMBER_WITH_BASE (uLong, Flags);
 };
 
 class levelscript : public scriptwithbase

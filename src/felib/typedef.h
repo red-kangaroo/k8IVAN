@@ -12,6 +12,8 @@
 #ifndef __FELIB_TYPEDEF_H__
 #define __FELIB_TYPEDEF_H__
 
+#include <stdint.h>
+
 #include "pragmas.h"
 
 
@@ -20,35 +22,37 @@ class festring;
 struct blitdata;
 struct v2;
 
-typedef int truth;
-typedef unsigned char uchar;
-typedef unsigned short ushort;
-typedef unsigned int uint;
-typedef unsigned long ulong;
-typedef int col16;
-typedef ushort packcol16;
-typedef ulong col24;
-typedef int alpha;
-typedef uchar packalpha;
-typedef int priority;
-typedef uchar packpriority;
-typedef uchar paletteindex;
+typedef int32_t truth;
+typedef uint8_t uChar;
+typedef uint16_t uShort;
+typedef uint32_t uInt;
+typedef uint32_t uLong; // uint64_t?
+typedef int32_t sLong;
+typedef int32_t col16;
+typedef uShort packcol16;
+typedef uLong col24;
+typedef int32_t alpha;
+typedef uChar packalpha;
+typedef int32_t priority;
+typedef uChar packpriority;
+typedef uChar paletteindex;
 
 typedef const char cchar;
-typedef const int cint;
-typedef const int ctruth;
-typedef const unsigned char cuchar;
-typedef const unsigned short cushort;
-typedef const unsigned int cuint;
-typedef const unsigned long culong;
-typedef const int ccol16;
-typedef const ushort cpackcol16;
-typedef const ulong ccol24;
-typedef const int calpha;
-typedef const uchar cpackalpha;
-typedef const int cpriority;
-typedef const uchar cpackpriority;
-typedef const uchar cpaletteindex;
+typedef const int32_t cint;
+typedef const int32_t ctruth;
+typedef const uint8_t cuchar;
+typedef const uint16_t cushort;
+typedef const uint32_t cuint;
+typedef const uint32_t culong; // uint64_t?
+typedef const int32_t cslong;
+typedef const int32_t ccol16;
+typedef const uShort cpackcol16;
+typedef const uLong ccol24;
+typedef const int32_t calpha;
+typedef const uChar cpackalpha;
+typedef const int32_t cpriority;
+typedef const uChar cpackpriority;
+typedef const uChar cpaletteindex;
 
 typedef const bitmap cbitmap;
 typedef const blitdata cblitdata;

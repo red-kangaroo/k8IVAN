@@ -55,21 +55,21 @@ public:
   virtual character* TryNecromancy(character*) { return 0; }
   virtual void SignalDisappearance() { }
   virtual void SpecialEatEffect(character*, int) { }
-  virtual ulong GetTrapID() const { return 0; }
-  virtual ulong GetVictimID() const { return 0; }
+  virtual uLong GetTrapID() const { return 0; }
+  virtual uLong GetVictimID() const { return 0; }
   virtual void AddTrapName(festring&, int) const { }
   virtual void UnStick() { }
   virtual void UnStick(int) { }
   virtual truth TryToUnStick(character*, v2);
   virtual int GetTrapType() const { return 0; }
-  void AddFlags(ulong What) { Flags |= What; }
-  void RemoveFlags(ulong What) { Flags &= ~What; }
+  void AddFlags(uLong What) { Flags |= What; }
+  void RemoveFlags(uLong What) { Flags &= ~What; }
   virtual truth IsStuckTo(ccharacter*) const { return false; }
   virtual ccharacter* FindCarrier() const { return 0; }
 
 protected:
   col24 Emitation;
-  ulong Flags;
+  uLong Flags;
 
 private:
   entity *Last;

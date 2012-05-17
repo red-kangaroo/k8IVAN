@@ -46,7 +46,7 @@ truth angel::BodyPartIsVital(int I) const { return I == TORSO_INDEX || I == HEAD
 
 truth genie::BodyPartIsVital(int I) const { return I == TORSO_INDEX || I == HEAD_INDEX; }
 
-material* golem::CreateBodyPartMaterial(int, long Volume) const { return MAKE_MATERIAL(GetConfig(), Volume); }
+material* golem::CreateBodyPartMaterial(int, sLong Volume) const { return MAKE_MATERIAL(GetConfig(), Volume); }
 
 truth sumowrestler::EquipmentIsAllowed(int I) const { return I == BELT_INDEX; }
 
@@ -239,7 +239,7 @@ truth humanoid::Hit(character* Enemy, v2 HitPos, int Direction, int Flags)
     {
       msgsystem::EnterBigMessageMode();
       Hostility(Enemy);
-      long FirstAPCost = 0, SecondAPCost = 0;
+      sLong FirstAPCost = 0, SecondAPCost = 0;
       arm* FirstArm, * SecondArm;
 
       if(RAND() & 1)
@@ -380,16 +380,16 @@ void priest::BeTalkedTo () {
   for (int c = 0; c < PLAYER->GetBodyParts(); ++c) {
     if (!PLAYER->GetBodyPart(c) && PLAYER->CanCreateBodyPart(c)) {
       truth HasOld = false;
-      for (std::list<ulong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
+      for (std::list<uLong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
         bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
         if (OldBodyPart) {
           HasOld = true;
-          long Price = GetConfig() == VALPURUS ? 50 : 10;
+          sLong Price = GetConfig() == VALPURUS ? 50 : 10;
           if (PLAYER->GetMoney() >= Price) {
             if (!OldBodyPart->CanRegenerate())
               ADD_MESSAGE("\"Sorry, I cannot put back bodyparts made of %s, not even your severed %s.\"", OldBodyPart->GetMainMaterial()->GetName(false, false).CStr(), PLAYER->GetBodyPartName(c).CStr());
             else {
-              ADD_MESSAGE("\"I could put your old %s back in exchange for %ld gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+              ADD_MESSAGE("\"I could put your old %s back in exchange for %d gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
               if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
                 OldBodyPart->SetHP(1);
                 PLAYER->SetMoney(PLAYER->GetMoney()-Price);
@@ -400,16 +400,16 @@ void priest::BeTalkedTo () {
               }
             }
           } else {
-            ADD_MESSAGE("\"Your %s is severed. Help yourself and get %ldgp and I'll help you too.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+            ADD_MESSAGE("\"Your %s is severed. Help yourself and get %dgp and I'll help you too.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
           }
         }
       }
-      long Price = GetConfig() == VALPURUS ? 100 : 20;
+      sLong Price = GetConfig() == VALPURUS ? 100 : 20;
       if (PLAYER->GetMoney() >= Price) {
         if (HasOld)
-          ADD_MESSAGE("\"I could still summon up a new one for %ld gold.\"", Price);
+          ADD_MESSAGE("\"I could still summon up a new one for %d gold.\"", Price);
         else
-          ADD_MESSAGE("\"Since you don't seem to have your original %s with you, I could summon up a new one for %ld gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+          ADD_MESSAGE("\"Since you don't seem to have your original %s with you, I could summon up a new one for %d gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
         if (game::TruthQuestion(CONST_S("Agreed? [y/N]"))) {
           PLAYER->SetMoney(PLAYER->GetMoney()-Price);
           SetMoney(GetMoney()+Price);
@@ -418,14 +418,14 @@ void priest::BeTalkedTo () {
           return;
         }
       } else if (!HasOld) {
-        ADD_MESSAGE("\"You don't have your original %s with you. I could create you a new one, but my Divine Employer is not a communist and you need %ldgp first.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+        ADD_MESSAGE("\"You don't have your original %s with you. I could create you a new one, but my Divine Employer is not a communist and you need %dgp first.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
       }
     }
   }
   if (PLAYER->TemporaryStateIsActivated(POISONED)) {
-    long Price = GetConfig() == VALPURUS ? 25 : 5;
+    sLong Price = GetConfig() == VALPURUS ? 25 : 5;
     if (PLAYER->GetMoney() >= Price) {
-      ADD_MESSAGE("\"You seem to be rather ill. I could give you a small dose of antidote for %ld gold pieces.\"", Price);
+      ADD_MESSAGE("\"You seem to be rather ill. I could give you a small dose of antidote for %d gold pieces.\"", Price);
       if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(POISONED);
@@ -434,13 +434,13 @@ void priest::BeTalkedTo () {
         return;
       }
     } else {
-      ADD_MESSAGE("\"You seem to be rather ill. Get %ld gold pieces and I'll fix that.\"", Price);
+      ADD_MESSAGE("\"You seem to be rather ill. Get %d gold pieces and I'll fix that.\"", Price);
     }
   }
   if (PLAYER->TemporaryStateIsActivated(LEPROSY)) {
-    long Price = GetConfig() == VALPURUS ? 100 : 20;
+    sLong Price = GetConfig() == VALPURUS ? 100 : 20;
     if (PLAYER->GetMoney() >= Price) {
-      ADD_MESSAGE("\"You seem to have contracted the vile disease of leprosy. I could give you a small dose of medicince for %ld gold pieces.\"", Price);
+      ADD_MESSAGE("\"You seem to have contracted the vile disease of leprosy. I could give you a small dose of medicince for %d gold pieces.\"", Price);
       if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(LEPROSY);
@@ -449,13 +449,13 @@ void priest::BeTalkedTo () {
         return;
       }
     } else {
-      ADD_MESSAGE("\"You seem to be falling apart. Get %ld gold pieces and I'll fix that.\"", Price);
+      ADD_MESSAGE("\"You seem to be falling apart. Get %d gold pieces and I'll fix that.\"", Price);
     }
   }
   if (PLAYER->TemporaryStateIsActivated(LYCANTHROPY)) {
-    long Price = GetConfig() == VALPURUS ? 100 : 20;
+    sLong Price = GetConfig() == VALPURUS ? 100 : 20;
     if (PLAYER->GetMoney() >= Price) {
-      ADD_MESSAGE("\"You seem to be turning into a werewolf quite frequently. Well, everyone has right to little secret habits, but if you wish to donate %ldgp to %s, maybe I could pray %s to remove the canine blood from your veins, just so you don't scare our blessed youth.\"", Price, GetMasterGod()->GetName(), GetMasterGod()->GetObjectPronoun());
+      ADD_MESSAGE("\"You seem to be turning into a werewolf quite frequently. Well, everyone has right to little secret habits, but if you wish to donate %dgp to %s, maybe I could pray %s to remove the canine blood from your veins, just so you don't scare our blessed youth.\"", Price, GetMasterGod()->GetName(), GetMasterGod()->GetObjectPronoun());
       if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(LYCANTHROPY);
@@ -464,7 +464,7 @@ void priest::BeTalkedTo () {
         return;
       }
     } else {
-      ADD_MESSAGE("\"You seem to be lycanthropic. I might be able to do something for that but I need %ldgp for the ritual materials first.\"", Price);
+      ADD_MESSAGE("\"You seem to be lycanthropic. I might be able to do something for that but I need %dgp for the ritual materials first.\"", Price);
     }
   }
   humanoid::BeTalkedTo();
@@ -592,7 +592,7 @@ void librarian::BeTalkedTo()
     return;
   }
 
-  static long Said;
+  static sLong Said;
 
   switch(RandomizeReply(Said, 12))
   {
@@ -899,7 +899,7 @@ int humanoid::GetSize() const
   return Size;
 }
 
-long humanoid::GetBodyPartSize(int I, int TotalSize) const
+sLong humanoid::GetBodyPartSize(int I, int TotalSize) const
 {
   switch(I)
   {
@@ -916,7 +916,7 @@ long humanoid::GetBodyPartSize(int I, int TotalSize) const
   return 0;
 }
 
-long humanoid::GetBodyPartVolume(int I) const
+sLong humanoid::GetBodyPartVolume(int I) const
 {
   switch(I)
   {
@@ -983,18 +983,18 @@ truth humanoid::ReceiveDamage(character* Damager, int Damage, int Type, int Targ
   if(Divide)
   {
     int c;
-    long TotalVolume = 0;
+    sLong TotalVolume = 0;
 
     for(c = 0; c < BodyParts; ++c)
       TotalVolume += GetBodyPart(ChooseFrom[c])->GetBodyPartVolume();
 
     for(c = 0; c < BodyParts; ++c)
-      if(ReceiveBodyPartDamage(Damager, long(Damage) * GetBodyPart(ChooseFrom[c])->GetBodyPartVolume() / TotalVolume, Type, ChooseFrom[c], Direction, PenetrateArmor, Critical, false))
+      if(ReceiveBodyPartDamage(Damager, sLong(Damage) * GetBodyPart(ChooseFrom[c])->GetBodyPartVolume() / TotalVolume, Type, ChooseFrom[c], Direction, PenetrateArmor, Critical, false))
   Affected = true;
   }
   else
   {
-    long Possibility[MAX_BODYPARTS], PossibilitySum = 0;
+    sLong Possibility[MAX_BODYPARTS], PossibilitySum = 0;
     int Index = 0;
 
     for(int c = 0; c < BodyParts; ++c)
@@ -1824,7 +1824,7 @@ truth humanoid::CheckBalance(double KickDamage)
   && KickDamage * 5 < RAND() % GetSize());
 }
 
-long humanoid::GetMoveAPRequirement(int Difficulty) const
+sLong humanoid::GetMoveAPRequirement(int Difficulty) const
 {
   if(IsFlying())
     return (!StateIsActivated(PANIC) ? 10000000 : 8000000) * Difficulty / (APBonus(GetAttribute(AGILITY)) * GetMoveEase());
@@ -2326,7 +2326,7 @@ col24 angel::GetBaseEmitation() const
 
 void bananagrower::BeTalkedTo()
 {
-  static long Said;
+  static sLong Said;
 
   if(GetRelation(PLAYER) == HOSTILE)
     ProcessAndAddMessage(GetHostileReplies()[RandomizeReply(Said, GetHostileReplies().Size)]);
@@ -2428,15 +2428,15 @@ void smith::BeTalkedTo()
 
     /** update messages */
 
-    long FixPrice = Item->GetFixPrice();
+    sLong FixPrice = Item->GetFixPrice();
 
     if(PLAYER->GetMoney() < FixPrice)
     {
-      ADD_MESSAGE("\"Getting that fixed costs you %ld gold pieces. Get the money and we'll talk.\"", FixPrice);
+      ADD_MESSAGE("\"Getting that fixed costs you %d gold pieces. Get the money and we'll talk.\"", FixPrice);
       return;
     }
 
-    ADD_MESSAGE("\"I can fix your %s, but it'll cost you %ld gold pieces.\"", Item->CHAR_NAME(UNARTICLED), FixPrice);
+    ADD_MESSAGE("\"I can fix your %s, but it'll cost you %d gold pieces.\"", Item->CHAR_NAME(UNARTICLED), FixPrice);
 
     if(game::TruthQuestion(CONST_S("Do you accept this deal? [y/N]")))
     {
@@ -2500,7 +2500,7 @@ void bananagrower::GetAICommand()
     itemvector ItemVector;
     GetStack()->FillItemVector(ItemVector);
     int BananasDropped = 0;
-    uint c;
+    uInt c;
 
     for(c = 0; c < ItemVector.size(); ++c)
       if(ItemVector[c]->IsBanana())
@@ -2685,7 +2685,7 @@ void encourager::Load(inputfile& SaveFile)
   SaveFile >> LastHit;
 }*/
 
-long skeleton::GetBodyPartVolume(int I) const
+sLong skeleton::GetBodyPartVolume(int I) const
 {
   switch(I)
   {
@@ -2873,7 +2873,7 @@ void darkmage::GetAICommand()
     return;
 
   character* NearestEnemy = 0;
-  long NearestEnemyDistance = 0x7FFFFFFF;
+  sLong NearestEnemyDistance = 0x7FFFFFFF;
   character* RandomFriend = 0;
   charactervector Friend;
   v2 Pos = GetPos();
@@ -2885,7 +2885,7 @@ void darkmage::GetAICommand()
       for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
   if((*i)->IsEnabled())
   {
-    long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
+    sLong ThisDistance = Max<sLong>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
 
     if((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND() % 3))) && (*i)->CanBeSeenBy(this))
     {
@@ -3162,7 +3162,7 @@ int humanoid::GetRandomApplyBodyPart() const
 
 void golem::BeTalkedTo()
 {
-  static long Said;
+  static sLong Said;
 
   if(GetRelation(PLAYER) == HOSTILE)
     Engrave(GetHostileReplies()[RandomizeReply(Said, GetHostileReplies().Size)]);
@@ -3347,7 +3347,7 @@ void playerkind::Load(inputfile& SaveFile)
   SaveFile >> SoulID >> HairColor >> EyeColor >> Talent >> Weakness >> IsBonePlayer >> IsClone;
 }
 
-void playerkind::SetSoulID(ulong What)
+void playerkind::SetSoulID(uLong What)
 {
   SoulID = What;
 
@@ -3412,7 +3412,7 @@ void playerkind::BeTalkedTo()
       return;
     }
 
-    static long Said;
+    static sLong Said;
 
     switch(RandomizeReply(Said, 4))
     {
@@ -3438,7 +3438,7 @@ void playerkind::BeTalkedTo()
       return;
     }
 
-    static long Said;
+    static sLong Said;
 
     switch(RandomizeReply(Said, 4))
     {
@@ -3464,7 +3464,7 @@ void playerkind::BeTalkedTo()
       return;
     }
 
-    static long Said;
+    static sLong Said;
 
     switch(RandomizeReply(Said, 4))
     {
@@ -3590,7 +3590,7 @@ truth humanoid::CanConsume(material* Material) const
 
 void femaleslave::BeTalkedTo()
 {
-  static long Said;
+  static sLong Said;
 
   if(GetConfig() != NEW_ATTNAM || GetRelation(PLAYER) == HOSTILE)
     humanoid::BeTalkedTo();
@@ -3608,7 +3608,7 @@ void necromancer::GetAICommand()
     return;
 
   character* NearestEnemy = 0;
-  long NearestEnemyDistance = 0x7FFFFFFF;
+  sLong NearestEnemyDistance = 0x7FFFFFFF;
   v2 Pos = GetPos();
 
   for(int c = 0; c < game::GetTeams(); ++c)
@@ -3617,7 +3617,7 @@ void necromancer::GetAICommand()
       for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
   if((*i)->IsEnabled())
   {
-    long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
+    sLong ThisDistance = Max<sLong>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
 
     if((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND() % 3))) && (*i)->CanBeSeenBy(this))
     {
@@ -3898,7 +3898,7 @@ void sumowrestler::GetAICommand()
 
 void sumowrestler::BeTalkedTo()
 {
-  static long Said;
+  static sLong Said;
 
   if(GetRelation(PLAYER) == HOSTILE)
     ProcessAndAddMessage(GetHostileReplies()[RandomizeReply(Said, GetHostileReplies().Size)]);
@@ -4141,7 +4141,7 @@ void humanoid::DropBodyPart(int Index)
   }
 }
 
-void humanoid::DuplicateEquipment(character* Receiver, ulong Flags)
+void humanoid::DuplicateEquipment(character* Receiver, uLong Flags)
 {
   character::DuplicateEquipment(Receiver, Flags);
   EnsureCurrentSWeaponSkillIsCorrect(CurrentRightSWeaponSkill, GetRightWielded());
@@ -4344,15 +4344,15 @@ void tailor::BeTalkedTo()
 
     /** update messages */
 
-    long FixPrice = Item->GetFixPrice();
+    sLong FixPrice = Item->GetFixPrice();
 
     if(PLAYER->GetMoney() < FixPrice)
     {
-      ADD_MESSAGE("\"Getting that fixed costs you %ld gold pieces. Get the money and we'll talk.\"", FixPrice);
+      ADD_MESSAGE("\"Getting that fixed costs you %d gold pieces. Get the money and we'll talk.\"", FixPrice);
       return;
     }
 
-    ADD_MESSAGE("\"I can fix your %s, but it'll cost you %ld gold pieces.\"", Item->CHAR_NAME(UNARTICLED), FixPrice);
+    ADD_MESSAGE("\"I can fix your %s, but it'll cost you %d gold pieces.\"", Item->CHAR_NAME(UNARTICLED), FixPrice);
 
     if(game::TruthQuestion(CONST_S("Do you accept this deal? [y/N]")))
     {
@@ -4454,7 +4454,7 @@ void oree::CallForMonsters()
   delete ToBeCalled;
 }
 
-int humanoid::RandomizeTryToUnStickBodyPart(ulong PossibleBodyParts) const
+int humanoid::RandomizeTryToUnStickBodyPart(uLong PossibleBodyParts) const
 {
   int Possible = 0, PossibleArray[3];
 
@@ -4972,7 +4972,7 @@ truth petrus::HealFully (character *ToBeHealed) {
   for (int c = 0; c < ToBeHealed->GetBodyParts(); ++c) {
     if (!ToBeHealed->GetBodyPart(c)) {
       bodypart* BodyPart = 0;
-      for (std::list<ulong>::const_iterator i = ToBeHealed->GetOriginalBodyPartID(c).begin(); i != ToBeHealed->GetOriginalBodyPartID(c).end(); ++i) {
+      for (std::list<uLong>::const_iterator i = ToBeHealed->GetOriginalBodyPartID(c).begin(); i != ToBeHealed->GetOriginalBodyPartID(c).end(); ++i) {
         BodyPart = static_cast<bodypart *>(ToBeHealed->SearchForItem(*i));
         if (BodyPart) break;
       }
@@ -5294,9 +5294,9 @@ void mysteryman::BeTalkedTo () {
 void imperialist::BeTalkedTo () {
   decosadshirt *Shirt = static_cast<decosadshirt *>(PLAYER->SearchForItem(this, &item::IsDecosAdShirt));
   if (Shirt) {
-    ulong Reward = Shirt->GetEquippedTicks()/500;
+    uLong Reward = Shirt->GetEquippedTicks()/500;
     if (Reward) {
-      ADD_MESSAGE("%s smiles. \"I see you have advertised our company diligently. Here's %ldgp as a token of my gratitude.\"", CHAR_NAME(DEFINITE), Reward);
+      ADD_MESSAGE("%s smiles. \"I see you have advertised our company diligently. Here's %dgp as a token of my gratitude.\"", CHAR_NAME(DEFINITE), Reward);
       PLAYER->EditMoney(Reward);
       Shirt->SetEquippedTicks(0);
     } else if (!(RAND()%5)) {
@@ -5304,7 +5304,7 @@ void imperialist::BeTalkedTo () {
     }
     return;
   }
-  static long Said;
+  static sLong Said;
   if (GetRelation(PLAYER) == HOSTILE)
     ProcessAndAddMessage(GetHostileReplies()[RandomizeReply(Said, GetHostileReplies().Size)]);
   else if (!game::PlayerIsSumoChampion())
@@ -5356,7 +5356,7 @@ void exiledpriest::healBodyParts () {
   for (int c = 0; c < PLAYER->GetBodyParts(); ++c) {
     if (!PLAYER->GetBodyPart(c) && PLAYER->CanCreateBodyPart(c)) {
       truth HasOld = false;
-      for (std::list<ulong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
+      for (std::list<uLong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
         bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
         if (OldBodyPart) {
           HasOld = true;

@@ -38,7 +38,7 @@ public:
   static truth NormalNumberChangeInterface (numberoption *);
   static truth NormalTruthChangeInterface (truthoption *);
   static void NormalStringChanger (stringoption *, cfestring &);
-  static void NormalNumberChanger (numberoption *, long);
+  static void NormalNumberChanger (numberoption *, sLong);
   static void NormalTruthChanger (truthoption *, truth);
   static void SetConfigFileName (cfestring &What) { ConfigFileName = What; }
 
@@ -84,34 +84,34 @@ struct stringoption : public configoption {
 
 struct numberoption : public configoption
 {
-  numberoption(cchar*, cchar*, long,
+  numberoption(cchar*, cchar*, sLong,
          void (*)(const numberoption*, festring&)
          = &configsystem::NormalNumberDisplayer,
          truth (*)(numberoption*)
          = &configsystem::NormalNumberChangeInterface,
-         void (*)(numberoption*, long)
+         void (*)(numberoption*, sLong)
          = &configsystem::NormalNumberChanger);
   virtual void SaveValue(std::ofstream&) const;
   virtual void LoadValue(inputfile&);
   virtual void DisplayeValue(festring& Entry) const
   { ValueDisplayer(this, Entry); }
   virtual truth ActivateChangeInterface() { return ChangeInterface(this); }
-  void ChangeValue(long What) { ValueChanger(this, What); }
-  long Value;
+  void ChangeValue(sLong What) { ValueChanger(this, What); }
+  sLong Value;
   void (*ValueDisplayer)(const numberoption*, festring&);
   truth (*ChangeInterface)(numberoption*);
-  void (*ValueChanger)(numberoption*, long);
+  void (*ValueChanger)(numberoption*, sLong);
 };
 
 struct scrollbaroption : public numberoption
 {
-  scrollbaroption(cchar*, cchar*, long,
+  scrollbaroption(cchar*, cchar*, sLong,
       void (*)(const numberoption*, festring&),
       truth (*)(numberoption*),
-      void (*)(numberoption*, long)
+      void (*)(numberoption*, sLong)
       = &configsystem::NormalNumberChanger,
-      void (*)(long) = 0);
-  void (*BarHandler)(long);
+      void (*)(sLong) = 0);
+  void (*BarHandler)(sLong);
 };
 
 struct truthoption : public configoption

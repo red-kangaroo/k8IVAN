@@ -53,7 +53,7 @@ class entity;
 class olterrain;
 struct explosion;
 
-typedef std::map<festring, long> valuemap;
+typedef std::map<festring, sLong> valuemap;
 typedef truth (*stringkeyhandler)(int, festring&);
 typedef v2 (*positionkeyhandler)(v2, int);
 typedef void (*positionhandler)(v2);
@@ -152,11 +152,11 @@ inputfile& operator>>(inputfile&, killdata&);
 
 
 typedef std::map<configid, dangerid> dangermap;
-typedef std::map<ulong, character*> characteridmap;
-typedef std::map<ulong, item*> itemidmap;
-typedef std::map<ulong, entity*> trapidmap;
+typedef std::map<uLong, character*> characteridmap;
+typedef std::map<uLong, item*> itemidmap;
+typedef std::map<uLong, entity*> trapidmap;
 typedef std::map<massacreid, killdata> massacremap;
-typedef std::map<ulong, ulong> boneidmap;
+typedef std::map<uLong, uLong> boneidmap;
 typedef std::vector<item*> itemvector;
 typedef std::vector<itemvector> itemvectorvector;
 typedef std::vector<character*> charactervector;
@@ -175,11 +175,11 @@ enum ArgTypes {
 struct FuncArg {
   FuncArg () : type(FARG_UNDEFINED), sval(""), ival(0) {}
   FuncArg (cfestring &aVal) : type(FARG_STRING), sval(aVal), ival(0) {}
-  FuncArg (long aVal) : type(FARG_NUMBER), sval(""), ival(aVal) {}
+  FuncArg (sLong aVal) : type(FARG_NUMBER), sval(""), ival(aVal) {}
   //
   ArgTypes type;
   festring sval;
-  long ival;
+  sLong ival;
 };
 
 
@@ -195,7 +195,7 @@ public:
   static cv2 GetLargeMoveVector(int I) { return LargeMoveVector[I]; }
   static area* GetCurrentArea() { return CurrentArea; }
   static level* GetCurrentLevel() { return CurrentLevel; }
-  static uchar*** GetLuxTable() { return LuxTable; }
+  static uChar*** GetLuxTable() { return LuxTable; }
   static character* GetPlayer() { return Player; }
   static void SetPlayer(character*);
   static v2 GetCamera() { return Camera; }
@@ -231,7 +231,7 @@ public:
   static void TriggerQuestForGoldenEagleShirt();
   static void CalculateGodNumber();
   static void IncreaseTick() { ++Tick; }
-  static ulong GetTick() { return Tick; }
+  static uLong GetTick() { return Tick; }
   static festring GetAutoSaveFileName() { return AutoSaveFileName; }
   static int DirectionQuestion(cfestring&, truth = true, truth = false);
   static void RemoveSaves(truth = true);
@@ -252,17 +252,17 @@ public:
   static void SaveWorldMap(cfestring& = SaveName(""), truth = true);
   static worldmap* LoadWorldMap(cfestring& = SaveName(""));
   static void UpdateCamera();
-  static ulong CreateNewCharacterID(character*);
-  static ulong CreateNewItemID(item*);
-  static ulong CreateNewTrapID(entity*);
+  static uLong CreateNewCharacterID(character*);
+  static uLong CreateNewItemID(item*);
+  static uLong CreateNewTrapID(entity*);
   static team* GetTeam(int I) { return Team[I]; }
   static int GetTeams() { return Teams; }
   static void Hostility(team*, team*);
   static void CreateTeams();
   static festring StringQuestion(cfestring&, col16, festring::sizetype, festring::sizetype, truth, stringkeyhandler = 0);
-  static long NumberQuestion(cfestring&, int, truth = false);
-  static ulong IncreaseLOSTick();
-  static ulong GetLOSTick() { return LOSTick; }
+  static sLong NumberQuestion(cfestring&, int, truth = false);
+  static uLong IncreaseLOSTick();
+  static uLong GetLOSTick() { return LOSTick; }
   static void SendLOSUpdateRequest() { LOSUpdateRequested = true; }
   static void RemoveLOSUpdateRequest() { LOSUpdateRequested = false; }
   static character* GetPetrus() { return Petrus; }
@@ -295,7 +295,7 @@ public:
   static v2 NameKeyHandler(v2, int);
   static void End(festring, truth = true, truth = true);
   static int CalculateRoughDirection(v2);
-  static long ScrollBarQuestion(cfestring&, long, long, long, long, long, col16, col16, col16, void (*)(long) = 0);
+  static sLong ScrollBarQuestion(cfestring&, sLong, sLong, sLong, sLong, sLong, col16, col16, col16, void (*)(sLong) = 0);
   static truth IsGenerating() { return Generating; }
   static void SetIsGenerating(truth What) { Generating = What; }
   static void CalculateNextDanger();
@@ -318,17 +318,17 @@ public:
   static void InitPlayerAttributeAverage();
   static void UpdatePlayerAttributeAverage();
   static void CallForAttention(v2, int);
-  static character* SearchCharacter(ulong);
-  static item* SearchItem(ulong);
-  static entity* SearchTrap(ulong);
-  static void AddCharacterID(character*, ulong);
-  static void RemoveCharacterID(ulong);
-  static void AddItemID(item*, ulong);
-  static void RemoveItemID(ulong);
-  static void UpdateItemID(item*, ulong);
-  static void AddTrapID(entity*, ulong);
-  static void RemoveTrapID(ulong);
-  static void UpdateTrapID(entity*, ulong);
+  static character* SearchCharacter(uLong);
+  static item* SearchItem(uLong);
+  static entity* SearchTrap(uLong);
+  static void AddCharacterID(character*, uLong);
+  static void RemoveCharacterID(uLong);
+  static void AddItemID(item*, uLong);
+  static void RemoveItemID(uLong);
+  static void UpdateItemID(item*, uLong);
+  static void AddTrapID(entity*, uLong);
+  static void RemoveTrapID(uLong);
+  static void UpdateTrapID(entity*, uLong);
   static int GetStoryState() { return StoryState; }
   static void SetStoryState(int What) { StoryState = What; }
   static int GetMondedrPass () { return MondedrPass; }
@@ -361,7 +361,7 @@ public:
   static festring& GetDefaultDetectMaterial() { return DefaultDetectMaterial; }
   static void SignalDeath(ccharacter*, ccharacter*, festring);
   static void DisplayMassacreLists();
-  static void DisplayMassacreList(const massacremap&, cchar*, long);
+  static void DisplayMassacreList(const massacremap&, cchar*, sLong);
   static truth MassacreListsEmpty();
 #ifdef WIZARD
   static void ActivateWizardMode() { WizardMode = true; }
@@ -390,16 +390,16 @@ public:
   static truth TooGreatDangerFound() { return TooGreatDangerFoundTruth; }
   static void SetTooGreatDangerFound(truth What) { TooGreatDangerFoundTruth = What; }
   static void CreateBusyAnimationCache();
-  static long GetScore();
+  static sLong GetScore();
   static truth TweraifIsFree();
   static truth IsXMas();
   static int AddToItemDrawVector(const itemvector&);
   static void ClearItemDrawVector();
-  static void ItemEntryDrawer(bitmap*, v2, uint);
+  static void ItemEntryDrawer(bitmap*, v2, uInt);
   static int AddToCharacterDrawVector(character*);
   static void ClearCharacterDrawVector();
-  static void CharacterEntryDrawer(bitmap*, v2, uint);
-  static void GodEntryDrawer(bitmap*, v2, uint);
+  static void CharacterEntryDrawer(bitmap*, v2, uInt);
+  static void GodEntryDrawer(bitmap*, v2, uInt);
   static itemvectorvector& GetItemDrawVector() { return ItemDrawVector; }
   static charactervector& GetCharacterDrawVector() { return CharacterDrawVector; }
   static truth IsSumoWrestling() { return SumoWrestling; }
@@ -417,23 +417,23 @@ public:
   static truth PlayerIsSumoChampion() { return PlayerSumoChampion; }
   static v2 GetSunLightDirectionVector();
   static int CalculateMinimumEmitationRadius(col24);
-  static ulong IncreaseSquarePartEmitationTicks();
+  static uLong IncreaseSquarePartEmitationTicks();
   static cint GetLargeMoveDirection(int I) { return LargeMoveDirection[I]; }
   static bool Wish(character*, cchar*, cchar*, bool canAbort=false);
   static festring DefaultQuestion(festring, festring&, stringkeyhandler = 0);
   static void GetTime(ivantime&);
-  static long GetTurn() { return Turn; }
+  static sLong GetTurn() { return Turn; }
   static void IncreaseTurn() { ++Turn; }
   static int GetTotalMinutes() { return Tick * 60 / 2000; }
   static truth PolymorphControlKeyHandler(int, festring&);
-  static ulong* GetEquipmentMemory() { return EquipmentMemory; }
+  static uLong* GetEquipmentMemory() { return EquipmentMemory; }
   static truth PlayerIsRunning();
   static void SetPlayerIsRunning(truth What) { PlayerRunning = What; }
   static truth FillPetVector(cchar*);
   static truth CommandQuestion();
   static void NameQuestion();
   static v2 CommandKeyHandler(v2, int);
-  static void CommandScreen(cfestring&, ulong, ulong, ulong&, ulong&);
+  static void CommandScreen(cfestring&, uLong, uLong, uLong&, uLong&);
   static truth CommandAll();
   static double GetDangerFound() { return DangerFound; }
   static void SetDangerFound(double What) { DangerFound = What; }
@@ -448,7 +448,7 @@ public:
   static void SetMonsterPortal(olterrain* What) { MonsterPortal = What; }
   static truth GetCausePanicFlag() { return CausePanicFlag; }
   static void SetCausePanicFlag(truth What) { CausePanicFlag = What; }
-  static long GetTimeSpent();
+  static sLong GetTimeSpent();
   static void AddSpecialCursor(v2, int);
   static void RemoveSpecialCursors();
   static void LearnAbout(god*);
@@ -491,22 +491,22 @@ private:
   static cv2 RelativeMoveVector[];
   static cv2 BasicMoveVector[];
   static cv2 LargeMoveVector[];
-  static uchar*** LuxTable;
+  static uChar*** LuxTable;
   static truth Running;
   static character* Player;
   static v2 Camera;
-  static ulong Tick;
+  static uLong Tick;
   static festring AutoSaveFileName;
   static truth InWilderness;
   static worldmap* WorldMap;
   static area* AreaInLoad;
   static square* SquareInLoad;
   static dungeon** Dungeon;
-  static ulong NextCharacterID;
-  static ulong NextItemID;
-  static ulong NextTrapID;
+  static uLong NextCharacterID;
+  static uLong NextItemID;
+  static uLong NextTrapID;
   static team** Team;
-  static ulong LOSTick;
+  static uLong LOSTick;
   static truth LOSUpdateRequested;
   static character* Petrus;
   static truth Loading;
@@ -549,9 +549,9 @@ private:
   static massacremap PlayerMassacreMap;
   static massacremap PetMassacreMap;
   static massacremap MiscMassacreMap;
-  static long PlayerMassacreAmount;
-  static long PetMassacreAmount;
-  static long MiscMassacreAmount;
+  static sLong PlayerMassacreAmount;
+  static sLong PetMassacreAmount;
+  static sLong MiscMassacreAmount;
   static truth WizardMode;
   static int SeeWholeMapCheatMode;
   static truth GoThroughWallsCheat;
@@ -566,12 +566,12 @@ private:
   static festring PlayerName;
   static liquid* GlobalRainLiquid;
   static v2 GlobalRainSpeed;
-  static long GlobalRainTimeModifier;
+  static sLong GlobalRainTimeModifier;
   static truth PlayerSumoChampion;
-  static ulong SquarePartEmitationTick;
+  static uLong SquarePartEmitationTick;
   static cint LargeMoveDirection[];
-  static long Turn;
-  static ulong EquipmentMemory[MAX_EQUIPMENT_SLOTS];
+  static sLong Turn;
+  static uLong EquipmentMemory[MAX_EQUIPMENT_SLOTS];
   static truth PlayerRunning;
   static character* LastPetUnderCursor;
   static charactervector PetVector;
@@ -606,11 +606,11 @@ inline void game::CombineLights(col24& L1, col24 L2)
   {
     if(L1)
     {
-      long Red1 = L1 & 0xFF0000, Red2 = L2 & 0xFF0000;
-      long New = Red1 >= Red2 ? Red1 : Red2;
-      long Green1 = L1 & 0xFF00, Green2 = L2 & 0xFF00;
+      sLong Red1 = L1 & 0xFF0000, Red2 = L2 & 0xFF0000;
+      sLong New = Red1 >= Red2 ? Red1 : Red2;
+      sLong Green1 = L1 & 0xFF00, Green2 = L2 & 0xFF00;
       New |= Green1 >= Green2 ? Green1 : Green2;
-      long Blue1 = L1 & 0xFF, Blue2 = L2 & 0xFF;
+      sLong Blue1 = L1 & 0xFF, Blue2 = L2 & 0xFF;
       L1 = Blue1 >= Blue2 ? New | Blue1 : New | Blue2;
     }
     else

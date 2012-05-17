@@ -63,7 +63,7 @@ public:
 
 protected:
   v2 Size;
-  uchar *Palette;
+  uChar *Palette;
   paletteindex **PaletteBuffer;
   fontcache FontCache;
 };

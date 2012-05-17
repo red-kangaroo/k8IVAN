@@ -44,7 +44,7 @@ ITEM(materialcontainer, item)
   virtual void InitMaterials(const materialscript*, const materialscript*, truth);
   virtual int GetSparkleFlags() const;
  protected:
-  virtual long GetMaterialPrice() const;
+  virtual sLong GetMaterialPrice() const;
   virtual truth CalculateHasBe() const;
   virtual void GenerateMaterials();
   virtual col16 GetMaterialColorB(int) const;
@@ -242,12 +242,12 @@ ITEM(wand, item)
   virtual truth ReceiveDamage(character*, int, int, int);
   virtual truth Zap(character*, v2, int);
   virtual void AddInventoryEntry(ccharacter*, festring&, int, truth) const;
-  virtual long GetPrice() const;
+  virtual sLong GetPrice() const;
   virtual truth IsExplosive() const { return true; }
  protected:
   virtual void PostConstruct();
   void BreakEffect(character*, cfestring&);
-  ulong GetSpecialParameters() const;
+  uLong GetSpecialParameters() const;
   int Charges;
   int TimesUsed;
 };
@@ -287,7 +287,7 @@ ITEM(backpack, materialcontainer)
   virtual truth IsAppliable(ccharacter*) const { return true; }
   virtual truth ReceiveDamage(character*, int, int, int);
   virtual truth IsExplosive() const;
-  virtual long GetTotalExplosivePower() const;
+  virtual sLong GetTotalExplosivePower() const;
   virtual void SpillFluid(character*, liquid*, int = 0);
  protected:
   virtual void AddPostFix(festring& String, int) const { AddContainerPostFix(String); }
@@ -327,7 +327,7 @@ ITEM(oillamp, item)
 ITEM(stone, item)
 {
  public:
-  virtual long GetTruePrice() const;
+  virtual sLong GetTruePrice() const;
   virtual truth IsLuxuryItem(ccharacter*) const { return GetTruePrice() > 0; }
  protected:
   virtual truth WeightIsIrrelevant() const { return true; }
@@ -398,7 +398,7 @@ ITEM(magicalwhistle, whistle)
   virtual void Save(outputfile&) const;
   virtual void FinalProcessForBone();
  protected:
-  ulong LastUsed;
+  uLong LastUsed;
 };
 
 ITEM(itemcontainer, lockableitem)
@@ -413,7 +413,7 @@ ITEM(itemcontainer, lockableitem)
   virtual truth Polymorph(character*, stack*);
   virtual void CalculateVolumeAndWeight();
   virtual truth ContentsCanBeSeenBy(ccharacter*) const;
-  virtual long GetTruePrice() const;
+  virtual sLong GetTruePrice() const;
   virtual truth ReceiveDamage(character*, int, int, int);
   virtual void DrawContents(ccharacter*);
   virtual truth Apply(character* Applier) { return Open(Applier); }
@@ -456,8 +456,8 @@ ITEM(beartrap, itemtrap<item>)
   virtual truth ReceiveDamage(character*, int, int, int);
   virtual truth NeedDangerSymbol() const { return IsActive(); }
   virtual void Fly(character*, int, int);
-  virtual ulong GetTrapID() const { return TrapData.TrapID; }
-  virtual ulong GetVictimID() const { return TrapData.VictimID; }
+  virtual uLong GetTrapID() const { return TrapData.TrapID; }
+  virtual uLong GetVictimID() const { return TrapData.VictimID; }
   virtual void UnStick() { TrapData.VictimID = 0; }
   virtual void UnStick(int I) { TrapData.BodyParts &= ~(1 << I); }
   virtual truth TryToUnStick(character*, v2);
@@ -529,7 +529,7 @@ ITEM(horn, item)
   virtual truth IsAppliable(ccharacter*) const { return true; }
   virtual void FinalProcessForBone();
  protected:
-  ulong LastUsed;
+  uLong LastUsed;
 };
 
 ITEM(carrot, item)
@@ -551,7 +551,7 @@ ITEM(charmlyre, item)
   virtual void FinalProcessForBone();
  protected:
   virtual col16 GetMaterialColorB(int) const;
-  ulong LastUsed;
+  uLong LastUsed;
 };
 
 ITEM(scrollofdetectmaterial, scroll)
@@ -608,9 +608,9 @@ ITEM(holyhandgrenade, item)
   virtual col16 GetMaterialColorB(int) const;
   virtual bool WillExplodeSoon() const;
  protected:
-  ulong PinPulledTick;
+  uLong PinPulledTick;
   int Count;
-  ulong PinPullerID;
+  uLong PinPullerID;
 };
 
 ITEM(pantheonbook, holybook)
@@ -673,7 +673,7 @@ public:
   virtual truth CanBeHardened (ccharacter *) const { return false; }
   virtual truth IsMoneyBag () const { return true; }
 
-  virtual long GetTruePrice () const { return moneyAmount; }
+  virtual sLong GetTruePrice () const { return moneyAmount; }
 
 protected:
   int moneyAmount;

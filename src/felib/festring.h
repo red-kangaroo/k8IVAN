@@ -13,6 +13,7 @@
 #define __FELIB_FESTRING_H__
 
 #include <vector>
+#include <time.h>
 
 #include "felibdef.h"
 
@@ -20,8 +21,8 @@
 
 class festring {
 public:
-  typedef ulong sizetype;
-  typedef const ulong csizetype;
+  typedef uLong sizetype;
+  typedef const uLong csizetype;
   /* It can be proven that the code works even if OwnsData is left
      uninitialized. However, Valgrind reports this as a possible error
      which is annoying */
@@ -64,11 +65,12 @@ public:
   festring &operator << (cchar *);
   festring &operator << (cfestring &);
   festring &operator << (short Int) { return Append(Int); }
-  festring &operator << (ushort Int) { return Append(Int); }
+  festring &operator << (uShort Int) { return Append(Int); }
   festring &operator << (int Int) { return Append(Int); }
-  festring &operator << (uint Int) { return Append(Int); }
-  festring &operator << (long Int) { return Append(Int); }
-  festring &operator << (ulong Int) { return Append(Int); }
+  festring &operator << (uInt Int) { return Append((int)Int); } //k8:64
+  //festring &operator << (sLong Int) { return Append(Int); } //k8:64
+  //festring &operator << (uLong Int) { return Append(Int); } //k8:64
+  festring &operator << (time_t Int) { return Append((int64_t)Int); } //k8:64
   bool operator < (cfestring &) const;
   bool operator <= (cfestring &) const;
   bool operator > (cfestring &) const;
@@ -109,14 +111,15 @@ public:
   void PostProcessForFebot ();
   void SwapData (festring &);
   void ExtractWord (festring &);
-  long GetCheckSum () const;
+  sLong GetCheckSum () const;
   void EnsureOwnsData ();
 private:
   static void InstallIntegerMap ();
   static void DeInstallIntegerMap ();
   void CreateOwnData (cchar *, sizetype);
-  festring& Append (long);
-  festring& Append (cchar *, sizetype);
+  festring &Append (int64_t);
+  festring &Append (sLong);
+  festring &Append (cchar *, sizetype);
   void SlowAppend (char);
   void SlowAppend (cchar *, sizetype);
 

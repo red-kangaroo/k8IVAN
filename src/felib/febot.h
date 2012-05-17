@@ -24,7 +24,7 @@ class inputfile;
 
 class febot {
 public:
-  void Initialize (ushort);
+  void Initialize (uShort);
   void Save (outputfile &) const;
   void Load (inputfile &);
   void BeTalkedTo (festring);
@@ -34,7 +34,7 @@ public:
 
 private:
   struct wordchain {
-    wordchain (ushort ChainLength) : String(ChainLength, festring()) {}
+    wordchain (uShort ChainLength) : String(ChainLength, festring()) {}
     wordchain (const wordchain *, cfestring &);
     bool operator < (const wordchain &) const;
     wordchain *GetRandomLink () const;
@@ -45,7 +45,7 @@ private:
   wordchain *GetControlWordChain () const;
   typedef std::set<wordchain> wordchainset;
   wordchainset WordChainSet;
-  ushort ChainLength;
+  uShort ChainLength;
 };
 
 

@@ -23,7 +23,7 @@ ITEM(meleeweapon, item)
   virtual ~meleeweapon();
   virtual truth HitEffect(character*, character*, v2, int, int, truth);
   virtual void DipInto(liquid*, character*);
-  virtual long GetPrice() const;
+  virtual sLong GetPrice() const;
   virtual truth IsDippable(ccharacter*) const;
   virtual material* GetSecondaryMaterial() const { return SecondaryMaterial; }
   virtual void SetSecondaryMaterial(material*, int = 0);
@@ -46,7 +46,7 @@ ITEM(meleeweapon, item)
   virtual double GetDamageBonus() const;
   virtual int GetSpoilLevel() const;
   virtual material* GetMaterial(int) const;
-  virtual void TryToRust(long);
+  virtual void TryToRust(sLong);
   virtual material* GetConsumeMaterial(ccharacter*, materialpredicate = TrueMaterialPredicate) const;
   virtual pixelpredicate GetFluidPixelAllowedPredicate() const;
   virtual material* RemoveMaterial(material*);
@@ -60,7 +60,7 @@ ITEM(meleeweapon, item)
   virtual truth AllowFluids() const { return true; }
   virtual int GetSparkleFlags() const;
  protected:
-  virtual long GetMaterialPrice() const;
+  virtual sLong GetMaterialPrice() const;
   virtual truth CalculateHasBe() const;
   virtual void PostConstruct();
   virtual void AddPostFix(festring&, int) const;
@@ -145,7 +145,7 @@ ITEM(turox, meleeweapon)
 ITEM(whipofthievery, whip)
 {
  public:
-  virtual long GetPrice() const;
+  virtual sLong GetPrice() const;
   virtual truth HitEffect(character*, character*, v2, int, int, truth);
  protected:
   virtual truth CleptiaHelps(ccharacter*, ccharacter*) const;
@@ -177,7 +177,7 @@ ITEM(saalthul, meleeweapon)
 ITEM(armor, item)
 {
  public:
-  virtual long GetPrice() const;
+  virtual sLong GetPrice() const;
   virtual void AddInventoryEntry(ccharacter*, festring&, int, truth) const;
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
@@ -204,7 +204,7 @@ ITEM(armor, item)
 ITEM(bodyarmor, armor)
 {
  public:
-  virtual long GetPrice() const;
+  virtual sLong GetPrice() const;
   virtual truth IsBodyArmor(ccharacter*) const { return true; }
   virtual truth IsInCorrectSlot(int) const;
  protected:
@@ -228,7 +228,7 @@ ITEM(goldeneagleshirt, bodyarmor)
 ITEM(shield, armor)
 {
  public:
-  virtual long GetPrice() const;
+  virtual sLong GetPrice() const;
   virtual truth IsShield(ccharacter*) const { return true; }
   virtual void AddInventoryEntry(ccharacter*, festring&, int, truth) const;
 };
@@ -236,7 +236,7 @@ ITEM(shield, armor)
 ITEM(cloak, armor)
 {
  public:
-  virtual long GetPrice() const;
+  virtual sLong GetPrice() const;
   virtual truth IsCloak(ccharacter*) const { return true; }
   virtual truth IsInCorrectSlot(int) const;
   virtual truth ReceiveDamage(character*, int, int, int);
@@ -250,7 +250,7 @@ ITEM(cloak, armor)
 ITEM(boot, armor)
 {
  public:
-  virtual long GetPrice() const;
+  virtual sLong GetPrice() const;
   virtual truth IsBoot(ccharacter*) const { return true; }
   virtual truth IsInCorrectSlot(int) const;
 };
@@ -258,7 +258,7 @@ ITEM(boot, armor)
 ITEM(gauntlet, armor)
 {
  public:
-  virtual long GetPrice() const;
+  virtual sLong GetPrice() const;
   virtual truth IsGauntlet(ccharacter*) const { return true; }
   virtual truth IsInCorrectSlot(int) const;
 };
@@ -266,7 +266,7 @@ ITEM(gauntlet, armor)
 ITEM(belt, armor)
 {
  public:
-  virtual long GetPrice() const;
+  virtual sLong GetPrice() const;
   virtual truth IsBelt(ccharacter*) const { return true; }
   virtual int GetFormModifier() const;
   virtual truth IsInCorrectSlot(int) const;
@@ -305,7 +305,7 @@ ITEM(helmet, armor)
 {
  public:
   virtual truth IsGorovitsFamilyRelic() const;
-  virtual long GetPrice() const;
+  virtual sLong GetPrice() const;
   virtual truth IsHelmet(ccharacter*) const { return true; }
   virtual truth IsInCorrectSlot(int) const;
  protected:
@@ -340,12 +340,12 @@ ITEM(decosadshirt, bodyarmor)
   virtual void Be();
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
-  ulong GetEquippedTicks() { return EquippedTicks; }
-  void SetEquippedTicks(ulong What) { EquippedTicks = What; }
+  uLong GetEquippedTicks() { return EquippedTicks; }
+  void SetEquippedTicks(uLong What) { EquippedTicks = What; }
   virtual truth IsDecosAdShirt(ccharacter*) const { return true; }
  protected:
   virtual truth CalculateHasBe() const { return true; }
-  ulong EquippedTicks;
+  uLong EquippedTicks;
 };
 
 ITEM(weepblade, meleeweapon)

@@ -23,19 +23,19 @@ level::level() : Room(1, static_cast<room*>(0)), GlobalRainLiquid(0), SunLightEm
 void level::SetRoom(int I, room* What) { Room[I] = What; }
 void level::AddToAttachQueue(v2 Pos) { AttachQueue.push_back(Pos); }
 
-ulong level::NextExplosionID = 1;
+uLong level::NextExplosionID = 1;
 
 node*** node::NodeMap;
 int node::RequiredWalkability;
 ccharacter* node::SpecialMover;
 v2 node::To;
-uchar** node::WalkabilityMap;
+uChar** node::WalkabilityMap;
 int node::XSize, node::YSize;
 nodequeue* node::NodeQueue;
 
 level::~level()
 {
-  ulong c;
+  uLong c;
 
   for(c = 0; c < XSizeTimesYSize; ++c)
     delete NodeMap[0][c];
@@ -361,7 +361,7 @@ void level::CreateItems(int Amount)
 {
   if(Amount)
   {
-    long MinPrice = *LevelScript->GetItemMinPriceBase() + *LevelScript->GetItemMinPriceDelta() * Index;
+    sLong MinPrice = *LevelScript->GetItemMinPriceBase() + *LevelScript->GetItemMinPriceDelta() * Index;
 
     for(int x = 0; x < Amount; ++x)
     {
@@ -522,7 +522,7 @@ truth level::MakeRoom(const roomscript* RoomScript)
 
       for(y = 0; y < ItemMap->GetSize()->Y; ++y)
   if(IsValidScript(ItemScript = ItemMap->GetContentScript(x, y)))
-    for(uint c1 = 0; c1 < ItemScript->Size; ++c1)
+    for(uInt c1 = 0; c1 < ItemScript->Size; ++c1)
     {
       const interval* TimesPtr = ItemScript->Data[c1].GetTimes();
       int Times = TimesPtr ? TimesPtr->Randomize() : 1;
@@ -861,7 +861,7 @@ room* level::GetRoom(int I) const
 void level::Explosion(character* Terrorist, cfestring& DeathMsg, v2 Pos, int Strength, truth HurtNeutrals)
 {
   static int StrengthLimit[6] = { 500, 250, 100, 50, 25, 10 };
-  uint c;
+  uInt c;
   int Size = 6;
 
   for(c = 0; c < 6; ++c)
@@ -885,12 +885,12 @@ void level::Explosion(character* Terrorist, cfestring& DeathMsg, v2 Pos, int Str
 
   if(ExplosionQueue.size() == 1)
   {
-    uint Explosions = 0;
+    uInt Explosions = 0;
 
     while(Explosions != ExplosionQueue.size())
     {
       for(c = Explosions; c != ExplosionQueue.size(); c = TriggerExplosions(c));
-      uint NewExplosions = c;
+      uInt NewExplosions = c;
 
       for(c = Explosions; c < NewExplosions; ++c)
   if(PlayerHurt[c] && PLAYER->IsEnabled())
@@ -899,7 +899,7 @@ void level::Explosion(character* Terrorist, cfestring& DeathMsg, v2 Pos, int Str
       Explosions = NewExplosions;
     }
 
-    for(uint c = 0; c < ExplosionQueue.size(); ++c)
+    for(uInt c = 0; c < ExplosionQueue.size(); ++c)
       delete ExplosionQueue[c];
 
     ExplosionQueue.clear();
@@ -1230,7 +1230,7 @@ void level::GenerateRectangularRoom(std::vector<v2>& OKForDoor, std::vector<v2>&
   }
 
   int Room = RoomClass->GetIndex();
-  long Counter = 0;
+  sLong Counter = 0;
   truth AllowLanterns = *RoomScript->GenerateLanterns();
   truth AllowWindows = *RoomScript->GenerateWindows();
   int x, y;
@@ -1325,7 +1325,7 @@ void level::GenerateRectangularRoom(std::vector<v2>& OKForDoor, std::vector<v2>&
 
 void level::Reveal()
 {
-  ulong Tick = game::GetLOSTick();
+  uLong Tick = game::GetLOSTick();
 
   for(int x = 0; x < XSize; ++x)
     for(int y = 0; y < YSize; ++y)
@@ -1757,7 +1757,7 @@ void level::FinalProcessForBone()
     for(int y = 0; y < YSize; ++y)
       Map[x][y]->FinalProcessForBone();
 
-  for(uint c = 1; c < Room.size(); ++c)
+  for(uInt c = 1; c < Room.size(); ++c)
     Room[c]->FinalProcessForBone();
 }
 
@@ -1779,7 +1779,7 @@ void level::GenerateDungeon(int Index)
   EnchantmentPlusChance = *LevelScript->GetEnchantmentPlusChanceBase() + *LevelScript->GetEnchantmentPlusChanceDelta() * Index;
   const contentscript<glterrain>* GTerrain = LevelScript->GetFillSquare()->GetGTerrain();
   const contentscript<olterrain>* OTerrain = LevelScript->GetFillSquare()->GetOTerrain();
-  long Counter = 0;
+  sLong Counter = 0;
   int x;
   game::BusyAnimation();
 
@@ -1787,8 +1787,8 @@ void level::GenerateDungeon(int Index)
     for(int y = 0; y < YSize; ++y, ++Counter)
       Map[x][y]->SetLTerrain(GTerrain->Instantiate(), OTerrain->Instantiate());
 
-  uint c;
-  uint Rooms = LevelScript->GetRooms()->Randomize();
+  uInt c;
+  uInt Rooms = LevelScript->GetRooms()->Randomize();
   const std::list<roomscript>& RoomList = LevelScript->GetRoom();
   std::list<roomscript>::const_iterator Iterator = RoomList.begin();
 
@@ -2165,7 +2165,7 @@ void node::CalculateNextNodes()
   /* We use the heuristic max(abs(distance.x), abs(distance.y)) here,
      which is exact in the current geometry if the path is open */
 
-  long Remaining = To.X - NodePos.X;
+  sLong Remaining = To.X - NodePos.X;
 
   if(Remaining < NodePos.X - To.X)
     Remaining = NodePos.X - To.X;
@@ -2304,7 +2304,7 @@ void level::CheckSunLight()
 void level::ChangeSunLight()
 {
   truth SunSet = game::IsDark(SunLightEmitation);
-  ulong c;
+  uLong c;
 
   for(c = 0; c < XSizeTimesYSize; ++c)
     Map[0][c]->RemoveSunLight();
@@ -2354,13 +2354,13 @@ struct sunbeamcontroller : public stackcontroller
 {
   static truth Handler(int, int);
   static void ProcessStack();
-  static ulong ID;
+  static uLong ID;
   static int SunLightBlockHeight;
   static v2 SunLightBlockPos;
   static truth ReSunEmitation;
 };
 
-ulong sunbeamcontroller::ID;
+uLong sunbeamcontroller::ID;
 int sunbeamcontroller::SunLightBlockHeight;
 v2 sunbeamcontroller::SunLightBlockPos;
 truth sunbeamcontroller::ReSunEmitation;
@@ -2369,7 +2369,7 @@ void level::ForceEmitterNoxify(const emittervector& Emitter) const
 {
   for(emittervector::const_iterator i = Emitter.begin(); i != Emitter.end(); ++i)
   {
-    ulong ID = i->ID;
+    uLong ID = i->ID;
     lsquare* Square = GetLSquare(ExtractPosFromEmitterID(ID));
 
     if(ID & SECONDARY_SUN_LIGHT)
@@ -2379,11 +2379,11 @@ void level::ForceEmitterNoxify(const emittervector& Emitter) const
   }
 }
 
-void level::ForceEmitterEmitation(const emittervector& Emitter, const sunemittervector& SunEmitter, ulong IDFlags) const
+void level::ForceEmitterEmitation(const emittervector& Emitter, const sunemittervector& SunEmitter, uLong IDFlags) const
 {
   for(emittervector::const_iterator i = Emitter.begin(); i != Emitter.end(); ++i)
   {
-    ulong ID = i->ID;
+    uLong ID = i->ID;
     lsquare* Square = GetLSquare(ExtractPosFromEmitterID(ID));
 
     if(ID & SECONDARY_SUN_LIGHT)
@@ -2402,7 +2402,7 @@ void level::ForceEmitterEmitation(const emittervector& Emitter, const sunemitter
 
     for(sunemittervector::const_iterator i = SunEmitter.begin(); i != SunEmitter.end(); ++i)
     {
-      ulong ID = (*i & ~(EMITTER_SHADOW_BITS|EMITTER_SQUARE_PART_BITS)) | RE_SUN_EMITATED, SourceFlags;
+      uLong ID = (*i & ~(EMITTER_SHADOW_BITS|EMITTER_SQUARE_PART_BITS)) | RE_SUN_EMITATED, SourceFlags;
       int X, Y;
 
       if(ID & ID_X_COORDINATE)
@@ -2451,13 +2451,13 @@ struct loscontroller : public tickcontroller, public stackcontroller
     Square->SquarePartLastSeen = (Square->SquarePartLastSeen & ~SquarePartTickMask[SquarePartIndex]) | ShiftedTick[SquarePartIndex];
     return false;
   }
-  static ulong& GetTickReference(int X, int Y)
+  static uLong& GetTickReference(int X, int Y)
   {
     return Map[X][Y]->SquarePartLastSeen;
   }
   static void ProcessStack()
   {
-    for(long c = 0; c < StackIndex; ++c)
+    for(sLong c = 0; c < StackIndex; ++c)
       Stack[c]->SignalSeen(Tick);
   }
 };
@@ -2514,7 +2514,7 @@ void level::EmitSunBeams()
   sunbeamcontroller::ReSunEmitation = false;
   v2 Dir = SunLightDirection;
   int x, y, X = 0, Y = 0, SourceFlags;
-  ulong IDFlags;
+  uLong IDFlags;
 
   /* Do not try to understand the logic behind the starting points of
      sunbeams. I determined the formulas by trial and error since all
@@ -2587,7 +2587,7 @@ void level::EmitSunBeams()
   }
 }
 
-void level::EmitSunBeam(v2 S, ulong ID, int SourceFlags) const
+void level::EmitSunBeam(v2 S, uLong ID, int SourceFlags) const
 {
   S <<= 1;
   v2 D = S + SunLightDirection;
@@ -2634,12 +2634,12 @@ truth sunbeamcontroller::Handler(int x, int y)
 
   if(!SunLightBlockHeight)
   {
-    ulong Flag = 1 << EMITTER_SQUARE_PART_SHIFT << SquarePartIndex;
+    uLong Flag = 1 << EMITTER_SQUARE_PART_SHIFT << SquarePartIndex;
     Square->AddSunLightEmitter(ID | Flag);
   }
   else
   {
-    ulong Flags = ((1 << EMITTER_SQUARE_PART_SHIFT)
+    uLong Flags = ((1 << EMITTER_SQUARE_PART_SHIFT)
        | (1 << EMITTER_SHADOW_SHIFT))
           << SquarePartIndex;
 
@@ -2677,7 +2677,7 @@ truth sunbeamcontroller::Handler(int x, int y)
 
 void sunbeamcontroller::ProcessStack()
 {
-  long c;
+  sLong c;
 
   for(c = 0; c < StackIndex; ++c)
   {
@@ -2701,7 +2701,7 @@ void sunbeamcontroller::ProcessStack()
 
 int level::DetectMaterial(cmaterial* Material)
 {
-  ulong Tick = game::IncreaseLOSTick();
+  uLong Tick = game::IncreaseLOSTick();
   int Squares = 0;
 
   for(int x = 0; x < XSize; ++x)
@@ -2782,12 +2782,12 @@ struct areacontroller : public stackcontroller
   }
   static int GetStartX(int) { return Center.X; }
   static int GetStartY(int) { return Center.Y; }
-  static long RadiusSquare;
+  static sLong RadiusSquare;
 };
 
-long areacontroller::RadiusSquare;
+sLong areacontroller::RadiusSquare;
 
-int level::AddRadiusToSquareStack(v2 Center, long RadiusSquare) const
+int level::AddRadiusToSquareStack(v2 Center, sLong RadiusSquare) const
 {
   stackcontroller::Map = Map;
   stackcontroller::Stack = SquareStack;

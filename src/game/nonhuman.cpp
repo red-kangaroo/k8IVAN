@@ -180,7 +180,7 @@ void nonhumanoid::CalculateUnarmedToHitValue()
 
 void nonhumanoid::CalculateUnarmedAPCost()
 {
-  UnarmedAPCost = Max(long(10000000000. / (APBonus(GetAttribute(DEXTERITY)) * GetMoveEase() * GetCWeaponSkill(UNARMED)->GetBonus())), 100L);
+  UnarmedAPCost = Max(sLong(10000000000. / (APBonus(GetAttribute(DEXTERITY)) * GetMoveEase() * GetCWeaponSkill(UNARMED)->GetBonus())), 100);
 }
 
 void nonhumanoid::CalculateKickDamage()
@@ -195,7 +195,7 @@ void nonhumanoid::CalculateKickToHitValue()
 
 void nonhumanoid::CalculateKickAPCost()
 {
-  KickAPCost = Max(long(20000000000. / (APBonus(GetAttribute(AGILITY)) * GetMoveEase() * GetCWeaponSkill(KICK)->GetBonus())), 1000L);
+  KickAPCost = Max(sLong(20000000000. / (APBonus(GetAttribute(AGILITY)) * GetMoveEase() * GetCWeaponSkill(KICK)->GetBonus())), 1000);
 }
 
 void nonhumanoid::CalculateBiteDamage()
@@ -210,7 +210,7 @@ void nonhumanoid::CalculateBiteToHitValue()
 
 void nonhumanoid::CalculateBiteAPCost()
 {
-  BiteAPCost = Max(long(10000000000. / (APBonus(GetAttribute(DEXTERITY)) * GetMoveEase() * GetCWeaponSkill(BITE)->GetBonus())), 100L);
+  BiteAPCost = Max(sLong(10000000000. / (APBonus(GetAttribute(DEXTERITY)) * GetMoveEase() * GetCWeaponSkill(BITE)->GetBonus())), 100);
 }
 
 void nonhumanoid::InitSpecialAttributes()
@@ -554,7 +554,7 @@ void genetrixvesana::GetAICommand()
         if(LSquare && (LSquare->GetWalkability() & WALK) && !LSquare->GetCharacter())
         {
     character* NewPlant;
-    long RandomValue = RAND() % TurnsExisted;
+    sLong RandomValue = RAND() % TurnsExisted;
 
     if(RandomValue < 250)
       NewPlant = carnivorousplant::Spawn();
@@ -628,7 +628,7 @@ void ostrich::GetAICommand()
   GetStackUnder()->FillItemVector(ItemVector);
   int BananasPicked = 0;
 
-  for(uint c = 0; c < ItemVector.size(); ++c)
+  for(uInt c = 0; c < ItemVector.size(); ++c)
     if(ItemVector[c]->IsBanana() && ItemVector[c]->CanBeSeenBy(this)
        && ItemVector[c]->IsPickable(this)
        && !MakesBurdened(GetCarriedWeight() + ItemVector[c]->GetWeight()))
@@ -660,7 +660,7 @@ void ostrich::GetAICommand()
     itemvector ItemVector;
     GetStack()->FillItemVector(ItemVector);
 
-    for(uint c = 0; c < ItemVector.size(); ++c)
+    for(uInt c = 0; c < ItemVector.size(); ++c)
     {
       ItemVector[c]->RemoveFromSlot();
       ItemVector[c]->SendToHell();
@@ -1341,7 +1341,7 @@ truth ghost::RaiseTheDead(character* Summoner)
   itemvector ItemVector;
   GetStackUnder()->FillItemVector(ItemVector);
 
-  for(uint c = 0; c < ItemVector.size(); ++c)
+  for(uInt c = 0; c < ItemVector.size(); ++c)
     if(ItemVector[c]->SuckSoul(this, Summoner))
       return true;
 
@@ -1551,9 +1551,9 @@ void hattifattener::GetAICommand()
 void hattifattener::CreateCorpse(lsquare* Square)
 {
   level* Level = Square->GetLevel();
-  ulong StackSize = Level->AddRadiusToSquareStack(Square->GetPos(), 9);
+  uLong StackSize = Level->AddRadiusToSquareStack(Square->GetPos(), 9);
   lsquare** SquareStack = Level->GetSquareStack();
-  ulong c;
+  uLong c;
 
   for(c = 0; c < StackSize; ++c)
     SquareStack[c]->RemoveFlags(IN_SQUARE_STACK);
@@ -2038,7 +2038,7 @@ void mysticfrog::GetAICommand()
     return;
 
   character* NearestEnemy = 0;
-  long NearestEnemyDistance = 0x7FFFFFFF;
+  sLong NearestEnemyDistance = 0x7FFFFFFF;
   character* RandomFriend = 0;
   charactervector Friend;
   v2 Pos = GetPos();
@@ -2052,7 +2052,7 @@ void mysticfrog::GetAICommand()
   if((*i)->IsEnabled())
   {
     Enemies = true;
-    long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
+    sLong ThisDistance = Max<sLong>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
 
     if((ThisDistance < NearestEnemyDistance || (ThisDistance == NearestEnemyDistance && !(RAND() % 3))) && (*i)->CanBeSeenBy(this))
     {
@@ -2197,7 +2197,7 @@ void spider::GetAICommand()
     return;
 
   character* NearestChar = 0;
-  long NearestDistance = 0x7FFFFFFF;
+  sLong NearestDistance = 0x7FFFFFFF;
   v2 Pos = GetPos();
   int Hostiles = 0;
 
@@ -2207,7 +2207,7 @@ void spider::GetAICommand()
     i != game::GetTeam(c)->GetMember().end(); ++i)
   if((*i)->IsEnabled() && GetAttribute(WISDOM) < (*i)->GetAttackWisdomLimit())
   {
-    long ThisDistance = Max<long>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
+    sLong ThisDistance = Max<sLong>(abs((*i)->GetPos().X - Pos.X), abs((*i)->GetPos().Y - Pos.Y));
     ++Hostiles;
 
     if((ThisDistance < NearestDistance
@@ -2417,7 +2417,7 @@ void menatrixfusanga::GetAICommand () {
               lsquare *LSquare = (*i)->GetNeighbourLSquare(RAND()%GetNeighbourSquares());
               if (LSquare && (LSquare->GetWalkability() & WALK) && !LSquare->GetCharacter()) {
                 character *NewPlant;
-                long RandomValue = RAND()%TurnsExisted;
+                sLong RandomValue = RAND()%TurnsExisted;
                 if (RandomValue < 250) NewPlant = mushroom::Spawn();
                 else if (RandomValue < 1500) NewPlant = magicmushroom::Spawn();
                 else NewPlant = magicmushroom::Spawn();

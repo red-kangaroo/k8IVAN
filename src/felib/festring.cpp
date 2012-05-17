@@ -10,8 +10,8 @@
  *
  */
 #include <cctype>
-/*k8: why?*/
 #include <cstdlib>
+#include <cstdio>
 
 #include "festring.h"
 #include "allocate.h"
@@ -105,7 +105,7 @@ void festring::SlowAppend (char Char) {
   if (OldPtr) {
     sizetype OldSize = Size++;
     sizetype NewSize = OldSize+1;
-    ulong *DeletePtr = 0;
+    uLong *DeletePtr = 0;
     if (OwnsData && !REFS(OldPtr)--) DeletePtr = REFSA(OldPtr);
     Reserved = NewSize|FESTRING_PAGE;
     char *NewPtr = 4+new char[Reserved+5];
@@ -132,7 +132,7 @@ void festring::SlowAppend (cchar *CStr, sizetype N) {
     sizetype OldSize = Size;
     sizetype NewSize = OldSize+N;
     Size = NewSize;
-    ulong *DeletePtr = 0;
+    uLong *DeletePtr = 0;
     if (OwnsData && !REFS(OldPtr)--) DeletePtr = REFSA(OldPtr);
     Reserved = NewSize|FESTRING_PAGE;
     char *NewPtr = 4+new char[Reserved+5];
@@ -173,7 +173,7 @@ void festring::Resize (sizetype N, char C) {
   char *NewPtr;
   Size = N;
   if (OldSize < N) {
-    ulong *DeletePtr = 0;
+    uLong *DeletePtr = 0;
     if (OwnsData && OldPtr) {
       if (!REFS(OldPtr)) {
         if (N <= Reserved) {
@@ -303,7 +303,7 @@ void festring::Insert (sizetype Pos, cchar *CStr, sizetype N) {
     if (Pos < OldSize) {
       // this implies Data != 0
       char *OldPtr = Data;
-      ulong *DeletePtr = 0;
+      uLong *DeletePtr = 0;
       sizetype NewSize = OldSize+N;
       Size = NewSize;
       if (OwnsData) {
@@ -339,7 +339,7 @@ void festring::Insert (sizetype Pos, cchar *CStr, sizetype N) {
 
 
 /* Creates map of char representations of numbers 0-999 used by
- * festring::Append(long). Due to automatization, you don't need
+ * festring::Append(sLong). Due to automatization, you don't need
  * to explicitly call it. */
 void festring::InstallIntegerMap () {
   Alloc2D(IntegerMap, 1000, 3);
@@ -360,7 +360,7 @@ void festring::InstallIntegerMap () {
 }
 
 
-/* Deletes the integer map used by festring::Append(long).
+/* Deletes the integer map used by festring::Append(sLong).
  * Due to automatization, you don't need to explicitly call it. */
 void festring::DeInstallIntegerMap () {
   delete [] IntegerMap;
@@ -370,7 +370,7 @@ void festring::DeInstallIntegerMap () {
 
 /* Displays numbers in the range [-2147483647, 2147483647].
  * Much faster than sprintf and (nonstandard) itoa. */
-festring &festring::Append (long Integer) {
+festring &festring::Append (sLong Integer) {
   if (!IntegerMap) InstallIntegerMap();
   char IntegerBuffer[12];
   char *BufferPtr = IntegerBuffer;
@@ -415,6 +415,17 @@ festring &festring::Append (long Integer) {
   if (Negative) *--BufferPtr = '-';
   else if (!*BufferPtr) --BufferPtr; // check if the original Integer was zero
   return Append(BufferPtr, EndPtr-BufferPtr);
+}
+
+
+//FIXME: buffer overflows?
+//FIXME: windoze?
+festring &festring::Append (int64_t Integer) {
+  char buf[4096];
+  //
+  snprintf(buf, sizeof(buf)-1, "%lld", Integer);
+  buf[sizeof(buf)-1] = 0;
+  return Append(buf, strlen(buf));
 }
 
 
@@ -587,9 +598,9 @@ void festring::SwapData (festring &Str) {
 }
 
 
-long festring::GetCheckSum () const {
-  long Counter = 0;
-  for (ushort c = 0; c < GetSize(); ++c) Counter = long(Data[c]);
+sLong festring::GetCheckSum () const {
+  sLong Counter = 0;
+  for (uShort c = 0; c < GetSize(); ++c) Counter = sLong(Data[c]);
   return Counter;
 }
 

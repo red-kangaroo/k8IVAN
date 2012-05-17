@@ -21,7 +21,7 @@ int CWeaponSkillLevelMap[] = {
   1500000, 2000000
 };
 
-ulong CWeaponSkillUnuseTickMap[] = {
+uLong CWeaponSkillUnuseTickMap[] = {
   500000, 400000, 300000, 250000, 200000,
   150000, 125000, 100000, 80000, 62500,
   50000, 40000, 30000, 25000, 20000,
@@ -55,7 +55,7 @@ int SWeaponSkillLevelMap[] = {
   500000, 750000
 };
 
-ulong SWeaponSkillUnuseTickMap[] = {
+uLong SWeaponSkillUnuseTickMap[] = {
   250000, 200000, 150000, 125000, 100000,
   80000, 62500, 50000, 40000, 30000,
   25000, 20000, 15000, 12500, 10000,
@@ -71,13 +71,13 @@ int SWeaponSkillUnusePenaltyMap[] = {
 
 
 int cweaponskill::GetLevelMap (int I) const { return CWeaponSkillLevelMap[I]; }
-ulong cweaponskill::GetUnuseTickMap (int I) const { return CWeaponSkillUnuseTickMap[I]; }
+uLong cweaponskill::GetUnuseTickMap (int I) const { return CWeaponSkillUnuseTickMap[I]; }
 int cweaponskill::GetUnusePenaltyMap (int I) const { return CWeaponSkillUnusePenaltyMap[I]; }
 cchar *cweaponskill::GetName (int Category) const { return CWeaponSkillName[Category]; }
 
 sweaponskill::sweaponskill (citem *Item) : ID(Item->GetID()), Weight(Item->GetWeight()), Config(Item->GetConfig()) {}
 int sweaponskill::GetLevelMap (int I) const { return SWeaponSkillLevelMap[I]; }
-ulong sweaponskill::GetUnuseTickMap (int I) const { return SWeaponSkillUnuseTickMap[I]; }
+uLong sweaponskill::GetUnuseTickMap (int I) const { return SWeaponSkillUnuseTickMap[I]; }
 int sweaponskill::GetUnusePenaltyMap (int I) const { return SWeaponSkillUnusePenaltyMap[I]; }
 
 void weaponskill::Save (outputfile &SaveFile) const { SaveFile << (int)Level << (int)Hits << (int)HitCounter; }
@@ -148,6 +148,6 @@ truth sweaponskill::IsSkillOf (citem *Item) const {
 }
 
 
-truth sweaponskill::IsSkillOfCloneMother (citem *Item, ulong CMID) const {
+truth sweaponskill::IsSkillOfCloneMother (citem *Item, uLong CMID) const {
   return (ID == CMID && Weight == Item->GetWeight() && Config == Item->GetConfig());
 }

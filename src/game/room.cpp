@@ -16,7 +16,7 @@ roomprototype::roomprototype(roomspawner Spawner, cchar* ClassID) : Spawner(Spaw
 
 void room::Save(outputfile& SaveFile) const
 {
-  SaveFile << (ushort)GetType();
+  SaveFile << (uShort)GetType();
   SaveFile << Pos << Size << Index << DivineMaster << MasterID;
 }
 
@@ -79,7 +79,7 @@ truth room::CheckKickSquare(ccharacter* Kicker, const lsquare* LSquare) const
 
 character* room::GetMaster() const
 {
-  ulong Tick = game::GetTick();
+  uLong Tick = game::GetTick();
 
   if(LastMasterSearchTick == Tick)
     return Master;

@@ -59,11 +59,11 @@ public:
 protected:
   wsquare ***Map;
   std::vector<continent *> Continent;
-  uchar **TypeBuffer;
-  uchar **OldTypeBuffer;
+  uChar **TypeBuffer;
+  uChar **OldTypeBuffer;
   short **AltitudeBuffer;
   short **OldAltitudeBuffer;
-  uchar **ContinentBuffer;
+  uChar **ContinentBuffer;
   charactervector PlayerGroup;
 };
 

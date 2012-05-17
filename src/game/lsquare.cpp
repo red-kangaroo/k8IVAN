@@ -19,13 +19,13 @@ ccharacter* pathcontroller::Character;
 
 lsquare*** stackcontroller::Map;
 lsquare** stackcontroller::Stack;
-long stackcontroller::StackIndex;
+sLong stackcontroller::StackIndex;
 int stackcontroller::LevelXSize, stackcontroller::LevelYSize;
 v2 stackcontroller::Center;
 
-ulong tickcontroller::Tick;
-ulong tickcontroller::ShiftedTick[4];
-ulong tickcontroller::ShiftedQuadriTick[4];
+uLong tickcontroller::Tick;
+uLong tickcontroller::ShiftedTick[4];
+uLong tickcontroller::ShiftedQuadriTick[4];
 
 void tickcontroller::PrepareShiftedTick()
 {
@@ -386,17 +386,17 @@ struct emitationcontroller : public tickcontroller, public stackcontroller
       return false;
     }
   }
-  static ulong& GetTickReference(int X, int Y)
+  static uLong& GetTickReference(int X, int Y)
   {
     return Map[X][Y]->SquarePartEmitationTick;
   }
   static void ProcessStack()
   {
-    for(long c1 = 0; c1 < StackIndex; ++c1)
+    for(sLong c1 = 0; c1 < StackIndex; ++c1)
     {
       lsquare* Square = Stack[c1];
       culong SquareTick = Square->SquarePartEmitationTick;
-      ulong TempID = ID;
+      uLong TempID = ID;
 
       for(int c2 = 0; c2 < 4; ++c2)
   if((SquareTick & SquarePartTickMask[c2]) == ShiftedTick[c2])
@@ -413,26 +413,26 @@ struct emitationcontroller : public tickcontroller, public stackcontroller
              BlueLuxTable[XVal][YVal]));
     }
   }
-  static ulong ID;
+  static uLong ID;
   static int MinNightAmbientLuminanceElement;
   static int EmitterPosXMinus16;
   static int EmitterPosYMinus16;
-  static uchar** MaxLuxTable;
-  static uchar** RedLuxTable;
-  static uchar** GreenLuxTable;
-  static uchar** BlueLuxTable;
+  static uChar** MaxLuxTable;
+  static uChar** RedLuxTable;
+  static uChar** GreenLuxTable;
+  static uChar** BlueLuxTable;
 };
 
-ulong emitationcontroller::ID;
+uLong emitationcontroller::ID;
 int emitationcontroller::MinNightAmbientLuminanceElement;
 int emitationcontroller::EmitterPosXMinus16;
 int emitationcontroller::EmitterPosYMinus16;
-uchar** emitationcontroller::MaxLuxTable;
-uchar** emitationcontroller::RedLuxTable;
-uchar** emitationcontroller::GreenLuxTable;
-uchar** emitationcontroller::BlueLuxTable;
+uChar** emitationcontroller::MaxLuxTable;
+uChar** emitationcontroller::RedLuxTable;
+uChar** emitationcontroller::GreenLuxTable;
+uChar** emitationcontroller::BlueLuxTable;
 
-void lsquare::Emitate(col24 Emitation, ulong IDFlags)
+void lsquare::Emitate(col24 Emitation, uLong IDFlags)
 {
   if(game::IsDark(Emitation))
     return;
@@ -481,14 +481,14 @@ struct noxifycontroller : public stackcontroller
   }
   static int GetStartX(int) { return Center.X; }
   static int GetStartY(int) { return Center.Y; }
-  static ulong ID;
-  static ulong Tick;
+  static uLong ID;
+  static uLong Tick;
 };
 
-ulong noxifycontroller::ID;
-ulong noxifycontroller::Tick;
+uLong noxifycontroller::ID;
+uLong noxifycontroller::Tick;
 
-void lsquare::Noxify(col24 Emitation, ulong IDFlags)
+void lsquare::Noxify(col24 Emitation, uLong IDFlags)
 {
   if(game::IsDark(Emitation))
     return;
@@ -508,7 +508,7 @@ void lsquare::Noxify(col24 Emitation, ulong IDFlags)
   mapmath<noxifycontroller>::DoArea();
 }
 
-truth lsquare::NoxifyEmitter(ulong ID)
+truth lsquare::NoxifyEmitter(uLong ID)
 {
   emittervector::iterator i, End = Emitter.end();
 
@@ -524,7 +524,7 @@ truth lsquare::NoxifyEmitter(ulong ID)
   return false;
 }
 
-void lsquare::AlterLuminance(ulong ID, col24 NewLuminance)
+void lsquare::AlterLuminance(uLong ID, col24 NewLuminance)
 {
   emittervector::iterator i, End = Emitter.end();
 
@@ -544,7 +544,7 @@ void lsquare::AlterLuminance(ulong ID, col24 NewLuminance)
   ChangeLuminance(Emitter.back().Emitation, NewLuminance);
 }
 
-void lsquare::AddSunLightEmitter(ulong ID)
+void lsquare::AddSunLightEmitter(uLong ID)
 {
   sunemittervector::iterator i, End = SunEmitter.end();
 
@@ -585,9 +585,9 @@ void lsquare::Save(outputfile& SaveFile) const
   SaveFile << GLTerrain << OLTerrain;
   SaveFile << Emitter << SunEmitter;
   SaveFile << Emitation << Engraved << Luminance;
-  SaveFile << SmokeAlphaSum << (uchar)Flags << Memorized;
+  SaveFile << SmokeAlphaSum << (uChar)Flags << Memorized;
   SaveFile << SecondarySunLightEmitation;
-  SaveFile << (uchar)RoomIndex;
+  SaveFile << (uChar)RoomIndex;
   SaveFile << SunLightLuminance;
   SaveLinkedList(SaveFile, Fluid);
   SaveLinkedList(SaveFile, Smoke);
@@ -603,11 +603,11 @@ void lsquare::Load(inputfile& SaveFile)
   SaveFile >> GLTerrain >> OLTerrain;
   SaveFile >> Emitter >> SunEmitter;
   SaveFile >> Emitation >> Engraved >> Luminance;
-  SaveFile >> SmokeAlphaSum >> (uchar&)Flags >> Memorized;
+  SaveFile >> SmokeAlphaSum >> (uChar&)Flags >> Memorized;
   Flags &= INSIDE|DESCRIPTION_CHANGE; //only these flags are loaded
   Flags |= MEMORIZED_UPDATE_REQUEST;
   SecondarySunLightEmitation = ReadType<col24>(SaveFile);
-  RoomIndex = ReadType<uchar>(SaveFile);
+  RoomIndex = ReadType<uChar>(SaveFile);
   SunLightLuminance = ReadType<col24>(SaveFile);
   LoadLinkedList(SaveFile, Fluid);
   LoadLinkedList(SaveFile, Smoke);
@@ -646,7 +646,7 @@ void lsquare::CalculateLuminance()
   }
   else
   {
-    ulong BitMask = 0, LOSTick = game::GetLOSTick();
+    uLong BitMask = 0, LOSTick = game::GetLOSTick();
 
     for(int c = 0; c < 4; ++c)
       if((SquarePartLastSeen >> (c << 3) & 0xFF) >= LOSTick)
@@ -959,7 +959,7 @@ void lsquare::ApplyScript(const squarescript* SquareScript, room* Room)
   const fearray<contentscript<item> >* Items = SquareScript->GetItems();
 
   if(Items)
-    for(uint c1 = 0; c1 < Items->Size; ++c1)
+    for(uInt c1 = 0; c1 < Items->Size; ++c1)
     {
       const interval* TimesPtr = Items->Data[c1].GetTimes();
       int Times = TimesPtr ? TimesPtr->Randomize() : 1;
@@ -1007,7 +1007,7 @@ truth lsquare::CanBeSeenByPlayer(truth IgnoreDarkness) const
   return (IgnoreDarkness || !IsDark()) && LastSeen == game::GetLOSTick();
 }
 
-truth lsquare::CanBeSeenFrom(v2 FromPos, long MaxDistance, truth IgnoreDarkness) const
+truth lsquare::CanBeSeenFrom(v2 FromPos, sLong MaxDistance, truth IgnoreDarkness) const
 {
   if((Pos - FromPos).GetLengthSquare() <= MaxDistance
      && (IgnoreDarkness || !IsDark()))
@@ -1057,7 +1057,7 @@ void lsquare::StepOn(character* Stepper, lsquare** ComingFrom)
     }
   }
 
-  uint c;
+  uInt c;
   std::vector<trap*> TrapVector;
 
   for(trap* T = Trap; T; T = T->Next)
@@ -1124,7 +1124,7 @@ void lsquare::ChangeOLTerrainAndUpdateLights(olterrain* NewTerrain)
     Noxified = true;
   }
 
-  long OldEmit = OLTerrain ? OLTerrain->GetEmitation() : 0;
+  sLong OldEmit = OLTerrain ? OLTerrain->GetEmitation() : 0;
   ChangeOLTerrain(NewTerrain);
 
   if(NewTerrain)
@@ -1158,7 +1158,7 @@ void lsquare::ChangeOLTerrainAndUpdateLights(olterrain* NewTerrain)
   }
 }
 
-void lsquare::DrawParticles(long Color, truth DrawHere)
+void lsquare::DrawParticles(sLong Color, truth DrawHere)
 {
   if(GetPos().X < game::GetCamera().X
      || GetPos().Y < game::GetCamera().Y
@@ -1226,7 +1226,7 @@ truth lsquare::TryKey(item* Key, character* Applier)
   return true;
 }
 
-void lsquare::SignalSeen(ulong Tick)
+void lsquare::SignalSeen(uLong Tick)
 {
   if(LastSeen < Tick - 2)
     Flags |= STRONG_NEW_DRAW_REQUEST;
@@ -1377,7 +1377,7 @@ void lsquare::AddItem(item* Item)
   Stack->AddItem(Item);
 }
 
-v2 lsquare::DrawLightning(v2 StartPos, long Color, int Direction, truth DrawHere)
+v2 lsquare::DrawLightning(v2 StartPos, sLong Color, int Direction, truth DrawHere)
 {
   if(GetPos().X < game::GetCamera().X
      || GetPos().Y < game::GetCamera().Y
@@ -2150,13 +2150,13 @@ void lsquare::SpillFluid(character* Spiller, liquid* Liquid, truth ForceHit, tru
       if(Spiller && !GetCharacter()->IsAlly(Spiller))
   Spiller->Hostility(GetCharacter());
 
-      long CharVolume = GetCharacter()->GetVolume();
+      sLong CharVolume = GetCharacter()->GetVolume();
       double ChanceMultiplier = 1. / (300 + sqrt(GetStack()->GetVolume() + CharVolume));
       double Root = sqrt(CharVolume);
 
       if(ForceHit || Root > RAND() % 400 || Root > RAND() % 400)
       {
-  long SpillVolume = long(Liquid->GetVolume() * Root * ChanceMultiplier);
+  sLong SpillVolume = sLong(Liquid->GetVolume() * Root * ChanceMultiplier);
 
   if(SpillVolume)
   {
@@ -2481,15 +2481,15 @@ truth lsquare::CalculateIsTransparent()
   }
 }
 
-void lsquare::CalculateSunLightLuminance(ulong SeenBitMask)
+void lsquare::CalculateSunLightLuminance(uLong SeenBitMask)
 {
   sunemittervector::const_iterator i, SunEnd = SunEmitter.end();
   int S = 0, L = 0;
 
   for(i = SunEmitter.begin(); i != SunEnd; ++i)
   {
-    ulong ShadowFlag = 1 << EMITTER_SHADOW_SHIFT;
-    ulong SquarePartFlag = 1 << EMITTER_SQUARE_PART_SHIFT;
+    uLong ShadowFlag = 1 << EMITTER_SHADOW_SHIFT;
+    uLong SquarePartFlag = 1 << EMITTER_SQUARE_PART_SHIFT;
     for (int c = 0; c < 4; ++c, ShadowFlag <<= 1, SquarePartFlag <<= 1) {
       if (SeenBitMask & *i & SquarePartFlag) {
         if (*i & ShadowFlag) ++S; else ++L;
@@ -2557,7 +2557,7 @@ truth lsquare::DetectMaterial (cmaterial *Material) const {
   return false;
 }
 
-void lsquare::Reveal(ulong Tick, truth IgnoreDarkness)
+void lsquare::Reveal(uLong Tick, truth IgnoreDarkness)
 {
   if(!Memorized)
     CreateMemorized();
@@ -2708,7 +2708,7 @@ void lsquare::ReceiveTrapDamage(character* Damager, int Damage, int Type, int Di
   std::vector<trap*> TrapVector;
   FillTrapVector(TrapVector);
 
-  for(uint c = 0; c < TrapVector.size(); ++c)
+  for(uInt c = 0; c < TrapVector.size(); ++c)
     TrapVector[c]->ReceiveDamage(Damager, Damage, Type, Direction);
 }
 

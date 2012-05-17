@@ -65,13 +65,13 @@ ITEM(bodypart, item)
   virtual void SignalEquipmentAdd(gearslot*);
   virtual void SignalEquipmentRemoval(gearslot*, citem*);
   virtual void Mutate();
-  long GetBodyPartVolume() const { return BodyPartVolume; }
-  long GetCarriedWeight() const { return CarriedWeight; }
+  sLong GetBodyPartVolume() const { return BodyPartVolume; }
+  sLong GetCarriedWeight() const { return CarriedWeight; }
   virtual item* GetEquipment(int) const { return 0; }
   virtual int GetEquipments() const { return 0; }
   virtual void CalculateVolumeAndWeight();
   virtual void CalculateEmitation();
-  void CalculateMaxHP(ulong = MAY_CHANGE_HPS|CHECK_USABILITY);
+  void CalculateMaxHP(uLong = MAY_CHANGE_HPS|CHECK_USABILITY);
   virtual void SignalVolumeAndWeightChange();
   void FastRestoreHP();
   void RestoreHP();
@@ -118,7 +118,7 @@ ITEM(bodypart, item)
   void StayOn(liquid*);
   void SetBloodMaterial(int What) { BloodMaterial = What; }
   int GetBloodMaterial() const { return BloodMaterial; }
-  liquid* CreateBlood(long) const;
+  liquid* CreateBlood(sLong) const;
   virtual truth UpdateArmorPictures() { return false; }
   virtual void DrawArmor(blitdata&) const { }
   virtual void UpdatePictures();
@@ -126,9 +126,9 @@ ITEM(bodypart, item)
   item *GetExternalCloak () const;
   item *GetExternalHelmet () const;
   item *GetExternalBelt () const;
-  virtual void ReceiveAcid(material*, cfestring&, long);
+  virtual void ReceiveAcid(material*, cfestring&, sLong);
   virtual truth ShowFluids() const { return false; }
-  virtual void TryToRust(long);
+  virtual void TryToRust(sLong);
   virtual truth AllowFluidBe() const;
   virtual material* RemoveMaterial(material*);
   virtual void CopyAttributes(const bodypart*) { }
@@ -146,7 +146,7 @@ ITEM(bodypart, item)
   virtual truth MaterialIsChangeable(ccharacter*) const;
   virtual void RemoveRust();
   virtual item* Fix();
-  virtual long GetFixPrice() const;
+  virtual sLong GetFixPrice() const;
   virtual truth IsFixableBySmith(ccharacter*) const;
   virtual truth IsFixableByTailor(ccharacter*) const;
   virtual void SignalMaterialChange();
@@ -181,19 +181,19 @@ protected:
   void AddDamageID(int, int);
   festring OwnerDescription;
   character* Master;
-  long CarriedWeight;
-  long BodyPartVolume;
+  sLong CarriedWeight;
+  sLong BodyPartVolume;
   packv2 BitmapPos;
   packcol16 ColorB;
   packcol16 ColorC;
   packcol16 ColorD;
-  ushort SpecialFlags;
+  uShort SpecialFlags;
   short HP;
   short MaxHP;
   short BloodMaterial;
   short NormalMaterial;
-  uchar SpillBloodCounter;
-  uchar WobbleData;
+  uChar SpillBloodCounter;
+  uChar WobbleData;
   std::vector<scar> Scar;
   std::deque<damageid> DamageID;
 };
@@ -217,12 +217,12 @@ ITEM(head, bodypart)
   int GetBiteMinDamage() const;
   int GetBiteMaxDamage() const;
   double GetBiteToHitValue() const { return BiteToHitValue; }
-  long GetBiteAPCost() const { return BiteAPCost; }
+  sLong GetBiteAPCost() const { return BiteAPCost; }
   virtual void InitSpecialAttributes();
   virtual item* GetEquipment(int) const;
   virtual int GetEquipments() const { return 2; }
   int GetBaseBiteStrength() const { return BaseBiteStrength; }
-  void SetBaseBiteStrength(long What) { BaseBiteStrength = What; }
+  void SetBaseBiteStrength(sLong What) { BaseBiteStrength = What; }
   virtual void CalculateDamage();
   virtual void CalculateToHitValue();
   virtual void CalculateAPCost();
@@ -237,7 +237,7 @@ ITEM(head, bodypart)
   int BaseBiteStrength;
   double BiteToHitValue;
   double BiteDamage;
-  long BiteAPCost;
+  sLong BiteAPCost;
 };
 
 ITEM(torso, bodypart)
@@ -312,12 +312,12 @@ ITEM(arm, bodypart)
   virtual void InitSpecialAttributes();
   virtual void Mutate();
   virtual arm* GetPairArm() const { return 0; }
-  long GetWieldedAPCost() const;
-  long GetUnarmedAPCost() const;
+  sLong GetWieldedAPCost() const;
+  sLong GetUnarmedAPCost() const;
   virtual item* GetEquipment(int) const;
   virtual int GetEquipments() const { return 3; }
   int GetBaseUnarmedStrength() const { return BaseUnarmedStrength; }
-  void SetBaseUnarmedStrength(long What) { BaseUnarmedStrength = What; }
+  void SetBaseUnarmedStrength(sLong What) { BaseUnarmedStrength = What; }
   virtual void CalculateDamage();
   virtual void CalculateToHitValue();
   virtual void CalculateAPCost();
@@ -325,7 +325,7 @@ ITEM(arm, bodypart)
   int GetMinDamage() const;
   int GetMaxDamage() const;
   double GetToHitValue() const { return ToHitValue; }
-  long GetAPCost() const { return APCost; }
+  sLong GetAPCost() const { return APCost; }
   truth PairArmAllowsMelee() const;
   virtual void SignalVolumeAndWeightChange();
   truth TwoHandWieldIsActive() const;
@@ -371,7 +371,7 @@ protected:
   int BaseUnarmedStrength;
   double Damage;
   double ToHitValue;
-  long APCost;
+  sLong APCost;
   int StrengthBonus;
   int DexterityBonus;
   graphicdata WieldedGraphicData;
@@ -435,11 +435,11 @@ ITEM(leg, bodypart)
   void EditExperience(int, double, double);
   virtual void InitSpecialAttributes();
   virtual void Mutate();
-  long GetKickAPCost() const { return KickAPCost; }
+  sLong GetKickAPCost() const { return KickAPCost; }
   virtual item* GetEquipment(int) const;
   virtual int GetEquipments() const { return 1; }
-  long GetBaseKickStrength() const { return BaseKickStrength; }
-  void SetBaseKickStrength(long What) { BaseKickStrength = What; }
+  sLong GetBaseKickStrength() const { return BaseKickStrength; }
+  void SetBaseKickStrength(sLong What) { BaseKickStrength = What; }
   virtual void CalculateDamage();
   virtual void CalculateToHitValue();
   virtual void CalculateAPCost();
@@ -467,7 +467,7 @@ protected:
   int BaseKickStrength;
   double KickDamage;
   double KickToHitValue;
-  long KickAPCost;
+  sLong KickAPCost;
   int StrengthBonus;
   int AgilityBonus;
 };
@@ -507,7 +507,7 @@ ITEM(corpse, item)
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual truth IsDestroyable(ccharacter*) const;
-  virtual long GetTruePrice() const;
+  virtual sLong GetTruePrice() const;
   virtual int GetMaterials() const { return 2; }
   virtual truth RaiseTheDead(character*);
   virtual void CalculateVolumeAndWeight();

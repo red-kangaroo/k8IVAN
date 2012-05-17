@@ -18,7 +18,7 @@
    the first in FWordSet (since S1 < S2 for every string S2 if S1 is empty).
    Fwords to which ControlFWord is linked can begin a reply and those fwords linked
    to ControlFWord can end it. */
-void febot::Initialize (ushort NewChainLength) {
+void febot::Initialize (uShort NewChainLength) {
   ChainLength = NewChainLength;
   WordChainSet.clear();
   WordChainSet.insert(wordchain(ChainLength));
@@ -45,19 +45,19 @@ febot::wordchain *febot::CreateWordChain (const febot::wordchain *WordChain, cfe
 
 void febot::Save (outputfile &SaveFile) const {
   /*
-  SaveFile << ulong(WordChainSet.size());
+  SaveFile << uLong(WordChainSet.size());
   fwordset::const_iterator i1;
   */
   /* Speeds up saving tremendously for large files */
   /*
-  std::map<const fword*, ulong> FWordIndexMap;
-  ulong c;
+  std::map<const fword*, uLong> FWordIndexMap;
+  uLong c;
   for (i1 = FWordSet.begin(), c = 0; i1 != FWordSet.end(); ++i1, ++c) {
     SaveFile << i1->String;
     FWordIndexMap[&*i1] = c;
   }
   for (i1 = FWordSet.begin(); i1 != FWordSet.end(); ++i1) {
-    SaveFile << ulong(i1->Link.size());
+    SaveFile << uLong(i1->Link.size());
     for(c = 0; c < i1->Link.size(); ++c)
     SaveFile << FWordIndexMap.find(i1->Link[c])->second;
   }
@@ -70,20 +70,20 @@ void febot::Load (inputfile &SaveFile) {
   Chain = CreateWordChain(Chain, "on");
   /*
   FWordSet.clear();
-  ulong MapSize;
+  uLong MapSize;
   SaveFile >> MapSize;
   */
   /* Speeds up loading tremendously for large files */
   /*
-  std::map<ulong, fword*> FWordPtrMap;
-  for (ulong c = 0; c < MapSize; ++c)
+  std::map<uLong, fword*> FWordPtrMap;
+  for (uLong c = 0; c < MapSize; ++c)
     FWordPtrMap[c] = const_cast<fword *>(&*FWordSet.insert(FWordSet.end(), fword(ReadType<festring>(SaveFile))));
   for (fwordset::const_iterator i1 = FWordSet.begin(); i1 != FWordSet.end(); ++i1) {
-    ulong LinkSize;
+    uLong LinkSize;
     SaveFile >> LinkSize;
     fword *FWord = const_cast<fword *>(&*i1);
     FWord->Link.resize(LinkSize);
-    for (ulong c = 0; c < LinkSize; ++c) FWord->Link[c] = FWordPtrMap.find(ReadType<ulong>(SaveFile))->second;
+    for (uLong c = 0; c < LinkSize; ++c) FWord->Link[c] = FWordPtrMap.find(ReadType<uLong>(SaveFile))->second;
   }
   */
 }

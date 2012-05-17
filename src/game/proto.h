@@ -28,7 +28,7 @@ template <class type> class databasecreator;
 struct itemdatabase;
 
 
-typedef std::map<festring, long> valuemap;
+typedef std::map<festring, sLong> valuemap;
 typedef std::vector<item*> itemvector;
 typedef std::vector<itemvector> itemvectorvector;
 typedef std::vector<character*> charactervector;
@@ -56,7 +56,7 @@ template <class type> inline int protocontainer<type>::Add (prototype *Proto) {
   if (!GetSize()) (GetProtoData() = new prototype*[1024])[GetSizeRef()++] = 0;
   int Index = GetSizeRef()++;
   GetProtoData()[Index] = Proto;
-  std::pair<festring, long> Pair(Proto->GetClassID(), Index);
+  std::pair<festring, sLong> Pair(Proto->GetClassID(), Index);
   GetCodeNameMap().insert(Pair);
   return Index;
 }
@@ -71,11 +71,11 @@ template <class type> inline int protocontainer<type>::SearchCodeName (cfestring
 class protosystem {
 public:
   static character* BalancedCreateMonster();
-  static item* BalancedCreateItem(long = 0, long = MAX_PRICE, long = ANY_CATEGORY, int = 0, int = 0, int = 0, truth = false);
+  static item* BalancedCreateItem(sLong = 0, sLong = MAX_PRICE, sLong = ANY_CATEGORY, int = 0, int = 0, int = 0, truth = false);
   static character* CreateMonster(int = 1, int = 999999, int = 0);
   static character* CreateMonster(cfestring&, int = 0, truth = true);
   static item* CreateItem(cfestring&, truth = true);
-  static material* CreateMaterial(cfestring&, long = 0, truth = true);
+  static material* CreateMaterial(cfestring&, sLong = 0, truth = true);
   static void CreateEveryNormalEnemy(charactervector&);
 #ifdef WIZARD
   static void CreateEveryCharacter(charactervector&);
@@ -93,19 +93,19 @@ public:
   static int ItemConfigDataSize;
   static itemdatabase** ItemCategoryData[ITEM_CATEGORIES];
   static int ItemCategorySize[ITEM_CATEGORIES];
-  static long ItemCategoryPossibility[ITEM_CATEGORIES];
-  static long TotalItemPossibility;
+  static sLong ItemCategoryPossibility[ITEM_CATEGORIES];
+  static sLong TotalItemPossibility;
 };
 
 
 template <class type> inline outputfile &operator << (outputfile &SaveFile, const type *Class) {
-  if (Class) Class->Save(SaveFile); else SaveFile << ushort(0);
+  if (Class) Class->Save(SaveFile); else SaveFile << uShort(0);
   return SaveFile;
 }
 
 
 template <class type> inline inputfile &operator >> (inputfile &SaveFile, type *&Class) {
-  ushort Type = 0;
+  uShort Type = 0;
   SaveFile >> Type;
   Class = Type ? protocontainer<type>::GetProto(Type)->SpawnAndLoad(SaveFile) : 0;
   return SaveFile;

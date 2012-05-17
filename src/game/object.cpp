@@ -67,7 +67,7 @@ void object::Load(inputfile& SaveFile)
   LoadMaterial(SaveFile, MainMaterial);
 }
 
-void object::ObjectInitMaterials(material*& FirstMaterial, material* FirstNewMaterial, long FirstDefaultVolume, material*& SecondMaterial, material* SecondNewMaterial, long SecondDefaultVolume, truth CallUpdatePictures)
+void object::ObjectInitMaterials(material*& FirstMaterial, material* FirstNewMaterial, sLong FirstDefaultVolume, material*& SecondMaterial, material* SecondNewMaterial, sLong SecondDefaultVolume, truth CallUpdatePictures)
 {
   InitMaterial(FirstMaterial, FirstNewMaterial, FirstDefaultVolume);
   InitMaterial(SecondMaterial, SecondNewMaterial, SecondDefaultVolume);
@@ -77,7 +77,7 @@ void object::ObjectInitMaterials(material*& FirstMaterial, material* FirstNewMat
     UpdatePictures();
 }
 
-void object::InitMaterial(material*& Material, material* NewMaterial, long DefaultVolume)
+void object::InitMaterial(material*& Material, material* NewMaterial, sLong DefaultVolume)
 {
   Material = NewMaterial;
 
@@ -94,12 +94,12 @@ void object::InitMaterial(material*& Material, material* NewMaterial, long Defau
   }
 }
 
-void object::ChangeMaterial(material*& Material, material* NewMaterial, long DefaultVolume, int SpecialFlags)
+void object::ChangeMaterial(material*& Material, material* NewMaterial, sLong DefaultVolume, int SpecialFlags)
 {
   delete SetMaterial(Material, NewMaterial, DefaultVolume, SpecialFlags);
 }
 
-material *object::SetMaterial (material *&Material, material *NewMaterial, long DefaultVolume, int SpecialFlags) {
+material *object::SetMaterial (material *&Material, material *NewMaterial, sLong DefaultVolume, int SpecialFlags) {
   material *OldMaterial = Material;
   Material = NewMaterial;
 
@@ -133,7 +133,7 @@ void object::UpdatePictures()
   UpdatePictures(GraphicData, ZeroPos, VisualEffects|GetSpecialFlags(), GetMaxAlpha(), GetGraphicsContainerIndex(), &object::GetBitmapPos);
 }
 
-truth object::RandomizeSparklePos(v2& SparklePos, v2 BPos, int& SparkleTime, ulong SeedBase, int SpecialFlags, int GraphicsContainerIndex) const
+truth object::RandomizeSparklePos(v2& SparklePos, v2 BPos, int& SparkleTime, uLong SeedBase, int SpecialFlags, int GraphicsContainerIndex) const
 {
   static int SeedModifier = 1;
   femath::SaveSeed();
@@ -422,7 +422,7 @@ void object::LoadMaterial(inputfile& SaveFile, material*& Material)
 
 int object::RandomizeMaterialConfiguration()
 {
-  const fearray<long>& MCC = GetMaterialConfigChances();
+  const fearray<sLong>& MCC = GetMaterialConfigChances();
   return MCC.Size > 1
     ? femath::WeightedRand(MCC.Data, GetMaterialConfigChanceSum())
     : 0;

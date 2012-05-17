@@ -28,12 +28,12 @@ void area::Initialize (int InitXSize, int InitYSize) {
   Border = rect(0, 0, XSize - 1, YSize - 1);
   Alloc2D(Map, XSize, YSize);
   Alloc2D(FlagMap, XSize, YSize);
-  memset(FlagMap[0], 0, XSizeTimesYSize * sizeof(uchar));
+  memset(FlagMap[0], 0, XSizeTimesYSize * sizeof(uChar));
 }
 
 
 area::~area () {
-  for (ulong c = 0; c < XSizeTimesYSize; ++c) delete Map[0][c];
+  for (uLong c = 0; c < XSizeTimesYSize; ++c) delete Map[0][c];
   delete [] Map;
   delete [] FlagMap;
 }
@@ -41,7 +41,7 @@ area::~area () {
 
 void area::Save (outputfile &SaveFile) const {
   SaveFile << XSize << YSize << EntryMap;
-  SaveFile.Write(reinterpret_cast<char*>(FlagMap[0]), XSizeTimesYSize * sizeof(uchar));
+  SaveFile.Write(reinterpret_cast<cchar *>(FlagMap[0]), XSizeTimesYSize*sizeof(uChar));
 }
 
 
@@ -50,11 +50,11 @@ void area::Load (inputfile &SaveFile) {
   SaveFile >> XSize >> YSize;
   if (SaveFile.Eof()) ABORT("Area file %s corrupted!", SaveFile.GetFileName().CStr());
   SaveFile >> EntryMap;
-  XSizeTimesYSize = XSize * YSize;
-  Border = rect(0, 0, XSize - 1, YSize - 1);
+  XSizeTimesYSize = XSize*YSize;
+  Border = rect(0, 0, XSize-1, YSize-1);
   Alloc2D(Map, XSize, YSize);
   Alloc2D(FlagMap, XSize, YSize);
-  SaveFile.Read(reinterpret_cast<char*>(FlagMap[0]), XSizeTimesYSize * sizeof(uchar));
+  SaveFile.Read(reinterpret_cast<char *>(FlagMap[0]), XSizeTimesYSize*sizeof(uChar));
 }
 
 

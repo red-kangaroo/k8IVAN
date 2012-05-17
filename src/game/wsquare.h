@@ -48,7 +48,7 @@ public:
   int GetWalkability () const;
   virtual int GetSquareWalkability () const { return GetWalkability(); }
   virtual truth CanBeSeenByPlayer (truth = false) const;
-  virtual truth CanBeSeenFrom (v2, long, truth = false) const;
+  virtual truth CanBeSeenFrom (v2, sLong, truth = false) const;
 
 protected:
   gwterrain *GWTerrain;

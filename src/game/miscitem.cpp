@@ -38,12 +38,12 @@ truth bananapeels::IsDangerous(ccharacter* Stepper) const { return Stepper->HasA
 
 truth brokenbottle::IsDangerous(ccharacter* Stepper) const { return Stepper->HasALeg(); }
 
-long wand::GetPrice() const { return Charges > TimesUsed ? item::GetPrice() : 0; }
+sLong wand::GetPrice() const { return Charges > TimesUsed ? item::GetPrice() : 0; }
 
 truth backpack::IsExplosive() const { return GetSecondaryMaterial() && GetSecondaryMaterial()->IsExplosive(); }
-long backpack::GetTotalExplosivePower() const { return GetSecondaryMaterial() ? GetSecondaryMaterial()->GetTotalExplosivePower() : 0; }
+sLong backpack::GetTotalExplosivePower() const { return GetSecondaryMaterial() ? GetSecondaryMaterial()->GetTotalExplosivePower() : 0; }
 
-long stone::GetTruePrice() const { return item::GetTruePrice() << 1; }
+sLong stone::GetTruePrice() const { return item::GetTruePrice() << 1; }
 
 col16 whistle::GetMaterialColorB(int) const { return MakeRGB16(80, 32, 16); }
 
@@ -201,12 +201,12 @@ void scrollofchangematerial::FinishReading(character* Reader)
   ADD_MESSAGE("As the fire dies out they look greatly altered.");
 
   if(SecondaryMaterial && SecondaryMaterial->IsSameAs(MainMaterial))
-    for(uint c = 0; c < Item.size(); ++c)
+    for(uInt c = 0; c < Item.size(); ++c)
       Item[c]->ChangeSecondaryMaterial(TempMaterial->SpawnMore());
 
   Item[0]->ChangeMainMaterial(TempMaterial);
 
-  for(uint c = 1; c < Item.size(); ++c)
+  for(uInt c = 1; c < Item.size(); ++c)
     Item[c]->ChangeMainMaterial(TempMaterial->SpawnMore());
       }
       else
@@ -536,7 +536,7 @@ void scrollofcharging::FinishReading(character* Reader)
     continue;
       }
 
-      for(uint c = 0; c < Item.size(); ++c)
+      for(uInt c = 0; c < Item.size(); ++c)
   Item[c]->ChargeFully(Reader);
 
       ADD_MESSAGE("You charge %s and the scroll burns.", Item[0]->CHAR_NAME(DEFINITE|(Item.size() == 1 ? 0 : PLURAL)));
@@ -787,9 +787,9 @@ void whistle::BlowEffect(character* Whistler)
 
 struct distancepair
 {
-  distancepair(long Distance, character* Char) : Distance(Distance), Char(Char) { }
+  distancepair(sLong Distance, character* Char) : Distance(Distance), Char(Char) { }
   bool operator<(const distancepair& D) const { return Distance > D.Distance; }
-  long Distance;
+  sLong Distance;
   character* Char;
 };
 
@@ -831,7 +831,7 @@ void magicalwhistle::BlowEffect(character* Whistler)
   if(ToSort.size() > 5)
     std::sort(ToSort.begin(), ToSort.end());
 
-  for(uint c = 0; c < 5 && c < ToSort.size(); ++c)
+  for(uInt c = 0; c < 5 && c < ToSort.size(); ++c)
     ToSort[c].Char->TeleportNear(Whistler);
 
   game::CallForAttention(GetPos(), 400);
@@ -846,12 +846,12 @@ void itemcontainer::PostConstruct()
 {
   lockableitem::PostConstruct();
   SetIsLocked(RAND_N(3));
-  long ItemNumber = RAND() % (GetMaxGeneratedContainedItems() + 1);
+  sLong ItemNumber = RAND() % (GetMaxGeneratedContainedItems() + 1);
 
   for(int c = 0; c < ItemNumber; ++c)
   {
     item* NewItem = protosystem::BalancedCreateItem();
-    long Volume = NewItem->GetVolume();
+    sLong Volume = NewItem->GetVolume();
 
     if(NewItem->HandleInPairs())
       Volume <<= 1;
@@ -870,11 +870,11 @@ void itemcontainer::PostConstruct()
 void materialcontainer::GenerateMaterials()
 {
   int Chosen = RandomizeMaterialConfiguration();
-  const fearray<long>& MMC = GetMainMaterialConfig();
+  const fearray<sLong>& MMC = GetMainMaterialConfig();
   InitMaterial(MainMaterial,
          MAKE_MATERIAL(MMC.Data[MMC.Size == 1 ? 0 : Chosen]),
          GetDefaultMainVolume());
-  const fearray<long>& SMC = GetSecondaryMaterialConfig();
+  const fearray<sLong>& SMC = GetSecondaryMaterialConfig();
   InitMaterial(SecondaryMaterial,
          MAKE_MATERIAL(SMC.Data[SMC.Size == 1 ? 0 : Chosen]),
          GetDefaultSecondaryVolume());
@@ -944,7 +944,7 @@ beartrap::beartrap(const beartrap& Trap) : mybase(Trap)
 
 truth beartrap::TryToUnStick(character* Victim, v2)
 {
-  ulong TrapID = GetTrapID();
+  uLong TrapID = GetTrapID();
   int Modifier = GetBaseTrapDamage() * 40 / Max(Victim->GetAttribute(DEXTERITY) + Victim->GetAttribute(ARM_STRENGTH), 1);
 
   if(!RAND_N(Max(Modifier, 2)))
@@ -1327,7 +1327,7 @@ truth materialcontainer::CanBePiledWith(citem* Item, ccharacter* Viewer) const
     && SecondaryMaterial->GetSpoilLevel() == Weapon->SecondaryMaterial->GetSpoilLevel();
 }
 
-long itemcontainer::GetTruePrice() const
+sLong itemcontainer::GetTruePrice() const
 {
   return GetContained()->GetTruePrice() + item::GetTruePrice();
 }
@@ -1364,7 +1364,7 @@ void potion::Break(character* Breaker, int Dir)
 
       if(Remains->GetLevel()->IsValidPos(Pos))
       {
-  long HalfVolume = GetSecondaryMaterial()->GetVolume() >> 1;
+  sLong HalfVolume = GetSecondaryMaterial()->GetVolume() >> 1;
   Liquid->EditVolume(-HalfVolume);
   Remains->GetNearLSquare(Pos)->SpillFluid(Breaker, Liquid->SpawnMoreLiquid(HalfVolume));
       }
@@ -1435,7 +1435,7 @@ void scrollofenchantweapon::FinishReading(character* Reader)
       else
   ADD_MESSAGE("Your %s glow briefly red. They feel very warm now.", Item[0]->CHAR_NAME(PLURAL));
 
-      for(uint c = 0; c < Item.size(); ++c)
+      for(uInt c = 0; c < Item.size(); ++c)
   Item[c]->EditEnchantment(1);
 
       break;
@@ -1492,7 +1492,7 @@ void scrollofenchantarmor::FinishReading(character* Reader)
       else
   ADD_MESSAGE("Your %s glow briefly blue. They feel very warm now.", Item[0]->CHAR_NAME(PLURAL));
 
-      for(uint c = 0; c < Item.size(); ++c)
+      for(uInt c = 0; c < Item.size(); ++c)
   Item[c]->EditEnchantment(1);
 
       break;
@@ -1551,7 +1551,7 @@ void itemcontainer::SetItemsInside(const fearray<contentscript<item> >& ItemArra
 {
   GetContained()->Clean();
 
-  for(uint c1 = 0; c1 < ItemArray.Size; ++c1)
+  for(uInt c1 = 0; c1 < ItemArray.Size; ++c1)
     if(ItemArray[c1].IsValid())
     {
       const interval* TimesPtr = ItemArray[c1].GetTimes();
@@ -1606,7 +1606,7 @@ void scrollofrepair::FinishReading (character *Reader) {
         ADD_MESSAGE("As you read the scroll, %s glows green and %s.", Item[0]->CHAR_NAME(DEFINITE), Item[0]->IsBroken() ? "fixes itself" : "its rust vanishes");
       else
         ADD_MESSAGE("As you read the scroll, %s glow green and %s.", Item[0]->CHAR_NAME(PLURAL), Item[0]->IsBroken() ? "fix themselves" : "their rust vanishes");
-      for (uint c = 0; c < Item.size(); ++c) {
+      for (uInt c = 0; c < Item.size(); ++c) {
         Item[c]->RemoveRust();
         Item[c]->Fix();
       }
@@ -1867,9 +1867,9 @@ void wand::BreakEffect(character* Terrorist, cfestring& DeathMsg)
   v2 Pos = GetPos();
   level* Level = GetLevel();
   RemoveFromSlot();
-  ulong StackSize = Level->AddRadiusToSquareStack(Pos, GetBreakEffectRangeSquare());
+  uLong StackSize = Level->AddRadiusToSquareStack(Pos, GetBreakEffectRangeSquare());
   lsquare** SquareStack = Level->GetSquareStack();
-  ulong c;
+  uLong c;
 
   for(c = 0; c < StackSize; ++c)
     SquareStack[c]->RemoveFlags(IN_SQUARE_STACK);
@@ -2303,7 +2303,7 @@ v2 lantern::GetBitmapPos(int Frame) const
             : item::GetWallBitmapPos(Frame);
 }
 
-long materialcontainer::GetMaterialPrice() const
+sLong materialcontainer::GetMaterialPrice() const
 {
   return MainMaterial->GetRawPrice()
     + (SecondaryMaterial ? SecondaryMaterial->GetRawPrice() : 0);
@@ -2459,12 +2459,12 @@ void scrollofhardenmaterial::FinishReading(character* Reader)
       ADD_MESSAGE("As the fire dies out they look much harder.");
 
       if(SecondaryMaterial && SecondaryMaterial->IsSameAs(MainMaterial))
-  for(uint c = 0; c < Item.size(); ++c)
+  for(uInt c = 0; c < Item.size(); ++c)
     Item[c]->ChangeSecondaryMaterial(TempMaterial->SpawnMore());
 
       Item[0]->ChangeMainMaterial(TempMaterial);
 
-      for(uint c = 1; c < Item.size(); ++c)
+      for(uInt c = 1; c < Item.size(); ++c)
   Item[c]->ChangeMainMaterial(TempMaterial->SpawnMore());
     }
 
@@ -2484,7 +2484,7 @@ void itemcontainer::SetLifeExpectancy(int Base, int RandPlus)
   Contained->SetLifeExpectancy(Base, RandPlus);
 }
 
-ulong wand::GetSpecialParameters() const
+uLong wand::GetSpecialParameters() const
 {
   switch(GetConfig())
   {
@@ -2528,7 +2528,7 @@ void scrollofgolemcreation::FinishReading(character* Reader)
 
       int MaterialConfig = MainPossible ? Main->GetConfig() : Sec->GetConfig();
       golem* Golem = golem::Spawn(MaterialConfig);
-      long Volume = MainPossible ? Sec && Sec->IsSameAs(Main)
+      sLong Volume = MainPossible ? Sec && Sec->IsSameAs(Main)
         ? Main->GetVolume() + Sec->GetVolume()
         : Main->GetVolume() : Sec->GetVolume();
       Golem->SetItemVolume(Volume);
@@ -2571,7 +2571,7 @@ void itemcontainer::CalculateEnchantment()
 
 int itemcontainer::GetTeleportPriority() const
 {
-  long Priority = item::GetTeleportPriority();
+  sLong Priority = item::GetTeleportPriority();
 
   for(stackiterator i = Contained->GetBottom(); i.HasItem(); ++i)
     Priority += i->GetTeleportPriority();
@@ -2665,7 +2665,7 @@ truth holyhandgrenade::CalculateHasBe() const
 
 void holyhandgrenade::Be() {
   item::Be();
-  if(3 * (game::GetTick() - PinPulledTick) > (ulong)(Count) * 100)
+  if(3 * (game::GetTick() - PinPulledTick) > (uLong)(Count) * 100)
   {
     ++Count;
     festring Msg = "A voice loudly declares: \"";

@@ -43,8 +43,8 @@ public:
   inline void SetLSquareUnder (lsquare *What) { LSquareUnder = What; }
   inline lsquare *GetLSquareUnder () const { return LSquareUnder; }
   virtual truth IsOnGround () const { return true; }
-  void AddLiquid (long);
-  void AddLiquidAndVolume (long);
+  void AddLiquid (sLong);
+  void AddLiquidAndVolume (sLong);
   virtual void SignalVolumeAndWeightChange ();
   void SetMotherItem (item *);
   static void AddFluidInfo (const fluid *, festring &);
@@ -59,8 +59,8 @@ public:
   inline truth IsInside () const { return Flags & FLUID_INSIDE; }
   truth UseImage() const;
   virtual int GetTrapType () const { return Liquid->GetType() | FLUID_TRAP; }
-  virtual ulong GetTrapID () const { return TrapData.TrapID; }
-  virtual ulong GetVictimID () const { return TrapData.VictimID; }
+  virtual uLong GetTrapID () const { return TrapData.TrapID; }
+  virtual uLong GetVictimID () const { return TrapData.VictimID; }
   virtual void AddTrapName (festring &, int) const;
   virtual void UnStick () { TrapData.VictimID = 0; }
   virtual void UnStick (int I) { TrapData.BodyParts &= ~(1 << I); }
@@ -77,7 +77,7 @@ protected:
     imagedata (truth = true);
     ~imagedata ();
     void Animate (blitdata &, int) const;
-    void AddLiquidToPicture (const rawbitmap *, long, long, col16, pixelpredicate);
+    void AddLiquidToPicture (const rawbitmap *, sLong, sLong, col16, pixelpredicate);
     void Save (outputfile &) const;
     void Load (inputfile &);
     truth Fade ();
@@ -93,7 +93,7 @@ protected:
     /* Sum of all alphas of Picture. The volume of the liquid is currently
        proportional to AlphaSum of the fluid's Image, limiting it
        considerably. */
-    long AlphaSum;
+    sLong AlphaSum;
     /* AlphaSum / (non-transparent pixels in Picture), used to synchronise
        gear pictures with the main image */
     packalpha AlphaAverage;
@@ -116,9 +116,9 @@ protected:
      or weapon is unequipped. There is no real need, since the existence
      of the fluid is very temporary anyway. */
   imagedata *GearImage;
-  ulong Flags;
+  uLong Flags;
   festring LocationName;
-  static const long BodyArmorPartPixels[];
+  static const sLong BodyArmorPartPixels[];
 };
 
 

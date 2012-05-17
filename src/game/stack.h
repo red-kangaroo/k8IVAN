@@ -68,7 +68,7 @@ private:
 
 class stack {
 public:
-  stack (square *, entity *, ulong = 0);
+  stack (square *, entity *, uLong = 0);
   ~stack ();
   void Load (inputfile &);
   void Draw (ccharacter *, blitdata &, int) const;
@@ -102,7 +102,7 @@ public:
   void CheckForStepOnEffect (character *);
   lsquare *GetLSquareTrulyUnder (int) const;
   void ReceiveDamage (character *, int, int, int = YOURSELF);
-  void TeleportRandomly (uint = 0xFFFF);
+  void TeleportRandomly (uInt = 0xFFFF);
   void FillItemVector (itemvector &) const;
   truth IsOnGround () const;
   truth RaiseTheDead (character *);
@@ -110,9 +110,9 @@ public:
   truth Open (character *);
   void SignalVolumeAndWeightChange ();
   void CalculateVolumeAndWeight ();
-  long GetVolume () const { return Volume; }
-  long GetWeight () const { return Weight; }
-  long GetWeight (ccharacter *, int) const;
+  sLong GetVolume () const { return Volume; }
+  sLong GetWeight () const { return Weight; }
+  sLong GetWeight (ccharacter *, int) const;
   entity *GetMotherEntity () const { return MotherEntity; }
   void SetMotherEntity (entity *What) { MotherEntity = What; }
   area *GetArea () const { return GetSquareUnder()->GetArea(); }
@@ -124,18 +124,18 @@ public:
   col24 GetSideEmitation (int);
   truth CanBeSeenBy (ccharacter *, int) const;
   truth IsDangerous (ccharacter *) const;
-  truth Duplicate (int, ulong = 0);
+  truth Duplicate (int, uLong = 0);
   void MoveItemsTo (stack *);
   void MoveItemsTo (slot *);
   item *GetBottomItem (ccharacter *, truth) const;
   item *GetBottomVisibleItem (ccharacter *) const;
   item *GetBottomSideItem (ccharacter *, int, truth) const;
   void Pile (itemvectorvector &, ccharacter *, int, sorter = 0) const;
-  long GetTruePrice () const;
+  sLong GetTruePrice () const;
   static int GetSelected () { return Selected; }
   static void SetSelected (int What) { Selected = What; }
   truth TakeSomethingFrom (character *, cfestring&);
-  truth PutSomethingIn (character *, cfestring &, long, ulong);
+  truth PutSomethingIn (character *, cfestring &, sLong, uLong);
   truth IsVisible () const { return !(Flags & HIDDEN); }
   int GetSpoiledItems () const;
   void SortAllItems (const sortdata &) const;
@@ -145,7 +145,7 @@ public:
   void PostProcessForBone ();
   void FinalProcessForBone ();
   void AddElement (item *, truth = false);
-  void SpillFluid (character *, liquid *, long);
+  void SpillFluid (character *, liquid *, sLong);
   void AddItems (const itemvector &);
   void MoveItemsTo (itemvector &, int);
   void Freeze () { Flags |= FREEZED; }
@@ -171,10 +171,10 @@ private:
   stackslot *Top;
   square *MotherSquare;
   entity *MotherEntity;
-  long Volume;
-  long Weight;
+  sLong Volume;
+  sLong Weight;
   col24 Emitation : 24;
-  ulong Flags : 8;
+  uLong Flags : 8;
   int Items;
 };
 

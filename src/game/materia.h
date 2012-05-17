@@ -24,7 +24,7 @@ class bodypart;
 class materialprototype;
 template <class type> class databasecreator;
 
-typedef material* (*materialspawner)(int, long, truth);
+typedef material* (*materialspawner)(int, sLong, truth);
 typedef material* (*materialcloner)(cmaterial*);
 
 struct materialdatabase : public databasebase
@@ -33,15 +33,15 @@ struct materialdatabase : public databasebase
   void InitDefaults(const prototype*, int);
   void PostProcess() { }
   const prototype* ProtoType;
-  ulong CategoryFlags;
-  ulong BodyFlags;
-  ulong InteractionFlags;
+  uLong CategoryFlags;
+  uLong BodyFlags;
+  uLong InteractionFlags;
   int StrengthValue;
   int ConsumeType;
   int Density;
   int Color;
   int RainColor;
-  long PriceModifier;
+  sLong PriceModifier;
   col24 Emitation;
   int NutritionValue;
   festring NameStem;
@@ -49,7 +49,7 @@ struct materialdatabase : public databasebase
   int Effect;
   int ConsumeEndMessage;
   int HitMessage;
-  long ExplosivePower;
+  sLong ExplosivePower;
   alpha Alpha;
   int Flexibility;
   int SpoilModifier;
@@ -73,7 +73,7 @@ class materialprototype
  public:
   friend class databasecreator<material>;
   materialprototype(const materialprototype*, materialspawner, materialcloner, cchar*);
-  material* Spawn(int Config, long Volume = 0) const { return Spawner(Config, Volume, false); }
+  material* Spawn(int Config, sLong Volume = 0) const { return Spawner(Config, Volume, false); }
   material* SpawnAndLoad(inputfile&) const;
   material* Clone(cmaterial* Material) const { return Cloner(Material); }
   cchar* GetClassID() const { return ClassID; }
@@ -103,7 +103,7 @@ class material
   friend class databasecreator<material>;
   typedef materialprototype prototype;
   typedef materialdatabase database;
-  material(int NewConfig, long InitVolume = 0, truth Load = false) : MotherEntity(0) { Initialize(NewConfig, InitVolume, Load); }
+  material(int NewConfig, sLong InitVolume = 0, truth Load = false) : MotherEntity(0) { Initialize(NewConfig, InitVolume, Load); }
   material() : MotherEntity(0) { }
   virtual ~material() { }
   void AddName(festring&, truth = false, truth = true) const;
@@ -111,30 +111,30 @@ class material
   material* TakeDipVolumeAway();
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
-  truth Effect(character*, int, long);
-  virtual material* EatEffect(character*, long);
+  truth Effect(character*, int, sLong);
+  virtual material* EatEffect(character*, sLong);
   truth HitEffect(character*, bodypart*);
   virtual col16 GetSkinColor() const { return GetColor(); }
   virtual void SetSkinColor(int) { }
-  long GetRawPrice() const;
+  sLong GetRawPrice() const;
   truth CanBeDug(material* ShovelMaterial) const;
   virtual truth HasBe() const { return false; }
-  virtual void Be(ulong) { }
+  virtual void Be(uLong) { }
   int GetType() const { return GetProtoType()->GetIndex(); }
   virtual void AddConsumeEndMessage(character*) const;
   DATA_BASE_VALUE(const prototype*, ProtoType);
   DATA_BASE_VALUE(int, Config);
-  DATA_BASE_VALUE(ulong, CommonFlags);
-  DATA_BASE_VALUE(ulong, NameFlags);
-  DATA_BASE_VALUE(ulong, CategoryFlags);
-  DATA_BASE_VALUE(ulong, BodyFlags);
-  DATA_BASE_VALUE(ulong, InteractionFlags);
+  DATA_BASE_VALUE(uLong, CommonFlags);
+  DATA_BASE_VALUE(uLong, NameFlags);
+  DATA_BASE_VALUE(uLong, CategoryFlags);
+  DATA_BASE_VALUE(uLong, BodyFlags);
+  DATA_BASE_VALUE(uLong, InteractionFlags);
   virtual DATA_BASE_VALUE(int, StrengthValue);
   DATA_BASE_VALUE(int, ConsumeType);
   DATA_BASE_VALUE(int, Density);
   DATA_BASE_VALUE(int, Color);
   DATA_BASE_VALUE(int, RainColor);
-  DATA_BASE_VALUE(long, PriceModifier);
+  DATA_BASE_VALUE(sLong, PriceModifier);
   DATA_BASE_VALUE(col24, Emitation);
   DATA_BASE_VALUE(int, NutritionValue);
   DATA_BASE_VALUE(cfestring&, NameStem);
@@ -142,7 +142,7 @@ class material
   DATA_BASE_VALUE(int, Effect);
   DATA_BASE_VALUE(int, ConsumeEndMessage);
   DATA_BASE_VALUE(int, HitMessage);
-  DATA_BASE_VALUE(long, ExplosivePower);
+  DATA_BASE_VALUE(sLong, ExplosivePower);
   DATA_BASE_VALUE(alpha, Alpha);
   DATA_BASE_VALUE(int, Flexibility);
   DATA_BASE_VALUE(int, SpoilModifier);
@@ -157,9 +157,9 @@ class material
   DATA_BASE_VALUE(int, Stickiness);
   const database* GetDataBase() const { return DataBase; }
   material* SpawnMore() const { return GetProtoType()->Spawn(GetConfig(), Volume); }
-  material* SpawnMore(long Volume) const { return GetProtoType()->Spawn(GetConfig(), Volume); }
-  long GetTotalExplosivePower() const;
-  static material* MakeMaterial(int, long = 0);
+  material* SpawnMore(sLong Volume) const { return GetProtoType()->Spawn(GetConfig(), Volume); }
+  sLong GetTotalExplosivePower() const;
+  static material* MakeMaterial(int, sLong = 0);
   virtual truth IsFlesh() const { return false; }
   virtual truth IsLiquid() const { return false; }
   virtual cchar* GetConsumeVerb() const;
@@ -167,9 +167,9 @@ class material
   void SetMotherEntity(entity* What) { MotherEntity = What; }
   truth IsSameAs(cmaterial* What) const { return What->GetConfig() == GetConfig(); }
   truth IsTransparent() const { return GetAlpha() != 255; }
-  virtual long GetTotalNutritionValue() const;
+  virtual sLong GetTotalNutritionValue() const;
   virtual truth IsVeryCloseToSpoiling() const { return false; }
-  virtual void AddWetness(long) { }
+  virtual void AddWetness(sLong) { }
   virtual int GetSpoilLevel() const { return 0; }
   virtual void ResetSpoiling() { }
   truth CanBeEatenByAI(ccharacter*) const;
@@ -182,24 +182,24 @@ class material
   virtual void SetRustLevel(int) { }
   virtual int GetRustLevel() const { return NOT_RUSTED; }
   virtual int GetRustData() const { return NOT_RUSTED; }
-  virtual truth TryToRust(long, long = 0) { return false; }
+  virtual truth TryToRust(sLong, sLong = 0) { return false; }
   static const database* GetDataBase(int);
   virtual truth CanSpoil() const { return false; }
   truth IsSolid() const { return !IsLiquid(); }
   /* A dummy materialpredicate */
   truth True() const { return true; }
   void FinishConsuming(character*);
-  long GetVolume() const { return Volume; }
-  long GetWeight() const
+  sLong GetVolume() const { return Volume; }
+  sLong GetWeight() const
   {
-    return Volume ? long(double(Volume) * GetDensity() / 1000) : 0;
+    return Volume ? sLong(double(Volume) * GetDensity() / 1000) : 0;
   }
-  void EditVolume(long What) { SetVolume(Volume + What); }
-  void SetVolume(long);
-  void SetVolumeNoSignals(long What) { Volume = What; }
+  void EditVolume(sLong What) { SetVolume(Volume + What); }
+  void SetVolume(sLong);
+  void SetVolumeNoSignals(sLong What) { Volume = What; }
   virtual truth IsPowder() const { return false; }
-  static item* CreateNaturalForm(int, long);
-  item* CreateNaturalForm(long) const;
+  static item* CreateNaturalForm(int, sLong);
+  item* CreateNaturalForm(sLong) const;
   virtual truth IsInfectedByLeprosy() const { return false; }
   virtual void SetIsInfectedByLeprosy(truth) { }
   virtual truth AddRustLevelDescription(festring&, truth) const { return false; }
@@ -214,12 +214,12 @@ class material
   DATA_BASE_TRUTH(DisablesPanicWhenConsumed);
  protected:
   virtual void PostConstruct() { }
-  void Initialize(int, long, truth);
+  void Initialize(int, sLong, truth);
   virtual const prototype* FindProtoType() const { return &ProtoType; }
   static const prototype ProtoType;
   const database* DataBase;
   entity* MotherEntity;
-  long Volume;
+  sLong Volume;
 };
 
 template <class type, class base>
@@ -227,7 +227,7 @@ class materialsysbase : public base
 {
  public:
   typedef materialsysbase<type, base> mybase;
-  static type* Spawn(int Config = 0, long Volume = 0, truth Load = false)
+  static type* Spawn(int Config = 0, sLong Volume = 0, truth Load = false)
   {
     type* M = new type;
     M->Initialize(Config, Volume, Load);

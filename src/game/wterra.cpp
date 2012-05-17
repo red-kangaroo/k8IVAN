@@ -82,12 +82,12 @@ void wterrain::Load (inputfile &) {
 
 
 void gwterrain::Save (outputfile &SaveFile) const {
-  SaveFile << (ushort)GetType();
+  SaveFile << (uShort)GetType();
 }
 
 
 void owterrain::Save (outputfile &SaveFile) const {
-  SaveFile << (ushort)GetType();
+  SaveFile << (uShort)GetType();
 }
 
 

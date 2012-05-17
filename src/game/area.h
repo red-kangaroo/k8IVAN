@@ -48,9 +48,9 @@ public:
 
 protected:
   square ***Map;
-  uchar **FlagMap;
+  uChar **FlagMap;
   int XSize, YSize;
-  ulong XSizeTimesYSize;
+  uLong XSizeTimesYSize;
   rect Border;
   std::map<int, v2> EntryMap;
 };

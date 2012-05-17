@@ -59,7 +59,7 @@ private:
 class soundsystem {
 public:
   static void playSound (const festring &Buffer);
-  static void setVolume (long vol); // 0..128
+  static void setVolume (sLong vol); // 0..128
 
 private:
   static void initSound ();

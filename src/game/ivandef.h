@@ -42,8 +42,8 @@ typedef const character ccharacter;
 struct databasebase
 {
   int Config;
-  ulong CommonFlags;
-  ulong NameFlags;
+  uLong CommonFlags;
+  uLong NameFlags;
 };
 
 template <class type, class base, class prototype>
@@ -560,7 +560,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define MORTIFER 15
 #define ATHEIST 16
 
-#define MAX_PRICE 2147483647L
+#define MAX_PRICE  (2147483647)
 
 #define PERMANENT 0xFFFF
 

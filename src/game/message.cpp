@@ -111,7 +111,7 @@ void msgsystem::AddMessage (cchar *Format, ...) {
   std::vector<festring> Chapter;
   festring::SplitString(Temp, Chapter, 78, Marginal);
 
-  for(uint c = 0; c < Chapter.size(); ++c)
+  for(uInt c = 0; c < Chapter.size(); ++c)
     MessageHistory.AddEntry(Chapter[c], WHITE);
 
   MessageHistory.SetSelected(MessageHistory.GetLastEntryIndex());
@@ -217,7 +217,7 @@ void msgsystem::ThyMessagesAreNowOld()
   if(MessageHistory.GetColor(MessageHistory.GetLastEntryIndex()) == WHITE)
     MessagesChanged = true;
 
-  for(uint c = 0; c < MessageHistory.GetLength(); ++c)
+  for(uInt c = 0; c < MessageHistory.GetLength(); ++c)
     MessageHistory.SetColor(c, LIGHT_GRAY);
 }
 
@@ -334,7 +334,7 @@ SoundFile *soundsystem::findMatchingSound (const festring &Buffer) {
 }
 
 
-void soundsystem::setVolume (long vol) {
+void soundsystem::setVolume (sLong vol) {
   if (vol < 0) vol = 0; else if (vol > 128) vol = 128;
   if (SoundState == 1) {
     for (int f = 0; f < 16; f++) Mix_Volume(f, vol);
@@ -371,6 +371,6 @@ void soundsystem::initSound () {}
 int soundsystem::addFile (const festring &filename) { return 0; }
 SoundFile *soundsystem::findMatchingSound (const festring &Buffer) { return NULL; }
 void soundsystem::playSound (const festring &Buffer) {}
-void soundsystem::setVolume (long vol) {}
+void soundsystem::setVolume (sLong vol) {}
 
 #endif

@@ -317,7 +317,7 @@ truth commandsystem::Drop (character *Char) {
     Char->GetStack()->DrawContents(ToDrop, Char, CONST_S("What do you want to drop?"), REMEMBER_SELECTED);
     if (ToDrop.empty()) break;
     if (game::IsInWilderness()) {
-      for (uint c = 0; c < ToDrop.size(); ++c) {
+      for (uInt c = 0; c < ToDrop.size(); ++c) {
         if (game::TruthQuestion(CONST_S("Are you sure? You will never see ")+ToDrop[c]->CHAR_NAME(DEFINITE)+" again! [y/N]")) {
           ADD_MESSAGE("You drop %s.", ToDrop[c]->CHAR_NAME(DEFINITE));
           ToDrop[c]->RemoveFromSlot();
@@ -326,7 +326,7 @@ truth commandsystem::Drop (character *Char) {
       }
     } else if (!Char->GetRoom() || Char->GetRoom()->DropItem(Char, ToDrop[0], ToDrop.size())) {
       ADD_MESSAGE("%s dropped.", ToDrop[0]->GetName(INDEFINITE, ToDrop.size()).CStr());
-      for (uint c = 0; c < ToDrop.size(); ++c) ToDrop[c]->MoveTo(Char->GetStackUnder());
+      for (uInt c = 0; c < ToDrop.size(); ++c) ToDrop[c]->MoveTo(Char->GetStackUnder());
       Success = true;
     }
   }
@@ -432,7 +432,7 @@ truth commandsystem::PickUp (character *Char) {
     if (ToPickup[0]->CanBePickedUp()) {
       if ((!ToPickup[0]->GetRoom() || ToPickup[0]->GetRoom()->PickupItem(Char, ToPickup[0], ToPickup.size())) &&
           ToPickup[0]->CheckPickUpEffect(Char)) {
-        for (uint c = 0; c < ToPickup.size(); ++c) ToPickup[c]->MoveTo(Char->GetStack());
+        for (uInt c = 0; c < ToPickup.size(); ++c) ToPickup[c]->MoveTo(Char->GetStack());
         ADD_MESSAGE("%s picked up.", ToPickup[0]->GetName(INDEFINITE, ToPickup.size()).CStr());
         Success = true;
       }
@@ -850,7 +850,7 @@ truth commandsystem::Rest (character *Char) {
     Error = true;
   }
   if (Error) {
-    long MinutesToRest = game::NumberQuestion(CONST_S("How many minutes to wait?"), WHITE, true);
+    sLong MinutesToRest = game::NumberQuestion(CONST_S("How many minutes to wait?"), WHITE, true);
     if (MinutesToRest > 0) {
       oterrain *Terrain = Char->GetSquareUnder()->GetOTerrain();
       if (Terrain) Terrain->ShowRestMessage(Char);
@@ -862,7 +862,7 @@ truth commandsystem::Rest (character *Char) {
     }
     return false;
   }
-  long HPToRest = game::ScrollBarQuestion(CONST_S("How many hit points you desire?"), Char->GetMaxHP(), 1, 0, Char->GetMaxHP(), 0, WHITE, LIGHT_GRAY, DARK_GRAY);
+  sLong HPToRest = game::ScrollBarQuestion(CONST_S("How many hit points you desire?"), Char->GetMaxHP(), 1, 0, Char->GetMaxHP(), 0, WHITE, LIGHT_GRAY, DARK_GRAY);
   if (HPToRest <= Char->GetHP()) {
     if (HPToRest != 0) ADD_MESSAGE("Your HP is already %d.", Char->GetHP());
     return false;
@@ -1042,7 +1042,7 @@ truth commandsystem::GainAllItems (character *Char) {
   itemvectorvector AllItems;
   protosystem::CreateEveryItem(AllItems);
   stack *Stack = game::IsInWilderness() ? Char->GetStack() : Char->GetStackUnder();
-  for (uint c = 0; c < AllItems.size(); ++c) Stack->AddItem(AllItems[c][0]);
+  for (uInt c = 0; c < AllItems.size(); ++c) Stack->AddItem(AllItems[c][0]);
   return false;
 }
 
@@ -1088,7 +1088,7 @@ truth commandsystem::SecretKnowledge (character *Char) {
   List.AddEntry(CONST_S("Material info"), LIGHT_GRAY);
   game::SetStandardListAttributes(List);
   List.AddFlags(SELECTABLE);
-  uint c, Chosen = List.Draw();
+  uInt c, Chosen = List.Draw();
   festring Entry;
   if (Chosen & FELIST_ERROR_BIT) return false;
   List.Empty();
@@ -1231,9 +1231,9 @@ truth commandsystem::SummonMonster (character *Char) {
 
 
 truth commandsystem::LevelTeleport (character *) {
-  long Level = game::NumberQuestion(CONST_S("To which level?"), WHITE);
+  sLong Level = game::NumberQuestion(CONST_S("To which level?"), WHITE);
   if (Level <= 0 || Level > game::GetLevels()) {
-    ADD_MESSAGE("There is no level %ld in this dungeon, %s!", Level, game::Insult());
+    ADD_MESSAGE("There is no level %d in this dungeon, %s!", Level, game::Insult());
     return false;
   }
   if (Level == game::GetCurrentLevelIndex()+1) {
@@ -1371,7 +1371,7 @@ truth commandsystem::WizardHeal (character *Char) {
   for (int c = 0; c < Char->GetBodyParts(); ++c) {
     if (Char->GetBodyPart(c)) Char->GetBodyPart(c)->RemoveAllFluids();
     if (!Char->GetBodyPart(c) && Char->CanCreateBodyPart(c)) {
-      for (std::list<ulong>::const_iterator i = Char->GetOriginalBodyPartID(c).begin(); i != Char->GetOriginalBodyPartID(c).end(); ++i) {
+      for (std::list<uLong>::const_iterator i = Char->GetOriginalBodyPartID(c).begin(); i != Char->GetOriginalBodyPartID(c).end(); ++i) {
         bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
         if (OldBodyPart && OldBodyPart->CanRegenerate()) {
           OldBodyPart->RemoveAllFluids();

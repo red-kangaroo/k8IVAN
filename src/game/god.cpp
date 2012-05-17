@@ -42,7 +42,7 @@ void god::Pray()
       }
       else if(Relation > 100 && !(RAND() % 20))
       {
-  long Category = RAND() & ANY_CATEGORY;
+  sLong Category = RAND() & ANY_CATEGORY;
 
   if(!Category)
     Category = ANY_CATEGORY;
@@ -180,7 +180,7 @@ void god::AdjustRelation(int Amount)
     Relation = 1000;
 }
 
-void god::AdjustTimer(long Amount)
+void god::AdjustTimer(sLong Amount)
 {
   Timer += Amount;
 
@@ -391,7 +391,7 @@ truth god::TryToAttachBodyPart(character* Char)
       materialvector MaterialVector;
       protosystem::CreateEveryMaterial(MaterialVector, this, Char);
       std::sort(MaterialVector.begin(), MaterialVector.end(), materialsorter(0));
-      uint c;
+      uInt c;
 
       for(c = 0; c < MaterialVector.size(); ++c)
   if(ForceGiveBodyPart()
@@ -440,9 +440,9 @@ truth god::TryToAttachBodyPart(character* Char)
 truth god::TryToHardenBodyPart(character* Char)
 {
   bodypart* PossibleBodyPart[MAX_BODYPARTS];
-  uint c, Index = 0;
+  uInt c, Index = 0;
 
-  for(c = 1; c < uint(Char->GetBodyParts()); ++c) // annoying :(
+  for(c = 1; c < uInt(Char->GetBodyParts()); ++c) // annoying :(
   {
     bodypart* BodyPart = Char->GetBodyPart(c);
 
@@ -499,12 +499,12 @@ void god::SignalRandomAltarGeneration(const std::vector<v2>& RoomSquare)
 
   for(int c = 0; c < Times; ++c)
   {
-    long Category = RAND() & ANY_CATEGORY;
+    sLong Category = RAND() & ANY_CATEGORY;
 
     if(!Category)
       Category = ANY_CATEGORY;
 
-    long MaxPrice = 250 + femath::LoopRoll(95, 500) * 10;
+    sLong MaxPrice = 250 + femath::LoopRoll(95, 500) * 10;
     item* Item = protosystem::BalancedCreateItem(0, MaxPrice, Category, 0, 0, GetType());
 
     if(Item)
@@ -517,7 +517,7 @@ void god::SignalRandomAltarGeneration(const std::vector<v2>& RoomSquare)
 
 void god::Save(outputfile& SaveFile) const
 {
-  SaveFile << (ushort)GetType();
+  SaveFile << (uShort)GetType();
   SaveFile << Relation << Timer << Known << LastPray;
 }
 

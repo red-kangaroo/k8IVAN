@@ -55,17 +55,17 @@ worldmap::~worldmap () {
   delete [] TypeBuffer;
   delete [] AltitudeBuffer;
   delete [] ContinentBuffer;
-  for (uint c = 1; c < Continent.size(); ++c) delete Continent[c];
-  for (uint c = 0; c < PlayerGroup.size(); ++c) delete PlayerGroup[c];
+  for (uInt c = 1; c < Continent.size(); ++c) delete Continent[c];
+  for (uInt c = 0; c < PlayerGroup.size(); ++c) delete PlayerGroup[c];
 }
 
 
 void worldmap::Save (outputfile &SaveFile) const {
   area::Save(SaveFile);
-  SaveFile.Write(reinterpret_cast<char*>(TypeBuffer[0]), XSizeTimesYSize*sizeof(uchar));
+  SaveFile.Write(reinterpret_cast<char*>(TypeBuffer[0]), XSizeTimesYSize*sizeof(uChar));
   SaveFile.Write(reinterpret_cast<char*>(AltitudeBuffer[0]), XSizeTimesYSize*sizeof(short));
-  SaveFile.Write(reinterpret_cast<char*>(ContinentBuffer[0]), XSizeTimesYSize*sizeof(uchar));
-  for (ulong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->Save(SaveFile);
+  SaveFile.Write(reinterpret_cast<char*>(ContinentBuffer[0]), XSizeTimesYSize*sizeof(uChar));
+  for (uLong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->Save(SaveFile);
   SaveFile << Continent << PlayerGroup;
 }
 
@@ -76,9 +76,9 @@ void worldmap::Load (inputfile &SaveFile) {
   Alloc2D(TypeBuffer, XSize, YSize);
   Alloc2D(AltitudeBuffer, XSize, YSize);
   Alloc2D(ContinentBuffer, XSize, YSize);
-  SaveFile.Read(reinterpret_cast<char*>(TypeBuffer[0]), XSizeTimesYSize*sizeof(uchar));
+  SaveFile.Read(reinterpret_cast<char*>(TypeBuffer[0]), XSizeTimesYSize*sizeof(uChar));
   SaveFile.Read(reinterpret_cast<char*>(AltitudeBuffer[0]), XSizeTimesYSize*sizeof(short));
-  SaveFile.Read(reinterpret_cast<char*>(ContinentBuffer[0]), XSizeTimesYSize*sizeof(uchar));
+  SaveFile.Read(reinterpret_cast<char*>(ContinentBuffer[0]), XSizeTimesYSize*sizeof(uChar));
   continent::TypeBuffer = TypeBuffer;
   continent::AltitudeBuffer = AltitudeBuffer;
   continent::ContinentBuffer = ContinentBuffer;
@@ -107,7 +107,7 @@ void worldmap::Generate () {
     SmoothClimate();
     CalculateContinents();
     std::vector<continent*> PerfectForAttnam, PerfectForNewAttnam;
-    for (uint c = 1; c < Continent.size(); ++c) {
+    for (uInt c = 1; c < Continent.size(); ++c) {
       if (Continent[c]->GetSize() > 25 && Continent[c]->GetSize() < 1000 &&
           Continent[c]->GetGTerrainAmount(EGForestType) &&
           Continent[c]->GetGTerrainAmount(SnowType) &&
@@ -247,7 +247,7 @@ void worldmap::SmoothAltitude () {
 
 
 void worldmap::FastSmooth (int x, int y) {
-  long HeightNear = 0;
+  sLong HeightNear = 0;
   int d;
   for (d = 0; d < 4; ++d) HeightNear += OldAltitudeBuffer[x + DirX[d]][y + DirY[d]];
   for (d = 4; d < 8; ++d) HeightNear += AltitudeBuffer[x + DirX[d]][y + DirY[d]];
@@ -257,7 +257,7 @@ void worldmap::FastSmooth (int x, int y) {
 
 
 void worldmap::SafeSmooth (int x, int y) {
-  long HeightNear = 0;
+  sLong HeightNear = 0;
   int d, SquaresNear = 0;
   for (d = 0; d < 4; ++d) {
     int X = x + DirX[d];
@@ -361,9 +361,9 @@ int worldmap::WhatTerrainIsMostCommonAroundCurrentTerritorySquareIncludingTheSqu
 
 
 void worldmap::CalculateContinents () {
-  for (uint c = 1; c < Continent.size(); ++c) delete Continent[c];
+  for (uInt c = 1; c < Continent.size(); ++c) delete Continent[c];
   Continent.resize(1, 0);
-  memset(ContinentBuffer[0], 0, XSizeTimesYSize*sizeof(uchar));
+  memset(ContinentBuffer[0], 0, XSizeTimesYSize*sizeof(uChar));
   game::BusyAnimation();
   for (int x = 0; x < XSize; ++x) {
     for (int y = 0; y < YSize; ++y) {
@@ -400,14 +400,14 @@ void worldmap::CalculateContinents () {
     }
   }
   RemoveEmptyContinents();
-  for (uint c = 1; c < Continent.size(); ++c) Continent[c]->GenerateInfo();
+  for (uInt c = 1; c < Continent.size(); ++c) Continent[c]->GenerateInfo();
 }
 
 
 void worldmap::RemoveEmptyContinents () {
-  for (uint c = 1; c < Continent.size(); ++c) {
+  for (uInt c = 1; c < Continent.size(); ++c) {
     if (!Continent[c]->GetSize()) {
-      for (uint i = Continent.size() - 1; i >= c; i--) {
+      for (uInt i = Continent.size() - 1; i >= c; i--) {
         if (Continent[i]->GetSize()) {
           Continent[i]->AttachTo(Continent[c]);
           delete Continent[i];
@@ -456,12 +456,12 @@ void worldmap::Draw (truth) const {
 
 
 void worldmap::CalculateLuminances () {
-  for (ulong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->CalculateLuminance();
+  for (uLong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->CalculateLuminance();
 }
 
 
 void worldmap::CalculateNeighbourBitmapPoses () {
-  for (ulong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->GetGWTerrain()->CalculateNeighbourBitmapPoses();
+  for (uLong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->GetGWTerrain()->CalculateNeighbourBitmapPoses();
 }
 
 
@@ -497,11 +497,11 @@ inputfile &operator >> (inputfile &SaveFile, worldmap *&WorldMap) {
 void worldmap::UpdateLOS () {
   game::RemoveLOSUpdateRequest();
   int Radius = PLAYER->GetLOSRange();
-  long RadiusSquare = Radius*Radius;
+  sLong RadiusSquare = Radius*Radius;
   v2 Pos = PLAYER->GetPos();
   rect Rect;
   femath::CalculateEnvironmentRectangle(Rect, Border, Pos, Radius);
   for (int x = Rect.X1; x <= Rect.X2; ++x)
     for (int y = Rect.Y1; y <= Rect.Y2; ++y)
-      if (long(HypotSquare(Pos.X-x, Pos.Y-y)) <= RadiusSquare) Map[x][y]->SignalSeen();
+      if (sLong(HypotSquare(Pos.X-x, Pos.Y-y)) <= RadiusSquare) Map[x][y]->SignalSeen();
 }

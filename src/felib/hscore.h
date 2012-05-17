@@ -37,29 +37,29 @@ public:
   //void AddToFile (highscore *) const;
   truth MergeToFile (highscore *To) const;
 
-  truth Add (long NewScore, cfestring &NewEntry);
+  truth Add (sLong NewScore, cfestring &NewEntry);
   truth LastAddFailed () const { return LastAdd == MAX_HIGHSCORES; }
 
-  int Find (long AScore, cfestring &AEntry, time_t ATime, long ARandomID);
+  int Find (sLong AScore, cfestring &AEntry, time_t ATime, sLong ARandomID);
 
-  ushort GetVersion () const { return Version; }
+  uShort GetVersion () const { return Version; }
   cfestring &GetEntry (int I) const { return Entry[I]; }
-  long GetScore (int I) const { return Score[I]; }
-  long GetSize () const { return Entry.size(); }
+  sLong GetScore (int I) const { return Score[I]; }
+  sLong GetSize () const { return Entry.size(); }
 
   void Draw () const;
 
 private:
-  truth Add (long NewScore, cfestring &NewEntry, time_t NewTime, long NewRandomID);
+  truth Add (sLong NewScore, cfestring &NewEntry, time_t NewTime, sLong NewRandomID);
   festring genFileName (const festring &fname) const;
 
 private:
   std::vector<festring> Entry;
-  std::vector<long> Score;
+  std::vector<sLong> Score;
   std::vector<time_t> Time;
-  std::vector<long> RandomID;
+  std::vector<sLong> RandomID;
   int LastAdd;
-  ushort Version;
+  uShort Version;
 };
 
 

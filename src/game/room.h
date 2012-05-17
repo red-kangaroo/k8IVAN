@@ -56,7 +56,7 @@ class room
   void SetIndex(int What) { Index = What; }
   int GetIndex() const { return Index; }
   character* GetMaster() const;
-  void SetMasterID(ulong What) { MasterID = What; }
+  void SetMasterID(uLong What) { MasterID = What; }
   virtual truth PickupItem(character*, item*, int) { return true; }
   virtual truth DropItem(character*, item*, int) { return true; }
   int GetDivineMaster() const { return DivineMaster; }
@@ -85,17 +85,17 @@ class room
   virtual truth IsOKToDestroyWalls(ccharacter*) const;
   virtual void AddItemEffect(item*) { };
   void FinalProcessForBone();
-  void SetFlags(ulong What) { Flags = What; }
+  void SetFlags(uLong What) { Flags = What; }
   truth DontGenerateMonsters() const { return Flags & NO_MONSTER_GENERATION; }
  protected:
   mutable character* Master;
-  mutable ulong LastMasterSearchTick;
+  mutable uLong LastMasterSearchTick;
   v2 Pos;
   v2 Size;
-  ulong MasterID;
+  uLong MasterID;
   int Index;
   int DivineMaster;
-  ulong Flags;
+  uLong Flags;
 };
 
 #ifdef __FILE_OF_STATIC_ROOM_PROTOTYPE_DEFINITIONS__

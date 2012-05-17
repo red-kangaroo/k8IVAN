@@ -46,10 +46,10 @@ struct lterraindatabase : public databasebase
   festring NamePlural;
   festring PostFix;
   int ArticleMode;
-  fearray<long> MainMaterialConfig;
-  fearray<long> SecondaryMaterialConfig;
-  fearray<long> MaterialConfigChances;
-  long MaterialConfigChanceSum;
+  fearray<sLong> MainMaterialConfig;
+  fearray<sLong> SecondaryMaterialConfig;
+  fearray<sLong> MaterialConfigChances;
+  sLong MaterialConfigChanceSum;
   int OKVisualEffects;
   col16 MaterialColorB;
   col16 MaterialColorC;
@@ -97,14 +97,14 @@ class lterrain : public object
   virtual truth IsOnGround() const { return true; }
   room* GetRoom() const;
   virtual void SignalRustLevelChange();
-  virtual void TryToRust(long);
-  virtual void ReceiveAcid(material*, long) { }
+  virtual void TryToRust(sLong);
+  virtual void ReceiveAcid(material*, sLong) { }
   void InitMaterials(material*, truth = true);
   void SetMainMaterial(material*, int = 0);
   void ChangeMainMaterial(material*, int = 0);
   virtual void GenerateMaterials();
   virtual void InitMaterials(const materialscript*, const materialscript*, truth);
-  virtual const fearray<long>& GetMainMaterialConfig() const = 0;
+  virtual const fearray<sLong>& GetMainMaterialConfig() const = 0;
   virtual void SurviveEffect(character*) { }
   virtual void RestoreHP() { }
   virtual void AddLocationDescription(festring&) const;
@@ -170,10 +170,10 @@ class glterrain : public lterrain, public gterrain
   DATA_BASE_VALUE(cfestring&, NamePlural);
   DATA_BASE_VALUE(cfestring&, PostFix);
   DATA_BASE_VALUE(int, ArticleMode);
-  virtual DATA_BASE_VALUE(const fearray<long>&, MainMaterialConfig);
-  DATA_BASE_VALUE(const fearray<long>&, SecondaryMaterialConfig);
-  virtual DATA_BASE_VALUE(const fearray<long>&, MaterialConfigChances);
-  virtual DATA_BASE_VALUE(long, MaterialConfigChanceSum);
+  virtual DATA_BASE_VALUE(const fearray<sLong>&, MainMaterialConfig);
+  DATA_BASE_VALUE(const fearray<sLong>&, SecondaryMaterialConfig);
+  virtual DATA_BASE_VALUE(const fearray<sLong>&, MaterialConfigChances);
+  virtual DATA_BASE_VALUE(sLong, MaterialConfigChanceSum);
   DATA_BASE_VALUE(int, OKVisualEffects);
   virtual DATA_BASE_VALUE_WITH_PARAMETER(col16, MaterialColorB, int);
   virtual DATA_BASE_VALUE_WITH_PARAMETER(col16, MaterialColorC, int);
@@ -207,7 +207,7 @@ struct olterraindatabase : public lterraindatabase
   festring DigMessage;
   int RestModifier;
   festring RestMessage;
-  long StorageVolume;
+  sLong StorageVolume;
   int HPModifier;
   v2 OpenBitmapPos;
   v2 WindowBitmapPos;
@@ -285,10 +285,10 @@ class olterrain : public lterrain, public oterrain
   DATA_BASE_VALUE(cfestring&, NamePlural);
   DATA_BASE_VALUE(cfestring&, PostFix);
   DATA_BASE_VALUE(int, ArticleMode);
-  virtual DATA_BASE_VALUE(const fearray<long>&, MainMaterialConfig);
-  DATA_BASE_VALUE(const fearray<long>&, SecondaryMaterialConfig);
-  virtual DATA_BASE_VALUE(const fearray<long>&, MaterialConfigChances);
-  virtual DATA_BASE_VALUE(long, MaterialConfigChanceSum);
+  virtual DATA_BASE_VALUE(const fearray<sLong>&, MainMaterialConfig);
+  DATA_BASE_VALUE(const fearray<sLong>&, SecondaryMaterialConfig);
+  virtual DATA_BASE_VALUE(const fearray<sLong>&, MaterialConfigChances);
+  virtual DATA_BASE_VALUE(sLong, MaterialConfigChanceSum);
   DATA_BASE_VALUE(int, OKVisualEffects);
   virtual DATA_BASE_VALUE_WITH_PARAMETER(col16, MaterialColorB, int);
   virtual DATA_BASE_VALUE_WITH_PARAMETER(col16, MaterialColorC, int);
@@ -300,7 +300,7 @@ class olterrain : public lterrain, public oterrain
   DATA_BASE_VALUE(int, RestModifier);
   DATA_BASE_VALUE(cfestring&, RestMessage);
   DATA_BASE_TRUTH(IsUpLink);
-  DATA_BASE_VALUE(long, StorageVolume);
+  DATA_BASE_VALUE(sLong, StorageVolume);
   DATA_BASE_VALUE(int, HPModifier);
   DATA_BASE_TRUTH(IsSafeToCreateDoor);
   DATA_BASE_VALUE_WITH_PARAMETER(v2, OpenBitmapPos, int);
@@ -327,7 +327,7 @@ class olterrain : public lterrain, public oterrain
   virtual void Draw(blitdata&) const;
   virtual int GetTheoreticalWalkability() const { return DataBase->Walkability; }
   virtual void BeDestroyed() { Break(); }
-  virtual void ReceiveAcid(material*, long);
+  virtual void ReceiveAcid(material*, sLong);
   virtual void SignalRustLevelChange();
   virtual truth IsFountainWithWater() const { return false; }
   truth ShowThingsUnder() const;

@@ -41,9 +41,9 @@ CHARACTER(nonhumanoid, character)
   double GetUnarmedToHitValue() const { return UnarmedToHitValue; }
   double GetKickToHitValue() const { return KickToHitValue; }
   double GetBiteToHitValue() const { return BiteToHitValue; }
-  long GetUnarmedAPCost() const { return UnarmedAPCost; }
-  long GetKickAPCost() const { return KickAPCost; }
-  long GetBiteAPCost() const { return BiteAPCost; }
+  sLong GetUnarmedAPCost() const { return UnarmedAPCost; }
+  sLong GetKickAPCost() const { return KickAPCost; }
+  sLong GetBiteAPCost() const { return BiteAPCost; }
   virtual void Kick(lsquare*, int, truth = false);
   virtual truth Hit(character*, v2, int, int = 0);
   virtual void UnarmedHit(character*, v2, int, truth = false);
@@ -73,9 +73,9 @@ CHARACTER(nonhumanoid, character)
   double UnarmedToHitValue;
   double KickToHitValue;
   double BiteToHitValue;
-  long UnarmedAPCost;
-  long KickAPCost;
-  long BiteAPCost;
+  sLong UnarmedAPCost;
+  sLong KickAPCost;
+  sLong BiteAPCost;
 };
 
 CHARACTER(frog, nonhumanoid)
@@ -245,7 +245,7 @@ CHARACTER(floatingeye, nonhumanoid)
  protected:
   virtual void GetAICommand();
   std::vector<v2> WayPoints;
-  uint NextWayPoint;
+  uInt NextWayPoint;
 };
 
 CHARACTER(eddy, nonhumanoid)
@@ -392,7 +392,7 @@ CHARACTER(genetrixvesana, largecreature)
   virtual void GetAICommand();
   virtual void CreateCorpse(lsquare*);
   virtual truth MustBeRemovedFromBone() const;
-  long TurnsExisted;
+  sLong TurnsExisted;
 };
 
 CHARACTER(hedgehog, nonhumanoid)
@@ -491,7 +491,7 @@ protected:
   virtual void GetAICommand ();
   virtual void CreateCorpse (lsquare *);
   virtual truth MustBeRemovedFromBone () const;
-  long TurnsExisted;
+  sLong TurnsExisted;
   int Species;
 };
 

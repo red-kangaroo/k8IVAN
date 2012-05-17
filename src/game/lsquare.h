@@ -40,18 +40,18 @@ typedef truth (item::*sorter)(ccharacter*) const;
 
 struct emitter
 {
-  emitter(ulong ID, col24 Emitation) : ID(ID), Emitation(Emitation) { }
+  emitter(uLong ID, col24 Emitation) : ID(ID), Emitation(Emitation) { }
   explicit emitter() { }
-  ulong ID;
+  uLong ID;
   col24 Emitation;
 };
 
-inline ulong MakeEmitterID(v2 Pos)
+inline uLong MakeEmitterID(v2 Pos)
 {
   return Pos.X + (Pos.Y << 8);
 }
 
-inline v2 ExtractPosFromEmitterID(ulong ID)
+inline v2 ExtractPosFromEmitterID(uLong ID)
 {
   return v2(ID & 0xFF, (ID >> 8) & 0xFF);
 }
@@ -78,7 +78,7 @@ struct stackcontroller
 {
   static lsquare*** Map;
   static lsquare** Stack;
-  static long StackIndex;
+  static sLong StackIndex;
   static int LevelXSize, LevelYSize;
   static v2 Center;
 };
@@ -86,9 +86,9 @@ struct stackcontroller
 struct tickcontroller
 {
   static void PrepareShiftedTick();
-  static ulong Tick;
-  static ulong ShiftedTick[4];
-  static ulong ShiftedQuadriTick[4];
+  static uLong Tick;
+  static uLong ShiftedTick[4];
+  static uLong ShiftedQuadriTick[4];
 };
 
 class lsquare : public square
@@ -105,9 +105,9 @@ class lsquare : public square
   virtual void AddCharacter(character*);
   virtual void RemoveCharacter();
   stack* GetStack() const { return Stack; }
-  void AlterLuminance(ulong, col24);
+  void AlterLuminance(uLong, col24);
   void Emitate() { Emitate(Emitation); }
-  void Emitate(col24, ulong = 0);
+  void Emitate(col24, uLong = 0);
   void Clean();
   truth Open(character*);
   truth Close(character*);
@@ -117,8 +117,8 @@ class lsquare : public square
   void SignalEmitationDecrease(col24);
   col24 GetEmitation() const { return Emitation; }
   void Noxify() { Noxify(Emitation); }
-  void Noxify(col24, ulong = 0);
-  truth NoxifyEmitter(ulong);
+  void Noxify(col24, uLong = 0);
+  truth NoxifyEmitter(uLong);
   cchar* GetEngraved() const { return Engraved; }
   truth Engrave(cfestring&);
   void UpdateMemorizedDescription(truth = false);
@@ -139,20 +139,20 @@ class lsquare : public square
   void SetLTerrain(glterrain*, olterrain*);
   void ApplyScript(const squarescript*, room*);
   virtual truth CanBeSeenByPlayer(truth = false) const;
-  virtual truth CanBeSeenFrom(v2, long, truth = false) const ;
+  virtual truth CanBeSeenFrom(v2, sLong, truth = false) const ;
   void StepOn(character*, lsquare**);
-  uint GetRoomIndex() const { return RoomIndex; }
-  void SetRoomIndex(uint What) { RoomIndex = What; }
+  uInt GetRoomIndex() const { return RoomIndex; }
+  void SetRoomIndex(uInt What) { RoomIndex = What; }
   void ReceiveVomit(character*, liquid*);
   room* GetRoom() const { return RoomIndex ? GetLevel()->GetRoom(RoomIndex) : 0; }
   void SetTemporaryEmitation(col24);
   col24 GetTemporaryEmitation() const { return TemporaryEmitation; }
   void ChangeOLTerrainAndUpdateLights(olterrain*);
-  void DrawParticles(long, truth = true);
-  v2 DrawLightning(v2, long, int, truth = true);
+  void DrawParticles(sLong, truth = true);
+  v2 DrawLightning(v2, sLong, int, truth = true);
   truth DipInto(item*, character*);
   truth TryKey(item*, character*);
-  void SignalSeen(ulong);
+  void SignalSeen(uLong);
   void CalculateLuminance();
   void DrawStaticContents(blitdata&) const;
   void DrawMemorized(blitdata&) const;
@@ -233,16 +233,16 @@ class lsquare : public square
   void UnFreeze() { Flags &= ~FREEZED; }
   void InitLastSeen();
   void GetSideItemDescription(festring&, truth = false) const;
-  void AddSunLightEmitter(ulong);
+  void AddSunLightEmitter(uLong);
   void SendSunLightSignals();
   const sunemittervector& GetSunEmitter() const { return SunEmitter; }
   void ZeroReSunEmitatedFlags();
   virtual truth HasBeenSeen() const { return truth(Memorized); }
   truth CalculateIsTransparent();
-  void CalculateSunLightLuminance(ulong);
+  void CalculateSunLightLuminance(uLong);
   void CreateMemorized();
   truth DetectMaterial(cmaterial*) const;
-  void Reveal(ulong, truth = false);
+  void Reveal(uLong, truth = false);
   void DestroyMemorized();
   void SwapMemorized(lsquare*);
   truth HasNoBorderPartners() const;
@@ -285,11 +285,11 @@ class lsquare : public square
   bitmap* FowMemorized;
   char* Engraved;
   glterrain** GroundBorderPartnerTerrain;
-  ulong GroundBorderPartnerInfo;
+  uLong GroundBorderPartnerInfo;
   olterrain** OverBorderPartnerTerrain;
-  ulong OverBorderPartnerInfo;
-  ulong SquarePartEmitationTick;
-  ulong SquarePartLastSeen;
+  uLong OverBorderPartnerInfo;
+  uLong SquarePartEmitationTick;
+  uLong SquarePartLastSeen;
   col24 Emitation;
   int SmokeAlphaSum;
   lsquare* NeighbourLSquare[8];
@@ -297,8 +297,8 @@ class lsquare : public square
   col24 SunLightLuminance;
   col24 TemporaryEmitation;
   col24 SecondarySunLightEmitation;
-  ushort LastExplosionID;
-  uchar RoomIndex;
+  uShort LastExplosionID;
+  uChar RoomIndex;
 };
 
 inline truth lsquare::IsDark() const

@@ -30,24 +30,24 @@ struct graphicid
 {
   graphicid() { }
   bool operator<(const graphicid&) const;
-  ushort BitmapPosX NO_ALIGNMENT;
-  ushort BitmapPosY NO_ALIGNMENT;
+  uShort BitmapPosX NO_ALIGNMENT;
+  uShort BitmapPosY NO_ALIGNMENT;
   packcol16 Color[4] NO_ALIGNMENT;
-  uchar Frame /*k8NO_ALIGNMENT*/;
-  uchar FileIndex /*k8NO_ALIGNMENT*/;
-  ushort SpecialFlags NO_ALIGNMENT;
+  uChar Frame /*k8NO_ALIGNMENT*/;
+  uChar FileIndex /*k8NO_ALIGNMENT*/;
+  uShort SpecialFlags NO_ALIGNMENT;
   packalpha Alpha[4] /*k8NO_ALIGNMENT*/;
   packalpha BaseAlpha /*k8NO_ALIGNMENT*/;
-  uchar SparkleFrame /*k8NO_ALIGNMENT*/;
-  uchar SparklePosX /*k8NO_ALIGNMENT*/;
-  uchar SparklePosY /*k8NO_ALIGNMENT*/;
+  uChar SparkleFrame /*k8NO_ALIGNMENT*/;
+  uChar SparklePosX /*k8NO_ALIGNMENT*/;
+  uChar SparklePosY /*k8NO_ALIGNMENT*/;
   packcol16 OutlineColor NO_ALIGNMENT;
   packalpha OutlineAlpha /*k8NO_ALIGNMENT*/;
-  uchar FlyAmount /*k8NO_ALIGNMENT*/;
+  uChar FlyAmount /*k8NO_ALIGNMENT*/;
   v2 Position NO_ALIGNMENT;
-  uchar RustData[4] /*k8NO_ALIGNMENT*/;
-  ushort Seed NO_ALIGNMENT;
-  uchar WobbleData /*k8NO_ALIGNMENT*/;
+  uChar RustData[4] /*k8NO_ALIGNMENT*/;
+  uShort Seed NO_ALIGNMENT;
+  uChar WobbleData /*k8NO_ALIGNMENT*/;
 };
 
 inline bool graphicid::operator<(const graphicid& GI) const
@@ -63,7 +63,7 @@ struct tile
   tile() { }
   tile(bitmap* Bitmap) : Bitmap(Bitmap), Users(1) { }
   bitmap* Bitmap;
-  long Users;
+  sLong Users;
 };
 
 typedef std::map<graphicid, tile> tilemap;
@@ -123,7 +123,7 @@ class igraph
   static cchar* RawGraphicFileName[];
   static cchar* GraphicFileName[];
   static tilemap TileMap;
-  static uchar RollBuffer[256];
+  static uChar RollBuffer[256];
   static bitmap* FlagBuffer;
   static int** BodyBitmapValidityMap;
   static bitmap* Menu;

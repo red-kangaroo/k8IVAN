@@ -87,9 +87,9 @@ void bodypart::Load(inputfile& SaveFile)
 int bodypart::GetStrengthValue() const
 {
   if(!UseMaterialAttributes())
-    return long(GetStrengthModifier()) * Master->GetAttribute(ENDURANCE) / 2000;
+    return sLong(GetStrengthModifier()) * Master->GetAttribute(ENDURANCE) / 2000;
   else
-    return long(GetStrengthModifier()) * GetMainMaterial()->GetStrengthValue() / 2000;
+    return sLong(GetStrengthModifier()) * GetMainMaterial()->GetStrengthValue() / 2000;
 }
 
 int head::GetTotalResistance(int Type) const
@@ -341,9 +341,9 @@ double arm::GetUnarmedToHitValue() const
     * BonusMultiplier / 5000000;
 }
 
-long arm::GetUnarmedAPCost() const
+sLong arm::GetUnarmedAPCost() const
 {
-  return long(10000000000. / (APBonus(GetAttribute(DEXTERITY)) * Master->GetMoveEase() * Master->GetCWeaponSkill(UNARMED)->GetBonus()));
+  return sLong(10000000000. / (APBonus(GetAttribute(DEXTERITY)) * Master->GetMoveEase() * Master->GetCWeaponSkill(UNARMED)->GetBonus()));
 }
 
 void arm::CalculateDamage()
@@ -460,7 +460,7 @@ double arm::GetWieldedToHitValue() const
   return Base * ThisToHit;
 }
 
-long arm::GetWieldedAPCost() const
+sLong arm::GetWieldedAPCost() const
 {
   citem* Wielded = GetWielded();
 
@@ -472,7 +472,7 @@ long arm::GetWieldedAPCost() const
   if(HitStrength <= 0)
     return 0;
 
-  return long(1 / (1e-14 * APBonus(GetAttribute(DEXTERITY)) * Master->GetMoveEase() * GetHumanoidMaster()->GetCWeaponSkill(Wielded->GetWeaponCategory())->GetBonus() * (GetCurrentSWeaponSkillBonus() * Min(HitStrength, 10))));
+  return sLong(1 / (1e-14 * APBonus(GetAttribute(DEXTERITY)) * Master->GetMoveEase() * GetHumanoidMaster()->GetCWeaponSkill(Wielded->GetWeaponCategory())->GetBonus() * (GetCurrentSWeaponSkillBonus() * Min(HitStrength, 10))));
 }
 
 void head::CalculateDamage()
@@ -496,7 +496,7 @@ void head::CalculateAPCost()
   if(!Master)
     return;
 
-  BiteAPCost = Max(long(10000000000. / (APBonus(Master->GetAttribute(AGILITY)) * Master->GetMoveEase() * Master->GetCWeaponSkill(BITE)->GetBonus())), 100L);
+  BiteAPCost = Max(sLong(10000000000. / (APBonus(Master->GetAttribute(AGILITY)) * Master->GetMoveEase() * Master->GetCWeaponSkill(BITE)->GetBonus())), 100);
 }
 
 void leg::CalculateDamage()
@@ -542,7 +542,7 @@ void leg::CalculateAPCost()
   if(!Master)
     return;
 
-  KickAPCost = Max(long(20000000000. / (APBonus(GetAttribute(AGILITY)) * Master->GetMoveEase() * Master->GetCWeaponSkill(KICK)->GetBonus())), 100L);
+  KickAPCost = Max(sLong(20000000000. / (APBonus(GetAttribute(AGILITY)) * Master->GetMoveEase() * Master->GetCWeaponSkill(KICK)->GetBonus())), 100);
 }
 
 humanoid* bodypart::GetHumanoidMaster() const
@@ -605,7 +605,7 @@ truth corpse::CanBeEatenByAI(ccharacter* Eater) const
 
 int corpse::GetStrengthValue() const
 {
-  return long(GetStrengthModifier()) * GetDeceased()->GetTorso()->GetMainMaterial()->GetStrengthValue() / 2000;
+  return sLong(GetStrengthModifier()) * GetDeceased()->GetTorso()->GetMainMaterial()->GetStrengthValue() / 2000;
 }
 
 corpse::~corpse()
@@ -791,9 +791,9 @@ truth corpse::IsDestroyable(ccharacter* Char) const
   return true;
 }
 
-long corpse::GetTruePrice() const
+sLong corpse::GetTruePrice() const
 {
-  long Price = 0;
+  sLong Price = 0;
 
   for(int c = 0; c < GetDeceased()->GetBodyParts(); ++c)
   {
@@ -885,15 +885,15 @@ leftleg::leftleg()
 
 void arm::Hit(character* Enemy, v2 HitPos, int Direction, int Flags)
 {
-  long StrExp = 50, DexExp = 50;
+  sLong StrExp = 50, DexExp = 50;
   truth THW = false;
   item* Wielded = GetWielded();
 
   if(Wielded)
   {
-    long Weight = Wielded->GetWeight();
-    StrExp = Limit(15 * Weight / 200L, 75L, 300L);
-    DexExp = Weight ? Limit(75000L / Weight, 75L, 300L) : 300;
+    sLong Weight = Wielded->GetWeight();
+    StrExp = Limit(15 * Weight / 200, 75, 300);
+    DexExp = Weight ? Limit(75000 / Weight, 75, 300) : 300;
     THW = TwoHandWieldIsActive();
   }
 
@@ -1194,7 +1194,7 @@ void bodypart::SignalEquipmentRemoval(gearslot* Slot, citem* Item)
 
 void bodypart::Mutate()
 {
-  GetMainMaterial()->SetVolume(long(GetVolume() * (1.5 - (RAND() & 1023) / 1023.)));
+  GetMainMaterial()->SetVolume(sLong(GetVolume() * (1.5 - (RAND() & 1023) / 1023.)));
 }
 
 void arm::Mutate()
@@ -1333,7 +1333,7 @@ void bodypart::CalculateEmitation()
   }
 }
 
-void bodypart::CalculateMaxHP(ulong Flags)
+void bodypart::CalculateMaxHP(uLong Flags)
 {
   int HPDelta = MaxHP - HP/*k8, OldMaxHP = MaxHP*/;
   MaxHP = 0;
@@ -1342,7 +1342,7 @@ void bodypart::CalculateMaxHP(ulong Flags)
   {
     if(!UseMaterialAttributes())
     {
-      long Endurance = Master->GetAttribute(ENDURANCE);
+      sLong Endurance = Master->GetAttribute(ENDURANCE);
       double DoubleHP = GetBodyPartVolume() * Endurance * Endurance / 200000;
 
       for(unsigned int c = 0; c < Scar.size(); ++c)
@@ -1352,7 +1352,7 @@ void bodypart::CalculateMaxHP(ulong Flags)
     }
     else
     {
-      long SV = GetMainMaterial()->GetStrengthValue();
+      sLong SV = GetMainMaterial()->GetStrengthValue();
       MaxHP = (GetBodyPartVolume() * SV >> 4) * SV / 250000;
     }
 
@@ -1524,7 +1524,7 @@ double bodypart::GetTimeToDie(int Damage, double ToHitValue, double DodgeValue, 
   double ChanceForNoBlock = 1.0;
   AverageDamage = 0;
 
-  for(uint c = 0; c < Block.size(); ++c)
+  for(uInt c = 0; c < Block.size(); ++c)
   {
     ChanceForNoBlock -= Block[c].first;
 
@@ -1769,7 +1769,7 @@ void bodypart::Be()
 void bodypart::SpillBlood(int HowMuch, v2 Pos)
 {
   if(HowMuch && (!Master || Master->SpillsBlood()) && (IsAlive() || MainMaterial->IsLiquid()) && !game::IsInWilderness())
-    GetNearLSquare(Pos)->SpillFluid(0, CreateBlood(long(HowMuch * sqrt(BodyPartVolume) / 2)), false, false);
+    GetNearLSquare(Pos)->SpillFluid(0, CreateBlood(sLong(HowMuch * sqrt(BodyPartVolume) / 2)), false, false);
 }
 
 void bodypart::SpillBlood(int HowMuch)
@@ -1777,7 +1777,7 @@ void bodypart::SpillBlood(int HowMuch)
   if(HowMuch && (!Master || Master->SpillsBlood()) && (IsAlive() || MainMaterial->IsLiquid()) && !game::IsInWilderness())
     for(int c = 0; c < GetSquaresUnder(); ++c)
       if(GetLSquareUnder(c))
-  GetLSquareUnder(c)->SpillFluid(0, CreateBlood(long(HowMuch * sqrt(BodyPartVolume) / 2)), false, false);
+  GetLSquareUnder(c)->SpillFluid(0, CreateBlood(sLong(HowMuch * sqrt(BodyPartVolume) / 2)), false, false);
 }
 
 void bodypart::SignalEnchantmentChange()
@@ -2026,7 +2026,7 @@ void bodypart::SignalSpoilLevelChange(material* Material)
 
 truth head::DamageArmor(character* Damager, int Damage, int Type)
 {
-  long AV[3] = { 0, 0, 0 }, AVSum = 0;
+  sLong AV[3] = { 0, 0, 0 }, AVSum = 0;
   item* Armor[3];
 
   if((Armor[0] = GetHelmet()))
@@ -2043,7 +2043,7 @@ truth head::DamageArmor(character* Damager, int Damage, int Type)
 
 truth humanoidtorso::DamageArmor(character* Damager, int Damage, int Type)
 {
-  long AV[3] = { 0, 0, 0 }, AVSum = 0;
+  sLong AV[3] = { 0, 0, 0 }, AVSum = 0;
   item* Armor[3];
 
   if((Armor[0] = GetBodyArmor()))
@@ -2060,7 +2060,7 @@ truth humanoidtorso::DamageArmor(character* Damager, int Damage, int Type)
 
 truth arm::DamageArmor(character* Damager, int Damage, int Type)
 {
-  long AV[3] = { 0, 0, 0 }, AVSum = 0;
+  sLong AV[3] = { 0, 0, 0 }, AVSum = 0;
   item* Armor[3];
 
   if((Armor[0] = GetGauntlet()))
@@ -2082,7 +2082,7 @@ truth groin::DamageArmor(character* Damager, int Damage, int Type)
 
 truth leg::DamageArmor(character* Damager, int Damage, int Type)
 {
-  long AV[3] = { 0, 0, 0 }, AVSum = 0;
+  sLong AV[3] = { 0, 0, 0 }, AVSum = 0;
   item* Armor[3];
 
   if((Armor[0] = GetBoot()))
@@ -2589,7 +2589,7 @@ void bodypart::StayOn(liquid* Liquid)
     Liquid->TouchEffect(GetMaster(), GetBodyPartIndex());
 }
 
-liquid* bodypart::CreateBlood(long Volume) const
+liquid* bodypart::CreateBlood(sLong Volume) const
 {
   return liquid::Spawn(GetBloodMaterial(), Volume);
 }
@@ -2948,15 +2948,15 @@ void playerkindtorso::SignalVolumeAndWeightChange()
 }
 
 
-void bodypart::ReceiveAcid (material *Material, cfestring &LocationName, long Modifier) {
+void bodypart::ReceiveAcid (material *Material, cfestring &LocationName, sLong Modifier) {
   if (Master && MainMaterial->GetInteractionFlags() & CAN_DISSOLVE) {
-    long Tries = Modifier/1000;
+    sLong Tries = Modifier/1000;
     Modifier -= Tries*1000; //opt%?
     int Damage = 0;
-    for (long c = 0; c < Tries; ++c) if (!(RAND() % 100)) ++Damage;
+    for (sLong c = 0; c < Tries; ++c) if (!(RAND() % 100)) ++Damage;
     if (Modifier && !(RAND()%100000/Modifier)) ++Damage;
     if (Damage) {
-      ulong Minute = game::GetTotalMinutes();
+      uLong Minute = game::GetTotalMinutes();
       character *Master = this->Master;
       if (Master->GetLastAcidMsgMin() != Minute && (Master->CanBeSeenByPlayer() || Master->IsPlayer())) {
         Master->SetLastAcidMsgMin(Minute);
@@ -2969,13 +2969,13 @@ void bodypart::ReceiveAcid (material *Material, cfestring &LocationName, long Mo
         }
       }
       Master->ReceiveBodyPartDamage(0, Damage, ACID, GetBodyPartIndex(), YOURSELF, false, false, false);
-      ulong DeathFlags = Material->IsStuckTo(Master) ? IGNORE_TRAPS : 0;
+      uLong DeathFlags = Material->IsStuckTo(Master) ? IGNORE_TRAPS : 0;
       Master->CheckDeath(CONST_S("dissolved by ")+Material->GetName(), 0, DeathFlags);
     }
   }
 }
 
-void bodypart::TryToRust(long LiquidModifier)
+void bodypart::TryToRust(sLong LiquidModifier)
 {
   if(MainMaterial->TryToRust(LiquidModifier << 4))
   {
@@ -3056,7 +3056,7 @@ truth corpse::DetectMaterial(const material* Material) const
 void bodypart::DestroyBodyPart(stack* Stack)
 {
   int Lumps = 1 + RAND() % 3;
-  long LumpVolume = Volume / Lumps >> 2;
+  sLong LumpVolume = Volume / Lumps >> 2;
 
   if(LumpVolume >= 10)
     for(int c = 0; c < Lumps; ++c)
@@ -3223,7 +3223,7 @@ void bodypart::UpdateFlags()
 
 void head::SignalPossibleUsabilityChange()
 {
-  ulong OldFlags = Flags;
+  uLong OldFlags = Flags;
   UpdateFlags();
 
   if(!Master->IsInitializing() && HP > 0
@@ -3266,7 +3266,7 @@ void head::SignalPossibleUsabilityChange()
 
 void arm::SignalPossibleUsabilityChange()
 {
-  ulong OldFlags = Flags;
+  uLong OldFlags = Flags;
   UpdateFlags();
 
   if(Flags != OldFlags && !Master->IsInitializing())
@@ -3275,7 +3275,7 @@ void arm::SignalPossibleUsabilityChange()
 
 void leg::SignalPossibleUsabilityChange()
 {
-  ulong OldFlags = Flags;
+  uLong OldFlags = Flags;
   UpdateFlags();
 
   if(Flags != OldFlags && !Master->IsInitializing())
@@ -3377,7 +3377,7 @@ void bodypart::RemoveRust()
   RestoreHP();
 }
 
-long bodypart::GetFixPrice() const
+sLong bodypart::GetFixPrice() const
 {
   return GetMaxHP() - GetHP() + GetMainMaterial()->GetRustLevel() * 25;
 }

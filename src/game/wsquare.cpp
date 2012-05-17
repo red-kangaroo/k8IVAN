@@ -156,6 +156,6 @@ truth wsquare::CanBeSeenByPlayer (truth) const {
 }
 
 
-truth wsquare::CanBeSeenFrom (v2 FromPos, long MaxDistance, truth) const {
+truth wsquare::CanBeSeenFrom (v2 FromPos, sLong MaxDistance, truth) const {
   return (Pos-FromPos).GetLengthSquare() <= MaxDistance;
 }

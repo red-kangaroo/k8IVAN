@@ -26,7 +26,7 @@ static truth DebugDraw (festring Filename) {
     if (HighScore.Eof()) return false;
   }
   inputfile HighScore(Filename, 0, false);
-  ushort HVersion;
+  uShort HVersion;
   HighScore >> HVersion;
   std::cout << "\nFile is version " << HVersion << std::endl;
   return true;

@@ -42,13 +42,13 @@ class rain : public entity
   mutable struct drop
   {
     packv2 StartPos;
-    ushort StartTick;
-    ushort MaxAge;
+    uShort StartTick;
+    uShort MaxAge;
   }* Drop;
   liquid* Liquid;
   lsquare* LSquareUnder;
   v2 Speed;
-  long SpeedAbs;
+  sLong SpeedAbs;
   mutable int Drops : 8;
   int BeCounter : 7;
   truth OwnLiquid : 1;

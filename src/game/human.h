@@ -97,7 +97,7 @@ public:
   virtual int CheckForBlock(character*, item*, double, int, int, int);
   virtual truth AddSpecialSkillInfo(felist&) const;
   virtual truth CheckBalance(double);
-  virtual long GetMoveAPRequirement(int) const;
+  virtual sLong GetMoveAPRequirement(int) const;
   virtual v2 GetEquipmentPanelPos(int) const;
   virtual truth EquipmentEasilyRecognized(int) const;
   sweaponskill* GetCurrentRightSWeaponSkill() const { return CurrentRightSWeaponSkill; }
@@ -152,14 +152,14 @@ public:
   virtual void LeprosyHandler();
   virtual void DropRandomNonVitalBodypart();
   virtual void DropBodyPart(int);
-  virtual void DuplicateEquipment(character*, ulong);
+  virtual void DuplicateEquipment(character*, uLong);
   virtual int GetAttributeAverage() const;
   virtual truth CanVomit() const;
   virtual truth CheckApply() const;
   virtual truth CanForceVomit() const { return TorsoIsAlive() && HasAUsableArm(); }
   virtual truth IsTransparent() const;
   virtual void ModifySituationDanger(double&) const;
-  virtual int RandomizeTryToUnStickBodyPart(ulong) const;
+  virtual int RandomizeTryToUnStickBodyPart(uLong) const;
   virtual truth AllowUnconsciousness() const;
   virtual truth CanChokeOnWeb(web*) const;
   virtual truth BrainsHurt() const;
@@ -175,8 +175,8 @@ public:
   virtual col16 GetBodyPartColorC(int, truth = false) const;
   virtual col16 GetBodyPartColorD(int, truth = false) const;
   virtual int GetBodyPartSparkleFlags(int) const;
-  virtual long GetBodyPartSize(int, int) const;
-  virtual long GetBodyPartVolume(int) const;
+  virtual sLong GetBodyPartSize(int, int) const;
+  virtual sLong GetBodyPartVolume(int) const;
   virtual bodypart* MakeBodyPart(int) const;
   virtual cfestring& GetDeathMessage() const;
   virtual v2 GetDrawDisplacement(int) const { return ZERO_V2; }
@@ -201,7 +201,7 @@ CHARACTER(playerkind, humanoid)
   playerkind(const playerkind&);
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
-  virtual void SetSoulID(ulong);
+  virtual void SetSoulID(uLong);
   virtual truth SuckSoul(character*);
   virtual truth TryToRiseFromTheDead();
   virtual void FinalProcessForBone();
@@ -218,7 +218,7 @@ CHARACTER(playerkind, humanoid)
  protected:
   virtual bodypart* MakeBodyPart(int) const;
   virtual void PostConstruct();
-  ulong SoulID;
+  uLong SoulID;
   col16 HairColor;
   col16 EyeColor;
   int Talent;
@@ -241,7 +241,7 @@ CHARACTER(petrus, humanoid)
  protected:
   virtual void CreateCorpse(lsquare*);
   virtual void GetAICommand();
-  ulong LastHealed;
+  uLong LastHealed;
 };
 
 CHARACTER(farmer, humanoid)
@@ -264,7 +264,7 @@ CHARACTER(guard, humanoid)
   virtual void BeTalkedTo();
  protected:
   std::vector<v2> WayPoints;
-  uint NextWayPoint;
+  uInt NextWayPoint;
 };
 
 CHARACTER(shopkeeper, humanoid)
@@ -340,7 +340,7 @@ CHARACTER(skeleton, humanoid)
   virtual void BeTalkedTo();
   virtual item* SevereBodyPart(int, truth = false, stack* = 0);
   virtual truth BodyPartIsVital(int) const;
-  virtual long GetBodyPartVolume(int) const;
+  virtual sLong GetBodyPartVolume(int) const;
  protected:
   virtual void CreateCorpse(lsquare*);
 };
@@ -358,12 +358,12 @@ CHARACTER(golem, humanoid)
   virtual void BeTalkedTo();
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
-  void SetItemVolume(long What) { ItemVolume = What; }
+  void SetItemVolume(sLong What) { ItemVolume = What; }
  protected:
   virtual truth AddAdjective(festring&, truth) const;
-  virtual material* CreateBodyPartMaterial(int, long) const;
+  virtual material* CreateBodyPartMaterial(int, sLong) const;
   virtual void CreateCorpse(lsquare*);
-  long ItemVolume;
+  sLong ItemVolume;
 };
 
 CHARACTER(communist, humanoid)
@@ -501,7 +501,7 @@ CHARACTER(angel, humanoid)
   virtual int GetTorsoMainColor() const;
   virtual int GetArmMainColor() const;
   virtual void GetAICommand();
-  ulong LastHealed;
+  uLong LastHealed;
 };
 
 CHARACTER(kamikazedwarf, humanoid)
@@ -607,7 +607,7 @@ CHARACTER(encourager, humanoid)
   virtual void FinalProcessForBone();
  protected:
   virtual void GetAICommand();
-  ulong LastHit;*/
+  uLong LastHit;*/
  protected:
   virtual void GetAICommand() { StandIdleAI(); }
 };

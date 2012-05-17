@@ -273,7 +273,7 @@ int iosystem::StringQuestion (festring &Input, cfestring &Topic, v2 Pos, col16 C
    The question is drawn to cordinates given by Pos. All fonts are Color
    coled. If Fade is true the question is asked on a black background
    and the transition to that is a fade. */
-long iosystem::NumberQuestion (cfestring &Topic, v2 Pos, col16 Color, truth Fade, truth ReturnZeroOnEsc) {
+sLong iosystem::NumberQuestion (cfestring &Topic, v2 Pos, col16 Color, truth Fade, truth ReturnZeroOnEsc) {
   v2 V(RES.X, 9); ///???????????
   bitmap BackUp(V, 0);
   blitdata B = {
@@ -329,11 +329,11 @@ long iosystem::NumberQuestion (cfestring &Topic, v2 Pos, col16 Color, truth Fade
    the scrollbar. Although '<' and '>' also work always. If Fade is true
    the screen is faded to black before drawing th scrollbar. If Handler is
    set it is called always when the value of the scroll bar changes. */
-long iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, long StartValue, long Step,
-  long Min, long Max, long AbortValue, col16 TopicColor, col16 Color1,
-  col16 Color2, int LeftKey, int RightKey, truth Fade, void (*Handler)(long))
+sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, sLong Step,
+  sLong Min, sLong Max, sLong AbortValue, col16 TopicColor, col16 Color1,
+  col16 Color2, int LeftKey, int RightKey, truth Fade, void (*Handler)(sLong))
 {
-  long BarValue = StartValue;
+  sLong BarValue = StartValue;
   festring Input;
   truth FirstTime = true;
   v2 V(RES.X, 20); ///???????????
@@ -341,7 +341,7 @@ long iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, long StartValue, lon
   if (Fade) {
     bitmap Buffer(RES, 0);
     Buffer.ActivateFastFlag();
-    FONT->Printf(&Buffer, Pos, TopicColor, "%s %ld", Topic.CStr(), StartValue);
+    FONT->Printf(&Buffer, Pos, TopicColor, "%s %d", Topic.CStr(), StartValue);
     FONT->Printf(&Buffer, v2(Pos.X + (Topic.GetSize() << 3) + 8, Pos.Y + 1), TopicColor, "_");
     Buffer.DrawHorizontalLine(Pos.X + 1, Pos.X + 201, Pos.Y + 15, Color2, false);
     Buffer.DrawVerticalLine(Pos.X + 201, Pos.Y + 12, Pos.Y + 18, Color2, false);
@@ -388,7 +388,7 @@ long iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, long StartValue, lon
     BackUp.NormalBlit(B1);
     BackUp.NormalBlit(B2);
     if (FirstTime) {
-      FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor, "%s %ld", Topic.CStr(), StartValue);
+      FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor, "%s %d", Topic.CStr(), StartValue);
       FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + (Topic.GetSize() << 3) + 8, Pos.Y + 1), TopicColor, "_");
       FirstTime = false;
     } else {

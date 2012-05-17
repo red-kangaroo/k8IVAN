@@ -34,7 +34,7 @@ truth shop::PickupItem (character *Customer, item *ForSale, int Amount) {
     return false;
   }
 
-  long Price = ForSale->GetTruePrice();
+  sLong Price = ForSale->GetTruePrice();
 
   if (Price) {
     Price = Amount*(Price*100/(100+Customer->GetAttribute(CHARISMA))+1);
@@ -72,9 +72,9 @@ truth shop::PickupItem (character *Customer, item *ForSale, int Amount) {
 
     if (Customer->GetMoney() >= Price) {
       if (Amount == 1)
-        ADD_MESSAGE("\"Ah! That %s costs %ld gold pieces. No haggling, please.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
+        ADD_MESSAGE("\"Ah! That %s costs %d gold pieces. No haggling, please.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
       else
-        ADD_MESSAGE("\"Ah! Those %d %s cost %ld gold pieces. No haggling, please.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
+        ADD_MESSAGE("\"Ah! Those %d %s cost %d gold pieces. No haggling, please.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
       if (game::TruthQuestion(CONST_S("Do you accept this deal? [y/N]"))) {
         Customer->EditMoney(-Price);
         GetMaster()->EditMoney(+Price);
@@ -84,9 +84,9 @@ truth shop::PickupItem (character *Customer, item *ForSale, int Amount) {
       return false;
     } else {
       if (Amount == 1)
-        ADD_MESSAGE("\"Don't touch that %s, beggar! It is worth %ld gold pieces!\"", ForSale->CHAR_NAME(UNARTICLED), Price);
+        ADD_MESSAGE("\"Don't touch that %s, beggar! It is worth %d gold pieces!\"", ForSale->CHAR_NAME(UNARTICLED), Price);
       else
-        ADD_MESSAGE("\"Don't touch those %s, beggar! They are worth %ld gold pieces!\"", ForSale->CHAR_NAME(PLURAL), Price);
+        ADD_MESSAGE("\"Don't touch those %s, beggar! They are worth %d gold pieces!\"", ForSale->CHAR_NAME(PLURAL), Price);
       return false;
     }
   }
@@ -105,7 +105,7 @@ truth shop::DropItem (character *Customer, item *ForSale, int Amount) {
     return false;
   }
 
-  long Price = ForSale->GetTruePrice()*Amount*(100+Customer->GetAttribute(CHARISMA))/400;
+  sLong Price = ForSale->GetTruePrice()*Amount*(100+Customer->GetAttribute(CHARISMA))/400;
   if (ForSale->IsMoneyBag()) {
     // BUGBUGBUG? don't allow to give more that one bag
     if (Amount > 1) {
@@ -158,8 +158,8 @@ truth shop::DropItem (character *Customer, item *ForSale, int Amount) {
 
     if (GetMaster()->GetMoney()) {
       if (GetMaster()->GetMoney() < Price) Price = GetMaster()->GetMoney();
-      if (Amount == 1) ADD_MESSAGE("\"What a fine %s. I'll pay %ld gold pieces for it.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
-      else ADD_MESSAGE("\"What a fine pile of %d %s. I'll pay %ld gold pieces for them.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
+      if (Amount == 1) ADD_MESSAGE("\"What a fine %s. I'll pay %d gold pieces for it.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
+      else ADD_MESSAGE("\"What a fine pile of %d %s. I'll pay %d gold pieces for them.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
       if (game::TruthQuestion(CONST_S("Do you accept this deal? [y/N]"))) {
         Customer->SetMoney(Customer->GetMoney() + Price);
         GetMaster()->SetMoney(GetMaster()->GetMoney() - Price);
@@ -168,7 +168,7 @@ truth shop::DropItem (character *Customer, item *ForSale, int Amount) {
       }
       return false;
     }
-    ADD_MESSAGE("\"I would pay you %ld gold pieces for %s, but I'm temporarily short of cash. Sorry.\"", Price, Amount == 1 ? "it" : "them");
+    ADD_MESSAGE("\"I would pay you %d gold pieces for %s, but I'm temporarily short of cash. Sorry.\"", Price, Amount == 1 ? "it" : "them");
     return false;
   }
   ADD_MESSAGE("The shopkeeper doesn't see you, so you cannot trade with him.");
@@ -352,7 +352,7 @@ truth library::PickupItem (character *Customer, item *ForSale, int Amount) {
     return false;
   }
 
-  long Price = ForSale->GetTruePrice()*Amount*100/(100+Customer->GetAttribute(CHARISMA));
+  sLong Price = ForSale->GetTruePrice()*Amount*100/(100+Customer->GetAttribute(CHARISMA));
 
   if (!Customer->IsPlayer()) {
     if (Customer->CanBeSeenByPlayer() && Customer->GetMoney() >= Price) {
@@ -379,9 +379,9 @@ truth library::PickupItem (character *Customer, item *ForSale, int Amount) {
 
     if (Customer->GetMoney() >= Price) {
       if (Amount == 1)
-        ADD_MESSAGE("\"Ah! That %s costs %ld gold pieces. No haggling, please.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
+        ADD_MESSAGE("\"Ah! That %s costs %d gold pieces. No haggling, please.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
       else
-        ADD_MESSAGE("\"Ah! Those %d %s cost %ld gold pieces. No haggling, please.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
+        ADD_MESSAGE("\"Ah! Those %d %s cost %d gold pieces. No haggling, please.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
       if (game::TruthQuestion(CONST_S("Do you accept this deal? [y/N]"))) {
         Customer->EditMoney(-Price);
         GetMaster()->EditMoney(Price);
@@ -391,9 +391,9 @@ truth library::PickupItem (character *Customer, item *ForSale, int Amount) {
       return false;
     } else {
       if (Amount == 1)
-        ADD_MESSAGE("\"Don't touch that %s, beggar! It is worth %ld gold pieces!\"", ForSale->CHAR_NAME(UNARTICLED), Price);
+        ADD_MESSAGE("\"Don't touch that %s, beggar! It is worth %d gold pieces!\"", ForSale->CHAR_NAME(UNARTICLED), Price);
       else
-        ADD_MESSAGE("\"Don't touch those %s, beggar! They are worth %ld gold pieces!\"", ForSale->CHAR_NAME(PLURAL), Price);
+        ADD_MESSAGE("\"Don't touch those %s, beggar! They are worth %d gold pieces!\"", ForSale->CHAR_NAME(PLURAL), Price);
       return false;
     }
   }
@@ -408,7 +408,7 @@ truth library::PickupItem (character *Customer, item *ForSale, int Amount) {
 truth library::DropItem (character *Customer, item *ForSale, int Amount) {
   if (!MasterIsActive() || Customer == GetMaster() || GetMaster()->GetRelation(Customer) == HOSTILE) return true;
 
-  long Price = ForSale->GetTruePrice()*Amount*(100+Customer->GetAttribute(CHARISMA))/400;
+  sLong Price = ForSale->GetTruePrice()*Amount*(100+Customer->GetAttribute(CHARISMA))/400;
 
   if (!Customer->IsPlayer()) {
     if (Price && Customer->CanBeSeenByPlayer() && GetMaster()->GetMoney() >= Price) {
@@ -438,9 +438,9 @@ truth library::DropItem (character *Customer, item *ForSale, int Amount) {
     if (GetMaster()->GetMoney()) {
       if (GetMaster()->GetMoney() < Price) Price = GetMaster()->GetMoney();
       if (Amount == 1)
-        ADD_MESSAGE("\"What an interesting %s. I'll pay %ld gold pieces for it.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
+        ADD_MESSAGE("\"What an interesting %s. I'll pay %d gold pieces for it.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
       else
-        ADD_MESSAGE("\"What an interesting collection of %d %s. I'll pay %ld gold pieces for it.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
+        ADD_MESSAGE("\"What an interesting collection of %d %s. I'll pay %d gold pieces for it.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
       if (game::TruthQuestion(CONST_S("Do you want to sell ")+(Amount == 1 ? "this item" : "these items")+"? [y/N]")) {
         Customer->EditMoney(Price);
         GetMaster()->EditMoney(-Price);
@@ -449,7 +449,7 @@ truth library::DropItem (character *Customer, item *ForSale, int Amount) {
       }
       return false;
     } else {
-      ADD_MESSAGE("\"I would pay you %ld gold pieces for %s, but I'm temporarily short of cash. Sorry.\"",
+      ADD_MESSAGE("\"I would pay you %d gold pieces for %s, but I'm temporarily short of cash. Sorry.\"",
       Price, Amount == 1 ? "it" : "them");
       return false;
     }

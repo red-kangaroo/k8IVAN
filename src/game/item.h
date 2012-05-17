@@ -52,9 +52,9 @@ struct sortdata
 
 struct idholder
 {
-  idholder(ulong ID) : ID(ID) { }
+  idholder(uLong ID) : ID(ID) { }
   idholder* Next;
-  ulong ID;
+  uLong ID;
 };
 
 outputfile& operator<<(outputfile&, const idholder*);
@@ -91,8 +91,8 @@ struct itemdatabase : public databasebase
 
   const prototype* ProtoType;
   /* Maintained by configcontainer */
-  long PartialPossibilitySum;
-  long PartialCategoryPossibilitySum;
+  sLong PartialPossibilitySum;
+  sLong PartialCategoryPossibilitySum;
   int Possibility;
   int WeaponCategory;
   truth IsDestroyable;
@@ -135,7 +135,7 @@ struct itemdatabase : public databasebase
   truth FlexibilityIsEssential;
   truth CanBeBroken;
   truth CanBePiled;
-  long Category;
+  sLong Category;
   int FireResistance;
   int PoisonResistance;
   int ElectricityResistance;
@@ -143,10 +143,10 @@ struct itemdatabase : public databasebase
   int StrengthModifier;
   int FormModifier;
   int DefaultSize;
-  long DefaultMainVolume;
-  long DefaultSecondaryVolume;
+  sLong DefaultMainVolume;
+  sLong DefaultSecondaryVolume;
   v2 BitmapPos;
-  long Price;
+  sLong Price;
   col24 BaseEmitation;
   truth UsesLongArticle;
   festring Adjective;
@@ -155,21 +155,21 @@ struct itemdatabase : public databasebase
   festring NamePlural;
   festring PostFix;
   int ArticleMode;
-  fearray<long> MainMaterialConfig;
-  fearray<long> SecondaryMaterialConfig;
-  fearray<long> MaterialConfigChances;
-  long MaterialConfigChanceSum;
+  fearray<sLong> MainMaterialConfig;
+  fearray<sLong> SecondaryMaterialConfig;
+  fearray<sLong> MaterialConfigChances;
+  sLong MaterialConfigChanceSum;
   fearray<festring> Alias;
   int OKVisualEffects;
   int ForcedVisualEffects;
   int Roundness;
-  long GearStates;
+  sLong GearStates;
   int BeamRange;
   v2 WallBitmapPos;
   festring FlexibleNameSingular;
   int MinCharges;
   int MaxCharges;
-  long StorageVolume;
+  sLong StorageVolume;
   int MaxGeneratedContainedItems;
   int BaseEnchantment;
   int InElasticityPenaltyModifier;
@@ -245,7 +245,7 @@ class item : public object
 
   virtual double GetWeaponStrength() const;
   virtual truth Open(character*);
-  truth Consume(character*, long);
+  truth Consume(character*, sLong);
   virtual truth IsHeadOfElpuri() const { return false; }
   virtual truth IsPetrussNut() const { return false; }
   virtual truth IsGoldenEagleShirt() const { return false; }
@@ -275,7 +275,7 @@ class item : public object
   virtual void ChargeFully(character*) { }
   void SetSize(int Value) { Size = Value; }
   virtual int GetSize() const { return Size; }
-  ulong GetID() const { return ID; }
+  uLong GetID() const { return ID; }
   virtual void TeleportRandomly();
   virtual int GetStrengthValue() const;
   slot* GetSlot(int I = 0) const { return Slot[I]; }
@@ -284,7 +284,7 @@ class item : public object
   virtual void RemoveFromSlot();
   void MoveTo(stack*);
   truth IsMainSlot(const slot* What) const { return Slot[0] == What; }
-  static cchar* GetItemCategoryName(long);
+  static cchar* GetItemCategoryName(sLong);
   virtual truth IsConsumable() const { return true; }
   truth IsEatable(ccharacter*) const;
   truth IsDrinkable(ccharacter*) const;
@@ -330,7 +330,7 @@ class item : public object
   DATA_BASE_TRUTH(IsMaterialChangeable);
   DATA_BASE_VALUE(int, WeaponCategory);
   DATA_BASE_TRUTH(IsAutoInitializable);
-  DATA_BASE_VALUE(long, Category);
+  DATA_BASE_VALUE(sLong, Category);
   DATA_BASE_VALUE(int, FireResistance);
   DATA_BASE_VALUE(int, PoisonResistance);
   DATA_BASE_VALUE(int, ElectricityResistance);
@@ -338,10 +338,10 @@ class item : public object
   DATA_BASE_VALUE(int, StrengthModifier);
   virtual DATA_BASE_VALUE(int, FormModifier);
   DATA_BASE_VALUE(int, DefaultSize);
-  DATA_BASE_VALUE(long, DefaultMainVolume);
-  DATA_BASE_VALUE(long, DefaultSecondaryVolume);
+  DATA_BASE_VALUE(sLong, DefaultMainVolume);
+  DATA_BASE_VALUE(sLong, DefaultSecondaryVolume);
   virtual DATA_BASE_VALUE_WITH_PARAMETER(v2, BitmapPos, int);
-  virtual DATA_BASE_VALUE(long, Price);
+  virtual DATA_BASE_VALUE(sLong, Price);
   virtual DATA_BASE_VALUE(col24, BaseEmitation);
   virtual DATA_BASE_TRUTH(UsesLongArticle);
   virtual DATA_BASE_VALUE(cfestring&, Adjective);
@@ -350,16 +350,16 @@ class item : public object
   virtual DATA_BASE_VALUE(cfestring&, NamePlural);
   virtual DATA_BASE_VALUE(cfestring&, PostFix);
   virtual DATA_BASE_VALUE(int, ArticleMode);
-  DATA_BASE_VALUE(const fearray<long>&, MainMaterialConfig);
-  DATA_BASE_VALUE(const fearray<long>&, SecondaryMaterialConfig);
-  virtual DATA_BASE_VALUE(const fearray<long>&, MaterialConfigChances);
-  virtual DATA_BASE_VALUE(long, MaterialConfigChanceSum);
+  DATA_BASE_VALUE(const fearray<sLong>&, MainMaterialConfig);
+  DATA_BASE_VALUE(const fearray<sLong>&, SecondaryMaterialConfig);
+  virtual DATA_BASE_VALUE(const fearray<sLong>&, MaterialConfigChances);
+  virtual DATA_BASE_VALUE(sLong, MaterialConfigChanceSum);
   DATA_BASE_TRUTH(IsPolymorphable);
   virtual DATA_BASE_VALUE(int, OKVisualEffects);
   DATA_BASE_TRUTH(CanBeGeneratedInContainer);
   virtual DATA_BASE_VALUE(int, ForcedVisualEffects);
   DATA_BASE_VALUE(int, Roundness);
-  DATA_BASE_VALUE(long, GearStates);
+  DATA_BASE_VALUE(sLong, GearStates);
   DATA_BASE_TRUTH(IsTwoHanded);
   DATA_BASE_TRUTH(CanBeBroken);
   DATA_BASE_VALUE_WITH_PARAMETER(v2, WallBitmapPos, int);
@@ -382,7 +382,7 @@ class item : public object
   DATA_BASE_VALUE(int, MaxCharges);
   DATA_BASE_VALUE(int, MinCharges);
   DATA_BASE_VALUE(int, InElasticityPenaltyModifier);
-  DATA_BASE_VALUE(long, StorageVolume);
+  DATA_BASE_VALUE(sLong, StorageVolume);
   DATA_BASE_VALUE(int, MaxGeneratedContainedItems);
   virtual DATA_BASE_TRUTH(CanBeCloned);
   virtual DATA_BASE_TRUTH(CanBeMirrored);
@@ -391,7 +391,7 @@ class item : public object
   DATA_BASE_VALUE(int, DamageDivider);
   DATA_BASE_TRUTH(HandleInPairs);
   DATA_BASE_TRUTH(CanBeEnchanted);
-  DATA_BASE_VALUE(long, BeamColor);
+  DATA_BASE_VALUE(sLong, BeamColor);
   DATA_BASE_VALUE(int, BeamEffect);
   DATA_BASE_VALUE(int, BeamStyle);
   DATA_BASE_VALUE(int, WearWisdomLimit);
@@ -423,7 +423,7 @@ class item : public object
   DATA_BASE_TRUTH(IsThrowingWeapon);
   truth CanBeSoldInLibrary(character* Librarian) const { return CanBeRead(Librarian); }
   virtual truth TryKey(item*, character*) { return false; }
-  long GetBlockModifier() const;
+  sLong GetBlockModifier() const;
   truth IsSimiliarTo(item*) const;
   virtual truth IsPickable(character*) const { return true; }
   truth CanBeSeenByPlayer() const;
@@ -441,8 +441,8 @@ class item : public object
   lsquare* GetNearLSquare(int x, int y) const { return static_cast<lsquare*>(Slot[0]->GetSquareUnder()->GetArea()->GetSquare(x, y)); }
   virtual void SignalVolumeAndWeightChange();
   virtual void CalculateVolumeAndWeight();
-  long GetVolume() const { return Volume; }
-  long GetWeight() const { return Weight; }
+  sLong GetVolume() const { return Volume; }
+  sLong GetWeight() const { return Weight; }
   virtual void SignalEmitationIncrease(col24);
   virtual void SignalEmitationDecrease(col24);
   void CalculateAll();
@@ -452,7 +452,7 @@ class item : public object
   void WeaponSkillHit(int);
   virtual void SetTeam(int) { }
   void SpecialGenerationHandler();
-  item* Duplicate(ulong = 0);
+  item* Duplicate(uLong = 0);
   virtual void SetIsActive(truth) { }
   double GetBaseDamage() const;
   int GetBaseMinDamage() const;
@@ -460,12 +460,12 @@ class item : public object
   int GetBaseToHitValue() const;
   int GetBaseBlockValue() const;
   virtual void AddInventoryEntry(ccharacter*, festring&, int, truth) const;
-  long GetNutritionValue() const;
+  sLong GetNutritionValue() const;
   virtual void SignalSpoil(material*);
   virtual truth AllowSpoil() const;
-  item* DuplicateToStack(stack*, ulong = 0);
+  item* DuplicateToStack(stack*, uLong = 0);
   virtual truth CanBePiledWith(citem*, ccharacter*) const;
-  virtual long GetTotalExplosivePower() const { return 0; }
+  virtual sLong GetTotalExplosivePower() const { return 0; }
   virtual void Break(character*, int = YOURSELF);
   virtual void SetEnchantment(int) { }
   virtual void EditEnchantment(int) { }
@@ -475,13 +475,13 @@ class item : public object
   virtual void DrawContents(ccharacter*) { }
   virtual truth IsBroken() const;
   virtual int GetEnchantment() const { return 0; }
-  long GetEnchantedPrice(int) const;
+  sLong GetEnchantedPrice(int) const;
   virtual item* Fix();
   int GetStrengthRequirement() const;
   virtual int GetInElasticityPenalty(int) const { return 0; }
   virtual truth IsFixableBySmith(ccharacter*) const { return false; }
   virtual truth IsFixableByTailor(ccharacter*) const { return false; }
-  virtual long GetFixPrice() const;
+  virtual sLong GetFixPrice() const;
   virtual void DonateSlotTo(item*);
   virtual int GetSpoilLevel() const;
   virtual void SignalSpoilLevelChange(material*);
@@ -503,7 +503,7 @@ class item : public object
   virtual void SortAllItems(const sortdata&) const;
   virtual truth AllowAlphaEverywhere() const { return false; }
   virtual int GetAttachedGod() const;
-  virtual long GetTruePrice() const;
+  virtual sLong GetTruePrice() const;
   virtual void Search(ccharacter*, int) { }
   virtual head* Behead() { return 0; }
   virtual truth IsGorovitsFamilyRelic() const { return false; }
@@ -533,7 +533,7 @@ class item : public object
   virtual void CalculateEmitation();
   void FillFluidVector(fluidvector&, int = 0) const;
   virtual void SpillFluid(character*, liquid*, int = 0);
-  virtual void TryToRust(long);
+  virtual void TryToRust(sLong);
   void RemoveFluid(fluid*);
   void RemoveAllFluids ();
   void AddFluid(liquid*, festring, int, truth);
@@ -543,7 +543,7 @@ class item : public object
   void DrawFluidBodyArmorPictures(blitdata&, int) const;
   void CheckFluidGearPictures(v2, int, truth);
   void DrawFluids(blitdata&) const;
-  virtual void ReceiveAcid(material*, cfestring&, long);
+  virtual void ReceiveAcid(material*, cfestring&, sLong);
   virtual truth ShowFluids() const { return true; }
   void DonateFluidsTo(item*);
   void Destroy(character*, int);
@@ -579,7 +579,7 @@ class item : public object
   virtual DATA_BASE_TRUTH_WITH_PARAMETER(IsKamikazeWeapon, ccharacter*);
   virtual void AddTrapName(festring&, int) const;
   int GetMainMaterialRustLevel() const;
-  truth HasID(ulong What) const { return ID == What; }
+  truth HasID(uLong What) const { return ID == What; }
   virtual truth Spoils() const;
   int GetMaxSpoilPercentage() const;
   truth HasPrice() const;
@@ -604,7 +604,7 @@ class item : public object
 
 protected:
   virtual cchar* GetBreakVerb() const;
-  virtual long GetMaterialPrice() const;
+  virtual sLong GetMaterialPrice() const;
   void LoadDataBaseStats();
   virtual void PostConstruct() { }
   void Initialize(int, int);
@@ -617,15 +617,15 @@ protected:
   static const prototype ProtoType;
   slot** Slot;
   int Size;
-  ulong ID;
+  uLong ID;
   const database* DataBase;
-  long Volume;
-  long Weight;
+  sLong Volume;
+  sLong Weight;
   idholder* CloneMotherID;
   fluid** Fluid;
   int SquaresUnder;
   int LifeExpectancy;
-  ulong ItemFlags;
+  uLong ItemFlags;
   truth mIsStepedOn;
 };
 

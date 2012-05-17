@@ -33,7 +33,7 @@ struct blitdata {
     col24 Luminance;
   };
   col16 MaskColor;
-  ulong CustomData;
+  uLong CustomData;
 };
 
 
@@ -103,30 +103,30 @@ public:
   v2 GetSize () const { return mSize; }
   void DrawPolygon (int, int, int, int, col16, truth = true, truth = false, double = 0);
   void CreateAlphaMap (alpha);
-  truth Fade (long &, packalpha &, int);
+  truth Fade (sLong &, packalpha &, int);
   void SetAlpha (int X, int Y, alpha Alpha) { AlphaMap[Y][X] = Alpha; }
   void SetAlpha (v2 Pos, alpha Alpha) { AlphaMap[Pos.Y][Pos.X] = Alpha; }
   alpha GetAlpha (int X, int Y) const { return AlphaMap[Y][X]; }
   alpha GetAlpha (v2 Pos) const { return AlphaMap[Pos.Y][Pos.X]; }
   void Outline (col16, alpha, priority);
   void FadeToScreen (bitmapeditor = 0);
-  void CreateFlames (rawbitmap *, v2, ulong, int);
+  void CreateFlames (rawbitmap *, v2, uLong, int);
   truth IsValidPos (v2 What) const { return What.X >= 0 && What.Y >= 0 && What.X < mSize.X && What.Y < mSize.Y; }
   truth IsValidPos (int X, int Y) const { return X >= 0 && Y >= 0 && X < mSize.X && Y < mSize.Y; }
   void CreateSparkle (v2, int);
-  void CreateFlies (ulong, int, int);
-  void CreateLightning (ulong, col16);
+  void CreateFlies (uLong, int, int);
+  void CreateLightning (uLong, col16);
   truth CreateLightning (v2, v2, int, col16);
   packcol16 **GetImage () const { return Image; }
   packalpha **GetAlphaMap () const { return AlphaMap; }
-  static truth PixelVectorHandler (long, long);
+  static truth PixelVectorHandler (sLong, sLong);
   void FillAlpha (alpha);
   void InitPriorityMap (priority);
   void FillPriority (priority);
   void SafeSetPriority (int, int, priority);
   void SafeSetPriority (v2 Pos, priority What) { SafeSetPriority(Pos.X, Pos.Y, What); }
   void SafeUpdateRandMap (v2, truth);
-  void UpdateRandMap (long, truth);
+  void UpdateRandMap (sLong, truth);
   void InitRandMap ();
   v2 RandomizePixel () const;
   void AlphaPutPixel (int, int, col16, col24, alpha);
@@ -142,8 +142,8 @@ public:
 
 protected:
   v2 mSize;
-  ulong XSizeTimesYSize : 31;
-  ulong FastFlag : 1;
+  uLong XSizeTimesYSize : 31;
+  uLong FastFlag : 1;
   packcol16 **Image;
   packalpha **AlphaMap;
   packpriority **PriorityMap;

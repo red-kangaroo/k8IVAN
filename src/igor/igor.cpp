@@ -50,7 +50,7 @@ int Main (int, char **) {
   List.AddEntry(CONST_S("Item.pcx"), LIGHT_GRAY);
   List.AddEntry(CONST_S("GLTerra.pcx"), LIGHT_GRAY);
   List.AddEntry(CONST_S("OLTerra.pcx"), LIGHT_GRAY);
-  ushort Selected;
+  uShort Selected;
   festring FileName;
   List.SetPos(v2(300, 250));
   List.SetWidth(200);
@@ -70,7 +70,7 @@ int Main (int, char **) {
   Selected = 0;
   packcol16 Color[4] = { MakeRGB16(47, 131, 95), MakeRGB16(123, 0, 127), MakeRGB16(0, 131, 131), MakeRGB16(175, 131, 0) };
   std::vector<v2> DrawQueue;
-  uchar TempBuffer[256];
+  uChar TempBuffer[256];
   blitdata B1 = {
     DOUBLE_BUFFER,
     { 0, 0 },

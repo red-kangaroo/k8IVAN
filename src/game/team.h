@@ -29,12 +29,12 @@ typedef std::vector<character *> charactervector;
 class team {
 public:
   team ();
-  team (ulong);
+  team (uLong);
   void SetRelation (team *, int);
   int GetRelation (const team *) const;
   void Hostility (team *);
-  ulong GetID () const { return ID; }
-  void SetID (ulong What) { ID = What; }
+  uLong GetID () const { return ID; }
+  void SetID (uLong What) { ID = What; }
   void Save (outputfile &) const;
   void Load (inputfile &);
   void SetLeader (character *What) { Leader = What; }
@@ -51,9 +51,9 @@ public:
 
 private:
   character *Leader;
-  std::map<ulong, int> Relation;
+  std::map<uLong, int> Relation;
   std::list<character *> Member;
-  ulong ID;
+  uLong ID;
   int KillEvilness;
 };
 
