@@ -254,12 +254,12 @@ void igraph::EditBodyPartTile(rawbitmap* Source, rawbitmap* Dest, v2 Pos, int Bo
   else if(BodyPartFlags == ST_GROIN)
   {
     Source->NormalBlit(Dest, v2(Pos.X, Pos.Y + 8), v2(0, 8), v2(16, 2));
-    int i;
+    //int i;
     v2 V;
 
-    for(V.Y = 10, i = 0; V.Y < 13; ++V.Y)
+    for(V.Y = 10/*, i = 0*/; V.Y < 13; ++V.Y)
       for(V.X = V.Y - 5; V.X < 20 - V.Y; ++V.X)
-  Dest->PutPixel(V, Source->GetPixel(Pos + V));
+        Dest->PutPixel(V, Source->GetPixel(Pos + V));
   }
   else if(BodyPartFlags == ST_RIGHT_LEG)
   {
