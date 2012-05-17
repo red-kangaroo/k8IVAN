@@ -21,18 +21,12 @@ void team::SetRelation(team* AnotherTeam, int Relation)
   this->Relation[AnotherTeam->ID] = AnotherTeam->Relation[ID] = Relation;
 }
 
-int team::GetRelation(const team* AnotherTeam) const
-{
-  if(AnotherTeam != this)
-  {
+int team::GetRelation (const team *AnotherTeam) const {
+  if (AnotherTeam != this) {
     std::map<uLong, int>::const_iterator Iterator = Relation.find(AnotherTeam->ID);
-
-    if(Iterator != Relation.end())
-      return Iterator->second;
-    else
-      ABORT("Team %u dismissed!", AnotherTeam->ID);
+    if (Iterator != Relation.end()) return Iterator->second;
+    ABORT("Team %u dismissed!", AnotherTeam->ID);
   }
-
   return FRIEND;
 }
 
