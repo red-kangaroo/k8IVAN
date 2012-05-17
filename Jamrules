@@ -1,7 +1,11 @@
 set-profile ;
-set-default-subdir-locates ;
+set-default-locations ;
+OPTIM.all += -Wno-narrowing ;
 
-HDRS += $(TOP)/src/felib $(TOP)/src/vasya $(TOP)/src/regex $(TOP)/src/game ;
+HDRS += $(TOP)/src/felib ;
+HDRS += $(TOP)/src/vasya ;
+HDRS += $(TOP)/src/regex ;
+#HDRS += $(TOP)/src/game ;
 
 if $(USE_SOUND) = 0 || $(USE_SOUND) = "ona" || $(USE_SOUND) = "no" || $(USE_SOUND) = "n" {
   USE_SOUND = ;
@@ -40,109 +44,16 @@ if $(DISABLE_LIBPNG) {
 }
 
 
-#####################################################################
-# game defines
-DEFINES += WIZARD ;
+include $(TOP)/Jamrules.defines ;
+softinclude $(TOP)/Jamrules.windoze ;
 
-
-if $(DEBUG) { DEFINES += DEBUG_BUILD ; }
-
-
-if ! $(GLOBAL_SAVES) {
-  Echo "MSG: using local saves" ;
-  DEFINES += LOCAL_SAVES ;
-}
-
-
-if $(USE_SOUND) {
-  Echo "MSG: sound support enabled" ;
-  LINKLIBS += -lSDL_mixer ;
-  C++LINKLIBS += -lSDL_mixer ;
-} else {
-  Echo "MSG: sound support disabled; USE_SOUND=1 will enable it" ;
-  DEFINES += DISABLE_SOUND ;
-}
-
-
-if $(HAVE_IMLIB2) {
-  Echo "MSG: imlib2 found" ;
-  lib-config "pkg-config imlib2" ;
-  DEFINES += HAVE_IMLIB2 ;
-}
-
-if $(HAVE_LIBPNG) {
-  Echo "MSG: libpng found" ;
-  lib-config "pkg-config libpng" ;
-  DEFINES += HAVE_LIBPNG ;
-}
-
-if $(HAVE_IMLIB2) || $(HAVE_LIBPNG) {
-  if $(ENABLE_PNG_SHOTS) {
-    Echo "MSG: savegame screenshots will be in PNG format" ;
-  } else {
-    Echo "MSG: savegame screenshots will be in internal format" ;
-    DEFINES += SGAME_SHOTS_IPU ;
-  }
-}
-
-
-#####################################################################
-if $(WINDOZE) {
-  WINE = "wine" ;
-  MGPATH = "wine c:\\\\mingw\\\\bin\\\\" ;
-  MGCC = "mingw32-gcc.exe" ;
-
-  CC = $(MGPATH)$(MGCC) -mthreads ;
-  LINK = $(MGPATH)$(MGCC) -mthreads ;
-  AR = $(MGPATH)ar.exe -ru ;
-  RANLIB = $(MGPATH)ranlib.exe ;
-  C++ = "wine c:\\\\mingw\\\\bin\\\\mingw32-g++.exe" ;
-  C++LINK = "wine c:\\\\mingw\\\\bin\\\\mingw32-g++.exe -static-libgcc" ;
-
-  rule UserObject {
-    switch $(>) {
-      case *.rc : ResourceCompiler $(<) : $(>) ;
-      #case *.o : DEPENDS $(<) : $(>) ;
-      case *.o : DummyRule $(<) : $(>) ;
-      case * : ECHO "unknown suffix on" $(>) ;
-    }
-  }
-  rule DummyRule {
-  }
-  rule ResourceCompiler {
-    DEPENDS $(<) : $(>) ;
-    Clean clean : $(<) ;
-  }
-  actions ResourceCompiler {
-    $(MGPATH)windres.exe -i $(>) -o $(<)
-  }
-
-  LINKLIBS += -lkernel32 -luser32 -ladvapi32 ;
-  #if $(DO_MAP) {
-  #  LINKFLAGS += -Wl,-Map,zpx2.map ;
-  #}
-  #WINSUBSYS = "windows" ;
-  WINSUBSYS = "console" ;
-  #LINKFLAGS += -Wl,-subsystem,console ;
-  SUFEXE = .exe ;
-  if $(DO_MAP) {
-    LINKFLAGS += "-Wl,-Map,ivan.map,-subsystem,$(WINSUBSYS)" ;
-  } else {
-    LINKFLAGS += "-Wl,-subsystem,$(WINSUBSYS)" ;
-  }
-
-  HDRS += wininc wininc/SDL ;
-  LINKLIBS += -Lwinlib -lm -lSDL ;
-  C++LINKLIBS += -Lwinlib -lm -lSDL ;
-}
-#####################################################################
 
 if ! $(NOGDB) {
-  OPTIM += -g ;
-  LINKFLAGS += -g ;
+  OPTIM.all += -g ;
+  LINKFLAGS.all += -g ;
 } else {
-  OPTIM += -s ;
-  LINKFLAGS += -s ;
+  OPTIM.all += -s ;
+  LINKFLAGS.all += -s ;
 }
 
 #CCFLAGS += -DNDEBUG ;
@@ -150,8 +61,5 @@ if ! $(NOGDB) {
 #CCFLAGS += -Wall ;
 #C++FLAGS += -Wall ;
 
-OPTIM += -Wall ;
-C++OPTIM += -Wall ;
-
-LINKLIBS += -lm ;
-C++LINKLIBS += -lm ;
+LINKLIBS.all += -lm ;
+#C++LINKLIBS.all += -lm ;

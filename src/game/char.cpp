@@ -1969,9 +1969,105 @@ truth character::CheckForUsefulItemsOnGround (truth CheckFood) {
     if (ItemVector[c]->CanBeSeenBy(this) && ItemVector[c]->IsPickable(this)) {
       if (!(CommandFlags & DONT_CHANGE_EQUIPMENT) && TryToEquip(ItemVector[c])) return true;
       if (CheckFood && UsesNutrition() && !CheckIfSatiated() && TryToConsume(ItemVector[c])) return true;
+      if ((ItemVector[c])->IsThrowingWeapon() && IsRangedAttacker() && TryToAddToInventory(ItemVector[c])) return true;
     }
   }
   return false;
+}
+
+
+truth character::TryToAddToInventory (item *Item) {
+  if (!(GetBurdenState() > STRESSED) || !CanUseEquipment() || Item->GetSquaresUnder() != 1) return false;
+  room *Room = GetRoom();
+  if (!Room || Room->PickupItem(this, Item, 1)) {
+    if (CanBeSeenByPlayer()) ADD_MESSAGE("%s picks up %s from the ground.", CHAR_NAME(DEFINITE), Item->CHAR_NAME(INDEFINITE));
+    Item->MoveTo(GetStack());
+    DexterityAction(5);
+    return true;
+  }
+  return false;
+}
+
+
+truth character::CheckThrowItemOpportunity () {
+  if (!IsRangedAttacker() || !CanThrow() || !IsHumanoid() || !IsSmall() || !IsEnabled()) return false; // total gum
+  // Steps:
+  // (1) - Acquire target as nearest enemy
+  // (2) - Check that this enemy is in range, and is in appropriate direction
+  //       No friendly fire!
+  // (3) - check inventory for throwing weapon, select this weapon
+  // (4) - throw item in direction where the enemy is
+  //
+  //Check the visible area for hostiles
+  int ThrowDirection = 0;
+  int TargetFound = 0;
+  v2 Pos = GetPos();
+  v2 TestPos;
+  int RangeMax = GetLOSRange();
+  int CandidateDirections[7] = {0, 0, 0, 0, 0, 0, 0};
+  int HostileFound = 0;
+  item *ToBeThrown = 0;
+  itemvector ItemVector;
+  //
+  for (int r = 1; r <= RangeMax; ++r) {
+    for (int dir = 0; dir < 8; ++dir) {
+      level *Level = GetLevel();
+      //
+      switch (dir) {
+        case 0: TestPos = v2(Pos.X-r, Pos.Y-r); break;
+        case 1: TestPos = v2(Pos.X, Pos.Y-r); break;
+        case 2: TestPos = v2(Pos.X+r, Pos.Y-r); break;
+        case 3: TestPos = v2(Pos.X-r, Pos.Y); break;
+        case 4: TestPos = v2(Pos.X+r, Pos.Y); break;
+        case 5: TestPos = v2(Pos.X-r, Pos.Y+r); break;
+        case 6: TestPos = v2(Pos.X, Pos.Y+r); break;
+        case 7: TestPos = v2(Pos.X+r, Pos.Y+r); break;
+      }
+      if (Level->IsValidPos(TestPos)) {
+        square *TestSquare = GetNearSquare(TestPos);
+        character *Dude = TestSquare->GetCharacter();
+        //
+        if (Dude && Dude->IsEnabled() && GetRelation(Dude) != HOSTILE && Dude->CanBeSeenBy(this, false, true)) {
+          CandidateDirections[dir] = BLOCKED;
+        }
+        if (Dude && Dude->IsEnabled() && GetRelation(Dude) == HOSTILE && Dude->CanBeSeenBy(this, false, true) && CandidateDirections[dir] != BLOCKED) {
+          //then load this candidate position direction into the vector of possible throw directions
+          CandidateDirections[dir] = SUCCESS;
+          HostileFound = 1;
+        }
+      }
+    }
+  }
+  //
+  if (HostileFound) {
+    for (int dir = 0; dir < 8; ++dir) {
+      if (CandidateDirections[dir] == SUCCESS && !TargetFound) {
+        ThrowDirection = dir;
+        TargetFound = 1;
+      }
+    }
+    if (!TargetFound) return false;
+  } else {
+    return false;
+  }
+  //check inventory for throwing weapon
+  GetStack()->FillItemVector(ItemVector);
+  for (uint c = 0; c < ItemVector.size(); ++c) {
+    if (ItemVector[c]->IsThrowingWeapon()) {
+      ToBeThrown = ItemVector[c];
+      break;
+    }
+  }
+  if (!ToBeThrown) return false;
+  if (CanBeSeenByPlayer()) ADD_MESSAGE("%s throws %s.", CHAR_NAME(DEFINITE), ToBeThrown->CHAR_NAME(INDEFINITE));
+  ThrowItem(ThrowDirection, ToBeThrown);
+  EditExperience(ARM_STRENGTH, 75, 1 << 8);
+  EditExperience(DEXTERITY, 75, 1 << 8);
+  EditExperience(PERCEPTION, 75, 1 << 8);
+  EditNP(-50);
+  DexterityAction(5);
+  TerminateGoingTo();
+  return true;
 }
 
 

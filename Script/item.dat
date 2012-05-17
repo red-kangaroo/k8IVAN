@@ -121,6 +121,7 @@ item
   IsKamikazeWeapon = false;
   FlexibilityIsEssential = false;
   IsSadistWeapon = false;
+  IsThrowingWeapon = false;
 }
 
 materialcontainer
@@ -363,6 +364,7 @@ meleeweapon
     WieldedBitmapPos = 160, 176;
     EnchantmentPlusChance = 15;
     DamageFlags = SLASH;
+    IsThrowingWeapon = true;
   }
 
   Config BROKEN|AXE;
@@ -523,6 +525,7 @@ meleeweapon
     WieldedBitmapPos = 160, 288;
     EnchantmentPlusChance = 25;
     DamageFlags = SLASH|PIERCE;
+    IsThrowingWeapon = true;
   }
 
   Config BROKEN|DAGGER;

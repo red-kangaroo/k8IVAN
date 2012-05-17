@@ -5,4 +5,4 @@ C++Main mihail : mihail.cpp ;
 LinkLibraries mihail : libfelib.a ;
 
 
-SubIncludeOnce JAM_IVAN_INC_SRC_FELIB : TOP src felib ;
+SubInclude TOP src felib ;

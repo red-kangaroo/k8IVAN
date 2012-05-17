@@ -77,6 +77,7 @@ public:
   virtual int OpenMultiplier() const;
   virtual int CloseMultiplier() const;
   virtual truth CheckThrow() const;
+  virtual truth CheckThrowItemOpportunity();
   virtual truth CheckOffer() const;
   virtual sorter EquipmentSorter(int) const;
   virtual void SetEquipment(int, item*);
@@ -512,6 +513,20 @@ CHARACTER(kamikazedwarf, humanoid)
   virtual void CreateInitialEquipment(int);
   virtual truth IsKamikazeDwarf() const { return true; }
   virtual void SingRandomSong();
+ protected:
+  virtual int GetTorsoMainColor() const;
+  virtual int GetGauntletColor() const;
+  virtual int GetLegMainColor() const;
+  virtual v2 GetDrawDisplacement(int) const;
+  virtual int GetWSkillHits() const { return 10000; }
+  virtual truth IsElite() const { return false; }
+};
+
+CHARACTER(axethrowerdwarf, humanoid)
+{
+ public:
+  virtual void GetAICommand();
+  virtual void CreateInitialEquipment(int);
  protected:
   virtual int GetTorsoMainColor() const;
   virtual int GetGauntletColor() const;

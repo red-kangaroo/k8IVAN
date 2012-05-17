@@ -34,6 +34,6 @@ C++Main ivan : $(gamesources) ;
 LinkLibraries ivan : libfelib.a libregex.a ;
 
 
-SubIncludeOnce JAM_IVAN_INC_SRC_FELIB : TOP src felib ;
-SubIncludeOnce JAM_IVAN_INC_SRC_REGEX : TOP src regex ;
-SubIncludeOnce JAM_IVAN_INC_SRC_VASYA : TOP src vasya ;
+SubInclude TOP src felib ;
+SubInclude TOP src regex ;
+SubInclude TOP src vasya ;

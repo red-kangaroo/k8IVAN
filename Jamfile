@@ -1,4 +1,4 @@
 SubDir TOP ;
 
 
-SubIncludeOnce JAM_IVAN_INC_SRC : TOP src ;
+SubInclude TOP src ;

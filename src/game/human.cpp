@@ -832,6 +832,50 @@ void kamikazedwarf::GetAICommand()
   }
 }
 
+
+void axethrowerdwarf::CreateInitialEquipment (int SpecialFlags) {
+  SetRightWielded(meleeweapon::Spawn(AXE, SpecialFlags));
+  SetLeftWielded(meleeweapon::Spawn(AXE, SpecialFlags));
+  for (int k = 0; k < 6; ++k) GetStack()->AddItem(meleeweapon::Spawn(AXE));
+  GetStack()->AddItem(lantern::Spawn());
+  GetCWeaponSkill(AXES)->AddHit(GetWSkillHits());
+  GetCurrentRightSWeaponSkill()->AddHit(GetWSkillHits());
+}
+
+
+void axethrowerdwarf::GetAICommand () {
+  if (CheckThrowItemOpportunity()) return;
+  character::GetAICommand();
+}
+
+
+v2 axethrowerdwarf::GetDrawDisplacement (int j) const {
+  static v2 DrawDisplacement[] = { v2(0, 0), v2(0, 1), v2(0, -1), v2(0, -1), v2(0, -1), v2(0, 0), v2(0, 0) };
+  return DrawDisplacement[j];
+}
+
+
+col16 axethrowerdwarf::GetTorsoMainColor () const {
+  return GetMasterGod()->GetColor();
+}
+
+
+col16 axethrowerdwarf::GetGauntletColor () const {
+  return GetMasterGod()->GetColor();
+}
+
+
+col16 axethrowerdwarf::GetLegMainColor () const {
+  return GetMasterGod()->GetColor();
+}
+
+
+truth humanoid::CheckThrowItemOpportunity () {
+  if(!HasAUsableArm()) return false;
+  return character::CheckThrowItemOpportunity();
+}
+
+
 int humanoid::GetSize() const
 {
   int Size = 0;

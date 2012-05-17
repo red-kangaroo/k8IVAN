@@ -245,6 +245,7 @@ struct characterdatabase : public databasebase {
   truth CanBeGeneratedOnlyInTheCatacombs;
   truth IsAlcoholic;
   truth IsImmuneToWhipOfThievery;
+  truth IsRangedAttacker;
 };
 
 
@@ -299,6 +300,7 @@ public:
   truth TestForPickup (item *) const;
   void ThrowItem (int, item *);
   truth TryMove (v2, truth, truth);
+  truth TryToAddToInventory (item *);
   truth HasHeadOfElpuri () const;
   truth HasGoldenEagleShirt () const;
   truth HasPetrussNut () const;
@@ -609,6 +611,7 @@ public:
   DATA_BASE_TRUTH(CanBeGeneratedOnlyInTheCatacombs);
   DATA_BASE_TRUTH(IsAlcoholic);
   DATA_BASE_TRUTH(IsImmuneToWhipOfThievery);
+  DATA_BASE_TRUTH(IsRangedAttacker);
   int GetType () const { return GetProtoType()->GetIndex(); }
   void TeleportRandomly (truth = false);
   truth TeleportNear (character *);
@@ -1093,6 +1096,7 @@ public:
   truth CanTameWithScroll (const character *) const;
   truth IsCharmable () const { return GetTamingDifficulty() != NO_TAMING; }
   truth CheckSadism ();
+  truth CheckThrowItemOpportunity ();
   virtual truth HasSadistAttackMode () const { return IsUsingLegs(); }
   truth CheckForBeverage ();
   void Haste ();
