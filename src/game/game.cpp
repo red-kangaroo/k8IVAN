@@ -675,9 +675,7 @@ void game::DrawEverythingNoBlit (truth AnimationDraw) {
       DOUBLE_BUFFER->Fill(CalculateScreenCoordinates(CursorPos), TILE_V2, 0);
   }
 
-  unsigned int c;
-
-  for (c = 0; c < SpecialCursorPos.size(); ++c) {
+  for (unsigned int c = 0; c < SpecialCursorPos.size(); ++c) {
     if (OnScreen(SpecialCursorPos[c])) CurrentArea->GetSquare(SpecialCursorPos[c])->SendStrongNewDrawRequest();
   }
 
@@ -733,7 +731,7 @@ void game::DrawEverythingNoBlit (truth AnimationDraw) {
     }
   }
 
-  for (c = 0; c < SpecialCursorPos.size(); ++c) {
+  for (unsigned int c = 0; c < SpecialCursorPos.size(); ++c) {
     if (OnScreen(SpecialCursorPos[c])) {
       v2 ScreenCoord = CalculateScreenCoordinates(SpecialCursorPos[c]);
       igraph::DrawCursor(ScreenCoord, SpecialCursorData[c]);
