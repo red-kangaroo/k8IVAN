@@ -44,7 +44,7 @@ class room
 {
  public:
   typedef roomprototype prototype;
-  room() : LastMasterSearchTick(0), MasterID(0) { }
+  room() : LastMasterSearchTick(0), MasterID(0), LastWardSearchTick(0) { }
   virtual ~room() { }
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
@@ -87,6 +87,9 @@ class room
   void FinalProcessForBone();
   void SetFlags(uLong What) { Flags = What; }
   truth DontGenerateMonsters() const { return Flags & NO_MONSTER_GENERATION; }
+  olterrain* GetWard() const;
+  truth WardIsActive() const;
+  virtual truth IsOKToTeleportInto() const;
  protected:
   mutable character* Master;
   mutable uLong LastMasterSearchTick;
@@ -96,6 +99,8 @@ class room
   int Index;
   int DivineMaster;
   uLong Flags;
+  mutable olterrain* Ward;
+  mutable ulong LastWardSearchTick;
 };
 
 #ifdef __FILE_OF_STATIC_ROOM_PROTOTYPE_DEFINITIONS__

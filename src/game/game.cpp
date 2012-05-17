@@ -53,8 +53,8 @@
 #define SAVE_FILE_VERSION 119 // Increment this if changes make savefiles incompatible
 #define BONE_FILE_VERSION 106 // Increment this if changes make bonefiles incompatible
 */
-#define SAVE_FILE_VERSION 122 // Increment this if changes make savefiles incompatible
-#define BONE_FILE_VERSION 107 // Increment this if changes make bonefiles incompatible
+#define SAVE_FILE_VERSION 123 // Increment this if changes make savefiles incompatible
+#define BONE_FILE_VERSION 108 // Increment this if changes make bonefiles incompatible
 
 #define LOADED    0
 #define NEW_GAME  1
@@ -113,6 +113,7 @@ liquid* game::GlobalRainLiquid;
 v2 game::GlobalRainSpeed;
 sLong game::GlobalRainTimeModifier;
 truth game::PlayerSumoChampion;
+truth game::PlayerSolicitusChampion;
 uLong game::SquarePartEmitationTick = 0;
 sLong game::Turn;
 truth game::PlayerRunning;
@@ -409,6 +410,7 @@ truth game::Init (cfestring &Name) {
       SumoWrestling = false;
       GlobalRainTimeModifier = 2048-(RAND()&4095);
       PlayerSumoChampion = false;
+      PlayerSolicitusChampion = false;
       protosystem::InitCharacterDataBaseFlags();
       memset(EquipmentMemory, 0, sizeof(EquipmentMemory));
       PlayerRunning = false;
@@ -758,6 +760,7 @@ truth game::Save (cfestring &SaveName) {
   SaveFile << WizardMode << SeeWholeMapCheatMode << GoThroughWallsCheat;
   SaveFile << Tick << Turn << InWilderness << NextCharacterID << NextItemID << NextTrapID << NecroCounter;
   SaveFile << SumoWrestling << PlayerSumoChampion << GlobalRainTimeModifier;
+  SaveFile << PlayerSolicitusChampion;
   sLong Seed = RAND();
   femath::SetSeed(Seed);
   SaveFile << Seed;
@@ -810,6 +813,7 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> WizardMode >> SeeWholeMapCheatMode >> GoThroughWallsCheat;
   SaveFile >> Tick >> Turn >> InWilderness >> NextCharacterID >> NextItemID >> NextTrapID >> NecroCounter;
   SaveFile >> SumoWrestling >> PlayerSumoChampion >> GlobalRainTimeModifier;
+  SaveFile >> PlayerSolicitusChampion;
   femath::SetSeed(ReadType<sLong>(SaveFile));
   SaveFile >> AveragePlayerArmStrengthExperience;
   SaveFile >> AveragePlayerLegStrengthExperience;
@@ -1022,11 +1026,12 @@ worldmap *game::LoadWorldMap (cfestring &SaveName) {
 
 
 void game::Hostility (team *Attacker, team *Defender) {
-  for (int c = 0; c < Teams; ++c)
+  for (int c = 0; c < Teams; ++c) {
     if (GetTeam(c) != Attacker && GetTeam(c) != Defender &&
         GetTeam(c)->GetRelation(Defender) == FRIEND &&
         c != NEW_ATTNAM_TEAM && c != TOURIST_GUIDE_TEAM) // gum solution
       GetTeam(c)->SetRelation(Attacker, HOSTILE);
+  }
 }
 
 
@@ -1685,17 +1690,25 @@ void game::EnterArea (charactervector &Group, int Area, int EntryIndex) {
       GlobalRainSpeed = v2(-64, 128);
       CurrentLevel->CreateGlobalRain(GlobalRainLiquid, GlobalRainSpeed);
     }
+    //
     if (New && CurrentDungeonIndex == NEW_ATTNAM && Area == 0) {
       GlobalRainLiquid = liquid::Spawn(WATER);
       GlobalRainSpeed = v2(256, 512);
       CurrentLevel->CreateGlobalRain(GlobalRainLiquid, GlobalRainSpeed);
     }
+    //
     if (New && CurrentDungeonIndex == ELPURI_CAVE && Area == OREE_LAIR) {
       GlobalRainLiquid = liquid::Spawn(BLOOD);
       GlobalRainSpeed = v2(256, 512);
       CurrentLevel->CreateGlobalRain(GlobalRainLiquid, GlobalRainSpeed);
       GlobalRainLiquid->SetVolumeNoSignals(200);
       CurrentLevel->EnableGlobalRain();
+    }
+    //
+    if (New && CurrentDungeonIndex == MUNTUO && Area == 0) {
+      GlobalRainLiquid = liquid::Spawn(WATER);
+      GlobalRainSpeed = v2(-64, 1024);
+      CurrentLevel->CreateGlobalRain(GlobalRainLiquid, GlobalRainSpeed);
     }
 
     Generating = false;
@@ -2980,6 +2993,11 @@ truth game::PlayerKnowsAllGods () {
 
 void game::AdjustRelationsToAllGods (int Amount) {
   for (int c = 1; c <= GODS; ++c) GetGod(c)->AdjustRelation(Amount);
+}
+
+
+void game::SetRelationsToAllGods (int Amount) {
+  for (int c = 1; c <= GODS; ++c) GetGod(c)->SetRelation(Amount);
 }
 
 

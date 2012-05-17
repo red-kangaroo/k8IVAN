@@ -66,6 +66,7 @@ Dungeon UNDER_WATER_TUNNEL;
       GenerateWindows = false;
       UseFillSquareWalls = false;
       Flags = 0;
+      GenerateWards = false;
     }
   }
 

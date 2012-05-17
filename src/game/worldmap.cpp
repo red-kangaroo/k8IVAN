@@ -116,7 +116,7 @@ void worldmap::Generate () {
     }
     if (!PerfectForAttnam.size()) continue;
 
-    v2 AttnamPos, ElpuriCavePos, NewAttnamPos, TunnelEntry, TunnelExit, MondedrPos;
+    v2 AttnamPos, ElpuriCavePos, NewAttnamPos, TunnelEntry, TunnelExit, MondedrPos, MuntuoPos;
     truth Correct = false;
     continent *PetrusLikes;
     for (int c1 = 0; c1 < 25; ++c1) {
@@ -125,6 +125,7 @@ void worldmap::Generate () {
       AttnamPos = PetrusLikes->GetRandomMember(EGForestType);
       ElpuriCavePos = PetrusLikes->GetRandomMember(SnowType);
       MondedrPos = PetrusLikes->GetRandomMember(SteppeType);
+      MuntuoPos = PetrusLikes->GetRandomMember(LForestType);
       for (int c2 = 1; c2 < 50; ++c2) {
         TunnelExit = PetrusLikes->GetMember(RAND() % PetrusLikes->GetSize());
         if (AttnamPos != TunnelExit && ElpuriCavePos != TunnelExit) {
@@ -213,6 +214,8 @@ void worldmap::Generate () {
     SetEntryPos(UNDER_WATER_TUNNEL, TunnelEntry);
     GetWSquare(TunnelExit)->ChangeOWTerrain(underwatertunnelexit::Spawn());
     SetEntryPos(UNDER_WATER_TUNNEL_EXIT, TunnelExit);
+    GetWSquare(MuntuoPos)->ChangeOWTerrain(muntuo::Spawn());
+    SetEntryPos(MUNTUO, MuntuoPos);
     PLAYER->PutTo(NewAttnamPos);
     CalculateLuminances();
     CalculateNeighbourBitmapPoses();

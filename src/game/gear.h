@@ -511,4 +511,45 @@ protected:
 };
 
 
+ITEM(eptyron, meleeweapon)
+{
+ public:
+  virtual truth HitEffect(character*, character*, v2, int, int, truth);
+  virtual void BlockEffect(character*, character*, item*, int Type);
+  virtual truth AllowAlphaEverywhere() const { return true; }
+  //virtual void Break(character*, int); //should it have a break effect??
+ protected:
+  virtual int GetClassAnimationFrames() const;
+  virtual col16 GetOutlineColor(int) const;
+  virtual alpha GetOutlineAlpha(int) const;
+};
+
+ITEM(taiaha, meleeweapon)
+{
+ public:
+  //virtual truth HitEffect(character*, character*, v2, int, int, truth);
+  //virtual void BlockEffect(character*, character*, item*, int Type);
+  virtual truth AllowAlphaEverywhere() const { return true; }
+  virtual void Save(outputfile&) const;
+  virtual void Load(inputfile&);
+  virtual void ChargeFully(character*) { TimesUsed = 0; }
+  virtual truth IsAppliable(ccharacter*) const { return false; }
+  virtual truth IsZappable(ccharacter*) const { return true; }
+  virtual truth IsChargeable(ccharacter*) const { return true; }
+  virtual truth ReceiveDamage(character*, int, int, int);
+  virtual truth Zap(character*, v2, int);
+  virtual void AddInventoryEntry(ccharacter*, festring&, int, truth) const; //this?
+  virtual truth IsExplosive() const { return true; }
+ protected:
+  virtual int GetClassAnimationFrames() const;
+  virtual col16 GetOutlineColor(int) const;
+  virtual alpha GetOutlineAlpha(int) const;
+  virtual void PostConstruct();
+  void BreakEffect(character*, cfestring&);
+  //ulong GetSpecialParameters() const;
+  int Charges;
+  int TimesUsed;
+};
+
+
 #endif

@@ -415,6 +415,8 @@ public:
   static void SetGlobalRainLiquid(liquid* What) { GlobalRainLiquid = What; }
   static void SetGlobalRainSpeed(v2 What) { GlobalRainSpeed = What; }
   static truth PlayerIsSumoChampion() { return PlayerSumoChampion; }
+  static truth PlayerIsSolicitusChampion() { return PlayerSolicitusChampion; }
+  static void MakePlayerSolicitusChampion() { PlayerSolicitusChampion = true; }
   static v2 GetSunLightDirectionVector();
   static int CalculateMinimumEmitationRadius(col24);
   static uLong IncreaseSquarePartEmitationTicks();
@@ -454,6 +456,7 @@ public:
   static void LearnAbout(god*);
   static truth PlayerKnowsAllGods();
   static void AdjustRelationsToAllGods(int);
+  static void SetRelationsToAllGods(int);
   static void ShowDeathSmiley(bitmap*, truth);
   static void SetEnterImage(cbitmap* What) { EnterImage = What; }
   static void SetEnterTextDisplacement (v2 What) { EnterTextDisplacement = What; }
@@ -568,6 +571,7 @@ private:
   static v2 GlobalRainSpeed;
   static sLong GlobalRainTimeModifier;
   static truth PlayerSumoChampion;
+  static truth PlayerSolicitusChampion;
   static uLong SquarePartEmitationTick;
   static cint LargeMoveDirection[];
   static sLong Turn;

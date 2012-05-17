@@ -93,6 +93,11 @@
 #define PSYPHER (SOLID_ID + 72)
 #define EXTRA_HARD_BASALT (SOLID_ID + 73)
 #define WEAK_GLASS (SOLID_ID + 74)
+#define DEAD_GRASS (SOLID_ID + 75)
+#define KAURI_WOOD (SOLID_ID + 76)
+#define RATA_WOOD (SOLID_ID + 77)
+#define NEPHRITE (SOLID_ID + 78)
+#define HESSIAN_CLOTH (SOLID_ID + 79)
 
 #define ORGANIC_ID (2 << 12)
 
@@ -337,6 +342,8 @@
 #define GRAND_MASTER 8
 #define MONDEDR_GUARD 9
 #define DWARVEN_GUARD 10
+#define SENTINEL 11
+#define FOREST_SHOP 12
 #define ENQUIOX 128
 
 #define DARK 1
@@ -426,6 +433,7 @@
 #define SNOW_TERRAIN 6
 #define DARK_GRASS_TERRAIN 7
 #define SAND_TERRAIN 8
+#define DEAD_GRASS_TERRAIN 9
 
 #define POOL 1
 #define UNDERGROUND_LAKE 2

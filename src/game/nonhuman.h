@@ -509,4 +509,18 @@ CHARACTER(ox, nonhumanoid)
 };
 
 
+CHARACTER(solicitus, largecreature)
+{
+public:
+  virtual void Save(outputfile&) const;
+  virtual void Load(inputfile&);
+  virtual void FinalProcessForBone();
+  virtual void BeTalkedTo();
+protected:
+  virtual void GetAICommand();
+  virtual void CreateCorpse(lsquare*);
+  virtual truth MustBeRemovedFromBone() const;
+};
+
+
 #endif

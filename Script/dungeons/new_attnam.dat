@@ -49,6 +49,7 @@ Dungeon NEW_ATTNAM;
       GenerateWindows = true;
       UseFillSquareWalls = false;
       Flags = 0;
+      GenerateWards = false;
     }
 
     Room
@@ -62,6 +63,7 @@ Dungeon NEW_ATTNAM;
       DivineMaster = SILVA;
       GenerateLanterns = false;
       GenerateWindows = false;
+      GenerateWards = false;
 
       OTerrainMap
       {
@@ -219,6 +221,7 @@ Dungeon NEW_ATTNAM;
       Type = ROOM_BANANA_DROP_AREA;
       FloorSquare = solidterrain(FLOOR), 0;
       GenerateWindows = false;
+      GenerateWards = false;
 
       Square, Pos 1, 1;
       {
@@ -491,6 +494,8 @@ Dungeon NEW_ATTNAM;
       //Square, Pos 12,23; { Items == kawai; }
       Square, Pos 1,33; { Items == kawai; }
       Square, Pos 2,33; { Items == kawai; }
+      Square, Pos 4,33; { Items == eptyron; }
+      Square, Pos 5,33; { Items == taiaha; }
       //Square, Pos 9, 23; { Character = assassin { Team = MONSTER_TEAM; } }
       //Square, Pos 9, 23; { Character = cossack { Team = COLONIST_TEAM; } }
       //Square, Pos 11,8; { Items == kawai; }
@@ -538,6 +543,7 @@ Dungeon NEW_ATTNAM;
       IsInside = true;
       UseFillSquareWalls = false;
       Flags = 0;
+      GenerateWards = false;
 
       Square, Pos 6, 6;
       {

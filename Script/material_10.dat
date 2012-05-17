@@ -163,3 +163,83 @@ Extend liquid
     InteractionFlags = Base|EFFECT_IS_GOOD;
   }
 }
+
+
+Extend solid
+{
+  Config DEAD_GRASS;
+  {
+    StrengthValue = 1;
+    ConsumeType = CT_MISC_ORGANIC;
+    Density = 75;
+    Color = rgb16(148, 100, 5);
+    NameStem = "grass";
+    AdjectiveStem = "grassy";
+    Flexibility = 1;
+    AttachedGod = SILVA;
+    CommonFlags = Base&~CAN_BE_WISHED;
+    BodyFlags = Base;
+    InteractionFlags = CAN_BURN;
+  }
+
+  Config HESSIAN_CLOTH;
+  {
+    StrengthValue = 10;
+    ConsumeType = CT_MISC_ORGANIC;
+    Density = 300;
+    Color = rgb16(134, 108, 58);
+    NameStem = "hessian cloth";
+    Flexibility = 15;
+    AttachedGod = DULCIS;
+    HardenedMaterial = ANGEL_HAIR;
+    CategoryFlags = Base|CAN_BE_TAILORED|IS_GOLEM_MATERIAL;
+    InteractionFlags = CAN_BURN;
+  }
+
+  Config KAURI_WOOD;
+  {
+    StrengthValue = 60;
+    ConsumeType = CT_MISC_ORGANIC;
+    Density = 800;
+    Color = rgb16(140, 92, 42);
+    NameStem = "kauri";
+    AttachedGod = SILVA;
+    NaturalForm = stick;
+    SoftenedMaterial = TEAK_WOOD;
+    IntelligenceRequirement = 10;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+  }
+
+  Config RATA_WOOD;
+  {
+    StrengthValue = 70;
+    ConsumeType = CT_MISC_ORGANIC;
+    Density = 900;
+    Color = rgb16(166, 44, 24);
+    NameStem = "rata";
+    AttachedGod = SILVA;
+    NaturalForm = stick;
+    SoftenedMaterial = KAURI_WOOD;
+    IntelligenceRequirement = 15;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+  }
+
+  Config NEPHRITE;
+  {
+    StrengthValue = 75;
+    ConsumeType = CT_MINERAL;
+    Density = 2650;
+    Color = rgb16(24, 136, 64);
+    NameStem = "pounamu";
+    /*Alias == "jade";*/
+    AttachedGod = TERRA;
+    NaturalForm = stone;
+    HardenedMaterial = PURPLE_CRYSTAL;
+    PriceModifier = 1000;
+    IntelligenceRequirement = 5;
+    Alpha = 180;
+    CategoryFlags = Base|IS_SPARKLING|IS_GOLEM_MATERIAL;
+  }
+}

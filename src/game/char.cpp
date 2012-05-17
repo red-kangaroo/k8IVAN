@@ -1424,6 +1424,7 @@ void character::Save (outputfile &SaveFile) const {
   SaveFile << ExpModifierMap;
   SaveFile << NP << AP << Stamina << GenerationDanger << ScienceTalks << CounterToMindWormHatch;
   SaveFile << TemporaryState << EquipmentState << Money << GoingTo << RegenerationCounter << Route << Illegal;
+  SaveFile << CurrentSweatMaterial;
   SaveFile.Put(!!IsEnabled());
   SaveFile << HomeData << BlocksSinceLastTurn << CommandFlags;
   SaveFile << WarnFlags << (uShort)Flags;
@@ -1463,6 +1464,7 @@ void character::Load (inputfile &SaveFile) {
   SaveFile >> ExpModifierMap;
   SaveFile >> NP >> AP >> Stamina >> GenerationDanger >> ScienceTalks >> CounterToMindWormHatch;
   SaveFile >> TemporaryState >> EquipmentState >> Money >> GoingTo >> RegenerationCounter >> Route >> Illegal;
+  SaveFile >> CurrentSweatMaterial;
 
   if (!SaveFile.Get()) Disable();
 
@@ -2777,12 +2779,44 @@ void character::TeleportRandomly (truth Intentional) {
     ADD_MESSAGE("A rainbow-colored whirlpool twists the existence around you. You are sucked through a tunnel piercing a myriad of surreal universes. Luckily you return to this dimension in one piece.");
   }
 
-  if (TelePos != ERROR_V2) Move(TelePos, true);
-  else Move(GetLevel()->GetRandomSquare(this), true);
+  //if (TelePos != ERROR_V2) Move(TelePos, true);
+  //else Move(GetLevel()->GetRandomSquare(this), true);
+  //if (!IsPlayer() && CanBeSeenByPlayer()) ADD_MESSAGE("%s appears.", CHAR_NAME(INDEFINITE));
+  //if (GetAction() && GetAction()->IsVoluntary()) GetAction()->Terminate(false);
 
-  if (!IsPlayer() && CanBeSeenByPlayer()) ADD_MESSAGE("%s appears.", CHAR_NAME(INDEFINITE));
-
-  if (GetAction() && GetAction()->IsVoluntary()) GetAction()->Terminate(false);
+  if (TelePos == ERROR_V2) TelePos = GetLevel()->GetRandomSquare(this);
+  //
+  room *PossibleRoom = game::GetCurrentLevel()->GetLSquare(TelePos)->GetRoom();
+  //
+  if (!PossibleRoom) {
+    //if it's outside of a room
+    if (TelePos != ERROR_V2) Move(TelePos, true);
+    else Move(GetLevel()->GetRandomSquare(this), true);
+    if (!IsPlayer() && CanBeSeenByPlayer()) ADD_MESSAGE("%s appears.", CHAR_NAME(INDEFINITE));
+    if (GetAction() && GetAction()->IsVoluntary()) GetAction()->Terminate(false);
+  } else if (PossibleRoom && PossibleRoom->IsOKToTeleportInto()) {
+    // If it's inside of a room, check whether a ward is active that might impede the player
+    if (TelePos != ERROR_V2) Move(TelePos, true);
+    else Move(GetLevel()->GetRandomSquare(this), true);
+    if (!IsPlayer() && CanBeSeenByPlayer()) ADD_MESSAGE("%s appears.", CHAR_NAME(INDEFINITE));
+    if (GetAction() && GetAction()->IsVoluntary()) GetAction()->Terminate(false);
+  } else {
+    if (IsPlayer()){
+      ADD_MESSAGE("A mighty force blasts you back to where you were standing. A ward prevents you from teleporting.");
+    }
+    game::GetCurrentLevel()->Explosion(this, CONST_S("killed by an explosion triggered when attempting to teleport into room protected by a ward"), PLAYER->GetPos(), 300 >> 3, false);
+    /*
+    beamdata Beam
+    (
+      this,
+      CONST_S("killed by an explosion triggered when attempting to teleport into room protected by a ward"),
+      YOURSELF,
+      3 // or 0 ?
+    );
+    lsquare* Square = GetNearLSquare(GetPos());
+    Square->DrawParticles(RED);
+    Square->FireBall(Beam);*/
+  }
 }
 
 
@@ -3242,6 +3276,7 @@ void character::LoadDataBaseStats () {
     if (BaseExperience[c]) LimitRef(BaseExperience[c], MIN_EXP, MAX_EXP);
   }
   SetMoney(GetDefaultMoney());
+  SetInitialSweatMaterial(GetSweatMaterial());
   const fearray<sLong> &Skills = GetKnownCWeaponSkills();
   if (Skills.Size) {
     const fearray<sLong> &Hits = GetCWeaponSkillHits();
@@ -6828,7 +6863,8 @@ truth character::GetNewFormForPolymorphWithControl (character *&NewForm) {
 
 
 liquid *character::CreateSweat(sLong Volume) const {
-  return liquid::Spawn(GetSweatMaterial(), Volume);
+  //return liquid::Spawn(GetSweatMaterial(), Volume);
+  return liquid::Spawn(GetCurrentSweatMaterial(), Volume);
 }
 
 

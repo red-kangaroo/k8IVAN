@@ -90,6 +90,43 @@ character* room::GetMaster() const
   }
 }
 
+
+truth room::WardIsActive () const {
+  olterrain* PossibleWard = GetWard();
+  if (!PossibleWard) return false;
+  return PossibleWard->IsWard(); //if it is broken, then it will return zero hopefully
+}
+
+
+olterrain *room::GetWard() const {
+  uLong Tick = game::GetTick();
+  //
+  if (LastWardSearchTick == Tick) {
+    return Ward;
+  } else {
+    LastWardSearchTick = Tick;
+    //
+    std::vector<olterrain*> Found;
+    olterrain *OLTerrain;
+    v2 RoomPos = /*Room->*/GetPos();
+    v2 RoomSize = /*Room->*/GetSize();
+    //
+    for(int x = RoomPos.X; x < (RoomPos.X + RoomSize.X); ++x) {
+      for(int y = RoomPos.Y; y < ( RoomPos.Y + RoomSize.Y); ++y) {
+        OLTerrain = game::GetCurrentLevel()->GetLSquare(x,y)->GetOLTerrain();
+        if(OLTerrain && OLTerrain->IsWard()) return OLTerrain;
+      }
+    }
+    return 0;
+  }
+}
+
+
+truth room::IsOKToTeleportInto() const {
+  return !WardIsActive();
+}
+
+
 truth room::IsOKToDestroyWalls(ccharacter* Infidel) const
 {
   return !MasterIsActive() || Infidel == GetMaster() || GetMaster()->GetRelation(Infidel) == HOSTILE;

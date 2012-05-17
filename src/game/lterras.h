@@ -256,4 +256,10 @@ OLTERRAIN(ironmaiden, olterrain)
   truth Opened;
 };
 
+OLTERRAIN(ward, olterrain)
+{
+public:
+  virtual truth IsWard() const { return true; }
+};
+
 #endif

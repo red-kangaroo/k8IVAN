@@ -367,6 +367,9 @@ public:
   sLong GetMoney () const { return Money; }
   void SetMoney (sLong What) { Money = What; }
   void EditMoney (sLong What) { Money += What; }
+  int GetCurrentSweatMaterial() const { return CurrentSweatMaterial; }
+  void SetInitialSweatMaterial(int What) { CurrentSweatMaterial = What; }
+  void EditCurrentSweatMaterial(int What) { CurrentSweatMaterial = What; }
   truth Displace (character *, truth = false);
   truth CheckStarvationDeath (cfestring &);
   void ShowNewPosInfo () const;
@@ -1183,6 +1186,7 @@ public:
   team *Team;
   v2 GoingTo;
   sLong Money;
+  int CurrentSweatMaterial;
   std::list<character *>::iterator TeamIterator;
   bodypartslot *BodyPartSlot;
   festring AssignedName;

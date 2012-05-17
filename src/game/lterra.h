@@ -339,6 +339,7 @@ class olterrain : public lterrain, public oterrain
   virtual truth IsAnimated() const;
   virtual truth VomitingIsDangerous(ccharacter*) const { return false; }
   virtual void AddSpecialCursors() { }
+  virtual truth IsWard() const { return false; }
  protected:
   virtual v2 GetBitmapPos(int) const;
   v2 GetBorderBitmapPos(v2, int) const;

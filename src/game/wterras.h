@@ -154,4 +154,13 @@ public:
 };
 
 
+OWTERRAIN(muntuo, owterrain)
+{
+public:
+  virtual const char *GetNameStem () const;
+  virtual v2 GetBitmapPos (int) const;
+  virtual int GetAttachedDungeon () const;
+};
+
+
 #endif

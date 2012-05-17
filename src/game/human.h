@@ -781,4 +781,16 @@ protected:
 };
 
 
+CHARACTER(insudo, angel)
+{
+public:
+  virtual col24 GetBaseEmitation() const { return MakeRGB24(120, 120, 150); }
+  virtual void CreateInitialEquipment(int); //has a bespoke function to handle this, need to adapt from the archangel code
+protected:
+  virtual int GetTorsoMainColor() const { return MakeRGB16(120, 120, 120); }
+  virtual int GetArmMainColor() const { return MakeRGB16(120, 120, 120); }
+  virtual void GetAICommand();
+};
+
+
 #endif

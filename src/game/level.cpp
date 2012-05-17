@@ -271,8 +271,9 @@ void level::Generate(int Index)
   Map = reinterpret_cast<lsquare***>(area::Map);
   SquareStack = new lsquare*[XSizeTimesYSize];
 
-  if((Index == 0 && GetDungeon()->GetIndex() == NEW_ATTNAM)
-     || (Index == 0 && GetDungeon()->GetIndex() == ATTNAM))
+  if ((Index == 0 && GetDungeon()->GetIndex() == NEW_ATTNAM) ||
+      (Index == 0 && GetDungeon()->GetIndex() == ATTNAM) ||
+      (Index == 0 && GetDungeon()->GetIndex() == MUNTUO))
     NightAmbientLuminance = MakeRGB24(95, 95, 95);
 
   int x, y;
@@ -406,6 +407,10 @@ truth level::MakeRoom(const roomscript* RoomScript)
 
   if(*RoomScript->GenerateFountains() && !(RAND() % 10))
     GetLSquare(Inside[RAND() % Inside.size()])->ChangeOLTerrain(fountain::Spawn());
+
+  // Ward, which gets generated as per fountain activation
+  if(*RoomScript->GenerateWards() && !(RAND() % 5))
+    GetLSquare(Inside[RAND() % Inside.size()])->ChangeOLTerrain(ward::Spawn());
 
   if(*RoomScript->AltarPossible() && !(RAND() % 5))
   {
@@ -2260,46 +2265,52 @@ void level::CreateGlobalRain(liquid* Liquid, v2 Speed)
   Map[x][y]->AddRain(Liquid, Speed, MONSTER_TEAM, false);
 }
 
-void level::CheckSunLight()
-{
-  if(Index == 0 && GetDungeon()->GetIndex() == NEW_ATTNAM)
-  {
-    double Cos = cos(FPI * (game::GetTick() % 48000) / 24000.);
 
-    if(Cos > 0.01)
-    {
-      int E = int(100 + Cos * 30);
+void level::CheckSunLight () {
+  if (Index == 0 && GetDungeon()->GetIndex() == NEW_ATTNAM) {
+    double Cos = cos(FPI*(game::GetTick()%48000)/24000.0);
+    //
+    if (Cos > 0.01) {
+      int E = int(100+Cos*30);
+      //
       SunLightEmitation = MakeRGB24(E, E, E);
-      AmbientLuminance = MakeRGB24(E - 6, E - 6, E - 6);
-    }
-    else
-    {
+      AmbientLuminance = MakeRGB24(E-6, E-6, E-6);
+    } else {
       SunLightEmitation = 0;
       AmbientLuminance = NightAmbientLuminance;
     }
-  }
-  else if(Index == 0 && GetDungeon()->GetIndex() == ATTNAM)
-  {
-    double Cos = cos(FPI * (game::GetTick() % 48000) / 24000.);
-
-    if(Cos > 0.41)
-    {
-      int E = int(100 + (Cos - 0.40) * 40);
+  } else if (Index == 0 && GetDungeon()->GetIndex() == ATTNAM) {
+    double Cos = cos(FPI*(game::GetTick()%48000)/24000.0);
+    //
+    if (Cos > 0.41) {
+      int E = int(100+(Cos-0.40)*40);
+      //
       SunLightEmitation = MakeRGB24(E, E, E);
-      AmbientLuminance = MakeRGB24(E - 8, E - 8, E - 8);
-    }
-    else
-    {
+      AmbientLuminance = MakeRGB24(E-8, E-8, E-8);
+    } else {
       SunLightEmitation = 0;
       AmbientLuminance = NightAmbientLuminance;
     }
-  }
-  else
+  } else if (Index == 0 && GetDungeon()->GetIndex() == MUNTUO) {
+    double Cos = cos(FPI*(game::GetTick()%48000)/24000.0);
+    //
+    if (Cos > 0.21) {
+      int E = int(100+(Cos-0.20)*30);
+      //
+      SunLightEmitation = MakeRGB24(E, E, E);
+      AmbientLuminance = MakeRGB24(E-4, E-4, E-4);
+    } else {
+      SunLightEmitation = 0;
+      AmbientLuminance = NightAmbientLuminance;
+    }
+  } else {
     return;
-
+  }
+  //
   SunLightDirection = game::GetSunLightDirectionVector();
   ChangeSunLight();
 }
+
 
 void level::ChangeSunLight()
 {

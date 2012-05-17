@@ -87,6 +87,7 @@ Dungeon ELPURI_CAVE;
       GenerateWindows = false;
       UseFillSquareWalls = false;
       Flags = 0;
+      GenerateWards = false;
     }
   }
 

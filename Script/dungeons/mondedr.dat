@@ -54,6 +54,7 @@ Dungeon MONDEDR;
       GenerateWindows = false;
       UseFillSquareWalls = false;
       Flags = 0;
+      GenerateWards = false;
     }
   }
 
