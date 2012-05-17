@@ -127,7 +127,7 @@ character
   IsEnormous = false;
   ScienceTalkAdjectiveAttribute =
   {
-    141,
+    142,
     "", "applied", "recent", "dark", "linear",
     "molecular", "theoretical", "classical", "the future of", "queer",
     "multilinear", "fundamental", "mythical", "nuclear", "loop quantum",
@@ -161,7 +161,7 @@ character
     "sentient", "silksteel", "dead", "temporal", "transcendent",
     "unified", "the threshold of", "finite", "postmodern", "selective",
     "arctic", "the proofs of", "mortal", "teleological", "sick",
-    "the principle of";
+    "the principle of", "kinetic";
   }
   ScienceTalkSubstantiveAttribute =
   {
