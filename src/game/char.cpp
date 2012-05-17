@@ -1437,7 +1437,7 @@ void character::Save (outputfile &SaveFile) const {
 
   if (GetTeam()) {
     SaveFile.Put(true);
-    SaveFile << Team->GetID();
+    SaveFile << Team->GetID(); // ulong
   } else {
     SaveFile.Put(false);
   }
@@ -1484,7 +1484,7 @@ void character::Load (inputfile &SaveFile) {
 
   for (int c = 0; c < STATES; ++c) SaveFile >> TemporaryStateCounter[c];
 
-  if (SaveFile.Get()) SetTeam(game::GetTeam(ReadType<int>(SaveFile)));
+  if (SaveFile.Get()) SetTeam(game::GetTeam(ReadType<ulong>(SaveFile)));
 
   if (SaveFile.Get()) GetTeam()->SetLeader(this);
 
