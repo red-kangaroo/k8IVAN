@@ -1380,7 +1380,6 @@ truth commandsystem::WizardHeal (character *Char) {
   }
   */
   for (int c = 0; c < Char->GetBodyParts(); ++c) {
-    fprintf(stderr, "c=%d\n", c);
     if (Char->GetBodyPart(c)) {
       Char->GetBodyPart(c)->RemoveAllFluids();
     } else if (Char->CanCreateBodyPart(c)) {
