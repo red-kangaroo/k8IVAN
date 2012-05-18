@@ -94,6 +94,7 @@ item::item (citem &Item) :
   Volume(Item.Volume),
   Weight(Item.Weight),
   Fluid(0),
+  FluidCount(0),
   SquaresUnder(Item.SquaresUnder),
   LifeExpectancy(Item.LifeExpectancy),
   ItemFlags(Item.ItemFlags)
@@ -115,9 +116,10 @@ item::~item () {
   game::RemoveItemID(ID);
   fluid **FP = Fluid;
   if (FP) {
-    for (int c = 0; c < SquaresUnder; ++c) {
+    for (int c = 0; c < /*SquaresUnder*/FluidCount; ++c) {
       for (fluid* F = FP[c]; F;) {
         fluid *ToDel = F;
+        //
         F = F->Next;
         delete ToDel;
       }
@@ -270,7 +272,8 @@ void item::Save (outputfile &SaveFile) const {
   SaveLinkedList(SaveFile, CloneMotherID);
   if (Fluid) {
     SaveFile.Put(true);
-    for (int c = 0; c < SquaresUnder; ++c) SaveLinkedList(SaveFile, Fluid[c]);
+    SaveFile << FluidCount;
+    for (int c = 0; c < /*SquaresUnder*/FluidCount; ++c) SaveLinkedList(SaveFile, Fluid[c]);
   } else {
     SaveFile.Put(false);
   }
@@ -289,11 +292,15 @@ void item::Load (inputfile &SaveFile) {
   if (LifeExpectancy) Enable();
   game::AddItemID(this, ID);
   if (SaveFile.Get()) {
-    Fluid = new fluid*[SquaresUnder];
-    for (int c = 0; c < SquaresUnder; ++c) {
+    SaveFile >> FluidCount;
+    Fluid = new fluid*[/*SquaresUnder*/FluidCount];
+    for (int c = 0; c < /*SquaresUnder*/FluidCount; ++c) {
       LoadLinkedList(SaveFile, Fluid[c]);
       for (fluid *F = Fluid[c]; F; F = F->Next) F->SetMotherItem(this);
     }
+  } else {
+    if (Fluid) Fluid = 0; //FIXME: MEMORY LEAK
+    FluidCount = 0;
   }
 }
 
@@ -1077,52 +1084,38 @@ const rawbitmap* item::GetRawPicture() const
   return igraph::GetRawGraphic(GetGraphicsContainerIndex());
 }
 
-void item::RemoveFluid(fluid* ToBeRemoved)
-{
+void item::RemoveFluid(fluid *ToBeRemoved) {
   truth WasAnimated = IsAnimated();
   truth HasFluids = false;
-
-  for(int c = 0; c < SquaresUnder; ++c)
-  {
-    fluid* F = Fluid[c];
-
-    if(F == ToBeRemoved)
-      Fluid[c] = F->Next;
-    else if(F)
-    {
-      fluid* LF = F;
-
-      for(F = F->Next; F; LF = F, F = F->Next)
-  if(F == ToBeRemoved)
-  {
-    LF->Next = F->Next;
-    break;
-  }
+  //
+  if (Fluid && ToBeRemoved) {
+    for (int c = 0; c < /*SquaresUnder*/FluidCount; ++c) {
+      fluid *F = Fluid[c];
+      //
+      if (F == ToBeRemoved) {
+        Fluid[c] = F->Next;
+      } else if (F) {
+        fluid *LF = F;
+        //
+        for (F = F->Next; F; LF = F, F = F->Next) if (F == ToBeRemoved) { LF->Next = F->Next; break; }
+      }
+      if (Fluid[c]) HasFluids = true;
     }
-
-    if(Fluid[c])
-      HasFluids = true;
   }
-
   UpdatePictures();
-
-  if(!HasFluids)
-  {
+  if (!HasFluids && Fluid) {
     delete [] Fluid;
     Fluid = 0;
-
-    if(!IsAnimated() != !WasAnimated && Slot[0]->IsVisible())
-      GetSquareUnder()->DecStaticAnimatedEntities();
+    if (!IsAnimated() != !WasAnimated && Slot[0]->IsVisible()) GetSquareUnder()->DecStaticAnimatedEntities();
   }
-
-  SignalEmitationDecrease(ToBeRemoved->GetEmitation());
+  if (ToBeRemoved) SignalEmitationDecrease(ToBeRemoved->GetEmitation());
   SignalVolumeAndWeightChange();
 }
 
 
 void item::RemoveAllFluids () {
   if (Fluid) {
-    for (int c = 0; c < SquaresUnder; ) {
+    for (int c = 0; c < /*SquaresUnder*/FluidCount; ) {
       //fprintf(stderr, "c: %d; SquaresUnder: %d\n", c, SquaresUnder);
       fluid *F = Fluid[c];
       if (F) {
@@ -1137,41 +1130,36 @@ void item::RemoveAllFluids () {
 }
 
 
-void item::AddFluid(liquid* ToBeAdded, festring LocationName, int SquareIndex, truth IsInside)
-{
+void item::AddFluid (liquid *ToBeAdded, festring LocationName, int SquareIndex, truth IsInside) {
   truth WasAnimated = IsAnimated();
-
-  if(Fluid)
-  {
-    fluid* F = Fluid[SquareIndex];
-
-    if(!F)
+  //
+  if (SquareIndex < 0) ABORT("item::AddFluid(): invalid SquareIndex: %d", SquareIndex);
+  //
+  if (Fluid) {
+    fluid *F = Fluid[SquareIndex];
+    //
+    if (SquareIndex >= FluidCount) ABORT("item::AddFluid(): invalid SquareIndex: %d", SquareIndex);
+    if (!F) {
       Fluid[SquareIndex] = new fluid(ToBeAdded, this, LocationName, IsInside);
-    else
-    {
-      fluid* LF;
-
-      do
-      {
-  if(ToBeAdded->IsSameAs(F->GetLiquid()))
-  {
-    F->AddLiquidAndVolume(ToBeAdded->GetVolume());
-    delete ToBeAdded;
-    return;
-  }
-
-  LF = F;
-  F = F->Next;
-      }
-      while(F);
-
+    } else {
+      fluid *LF;
+      //
+      do {
+        if (ToBeAdded->IsSameAs(F->GetLiquid())) {
+          F->AddLiquidAndVolume(ToBeAdded->GetVolume());
+          delete ToBeAdded;
+          return;
+        }
+        LF = F;
+        F = F->Next;
+      } while(F);
       LF->Next = new fluid(ToBeAdded, this, LocationName, IsInside);
     }
-  }
-  else
-  {
-    Fluid = new fluid*[SquaresUnder];
-    memset(Fluid, 0, SquaresUnder * sizeof(fluid*));
+  } else {
+    FluidCount = SquaresUnder;
+    Fluid = new fluid*[/*SquaresUnder*/FluidCount];
+    if (SquareIndex >= FluidCount) ABORT("item::AddFluid(): invalid SquareIndex: %d", SquareIndex);
+    memset(Fluid, 0, SquaresUnder*sizeof(fluid *));
     Fluid[SquareIndex] = new fluid(ToBeAdded, this, LocationName, IsInside);
   }
 
@@ -1179,11 +1167,10 @@ void item::AddFluid(liquid* ToBeAdded, festring LocationName, int SquareIndex, t
   SignalVolumeAndWeightChange();
   SignalEmitationIncrease(ToBeAdded->GetEmitation());
 
-  if(Slot[0])
-  {
-    if(!IsAnimated() != !WasAnimated && Slot[0]->IsVisible())
+  if (Slot[0]) {
+    if (!IsAnimated() != !WasAnimated && Slot[0]->IsVisible()) {
       GetSquareUnder()->IncStaticAnimatedEntities();
-
+    }
     SendNewDrawAndMemorizedUpdateRequest();
   }
 }
@@ -1205,16 +1192,16 @@ void item::CalculateEmitation()
   object::CalculateEmitation();
 
   if(Fluid)
-    for(int c = 0; c < SquaresUnder; ++c)
+    for(int c = 0; c < /*SquaresUnder*/FluidCount; ++c)
       for(const fluid* F = Fluid[c]; F; F = F->Next)
   game::CombineLights(Emitation, F->GetEmitation());
 }
 
-void item::FillFluidVector(fluidvector& Vector, int SquareIndex) const
-{
-  if(Fluid)
-    for(fluid* F = Fluid[SquareIndex]; F; F = F->Next)
-      Vector.push_back(F);
+void item::FillFluidVector (fluidvector &Vector, int SquareIndex) const {
+  if (Fluid) {
+    if (SquareIndex < 0 || SquareIndex >= FluidCount) ABORT("item::FillFluidVector(): invalid SquareIndex: %d\n", SquareIndex);
+    for (fluid *F = Fluid[SquareIndex]; F; F = F->Next) Vector.push_back(F);
+  }
 }
 
 void item::SpillFluid(character*, liquid* Liquid, int SquareIndex)
