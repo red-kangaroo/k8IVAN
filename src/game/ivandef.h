@@ -657,6 +657,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 
 #define DIM_LUMINANCE 0x6E6E6E
 
+#define SUPER  64
 #define BROKEN 128
 #define WINDOW 1024
 

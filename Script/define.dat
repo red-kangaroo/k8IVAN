@@ -606,6 +606,7 @@
 };
 
 
+#define SUPER    64
 #define BROKEN   128
 #define WINDOW  1024
 

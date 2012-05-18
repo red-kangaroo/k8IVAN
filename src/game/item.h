@@ -625,6 +625,7 @@ protected:
   sLong Weight;
   idholder* CloneMotherID;
   fluid** Fluid;
+  int FluidCount; // same as 'SquaresUnder'?
   int SquaresUnder;
   int LifeExpectancy;
   uLong ItemFlags;

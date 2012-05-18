@@ -492,14 +492,20 @@ Dungeon NEW_ATTNAM;
     if @player_name == "_k8_";
       //Square, Pos 10,23; { Items == kawai; }
       //Square, Pos 12,23; { Items == kawai; }
-      Square, Pos 1,33; { Items == kawai; }
-      Square, Pos 2,33; { Items == kawai; }
-      Square, Pos 4,33; { Items == eptyron; }
-      Square, Pos 5,33; { Items == taiaha; }
+      Square, Pos 1,33; { Items == kawai(SUPER); }
+      Square, Pos 2,33; { Items == kawai(SUPER); }
+      //Square, Pos 4,33; { Items == eptyron; }
+      //Square, Pos 5,33; { Items == taiaha; }
       //Square, Pos 9, 23; { Character = assassin { Team = MONSTER_TEAM; } }
       //Square, Pos 9, 23; { Character = cossack { Team = COLONIST_TEAM; } }
       //Square, Pos 11,8; { Items == kawai; }
       //Square, Pos 13,8; { Items == kawai; }
+
+      Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+      {
+        Character = doctor { Team = NEW_ATTNAM_TEAM; }
+      }
+    }
     endif
   }
 

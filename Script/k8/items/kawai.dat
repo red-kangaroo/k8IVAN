@@ -23,11 +23,11 @@ kawai /* meleeweapon-> */
   IsPolymorphable = false;
   Alias == "Kawai";
   Roundness = 30;
-  BaseEnchantment = 42;
+  BaseEnchantment = 16;
   IsTwoHanded = false;
   CanBeCloned = false;
   CanBeMirrored = false;
-  CanBeBroken = false;
+  CanBeBroken = true;
   CanBeEnchanted = false;
   AttachedGod = NONE;
   WieldedBitmapPos = 176, 112;
@@ -39,7 +39,21 @@ kawai /* meleeweapon-> */
   ElectricityResistance = 30;
   AcidResistance = 30;
   DamageFlags = SLASH|PIERCE;
-  GearStates = HASTE|INFRA_VISION|ESP|POLYMORPH_CONTROL|TELEPORT_CONTROL;
+  GearStates = HASTE;
+
+  Config SUPER;
+  {
+    GearStates = HASTE|INFRA_VISION|ESP|POLYMORPH_CONTROL|TELEPORT_CONTROL|GAS_IMMUNITY|LEVITATION;
+    CanBeBroken = false;
+    Alias == "SuperKawai";
+    PostFix = "named SuperKawai";
+    FireResistance = 70;
+    PoisonResistance = 70;
+    ElectricityResistance = 70;
+    AcidResistance = 70;
+    BaseEnchantment = 64;
+    Roundness = 10;
+  }
 /*
   Config BROKEN;
   {
