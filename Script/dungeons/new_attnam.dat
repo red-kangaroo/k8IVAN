@@ -505,7 +505,6 @@ Dungeon NEW_ATTNAM;
       {
         Character = doctor { Team = NEW_ATTNAM_TEAM; }
       }
-    }
     endif
   }
 
