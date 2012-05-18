@@ -225,12 +225,15 @@ truth humanoid::Hit(character* Enemy, v2 HitPos, int Direction, int Flags)
 
   int Chosen = RAND() % AttackStyles;
 
-  for(c = 0, AttackStyles = 0; c < 8; ++c)
+  for(c = 0, AttackStyles = 0; c < 8; ++c) {
     if(GetAttackStyle() & (1 << c) && AttackStyles++ == Chosen)
     {
       Chosen = 1 << c;
       break;
     }
+  }
+
+  if (StateIsActivated(VAMPIRISM) && !(RAND()%2)) Chosen = USE_HEAD;
 
   switch(Chosen)
   {
@@ -465,6 +468,21 @@ void priest::BeTalkedTo () {
       }
     } else {
       ADD_MESSAGE("\"You seem to be lycanthropic. I might be able to do something for that but I need %dgp for the ritual materials first.\"", Price);
+    }
+  }
+  if (PLAYER->TemporaryStateIsActivated(VAMPIRISM)) {
+    sLong Price = GetConfig() == VALPURUS ? 100 : 20;
+    if (PLAYER->GetMoney() >= Price) {
+      ADD_MESSAGE("\"You seem to have an addiction to drinking blood. Well, everyone has right to little secret habits, but if you wish to donate %dgp to %s, maybe I could pray %s to remove your vampiric urges, just so you don't victimize our besotted youth.\"", Price, GetMasterGod()->GetName(), GetMasterGod()->GetObjectPronoun());
+      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+        ADD_MESSAGE("You feel better.");
+        PLAYER->DeActivateTemporaryState(VAMPIRISM);
+        PLAYER->SetMoney(PLAYER->GetMoney()-Price);
+        SetMoney(GetMoney()+Price);
+        return;
+      }
+    } else {
+      ADD_MESSAGE("\"You seem to be vampiric. I might be able to do something for that but I need %dgp for the ritual materials first.\"", Price);
     }
   }
   humanoid::BeTalkedTo();
@@ -4047,7 +4065,7 @@ character* humanoid::CreateZombie() const
   for(; i2 != SWeaponSkill.end(); ++i1, ++i2)
     *i1 = new sweaponskill(**i2);
 
-  memcpy(Zombie->BaseExperience,
+  memmove(Zombie->BaseExperience,
    BaseExperience,
    BASE_ATTRIBUTES * sizeof(*BaseExperience));
   Zombie->CalculateAll();
@@ -4999,6 +5017,20 @@ void assassin::BeTalkedTo () {
 }
 
 
+truth humanoid::SpecialBiteEffect (character *Char, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+  if (StateIsActivated(VAMPIRISM)) {
+    if (!BlockedByArmour && Char->IsWarm() && !(RAND()%2)) {
+      if (Char->IsHumanoid()) Char->BeginTemporaryState(VAMPIRISM, 1000+RAND_N(500)); // Randomly instigate vampirism
+      if (Char->IsPlayer() || IsPlayer() || Char->CanBeSeenByPlayer() || CanBeSeenByPlayer()) {
+        ADD_MESSAGE("%s drains some precious lifeblood from %s!", CHAR_DESCRIPTION(DEFINITE), Char->CHAR_DESCRIPTION(DEFINITE));
+      }
+      return Char->ReceiveBodyPartDamage(this, 8+(RAND()%9), DRAIN, BodyPartIndex, Direction);
+    }
+  }
+  return false;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 petrus::petrus () : LastHealed(0) {
   game::SetPetrus(this);
@@ -5531,6 +5563,7 @@ void exiledpriest::GetAICommand () {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void doctor::BeTalkedTo () {
   if (GetRelation(PLAYER) == HOSTILE) {
     ADD_MESSAGE("\"Bacillus! I surgically detach your every limb!\"");
@@ -5658,6 +5691,7 @@ void doctor::BeTalkedTo () {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void shaman::GetAICommand() {
   //SeekLeader(GetLeader());
   ////
@@ -5750,6 +5784,7 @@ void shaman::PostConstruct () {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void warlock::GetAICommand () {
   SeekLeader(GetLeader());
   if (FollowLeader(GetLeader())) return;
@@ -5808,6 +5843,7 @@ int warlock::GetSpellAPCost () const {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void alchemist::GetAICommand () {
   SeekLeader(GetLeader());
   if (FollowLeader(GetLeader())) return;
@@ -5947,6 +5983,7 @@ int alchemist::GetSpellAPCost () const {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void insudo::GetAICommand () {
   if ((LastHealed || game::GetTick()-LastHealed > 10000) && AttachBodyPartsOfFriendsNear()) return;
   StandIdleAI();
@@ -5973,4 +6010,17 @@ void insudo::CreateInitialEquipment (int SpecialFlags) {
   GetCurrentLeftSWeaponSkill()->AddHit(200000);
   GetRightArm()->SetDexterity(70);
   GetLeftArm()->SetDexterity(70);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+truth vampire::SpecialBiteEffect (character *Char, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+  if (!BlockedByArmour && !(RAND() % 2) && Char->IsWarm()) {
+    if (Char->IsHumanoid()) Char->BeginTemporaryState(VAMPIRISM, 1500+RAND_N(2000)); // Randomly instigate vampirism
+    if (Char->IsPlayer() || IsPlayer() || Char->CanBeSeenByPlayer() || CanBeSeenByPlayer()) {
+      ADD_MESSAGE("%s drains some precious lifeblood from %s!", CHAR_DESCRIPTION(DEFINITE), Char->CHAR_DESCRIPTION(DEFINITE));
+    }
+    return Char->ReceiveBodyPartDamage(this, 10 + (RAND() % 11), DRAIN, BodyPartIndex, Direction);
+  }
+  return false;
 }

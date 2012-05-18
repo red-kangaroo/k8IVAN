@@ -2605,7 +2605,7 @@ void noxiousorchid::CreateCorpse (lsquare *Square) {
 
 truth noxiousorchid::Hit (character *Enemy, v2 HitPos, int Direction, int Flags) {
   if (!(RAND()&2)) {
-    liquid* Fluid = 0; // = liquid::Spawn(WATER, 25+RAND()%25);
+    liquid *Fluid = 0; // = liquid::Spawn(WATER, 25+RAND()%25);
     //
     if (IsPlayer()) {
       ADD_MESSAGE("You hit %s.", Enemy->CHAR_DESCRIPTION(DEFINITE));

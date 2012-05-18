@@ -246,7 +246,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
       //Configs = Proto->CreateSpecialConfigurations(TempConfig, Configs);
       Proto->ConfigData = new database *[Configs];
       Proto->ConfigSize = Configs;
-      memcpy(Proto->ConfigData, TempConfig, Configs*sizeof(database *));
+      memmove(Proto->ConfigData, TempConfig, Configs*sizeof(database *));
     }
     delete inFile;
   }
@@ -256,13 +256,13 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
     for (int c2 = 1; c2 < protocontainer<type>::GetSize(); ++c2) {
       prototype *Proto = protocontainer<type>::GetProtoData()[c2];
       int Configs = Proto->ConfigSize;
-      memcpy(TempConfig, Proto->ConfigData, Configs*sizeof(database *));
+      memmove(TempConfig, Proto->ConfigData, Configs*sizeof(database *));
       Configs = Proto->CreateSpecialConfigurations(TempConfig, Configs, c1);
       if (Proto->ConfigSize != Configs) {
         delete [] Proto->ConfigData;
         Proto->ConfigData = new database *[Configs];
         Proto->ConfigSize = Configs;
-        memcpy(Proto->ConfigData, TempConfig, Configs*sizeof(database *));
+        memmove(Proto->ConfigData, TempConfig, Configs*sizeof(database *));
       }
     }
   }

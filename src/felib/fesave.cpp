@@ -865,7 +865,7 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
 #else
   bufSize = str.GetSize();
   buf = malloc(bufSize+1);
-  memcpy(buf, str.CStr(), bufSize);
+  memmove(buf, str.CStr(), bufSize);
   Buffer = fmemopen(buf, bufSize, "rb");
 #endif
   FileName = "<memory>";

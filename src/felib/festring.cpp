@@ -28,7 +28,7 @@ festring &festring::Append (cchar *CStr, sizetype N) {
   sizetype NewSize = OldSize+N;
   char *OldPtr = Data;
   if (OwnsData && OldPtr && !REFS(OldPtr) && NewSize <= Reserved) {
-    memcpy(OldPtr+OldSize, CStr, N);
+    if (N > 0) memmove(OldPtr+OldSize, CStr, N);
     Size = NewSize;
   } else {
     SlowAppend(CStr, N);
@@ -43,7 +43,7 @@ festring &festring::operator = (cchar *CStr) {
   char *Ptr = Data;
   if (Ptr && OwnsData) {
     if(!REFS(Ptr) && NewSize <= Reserved) {
-      memcpy(Ptr, CStr, NewSize);
+      if (NewSize > 0) memmove(Ptr, CStr, NewSize);
       return *this;
     }
     if (!REFS(Ptr)--) delete [] REFSA(Ptr);
@@ -61,7 +61,7 @@ festring &festring::operator = (cfestring &Str) {
   char *StrPtr = Str.Data;
   if (Ptr && OwnsData) {
     if (!REFS(Ptr) && NewSize <= Reserved) {
-      if (StrPtr) memcpy(Ptr, StrPtr, NewSize);
+      if (StrPtr && NewSize > 0) memmove(Ptr, StrPtr, NewSize);
       return *this;
     }
     if (!REFS(Ptr)--) delete [] REFSA(Ptr);
@@ -95,7 +95,7 @@ void festring::CreateOwnData (cchar *CStr, sizetype N) {
   char *Ptr = 4+new char[Reserved+5];
   REFS(Ptr) = 0;
   Data = Ptr;
-  memcpy(Ptr, CStr, N);
+  if (N > 0) memmove(Ptr, CStr, N);
   OwnsData = true;
 }
 
@@ -111,8 +111,9 @@ void festring::SlowAppend (char Char) {
     char *NewPtr = 4+new char[Reserved+5];
     REFS(NewPtr) = 0;
     Data = NewPtr;
-    memcpy(NewPtr, OldPtr, OldSize);
+    if (OldSize > 0) memmove(NewPtr, OldPtr, OldSize);
     NewPtr[OldSize] = Char;
+    NewPtr[OldSize+1] = 0;
     if (DeletePtr) delete [] DeletePtr;
   } else {
     Size = 1;
@@ -128,6 +129,7 @@ void festring::SlowAppend (char Char) {
 
 void festring::SlowAppend (cchar *CStr, sizetype N) {
   char *OldPtr = Data;
+  //
   if (OldPtr) {
     sizetype OldSize = Size;
     sizetype NewSize = OldSize+N;
@@ -138,8 +140,9 @@ void festring::SlowAppend (cchar *CStr, sizetype N) {
     char *NewPtr = 4+new char[Reserved+5];
     REFS(NewPtr) = 0;
     Data = NewPtr;
-    memcpy(NewPtr, OldPtr, OldSize);
-    memcpy(NewPtr+OldSize, CStr, N);
+    if (OldSize > 0) memmove(NewPtr, OldPtr, OldSize);
+    if (N > 0) memmove(NewPtr+OldSize, CStr, N);
+    NewPtr[Size] = 0;
     OwnsData = true;
     if (DeletePtr) delete [] DeletePtr;
   } else {
@@ -189,8 +192,8 @@ void festring::Resize (sizetype N, char C) {
     NewPtr = 4+new char[Reserved+5];
     REFS(NewPtr) = 0;
     Data = NewPtr;
-    memcpy(NewPtr, OldPtr, OldSize);
-    memset(NewPtr+OldSize, C, N-OldSize);
+    if (OldSize > 0) memmove(NewPtr, OldPtr, OldSize);
+    if (N > OldSize) memset(NewPtr+OldSize, C, N-OldSize);
     OwnsData = true;
     if (DeletePtr) delete [] DeletePtr;
   } else {
@@ -202,7 +205,7 @@ void festring::Resize (sizetype N, char C) {
     NewPtr = 4+new char[Reserved+5];
     REFS(NewPtr) = 0;
     Data = NewPtr;
-    memcpy(NewPtr, OldPtr, N);
+    if (N > 0) memmove(NewPtr, OldPtr, N);
     OwnsData = true;
   }
 }
@@ -287,10 +290,10 @@ void festring::Erase (sizetype Pos, sizetype Length) {
       REFS(Ptr) = 0;
       Data = Ptr;
       OwnsData = true;
-      if (Pos) memcpy(Ptr, OldPtr, Pos);
+      if (Pos > 0) memmove(Ptr, OldPtr, Pos);
       if (MoveReq) {
         sizetype End = Pos+Length;
-        memcpy(Ptr+Pos, OldPtr+End, OldSize-End);
+        if (OldSize > End) memmove(Ptr+Pos, OldPtr+End, OldSize-End);
       }
     }
   }
@@ -311,7 +314,7 @@ void festring::Insert (sizetype Pos, cchar *CStr, sizetype N) {
           if (NewSize <= Reserved) {
             char *Ptr = OldPtr+Pos;
             memmove(Ptr+N, Ptr, OldSize-Pos);
-            memcpy(Ptr, CStr, N);
+            if (N > 0) memmove(Ptr, CStr, N);
             return;
           } else {
             DeletePtr = REFSA(OldPtr);
@@ -324,9 +327,9 @@ void festring::Insert (sizetype Pos, cchar *CStr, sizetype N) {
       char* NewPtr = 4+new char[Reserved+5];
       REFS(NewPtr) = 0;
       Data = NewPtr;
-      memcpy(NewPtr, OldPtr, Pos);
-      memcpy(NewPtr+Pos, CStr, N);
-      memcpy(NewPtr+Pos+N, OldPtr+Pos, OldSize-Pos);
+      if (Pos > 0) memmove(NewPtr, OldPtr, Pos);
+      if (N > 0) memmove(NewPtr+Pos, CStr, N);
+      if (OldSize > Pos) memmove(NewPtr+Pos+N, OldPtr+Pos, OldSize-Pos);
       OwnsData = true;
       if (DeletePtr) delete [] DeletePtr;
     } else if (Pos == OldSize) {

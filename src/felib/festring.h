@@ -43,8 +43,8 @@ public:
     char *Ptr = 4+new char[Reserved+5];
     REFS(Ptr) = 0;
     Data = Ptr;
-    if (N) {
-      if (s) memcpy(Data, s, N); else memset(Data, 0, N);
+    if (N > 0) {
+      if (s) memmove(Data, s, N); else memset(Data, 0, N);
     }
   }
   festring (cchar *CStr, sizetype N) : Data(0/*const_cast<char *>(CStr)*/), Size(N), OwnsData(true), Reserved(0) {
@@ -53,8 +53,8 @@ public:
     char *Ptr = 4+new char[Reserved+5];
     REFS(Ptr) = 0;
     Data = Ptr;
-    if (N) {
-      if (s) memcpy(Data, s, N); else memset(Data, 0, N);
+    if (N > 0) {
+      if (s) memmove(Data, s, N); else memset(Data, 0, N);
     }
   }
 #else
@@ -308,7 +308,7 @@ inline festring &festring::operator << (cchar *CStr) {
   sizetype NewSize = OldSize+N;
   char *OldPtr = Data;
   if (OwnsData && OldPtr && !REFS(OldPtr) && NewSize <= Reserved) {
-    memcpy(OldPtr+OldSize, CStr, N);
+    if (N > 0) memmove(OldPtr+OldSize, CStr, N);
     Size = NewSize;
   } else {
     SlowAppend(CStr, N);
@@ -324,7 +324,7 @@ inline festring &festring::operator << (cfestring &Str) {
   char *OldPtr = Data;
   char *OtherPtr = Str.Data;
   if (OwnsData && OldPtr && !REFS(OldPtr) && NewSize <= Reserved) {
-    memcpy(OldPtr+OldSize, OtherPtr, N);
+    if (N > 0) memmove(OldPtr+OldSize, OtherPtr, N);
     Size = NewSize;
   } else {
     SlowAppend(OtherPtr, N);

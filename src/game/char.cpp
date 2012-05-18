@@ -250,6 +250,26 @@ const statedata StateData[STATES] =
     &character::HiccupsHandler,
     0,
     &character::HiccupsSituationDangerModifier
+  }, {
+    "Vampirism",
+    DUR_FLAGS, //perhaps no fountain, no secret and no confuse read either: SECRET|SRC_FOUNTAIN|SRC_CONFUSE_READ|
+    &character::PrintBeginVampirismMessage,
+    &character::PrintEndVampirismMessage,
+    0,
+    0,
+    &character::VampirismHandler,
+    0,
+    &character::VampirismSituationDangerModifier
+  }, {
+    "Detecting",
+    SECRET|(RANDOMIZABLE&~(SRC_MUSHROOM|SRC_EVIL)),
+    &character::PrintBeginDetectMessage,
+    &character::PrintEndDetectMessage,
+    0,
+    0,
+    &character::DetectHandler,
+    0,
+    0
   }
 };
 
@@ -1142,7 +1162,7 @@ void character::Die (ccharacter *Killer, cfestring &Msg, uLong DeathFlags) {
   }
   //lsquare **LSquareUnder = reinterpret_cast<lsquare **>(SquareUnder); /* warning; wtf? */
   lsquare *LSquareUnder[MAX_SQUARES_UNDER];
-  memcpy(LSquareUnder, SquareUnder, sizeof(SquareUnder));
+  memmove(LSquareUnder, SquareUnder, sizeof(SquareUnder));
   //
   if (!game::IsInWilderness()) {
     if (!StateIsActivated(POLYMORPHED)) {
@@ -2820,6 +2840,39 @@ void character::TeleportRandomly (truth Intentional) {
 }
 
 
+void character::DoDetecting () {
+  material *TempMaterial;
+  //
+  for (;;) {
+    festring Temp = game::DefaultQuestion(CONST_S("What material do you want to detect?"), game::GetDefaultDetectMaterial());
+    TempMaterial = protosystem::CreateMaterial(Temp);
+    if (TempMaterial) break;
+    game::DrawEverythingNoBlit();
+  }
+  //
+  level *Level = GetLevel();
+  int Squares = Level->DetectMaterial(TempMaterial);
+  //
+  if (Squares > GetAttribute(INTELLIGENCE) * (25+RAND()%51)) {
+    ADD_MESSAGE("An enormous burst of geographical information overwhelms your consciousness. Your mind cannot cope with it and your memories blur.");
+    Level->BlurMemory();
+    BeginTemporaryState(CONFUSED, 1000 + RAND() % 1000);
+    EditExperience(INTELLIGENCE, -100, 1 << 12);
+  } else if (!Squares) {
+    ADD_MESSAGE("You feel a sudden urge to imagine the dark void of a starless night sky.");
+    EditExperience(INTELLIGENCE, 200, 1 << 12);
+  } else {
+    ADD_MESSAGE("You feel attracted to all things made of %s.", TempMaterial->GetName(false, false).CStr());
+    game::PositionQuestion(CONST_S("Detecting material [direction keys move cursor, space exits]"), GetPos(), 0, 0, false);
+    EditExperience(INTELLIGENCE, 300, 1 << 12);
+  }
+  //
+  delete TempMaterial;
+  Level->CalculateLuminances();
+  game::SendLOSUpdateRequest();
+}
+
+
 void character::RestoreHP () {
   doforbodyparts()(this, &bodypart::FastRestoreHP);
   HP = MaxHP;
@@ -3802,6 +3855,16 @@ void character::PrintEndLycanthropyMessage () const {
 }
 
 
+void character::PrintBeginVampirismMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You suddenly decide you have always hated garlic.");
+}
+
+
+void character::PrintEndVampirismMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You recall your delight of the morning sunshine back in New Attnam. You are a vampire no longer.");
+}
+
+
 void character::PrintBeginInvisibilityMessage () const {
   if ((PLAYER->StateIsActivated(INFRA_VISION) && IsWarm()) || (PLAYER->StateIsActivated(ESP) && GetAttribute(INTELLIGENCE) >= 5)) {
     if (IsPlayer()) ADD_MESSAGE("You seem somehow transparent.");
@@ -4269,11 +4332,32 @@ void character::PrintEndTeleportMessage () const {
 }
 
 
+void character::PrintBeginDetectMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel curious about your surroundings.");
+}
+
+
+void character::PrintEndDetectMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You decide to rely on your intuition from now on.");
+}
+
+
 void character::TeleportHandler () {
   if (!(RAND() % 1500) && !game::IsInWilderness()) {
     if (IsPlayer()) ADD_MESSAGE("You feel an urgent spatial relocation is now appropriate.");
     else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s disappears.", CHAR_NAME(DEFINITE));
     TeleportRandomly();
+  }
+}
+
+
+void character::DetectHandler () {
+  if (IsPlayer()) {
+    //the AI can't be asked position questions! So only the player can hav this state really :/ a bit daft of me
+    if (!(RAND()%3000) && !game::IsInWilderness()) {
+      ADD_MESSAGE("Your mind wanders in search of something.");
+      DoDetecting(); //in fact, who knows what would happen if a dark frog had the detecting state?
+    }
   }
 }
 
@@ -5561,6 +5645,27 @@ void character::AddHolyBananaConsumeEndMessage () const {
 }
 
 
+void character::ReceiveHolyMango (sLong Amount) {
+  Amount <<= 1;
+  EditExperience(ARM_STRENGTH, Amount, 1 << 13);
+  EditExperience(LEG_STRENGTH, Amount, 1 << 13);
+  EditExperience(DEXTERITY, Amount, 1 << 13);
+  EditExperience(AGILITY, Amount, 1 << 13);
+  EditExperience(ENDURANCE, Amount, 1 << 13);
+  EditExperience(PERCEPTION, Amount, 1 << 13);
+  EditExperience(INTELLIGENCE, Amount, 1 << 13);
+  EditExperience(WISDOM, Amount, 1 << 13);
+  EditExperience(CHARISMA, Amount, 1 << 13);
+  RestoreLivingHP();
+}
+
+
+void character::AddHolyMangoConsumeEndMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel a mysterious strengthening fire coursing through your body.");
+  else if (CanBeSeenByPlayer()) ADD_MESSAGE("For a moment %s is surrounded by a swirling fire aura.", CHAR_NAME(DEFINITE));
+}
+
+
 truth character::PreProcessForBone () {
   if (IsPet() && IsEnabled()) {
     Die(0, CONST_S(""), FORBID_REINCARNATION);
@@ -6410,6 +6515,7 @@ void character::ReceiveWhiteUnicorn (sLong Amount) {
   DecreaseStateCounter(POISONED, -Amount / 100);
   DecreaseStateCounter(PARASITIZED, -Amount / 100);
   DecreaseStateCounter(LEPROSY, -Amount / 100);
+  DecreaseStateCounter(VAMPIRISM, -Amount / 100);
 }
 
 
@@ -7351,6 +7457,12 @@ void character::AddOmmelBoneConsumeEndMessage () const {
 }
 
 
+void character::AddLiquidHorrorConsumeEndMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("Untold horrors flash before your eyes. The melancholy of the world is on your shoulders!");
+  else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s looks as if the melancholy of the world is on %s shoulders!.", CHAR_NAME(DEFINITE), GetPossessivePronoun().CStr());
+}
+
+
 int character::GetBodyPartSparkleFlags (int) const {
   return
     ((GetNaturalSparkleFlags() & SKIN_COLOR ? SPARKLING_A : 0) |
@@ -7445,8 +7557,29 @@ void character::HiccupsHandler () {
 }
 
 
+void character::VampirismHandler () {
+  //EditExperience(ARM_STRENGTH, -25, 1 << 1);
+  //EditExperience(LEG_STRENGTH, -25, 1 << 1);
+  //EditExperience(DEXTERITY, -25, 1 << 1);
+  //EditExperience(AGILITY, -25, 1 << 1);
+  //EditExperience(ENDURANCE, -25, 1 << 1);
+  EditExperience(CHARISMA, -25, 1 << 1);
+  EditExperience(WISDOM, -25, 1 << 1);
+  EditExperience(INTELLIGENCE, -25, 1 << 1);
+  CheckDeath(CONST_S("killed by vampirism"));
+}
+
+
 void character::HiccupsSituationDangerModifier (double &Danger) const {
   Danger *= 1.25;
+}
+
+
+void character::VampirismSituationDangerModifier (double &Danger) const {
+  character *Vampire = vampire::Spawn();
+  double DangerToVampire = GetRelativeDanger(Vampire);
+  Danger *= pow(DangerToVampire, 0.1);
+  delete Vampire;
 }
 
 

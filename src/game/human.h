@@ -171,6 +171,7 @@ public:
   truth HasSadistWeapon() const;
   virtual truth HasSadistAttackMode() const;
   virtual void SurgicallyDetachBodyPart();
+  virtual truth SpecialBiteEffect(character*, v2, int, int, truth);
  protected:
   virtual v2 GetBodyPartBitmapPos(int, truth = false) const;
   virtual col16 GetBodyPartColorB(int, truth = false) const;
@@ -790,6 +791,13 @@ protected:
   virtual int GetTorsoMainColor() const { return MakeRGB16(120, 120, 120); }
   virtual int GetArmMainColor() const { return MakeRGB16(120, 120, 120); }
   virtual void GetAICommand();
+};
+
+
+CHARACTER(vampire, humanoid)
+{
+public:
+  virtual truth SpecialBiteEffect (character*, v2, int, int, truth);
 };
 
 

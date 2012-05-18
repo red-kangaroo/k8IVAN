@@ -38,7 +38,7 @@ void material::AddName (festring &Name, truth Articled, truth Adjective) const {
 
 festring material::GetName(truth Articled, truth Adjective) const
 {
-  static festring Name;
+  festring Name;
   Name.Empty();
   AddName(Name, Articled, Adjective);
   return Name;
@@ -138,6 +138,10 @@ truth material::Effect(character* Char, int BodyPart, sLong Amount)
    case EFFECT_OMMEL_BONE: Char->ReceiveOmmelBone(Amount); break;
    case EFFECT_MUSTARD_GAS: Char->ReceiveMustardGas(BodyPart, Amount); break;
    case EFFECT_MUSTARD_GAS_LIQUID: Char->ReceiveMustardGasLiquid(BodyPart, Amount); break;
+   case EFFECT_PANIC: Char->BeginTemporaryState(PANIC, Amount); break;
+   case EFFECT_TELEPORT: Char->BeginTemporaryState(TELEPORT, Amount); break;
+   case EFFECT_VAMPIRISM: Char->BeginTemporaryState(VAMPIRISM, Amount); break;
+   case EFFECT_DETECTING: Char->BeginTemporaryState(DETECTING, Amount); break;
    default: return false;
   }
 
@@ -214,6 +218,7 @@ truth material::HitEffect(character* Enemy, bodypart* BodyPart)
    case HM_ANTIDOTE: Enemy->AddAntidoteConsumeEndMessage(); break;
    case HM_CONFUSE: Enemy->AddConfuseHitMessage(); break;
    case HM_HOLY_BANANA: Enemy->AddHolyBananaConsumeEndMessage(); break;
+   case HM_HOLY_MANGO: Enemy->AddHolyMangoConsumeEndMessage(); break;
   }
 
   sLong Amount = Max<sLong>(GetVolume() >> 1, 1);
@@ -244,31 +249,26 @@ truth material::HitEffect(character* Enemy, bodypart* BodyPart)
   return Success;
 }
 
-void material::AddConsumeEndMessage(character* Eater) const
-{
-  switch(GetConsumeEndMessage())
-  {
-   case CEM_SCHOOL_FOOD: Eater->AddSchoolFoodConsumeEndMessage(); break;
-   case CEM_BONE: Eater->AddBoneConsumeEndMessage(); break;
-   case CEM_FROG_FLESH: Eater->AddFrogFleshConsumeEndMessage(); break;
-   case CEM_OMMEL: Eater->AddOmmelConsumeEndMessage(); break;
-   case CEM_PEPSI: Eater->AddPepsiConsumeEndMessage(); break;
-   case CEM_KOBOLD_FLESH: Eater->AddKoboldFleshConsumeEndMessage(); break;
-   case CEM_HEALING_LIQUID: Eater->AddHealingLiquidConsumeEndMessage(); break;
-   case CEM_ANTIDOTE: Eater->AddAntidoteConsumeEndMessage(); break;
-   case CEM_ESP: Eater->AddESPConsumeMessage(); break;
-   case CEM_HOLY_BANANA: Eater->AddHolyBananaConsumeEndMessage(); break;
-   case CEM_PEA_SOUP: Eater->AddPeaSoupConsumeEndMessage(); break;
-   case CEM_BLACK_UNICORN_FLESH:
-    Eater->AddBlackUnicornConsumeEndMessage();
-    break;
-   case CEM_GRAY_UNICORN_FLESH:
-    Eater->AddGrayUnicornConsumeEndMessage();
-    break;
-   case CEM_WHITE_UNICORN_FLESH:
-    Eater->AddWhiteUnicornConsumeEndMessage();
-    break;
-   case CEM_OMMEL_BONE: Eater->AddOmmelBoneConsumeEndMessage(); break;
+
+void material::AddConsumeEndMessage (character *Eater) const {
+  switch (GetConsumeEndMessage()) {
+    case CEM_SCHOOL_FOOD: Eater->AddSchoolFoodConsumeEndMessage(); break;
+    case CEM_BONE: Eater->AddBoneConsumeEndMessage(); break;
+    case CEM_FROG_FLESH: Eater->AddFrogFleshConsumeEndMessage(); break;
+    case CEM_OMMEL: Eater->AddOmmelConsumeEndMessage(); break;
+    case CEM_PEPSI: Eater->AddPepsiConsumeEndMessage(); break;
+    case CEM_KOBOLD_FLESH: Eater->AddKoboldFleshConsumeEndMessage(); break;
+    case CEM_HEALING_LIQUID: Eater->AddHealingLiquidConsumeEndMessage(); break;
+    case CEM_ANTIDOTE: Eater->AddAntidoteConsumeEndMessage(); break;
+    case CEM_ESP: Eater->AddESPConsumeMessage(); break;
+    case CEM_HOLY_BANANA: Eater->AddHolyBananaConsumeEndMessage(); break;
+    case CEM_PEA_SOUP: Eater->AddPeaSoupConsumeEndMessage(); break;
+    case CEM_BLACK_UNICORN_FLESH: Eater->AddBlackUnicornConsumeEndMessage(); break;
+    case CEM_GRAY_UNICORN_FLESH: Eater->AddGrayUnicornConsumeEndMessage(); break;
+    case CEM_WHITE_UNICORN_FLESH: Eater->AddWhiteUnicornConsumeEndMessage(); break;
+    case CEM_OMMEL_BONE: Eater->AddOmmelBoneConsumeEndMessage(); break;
+   case CEM_LIQUID_HORROR: Eater->AddLiquidHorrorConsumeEndMessage(); break;
+   case CEM_HOLY_MANGO: Eater->AddHolyMangoConsumeEndMessage(); break;
   }
 }
 

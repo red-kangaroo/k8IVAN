@@ -587,10 +587,10 @@ void bitmap::NormalBlit (cblitdata &BlitData) const {
     case NONE: {
       if (!B.Src.X && !B.Src.Y && !B.Dest.X && !B.Dest.Y && B.Border.X == mSize.X && B.Border.Y == mSize.Y &&
           B.Border.X == B.Bitmap->mSize.X && B.Border.Y == B.Bitmap->mSize.Y) {
-        memcpy(DestImage[0], SrcImage[0], XSizeTimesYSize * sizeof(packcol16));
+        memmove(DestImage[0], SrcImage[0], XSizeTimesYSize * sizeof(packcol16));
       } else {
         cint Bytes = B.Border.X * sizeof(packcol16);
-        for (int y = 0; y < B.Border.Y; ++y) memcpy(&DestImage[B.Dest.Y + y][B.Dest.X], &SrcImage[B.Src.Y + y][B.Src.X], Bytes);
+        for (int y = 0; y < B.Border.Y; ++y) memmove(&DestImage[B.Dest.Y + y][B.Dest.X], &SrcImage[B.Src.Y + y][B.Src.X], Bytes);
       }
       break; }
     case MIRROR: {
@@ -605,7 +605,7 @@ void bitmap::NormalBlit (cblitdata &BlitData) const {
     case FLIP: {
       B.Dest.Y += B.Border.Y - 1;
       cint Bytes = B.Border.X * sizeof(packcol16);
-      for (int y = 0; y < B.Border.Y; ++y) memcpy(&DestImage[B.Dest.Y - y][B.Dest.X], &SrcImage[B.Src.Y + y][B.Src.X], Bytes);
+      for (int y = 0; y < B.Border.Y; ++y) memmove(&DestImage[B.Dest.Y - y][B.Dest.X], &SrcImage[B.Src.Y + y][B.Src.X], Bytes);
       break; }
     case (MIRROR | FLIP): {
       B.Dest.X += B.Border.X - 1;
@@ -1420,8 +1420,8 @@ void bitmap::BlitAndCopyAlpha (bitmap *Bitmap, int Flags) const {
   packalpha **DestAlphaMap = Bitmap->AlphaMap;
   switch (Flags & 7) {
     case NONE: {
-      memcpy(DestImage[0], SrcImage[0], XSizeTimesYSize * sizeof(packcol16));
-      memcpy(DestAlphaMap[0], SrcAlphaMap[0], XSizeTimesYSize * sizeof(packalpha));
+      memmove(DestImage[0], SrcImage[0], XSizeTimesYSize * sizeof(packcol16));
+      memmove(DestAlphaMap[0], SrcAlphaMap[0], XSizeTimesYSize * sizeof(packalpha));
       break; }
     case MIRROR: {
       int Width = mSize.X;
@@ -1444,8 +1444,8 @@ void bitmap::BlitAndCopyAlpha (bitmap *Bitmap, int Flags) const {
       int Width = mSize.X;
       int DestY = Height - 1;
       for (int y = 0; y < Height; ++y) {
-        memcpy(DestImage[DestY - y], SrcImage[y], Width * sizeof(packcol16));
-        memcpy(DestAlphaMap[DestY - y], SrcAlphaMap[y], Width * sizeof(packalpha));
+        memmove(DestImage[DestY - y], SrcImage[y], Width * sizeof(packcol16));
+        memmove(DestAlphaMap[DestY - y], SrcAlphaMap[y], Width * sizeof(packalpha));
       }
       break; }
     case (MIRROR | FLIP): {
@@ -1655,8 +1655,8 @@ void bitmap::FastBlitAndCopyAlpha (bitmap *Bitmap) const {
     if (!AlphaMap || !Bitmap->AlphaMap) ABORT("Attempt to fast blit and copy alpha without an alpha map detected!");
     if (mSize.X != Bitmap->mSize.X || mSize.Y != Bitmap->mSize.Y) ABORT("Fast blit and copy alpha attempt of noncongruent bitmaps detected!");
   }
-  memcpy(Bitmap->Image[0], Image[0], XSizeTimesYSize * sizeof(packcol16));
-  memcpy(Bitmap->AlphaMap[0], AlphaMap[0], XSizeTimesYSize * sizeof(packalpha));
+  memmove(Bitmap->Image[0], Image[0], XSizeTimesYSize * sizeof(packcol16));
+  memmove(Bitmap->AlphaMap[0], AlphaMap[0], XSizeTimesYSize * sizeof(packalpha));
 }
 
 

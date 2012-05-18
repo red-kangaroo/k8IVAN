@@ -87,7 +87,7 @@ void graphics::BlitDBToScreen () {
   packcol16 *DestPtr = static_cast<packcol16 *>(TempSurface->pixels);
   uLong ScreenYMove = (TempSurface->pitch >> 1);
   uLong LineSize = Res.X << 1;
-  for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memcpy(DestPtr, SrcPtr, LineSize);
+  for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memmove(DestPtr, SrcPtr, LineSize);
   SDL_UnlockSurface(TempSurface);
   SDL_Surface *S = SDL_DisplayFormat(TempSurface);
   SDL_BlitSurface(S, NULL, Screen, NULL);
@@ -99,7 +99,7 @@ void graphics::BlitDBToScreen () {
   packcol16 *DestPtr = static_cast<packcol16 *>(Screen->pixels);
   uLong ScreenYMove = (Screen->pitch >> 1);
   uLong LineSize = Res.X << 1;
-  for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memcpy(DestPtr, SrcPtr, LineSize);
+  for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memmove(DestPtr, SrcPtr, LineSize);
   if (SDL_MUSTLOCK(Screen)) SDL_UnlockSurface(Screen);
   SDL_UpdateRect(Screen, 0, 0, Res.X, Res.Y);
 }

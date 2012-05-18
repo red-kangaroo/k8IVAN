@@ -398,6 +398,7 @@ public:
   void ChangeMainMaterial (material *, int = 0);
   void SetSecondaryMaterial (material *, int = 0);
   void ChangeSecondaryMaterial (material *, int = 0);
+  void DoDetecting ();
   void RestoreHP ();
   void RestoreLivingHP ();
   void RestoreStamina () { Stamina = MaxStamina; }
@@ -459,6 +460,7 @@ public:
   void AddGrayUnicornConsumeEndMessage () const;
   void AddWhiteUnicornConsumeEndMessage () const;
   void AddOmmelBoneConsumeEndMessage () const;
+  void AddLiquidHorrorConsumeEndMessage() const;
   void PrintInfo () const;
   virtual item *SevereBodyPart (int, truth = false, stack * = 0);
   virtual truth TryToRiseFromTheDead ();
@@ -658,6 +660,8 @@ public:
   void PrintEndLifeSaveMessage () const;
   void PrintBeginLycanthropyMessage () const;
   void PrintEndLycanthropyMessage () const;
+  void PrintBeginVampirismMessage () const;
+  void PrintEndVampirismMessage () const;
   void PrintBeginHasteMessage () const;
   void PrintEndHasteMessage () const;
   void PrintBeginSlowMessage () const;
@@ -678,6 +682,7 @@ public:
   void EndInfraVision ();
   void EndESP ();
   void HiccupsHandler ();
+  void VampirismHandler ();
   character *PolymorphRandomly (int, int, int);
   virtual truth EquipmentEasilyRecognized (int) const { return true; }
   void StartReading (item *, sLong);
@@ -707,8 +712,11 @@ public:
   void PrintBeginTeleportMessage () const;
   void PrintEndTeleportMessage () const;
   void TeleportHandler ();
+  void DetectHandler ();
   void PrintEndTeleportControlMessage () const;
   void PrintBeginTeleportControlMessage () const;
+  void PrintBeginDetectMessage () const;
+  void PrintEndDetectMessage () const;
   void PolymorphHandler ();
   void PrintEndPolymorphMessage () const;
   void PrintBeginPolymorphMessage () const;
@@ -882,6 +890,8 @@ public:
 #endif
   void ReceiveHolyBanana (sLong);
   void AddHolyBananaConsumeEndMessage () const;
+  void ReceiveHolyMango (sLong);
+  void AddHolyMangoConsumeEndMessage () const;
   virtual truth PreProcessForBone ();
   truth PostProcessForBone (double &, int &);
   truth PostProcessForBone ();
@@ -1050,6 +1060,7 @@ public:
   void ParasitizedSituationDangerModifier (double &) const;
   void LeprosySituationDangerModifier (double &) const;
   void HiccupsSituationDangerModifier (double &) const;
+  void VampirismSituationDangerModifier (double &) const;
   truth TryToTalkAboutScience ();
   truth IsUsingWeaponOfCategory (int) const;
   virtual truth IsKamikazeDwarf () const { return false; }

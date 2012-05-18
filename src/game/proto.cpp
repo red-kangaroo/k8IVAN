@@ -476,7 +476,7 @@ void protosystem::Initialize()
     ItemCategoryData[CategoryIndex] = new database*[CSize];
     ItemCategorySize[CategoryIndex] = CSize;
     ItemCategoryPossibility[CategoryIndex] = TotalPossibility;
-    memcpy(ItemCategoryData[CategoryIndex], DataBaseBuffer, CSize * sizeof(database*));
+    memmove(ItemCategoryData[CategoryIndex], DataBaseBuffer, CSize * sizeof(database*));
   }
 
   delete [] DataBaseBuffer;

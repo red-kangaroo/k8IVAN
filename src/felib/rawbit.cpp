@@ -77,7 +77,7 @@ void rawbitmap::Save (cfestring &FileName) {
   uLong hv = 0x0801050ALU;
   memset(PCXHeader, 0, 128);
   //*((uLong*)PCXHeader) = 0x0801050A;
-  memcpy(PCXHeader, &hv, 4); //FIXME: endianness
+  memmove(PCXHeader, &hv, 4); //FIXME: endianness
   PCXHeader[65] = 0x01;
   PCXHeader[66] = Size.X & 0xFF;
   PCXHeader[67] = (Size.X >> 8) & 0xFF;
@@ -486,7 +486,7 @@ truth rawbitmap::IsMaterialColor1 (v2 Pos) const {
 
 
 void rawbitmap::CopyPaletteFrom (rawbitmap *Bitmap) {
-  memcpy(Palette, Bitmap->Palette, 768);
+  memmove(Palette, Bitmap->Palette, 768);
 }
 
 
@@ -503,10 +503,10 @@ void rawbitmap::NormalBlit (rawbitmap *Bitmap, v2 Src, v2 Dest, v2 Border, int F
   switch (Flags & 7) {
     case NONE:
       if (Size.X == Bitmap->Size.X && Size.Y == Bitmap->Size.Y) {
-        memcpy(DestBuffer[0], SrcBuffer[0], Size.X*Size.Y*sizeof(paletteindex));
+        memmove(DestBuffer[0], SrcBuffer[0], Size.X*Size.Y*sizeof(paletteindex));
       } else {
         cint Bytes = Border.X*sizeof(paletteindex);
-        for (int y = 0; y < Border.Y; ++y) memcpy(&DestBuffer[Dest.Y+y][Dest.X], &SrcBuffer[Src.Y+y][Src.X], Bytes);
+        for (int y = 0; y < Border.Y; ++y) memmove(&DestBuffer[Dest.Y+y][Dest.X], &SrcBuffer[Src.Y+y][Src.X], Bytes);
       }
       break;
     case MIRROR:
@@ -521,7 +521,7 @@ void rawbitmap::NormalBlit (rawbitmap *Bitmap, v2 Src, v2 Dest, v2 Border, int F
     case FLIP: {
       Dest.Y += Border.Y-1;
       cint Bytes = Border.X*sizeof(paletteindex);
-      for (int y = 0; y < Border.Y; ++y) memcpy(&DestBuffer[Dest.Y-y][Dest.X], &SrcBuffer[Src.Y+y][Src.X], Bytes);
+      for (int y = 0; y < Border.Y; ++y) memmove(&DestBuffer[Dest.Y-y][Dest.X], &SrcBuffer[Src.Y+y][Src.X], Bytes);
       } break;
     case (MIRROR | FLIP):
       Dest.X += Border.X-1;
