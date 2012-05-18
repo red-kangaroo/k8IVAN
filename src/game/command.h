@@ -84,7 +84,8 @@ public:
   static truth WieldInLeftArm (character *);
   static truth AssignName (character *);
   static truth Search (character *);
-  static truth Consume(character*, cchar*, sorter);
+  static truth Consume (character*, cchar*, sorter);
+  static truth Burn (character *);
 #ifdef WIZARD
   static truth WizardMode (character *);
   static truth RaiseStats (character *);

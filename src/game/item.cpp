@@ -1673,3 +1673,17 @@ truth item::AddStateDescription(festring& Name, truth Articled) const
 
   return true;
 }
+
+
+truth item::Burn (character *who, v2 where, int dir) {
+  //who->EditExperience(PERCEPTION, 150, 1 << 10);
+  where += game::GetMoveVector(dir);
+  area *ca = who->GetSquareUnder()->GetArea();
+  if (where.X < 0 || where.Y < 0 || where.X >= ca->GetXSize() || where.Y >= ca->GetYSize()) return false;
+  lsquare *sq = static_cast<lsquare *>(ca->GetSquare(where.X, where.Y));
+  if (sq) {
+    sq->ReceiveTrapDamage(who, 50, FIRE, dir);
+    return true;
+  }
+  return false;
+}

@@ -197,6 +197,7 @@ command *commandsystem::Command[] = {
   new command(&NOP, "wait", '.', '.', true),
   new command(&WieldInRightArm, "wield in right arm", 'w', 'w', true),
   new command(&WieldInLeftArm, "wield in left arm", 'W', 'W', true),
+  new command(&Burn, "burn", 'B', 'B', false),
 #ifdef WIZARD
   new command(&WizardMode, "wizard mode activation", 'X', 'X', true),
 #endif
@@ -1425,6 +1426,28 @@ truth commandsystem::ToggleRunning (character *Char) {
     return false;
   }
   game::SetPlayerIsRunning(!game::PlayerIsRunning());
+  return false;
+}
+
+
+truth commandsystem::Burn (character *Char) {
+  if (!Char->PossessesItem(&item::IsFlaming)) {
+    ADD_MESSAGE("You have no flaming items, %s.", game::Insult());
+    return false;
+  }
+  item *Item = Char->SelectFromPossessions(CONST_S("What do you want to use?"), &item::IsFlaming);
+  if (Item) {
+    int Answer = game::DirectionQuestion(CONST_S("In what direction do you wish to burn? [press a direction key or '.']"), false, true);
+    if (Answer == DIR_ERROR) return false;
+    if (Item->Burn(Char, Char->GetPos(), Answer)) {
+      //FIXME: AP
+      Char->EditExperience(AGILITY, 150, 1<<6);
+      Char->EditNP(-10);
+      Char->EditAP(-100000/APBonus(Char->GetAttribute(AGILITY)));
+      return true;
+    }
+    return false;
+  }
   return false;
 }
 

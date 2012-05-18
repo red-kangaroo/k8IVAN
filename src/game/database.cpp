@@ -656,6 +656,7 @@ template<> void databasecreator<item>::CreateDataBaseMemberMap () {
   ADD_MEMBER(IsSadistWeapon);
   ADD_MEMBER(IsThrowingWeapon);
   ADD_MEMBER(ThrowItemTypes);
+  ADD_MEMBER(CanFlame);
 }
 
 

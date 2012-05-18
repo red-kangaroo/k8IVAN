@@ -200,6 +200,7 @@ struct itemdatabase : public databasebase
   truth IsSadistWeapon;
   truth IsThrowingWeapon;
   sLong ThrowItemTypes;
+  truth CanFlame;
 };
 
 class itemprototype
@@ -264,6 +265,7 @@ class item : public object
   virtual truth DogWillCatchAndConsume(ccharacter*) const { return false; }
   virtual truth Apply(character*);
   virtual truth Zap(character*, v2, int) { return false; }
+  virtual truth Burn(character*, v2, int);
   virtual truth Polymorph(character*, stack*);
   virtual truth CheckPickUpEffect(character*) { return true; }
   virtual void StepOnEffect(character*) { }
@@ -316,6 +318,7 @@ class item : public object
   virtual truth CanBeHardened(ccharacter*) const;
   virtual truth HasLock(ccharacter*) const { return false; }
   virtual truth IsOnGround() const;
+  virtual truth IsFlaming (ccharacter *) const { return CanFlame(); }
   int GetResistance(int) const;
   virtual void Be();
   int GetType() const { return GetProtoType()->GetIndex(); }
@@ -423,6 +426,7 @@ class item : public object
   DATA_BASE_TRUTH(IsSadistWeapon);
   DATA_BASE_TRUTH(IsThrowingWeapon);
   DATA_BASE_VALUE(sLong, ThrowItemTypes);
+  DATA_BASE_TRUTH(CanFlame);
   truth CanBeSoldInLibrary(character* Librarian) const { return CanBeRead(Librarian); }
   virtual truth TryKey(item*, character*) { return false; }
   sLong GetBlockModifier() const;
@@ -510,6 +514,7 @@ class item : public object
   virtual head* Behead() { return 0; }
   virtual truth IsGorovitsFamilyRelic() const { return false; }
   virtual truth EffectIsGood() const { return false; }
+  //virtual truth GetCanFlame () const { return CanFlame; }
 #ifdef WIZARD
   virtual void AddAttackInfo(felist&) const;
   void AddMiscellaneousInfo(felist&) const;
