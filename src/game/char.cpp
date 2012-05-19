@@ -501,9 +501,11 @@ int character::TakeHit (character *Enemy, item *Weapon, bodypart *EnemyBodyPart,
   double ToHitValue, int Success, int Type, int GivenDir, truth Critical, truth ForceHit)
 {
   //FIXME: args
+  game::ClearEventData();
   game::mActor = Enemy;
-  game::RunOnCharEvent(this, CONST_S("take_hit"));
-  game::mActor = 0;
+  game::mResult = DID_NO_DAMAGE;
+  if (game::RunOnCharEvent(this, CONST_S("take_hit"))) { game::ClearEventData(); return game::mResult; }
+  game::ClearEventData();
   int Dir = Type == BITE_ATTACK ? YOURSELF : GivenDir;
   double DodgeValue = GetDodgeValue();
   if (!Enemy->IsPlayer() && GetAttackWisdomLimit() != NO_LIMIT) Enemy->EditExperience(WISDOM, 75, 1 << 13);
@@ -1061,9 +1063,10 @@ void character::Die (ccharacter *Killer, cfestring &Msg, uLong DeathFlags) {
   /* Note: This function musn't delete any objects, since one of these may be
      the one currently processed by pool::Be()! */
   if (!IsEnabled()) return;
+  game::ClearEventData();
   game::mActor = Killer;
-  game::RunOnCharEvent(this, CONST_S("die"));
-  game::mActor = 0;
+  if (game::RunOnCharEvent(this, CONST_S("die"))) { game::ClearEventData(); RemoveTraps(); return; }
+  game::ClearEventData();
   RemoveTraps();
   if (IsPlayer()) {
     ADD_MESSAGE("You die.");
@@ -1793,8 +1796,10 @@ void character::BeKicked (character *Kicker, item *Boot, bodypart *Leg, v2 HitPo
   double ToHitValue, int Success, int Direction, truth Critical, truth ForceHit)
 {
   //FIXME: other args
+  game::ClearEventData();
   game::mActor = Kicker;
-  game::RunOnCharEvent(this, CONST_S("before_be_kicked"));
+  if (game::RunOnCharEvent(this, CONST_S("before_be_kicked"))) { game::ClearEventData(); return; }
+  game::ClearEventData();
   game::mActor = 0;
   switch (TakeHit(Kicker, Boot, Leg, HitPos, KickDamage, ToHitValue, Success, KICK_ATTACK, Direction, Critical, ForceHit)) {
     case HAS_HIT:
@@ -7658,8 +7663,7 @@ truth character::ForgetRandomThing () {
     if (Known.empty()) return false;
     int RandomGod = RAND_N(Known.size());
     Known.at(RAND_N(Known.size()))->SetIsKnown(false);
-    ADD_MESSAGE("You forget how to pray to %s.",
-    Known.at(RandomGod)->GetName());
+    ADD_MESSAGE("You forget how to pray to %s.", Known.at(RandomGod)->GetName());
     return true;
   }
   return false;

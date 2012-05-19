@@ -262,6 +262,34 @@ void potion::DipInto(liquid* Liquid, character* Dipper)
   Dipper->DexterityAction(10);
 }
 
+
+//FIXME: can dump something else?
+truth materialcontainer::DumpTo (character *dumper, v2 dest) {
+  if (!dumper || (!IsCan() && !IsBottle()) || !GetSecondaryMaterial()) return false;
+  if (!dumper->GetArea()->IsValidPos(dest)) return false;
+  /*
+  if (Item->IsOnGround()) {
+    room *Room = Item->GetRoom();
+    //
+    if (Room) Room->HostileAction(Char);
+  }
+  */
+  lsquare *sqr = dumper->GetNearLSquare(dest);
+  if (GetSecondaryMaterial()->IsLiquid()) {
+    liquid *Liquid = static_cast<liquid *>(RemoveSecondaryMaterial());
+    //
+    if (dumper->IsPlayer()) ADD_MESSAGE("Dumping %s.", Liquid->GetName(false, false).CStr());
+    sqr->SpillFluid(dumper, Liquid, false, true); // ForceHit, ShowMsg
+  } else {
+    item *Lump = lump::Spawn(0, NO_MATERIALS);
+    Lump->InitMaterials(RemoveSecondaryMaterial());
+    sqr->AddItem(Lump);
+  }
+  dumper->DexterityAction(10);
+  return true;
+}
+
+
 void lantern::SignalSquarePositionChange(int SquarePosition)
 {
   item::SignalSquarePositionChange(SquarePosition);

@@ -110,6 +110,7 @@ class material
   void AddName(festring&, truth = false, truth = true) const;
   festring GetName(truth = false, truth = true) const;
   material* TakeDipVolumeAway();
+  material* TakeAllVolumeAway();
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   truth Effect(character*, int, sLong);

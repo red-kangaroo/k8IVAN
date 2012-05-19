@@ -162,6 +162,7 @@ command *commandsystem::Command[] = {
   new command(&Talk, "chat", 'C', 'C', false),
   new command(&Close, "close", 'c', 'c', false),
   new command(&Dip, "dip", '!', '!', false),
+  new command(&Dump, "dump potion/can contents", 'U', 'U', false),
   new command(&Drink, "drink", 'D', 'D', true),
   new command(&Drop, "drop", 'd', 'd', true),
   new command(&Eat, "eat", 'e', 'e', true),
@@ -715,11 +716,15 @@ truth commandsystem::Kick (character *Char) {
   if (Enemy && !(Enemy->IsMasochist() && Char->GetRelation(Enemy) == FRIEND) && Char->GetRelation(Enemy) != HOSTILE) {
     if (!game::TruthQuestion(CONST_S("This might cause a hostile reaction. Are you sure? [y/N]"))) return false;
   }
+  game::ClearEventData();
   game::mActor = Square->GetCharacter();
-  game::RunOnCharEvent(Char, CONST_S("before_kick"));
-  game::mActor = 0;
-  game::RunOnCharEvent(Square->GetCharacter(), CONST_S("before_kicked_by"));
-  game::mActor = 0;
+  game::mSecondActor = Char;
+  if (game::RunOnCharEvent(Char, CONST_S("before_kick"))) { game::ClearEventData(); return game::mResult != 0; }
+  game::ClearEventData();
+  game::mActor = Char;
+  game::mSecondActor = Square->GetCharacter();
+  if (game::RunOnCharEvent(Square->GetCharacter(), CONST_S("before_kicked_by"))) { game::ClearEventData(); return game::mResult != 0; }
+  game::ClearEventData();
   Char->Hostility(Square->GetCharacter());
   Char->Kick(Square, Dir);
   return true;
@@ -1447,6 +1452,25 @@ truth commandsystem::Burn (character *Char) {
       return true;
     }
     return false;
+  }
+  return false;
+}
+
+
+//FIXME: check for actor in that direction
+//FIXME: made actor/room owner hostile when containing material is acid, etc
+//FIXME: способ вылить точно на пол или на монстрика (зависит от ловкости?)
+truth commandsystem::Dump (character *Char) {
+  if (!Char->GetStack()->SortedItems(Char, &item::IsDumpable) && !Char->EquipsSomething(&item::IsDumpable)) {
+    ADD_MESSAGE("You have nothing to dump!");
+    return false;
+  }
+  item *Item = Char->SelectFromPossessions(CONST_S("What do you want to dump?"), &item::IsDumpable);
+  if (Item) {
+    int Dir = game::DirectionQuestion(CONST_S("In what direction do you wish to dump it? [press a direction key or '.']"), false, true);
+    if (Dir == DIR_ERROR) return false;
+    v2 Pos = Char->GetPos()+game::GetMoveVector(Dir);
+    return Item->DumpTo(Char, Pos);
   }
   return false;
 }

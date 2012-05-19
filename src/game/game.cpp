@@ -64,7 +64,9 @@
 std::stack<inputfile *> game::mFEStack;
 character *game::mChar = 0;
 ccharacter *game::mActor = 0;
+ccharacter *game::mSecondActor = 0;
 item *game::mItem = 0;
+int game::mResult = 0;
 
 
 int game::CurrentLevelIndex;
@@ -422,6 +424,7 @@ truth game::Init (cfestring &Name) {
       /*k8: damn! seems that this is field, not local! bool PlayerHasReceivedAllGodsKnownBonus = false; */
       PlayerHasReceivedAllGodsKnownBonus = false;
       ADD_MESSAGE("You commence your journey to Attnam. Use direction keys to move, '>' to enter an area and '?' to view other commands.");
+      game::ClearEventData();
       RunOnEvent("game_start");
       if (IsXMas()) {
         item *Present = banana::Spawn();
@@ -3063,6 +3066,14 @@ int game::ListSelectorArray (int defsel, cfestring &title, const char *items[]) 
 }
 
 
+void game::ClearEventData () {
+  mChar = 0;
+  mActor = 0;
+  mSecondActor = 0;
+  mItem = 0;
+}
+
+
 int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args) {
   festring s;
   sLong n;
@@ -3148,8 +3159,9 @@ void game::SkipBlock (truth brcEaten) {
 }
 
 
-void game::DoOnEvent (truth brcEaten) {
+truth game::DoOnEvent (truth brcEaten) {
   // do; only funcalls for now
+  truth eaten = false;
   festring w;
   if (!brcEaten) {
     mFEStack.top()->ReadWord(w, true);
@@ -3170,6 +3182,10 @@ void game::DoOnEvent (truth brcEaten) {
         if (mChar) mChar->SetMoney(n);
         continue;
       }
+      if (w == "result") {
+        mResult = mFEStack.top()->ReadNumber(true);
+        continue;
+      }
       ABORT("Unknown var [%s] in file %s at line %d!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
     } else {
       //mFEStack.top()->ReadWord(w, true);
@@ -3181,12 +3197,14 @@ void game::DoOnEvent (truth brcEaten) {
         if (n < 0) n = 0;
         if (mChar) mChar->SetMoney(n);
         continue;
-      } if (w == "EditMoney") {
+      }
+      if (w == "EditMoney") {
         ParseFuncArgs("n", args);
         sLong n = args[0].ival;
         if (mChar) mChar->EditMoney(n);
         continue;
-      } if (w == "AddMessage") {
+      }
+      if (w == "AddMessage") {
         ParseFuncArgs("*", args);
         festring s;
         for (uInt f = 0; f < args.size(); f++) {
@@ -3196,54 +3214,82 @@ void game::DoOnEvent (truth brcEaten) {
         ADD_MESSAGE("%s", s.CStr());
         continue;
       }
+      if (w == "EatThisEvent") {
+        eaten = true;
+        continue;
+      }
       ABORT("Unknown function [%s] in file %s at line %d!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
       //if (mFEStack.top()->ReadWord() != ";") ABORT("';' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
     }
     //ABORT("Invalid term in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
   }
   //fprintf(stderr, "------------\n");
+  return eaten;
 }
 
 
-void game::RunOnEvent (cfestring &ename) {
+//TODO: cache event scripts
+truth game::RunOnEvent (cfestring &ename) {
+  static std::vector<festring> scriptFiles;
+  static truth cached = false;
+  truth res = false;
+  //
   character *old = mChar;
   mChar = PLAYER;
-  for (int fno = 99; fno >= -1; fno--) {
-    festring cfname;
-    cfname << game::GetGameDir() << "Script/onevent";
-    if (fno >= 0) {
-      char bnum[8];
-      sprintf(bnum, "_%02d", fno);
-      cfname << bnum;
+  if (!cached) {
+    cached = true;
+    for (int fno = 99; fno >= -1; fno--) {
+      festring cfname;
+      cfname << game::GetGameDir() << "Script/onevent";
+      if (fno >= 0) {
+        char bnum[8];
+        sprintf(bnum, "_%02d", fno);
+        cfname << bnum;
+      }
+      cfname << ".dat";
+      if (!inputfile::fileExists(cfname)) continue;
+      inputfile *ifl = new inputfile(cfname, &game::GetGlobalValueMap(), false);
+      if (!ifl->IsOpen()) {
+        delete ifl;
+        continue;
+      }
+      scriptFiles.push_back(cfname);
+      ifl->setGetVarCB(game::ldrGetVar);
+      mFEStack.push(ifl);
     }
-    cfname << ".dat";
-    if (!inputfile::fileExists(cfname)) continue;
-    inputfile *ifl = new inputfile(cfname, &game::GetGlobalValueMap(), false);
-    if (!ifl->IsOpen()) {
-      delete ifl;
-      continue;
+  } else {
+    for (unsigned int f = 0; f < scriptFiles.size(); ++f) {
+      festring cfname = scriptFiles[f];
+      inputfile *ifl = new inputfile(cfname, &game::GetGlobalValueMap(), false);
+      if (!ifl->IsOpen()) {
+        delete ifl;
+        continue;
+      }
+      ifl->setGetVarCB(game::ldrGetVar);
+      mFEStack.push(ifl);
     }
-    ifl->setGetVarCB(game::ldrGetVar);
-    mFEStack.push(ifl);
   }
+  //
   festring w;
   while (GetWord(w)) {
     if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
     mFEStack.top()->ReadWord(w, true);
     truth doIt = (w==ename);
-    if (doIt) {
-      DoOnEvent(false);
+    if (doIt && !res) {
+      res = DoOnEvent(false);
     } else {
       // skip
       SkipBlock(false);
     }
   }
   mChar = old;
+  return res;
 }
 
 
-void game::RunOnEventStr (cfestring &ename, cfestring &str) {
-  if (str.GetSize() < 1) return;
+truth game::RunOnEventStr (cfestring &ename, cfestring &str) {
+  truth res = false;
+  if (str.GetSize() < 1) return false;
   //fprintf(stderr, "=============\n%s=============\n", str.CStr());
   inputfile *ifl = new meminputfile(str, &game::GetGlobalValueMap());
   ifl->setGetVarCB(game::ldrGetVar);
@@ -3257,35 +3303,40 @@ void game::RunOnEventStr (cfestring &ename, cfestring &str) {
     mFEStack.top()->ReadWord(w, true);
     //fprintf(stderr, "on: [%s]\n", w.CStr());
     truth doIt = (w==ename);
-    if (doIt) {
+    if (doIt && !res) {
       //fprintf(stderr, "  do it\n");
-      DoOnEvent(false);
+      res = DoOnEvent(false);
     } else {
       // skip
       //fprintf(stderr, "  skip it\n");
       SkipBlock(false);
     }
   }
+  return res;
 }
 
 
-void game::RunOnCharEvent (character *who, cfestring &ename) {
-  if (!who) return;
+truth game::RunOnCharEvent (character *who, cfestring &ename) {
+  truth res = false;
+  if (!who) return false;
   character *old = mChar;
   mChar = who;
-  RunOnEventStr(ename, who->mOnEvents);
-  RunOnEventStr(ename, who->GetProtoType()->mOnEvents);
+  res = RunOnEventStr(ename, who->mOnEvents);
+  if (!res) res = RunOnEventStr(ename, who->GetProtoType()->mOnEvents);
   mChar = old;
+  return res;
 }
 
 
-void game::RunOnItemEvent (item *what, cfestring &ename) {
-  if (!what) return;
+truth game::RunOnItemEvent (item *what, cfestring &ename) {
+  truth res = false;
+  if (!what) return false;
   item *old = mItem;
   mItem = what;
-  RunOnEventStr(ename, what->mOnEvents);
-  RunOnEventStr(ename, what->GetProtoType()->mOnEvents);
+  res = RunOnEventStr(ename, what->mOnEvents);
+  if (!res) res = RunOnEventStr(ename, what->GetProtoType()->mOnEvents);
   mItem = old;
+  return res;
 }
 
 

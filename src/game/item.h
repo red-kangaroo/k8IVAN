@@ -257,6 +257,7 @@ class item : public object
   virtual void FinishReading(character*) { }
   virtual truth HitEffect(character*, character*, v2, int, int, truth) { return false; }
   virtual void DipInto(liquid*, character*) { }
+  virtual truth DumpTo (character *dumper, v2 dest) { return false; }
   virtual liquid* CreateDipLiquid() { return 0; }
   virtual item* BetterVersion() const { return 0; }
   virtual int GetOfferValue(int) const;
@@ -295,6 +296,7 @@ class item : public object
   virtual truth IsReadable(ccharacter*) const { return false; }
   virtual truth IsDippable(ccharacter*) const { return false; }
   virtual truth IsDipDestination(ccharacter*) const { return false; }
+  virtual truth IsDumpable(ccharacter*) const { return false; }
   virtual truth IsAppliable(ccharacter*) const { return false; }
   virtual truth IsZappable(ccharacter*) const { return false; }
   virtual truth IsChargeable(ccharacter*) const { return false; }

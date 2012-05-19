@@ -86,6 +86,7 @@ public:
   static truth Search (character *);
   static truth Consume (character*, cchar*, sorter);
   static truth Burn (character *);
+  static truth Dump (character *);
 #ifdef WIZARD
   static truth WizardMode (character *);
   static truth RaiseStats (character *);

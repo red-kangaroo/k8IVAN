@@ -469,18 +469,20 @@ public:
 
   static truth CheckDropLeftover (item *i);
 
-  static void RunOnEvent (cfestring &ename);
-  static void RunOnCharEvent (character *who, cfestring &ename);
-  static void RunOnItemEvent (item *what, cfestring &ename);
+  static void ClearEventData ();
+  // return 'true' if event is 'eaten'
+  static truth RunOnEvent (cfestring &ename);
+  static truth RunOnCharEvent (character *who, cfestring &ename);
+  static truth RunOnItemEvent (item *what, cfestring &ename);
 
   static festring ldrGetVar (cfestring &name);
 
 private:
-  static void RunOnEventStr (cfestring &name, cfestring &str);
+  static truth RunOnEventStr (cfestring &name, cfestring &str);
   static truth GetWord (festring &w);
   static void SkipBlock (truth brcEaten);
-  static void UpdateCameraCoordinate(int&, int, int, int);
-  static void DoOnEvent (truth brcEaten);
+  static void UpdateCameraCoordinate (int &, int, int, int);
+  static truth DoOnEvent (truth brcEaten);
   static int ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args);
 
 private:
@@ -601,7 +603,9 @@ private:
 public:
   static character *mChar;
   static ccharacter *mActor;
+  static ccharacter *mSecondActor;
   static item *mItem;
+  static int mResult;
 };
 
 inline void game::CombineLights(col24& L1, col24 L2)

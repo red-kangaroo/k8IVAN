@@ -55,6 +55,10 @@ material* material::TakeDipVolumeAway()
     return MotherEntity->RemoveMaterial(this);
 }
 
+material *material::TakeAllVolumeAway () {
+  return MotherEntity->RemoveMaterial(this);
+}
+
 void material::Save(outputfile& SaveFile) const
 {
   SaveFile << (uShort)GetType();

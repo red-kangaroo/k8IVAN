@@ -43,6 +43,7 @@ ITEM(materialcontainer, item)
   virtual void CalculateEmitation();
   virtual void InitMaterials(const materialscript*, const materialscript*, truth);
   virtual int GetSparkleFlags() const;
+  virtual truth DumpTo (character *dumper, v2 dest);
  protected:
   virtual sLong GetMaterialPrice() const;
   virtual truth CalculateHasBe() const;
@@ -110,6 +111,7 @@ ITEM(can, materialcontainer)
   virtual void DipInto(liquid*, character*);
   virtual truth IsDippable(ccharacter*) const { return !SecondaryMaterial; }
   virtual truth IsDipDestination(ccharacter*) const;
+  virtual truth IsDumpable(ccharacter*) const { return SecondaryMaterial != 0; }
   virtual liquid* CreateDipLiquid();
   virtual truth AllowSpoil() const { return false; } // temporary
   virtual truth Spoils() const { return false; } // temporary
@@ -138,6 +140,7 @@ ITEM(potion, materialcontainer)
   virtual truth IsDippable(ccharacter*) const { return !SecondaryMaterial; }
   virtual void Break(character*, int);
   virtual truth IsDipDestination(ccharacter*) const;
+  virtual truth IsDumpable(ccharacter*) const { return SecondaryMaterial != 0; }
   virtual truth IsExplosive() const;
   virtual truth ReceiveDamage(character*, int, int, int);
   virtual truth HasBetterVersion() const { return !SecondaryMaterial; }

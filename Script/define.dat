@@ -1251,4 +1251,14 @@
 
 #define NO_TAMING  -1
 
+
+/* for scripts */
+#define HAS_HIT 0
+#define HAS_BLOCKED 1
+#define HAS_DODGED 2
+#define HAS_DIED 3
+#define DID_NO_DAMAGE 4
+#define HAS_FAILED 5
+
+
 ; /* this line must be here */
