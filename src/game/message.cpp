@@ -224,6 +224,9 @@ void msgsystem::ThyMessagesAreNowOld()
 
 /* SOUND SYSTEM */
 #ifndef DISABLE_SOUND
+
+#define SND_CHANNEL_COUNT  (16)
+
 struct SoundFile {
   festring filename;
   Mix_Chunk *chunk;
@@ -284,7 +287,7 @@ void soundsystem::initSound () {
       SoundState = -1;
       return;
     }
-    Mix_AllocateChannels(16);
+    Mix_AllocateChannels(SND_CHANNEL_COUNT);
     setVolume(ivanconfig::GetSoundVolume());
     SoundState = -2;
     festring cfgfile = game::GetGameDir()+"Sound/config.txt";
@@ -321,14 +324,17 @@ void soundsystem::initSound () {
 
 
 SoundFile *soundsystem::findMatchingSound (const festring &Buffer) {
-  for (int i = patterns.size() - 1; i >= 0; i--)
-  if (patterns[i].re) {
-    /*
-    if (pcre_exec(patterns[i].re, patterns[i].extra, Buffer.CStr(), Buffer.GetSize(), 0, 0, NULL, 0) >= 0)
-      return &files[patterns[i].sounds[rand()%patterns[i].sounds.size()]];
-    */
-    if (SEE_regex_match(patterns[i].re, Buffer.CStr(), Buffer.GetSize(), 0, NULL))
-      return &files[patterns[i].sounds[rand()%patterns[i].sounds.size()]];
+  for (int f = patterns.size()-1; f >= 0; --f) {
+    if (patterns[f].re) {
+      /*
+      if (pcre_exec(patterns[f].re, patterns[f].extra, Buffer.CStr(), Buffer.GetSize(), 0, 0, NULL, 0) >= 0) {
+        return &files[patterns[f].sounds[rand()%patterns[f].sounds.size()]];
+      }
+      */
+      if (SEE_regex_match(patterns[f].re, Buffer.CStr(), Buffer.GetSize(), 0, NULL)) {
+        return &files[patterns[f].sounds[rand()%patterns[f].sounds.size()]];
+      }
+    }
   }
   return NULL;
 }
@@ -337,7 +343,7 @@ SoundFile *soundsystem::findMatchingSound (const festring &Buffer) {
 void soundsystem::setVolume (sLong vol) {
   if (vol < 0) vol = 0; else if (vol > 128) vol = 128;
   if (SoundState == 1) {
-    for (int f = 0; f < 16; f++) Mix_Volume(f, vol);
+    for (int f = 0; f < SND_CHANNEL_COUNT; f++) Mix_Volume(f, vol);
   }
 }
 
@@ -350,14 +356,16 @@ void soundsystem::playSound (const festring &Buffer) {
     if (!sf) return;
     if (!sf->chunk) {
       festring sndfile = game::GetGameDir()+"Sound/"+sf->filename;
+      fprintf(stderr, "loading sound: '%s'\n", sndfile.CStr());
       sf->chunk = Mix_LoadWAV(sndfile.CStr());
     }
     if (sf->chunk) {
-      for (int i = 0; i < 16; i++) {
-        if (!Mix_Playing(i)) {
-          Mix_Volume(i, ivanconfig::GetSoundVolume());
-          Mix_PlayChannel(i, sf->chunk, 0);
-          //Mix_SetPosition(i, angle, dist);
+      for (int f = 0; f < SND_CHANNEL_COUNT; ++f) {
+        if (!Mix_Playing(f)) {
+          fprintf(stderr, "starting sound: '%s'\n", sf->filename.CStr());
+          Mix_Volume(f, ivanconfig::GetSoundVolume());
+          Mix_PlayChannel(f, sf->chunk, 0);
+          //Mix_SetPosition(f, angle, dist);
           return;
         }
       }
