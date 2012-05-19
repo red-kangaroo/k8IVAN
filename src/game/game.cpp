@@ -3340,7 +3340,7 @@ truth game::RunOnItemEvent (item *what, cfestring &ename) {
 }
 
 
-festring game::ldrGetVar (cfestring &name) {
+festring game::ldrGetVar (inputfile *fl, cfestring &name) {
   //fprintf(stderr, "GETVAR: [%s]\n", name.CStr());
   if (name == "player_name") {
     return game::GetPlayerName();

@@ -38,6 +38,10 @@ inline inputfile& operator>>(inputfile& SaveFile, type& Value) { \
 }
 
 
+class inputfile;
+class outputfile;
+
+
 typedef std::map<festring, sLong> valuemap;
 
 
@@ -60,7 +64,7 @@ private:
 };
 
 
-typedef festring (*InputFileGetVarFn) (cfestring &name);
+typedef festring (*InputFileGetVarFn) (inputfile *fl, cfestring &name);
 
 class inputfile {
 public:
@@ -96,7 +100,7 @@ public:
 
   festring getVar (cfestring &name);
   void setVar (cfestring &name, cfestring &value);
-  void delVar (cfestring &name);
+  truth delVar (cfestring &name);
 
   void setGetVarCB (InputFileGetVarFn cb) { mGetVar = cb; }
 

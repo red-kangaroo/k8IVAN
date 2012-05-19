@@ -475,7 +475,7 @@ public:
   static truth RunOnCharEvent (character *who, cfestring &ename);
   static truth RunOnItemEvent (item *what, cfestring &ename);
 
-  static festring ldrGetVar (cfestring &name);
+  static festring ldrGetVar (inputfile *fl, cfestring &name);
 
 private:
   static truth RunOnEventStr (cfestring &name, cfestring &str);

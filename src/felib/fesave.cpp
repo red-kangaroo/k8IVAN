@@ -118,7 +118,7 @@ festring inputfile::getVar (cfestring &name) {
   //
   if (!found) {
     if (mGetVar) {
-      res = mGetVar(name);
+      res = mGetVar(this, name);
     } else {
       festring s = "unknown variable: "+name;
       die(s);
@@ -133,8 +133,14 @@ void inputfile::setVar (cfestring &name, cfestring &value) {
 }
 
 
-void inputfile::delVar (cfestring &name) {
-  ABORT("no delVar() yet");
+//TODO: invoke callback
+truth inputfile::delVar (cfestring &name) {
+  VarMap::iterator i = mVars.find(name);
+  if (i != mVars.end()) {
+    mVars.erase(i);
+    return true;
+  }
+  return false;
 }
 
 
@@ -169,7 +175,9 @@ festring inputfile::readCondition (festring &token, int prio, truth skipIt) {
       } else if (token == "@") {
         readWordIntr(token, true);
         if (!skipIt) res = getVar(token);
-      } else res = token;
+      } else {
+        res = token;
+      }
       readWordIntr(token, true);
       goto done;
       //return res;
