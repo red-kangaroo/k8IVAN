@@ -1437,7 +1437,7 @@ truth commandsystem::Burn (character *Char) {
   }
   item *Item = Char->SelectFromPossessions(CONST_S("What do you want to use?"), &item::IsFlaming);
   if (Item) {
-    int Answer = game::DirectionQuestion(CONST_S("In what direction do you wish to burn? [press a direction key or '.']"), false, true);
+    int Answer = game::DirectionQuestion(CONST_S("In what direction do you wish to burn? [press a direction key]"), false);
     if (Answer == DIR_ERROR) return false;
     if (Item->Burn(Char, Char->GetPos(), Answer)) {
       //FIXME: AP
