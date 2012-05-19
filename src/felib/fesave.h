@@ -112,11 +112,12 @@ protected:
   festring readCondition (festring &token, int prio, truth skipIt);
 
 protected:
+  typedef std::map<festring, festring> VarMap;
   FILE *Buffer;
   festring FileName;
   const valuemap *ValueMap;
   truth lastWordWasString;
-  std::vector<std::pair<festring, festring> > mVars;
+  VarMap mVars;
   InputFileGetVarFn mGetVar;
   std::stack<int> mIfStack;
 };

@@ -102,10 +102,10 @@ inputfile::~inputfile () {
 
 
 festring inputfile::findVar (cfestring &name, truth *found) const {
-  if (found) *found = true;
-  for (uInt f = 0; f < mVars.size(); f++) {
-    std::pair<festring, festring> v = mVars[f];
-    if (v.first == name) return v.second;
+  VarMap::const_iterator i = mVars.find(name);
+  if (i != mVars.end()) {
+    if (found) *found = true;
+    return i->second;
   }
   if (found) *found = false;
   return "";
@@ -115,6 +115,7 @@ festring inputfile::findVar (cfestring &name, truth *found) const {
 festring inputfile::getVar (cfestring &name) {
   truth found;
   festring res = findVar(name, &found);
+  //
   if (!found) {
     if (mGetVar) {
       res = mGetVar(name);
@@ -128,14 +129,7 @@ festring inputfile::getVar (cfestring &name) {
 
 
 void inputfile::setVar (cfestring &name, cfestring &value) {
-  for (uInt f = 0; f < mVars.size(); f++) {
-    std::pair<festring, festring> v = mVars[f];
-    if (v.first == name) {
-      v.second = value;
-      mVars[f] = v;
-      break;
-    }
-  }
+  mVars[name] = value;
 }
 
 
