@@ -5555,13 +5555,17 @@ void character::ShowAdventureInfo () const {
   for (;;) {
     sel = game::ListSelectorArray(sel, CONST_S("Do you want to see some funny history?"), lists[idx]);
     if (sel < 0) break;
-    if (sel == nums[idx][0] && !game::MassacreListsEmpty()) game::DisplayMassacreLists();
+    if (sel == nums[idx][0] && !game::MassacreListsEmpty()) {
+      game::DisplayMassacreLists();
+    }
     if (sel == nums[idx][1] && GetStack()->GetItems()) {
       GetStack()->DrawContents(this, CONST_S("Your inventory"), NO_SELECT);
       for(stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) i->DrawContents(this);
       doforequipmentswithparam<ccharacter *>()(this, &item::DrawContents, this);
     }
-    if (sel == nums[idx][2]) msgsystem::DrawMessageHistory();
+    if (sel == nums[idx][2]) {
+      msgsystem::DrawMessageHistory();
+    }
   }
 }
 

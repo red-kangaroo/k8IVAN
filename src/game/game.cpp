@@ -2073,7 +2073,7 @@ void game::DisplayMassacreList (const massacremap &MassacreMap, cchar *Reason, s
   festring FirstPronoun;
   truth First = true;
   charactervector GraveYard;
-
+  //
   for (massacremap::const_iterator i1 = MassacreMap.begin(); i1 != MassacreMap.end(); ++i1) {
     character *Victim = protocontainer<character>::GetProto(i1->first.Type)->Spawn(i1->first.Config);
     Victim->SetAssignedName(i1->first.Name);
