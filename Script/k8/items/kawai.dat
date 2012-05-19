@@ -53,6 +53,7 @@ kawai /* meleeweapon-> */
     AcidResistance = 70;
     BaseEnchantment = 64;
     Roundness = 10;
+    CanFlame = true;
   }
 /*
   Config BROKEN;
