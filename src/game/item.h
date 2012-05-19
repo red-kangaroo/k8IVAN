@@ -610,6 +610,7 @@ class item : public object
   virtual truth IsBodyPart () const { return false; }
   virtual truth IsBottle () const { return false; }
   virtual truth IsCan () const { return false; }
+  virtual truth IsScroll () const { return false; }
 
 protected:
   virtual cchar* GetBreakVerb() const;

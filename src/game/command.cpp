@@ -529,7 +529,13 @@ truth commandsystem::Read (character *Char) {
     return false;
   }
   item *Item = Char->GetStack()->DrawContents(Char, CONST_S("What do you want to read?"), 0, &item::IsReadable);
-  return Item && Char->ReadItem(Item);
+  if (Item) {
+    if (ivanconfig::GetConfirmScrollReading() && Item->IsScroll()) {
+      if (!game::TruthQuestion(festring("Do you really want to read ")+Item->CHAR_NAME(DEFINITE)+"? [y/n]")) return false;
+    }
+    return Char->ReadItem(Item);
+  }
+  return false;
 }
 
 

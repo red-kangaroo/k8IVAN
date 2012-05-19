@@ -180,6 +180,7 @@ ITEM(scroll, item)
  public:
   virtual truth CanBeRead(character*) const;
   virtual truth IsReadable(ccharacter*) const { return true; }
+  virtual truth IsScroll () const { return true; }
   virtual truth ReceiveDamage(character*, int, int, int);
 };
 

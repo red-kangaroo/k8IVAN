@@ -40,6 +40,7 @@ public:
   static int GetGoingDelay () { return GoingDelay.Value; }
   static truth GetStopOnCorpses () { return StopOnCorpses.Value; }
   static truth GetStopOnSeenItems () { return StopOnSeenItems.Value; }
+  static truth GetConfirmScrollReading () { return ConfirmScrollReading.Value; }
   static sLong ApplyContrastTo (sLong);
   static void Save () { configsystem::Save(); }
   static void Load () { configsystem::Load(); }
@@ -98,6 +99,7 @@ private:
   static numberoption GoingDelay;
   static truthoption StopOnCorpses;
   static truthoption StopOnSeenItems;
+  static truthoption ConfirmScrollReading;
   /*k8*/
   static col24 ContrastLuminance;
 };
