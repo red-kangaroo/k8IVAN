@@ -31,9 +31,7 @@ gamesources =
 
 
 C++Main ivan : $(gamesources) ;
-LinkLibraries ivan : libfelib.a libregex.a ;
+LinkLibraries ivan : libfelib.a ;
 
 
 SubInclude TOP src felib ;
-SubInclude TOP src regex ;
-SubInclude TOP src vasya ;

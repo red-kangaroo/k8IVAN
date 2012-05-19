@@ -17,6 +17,7 @@ felibsources =
   rawbit.cpp
   fesave.cpp
   whandler.cpp
+  regex.c
 ;
 
 

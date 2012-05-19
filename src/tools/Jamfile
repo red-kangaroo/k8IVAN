@@ -1,5 +1,8 @@
-SubDir TOP src igor ;
+SubDir TOP src tools ;
 
+
+C++Main mihail : mihail.cpp ;
+LinkLibraries mihail : libfelib.a ;
 
 C++Main igor : igor.cpp ;
 LinkLibraries igor : libfelib.a ;

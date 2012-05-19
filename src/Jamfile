@@ -2,10 +2,7 @@ SubDir TOP src ;
 
 
 SubInclude TOP src felib ;
-SubInclude TOP src vasya ;
-SubInclude TOP src regex ;
 SubInclude TOP src game ;
 if ! $(WINDOZE) && $(BUILD_TOOLS) {
-  SubInclude TOP src igor ;
-  SubInclude TOP src mihail ;
+  SubInclude TOP src tools ;
 }
