@@ -2,7 +2,7 @@
 # WARNING! SHITTY CODE!
 
 
-defines="-DSGAME_SHOTS_IPU -DWIZARD"
+defines="-DSGAME_SHOTS_IPU -DWIZARD -DLOCAL_SAVES"
 cflags="-Wno-narrowing -Isrc/felib"
 lflags="-lm"
 objects=""
