@@ -949,8 +949,12 @@ truth character::TryMove (v2 MoveVector, truth Important, truth Run) {
                 if (IsPlayer()) {
                   /*k8*/
                   if (ivanconfig::GetKickDownDoors()) {
-                    Kick(MoveToSquare[c], Direction);
-                    return true;
+                    if (game::TruthQuestion(CONST_S("Locked! Do you want to kick ")+Terrain->GetName(DEFINITE)+"? [Y/n]", true, game::GetMoveCommandKeyBetweenPoints(PLAYER->GetPos(), MoveToSquare[0]->GetPos()))) {
+                      Kick(MoveToSquare[c], Direction);
+                      return true;
+                    } else {
+                      return false;
+                    }
                   }
                   /*k8*/
                   ADD_MESSAGE("The %s is locked.", Terrain->GetNameSingular().CStr()); /* not sure if this is better than "the door is locked", but I guess it _might_ be slighltly better */
