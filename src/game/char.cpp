@@ -3653,9 +3653,9 @@ void character::DrawPanel (truth AnimationDraw) const {
   }
 
   if (game::PlayerIsRunning()) {
-    FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, GetRunDescriptionLine(0));
+    FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "%s", GetRunDescriptionLine(0));
     cchar *SecondLine = GetRunDescriptionLine(1);
-    if (strlen(SecondLine)) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, SecondLine);
+    if (strlen(SecondLine)) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "%s", SecondLine);
   }
 }
 
@@ -6195,14 +6195,14 @@ void character::EditExperience (int Identifier, double Value, double Speed) {
       if (Change > 0) {
        PlayerMsg = "You feel magical forces coursing through your body!";
         NPCMsg = "You notice an odd glow around %s.";
-       } else {
+      } else {
         PlayerMsg = "You feel your magical abilities withering slowly.";
         NPCMsg = "You notice strange vibrations in the air around %s. But they disappear rapidly.";
-     }
-       break;
+      }
+      break;
   }
 
-  if (IsPlayer()) ADD_MESSAGE(PlayerMsg);
+  if (IsPlayer()) ADD_MESSAGE("%s", PlayerMsg);
   else if (NPCMsg && CanBeSeenByPlayer()) ADD_MESSAGE(NPCMsg, CHAR_NAME(DEFINITE));
 
   CalculateBattleInfo();
@@ -7396,7 +7396,7 @@ void character::PrintAttribute (cchar *Desc, int I, int PanelPosX, int PanelPosY
   String.Resize(5);
   String << Attribute;
   String.Resize(8);
-  FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY * 10), C, String.CStr());
+  FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY * 10), C, "%s", String.CStr());
   if (Attribute != NoBonusAttribute) {
     int Where = PanelPosX + ((String.GetSize() + 1) << 3);
     FONT->Printf(DOUBLE_BUFFER, v2(Where, PanelPosY * 10), LIGHT_GRAY, "%d", NoBonusAttribute);

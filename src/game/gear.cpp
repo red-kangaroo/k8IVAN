@@ -145,7 +145,7 @@ truth pickaxe::Apply(character* User)
       else
   ADD_MESSAGE("%s is too hard to dig with %s.", Square->GetOLTerrain()->CHAR_NAME(DEFINITE), CHAR_NAME(INDEFINITE));
     else
-      ADD_MESSAGE(Terrain->GetDigMessage().CStr());
+      ADD_MESSAGE("%s", Terrain->GetDigMessage().CStr());
   }
 
   return false;

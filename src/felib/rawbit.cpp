@@ -276,15 +276,28 @@ bitmap *rawbitmap::Colorize (v2 Pos, v2 Border, v2 Move, cpackcol16 *Color, alph
 
 void rawbitmap::Printf (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const {
   char Buffer[2048];
-  va_list AP;
-  va_start(AP, Format);
-  vsnprintf(Buffer, sizeof(Buffer)-1, Format, AP);
-  va_end(AP);
+  char *bufptr = Buffer;
+  int bufsz = (int)sizeof(Buffer)-1;
+  //
+  for (;;) {
+    va_list AP;
+    int n;
+    char *np;
+    //
+    va_start(AP, Format);
+    n = vsnprintf(bufptr, bufsz, Format, AP);
+    va_end(AP);
+    if (n > -1 && n < bufsz) break;
+    if (n < -1) n = bufsz+4096;
+    np = (char *)realloc((bufptr == Buffer ? NULL : bufptr), n+1);
+    if (np == NULL) return; //FIXME
+  }
+  //
   fontcache::const_iterator Iterator = FontCache.find(Color);
   if (Iterator == FontCache.end()) {
     packcol16 ShadeCol = MakeShadeColor(Color);
-    for (int c = 0; Buffer[c]; ++c) {
-      v2 F(((Buffer[c] - 0x20) & 0xF) << 4, (Buffer[c] - 0x20) & 0xF0);
+    for (int c = 0; bufptr[c]; ++c) {
+      v2 F(((bufptr[c] - 0x20) & 0xF) << 4, (bufptr[c] - 0x20) & 0xF0);
       MaskedBlit(Bitmap, F, v2(Pos.X + (c << 3) + 1, Pos.Y + 1), v2(8, 8), &ShadeCol);
       MaskedBlit(Bitmap, F, v2(Pos.X + (c << 3), Pos.Y), v2(8, 8), &Color);
     }
@@ -299,27 +312,41 @@ void rawbitmap::Printf (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, 
       TRANSPARENT_COLOR,
       0
     };
-    for (int c = 0; Buffer[c]; ++c, B.Dest.X += 8) {
-      unsigned char ch = (unsigned char)Buffer[c];
+    for (int c = 0; bufptr[c]; ++c, B.Dest.X += 8) {
+      unsigned char ch = (unsigned char)bufptr[c];
       if (ch < ' ' || ch >= '\x7f') ch = ' ';
       B.Src.X = ((ch-0x20) & 0xF) << 4;
       B.Src.Y = (ch-0x20) & 0xF0;
       Font->PrintCharacter(B);
     }
   }
+  if (bufptr != Buffer) free(bufptr);
 }
 
 
 void rawbitmap::PrintfUnshaded (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const {
   char Buffer[2048];
-  va_list AP;
-  va_start(AP, Format);
-  vsnprintf(Buffer, sizeof(Buffer)-1, Format, AP);
-  va_end(AP);
+  char *bufptr = Buffer;
+  int bufsz = (int)sizeof(Buffer);
+  //
+  for (;;) {
+    va_list AP;
+    int n;
+    char *np;
+    //
+    va_start(AP, Format);
+    n = vsnprintf(bufptr, bufsz, Format, AP);
+    va_end(AP);
+    if (n > -1 && n < bufsz) break;
+    if (n < -1) n = bufsz+4096;
+    np = (char *)realloc((bufptr == Buffer ? NULL : bufptr), n+1);
+    if (np == NULL) return; //FIXME
+  }
+  //
   fontcache::const_iterator Iterator = FontCache.find(Color);
   if (Iterator == FontCache.end()) {
-    for (int c = 0; Buffer[c]; ++c) {
-      v2 F(((Buffer[c] - 0x20) & 0xF) << 4, (Buffer[c] - 0x20) & 0xF0);
+    for (int c = 0; bufptr[c]; ++c) {
+      v2 F(((bufptr[c] - 0x20) & 0xF) << 4, (bufptr[c] - 0x20) & 0xF0);
       MaskedBlit(Bitmap, F, v2(Pos.X + (c << 3), Pos.Y), v2(8, 8), &Color);
     }
   } else {
@@ -333,14 +360,15 @@ void rawbitmap::PrintfUnshaded (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *
       TRANSPARENT_COLOR,
       0
     };
-    for (int c = 0; Buffer[c]; ++c, B.Dest.X += 8) {
-      unsigned char ch = (unsigned char)Buffer[c];
+    for (int c = 0; bufptr[c]; ++c, B.Dest.X += 8) {
+      unsigned char ch = (unsigned char)bufptr[c];
       if (ch < ' ' || ch >= '\x7f') ch = ' ';
       B.Src.X = ((ch-0x20) & 0xF) << 4;
       B.Src.Y = (ch-0x20) & 0xF0;
       Font->PrintCharacter(B);
     }
   }
+  if (bufptr != Buffer) free(bufptr);
 }
 
 

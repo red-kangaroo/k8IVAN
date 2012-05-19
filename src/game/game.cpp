@@ -927,7 +927,7 @@ double game::GetMinDifficulty () {
 
 
 void game::ShowLevelMessage () {
-  if (CurrentLevel->GetLevelMessage().GetSize()) ADD_MESSAGE(CurrentLevel->GetLevelMessage().CStr());
+  if (CurrentLevel->GetLevelMessage().GetSize()) ADD_MESSAGE("%s", CurrentLevel->GetLevelMessage().CStr());
   CurrentLevel->SetLevelMessage("");
 }
 
@@ -3193,7 +3193,7 @@ void game::DoOnEvent (truth brcEaten) {
           const FuncArg &a = args[f];
           if (a.type == FARG_STRING) s << a.sval; else s << a.ival;
         }
-        ADD_MESSAGE(s.CStr());
+        ADD_MESSAGE("%s", s.CStr());
         continue;
       }
       ABORT("Unknown function [%s] in file %s at line %d!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());

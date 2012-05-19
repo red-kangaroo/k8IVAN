@@ -357,7 +357,7 @@ void felist::DrawDescription (bitmap *Buffer) const {
   Buffer->Fill(Pos.X+3, Pos.Y+3, Width-6, 20, BackColor);
   for (uInt c = 0; c < Description.size(); ++c) {
     Buffer->Fill(Pos.X+3, Pos.Y+13+c*10, Width-6, 10, BackColor);
-    FONT->Printf(Buffer, v2(Pos.X+13, Pos.Y+13+c*10), Description[c]->Color, Description[c]->String.CStr());
+    FONT->Printf(Buffer, v2(Pos.X+13, Pos.Y+13+c*10), Description[c]->Color, "%s", Description[c]->String.CStr());
   }
   Buffer->Fill(Pos.X+3, Pos.Y+13+Description.size()*10, Width-6, 10, BackColor);
 }

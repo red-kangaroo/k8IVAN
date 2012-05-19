@@ -805,7 +805,7 @@ truth commandsystem::ForceVomit (character *Char) {
             Other->GetRelation(Char) != HOSTILE &&
             Other->CanBeSeenBy(Char) &&
             !game::TruthQuestion("Do you really want to vomit at "+Other->GetObjectPronoun()+"? [y/N]")) return false;
-        ADD_MESSAGE(Char->GetForceVomitMessage().CStr());
+        ADD_MESSAGE("%s", Char->GetForceVomitMessage().CStr());
         Char->Vomit(Char->GetPos() + game::GetMoveVector(Dir), 500 + RAND() % 500, false);
         Char->EditAP(-1000);
         return true;

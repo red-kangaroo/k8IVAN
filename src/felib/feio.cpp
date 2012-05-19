@@ -46,7 +46,7 @@ void iosystem::TextScreen (cfestring & Text, v2 Disp, col16 Color, truth GKey, t
     if (Text[c] == '\n') {
       Line[c-LastBeginningOfLine] = 0;
       v2 PrintPos((RES.X>>1)-(strlen(Line)<<2)+Disp.X, (RES.Y<<1)/5-(LineNumber-Lines)*15+Disp.Y);
-      FONT->Printf(&Buffer, PrintPos, Color, Line);
+      FONT->Printf(&Buffer, PrintPos, Color, "%s", Line);
       ++Lines;
       LastBeginningOfLine = c+1;
     } else {
@@ -55,7 +55,7 @@ void iosystem::TextScreen (cfestring & Text, v2 Disp, col16 Color, truth GKey, t
   }
   Line[c-LastBeginningOfLine] = 0;
   v2 PrintPos((RES.X>>1)-(strlen(Line)<<2)+Disp.X, (RES.Y<<1)/5-(LineNumber-Lines)*15+Disp.Y);
-  FONT->Printf(&Buffer, PrintPos, Color, Line);
+  FONT->Printf(&Buffer, PrintPos, Color, "%s", Line);
   if (Fade) {
     Buffer.FadeToScreen(BitmapEditor);
   } else {

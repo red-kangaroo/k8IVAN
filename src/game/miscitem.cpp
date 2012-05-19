@@ -2692,7 +2692,7 @@ void holyhandgrenade::Be() {
       break;
     }
     Msg << "\".";
-    ADD_MESSAGE(Msg.CStr());
+    ADD_MESSAGE("%s", Msg.CStr());
     if(Count == 3) {
       Explode();
     }
