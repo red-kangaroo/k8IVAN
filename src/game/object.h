@@ -23,7 +23,7 @@ class god;
 class object;
 
 
-typedef v2 (object::*bposretriever)(int) const;
+typedef v2 (object::*bposretriever) (int) const;
 
 
 class object : public entity, public id {
@@ -68,42 +68,42 @@ public:
   festring mOnEvents;
 
 protected:
-  void CopyMaterial(material* const&, material*&);
-  void ObjectInitMaterials(material*&, material*, sLong, material*&, material*, sLong, truth);
-  material* SetMaterial(material*&, material*, sLong, int);
-  void ChangeMaterial(material*&, material*, sLong, int);
-  virtual truth CalculateHasBe() const;
-  virtual int GetGraphicsContainerIndex() const = 0;
-  virtual col16 GetMaterialColorA(int) const;
-  virtual col16 GetMaterialColorB(int) const { return 0; }
-  virtual col16 GetMaterialColorC(int) const { return 0; }
-  virtual col16 GetMaterialColorD(int) const { return 0; }
-  virtual alpha GetMaxAlpha() const { return 255; }
-  virtual alpha GetAlphaA(int) const;
-  virtual alpha GetAlphaB(int) const { return 255; }
-  virtual alpha GetAlphaC(int) const { return 255; }
-  virtual alpha GetAlphaD(int) const { return 255; }
-  virtual col16 GetOutlineColor(int) const;
-  virtual alpha GetOutlineAlpha(int) const { return 255; }
-  virtual truth AddRustLevelDescription(festring&, truth) const;
-  virtual truth AddMaterialDescription(festring&, truth) const;
-  int RandomizeMaterialConfiguration();
-  virtual int GetClassAnimationFrames() const { return 1; }
-  void AddContainerPostFix(festring&) const;
-  void AddLumpyPostFix(festring&) const;
-  truth AddEmptyAdjective(festring&, truth) const;
-  virtual v2 GetBitmapPos(int) const = 0;
-  void RandomizeVisualEffects();
-  virtual void ModifyAnimationFrames(int&) const { }
-  virtual int GetRustDataA() const;
-  virtual int GetRustDataB() const { return NOT_RUSTED; }
-  virtual int GetRustDataC() const { return NOT_RUSTED; }
-  virtual int GetRustDataD() const { return NOT_RUSTED; }
-  virtual col16 GetDripColor() const { return 0; }
-  virtual truth AllowSparkling() const { return true; }
-  virtual truth AllowRegularColors() const { return true; }
-  virtual int GetWobbleData() const { return 0; }
-  truth RandomizeSparklePos(v2&, v2, int&, feuLong, int, int) const;
+  void CopyMaterial (material *const &, material *&);
+  void ObjectInitMaterials (material *&, material *, sLong, material *&, material *, sLong, truth);
+  material *SetMaterial (material *&, material *, sLong, int);
+  void ChangeMaterial (material *&, material *, sLong, int);
+  virtual truth CalculateHasBe () const;
+  virtual int GetGraphicsContainerIndex () const = 0;
+  virtual col16 GetMaterialColorA (int) const;
+  virtual col16 GetMaterialColorB (int) const { return 0; }
+  virtual col16 GetMaterialColorC (int) const { return 0; }
+  virtual col16 GetMaterialColorD (int) const { return 0; }
+  virtual alpha GetMaxAlpha () const { return 255; }
+  virtual alpha GetAlphaA (int) const;
+  virtual alpha GetAlphaB (int) const { return 255; }
+  virtual alpha GetAlphaC (int) const { return 255; }
+  virtual alpha GetAlphaD (int) const { return 255; }
+  virtual col16 GetOutlineColor (int) const;
+  virtual alpha GetOutlineAlpha (int) const { return 255; }
+  virtual truth AddRustLevelDescription (festring &, truth) const;
+  virtual truth AddMaterialDescription( festring &, truth) const;
+  int RandomizeMaterialConfiguration ();
+  virtual int GetClassAnimationFrames () const { return 1; }
+  void AddContainerPostFix (festring &) const;
+  void AddLumpyPostFix (festring &) const;
+  truth AddEmptyAdjective (festring &, truth) const;
+  virtual v2 GetBitmapPos (int) const = 0;
+  void RandomizeVisualEffects ();
+  virtual void ModifyAnimationFrames (int &) const { }
+  virtual int GetRustDataA () const;
+  virtual int GetRustDataB () const { return NOT_RUSTED; }
+  virtual int GetRustDataC () const { return NOT_RUSTED; }
+  virtual int GetRustDataD () const { return NOT_RUSTED; }
+  virtual col16 GetDripColor () const { return 0; }
+  virtual truth AllowSparkling () const { return true; }
+  virtual truth AllowRegularColors () const { return true; }
+  virtual int GetWobbleData () const { return 0; }
+  truth RandomizeSparklePos (v2 &, v2, int &, feuLong, int, int) const;
 
   virtual truth isBone () const { return false; }
 
