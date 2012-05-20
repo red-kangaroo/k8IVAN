@@ -30,6 +30,7 @@ script::datamap levelscript::DataMap;
 script::datamap dungeonscript::DataMap;
 script::datamap teamscript::DataMap;
 script::datamap gamescript::DataMap;
+
 template <class type, class contenttype> script::datamap contentmap<type, contenttype>::DataMap;
 
 template <class type> void scriptmember<type>::ReadFrom (inputfile &SaveFile) {
@@ -38,37 +39,32 @@ template <class type> void scriptmember<type>::ReadFrom (inputfile &SaveFile) {
 }
 
 
-template <class type> void scriptmember<type>::Replace(scriptmemberbase& Base)
-{
-  scriptmember<type>& Data = static_cast<scriptmember<type>&>(Base);
-
-  if(Data.Member)
-  {
+template <class type> void scriptmember<type>::Replace (scriptmemberbase &Base) {
+  scriptmember<type> &Data = static_cast<scriptmember<type> &>(Base);
+  if (Data.Member) {
     delete Member;
     Member = Data.Member;
     Data.Member = 0;
   }
 }
 
-template <class type> void scriptmember<type>::Save(outputfile& SaveFile) const
-{
-  if(Member)
-  {
+
+template <class type> void scriptmember<type>::Save(outputfile &SaveFile) const {
+  if (Member) {
     SaveFile.Put(1);
     SaveFile << *Member;
-  }
-  else
+  } else {
     SaveFile.Put(0);
+  }
 }
 
-template <class type> void scriptmember<type>::Load(inputfile& SaveFile)
-{
-  if(SaveFile.Get())
-  {
+template <class type> void scriptmember<type>::Load(inputfile &SaveFile) {
+  if (SaveFile.Get()) {
     Member = new type;
     SaveFile >> *Member;
   }
 }
+
 
 #define INST_SCRIPT_MEMBER(type)\
 template void scriptmember< type >::ReadFrom(inputfile&);\
@@ -101,26 +97,27 @@ INST_SCRIPT_MEMBER(glterraincontentmap);
 INST_SCRIPT_MEMBER(olterraincontentmap);
 INST_SCRIPT_MEMBER(fearray<packv2>);
 
-template <class type> void fastscriptmember<type>::ReadFrom(inputfile& SaveFile)
-{
+
+template <class type> void fastscriptmember<type>::ReadFrom(inputfile &SaveFile) {
   ReadData(*&Member, SaveFile); // gcc 3.4.1 sucks
 }
 
-template <class type> void fastscriptmember<type>::Replace(scriptmemberbase& Base)
-{
-  fastscriptmember<type>& Data = static_cast<fastscriptmember<type>&>(Base);
+
+template <class type> void fastscriptmember<type>::Replace(scriptmemberbase &Base) {
+  fastscriptmember<type>& Data = static_cast<fastscriptmember<type> &>(Base);
   Member = Data.Member;
 }
 
-template <class type> void fastscriptmember<type>::Save(outputfile& SaveFile) const
-{
+
+template <class type> void fastscriptmember<type>::Save(outputfile &SaveFile) const {
   SaveFile << Member;
 }
 
-template <class type> void fastscriptmember<type>::Load(inputfile& SaveFile)
-{
+
+template <class type> void fastscriptmember<type>::Load(inputfile &SaveFile) {
   SaveFile >> *&Member; // gcc 3.4.1 sucks
 }
+
 
 #define INST_FAST_SCRIPT_MEMBER(type)\
 template void fastscriptmember< type >::ReadFrom(inputfile&);\
@@ -135,39 +132,34 @@ INST_FAST_SCRIPT_MEMBER(int);
 INST_FAST_SCRIPT_MEMBER(uLong);
 INST_FAST_SCRIPT_MEMBER(packv2);
 
-truth script::ReadMember(inputfile& SaveFile, cfestring& Word)
-{
-  scriptmemberbase* Data = GetData(Word.CStr());
 
-  if(Data)
-  {
+truth script::ReadMember (inputfile &SaveFile, cfestring &Word) {
+  scriptmemberbase *Data = GetData(Word.CStr());
+  if (Data) {
     Data->ReadFrom(SaveFile);
     return true;
   }
-  else
-    return false;
+  return false;
 }
 
-scriptmemberbase* script::GetDataFromMap(const datamap& DataMap, cchar* Identifier)
-{
+
+scriptmemberbase *script::GetDataFromMap (const datamap &DataMap, cchar *Identifier) {
   datamap::const_iterator i = DataMap.find(Identifier);
   return i != DataMap.end() ? &(this->*i->second) : 0;
 }
 
-void script::SaveDataMap(const datamap& DataMap, outputfile& SaveFile) const
-{
-  for(datamap::const_iterator i = DataMap.begin(); i != DataMap.end(); ++i)
-    (this->*i->second).Save(SaveFile);
+
+void script::SaveDataMap (const datamap &DataMap, outputfile &SaveFile) const {
+  for (datamap::const_iterator i = DataMap.begin(); i != DataMap.end(); ++i) (this->*i->second).Save(SaveFile);
 }
 
-void script::LoadDataMap(const datamap& DataMap, inputfile& SaveFile)
-{
-  for(datamap::const_iterator i = DataMap.begin(); i != DataMap.end(); ++i)
-    (this->*i->second).Load(SaveFile);
+
+void script::LoadDataMap (const datamap &DataMap, inputfile &SaveFile) {
+  for (datamap::const_iterator i = DataMap.begin(); i != DataMap.end(); ++i) (this->*i->second).Load(SaveFile);
 }
 
-template <class scriptmemberptr> void InitMember(script::datamap& DataMap, cchar* Identifier, scriptmemberptr DataMember)
-{
+
+template <class scriptmemberptr> void InitMember (script::datamap &DataMap, cchar *Identifier, scriptmemberptr DataMember) {
   DataMap[Identifier] = reinterpret_cast<scriptmemberbase script::*>(DataMember);
 }
 
@@ -175,96 +167,87 @@ template <class scriptmemberptr> void InitMember(script::datamap& DataMap, cchar
 
 #define INIT(name, value) name##Holder(value)
 
-void posscript::InitDataMap()
-{
+
+void posscript::InitDataMap () {
   INIT_ENTRY(Vector);
   INIT_ENTRY(Flags);
   INIT_ENTRY(Borders);
 }
 
-void posscript::ReadFrom(inputfile& SaveFile)
-{
+
+void posscript::ReadFrom (inputfile &SaveFile) {
   static festring Word;
   SaveFile.ReadWord(Word);
 
-  if(Word == "Pos")
-  {
+  if (Word == "Pos") {
     Random = false;
     VectorHolder.ReadFrom(SaveFile);
   }
 
-  if(Word == "Random")
-  {
+  if (Word == "Random") {
     Random = true;
     FlagsHolder.ReadFrom(SaveFile);
   }
 
-  if(Word == "BoundedRandom")
-  {
+  if (Word == "BoundedRandom") {
     Random = true;
     BordersHolder.ReadFrom(SaveFile);
     FlagsHolder.ReadFrom(SaveFile);
   }
 }
 
-void posscript::Save(outputfile& SaveFile) const
-{
+
+void posscript::Save (outputfile &SaveFile) const {
   script::Save(SaveFile);
   SaveFile << Random;
 }
 
-void posscript::Load(inputfile& SaveFile)
-{
+
+void posscript::Load (inputfile &SaveFile) {
   script::Load(SaveFile);
   SaveFile >> Random;
 }
 
-void materialscript::InitDataMap()
-{
+
+void materialscript::InitDataMap () {
   INIT_ENTRY(Volume);
 }
 
-void materialscript::ReadFrom(inputfile& SaveFile)
-{
+
+void materialscript::ReadFrom (inputfile &SaveFile) {
   static festring Word;
+  //
   SaveFile.ReadWord(Word);
-
-  if(Word == "=")
-    SaveFile.ReadWord(Word);
-
-  if(Word == "0")
+  if (Word == "=") SaveFile.ReadWord(Word);
+  if (Word == "0") {
     Config = 0;
-  else
-  {
+  } else {
     valuemap::const_iterator i = game::GetGlobalValueMap().find(Word);
-
-    if(i != game::GetGlobalValueMap().end())
-      Config = i->second;
-    else
-      ABORT("Unconfigured material script detected at line %d!", SaveFile.TellLine());
+    //
+    if (i != game::GetGlobalValueMap().end()) Config = i->second;
+    else ABORT("Unconfigured material script detected at line %d!", SaveFile.TellLine());
   }
-
-  if(SaveFile.ReadWord() != "{")
-    return;
-
-  for(SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word))
-    if(!ReadMember(SaveFile, Word))
+  if (SaveFile.ReadWord() != "{") return;
+  for (SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word)) {
+    if (!ReadMember(SaveFile, Word)) {
       ABORT("Odd script term %s encountered in material script line %d!", Word.CStr(), SaveFile.TellLine());
+    }
+  }
 }
 
-material* materialscript::Instantiate() const
-{
+
+material *materialscript::Instantiate () const {
   return MAKE_MATERIAL(Config, GetVolume() ? GetVolume()->Randomize() : 0);
 }
 
-void materialscript::Save(outputfile& SaveFile) const
-{
+
+void materialscript::Save (outputfile &SaveFile) const {
   script::Save(SaveFile);
   SaveFile << (uShort)Config;
 }
 
-void materialscript::Load(inputfile& SaveFile)
-{
+
+void materialscript::Load (inputfile &SaveFile) {
   script::Load(SaveFile);
   Config = 0;
   uShort s2;
@@ -272,96 +255,79 @@ void materialscript::Load(inputfile& SaveFile)
   Config = s2;
 }
 
-void basecontentscript::InitDataMap()
-{
+
+void basecontentscript::InitDataMap () {
   INIT_ENTRY(MainMaterial);
   INIT_ENTRY(SecondaryMaterial);
   INIT_ENTRY(Parameters);
 }
 
-basecontentscript::basecontentscript()
-: ContentType(0), Random(false), Config(0),
-  INIT(Parameters, NO_PARAMETERS)
-{ }
 
-void basecontentscript::ReadFrom(inputfile& SaveFile)
-{
+basecontentscript::basecontentscript () : ContentType(0), Random(false), Config(0), INIT(Parameters, NO_PARAMETERS) {
+}
+
+
+void basecontentscript::ReadFrom (inputfile &SaveFile) {
   static festring Word;
+  //
   SaveFile.ReadWord(Word);
-
-  if(Word == "=" || Word == ",")
+  if (Word == "[") {
+    mCode = SaveFile.ReadCode();
     SaveFile.ReadWord(Word);
-
+  }
+  if (Word == "=" || Word == ",") SaveFile.ReadWord(Word);
   valuemap::const_iterator i = game::GetGlobalValueMap().find(Word);
-
-  if(i != game::GetGlobalValueMap().end())
-  {
-    if(!GetMainMaterial())
-      MainMaterialHolder.Member = new materialscript;
-
+  if (i != game::GetGlobalValueMap().end()) {
+    if (!GetMainMaterial()) MainMaterialHolder.Member = new materialscript;
     MainMaterialHolder.Member->SetConfig(i->second);
     SaveFile.ReadWord(Word);
     i = game::GetGlobalValueMap().find(Word);
-
-    if(i != game::GetGlobalValueMap().end())
-    {
-      if(!GetSecondaryMaterial())
-  SecondaryMaterialHolder.Member = new materialscript;
-
+    if (i != game::GetGlobalValueMap().end()) {
+      if (!GetSecondaryMaterial()) SecondaryMaterialHolder.Member = new materialscript;
       SecondaryMaterialHolder.Member->SetConfig(i->second);
       SaveFile.ReadWord(Word);
     }
   }
-
-  if(Word == "NaturalMaterialForm")
-  {
+  if (Word == "NaturalMaterialForm") {
     Random = false;
     ContentType = NATURAL_MATERIAL_FORM;
     SaveFile.ReadWord(Word);
-  }
-  else if(Word == "Random")
-  {
+  } else if (Word == "Random") {
     Random = true;
     SaveFile.ReadWord(Word);
-  }
-  else
-  {
+  } else {
     Random = false;
     ContentType = SearchCodeName(Word);
-
-    if(ContentType || Word == "0")
-      SaveFile.ReadWord(Word);
-    else
-      ABORT("Odd script term %s encountered in %s content script, file %s line %d!", Word.CStr(), GetClassID(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+    if (ContentType || Word == "0") SaveFile.ReadWord(Word);
+    else ABORT("Odd script term %s encountered in %s content script, file %s line %d!", Word.CStr(), GetClassID(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   }
-
-  if(Word == "(")
-  {
+  if (Word == "(") {
     Config = SaveFile.ReadNumber();
     SaveFile.ReadWord(Word);
-  }
-  else
+  } else {
     Config = 0;
-
-  if(Word == "{")
-    for(SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word))
-    {
-      if(!ReadMember(SaveFile, Word))
-  ABORT("Odd script term %s encountered in %s content script, file %s line %d!", Word.CStr(), GetClassID(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  }
+  if (Word == "{") {
+    for (SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word)) {
+      if (!ReadMember(SaveFile, Word)) ABORT("Odd script term %s encountered in %s content script, file %s line %d!", Word.CStr(), GetClassID(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
     }
-  else
-    if(Word != ";" && Word != ",")
-      ABORT("Odd terminator %s encountered in %s content script, file %s line %d!", Word.CStr(), GetClassID(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  } else {
+    if (Word == "[") {
+      mCode = SaveFile.ReadCode();
+      SaveFile.ReadWord(Word);
+    }
+    if (Word != ";" && Word != ",") ABORT("Odd terminator %s encountered in %s content script, file %s line %d!", Word.CStr(), GetClassID(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  }
 }
 
-scriptmemberbase* basecontentscript::GetData(cchar* String)
-{
-  scriptmemberbase* Return = GetDataFromMap(GetDataMap(), String);
+
+scriptmemberbase *basecontentscript::GetData (cchar *String) {
+  scriptmemberbase *Return = GetDataFromMap(GetDataMap(), String);
   return Return ? Return : GetDataFromMap(DataMap, String);
 }
 
-void basecontentscript::Save(outputfile& SaveFile) const
-{
+
+void basecontentscript::Save (outputfile &SaveFile) const {
   SaveDataMap(GetDataMap(), SaveFile);
   SaveDataMap(DataMap, SaveFile);
   SaveFile << ContentType;
@@ -369,8 +335,8 @@ void basecontentscript::Save(outputfile& SaveFile) const
   SaveFile << Config;
 }
 
-void basecontentscript::Load(inputfile& SaveFile)
-{
+
+void basecontentscript::Load (inputfile &SaveFile) {
   LoadDataMap(GetDataMap(), SaveFile);
   LoadDataMap(DataMap, SaveFile);
   ContentType = ReadType<uShort>(SaveFile);
@@ -378,127 +344,113 @@ void basecontentscript::Load(inputfile& SaveFile)
   SaveFile >> Config;
 }
 
-template <class type> type* contentscripttemplate<type>::BasicInstantiate(int SpecialFlags) const
-{
-  type* Instance = 0;
-  const typename type::prototype* Proto = protocontainer<type>::GetProto(ContentType);
-  const typename type::database*const* ConfigData = Proto->GetConfigData();
-  const materialscript* MainMaterial = GetMainMaterial();
-  const materialscript* SecondaryMaterial = GetSecondaryMaterial();
-  const typename type::database* DataBase = *ConfigData;
+
+template <class type> type *contentscripttemplate<type>::BasicInstantiate (int SpecialFlags) const {
+  type *Instance = 0;
+  const typename type::prototype *Proto = protocontainer<type>::GetProto(ContentType);
+  const typename type::database *const *ConfigData = Proto->GetConfigData();
+  const materialscript *MainMaterial = GetMainMaterial();
+  const materialscript *SecondaryMaterial = GetSecondaryMaterial();
+  const typename type::database *DataBase = *ConfigData;
   truth UseOverriddenMaterials = false;
-
-  if(!Config && DataBase->IsAbstract)
-  {
-    while(!Instance)
-    {
-      DataBase = ConfigData[1 + RAND() % (Proto->GetConfigSize() - 1)];
-
-      if(DataBase->AllowRandomInstantiation())
-      {
-  if(!(SpecialFlags & NO_MATERIALS)
-     && MainMaterial
-     && (!DataBase->HasSecondaryMaterial || SecondaryMaterial))
-  {
-    SpecialFlags |= NO_MATERIALS;
-    UseOverriddenMaterials = true;
-  }
-
-  Instance = Proto->Spawn(DataBase->Config, SpecialFlags|NO_PIC_UPDATE);
+  //
+  if (!Config && DataBase->IsAbstract) {
+    while (!Instance) {
+      DataBase = ConfigData[1+RAND()%(Proto->GetConfigSize()-1)];
+      if (DataBase->AllowRandomInstantiation()) {
+        if (!(SpecialFlags & NO_MATERIALS) && MainMaterial && (!DataBase->HasSecondaryMaterial || SecondaryMaterial)) {
+          SpecialFlags |= NO_MATERIALS;
+          UseOverriddenMaterials = true;
+        }
+        Instance = Proto->Spawn(DataBase->Config, SpecialFlags|NO_PIC_UPDATE);
       }
     }
-  }
-  else
-  {
-    if(!(SpecialFlags & NO_MATERIALS)
-       && MainMaterial
-       && (!DataBase->HasSecondaryMaterial || SecondaryMaterial))
-    {
+  } else {
+    if (!(SpecialFlags & NO_MATERIALS) && MainMaterial && (!DataBase->HasSecondaryMaterial || SecondaryMaterial)) {
       SpecialFlags |= NO_MATERIALS;
       UseOverriddenMaterials = true;
     }
-
     Instance = Proto->Spawn(Config, SpecialFlags|NO_PIC_UPDATE);
   }
-
-  if(GetParameters() != NO_PARAMETERS)
-    Instance->SetParameters(GetParameters());
-
-  if(UseOverriddenMaterials)
+  if (GetParameters() != NO_PARAMETERS) Instance->SetParameters(GetParameters());
+  if (UseOverriddenMaterials) {
     Instance->InitMaterials(MainMaterial, SecondaryMaterial, false);
-  else
-  {
-    if(MainMaterial)
-      Instance->ChangeMainMaterial(MainMaterial->Instantiate(), SpecialFlags|NO_PIC_UPDATE);
-
-    if(SecondaryMaterial)
-      Instance->ChangeSecondaryMaterial(SecondaryMaterial->Instantiate(), SpecialFlags|NO_PIC_UPDATE);
+  } else {
+    if (MainMaterial) Instance->ChangeMainMaterial(MainMaterial->Instantiate(), SpecialFlags|NO_PIC_UPDATE);
+    if (SecondaryMaterial) Instance->ChangeSecondaryMaterial(SecondaryMaterial->Instantiate(), SpecialFlags|NO_PIC_UPDATE);
   }
-
-  if(!(SpecialFlags & NO_PIC_UPDATE))
-    Instance->UpdatePictures();
-
+  if (!(SpecialFlags & NO_PIC_UPDATE)) Instance->UpdatePictures();
   return Instance;
 }
 
+
 /* Called by an inline function in script.h... */
 
-template glterrain* contentscripttemplate<glterrain>::BasicInstantiate(int) const;
+template glterrain *contentscripttemplate<glterrain>::BasicInstantiate (int) const;
 
-template <class type> int contentscripttemplate<type>::SearchCodeName(cfestring& String) const
-{
+template <class type> int contentscripttemplate<type>::SearchCodeName (cfestring &String) const {
   return protocontainer<type>::SearchCodeName(String);
 }
 
 /* GCC 2.952 SUCKS!!! IT MUST BURN!!! */
 
-template int contentscripttemplate<character>::SearchCodeName(cfestring&) const;
-template int contentscripttemplate<item>::SearchCodeName(cfestring&) const;
-template int contentscripttemplate<glterrain>::SearchCodeName(cfestring&) const;
-template int contentscripttemplate<olterrain>::SearchCodeName(cfestring&) const;
+template int contentscripttemplate<character>::SearchCodeName(cfestring &) const;
+template int contentscripttemplate<item>::SearchCodeName(cfestring &) const;
+template int contentscripttemplate<glterrain>::SearchCodeName(cfestring &) const;
+template int contentscripttemplate<olterrain>::SearchCodeName(cfestring &) const;
 
-cchar* contentscript<character>::GetClassID() const { return "character"; }
-cchar* contentscript<item>::GetClassID() const { return "item"; }
-cchar* contentscript<glterrain>::GetClassID() const { return "glterrain"; }
-cchar* contentscript<olterrain>::GetClassID() const { return "olterrain"; }
+cchar *contentscript<character>::GetClassID () const { return "character"; }
+cchar *contentscript<item>::GetClassID () const { return "item"; }
+cchar *contentscript<glterrain>::GetClassID () const { return "glterrain"; }
+cchar *contentscript<olterrain>::GetClassID () const { return "olterrain"; }
 
-void contentscript<character>::InitDataMap()
-{
+
+void contentscript<character>::InitDataMap () {
   INIT_ENTRY(Inventory);
   INIT_ENTRY(WayPoint);
   INIT_ENTRY(Team);
   INIT_ENTRY(Flags);
 }
 
-contentscript<character>::contentscript()
-: INIT(Team, DEFAULT_TEAM),
-  INIT(Flags, 0)
-{ }
 
-character* contentscript<character>::Instantiate(int SpecialFlags) const
-{
-  character* Instance = contentscripttemplate<character>::BasicInstantiate(SpecialFlags);
+contentscript<character>::contentscript () : INIT(Team, DEFAULT_TEAM), INIT(Flags, 0) {
+}
 
-  if(GetTeam() != DEFAULT_TEAM)
-    Instance->SetTeam(game::GetTeam(GetTeam()));
 
-  const fearray<contentscript<item> >* Inventory = GetInventory();
-
-  if(Inventory)
-    Instance->AddToInventory(*Inventory, SpecialFlags);
-
-  const fearray<packv2>* WayPoint = GetWayPoint();
-
-  if(WayPoint)
-    Instance->SetWayPoints(*WayPoint);
-
+character *contentscript<character>::Instantiate (int SpecialFlags) const {
+  character *Instance = contentscripttemplate<character>::BasicInstantiate(SpecialFlags);
+  //
+  //fprintf(stderr, "instantiating character '%s'\n", Instance->GetNameSingular().CStr());
+  //
+  /*
+  if (Instance->GetNameSingular() == "vampire") {
+    delete Instance;
+    return 0;
+  }
+  */
+  //
+  if (!mCode.IsEmpty()) {
+    game::ClearEventData();
+    if (!game::RunAllowScriptStr(mCode)) {
+      //fprintf(stderr, "dropping character '%s'\n", Instance->GetNameSingular().CStr());
+      delete Instance;
+      return 0;
+    }
+  }
+  //
+  if (GetTeam() != DEFAULT_TEAM) Instance->SetTeam(game::GetTeam(GetTeam()));
+  const fearray<contentscript<item> > *Inventory = GetInventory();
+  if (Inventory) Instance->AddToInventory(*Inventory, SpecialFlags);
+  const fearray<packv2> *WayPoint = GetWayPoint();
+  if (WayPoint) Instance->SetWayPoints(*WayPoint);
   Instance->RestoreHP();
   Instance->RestoreStamina();
   return Instance;
 }
 
-contentscript<item>::contentscript()
-: INIT(Category, ANY_CATEGORY),
+
+contentscript<item>::contentscript () :
+  INIT(Category, ANY_CATEGORY),
   INIT(MinPrice, 0),
   INIT(MaxPrice, MAX_PRICE),
   INIT(Team, DEFAULT_TEAM),
@@ -508,10 +460,11 @@ contentscript<item>::contentscript()
   INIT(SpoilPercentage, 0),
   INIT(Enchantment, 0),
   INIT(IsActive, false)
-{ }
-
-void contentscript<item>::InitDataMap()
 {
+}
+
+
+void contentscript<item>::InitDataMap () {
   INIT_ENTRY(ItemsInside);
   INIT_ENTRY(Times);
   INIT_ENTRY(MinPrice);
@@ -527,78 +480,63 @@ void contentscript<item>::InitDataMap()
   INIT_ENTRY(IsActive);
 }
 
-item* contentscript<item>::InstantiateBasedOnMaterial(int MaterialConfig, int SpecialFlags) const
-{
-  if(ContentType == NATURAL_MATERIAL_FORM)
-  {
-    const materialscript* MainMaterial = GetMainMaterial();
-    sLong Volume = MainMaterial && MainMaterial->GetVolume()
-      ? MainMaterial->GetVolume()->Randomize() : 0;
+
+item *contentscript<item>::InstantiateBasedOnMaterial (int MaterialConfig, int SpecialFlags) const {
+  if (ContentType == NATURAL_MATERIAL_FORM) {
+    const materialscript *MainMaterial = GetMainMaterial();
+    sLong Volume = MainMaterial && MainMaterial->GetVolume() ? MainMaterial->GetVolume()->Randomize() : 0;
     return material::CreateNaturalForm(MaterialConfig, Volume);
   }
-  else
-    return Instantiate(SpecialFlags);
+  return Instantiate(SpecialFlags);
 }
 
-item* contentscript<item>::Instantiate(int SpecialFlags) const
-{
+
+item *contentscript<item>::Instantiate (int SpecialFlags) const {
   int Chance = GetChance();
-
-  if(Chance != 100 && Chance <= RAND_N(100))
-    return 0;
-
-  item* Instance;
-
-  if(Random)
+  item *Instance;
+  //
+  if (!mCode.IsEmpty()) {
+    game::ClearEventData();
+    if (!game::RunAllowScriptStr(mCode)) return 0;
+  }
+  //
+  if (Chance != 100 && Chance <= RAND_N(100)) return 0;
+  if (Random) {
     Instance = protosystem::BalancedCreateItem(GetMinPrice(), GetMaxPrice(), GetCategory(), SpecialFlags, GetConfigFlags());
-  else
+  } else {
     Instance = contentscripttemplate<item>::BasicInstantiate(SpecialFlags);
-
-  if(GetLifeExpectancy())
-    Instance->SetLifeExpectancy(GetLifeExpectancy()->Min, (GetLifeExpectancy()->Max - GetLifeExpectancy()->Min) + 1);
-
-  if(GetTeam() != DEFAULT_TEAM)
-    Instance->SetTeam(GetTeam());
-
-  if(IsActive())
-    Instance->SetIsActive(true);
-
-  if(GetEnchantment() != 0)
-    Instance->SetEnchantment(GetEnchantment());
-
-  const fearray<contentscript<item> >* ItemsInside = GetItemsInside();
-
-  if(ItemsInside)
-    Instance->SetItemsInside(*ItemsInside, SpecialFlags);
-
-  if(GetSpoilPercentage() != 0)
-    Instance->SetSpoilPercentage(GetSpoilPercentage());
-
+  }
+  if (GetLifeExpectancy()) Instance->SetLifeExpectancy(GetLifeExpectancy()->Min, (GetLifeExpectancy()->Max - GetLifeExpectancy()->Min) + 1);
+  if (GetTeam() != DEFAULT_TEAM) Instance->SetTeam(GetTeam());
+  if (IsActive()) Instance->SetIsActive(true);
+  if (GetEnchantment() != 0) Instance->SetEnchantment(GetEnchantment());
+  const fearray<contentscript<item> > *ItemsInside = GetItemsInside();
+  if (ItemsInside) Instance->SetItemsInside(*ItemsInside, SpecialFlags);
+  if (GetSpoilPercentage() != 0) Instance->SetSpoilPercentage(GetSpoilPercentage());
   return Instance;
 }
 
-truth IsValidScript(const fearray<contentscript<item> > *Array)
-{
-  for(uInt c = 0; c < Array->Size; ++c)
-    if(IsValidScript(&Array->Data[c]))
-      return true;
 
+truth IsValidScript (const fearray<contentscript<item> > *Array) {
+  for (uInt c = 0; c < Array->Size; ++c) if (IsValidScript(&Array->Data[c])) return true;
   return false;
 }
 
-void contentscript<glterrain>::InitDataMap()
-{
+
+void contentscript<glterrain>::InitDataMap () {
   INIT_ENTRY(IsInside);
 }
 
-contentscript<olterrain>::contentscript()
-: INIT(VisualEffects, 0),
+
+contentscript<olterrain>::contentscript () :
+  INIT(VisualEffects, 0),
   INIT(AttachedArea, DEFAULT_ATTACHED_AREA),
   INIT(AttachedEntry, DEFAULT_ATTACHED_ENTRY)
-{ }
-
-void contentscript<olterrain>::InitDataMap()
 {
+}
+
+
+void contentscript<olterrain>::InitDataMap () {
   INIT_ENTRY(ItemsInside);
   INIT_ENTRY(Text);
   INIT_ENTRY(VisualEffects);
@@ -606,45 +544,29 @@ void contentscript<olterrain>::InitDataMap()
   INIT_ENTRY(AttachedEntry);
 }
 
-olterrain* contentscript<olterrain>::Instantiate(int SpecialFlags) const
-{
-  if(!ContentType)
-    return 0;
 
-  olterrain* Instance = contentscripttemplate<olterrain>::BasicInstantiate(SpecialFlags);
-
-  if(GetVisualEffects())
-  {
+olterrain *contentscript<olterrain>::Instantiate (int SpecialFlags) const {
+  if (!ContentType) return 0;
+  olterrain *Instance = contentscripttemplate<olterrain>::BasicInstantiate(SpecialFlags);
+  if (GetVisualEffects()) {
     Instance->SetVisualEffects(GetVisualEffects());
     Instance->UpdatePictures();
   }
-
-  if(GetAttachedArea() != DEFAULT_ATTACHED_AREA)
-    Instance->SetAttachedArea(GetAttachedArea());
-
-  if(GetAttachedEntry() != DEFAULT_ATTACHED_ENTRY)
-    Instance->SetAttachedEntry(GetAttachedEntry());
-
-  cfestring* Text = GetText();
-
-  if(Text)
-    Instance->SetText(*Text);
-
-  const fearray<contentscript<item> >* ItemsInside = GetItemsInside();
-
-  if(ItemsInside)
-    Instance->SetItemsInside(*ItemsInside, SpecialFlags);
-
+  if (GetAttachedArea() != DEFAULT_ATTACHED_AREA) Instance->SetAttachedArea(GetAttachedArea());
+  if (GetAttachedEntry() != DEFAULT_ATTACHED_ENTRY) Instance->SetAttachedEntry(GetAttachedEntry());
+  cfestring *Text = GetText();
+  if (Text) Instance->SetText(*Text);
+  const fearray<contentscript<item> > *ItemsInside = GetItemsInside();
+  if (ItemsInside) Instance->SetItemsInside(*ItemsInside, SpecialFlags);
   return Instance;
 }
 
-squarescript::squarescript()
-: INIT(EntryIndex, NO_ENTRY),
-  INIT(AttachRequired, false)
-{ }
 
-void squarescript::InitDataMap()
-{
+squarescript::squarescript () : INIT(EntryIndex, NO_ENTRY), INIT(AttachRequired, false) {
+}
+
+
+void squarescript::InitDataMap () {
   INIT_ENTRY(Position);
   INIT_ENTRY(Character);
   INIT_ENTRY(Items);
@@ -655,24 +577,18 @@ void squarescript::InitDataMap()
   INIT_ENTRY(AttachRequired);
 }
 
-void squarescript::ReadFrom(inputfile& SaveFile)
-{
+
+void squarescript::ReadFrom (inputfile &SaveFile) {
   static festring Word;
+  //
   SaveFile.ReadWord(Word);
-
-  if(Word != "=")
-  {
+  if (Word != "=") {
     PositionHolder.ReadFrom(SaveFile);
-
-    if(SaveFile.ReadWord() != "{")
-      ABORT("Bracket missing in square script line %d!", SaveFile.TellLine());
-
-    for(SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word))
-      if(!ReadMember(SaveFile, Word))
-  ABORT("Odd script term %s encountered in square script line %d!", Word.CStr(), SaveFile.TellLine());
-  }
-  else
-  {
+    if (SaveFile.ReadWord() != "{") ABORT("Bracket missing in square script line %d!", SaveFile.TellLine());
+    for (SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word)) {
+      if (!ReadMember(SaveFile, Word)) ABORT("Odd script term %s encountered in square script line %d!", Word.CStr(), SaveFile.TellLine());
+    }
+  } else {
     GTerrainHolder.ReadFrom(SaveFile);
     OTerrainHolder.ReadFrom(SaveFile);
   }

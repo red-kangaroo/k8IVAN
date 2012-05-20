@@ -177,10 +177,18 @@ Dungeon UNDER_WATER_TUNNEL;
       {
         Items == lantern;
       }
-      if @player_name == "_k8_";
-        Square, Pos 2,1; { Items == holyhandgrenade; }
-        //Square, Pos 2,3; { Items = { 3, moneybag, BONE bone, OMMEL_BONE bone; } }
-      endif
+
+      Square, Pos 2,1;
+      {
+        Items == holyhandgrenade [
+          if @has_item "superkawai";
+            AddMessage "Nya!";
+          else
+            Disallow;
+          endif
+        ];
+      }
+      //Square, Pos 2,3; { Items = { 3, moneybag, BONE bone, OMMEL_BONE bone; } }
     }
   }
 

@@ -73,6 +73,7 @@ public:
 
   void SkipSpaces ();
 
+  festring ReadCode (truth AbortOnEOF=true);
   festring ReadWord (truth AbortOnEOF=true);
   void ReadWord (festring &str, truth AbortOnEOF=true, truth skipIt=false);
   char ReadLetter (truth AbortOnEOF=true);

@@ -938,22 +938,17 @@ void lsquare::ApplyScript(const squarescript* SquareScript, room* Room)
 
   const contentscript<character>* CharacterScript = SquareScript->GetCharacter();
 
-  if(CharacterScript)
-  {
-    character* Char = CharacterScript->Instantiate();
-    Char->SetGenerationDanger(GetLevel()->GetDifficulty());
-
-    if(!Char->GetTeam())
-      Char->SetTeam(game::GetTeam(*GetLevel()->GetLevelScript()->GetTeamDefault()));
-
-    if(CharacterScript->GetFlags() & IS_LEADER)
-      Char->GetTeam()->SetLeader(Char);
-
-    Char->PutToOrNear(Pos);
-    Char->CreateHomeData();
-
-    if(Room && CharacterScript->GetFlags() & IS_MASTER)
-      Room->SetMasterID(Char->GetID());
+  if (CharacterScript) {
+    character *Char = CharacterScript->Instantiate();
+    //
+    if (Char) {
+      Char->SetGenerationDanger(GetLevel()->GetDifficulty());
+      if (!Char->GetTeam()) Char->SetTeam(game::GetTeam(*GetLevel()->GetLevelScript()->GetTeamDefault()));
+      if (CharacterScript->GetFlags() & IS_LEADER) Char->GetTeam()->SetLeader(Char);
+      Char->PutToOrNear(Pos);
+      Char->CreateHomeData();
+      if (Room && CharacterScript->GetFlags() & IS_MASTER) Room->SetMasterID(Char->GetID());
+    }
   }
 
   const fearray<contentscript<item> >* Items = SquareScript->GetItems();

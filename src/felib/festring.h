@@ -12,6 +12,7 @@
 #ifndef __FELIB_FESTRING_H__
 #define __FELIB_FESTRING_H__
 
+#include <cctype>
 #include <vector>
 #include <time.h>
 
@@ -86,6 +87,7 @@ public:
   truth operator == (cchar*) const;
   truth operator != (cchar*) const;
   int Compare (cfestring &) const;
+  int CompareIgnoreCase (cfestring &) const;
   cchar *CStr () const;
   sizetype GetSize () const { return Size; }
   void Empty ();
@@ -260,6 +262,21 @@ inline int festring::Compare (cfestring &Str) const {
   if (ThisSize && StrSize) {
     int Comp = memcmp(Data, Str.Data, StrSize > ThisSize ? ThisSize : StrSize);
     if (Comp) return Comp;
+  }
+  return ThisSize < StrSize ? -1 : ThisSize != StrSize;
+}
+
+
+inline int festring::CompareIgnoreCase (cfestring &Str) const {
+  sizetype ThisSize = Size;
+  sizetype StrSize = Str.Size;
+  if (ThisSize && StrSize) {
+    for (sizetype Pos = 0; Pos < GetSize(); ++Pos) {
+      char Char1 = toupper(Data[Pos]);
+      char Char2 = toupper(Str[Pos]);
+      if (Char1 != Char2) return Char1-Char2;
+    }
+    return 0;
   }
   return ThisSize < StrSize ? -1 : ThisSize != StrSize;
 }

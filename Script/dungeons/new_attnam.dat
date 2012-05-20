@@ -501,16 +501,22 @@ Dungeon NEW_ATTNAM;
       //Square, Pos 11,8; { Items == kawai; }
       //Square, Pos 13,8; { Items == kawai; }
 
-      Square, Pos 3,35;
-      {
-        Character = vampire { Inventory = { 3, scrollofenchantweapon, scrollofenchantarmor, solstone; } }
-      }
-
       Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
       {
         Character = doctor { Team = NEW_ATTNAM_TEAM; }
       }
     endif
+
+    Square, Pos 3,35;
+    {
+      Character [
+        if @has_item "light";
+          AddMessage "Nya!";
+        else
+          Disallow;
+        endif
+      ] = vampire { Inventory = { 3, scrollofenchantweapon, scrollofenchantarmor, solstone; } }
+    }
   }
 
   Level 1;

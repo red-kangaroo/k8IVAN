@@ -347,13 +347,16 @@ truth level::MakeRoom (const roomscript *RoomScript) {
       game::BusyAnimation();
       for (int y = 0; y < CharacterMap->GetSize()->Y; ++y) {
         if (IsValidScript(CharacterScript = CharacterMap->GetContentScript(x, y))) {
-          character* Char = CharacterScript->Instantiate();
-          Char->SetGenerationDanger(Difficulty);
-          if (!Char->GetTeam()) Char->SetTeam(game::GetTeam(*LevelScript->GetTeamDefault()));
-          if (CharacterScript->GetFlags()&IS_LEADER) Char->GetTeam()->SetLeader(Char);
-          Char->PutTo(CharPos+v2(x, y));
-          Char->CreateHomeData();
-          if (CharacterScript->GetFlags()&IS_MASTER) RoomClass->SetMasterID(Char->GetID());
+          character *Char = CharacterScript->Instantiate();
+          //
+          if (Char) {
+            Char->SetGenerationDanger(Difficulty);
+            if (!Char->GetTeam()) Char->SetTeam(game::GetTeam(*LevelScript->GetTeamDefault()));
+            if (CharacterScript->GetFlags()&IS_LEADER) Char->GetTeam()->SetLeader(Char);
+            Char->PutTo(CharPos+v2(x, y));
+            Char->CreateHomeData();
+            if (CharacterScript->GetFlags()&IS_MASTER) RoomClass->SetMasterID(Char->GetID());
+          }
         }
       }
     }

@@ -712,6 +712,61 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
 }
 
 
+festring inputfile::ReadCode (truth AbortOnEOF) {
+  int sqLevel = 1;
+  char inString = 0;
+  festring res;
+  //
+  for (char Char = fgetc(Buffer); !feof(Buffer); Char = fgetc(Buffer)) {
+    //fprintf(stderr, "char: [%c]; inString: %d; sqLevel: %d\n", (Char < 32 || Char > 126 ? '?' : Char), inString, sqLevel);
+    if (inString) {
+      res << Char;
+      if (Char == inString) {
+        inString = 0;
+      } else if (Char == '\\') {
+        if (feof(Buffer)) break;
+        Char = fgetc(Buffer);
+        res << Char;
+      }
+    } else {
+      if (Char == '[') {
+        ++sqLevel;
+        res << Char;
+      } else if (Char == ']') {
+        if (--sqLevel == 0) break;
+        res << Char;
+      } else if (Char == '/') {
+        if (feof(Buffer)) { res << Char; break; }
+        switch ((Char = fgetc(Buffer))) {
+          case '/': // eol comment
+            while (!feof(Buffer)) if (fgetc(Buffer) == '\n') break;
+            break;
+          case '*': // c-like comment
+            while (!feof(Buffer)) {
+              if (fgetc(Buffer) == '*') {
+                if (feof(Buffer)) break;
+                if (fgetc(Buffer) == '/') break;
+              }
+            }
+            break;
+          default:
+            res << '/';
+            res << Char;
+            break;
+        }
+      } else if (Char == '"' || Char == '\'') {
+        res << Char;
+        inString = Char;
+      } else {
+        res << Char;
+      }
+    }
+  }
+  if (AbortOnEOF && feof(Buffer)) ABORT("Unexpected end of file %s!", FileName.CStr());
+  return res;
+}
+
+
 sLong inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
   sLong num = 0;
   truth isString = false;

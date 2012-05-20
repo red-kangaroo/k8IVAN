@@ -475,6 +475,8 @@ public:
   static truth RunOnCharEvent (character *who, cfestring &ename);
   static truth RunOnItemEvent (item *what, cfestring &ename);
 
+  static truth RunAllowScriptStr (cfestring &str);
+
   static festring ldrGetVar (inputfile *fl, cfestring &name);
 
 private:
@@ -482,8 +484,8 @@ private:
   static truth GetWord (festring &w);
   static void SkipBlock (truth brcEaten);
   static void UpdateCameraCoordinate (int &, int, int, int);
-  static truth DoOnEvent (truth brcEaten);
-  static int ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args);
+  static truth DoOnEvent (truth brcEaten, truth AllowScript=false);
+  static int ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args, inputfile *fl=0, truth noterm=false);
 
 private:
   static cchar* const Alignment[];
