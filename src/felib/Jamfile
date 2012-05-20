@@ -5,7 +5,6 @@ felibsources =
   bitmap.cpp
   config.cpp
   error.cpp
-  febot.cpp
   feio.cpp
   felist.cpp
   femain.cpp

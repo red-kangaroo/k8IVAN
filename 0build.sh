@@ -6,22 +6,22 @@ defines="-DSGAME_SHOTS_IPU -DWIZARD -DLOCAL_SAVES"
 cflags="-Wno-narrowing -Isrc/felib"
 lflags="-lm"
 objects=""
+have_package=""
 
 
 find_package() {
-  local r
-  #
   if [ "z$2" != "z" ]; then
     pkg-config --silence-errors $1 --atleast-version=$2
   else
     pkg-config --silence-errors $1
   fi
-  r="$?"
-  if [ "z$r" = "z0" ]; then
-    have_package="tan"
+  if [ "$?" = "0" ]; then
     cflags="${cflags} `pkg-config $1 --cflags`"
     lflags="${lflags} `pkg-config $1 --libs`"
+    #echo "MSG: package '$1' found"
+    have_package="tan"
   else
+    #echo "MSG: no package '$1'"
     have_package="ona"
   fi
 }
@@ -67,16 +67,20 @@ find_package SDL_mixer 1.2
 if [ "$have_package" != "tan" ]; then
   echo "MSG: no SDL_mixer package found, sound disabled"
   defines="${defines} -DDISABLE_SOUND"
+else
+  echo "MSG: sound support enabled"
 fi
 
 find_package imlib2 1.4
 if [ "$have_package" = "tan" ]; then
   defines="${defines} -DHAVE_IMLIB2"
+  echo "MSG: imlib2 found"
 fi
 
 find_package zlib 1.2
 if [ "$have_package" = "tan" ]; then
   defines="${defines} -DUSE_ZLIB"
+  echo "MSG: compressed saves enabled"
 fi
 
 #find_package libpng 1.5
@@ -90,7 +94,6 @@ mkdir _build 2>/dev/null
 compile src/felib bitmap.cpp
 compile src/felib config.cpp
 compile src/felib error.cpp
-compile src/felib febot.cpp
 compile src/felib feio.cpp
 compile src/felib felist.cpp
 compile src/felib femain.cpp
