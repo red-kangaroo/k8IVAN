@@ -17,6 +17,7 @@
 #include "fesave.h"
 #include "femath.h"
 #include "bitmap.h"
+#include "iconf.h"
 
 
 dungeon::dungeon () {
@@ -97,7 +98,7 @@ truth dungeon::PrepareLevel (int Index, truth Visual) {
 
 
 void dungeon::SaveLevel (cfestring &SaveName, int Number, truth DeleteAfterwards) {
-  outputfile SaveFile(SaveName+'.'+Index+Number);
+  outputfile SaveFile(SaveName+'.'+Index+Number, ivanconfig::GetUseMaximumCompression());
   SaveFile << Level[Number];
   if (DeleteAfterwards) {
     delete Level[Number];

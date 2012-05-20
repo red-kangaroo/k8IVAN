@@ -323,18 +323,23 @@ void bitmap::SaveBMP (cfestring &FileName) const {
     char(0x33), char(0x0B), char(0x00), char(0x00), char(0x00), char(0x00),
     char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00)
   };
-  outputfile SaveFile(FileName);
+  FILE *fo = fopen(FileName.CStr(), "wb");
   BMPHeader[0x12] =  mSize.X       & 0xFF;
   BMPHeader[0x13] = (mSize.X >> 8) & 0xFF;
   BMPHeader[0x16] =  mSize.Y       & 0xFF;
   BMPHeader[0x17] = (mSize.Y >> 8) & 0xFF;
-  SaveFile.Write(BMPHeader, 0x36);
+  fwrite(BMPHeader, 0x36, 1, fo);
   for (int y = mSize.Y - 1; y >= 0; --y) {
     for (int x = 0; x < mSize.X; ++x) {
       col16 Pixel = GetPixel(x, y);
-      SaveFile << char(Pixel << 3) << char((Pixel >> 5) << 2) << char((Pixel >> 11) << 3);
+      char b0 = Pixel << 3, b1 = (Pixel >> 5) << 2, b2 = (Pixel >> 11) << 3;
+      //SaveFile << char(Pixel << 3) << char((Pixel >> 5) << 2) << char((Pixel >> 11) << 3);
+      fwrite(&b0, 1, 1, fo);
+      fwrite(&b1, 1, 1, fo);
+      fwrite(&b2, 1, 1, fo);
     }
   }
+  fclose(fo);
 }
 
 
@@ -492,7 +497,7 @@ void bitmap::SaveScaledIPU (cfestring &fileName, double scale) const {
   delete [] unp;
   // and save it
 #ifdef USE_ZLIB
-  gzFile fo = gzopen(fileName.CStr(), "wb9");
+  gzFile fo = gzopen(fileName.CStr(), "wb1");
   if (fo) {
     uint16_t ii;
     //

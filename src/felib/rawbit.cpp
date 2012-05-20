@@ -85,16 +85,21 @@ void rawbitmap::Save (cfestring &FileName) {
   PCXHeader[0x09] = ((Size.X - 1) >> 8) & 0xFF;
   PCXHeader[0x0A] = (Size.Y - 1) & 0xFF;
   PCXHeader[0x0B] = ((Size.Y - 1) >> 8) & 0xFF;
-  outputfile SaveFile(FileName);
-  SaveFile.Write(PCXHeader, 128);
+  FILE *fo = fopen(FileName.CStr(), "wb");
+  //SaveFile.Write(PCXHeader, 128);
+  fwrite(PCXHeader, 128, 1, fo);
   paletteindex* Buffer = PaletteBuffer[0];
   paletteindex* End = &PaletteBuffer[Size.Y-1][Size.X];
   while (Buffer != End) {
     paletteindex Char = *Buffer++;
-    if (Char >= 192) SaveFile.Put(char(193));
-    SaveFile.Put(Char);
+    //if (Char >= 192) SaveFile.Put(char(193));
+    //SaveFile.Put(Char);
+    if (Char >= 192) fputc(193, fo);
+    fputc(Char, fo);
   }
-  SaveFile.Write(reinterpret_cast<char*>(Palette), 768);
+  //SaveFile.Write(reinterpret_cast<char*>(Palette), 768);
+  fwrite(reinterpret_cast<char*>(Palette), 768, 1, fo);
+  fclose(fo);
 }
 
 

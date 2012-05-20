@@ -757,7 +757,7 @@ truth game::Save (cfestring &SaveName) {
 #else
   DOUBLE_BUFFER->SaveScaledPNG(SaveName+".png", 0.8); //640; 320
 #endif
-  outputfile SaveFile(SaveName+".sav");
+  outputfile SaveFile(SaveName+".sav", ivanconfig::GetUseMaximumCompression());
   SaveFile << int(SAVE_FILE_VERSION);
   SaveFile << GameScript << CurrentDungeonIndex << CurrentLevelIndex << Camera;
   SaveFile << WizardMode << SeeWholeMapCheatMode << GoThroughWallsCheat;
@@ -1012,7 +1012,7 @@ void game::DoEvilDeed (int Amount) {
 
 
 void game::SaveWorldMap (cfestring &SaveName, truth DeleteAfterwards) {
-  outputfile SaveFile(SaveName+".wm");
+  outputfile SaveFile(SaveName+".wm", ivanconfig::GetUseMaximumCompression());
   SaveFile << WorldMap;
   if (DeleteAfterwards) {
     delete WorldMap;
@@ -2175,7 +2175,7 @@ void game::CreateBone () {
     if (BoneIndex != 1000) {
       //festring BoneName = GetBoneDir()+"bon"+CurrentDungeonIndex+CurrentLevelIndex+BoneIndex;
       fprintf(stderr, "creating bone file: [%s]\n", BoneName.CStr());
-      outputfile BoneFile(BoneName);
+      outputfile BoneFile(BoneName, true);
       BoneFile << int(BONE_FILE_VERSION) << PlayerName << CurrentLevel;
     }
   }

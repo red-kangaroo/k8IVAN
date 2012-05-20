@@ -47,9 +47,9 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-outputfile::outputfile (cfestring &FileName, truth AbortOnErr) :
+outputfile::outputfile (cfestring &FileName, truth maxcomp, truth AbortOnErr) :
 #ifdef USE_ZLIB
-  Buffer(gzopen(FileName.CStr(), "wb")),
+  Buffer(gzopen(FileName.CStr(), (maxcomp?"wb9":"wb1"))),
 #else
   Buffer(fopen(FileName.CStr(), "wb")),
 #endif

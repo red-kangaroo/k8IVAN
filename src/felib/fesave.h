@@ -52,7 +52,7 @@ typedef std::map<festring, sLong> valuemap;
 
 class outputfile {
 public:
-  outputfile (cfestring &FileName, truth AbortOnErr=true);
+  outputfile (cfestring &FileName, truth maxcomp, truth AbortOnErr=true);
   ~outputfile ();
 
   void Put (char What);
