@@ -1,0 +1,6 @@
+#include "actions/action_unconsciousness.cpp"
+#include "actions/action_consume.cpp"
+#include "actions/action_rest.cpp"
+#include "actions/action_dig.cpp"
+#include "actions/action_go.cpp"
+#include "actions/action_study.cpp"
