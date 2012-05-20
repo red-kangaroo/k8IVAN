@@ -1090,7 +1090,7 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
   strcpy(fname, "/tmp/ivan.XXXXXX");
   fd = mkstemp(fname);
   tfname = fname;
-  fprintf(stderr, "[%s]\n", tfname.CStr());
+  //fprintf(stderr, "[%s]\n", tfname.CStr());
   if (fd < 0) ABORT("Can't create temporary file!");
   write(fd, str.CStr(), str.GetSize());
   close(fd);

@@ -697,9 +697,9 @@ void character::Be () {
       static int Timer = 0;
       //
       if (ivanconfig::GetAutoSaveInterval() && !GetAction() && ++Timer >= ivanconfig::GetAutoSaveInterval()) {
-        fprintf(stderr, "autosaving..."); fflush(stderr);
+        //fprintf(stderr, "autosaving..."); fflush(stderr);
         game::Save(game::GetAutoSaveFileName());
-        fprintf(stderr, "done\n"); fflush(stderr);
+        //fprintf(stderr, "done\n"); fflush(stderr);
         Timer = 0;
       }
       game::CalculateNextDanger();
