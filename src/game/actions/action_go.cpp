@@ -2,6 +2,8 @@
 ACTION(go, action)
 {
 public:
+  go () : Direction(0), WalkingInOpen(false), mPrevWasTurn(false) {}
+
   virtual void Save (outputfile &SaveFile) const;
   virtual void Load (inputfile &SaveFile);
   virtual void Handle ();
@@ -26,9 +28,7 @@ protected:
 #else
 
 
-
 cchar *go::GetDescription () const { return "going"; }
-
 
 
 void go::Save (outputfile &SaveFile) const {
@@ -37,12 +37,10 @@ void go::Save (outputfile &SaveFile) const {
 }
 
 
-
 void go::Load (inputfile &SaveFile) {
   action::Load(SaveFile);
   SaveFile >> Direction >> WalkingInOpen;
 }
-
 
 
 void go::Handle () {
@@ -51,9 +49,10 @@ void go::Handle () {
 }
 
 
-
 truth go::TryDisplace () {
   Terminate(false);
   return true;
 }
+
+
 #endif

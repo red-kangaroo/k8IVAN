@@ -11,14 +11,9 @@ public:
 #else
 
 
-
 cchar *newattnam::GetNameStem () const { return "primitive village"; }
-
-
-
 v2 newattnam::GetBitmapPos (int) const { return v2(16, 64); }
-
-
-
 int newattnam::GetAttachedDungeon () const { return NEW_ATTNAM; }
+
+
 #endif

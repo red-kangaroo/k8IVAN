@@ -314,6 +314,8 @@ class olterrain : public lterrain, public oterrain
   DATA_BASE_TRUTH(IsWall);
   virtual void SetAttachedArea(int) { }
   virtual void SetAttachedEntry(int) { }
+  virtual int GetAttachedArea () const { return 0; }
+  virtual int GetAttachedEntry () const { return 0; }
   virtual void SetText(cfestring&) { }
   virtual festring GetText() const;
   virtual void SetItemsInside(const fearray<contentscript<item> >&, int) { }

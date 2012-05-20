@@ -1,21 +1,27 @@
 #ifdef HEADER_PHASE
 OLTERRAIN(ironmaiden, olterrain)
 {
- public:
-  ironmaiden() : Opened(false) {}
-  virtual void Save(outputfile&) const;
-  virtual void Load(inputfile&);
-  virtual truth Open(character*);
-  virtual truth CanBeOpened() const { return !Opened; }
-  virtual truth Close(character*);
- protected:
-  virtual v2 GetBitmapPos(int) const;
+public:
+  ironmaiden () : Opened(false) {}
+
+  virtual void Save (outputfile &) const;
+  virtual void Load (inputfile &);
+  virtual truth Open (character *);
+  virtual truth CanBeOpened () const;
+  virtual truth Close (character *);
+
+protected:
+  virtual v2 GetBitmapPos (int) const;
+
+protected:
   truth Opened;
 };
 
 
 #else
 
+
+truth ironmaiden::CanBeOpened () const { return !Opened; }
 
 
 void ironmaiden::Save (outputfile &SaveFile) const {
@@ -24,18 +30,15 @@ void ironmaiden::Save (outputfile &SaveFile) const {
 }
 
 
-
 void ironmaiden::Load (inputfile &SaveFile) {
   olterrain::Load(SaveFile);
   SaveFile >> Opened;
 }
 
 
-
 v2 ironmaiden::GetBitmapPos (int) const {
   return Opened ? v2(48,64) : v2(32,64);
 }
-
 
 
 truth ironmaiden::Open (character *Opener) {
@@ -60,7 +63,6 @@ truth ironmaiden::Open (character *Opener) {
 }
 
 
-
 truth ironmaiden::Close (character *Closer) {
   if (Closer->IsPlayer()) {
     if (Opened) ADD_MESSAGE("You close %s.", CHAR_NAME(DEFINITE));
@@ -75,4 +77,6 @@ truth ironmaiden::Close (character *Closer) {
   Closer->DexterityAction(Closer->OpenMultiplier()*5);
   return true;
 }
+
+
 #endif

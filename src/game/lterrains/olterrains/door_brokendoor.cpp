@@ -1,25 +1,30 @@
 #ifdef HEADER_PHASE
 OLTERRAIN(brokendoor, door)
 {
- public:
-  virtual void BeKicked(character*, int, int);
-  virtual void ReceiveDamage(character*, int, int);
-  virtual void HasBeenHitByItem(character*, item*, int);
-  virtual void Break() { olterrain::Break(); }
+public:
+  virtual void BeKicked (character *, int, int);
+  virtual void ReceiveDamage (character *, int, int);
+  virtual void HasBeenHitByItem (character *, item *, int);
+  virtual void Break ();
 };
 
 
 #else
 
 
+void brokendoor::Break () {
+  olterrain::Break();
+}
 
-void brokendoor::HasBeenHitByItem (character *Thrower, item *, int Damage) { ReceiveDamage(Thrower, Damage, PHYSICAL_DAMAGE); }
 
+void brokendoor::HasBeenHitByItem (character *Thrower, item *, int Damage) {
+  ReceiveDamage(Thrower, Damage, PHYSICAL_DAMAGE);
+}
 
 
 void brokendoor::BeKicked (character *Kicker, int KickDamage, int) {
   if (!Opened) {
-    if (!IsLocked() && KickDamage > (RAND() & 3)) {
+    if (!IsLocked() && KickDamage > (RAND()&3)) {
       if (CanBeSeenByPlayer()) ADD_MESSAGE("The broken door opens.");
       MakeWalkable();
       return;
@@ -27,7 +32,7 @@ void brokendoor::BeKicked (character *Kicker, int KickDamage, int) {
     if (IsLocked()) {
       int SV = Max(GetStrengthValue(), 1);
       if (KickDamage > SV && RAND()%(100*KickDamage/SV) >= 100) {
-        if (RAND() & 1) {
+        if (RAND()&1) {
           if (CanBeSeenByPlayer()) ADD_MESSAGE("The broken door opens from the force of the kick.");
           MakeWalkable();
         } else if (CanBeSeenByPlayer()) {
@@ -41,7 +46,6 @@ void brokendoor::BeKicked (character *Kicker, int KickDamage, int) {
     if (CanBeSeenByPlayer() && (Kicker->CanBeSeenByPlayer() || Kicker->IsPlayer())) ADD_MESSAGE("The broken door won't budge!");
   }
 }
-
 
 
 void brokendoor::ReceiveDamage (character *Villain, int Damage, int) {
@@ -66,4 +70,6 @@ void brokendoor::ReceiveDamage (character *Villain, int Damage, int) {
     }
   }
 }
+
+
 #endif

@@ -1,14 +1,17 @@
 #ifdef HEADER_PHASE
 OLTERRAIN(sign, olterrain)
 {
- public:
-  virtual void Save(outputfile&) const;
-  virtual void Load(inputfile&);
-  virtual void SetText(cfestring& What) { Text = What; }
-  virtual festring GetText() const;
-  virtual void AddPostFix(festring&, int) const;
-  virtual void StepOn(character*);
- protected:
+public:
+  sign () : Text("") {}
+
+  virtual void Save (outputfile &) const;
+  virtual void Load (inputfile &);
+  virtual void SetText(cfestring &What);
+  virtual festring GetText () const;
+  virtual void AddPostFix (festring &, int) const;
+  virtual void StepOn (character *);
+
+protected:
   festring Text;
 };
 
@@ -16,9 +19,8 @@ OLTERRAIN(sign, olterrain)
 #else
 
 
-
+void sign::SetText (cfestring &What) { Text = What; }
 festring sign::GetText () const { return Text; }
-
 
 
 void sign::AddPostFix (festring &String, int) const {
@@ -26,11 +28,9 @@ void sign::AddPostFix (festring &String, int) const {
 }
 
 
-
 void sign::StepOn (character *Stepper) {
   if (Stepper->IsPlayer()) ADD_MESSAGE("There's a sign here saying: \"%s\"", Text.CStr());
 }
-
 
 
 void sign::Save (outputfile &SaveFile) const {
@@ -39,9 +39,10 @@ void sign::Save (outputfile &SaveFile) const {
 }
 
 
-
 void sign::Load (inputfile &SaveFile) {
   olterrain::Load(SaveFile);
   SaveFile >> Text;
 }
+
+
 #endif

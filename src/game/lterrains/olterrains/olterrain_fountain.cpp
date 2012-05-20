@@ -1,57 +1,52 @@
 #ifdef HEADER_PHASE
 OLTERRAIN(fountain, olterrain)
 {
- public:
-  virtual ~fountain();
-  virtual truth SitOn(character*);
-  virtual truth Drink(character*);
-  virtual truth HasDrinkEffect() const { return true; }
-  virtual void DryOut();
-  virtual truth DipInto(item*, character*);
-  virtual truth IsDipDestination() const;
-  virtual material* GetSecondaryMaterial() const { return SecondaryMaterial; }
-  virtual void SetSecondaryMaterial(material*, int = 0);
-  virtual void ChangeSecondaryMaterial(material*, int = 0);
-  void InitMaterials(material*, material*, truth = true);
-  virtual void Save(outputfile&) const;
-  virtual void Load(inputfile&);
-  virtual int GetMaterials() const { return 2; }
-  virtual material* GetMaterial(int) const;
-  virtual void InitMaterials(const materialscript*, const materialscript*, truth);
-  virtual truth IsFountainWithWater() const;
-  virtual int GetSparkleFlags() const;
- protected:
-  virtual void GenerateMaterials();
-  virtual col16 GetMaterialColorB(int) const;
-  virtual void AddPostFix(festring& String, int) const { AddContainerPostFix(String); }
-  virtual truth AddAdjective(festring&, truth) const;
-  virtual v2 GetBitmapPos(int) const;
-  material* SecondaryMaterial;
+public:
+  fountain () : SecondaryMaterial(0) {}
+  virtual ~fountain ();
+
+  virtual truth SitOn (character *);
+  virtual truth Drink (character *);
+  virtual truth HasDrinkEffect () const;
+  virtual void DryOut ();
+  virtual truth DipInto (item *, character *);
+  virtual truth IsDipDestination () const;
+  virtual material *GetSecondaryMaterial () const;
+  virtual void SetSecondaryMaterial (material *, int = 0);
+  virtual void ChangeSecondaryMaterial (material *, int = 0);
+  void InitMaterials (material *, material *, truth = true);
+  virtual void Save (outputfile &) const;
+  virtual void Load (inputfile &);
+  virtual int GetMaterials () const;
+  virtual material *GetMaterial (int) const;
+  virtual void InitMaterials (const materialscript *, const materialscript *, truth);
+  virtual truth IsFountainWithWater () const;
+  virtual int GetSparkleFlags () const;
+
+protected:
+  virtual void GenerateMaterials ();
+  virtual col16 GetMaterialColorB (int) const;
+  virtual void AddPostFix (festring &String, int) const;
+  virtual truth AddAdjective (festring &, truth) const;
+  virtual v2 GetBitmapPos (int) const;
+
+protected:
+  material *SecondaryMaterial;
 };
 
 
 #else
 
 
-
+truth fountain::HasDrinkEffect () const { return true; }
+material *fountain::GetSecondaryMaterial () const { return SecondaryMaterial; }
+int fountain::GetMaterials () const { return 2; }
+void fountain::AddPostFix (festring &String, int) const { AddContainerPostFix(String); }
 void fountain::SetSecondaryMaterial (material *What, int SpecialFlags) { SetMaterial(SecondaryMaterial, What, 0, SpecialFlags); }
-
-
-
 void fountain::ChangeSecondaryMaterial (material *What, int SpecialFlags) { ChangeMaterial(SecondaryMaterial, What, 0, SpecialFlags); }
-
-
-
 void fountain::InitMaterials (material *M1, material *M2, truth CUP) { ObjectInitMaterials(MainMaterial, M1, 0, SecondaryMaterial, M2, 0, CUP); }
-
-
-
 v2 fountain::GetBitmapPos (int) const { return v2(GetSecondaryMaterial() ? 16 : 32, 288); }
-
-
-
 void fountain::InitMaterials (const materialscript *M, const materialscript *C, truth CUP) { InitMaterials(M->Instantiate(), C->Instantiate(), CUP); }
-
 
 
 truth fountain::SitOn (character *Sitter) {
@@ -62,7 +57,6 @@ truth fountain::SitOn (character *Sitter) {
   }
   return olterrain::SitOn(Sitter);
 }
-
 
 
 truth fountain::Drink (character *Drinker) {
@@ -224,7 +218,6 @@ truth fountain::Drink (character *Drinker) {
 }
 
 
-
 void fountain::DryOut () {
   ADD_MESSAGE("%s dries out.", CHAR_NAME(DEFINITE));
   ChangeSecondaryMaterial(0);
@@ -235,12 +228,10 @@ void fountain::DryOut () {
 }
 
 
-
 truth fountain::DipInto (item *ToBeDipped, character *Who) {
   ToBeDipped->DipInto(static_cast<liquid *>(GetSecondaryMaterial()->SpawnMore(100)), Who);
   return true;
 }
-
 
 
 void fountain::Save (outputfile &SaveFile) const {
@@ -249,12 +240,10 @@ void fountain::Save (outputfile &SaveFile) const {
 }
 
 
-
 void fountain::Load (inputfile &SaveFile) {
   olterrain::Load(SaveFile);
   LoadMaterial(SaveFile, SecondaryMaterial);
 }
-
 
 
 material *fountain::GetMaterial (int I) const {
@@ -262,12 +251,10 @@ material *fountain::GetMaterial (int I) const {
 }
 
 
-
 col16 fountain::GetMaterialColorB (int) const {
   if (GetSecondaryMaterial()) return GetSecondaryMaterial()->GetColor();
   return 0;
 }
-
 
 
 void fountain::GenerateMaterials () {
@@ -279,7 +266,6 @@ void fountain::GenerateMaterials () {
 }
 
 
-
 truth fountain::AddAdjective (festring &String, truth Articled) const {
   if (!GetSecondaryMaterial()) {
     String << (Articled ? "a dried out " : "dried out ");
@@ -289,11 +275,9 @@ truth fountain::AddAdjective (festring &String, truth Articled) const {
 }
 
 
-
 fountain::~fountain () {
   delete SecondaryMaterial;
 }
-
 
 
 int fountain::GetSparkleFlags () const {
@@ -302,14 +286,14 @@ int fountain::GetSparkleFlags () const {
 }
 
 
-
 truth fountain::IsDipDestination () const {
   return SecondaryMaterial && SecondaryMaterial->IsLiquid();
 }
 
 
-
 truth fountain::IsFountainWithWater () const {
   return truth(GetSecondaryMaterial());
 }
+
+
 #endif

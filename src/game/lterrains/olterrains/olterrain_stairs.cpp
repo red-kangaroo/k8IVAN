@@ -1,18 +1,23 @@
 #ifdef HEADER_PHASE
 OLTERRAIN(stairs, olterrain)
 {
- public:
+public:
+  stairs () : AttachedArea(0), AttachedEntry(0) {}
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual truth Enter(truth) const;
   virtual void StepOn(character*);
-  virtual void SetAttachedArea(int What) { AttachedArea = What; }
-  virtual void SetAttachedEntry(int What) { AttachedEntry = What; }
-  int GetAttachedArea() const { return AttachedArea; }
-  int GetAttachedEntry() const { return AttachedEntry; }
-  virtual void AddSpecialCursors();
- protected:
-  virtual void PostConstruct();
+  virtual void SetAttachedArea (int What);
+  virtual void SetAttachedEntry (int What);
+  virtual int GetAttachedArea () const;
+  virtual int GetAttachedEntry () const;
+  virtual void AddSpecialCursors ();
+
+protected:
+  virtual void PostConstruct ();
+
+protected:
   int AttachedArea;
   int AttachedEntry;
 };
@@ -21,12 +26,16 @@ OLTERRAIN(stairs, olterrain)
 #else
 
 
+void stairs::SetAttachedArea (int What) { AttachedArea = What; }
+void stairs::SetAttachedEntry (int What) { AttachedEntry = What; }
+int stairs::GetAttachedArea () const { return AttachedArea; }
+int stairs::GetAttachedEntry () const { return AttachedEntry; }
+
 
 void stairs::Save (outputfile &SaveFile) const {
   olterrain::Save(SaveFile);
   SaveFile << AttachedArea << AttachedEntry;
 }
-
 
 
 void stairs::Load (inputfile &SaveFile) {
@@ -35,14 +44,15 @@ void stairs::Load (inputfile &SaveFile) {
 }
 
 
-
 truth stairs::Enter (truth DirectionUp) const {
   if (!DirectionUp != !IsUpLink()) return olterrain::Enter(DirectionUp);
   /* "Temporary" gum solutions */
+  //
   if (GetConfig() == OREE_LAIR_ENTRY) {
     ADD_MESSAGE("You sense terrible evil trembling very near under your feet. You feel you shouldn't wander any further. On the other hand you have little choice.");
     if (!game::TruthQuestion(CONST_S("Continue? [y/N]"))) return false;
   }
+  //
   if (GetConfig() == OREE_LAIR_EXIT) {
     if (PLAYER->HasGoldenEagleShirt()) {
       ADD_MESSAGE("Somehow you get the feeling you cannot return.");
@@ -53,21 +63,23 @@ truth stairs::Enter (truth DirectionUp) const {
       return true;
     }
   }
+  //
   if (GetConfig() == DARK_LEVEL) {
     ADD_MESSAGE("This dark gate seems to be a one-way portal. You sense something distant but extremely dangerous on the other side. You feel you should think twice before entering.");
     if (!game::TruthQuestion(CONST_S("Continue? [y/N]"))) return false;
   }
+  //
   if (GetConfig() == SUMO_ARENA_ENTRY && !game::TryToEnterSumoArena()) return false;
+  //
   if (GetConfig() == SUMO_ARENA_EXIT && !game::TryToExitSumoArena()) return false;
+  //
   return game::TryTravel(game::GetCurrentDungeonIndex(), GetAttachedArea(), GetAttachedEntry(), GetAttachedArea() != WORLD_MAP);
 }
-
 
 
 void stairs::StepOn (character *Stepper) {
   if (Stepper->IsPlayer()) ADD_MESSAGE("There is %s here.", CHAR_NAME(INDEFINITE));
 }
-
 
 
 void stairs::PostConstruct () {
@@ -86,8 +98,9 @@ void stairs::PostConstruct () {
 }
 
 
-
 void stairs::AddSpecialCursors () {
   game::AddSpecialCursor(GetPos(), YELLOW_CURSOR|CURSOR_TARGET);
 }
+
+
 #endif

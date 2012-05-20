@@ -11,14 +11,9 @@ public:
 #else
 
 
-
 cchar *attnam::GetNameStem () const { return "migthy cathedral reaching the clouds"; }
-
-
-
 v2 attnam::GetBitmapPos (int) const { return v2(0, 48); }
-
-
-
 int attnam::GetAttachedDungeon () const { return ATTNAM; }
+
+
 #endif

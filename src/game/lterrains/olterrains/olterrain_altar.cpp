@@ -1,20 +1,19 @@
 #ifdef HEADER_PHASE
 OLTERRAIN(altar, olterrain)
 {
- public:
-  virtual truth AcceptsOffers() const { return true; }
-  virtual void StepOn(character*);
-  virtual void BeKicked(character*, int, int);
-  virtual truth ReceiveVomit(character*, liquid*);
-  virtual truth Polymorph(character*);
-  virtual truth SitOn(character*);
-  virtual void Draw(blitdata&) const;
-  virtual truth VomitingIsDangerous(ccharacter*) const;
+public:
+  virtual truth AcceptsOffers () const { return true; }
+  virtual void StepOn (character *);
+  virtual void BeKicked (character *, int, int);
+  virtual truth ReceiveVomit (character *, liquid *);
+  virtual truth Polymorph (character *);
+  virtual truth SitOn (character *);
+  virtual void Draw (blitdata &) const;
+  virtual truth VomitingIsDangerous (ccharacter *) const;
 };
 
 
 #else
-
 
 
 void altar::Draw (blitdata &BlitData) const {
@@ -25,14 +24,12 @@ void altar::Draw (blitdata &BlitData) const {
 }
 
 
-
 void altar::StepOn (character *Stepper) {
   if (Stepper->IsPlayer() && !GetMasterGod()->IsKnown()) {
     ADD_MESSAGE("The ancient altar is covered with strange markings. You manage to decipher them. The altar is dedicated to %s, the %s. You now know the sacred rituals that allow you to contact this deity via prayers.", GetMasterGod()->GetName(), GetMasterGod()->GetDescription());
     game::LearnAbout(GetMasterGod());
   }
 }
-
 
 
 void altar::BeKicked (character *Kicker, int, int) {
@@ -47,7 +44,6 @@ void altar::BeKicked (character *Kicker, int, int) {
 }
 
 
-
 truth altar::ReceiveVomit (character *Who, liquid *Liquid) {
   if (Who->IsPlayer()) {
     if (GetRoom()) GetRoom()->HostileAction(Who);
@@ -57,11 +53,9 @@ truth altar::ReceiveVomit (character *Who, liquid *Liquid) {
 }
 
 
-
 truth altar::VomitingIsDangerous (ccharacter *) const {
   return !GetMasterGod()->LikesVomit();
 }
-
 
 
 truth altar::Polymorph (character *) {
@@ -76,7 +70,6 @@ truth altar::Polymorph (character *) {
   GetLSquareUnder()->SendMemorizedUpdateRequest();
   return true;
 }
-
 
 
 truth altar::SitOn (character *Sitter) {
@@ -97,4 +90,6 @@ truth altar::SitOn (character *Sitter) {
   Sitter->EditAP(-1000);
   return true;
 }
+
+
 #endif

@@ -1,38 +1,43 @@
 #ifdef HEADER_PHASE
 OLTERRAIN(door, olterrain)
 {
- public:
-  virtual truth Open(character*);
-  virtual truth Close(character*);
-  virtual truth CanBeOpened() const { return !Opened; }
-  virtual void BeKicked(character*, int, int);
-  virtual void SetIsOpened(truth What) { Opened = What; }
-  virtual void Save(outputfile&) const;
-  virtual void Load(inputfile&);
-  virtual truth IsDoor() const { return true; }
-  virtual void SetIsLocked(truth What) { Locked = What; }
-  virtual truth IsLocked() const { return Locked; }
-  virtual truth CanBeOpenedByAI();
-  virtual void ReceiveDamage(character*, int, int);
-  virtual void CreateBoobyTrap();
-  virtual void ActivateBoobyTrap();
-  virtual truth TryKey(item*, character*);
-  virtual void SetParameters(int);
-  virtual void Lock() { SetIsLocked(true); }
-  virtual void HasBeenHitByItem(character*, item*, int);
-  virtual truth IsTransparent() const;
-  virtual int GetWalkability() const;
-  virtual int GetTheoreticalWalkability() const;
-  virtual void BeDestroyed();
- protected:
-  virtual void PostConstruct();
-  virtual truth AddAdjective(festring&, truth) const;
-  virtual void Break();
-  virtual v2 GetBitmapPos(int) const;
-  virtual void MakeWalkable();
-  virtual void MakeNotWalkable();
-  virtual int GetBoobyTrap() { return BoobyTrap; }
-  virtual void SetBoobyTrap(int What) { BoobyTrap = What; }
+public:
+  door () : Opened(false), Locked(false), BoobyTrap(0) {}
+
+  virtual truth Open (character *);
+  virtual truth Close (character *);
+  virtual truth CanBeOpened () const;
+  virtual void BeKicked (character *, int, int);
+  virtual void SetIsOpened (truth What);
+  virtual void Save (outputfile &) const;
+  virtual void Load (inputfile &);
+  virtual truth IsDoor () const;
+  virtual void SetIsLocked (truth What);
+  virtual truth IsLocked () const;
+  virtual truth CanBeOpenedByAI ();
+  virtual void ReceiveDamage (character *, int, int);
+  virtual void CreateBoobyTrap ();
+  virtual void ActivateBoobyTrap ();
+  virtual truth TryKey (item *, character *);
+  virtual void SetParameters (int);
+  virtual void Lock () { SetIsLocked(true); }
+  virtual void HasBeenHitByItem (character *, item *, int);
+  virtual truth IsTransparent () const;
+  virtual int GetWalkability () const;
+  virtual int GetTheoreticalWalkability () const;
+  virtual void BeDestroyed ();
+
+protected:
+  virtual void PostConstruct ();
+  virtual truth AddAdjective (festring &, truth) const;
+  virtual void Break ();
+  virtual v2 GetBitmapPos (int) const;
+  virtual void MakeWalkable ();
+  virtual void MakeNotWalkable ();
+  virtual int GetBoobyTrap ();
+  virtual void SetBoobyTrap (int What);
+
+protected:
   truth Opened;
   truth Locked;
   int BoobyTrap;
@@ -42,21 +47,17 @@ OLTERRAIN(door, olterrain)
 #else
 
 
-
+truth door::IsDoor () const { return true; }
+truth door::CanBeOpened () const { return !Opened; }
+void door::SetIsOpened (truth What) { Opened = What; }
+void door::SetIsLocked (truth What) { Locked = What; }
+truth door::IsLocked () const { return Locked; }
+int door::GetBoobyTrap () { return BoobyTrap; }
+void door::SetBoobyTrap (int What) { BoobyTrap = What; }
 truth door::CanBeOpenedByAI () { return !IsLocked() && CanBeOpened(); }
-
-
-
 void door::HasBeenHitByItem (character *Thrower, item *, int Damage) { ReceiveDamage(Thrower, Damage, PHYSICAL_DAMAGE); }
-
-
-
 v2 door::GetBitmapPos (int Frame) const { return Opened ? GetOpenBitmapPos(Frame) : olterrain::GetBitmapPos(Frame); }
-
-
-
 int door::GetTheoreticalWalkability () const { return ANY_MOVE; }
-
 
 
 truth door::Open (character *Opener) {
@@ -86,7 +87,6 @@ truth door::Open (character *Opener) {
 }
 
 
-
 truth door::Close (character *Closer) {
   if (Closer->IsPlayer()) {
     if (Opened) {
@@ -104,7 +104,6 @@ truth door::Close (character *Closer) {
   Closer->DexterityAction(Closer->OpenMultiplier() * 5);
   return true;
 }
-
 
 
 void door::BeKicked (character *Kicker, int KickDamage, int) {
@@ -142,19 +141,16 @@ void door::BeKicked (character *Kicker, int KickDamage, int) {
 }
 
 
-
 void door::Save (outputfile &SaveFile) const {
   olterrain::Save(SaveFile);
   SaveFile << Opened << Locked << BoobyTrap;
 }
 
 
-
 void door::Load (inputfile &SaveFile) {
   olterrain::Load(SaveFile);
   SaveFile >> Opened >> Locked >> BoobyTrap;
 }
-
 
 
 void door::MakeWalkable () {
@@ -168,7 +164,6 @@ void door::MakeWalkable () {
   if (GetLSquareUnder()->GetLastSeen() == game::GetLOSTick()) game::SendLOSUpdateRequest();
   ActivateBoobyTrap();
 }
-
 
 
 void door::MakeNotWalkable () {
@@ -185,7 +180,6 @@ void door::MakeNotWalkable () {
 }
 
 
-
 truth door::AddAdjective (festring &String, truth Articled) const {
   if (olterrain::AddAdjective(String, Articled)) Articled = false;
   if (Articled) String << (Opened ? "an open" : "a closed");
@@ -193,7 +187,6 @@ truth door::AddAdjective (festring &String, truth Articled) const {
   if (IsLocked()) String << " locked "; else String << ' ';
   return true;
 }
-
 
 
 void door::Break () {
@@ -210,7 +203,6 @@ void door::Break () {
 }
 
 
-
 void door::ActivateBoobyTrap () {
   switch (BoobyTrap) {
     case 1: // Explosion
@@ -224,11 +216,9 @@ void door::ActivateBoobyTrap () {
 }
 
 
-
 void door::CreateBoobyTrap () {
   SetBoobyTrap(1);
 }
-
 
 
 void door::PostConstruct () {
@@ -257,11 +247,9 @@ void door::PostConstruct () {
 }
 
 
-
 void door::SetParameters (int Param) {
   SetIsLocked(Param & LOCKED);
 }
-
 
 
 truth door::TryKey (item *Thingy, character *Applier) {
@@ -279,7 +267,6 @@ truth door::TryKey (item *Thingy, character *Applier) {
   if (Applier->IsPlayer()) ADD_MESSAGE("%s doesn't fit into the lock.", Thingy->CHAR_NAME(DEFINITE));
   return false;
 }
-
 
 
 void door::ReceiveDamage (character *Villain, int Damage, int) {
@@ -309,11 +296,9 @@ void door::ReceiveDamage (character *Villain, int Damage, int) {
 }
 
 
-
 int door::GetWalkability () const {
   return Opened ? ANY_MOVE : ANY_MOVE&~(WALK|FLY);
 }
-
 
 
 truth door::IsTransparent () const {
@@ -321,8 +306,9 @@ truth door::IsTransparent () const {
 }
 
 
-
 void door::BeDestroyed () {
   olterrain::Break();
 }
+
+
 #endif

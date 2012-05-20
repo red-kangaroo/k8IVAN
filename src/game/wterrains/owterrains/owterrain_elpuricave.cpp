@@ -11,14 +11,9 @@ public:
 #else
 
 
-
 cchar *elpuricave::GetNameStem () const { return "hideous cave entry radiating pure evil"; }
-
-
-
 v2 elpuricave::GetBitmapPos (int) const { return v2(16, 48); }
-
-
-
 int elpuricave::GetAttachedDungeon () const { return ELPURI_CAVE; }
+
+
 #endif

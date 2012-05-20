@@ -2,6 +2,8 @@
 ACTION(consume, action)
 {
 public:
+  consume () : Description(""), ConsumingID(0) {}
+
   virtual void Save (outputfile &SaveFile) const;
   virtual void Load (inputfile &SaveFile);
   virtual void Handle ();
@@ -21,13 +23,8 @@ protected:
 #else
 
 
-
 cchar *consume::GetDescription () const { return Description.CStr(); }
-
-
-
 void consume::SetDescription (cfestring &What) { Description = What; }
-
 
 
 void consume::Save (outputfile &SaveFile) const {
@@ -36,12 +33,10 @@ void consume::Save (outputfile &SaveFile) const {
 }
 
 
-
 void consume::Load (inputfile &SaveFile) {
   action::Load(SaveFile);
   SaveFile >> ConsumingID >> Description;
 }
-
 
 
 void consume::Handle () {
@@ -80,7 +75,6 @@ void consume::Handle () {
 }
 
 
-
 void consume::Terminate (truth Finished) {
   if (Flags & TERMINATING) return;
   Flags |= TERMINATING;
@@ -102,4 +96,6 @@ void consume::Terminate (truth Finished) {
   }
   action::Terminate(Finished);
 }
+
+
 #endif

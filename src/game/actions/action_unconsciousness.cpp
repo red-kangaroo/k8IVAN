@@ -2,6 +2,8 @@
 ACTION(unconsciousness, action)
 {
 public:
+  unconsciousness () : Counter(0) {}
+
   virtual void Save (outputfile &SaveFile) const;
   virtual void Load (inputfile &SaveFile);
   virtual void Handle ();
@@ -23,13 +25,8 @@ protected:
 #else
 
 
-
 cchar *unconsciousness::GetDeathExplanation () const { return " unconscious"; }
-
-
-
 cchar *unconsciousness::GetDescription () const { return "unconscious"; }
-
 
 
 void unconsciousness::Save (outputfile &SaveFile) const {
@@ -38,12 +35,10 @@ void unconsciousness::Save (outputfile &SaveFile) const {
 }
 
 
-
 void unconsciousness::Load (inputfile &SaveFile) {
   action::Load(SaveFile);
   SaveFile >> Counter;
 }
-
 
 
 void unconsciousness::Handle () {
@@ -57,7 +52,6 @@ void unconsciousness::Handle () {
 }
 
 
-
 void unconsciousness::Terminate (truth Finished) {
   if (Flags & TERMINATING) return;
   Flags |= TERMINATING;
@@ -67,8 +61,9 @@ void unconsciousness::Terminate (truth Finished) {
 }
 
 
-
 void unconsciousness::RaiseCounterTo (int What) {
   if (Counter < What) Counter = What;
 }
+
+
 #endif

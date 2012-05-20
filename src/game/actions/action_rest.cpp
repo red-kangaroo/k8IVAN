@@ -2,6 +2,8 @@
 ACTION(rest, action)
 {
 public:
+  rest () : GoalHP(0), MinToStop(0) {}
+
   virtual void Save (outputfile &SaveFile) const;
   virtual void Load (inputfile &SaveFile);
   virtual void Handle ();
@@ -20,9 +22,7 @@ protected:
 #else
 
 
-
 cchar *rest::GetDescription () const { return "resting"; }
-
 
 
 void rest::Save (outputfile &SaveFile) const {
@@ -31,12 +31,10 @@ void rest::Save (outputfile &SaveFile) const {
 }
 
 
-
 void rest::Load (inputfile &SaveFile) {
   action::Load(SaveFile);
   SaveFile >> GoalHP >> MinToStop;
 }
-
 
 
 void rest::Handle () {
@@ -52,7 +50,6 @@ void rest::Handle () {
 }
 
 
-
 void rest::Terminate (truth Finished) {
   if (Flags & TERMINATING) return;
   Flags |= TERMINATING;
@@ -65,4 +62,6 @@ void rest::Terminate (truth Finished) {
   }
   action::Terminate(Finished);
 }
+
+
 #endif

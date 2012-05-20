@@ -2,7 +2,8 @@
 ACTION(dig, action)
 {
 public:
-  dig () : RightBackupID(0), LeftBackupID(0) {}
+  dig () : RightBackupID(0), LeftBackupID(0), SquareDug(0, 0), MoveDigger(false) {}
+
   virtual void Save (outputfile &SaveFile) const;
   virtual void Load (inputfile &SaveFile);
   virtual void Handle ();
@@ -26,9 +27,7 @@ protected:
 #else
 
 
-
 cchar *dig::GetDescription () const { return "digging"; }
-
 
 
 void dig::Save (outputfile &SaveFile) const {
@@ -37,12 +36,10 @@ void dig::Save (outputfile &SaveFile) const {
 }
 
 
-
 void dig::Load (inputfile &SaveFile) {
   action::Load(SaveFile);
   SaveFile >> SquareDug >> MoveDigger >> RightBackupID >> LeftBackupID;
 }
-
 
 
 void dig::Handle () {
@@ -86,7 +83,6 @@ void dig::Handle () {
 }
 
 
-
 void dig::Terminate (truth Finished) {
   if (Flags & TERMINATING) return;
   Flags |= TERMINATING;
@@ -96,4 +92,6 @@ void dig::Terminate (truth Finished) {
   }
   action::Terminate(Finished);
 }
+
+
 #endif

@@ -2,6 +2,8 @@
 ACTION(study, action)
 {
 public:
+  study () : LiteratureID(0), Counter(0) {}
+
   virtual void Save (outputfile &SaveFile) const;
   virtual void Load (inputfile &SaveFile);
   virtual void Handle ();
@@ -19,9 +21,19 @@ protected:
 #else
 
 
-
 cchar *study::GetDescription () const { return "reading"; }
 
+
+void study::Save (outputfile &SaveFile) const {
+  action::Save(SaveFile);
+  SaveFile << Counter << LiteratureID;
+}
+
+
+void study::Load (inputfile &SaveFile) {
+  action::Load(SaveFile);
+  SaveFile >> Counter >> LiteratureID;
+}
 
 
 void study::Handle () {
@@ -43,7 +55,6 @@ void study::Handle () {
   if (GetActor()->GetAttribute(INTELLIGENCE) >= Counter) Counter = 0;
   else Counter -= GetActor()->GetAttribute(INTELLIGENCE);
 }
-
 
 
 void study::Terminate (truth Finished) {
@@ -71,16 +82,4 @@ void study::Terminate (truth Finished) {
 }
 
 
-
-void study::Save (outputfile &SaveFile) const {
-  action::Save(SaveFile);
-  SaveFile << Counter << LiteratureID;
-}
-
-
-
-void study::Load (inputfile &SaveFile) {
-  action::Load(SaveFile);
-  SaveFile >> Counter >> LiteratureID;
-}
 #endif
