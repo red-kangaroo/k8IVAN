@@ -71,7 +71,7 @@ ITEM(bodypart, item)
   virtual int GetEquipments() const { return 0; }
   virtual void CalculateVolumeAndWeight();
   virtual void CalculateEmitation();
-  void CalculateMaxHP(uLong = MAY_CHANGE_HPS|CHECK_USABILITY);
+  void CalculateMaxHP(feuLong = MAY_CHANGE_HPS|CHECK_USABILITY);
   virtual void SignalVolumeAndWeightChange();
   void FastRestoreHP();
   void RestoreHP();

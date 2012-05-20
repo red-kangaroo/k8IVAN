@@ -408,7 +408,7 @@ void felist::Empty () {
 
 void felist::AddEntry (cfestring &Str, col16 Color, uInt Marginal, uInt Key, truth Selectable) {
   Entry.push_back(new felistentry(Str, Color, Marginal, Key, Selectable));
-  if (Maximum && Entry.size() > uLong(Maximum)) {
+  if (Maximum && Entry.size() > feuLong(Maximum)) {
     delete Entry[0];
     Entry.erase(Entry.begin());
   }

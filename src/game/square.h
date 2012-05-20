@@ -34,7 +34,7 @@ class square
   virtual void AddCharacter(character*);
   virtual void RemoveCharacter();
   virtual character* GetCharacter() const { return Character; }
-  uLong GetLastSeen() const { return LastSeen; }
+  feuLong GetLastSeen() const { return LastSeen; }
   v2 GetPos() const { return Pos; }
   area* GetArea() const { return AreaUnder; }
   virtual gterrain* GetGTerrain() const = 0;
@@ -74,8 +74,8 @@ class square
   square* GetNearSquare(v2) const;
   virtual int GetSquareWalkability() const = 0;
   void SetCharacter(character* What) { Character = What; }
-  void AddFlags(uLong What) { Flags |= What; }
-  void RemoveFlags(uLong What) { Flags &= ~What; }
+  void AddFlags(feuLong What) { Flags |= What; }
+  void RemoveFlags(feuLong What) { Flags &= ~What; }
   virtual truth HasBeenSeen() const { return LastSeen; }
   virtual void SurviveEffect(character*);
  protected:
@@ -84,7 +84,7 @@ class square
   character* Character;
   v2 Pos;
   col24 Luminance;
-  mutable uLong Flags;
+  mutable feuLong Flags;
   uShort StaticAnimatedEntities;
   uShort AnimatedEntities;
   mutable uChar LastSeen;

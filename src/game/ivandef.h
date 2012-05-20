@@ -42,8 +42,8 @@ typedef const character ccharacter;
 struct databasebase
 {
   int Config;
-  uLong CommonFlags;
-  uLong NameFlags;
+  feuLong CommonFlags;
+  feuLong NameFlags;
 };
 
 template <class type, class base, class prototype>

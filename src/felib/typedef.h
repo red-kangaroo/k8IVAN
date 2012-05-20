@@ -26,11 +26,11 @@ typedef int32_t truth;
 typedef uint8_t uChar;
 typedef uint16_t uShort;
 typedef uint32_t uInt;
-typedef uint32_t uLong; // uint64_t?
+typedef uint32_t feuLong; // uint64_t?
 typedef int32_t sLong;
 typedef int32_t col16;
 typedef uShort packcol16;
-typedef uLong col24;
+typedef feuLong col24;
 typedef int32_t alpha;
 typedef uChar packalpha;
 typedef int32_t priority;
@@ -47,7 +47,7 @@ typedef const uint32_t culong; // uint64_t?
 typedef const int32_t cslong;
 typedef const int32_t ccol16;
 typedef const uShort cpackcol16;
-typedef const uLong ccol24;
+typedef const feuLong ccol24;
 typedef const int32_t calpha;
 typedef const uChar cpackalpha;
 typedef const int32_t cpriority;

@@ -71,7 +71,7 @@ struct characterdatabase : public databasebase {
   void PostProcess ();
   const prototype *ProtoType;
   double NaturalExperience[ATTRIBUTES];
-  uLong Flags;
+  feuLong Flags;
   truth IsAbstract;
   truth CanRead;
   truth CanBeGenerated;
@@ -215,8 +215,8 @@ struct characterdatabase : public databasebase {
   int BloodMaterial;
   int VomitMaterial;
   int PolymorphIntelligenceRequirement;
-  uLong DefaultCommandFlags;
-  uLong ConstantCommandFlags;
+  feuLong DefaultCommandFlags;
+  feuLong ConstantCommandFlags;
   festring ForceVomitMessage;
   int SweatMaterial;
   fearray<festring> ScienceTalkAdjectiveAttribute;
@@ -296,7 +296,7 @@ public:
   virtual void Load (inputfile &);
   virtual truth CanWield () const { return false; }
   virtual truth Catches(item *) { return false; }
-  truth CheckDeath (cfestring &, ccharacter * =0, uLong =0);
+  truth CheckDeath (cfestring &, ccharacter * =0, feuLong =0);
   truth DodgesFlyingItem (item *, double);
   virtual truth Hit (character *, v2, int, int=0)=0;
   truth ReadItem (item *);
@@ -330,7 +330,7 @@ public:
   void AddWeaponHitMessage (ccharacter *, citem *, int, truth = false) const;
   virtual void BeTalkedTo ();
   void ReceiveDarkness (sLong);
-  void Die (ccharacter *Killer=0, cfestring &Msg=CONST_S(""), uLong DeathFlags=0);
+  void Die (ccharacter *Killer=0, cfestring &Msg=CONST_S(""), feuLong DeathFlags=0);
   void HasBeenHitByItem (character *, item *, int, double, int);
   void Hunger ();
   void Move (v2, truth, truth = false);
@@ -580,7 +580,7 @@ public:
   DATA_BASE_VALUE(int, BloodMaterial);
   DATA_BASE_VALUE(int, VomitMaterial);
   DATA_BASE_TRUTH(AutomaticallySeen);
-  DATA_BASE_VALUE(uLong, DefaultCommandFlags);
+  DATA_BASE_VALUE(feuLong, DefaultCommandFlags);
   DATA_BASE_TRUTH(WillCarryItems);
   DATA_BASE_VALUE(int, SweatMaterial);
   DATA_BASE_TRUTH(Sweats);
@@ -759,7 +759,7 @@ public:
   void CalculateMaxHP ();
   int GetHP () const { return HP; }
   int GetMaxHP () const { return MaxHP; }
-  void CalculateBodyPartMaxHPs (uLong = MAY_CHANGE_HPS|CHECK_USABILITY);
+  void CalculateBodyPartMaxHPs (feuLong = MAY_CHANGE_HPS|CHECK_USABILITY);
   truth IsInitializing () const { return Flags & C_INITIALIZING; }
   truth IsInNoMsgMode () const { return Flags & C_IN_NO_MSG_MODE; }
   truth ActivateRandomState (int, int, sLong = 0);
@@ -777,7 +777,7 @@ public:
   virtual double GetTimeToKill (ccharacter *, truth) const = 0;
   virtual void AddSpecialEquipmentInfo (festring &, int) const {}
   virtual festring GetBodyPartName (int, truth = false) const;
-  item *SearchForItem (uLong) const;
+  item *SearchForItem (feuLong) const;
   truth SearchForItem (citem *) const;
   item *SearchForItem (const sweaponskill *) const;
   truth ContentsCanBeSeenBy (ccharacter *) const;
@@ -788,7 +788,7 @@ public:
   virtual truth SpecialBiteEffect (character *, v2, int, int, truth) { return false; }
   truth HitEffect (character *, item *, v2, int, int, int, truth);
   void WeaponSkillHit (item *, int, int);
-  character *Duplicate (uLong = 0);
+  character *Duplicate (feuLong = 0);
   room *GetRoom (int I=0) const { return GetLSquareUnder(I)->GetRoom(); }
   truth TryToEquip (item *);
   truth TryToConsume (item *);
@@ -798,7 +798,7 @@ public:
   void PrintBeginPanicMessage () const;
   void PrintEndPanicMessage () const;
   void CheckPanic (int);
-  character *DuplicateToNearestSquare (character *, uLong = 0);
+  character *DuplicateToNearestSquare (character *, feuLong = 0);
   virtual void SignalSpoil (material *m = 0);
   virtual void SignalSpoilLevelChange (material *m = 0);
   virtual truth UseMaterialAttributes () const = 0;
@@ -815,7 +815,7 @@ public:
   void ReceiveAntidote (sLong);
   void AddAntidoteConsumeEndMessage () const;
   truth IsDead () const;
-  void AddOriginalBodyPartID (int, uLong);
+  void AddOriginalBodyPartID (int, feuLong);
   void AddToInventory (const fearray<contentscript<item> > &, int);
   truth HasHadBodyPart (citem *) const;
   void ProcessAndAddMessage (festring) const;
@@ -862,9 +862,9 @@ public:
   truth HomeDataIsValid () const;
   void SetHomePos (v2);
   void RemoveHomeData ();
-  uLong GetID () const { return ID; }
+  feuLong GetID () const { return ID; }
   void AddESPConsumeMessage () const;
-  const std::list<uLong> &GetOriginalBodyPartID (int) const;
+  const std::list<feuLong> &GetOriginalBodyPartID (int) const;
   void GetHitByExplosion (const explosion *, int);
   truth CanBePoisoned () const { return TorsoIsAlive(); }
   truth CanBeParasitized () const { return TorsoIsAlive(); }
@@ -897,7 +897,7 @@ public:
   truth PostProcessForBone ();
   virtual void FinalProcessForBone ();
   virtual truth EditAllAttributes (int);
-  virtual void SetSoulID (uLong);
+  virtual void SetSoulID (feuLong);
   virtual truth SuckSoul (character *) { return false; }
   virtual truth MustBeRemovedFromBone () const;
   truth TorsoIsAlive () const { return GetTorso()->IsAlive(); }
@@ -957,8 +957,8 @@ public:
   virtual head *GetVirtualHead () const { return 0; }
   truth IsAlly (ccharacter *) const;
   virtual truth CanVomit () const { return TorsoIsAlive(); }
-  uLong GetLastAcidMsgMin () const { return LastAcidMsgMin; }
-  void SetLastAcidMsgMin (uLong What) { LastAcidMsgMin = What; }
+  feuLong GetLastAcidMsgMin () const { return LastAcidMsgMin; }
+  void SetLastAcidMsgMin (feuLong What) { LastAcidMsgMin = What; }
   virtual truth AllowSpoil () const { return false; }
   void Disappear (corpse *, cchar *, truth (item::*)() const);
   void ResetSpoiling ();
@@ -1007,7 +1007,7 @@ public:
   truth IsImmuneToLeprosy () const;
   bodypart *SearchForOriginalBodyPart (int) const;
   void SetLifeExpectancy (int, int);
-  virtual void DuplicateEquipment (character *, uLong);
+  virtual void DuplicateEquipment (character *, feuLong);
   virtual void SignalDisappearance ();
   virtual truth HornOfFearWorks () const;
   virtual truth CanHear () const;
@@ -1019,10 +1019,10 @@ public:
   void ReceiveOmmelSnot (sLong);
   void ReceiveOmmelBone (sLong);
   truth IsSameAs (ccharacter *) const;
-  uLong GetCommandFlags () const;
-  void SetCommandFlags (uLong What) { CommandFlags = What; }
-  uLong GetPossibleCommandFlags () const;
-  uLong GetConstantCommandFlags () const;
+  feuLong GetCommandFlags () const;
+  void SetCommandFlags (feuLong What) { CommandFlags = What; }
+  feuLong GetPossibleCommandFlags () const;
+  feuLong GetConstantCommandFlags () const;
   virtual truth AllowEquipment (citem *, int) const { return true; }
   truth ChatMenu ();
   truth ChangePetEquipment ();
@@ -1031,7 +1031,7 @@ public:
   truth IssuePetCommands ();
   truth ChatIdly ();
   truth EquipmentScreen (stack *, stack *);
-  uLong GetManagementFlags () const;
+  feuLong GetManagementFlags () const;
   cchar *GetVerbalBurdenState () const;
   col16 GetVerbalBurdenStateColor () const;
   virtual int GetAttributeAverage () const;
@@ -1068,18 +1068,18 @@ public:
   truth IsStuck () const { return truth(TrapData); }
   festring GetTrapDescription () const;
   truth TryToUnStickTraps (v2);
-  void RemoveTrap (uLong);
-  void AddTrap (uLong, uLong);
-  truth IsStuckToTrap (uLong) const;
+  void RemoveTrap (feuLong);
+  void AddTrap (feuLong, feuLong);
+  truth IsStuckToTrap (feuLong) const;
   void RemoveTraps ();
   void RemoveTraps (int);
-  int RandomizeHurtBodyPart (uLong) const;
-  virtual int RandomizeTryToUnStickBodyPart (uLong) const { return NONE_INDEX; }
+  int RandomizeHurtBodyPart (feuLong) const;
+  virtual int RandomizeTryToUnStickBodyPart (feuLong) const { return NONE_INDEX; }
   truth BodyPartIsStuck (int) const;
   void PrintAttribute (cchar *, int, int, int) const;
   virtual truth AllowUnconsciousness () const;
   truth CanPanic () const;
-  int GetRandomBodyPart (uLong = ALL_BODYPART_FLAGS) const;
+  int GetRandomBodyPart (feuLong = ALL_BODYPART_FLAGS) const;
   virtual truth CanChokeOnWeb (web *) const { return CanChoke(); }
   virtual truth BrainsHurt () const { return false; }
   truth IsSwimming () const;
@@ -1204,7 +1204,7 @@ public:
   action *Action;
   const database *DataBase;
   double BaseExperience[BASE_ATTRIBUTES];
-  std::list<uLong> *OriginalBodyPartID;
+  std::list<feuLong> *OriginalBodyPartID;
   entity *MotherEntity;
   character *PolymorphBackup;
   cweaponskill *CWeaponSkill;
@@ -1224,17 +1224,17 @@ public:
   int AttributeBonus[BASE_ATTRIBUTES];
   int CarryingBonus;
   homedata *HomeData;
-  uLong ID;
+  feuLong ID;
   int SquaresUnder;
   std::vector<v2> Route;
   std::set<v2> Illegal;
-  uLong LastAcidMsgMin;
+  feuLong LastAcidMsgMin;
   int Stamina;
   int MaxStamina;
   int BlocksSinceLastTurn;
   double GenerationDanger;
-  uLong CommandFlags;
-  uLong WarnFlags;
+  feuLong CommandFlags;
+  feuLong WarnFlags;
   int ScienceTalks;
   trapdata *TrapData;
   expmodifiermap ExpModifierMap;

@@ -74,9 +74,9 @@ rawbitmap::~rawbitmap () {
 /* a lousy bitmap saver that uses the pcx format but doesn't do any compression */
 void rawbitmap::Save (cfestring &FileName) {
   char PCXHeader[128];
-  uLong hv = 0x0801050ALU;
+  feuLong hv = 0x0801050ALU;
   memset(PCXHeader, 0, 128);
-  //*((uLong*)PCXHeader) = 0x0801050A;
+  //*((feuLong*)PCXHeader) = 0x0801050A;
   memmove(PCXHeader, &hv, 4); //FIXME: endianness
   PCXHeader[65] = 0x01;
   PCXHeader[66] = Size.X & 0xFF;
@@ -225,7 +225,7 @@ bitmap *rawbitmap::Colorize (v2 Pos, v2 Border, v2 Move, cpackcol16 *Color, alph
     UseAlpha = false;
   }
   truth Rusted = RustData && (RustData[0] || RustData[1] || RustData[2] || RustData[3]);
-  uLong RustSeed[4];
+  feuLong RustSeed[4];
   if (Rusted) {
     RustSeed[0] = (RustData[0]&0xFC)>>2;
     RustSeed[1] = (RustData[1]&0xFC)>>2;

@@ -33,9 +33,9 @@ struct materialdatabase : public databasebase
   void InitDefaults(const prototype*, int);
   void PostProcess() { }
   const prototype* ProtoType;
-  uLong CategoryFlags;
-  uLong BodyFlags;
-  uLong InteractionFlags;
+  feuLong CategoryFlags;
+  feuLong BodyFlags;
+  feuLong InteractionFlags;
   int StrengthValue;
   int ConsumeType;
   int Density;
@@ -121,16 +121,16 @@ class material
   sLong GetRawPrice() const;
   truth CanBeDug(material* ShovelMaterial) const;
   virtual truth HasBe() const { return false; }
-  virtual void Be(uLong) { }
+  virtual void Be(feuLong) { }
   int GetType() const { return GetProtoType()->GetIndex(); }
   virtual void AddConsumeEndMessage(character*) const;
   DATA_BASE_VALUE(const prototype*, ProtoType);
   DATA_BASE_VALUE(int, Config);
-  DATA_BASE_VALUE(uLong, CommonFlags);
-  DATA_BASE_VALUE(uLong, NameFlags);
-  DATA_BASE_VALUE(uLong, CategoryFlags);
-  DATA_BASE_VALUE(uLong, BodyFlags);
-  DATA_BASE_VALUE(uLong, InteractionFlags);
+  DATA_BASE_VALUE(feuLong, CommonFlags);
+  DATA_BASE_VALUE(feuLong, NameFlags);
+  DATA_BASE_VALUE(feuLong, CategoryFlags);
+  DATA_BASE_VALUE(feuLong, BodyFlags);
+  DATA_BASE_VALUE(feuLong, InteractionFlags);
   virtual DATA_BASE_VALUE(int, StrengthValue);
   DATA_BASE_VALUE(int, ConsumeType);
   DATA_BASE_VALUE(int, Density);

@@ -45,7 +45,7 @@ public:
   virtual void Load (inputfile &SaveFile);
   virtual void Handle ();
   virtual void Terminate (truth);
-  void SetConsumingID (uLong What) { ConsumingID = What; }
+  void SetConsumingID (feuLong What) { ConsumingID = What; }
   virtual truth AllowUnconsciousness () const { return false; }
   virtual truth AllowFoodConsumption () const { return false; }
   virtual cchar* GetDescription () const;
@@ -53,7 +53,7 @@ public:
 
 protected:
   festring Description;
-  uLong ConsumingID;
+  feuLong ConsumingID;
 };
 
 
@@ -84,16 +84,16 @@ public:
   virtual void Handle ();
   void SetSquareDug (v2 What) { SquareDug = What; }
   virtual void Terminate (truth);
-  void SetRightBackupID (uLong What) { RightBackupID = What; }
-  void SetLeftBackupID (uLong What) { LeftBackupID = What; }
+  void SetRightBackupID (feuLong What) { RightBackupID = What; }
+  void SetLeftBackupID (feuLong What) { LeftBackupID = What; }
   virtual truth TryDisplace () { return false; }
   virtual cchar *GetDescription () const;
   virtual truth ShowEnvironment () const { return false; }
   void SetMoveDigger (truth What) { MoveDigger = What; }
 
 protected:
-  uLong RightBackupID;
-  uLong LeftBackupID;
+  feuLong RightBackupID;
+  feuLong LeftBackupID;
   v2 SquareDug;
   truth MoveDigger;
 };
@@ -130,12 +130,12 @@ public:
   virtual void Load (inputfile &SaveFile);
   virtual void Handle ();
   virtual void Terminate (truth);
-  void SetLiteratureID (uLong What) { LiteratureID = What; }
+  void SetLiteratureID (feuLong What) { LiteratureID = What; }
   virtual cchar *GetDescription() const;
   void SetCounter (int What) { Counter = What; }
 
 protected:
-  uLong LiteratureID;
+  feuLong LiteratureID;
   int Counter;
 };
 

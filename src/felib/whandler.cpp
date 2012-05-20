@@ -25,7 +25,7 @@
 
 truth (*globalwindowhandler::ControlLoop[MAX_CONTROLS])();
 int globalwindowhandler::Controls = 0;
-uLong globalwindowhandler::Tick;
+feuLong globalwindowhandler::Tick;
 truth globalwindowhandler::ControlLoopsEnabled = true;
 
 std::vector<int> globalwindowhandler::KeyBuffer;
@@ -99,7 +99,7 @@ void globalwindowhandler::KSDLWaitEvent (void) {
 
 
 int globalwindowhandler::GetKey (truth EmptyBuffer) {
-  static uLong LastTick = 0;
+  static feuLong LastTick = 0;
   // Flush the buffer
   if (EmptyBuffer) {
     KSDLProcessEvents();

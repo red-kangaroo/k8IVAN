@@ -20,7 +20,7 @@
 #define STONE_TERRAIN           (32)
 
 
-uLong level::NextExplosionID = 1;
+feuLong level::NextExplosionID = 1;
 
 node*** node::NodeMap;
 int node::RequiredWalkability;
@@ -37,8 +37,8 @@ void level::AddToAttachQueue (v2 Pos) { AttachQueue.push_back(Pos); }
 
 
 level::~level () {
-  for (uLong c = 0; c < XSizeTimesYSize; ++c) delete NodeMap[0][c];
-  for (uLong c = 0; c < Room.size(); ++c) delete Room[c];
+  for (feuLong c = 0; c < XSizeTimesYSize; ++c) delete NodeMap[0][c];
+  for (feuLong c = 0; c < Room.size(); ++c) delete Room[c];
   delete [] NodeMap;
   delete [] WalkabilityMap;
   delete GlobalRainLiquid;
@@ -1077,7 +1077,7 @@ void level::GenerateRectangularRoom(std::vector<v2>& OKForDoor, std::vector<v2>&
 
 void level::Reveal()
 {
-  uLong Tick = game::GetLOSTick();
+  feuLong Tick = game::GetLOSTick();
 
   for(int x = 0; x < XSize; ++x)
     for(int y = 0; y < YSize; ++y)
@@ -2062,7 +2062,7 @@ void level::CheckSunLight () {
 void level::ChangeSunLight()
 {
   truth SunSet = game::IsDark(SunLightEmitation);
-  uLong c;
+  feuLong c;
 
   for(c = 0; c < XSizeTimesYSize; ++c)
     Map[0][c]->RemoveSunLight();
@@ -2112,13 +2112,13 @@ struct sunbeamcontroller : public stackcontroller
 {
   static truth Handler(int, int);
   static void ProcessStack();
-  static uLong ID;
+  static feuLong ID;
   static int SunLightBlockHeight;
   static v2 SunLightBlockPos;
   static truth ReSunEmitation;
 };
 
-uLong sunbeamcontroller::ID;
+feuLong sunbeamcontroller::ID;
 int sunbeamcontroller::SunLightBlockHeight;
 v2 sunbeamcontroller::SunLightBlockPos;
 truth sunbeamcontroller::ReSunEmitation;
@@ -2127,7 +2127,7 @@ void level::ForceEmitterNoxify(const emittervector& Emitter) const
 {
   for(emittervector::const_iterator i = Emitter.begin(); i != Emitter.end(); ++i)
   {
-    uLong ID = i->ID;
+    feuLong ID = i->ID;
     lsquare* Square = GetLSquare(ExtractPosFromEmitterID(ID));
 
     if(ID&SECONDARY_SUN_LIGHT)
@@ -2137,11 +2137,11 @@ void level::ForceEmitterNoxify(const emittervector& Emitter) const
   }
 }
 
-void level::ForceEmitterEmitation(const emittervector& Emitter, const sunemittervector& SunEmitter, uLong IDFlags) const
+void level::ForceEmitterEmitation(const emittervector& Emitter, const sunemittervector& SunEmitter, feuLong IDFlags) const
 {
   for(emittervector::const_iterator i = Emitter.begin(); i != Emitter.end(); ++i)
   {
-    uLong ID = i->ID;
+    feuLong ID = i->ID;
     lsquare* Square = GetLSquare(ExtractPosFromEmitterID(ID));
 
     if(ID&SECONDARY_SUN_LIGHT)
@@ -2160,7 +2160,7 @@ void level::ForceEmitterEmitation(const emittervector& Emitter, const sunemitter
 
     for(sunemittervector::const_iterator i = SunEmitter.begin(); i != SunEmitter.end(); ++i)
     {
-      uLong ID = (*i&~(EMITTER_SHADOW_BITS|EMITTER_SQUARE_PART_BITS))|RE_SUN_EMITATED, SourceFlags;
+      feuLong ID = (*i&~(EMITTER_SHADOW_BITS|EMITTER_SQUARE_PART_BITS))|RE_SUN_EMITATED, SourceFlags;
       int X, Y;
 
       if(ID&ID_X_COORDINATE)
@@ -2209,7 +2209,7 @@ struct loscontroller : public tickcontroller, public stackcontroller
     Square->SquarePartLastSeen = (Square->SquarePartLastSeen&~SquarePartTickMask[SquarePartIndex])|ShiftedTick[SquarePartIndex];
     return false;
   }
-  static uLong& GetTickReference(int X, int Y)
+  static feuLong& GetTickReference(int X, int Y)
   {
     return Map[X][Y]->SquarePartLastSeen;
   }
@@ -2272,7 +2272,7 @@ void level::EmitSunBeams()
   sunbeamcontroller::ReSunEmitation = false;
   v2 Dir = SunLightDirection;
   int x, y, X = 0, Y = 0, SourceFlags;
-  uLong IDFlags;
+  feuLong IDFlags;
 
   /* Do not try to understand the logic behind the starting points of
      sunbeams. I determined the formulas by trial and error since all
@@ -2345,7 +2345,7 @@ void level::EmitSunBeams()
   }
 }
 
-void level::EmitSunBeam(v2 S, uLong ID, int SourceFlags) const
+void level::EmitSunBeam(v2 S, feuLong ID, int SourceFlags) const
 {
   S <<= 1;
   v2 D = S+SunLightDirection;
@@ -2392,12 +2392,12 @@ truth sunbeamcontroller::Handler(int x, int y)
 
   if(!SunLightBlockHeight)
   {
-    uLong Flag = 1<<EMITTER_SQUARE_PART_SHIFT<<SquarePartIndex;
+    feuLong Flag = 1<<EMITTER_SQUARE_PART_SHIFT<<SquarePartIndex;
     Square->AddSunLightEmitter(ID|Flag);
   }
   else
   {
-    uLong Flags = ((1<<EMITTER_SQUARE_PART_SHIFT)|(1<<EMITTER_SHADOW_SHIFT))<<SquarePartIndex;
+    feuLong Flags = ((1<<EMITTER_SQUARE_PART_SHIFT)|(1<<EMITTER_SHADOW_SHIFT))<<SquarePartIndex;
 
     Square->AddSunLightEmitter(ID|Flags);
   }
@@ -2457,7 +2457,7 @@ void sunbeamcontroller::ProcessStack()
 
 int level::DetectMaterial(cmaterial* Material)
 {
-  uLong Tick = game::IncreaseLOSTick();
+  feuLong Tick = game::IncreaseLOSTick();
   int Squares = 0;
 
   for(int x = 0; x < XSize; ++x)

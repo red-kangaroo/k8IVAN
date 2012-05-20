@@ -31,7 +31,7 @@ public:
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
   virtual int GetLevelMap (int) const = 0;
-  virtual uLong GetUnuseTickMap (int) const = 0;
+  virtual feuLong GetUnuseTickMap (int) const = 0;
   virtual int GetUnusePenaltyMap (int) const = 0;
 
 protected:
@@ -44,7 +44,7 @@ protected:
 class cweaponskill : public weaponskill {
 public:
   virtual int GetLevelMap (int) const;
-  virtual uLong GetUnuseTickMap (int) const;
+  virtual feuLong GetUnuseTickMap (int) const;
   virtual int GetUnusePenaltyMap (int) const;
   cchar *GetName (int) const;
   int GetBonus () const { return 1000+50*Level; }
@@ -70,7 +70,7 @@ public:
   sweaponskill () : ID(0), Weight(0), Config(0) {}
   sweaponskill (citem *);
   virtual int GetLevelMap (int) const;
-  virtual uLong GetUnuseTickMap (int) const;
+  virtual feuLong GetUnuseTickMap (int) const;
   virtual int GetUnusePenaltyMap (int) const;
   int GetBonus () const { return Level ? 1150+25*(Level-1) : 1000; }
   void AddLevelUpMessage (cchar *) const;
@@ -78,13 +78,13 @@ public:
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
   truth IsSkillOf (citem *) const;
-  truth IsSkillOfCloneMother (citem *, uLong) const;
-  void SetID (uLong What) { ID = What; }
-  uLong GetID () const { return ID; }
+  truth IsSkillOfCloneMother (citem *, feuLong) const;
+  void SetID (feuLong What) { ID = What; }
+  feuLong GetID () const { return ID; }
   void PreProcessForBone () { ID = -ID; }
 
 private:
-  uLong ID;
+  feuLong ID;
   sLong Weight;
   int Config;
 };

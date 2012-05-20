@@ -33,7 +33,7 @@ web::~web () {
 
 
 truth web::TryToUnStick (character *Victim, v2) {
-  uLong TrapID = GetTrapID();
+  feuLong TrapID = GetTrapID();
   int Modifier = 7*GetTrapBaseModifier()/Max(Victim->GetAttribute(DEXTERITY)+Victim->GetAttribute(ARM_STRENGTH), 1);
   if (!RAND_N(Max(Modifier, 2))) {
     Victim->RemoveTrap(TrapID);

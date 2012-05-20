@@ -39,9 +39,9 @@ template <class type> inline fearray<type>::fearray (const fearray<type>& A) : D
 
 
 template <class type> inline fearray<type>::fearray (const type *Array, sizetype Size) : Size(Size) {
-  char *Ptr = new char[Size*sizeof(type)+sizeof(uLong)];
-  *reinterpret_cast<uLong *>(Ptr) = 0;
-  Data = reinterpret_cast<type *>(Ptr+sizeof(uLong));
+  char *Ptr = new char[Size*sizeof(type)+sizeof(feuLong)];
+  *reinterpret_cast<feuLong *>(Ptr) = 0;
+  Data = reinterpret_cast<type *>(Ptr+sizeof(feuLong));
   for (sizetype c = 0; c < Size; ++c) new (&Data[c])type(Array[c]);
 }
 
@@ -77,9 +77,9 @@ template <class type> inline void fearray<type>::Clear () {
 
 
 template <class type> inline void fearray<type>::Allocate (sizetype What) {
-  char *Ptr = new char[What*sizeof(type)+sizeof(uLong)];
-  *reinterpret_cast<uLong *>(Ptr) = 0;
-  Data = reinterpret_cast<type *>(Ptr+sizeof(uLong));
+  char *Ptr = new char[What*sizeof(type)+sizeof(feuLong)];
+  *reinterpret_cast<feuLong *>(Ptr) = 0;
+  Data = reinterpret_cast<type *>(Ptr+sizeof(feuLong));
   Size = What;
   for (sizetype c = 0; c < What; ++c) new (&Data[c])type;
 }
@@ -90,9 +90,9 @@ template <class type> inline void fearray<type>::Add (const type &Type) {
   type *Ptr = Data;
   if (Ptr) {
     sizetype Size = this->Size++;
-    char* NewPtr = new char[(Size+1)*sizeof(type)+sizeof(uLong)];
-    *reinterpret_cast<uLong *>(NewPtr) = 0;
-    type* NewData = reinterpret_cast<type *>(NewPtr+sizeof(uLong));
+    char* NewPtr = new char[(Size+1)*sizeof(type)+sizeof(feuLong)];
+    *reinterpret_cast<feuLong *>(NewPtr) = 0;
+    type* NewData = reinterpret_cast<type *>(NewPtr+sizeof(feuLong));
     if (!REFS(Ptr)--) {
       for (sizetype c = 0; c < Size; ++c) {
         new (&NewData[c])type(Ptr[c]);
@@ -105,9 +105,9 @@ template <class type> inline void fearray<type>::Add (const type &Type) {
     Data = NewData;
     new(&NewData[Size]) type(Type);
   } else {
-    char *NewPtr = new char[sizeof(type)+sizeof(uLong)];
-    *reinterpret_cast<uLong*>(NewPtr) = 0;
-    Data = reinterpret_cast<type*>(NewPtr+sizeof(uLong));
+    char *NewPtr = new char[sizeof(type)+sizeof(feuLong)];
+    *reinterpret_cast<feuLong*>(NewPtr) = 0;
+    Data = reinterpret_cast<type*>(NewPtr+sizeof(feuLong));
     Size = 1;
     new(Data) type(Type);
   }

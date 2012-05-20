@@ -323,7 +323,7 @@ cchar *character::UnarmedHitNoun () const { return "attack"; }
 cchar *character::KickNoun () const { return "kick"; }
 cchar *character::BiteNoun () const { return "attack"; }
 cchar *character::GetEquipmentName (int) const { return ""; }
-const std::list<uLong> &character::GetOriginalBodyPartID (int I) const { return OriginalBodyPartID[I]; }
+const std::list<feuLong> &character::GetOriginalBodyPartID (int I) const { return OriginalBodyPartID[I]; }
 square *character::GetNeighbourSquare (int I) const { return GetSquareUnder()->GetNeighbourSquare(I); }
 lsquare *character::GetNeighbourLSquare (int I) const { return static_cast<lsquare *>(GetSquareUnder())->GetNeighbourLSquare(I); }
 wsquare *character::GetNeighbourWSquare (int I) const { return static_cast<wsquare *>(GetSquareUnder())->GetNeighbourWSquare(I); }
@@ -400,7 +400,7 @@ character::character (ccharacter &Char) :
   if (Team) TeamIterator = Team->Add(this);
   for (c = 0; c < BASE_ATTRIBUTES; ++c) BaseExperience[c] = Char.BaseExperience[c];
   BodyPartSlot = new bodypartslot[BodyParts];
-  OriginalBodyPartID = new std::list<uLong>[BodyParts];
+  OriginalBodyPartID = new std::list<feuLong>[BodyParts];
   CWeaponSkill = new cweaponskill[AllowedWeaponSkillCategories];
   SquareUnder = new square *[SquaresUnder];
   if (SquaresUnder == 1) *SquareUnder = 0; else memset(SquareUnder, 0, SquaresUnder*sizeof(square *));
@@ -1059,7 +1059,7 @@ void character::CreateCorpse (lsquare *Square) {
 }
 
 
-void character::Die (ccharacter *Killer, cfestring &Msg, uLong DeathFlags) {
+void character::Die (ccharacter *Killer, cfestring &Msg, feuLong DeathFlags) {
   /* Note: This function musn't delete any objects, since one of these may be
      the one currently processed by pool::Be()! */
   if (!IsEnabled()) return;
@@ -1465,7 +1465,7 @@ void character::Save (outputfile &SaveFile) const {
 
   if (GetTeam()) {
     SaveFile.Put(true);
-    SaveFile << Team->GetID(); // uLong
+    SaveFile << Team->GetID(); // feuLong
   } else {
     SaveFile.Put(false);
   }
@@ -1513,7 +1513,7 @@ void character::Load (inputfile &SaveFile) {
 
   for (int c = 0; c < STATES; ++c) SaveFile >> TemporaryStateCounter[c];
 
-  if (SaveFile.Get()) SetTeam(game::GetTeam(ReadType<uLong>(SaveFile)));
+  if (SaveFile.Get()) SetTeam(game::GetTeam(ReadType<feuLong>(SaveFile)));
 
   if (SaveFile.Get()) GetTeam()->SetLeader(this);
 
@@ -1569,7 +1569,7 @@ void character::AddScoreEntry (cfestring &Description, double Multiplier, truth 
 }
 
 
-truth character::CheckDeath (cfestring &Msg, ccharacter *Murderer, uLong DeathFlags) {
+truth character::CheckDeath (cfestring &Msg, ccharacter *Murderer, feuLong DeathFlags) {
   if (!IsEnabled()) return true;
   if (game::IsSumoWrestling() && IsDead()) {
     game::EndSumoWrestling(!!IsPlayer());
@@ -3371,7 +3371,7 @@ void character::Initialize (int NewConfig, int SpecialFlags) {
   CalculateAllowedWeaponSkillCategories();
   CalculateSquaresUnder();
   BodyPartSlot = new bodypartslot[BodyParts];
-  OriginalBodyPartID = new std::list<uLong>[BodyParts];
+  OriginalBodyPartID = new std::list<feuLong>[BodyParts];
   CWeaponSkill = new cweaponskill[AllowedWeaponSkillCategories];
   SquareUnder = new square*[SquaresUnder];
 
@@ -4215,7 +4215,7 @@ bodypart *character::FindRandomOwnBodyPart (truth AllowNonLiving) const {
   itemvector LostAndFound;
   for (int c = 0; c < BodyParts; ++c) {
     if (!GetBodyPart(c)) {
-      for (std::list<uLong>::iterator i = OriginalBodyPartID[c].begin(); i != OriginalBodyPartID[c].end(); ++i) {
+      for (std::list<feuLong>::iterator i = OriginalBodyPartID[c].begin(); i != OriginalBodyPartID[c].end(); ++i) {
         bodypart *Found = static_cast<bodypart *>(SearchForItem(*i));
         if (Found && (AllowNonLiving || Found->CanRegenerate())) LostAndFound.push_back(Found);
       }
@@ -4551,8 +4551,8 @@ void character::CalculateMaxHP () {
 }
 
 
-void character::CalculateBodyPartMaxHPs (uLong Flags) {
-  doforbodypartswithparam<uLong>()(this, &bodypart::CalculateMaxHP, Flags);
+void character::CalculateBodyPartMaxHPs (feuLong Flags) {
+  doforbodypartswithparam<feuLong>()(this, &bodypart::CalculateMaxHP, Flags);
   CalculateMaxHP();
   CalculateHP();
 }
@@ -4719,8 +4719,8 @@ festring character::GetBodyPartName (int I, truth Articled) const {
 }
 
 
-item *character::SearchForItem(uLong ID) const {
-  item *Equipment = findequipment<uLong>()(this, &item::HasID, ID);
+item *character::SearchForItem(feuLong ID) const {
+  item *Equipment = findequipment<feuLong>()(this, &item::HasID, ID);
   if (Equipment) return Equipment;
   for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) if (i->GetID() == ID) return *i;
   return 0;
@@ -4768,7 +4768,7 @@ void character::WeaponSkillHit (item *Weapon, int Type, int Hits) {
 
 
 /* Returns 0 if character cannot be duplicated */
-character *character::Duplicate (uLong Flags) {
+character *character::Duplicate (feuLong Flags) {
   if (!(Flags & IGNORE_PROHIBITIONS) && !CanBeCloned()) return 0;
   character *Char = GetProtoType()->Clone(this);
   if (Flags & MIRROR_IMAGE) {
@@ -4886,7 +4886,7 @@ void character::CheckPanic (int Ticks) {
 
 
 /* returns 0 if fails else the newly created character */
-character *character::DuplicateToNearestSquare (character *Cloner, uLong Flags) {
+character *character::DuplicateToNearestSquare (character *Cloner, feuLong Flags) {
   character *NewlyCreated = Duplicate(Flags);
   if (!NewlyCreated) return 0;
   if (Flags & CHANGE_TEAM && Cloner) NewlyCreated->ChangeTeam(Cloner->GetTeam());
@@ -5034,7 +5034,7 @@ void character::SignalSpoilLevelChange (material *m) {
 }
 
 
-void character::AddOriginalBodyPartID (int I, uLong What) {
+void character::AddOriginalBodyPartID (int I, feuLong What) {
   if (std::find(OriginalBodyPartID[I].begin(), OriginalBodyPartID[I].end(), What) == OriginalBodyPartID[I].end()) {
     OriginalBodyPartID[I].push_back(What);
     if (OriginalBodyPartID[I].size() > 100) OriginalBodyPartID[I].erase(OriginalBodyPartID[I].begin());
@@ -5124,7 +5124,7 @@ void character::DamageAllItems (character *Damager, int Damage, int Type) {
 
 
 truth character::Equips (citem *Item) const {
-  return combineequipmentpredicateswithparam<uLong>()(this, &item::HasID, Item->GetID(), 1);
+  return combineequipmentpredicateswithparam<feuLong>()(this, &item::HasID, Item->GetID(), 1);
 }
 
 
@@ -5723,7 +5723,7 @@ truth character::PostProcessForBone (double &DangerSum, int& Enemies) {
 
 
 truth character::PostProcessForBone () {
-  uLong NewID = game::CreateNewCharacterID(this);
+  feuLong NewID = game::CreateNewCharacterID(this);
   game::GetBoneCharacterIDMap().insert(std::make_pair(-ID, NewID));
   game::RemoveCharacterID(ID);
   ID = NewID;
@@ -5744,10 +5744,10 @@ void character::FinalProcessForBone () {
   doforequipments()(this, &item::FinalProcessForBone);
   int c;
   for (c = 0; c < BodyParts; ++c) {
-    for (std::list<uLong>::iterator i = OriginalBodyPartID[c].begin(); i != OriginalBodyPartID[c].end();) {
+    for (std::list<feuLong>::iterator i = OriginalBodyPartID[c].begin(); i != OriginalBodyPartID[c].end();) {
       boneidmap::iterator BI = game::GetBoneItemIDMap().find(*i);
       if (BI == game::GetBoneItemIDMap().end()) {
-        std::list<uLong>::iterator Dirt = i++;
+        std::list<feuLong>::iterator Dirt = i++;
         OriginalBodyPartID[c].erase(Dirt);
       } else {
         *i = BI->second;
@@ -5758,13 +5758,13 @@ void character::FinalProcessForBone () {
 }
 
 
-void character::SetSoulID (uLong What) {
+void character::SetSoulID (feuLong What) {
   if (GetPolymorphBackup()) GetPolymorphBackup()->SetSoulID(What);
 }
 
 
 truth character::SearchForItem (citem *Item) const {
-  if (combineequipmentpredicateswithparam<uLong>()(this, &item::HasID, Item->GetID(), 1)) return true;
+  if (combineequipmentpredicateswithparam<feuLong>()(this, &item::HasID, Item->GetID(), 1)) return true;
   for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) if (*i == Item) return true;
   return false;
 }
@@ -6340,7 +6340,7 @@ truth character::CanUseEquipment (int I) const {
 /* Target mustn't have any equipment */
 void character::DonateEquipmentTo (character *Character) {
   if (IsPlayer()) {
-    uLong *EquipmentMemory = game::GetEquipmentMemory();
+    feuLong *EquipmentMemory = game::GetEquipmentMemory();
     for (int c = 0; c < MAX_EQUIPMENT_SLOTS; ++c) {
       item *Item = GetEquipment(c);
       if (Item) {
@@ -6570,7 +6570,7 @@ void character::LeprosyHandler () {
 
 bodypart *character::SearchForOriginalBodyPart (int I) const {
   for (stackiterator i1 = GetStackUnder()->GetBottom(); i1.HasItem(); ++i1) {
-    for (std::list<uLong>::iterator i2 = OriginalBodyPartID[I].begin(); i2 != OriginalBodyPartID[I].end(); ++i2)
+    for (std::list<feuLong>::iterator i2 = OriginalBodyPartID[I].begin(); i2 != OriginalBodyPartID[I].end(); ++i2)
       if (i1->GetID() == *i2) return static_cast<bodypart*>(*i1);
   }
   return 0;
@@ -6591,7 +6591,7 @@ void character::SetLifeExpectancy (int Base, int RandPlus) {
 
 
 /* Receiver should be a fresh duplicate of this */
-void character::DuplicateEquipment (character *Receiver, uLong Flags) {
+void character::DuplicateEquipment (character *Receiver, feuLong Flags) {
   for (int c = 0; c < GetEquipments(); ++c) {
     item *Equipment = GetEquipment(c);
     if (Equipment) {
@@ -6690,19 +6690,19 @@ truth character::IsSameAs (ccharacter *What) const {
 }
 
 
-uLong character::GetCommandFlags () const {
+feuLong character::GetCommandFlags () const {
   return !StateIsActivated(PANIC) ? CommandFlags : CommandFlags|FLEE_FROM_ENEMIES;
 }
 
 
-uLong character::GetConstantCommandFlags () const {
+feuLong character::GetConstantCommandFlags () const {
   return !StateIsActivated(PANIC) ? DataBase->ConstantCommandFlags : DataBase->ConstantCommandFlags|FLEE_FROM_ENEMIES;
 }
 
 
-uLong character::GetPossibleCommandFlags () const {
+feuLong character::GetPossibleCommandFlags () const {
   int Int = GetAttribute(INTELLIGENCE);
-  uLong Flags = ALL_COMMAND_FLAGS;
+  feuLong Flags = ALL_COMMAND_FLAGS;
   if (!CanMove() || Int < 4) Flags &= ~FOLLOW_LEADER;
   if (!CanMove() || Int < 6) Flags &= ~FLEE_FROM_ENEMIES;
   if (!CanUseEquipment() || Int < 8) Flags &= ~DONT_CHANGE_EQUIPMENT;
@@ -6722,7 +6722,7 @@ truth character::ChatMenu () {
     PLAYER->EditAP(-200);
     return true;
   }
-  uLong ManagementFlags = GetManagementFlags();
+  feuLong ManagementFlags = GetManagementFlags();
   if (ManagementFlags == CHAT_IDLY || !IsPet()) return ChatIdly();
   static cchar *const ChatMenuEntry[CHAT_MENU_ENTRIES] = {
     "Change equipment",
@@ -6824,13 +6824,13 @@ truth character::IssuePetCommands () {
     ADD_MESSAGE("%s is unconscious.", CHAR_DESCRIPTION(DEFINITE));
     return false;
   }
-  uLong PossibleC = GetPossibleCommandFlags();
+  feuLong PossibleC = GetPossibleCommandFlags();
   if (!PossibleC) {
     ADD_MESSAGE("%s cannot be commanded.", CHAR_DESCRIPTION(DEFINITE));
     return false;
   }
-  uLong OldC = GetCommandFlags();
-  uLong NewC = OldC, VaryFlags = 0;
+  feuLong OldC = GetCommandFlags();
+  feuLong NewC = OldC, VaryFlags = 0;
   game::CommandScreen(CONST_S("Issue commands to ")+GetDescription(DEFINITE), PossibleC, GetConstantCommandFlags(), VaryFlags, NewC);
   if (NewC == OldC) return false;
   SetCommandFlags(NewC);
@@ -6895,8 +6895,8 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
 }
 
 
-uLong character::GetManagementFlags () const {
-  uLong Flags = ALL_MANAGEMENT_FLAGS;
+feuLong character::GetManagementFlags () const {
+  feuLong Flags = ALL_MANAGEMENT_FLAGS;
   if (!CanUseEquipment() || !AllowPlayerToChangeEquipment()) Flags &= ~CHANGE_EQUIPMENT;
   if (!GetStack()->GetItems()) Flags &= ~TAKE_ITEMS;
   if (!WillCarryItems()) Flags &= ~GIVE_ITEMS;
@@ -7281,20 +7281,20 @@ truth character::TryToUnStickTraps (v2 Dir) {
 
 
 struct trapidcomparer {
-  trapidcomparer (uLong ID) : ID(ID) {}
+  trapidcomparer (feuLong ID) : ID(ID) {}
   truth operator () (const trapdata *T) const { return T->TrapID == ID; }
-  uLong ID;
+  feuLong ID;
 };
 
 
-void character::RemoveTrap (uLong ID) {
+void character::RemoveTrap (feuLong ID) {
   trapdata *&T = ListFind(TrapData, trapidcomparer(ID));
   T = T->Next;
   doforbodyparts()(this, &bodypart::SignalPossibleUsabilityChange);
 }
 
 
-void character::AddTrap (uLong ID, uLong BodyParts) {
+void character::AddTrap (feuLong ID, feuLong BodyParts) {
   trapdata *&T = ListFind(TrapData, trapidcomparer(ID));
   if (T) T->BodyParts |= BodyParts;
   else T = new trapdata(ID, GetID(), BodyParts);
@@ -7302,7 +7302,7 @@ void character::AddTrap (uLong ID, uLong BodyParts) {
 }
 
 
-truth character::IsStuckToTrap (uLong ID) const {
+truth character::IsStuckToTrap (feuLong ID) const {
   for (const trapdata *T = TrapData; T; T = T->Next) if (T->TrapID == ID) return true;
   return false;
 }
@@ -7322,7 +7322,7 @@ void character::RemoveTraps () {
 
 
 void character::RemoveTraps (int BodyPartIndex) {
-  uLong Flag = 1 << BodyPartIndex;
+  feuLong Flag = 1 << BodyPartIndex;
   for (trapdata **T = &TrapData; *T;) {
     if ((*T)->BodyParts & Flag) {
       entity *Trap = game::SearchTrap((*T)->TrapID);
@@ -7379,7 +7379,7 @@ festring character::GetTrapDescription () const {
 }
 
 
-int character::RandomizeHurtBodyPart (uLong BodyParts) const {
+int character::RandomizeHurtBodyPart (feuLong BodyParts) const {
   int BodyPartIndex[MAX_BODYPARTS];
   int Index = 0;
   for (int c = 0; c < GetBodyParts(); ++c) {
@@ -7427,7 +7427,7 @@ truth character::CanPanic () const {
 }
 
 
-int character::GetRandomBodyPart (uLong Possible) const {
+int character::GetRandomBodyPart (feuLong Possible) const {
   int OKBodyPart[MAX_BODYPARTS];
   int OKBodyParts = 0;
   for (int c = 0; c < BodyParts; ++c) if (1 << c & Possible && GetBodyPart(c)) OKBodyPart[OKBodyParts++] = c;
@@ -7633,7 +7633,7 @@ void character::ReceiveMustardGasLiquid (int BodyPartIndex, sLong Modifier) {
     for (sLong c = 0; c < Tries; ++c) if (!(RAND() % 100)) ++Damage;
     if (Modifier && !(RAND() % 1000 / Modifier)) ++Damage;
     if (Damage) {
-      uLong Minute = game::GetTotalMinutes();
+      feuLong Minute = game::GetTotalMinutes();
       if (GetLastAcidMsgMin() != Minute && (CanBeSeenByPlayer() || IsPlayer())) {
         SetLastAcidMsgMin(Minute);
         if (IsPlayer()) ADD_MESSAGE("Mustard gas dissolves the skin of your %s.", BodyPart->GetBodyPartName().CStr());

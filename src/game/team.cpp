@@ -13,7 +13,7 @@
 /* Compiled through charset.cpp */
 
 team::team() : Leader(0) { }
-team::team(uLong ID) : Leader(0), ID(ID), KillEvilness(0) { }
+team::team(feuLong ID) : Leader(0), ID(ID), KillEvilness(0) { }
 std::list<character*>::iterator team::Add(character* Char) { return Member.insert(Member.end(), Char); }
 
 void team::SetRelation(team* AnotherTeam, int Relation)
@@ -23,7 +23,7 @@ void team::SetRelation(team* AnotherTeam, int Relation)
 
 int team::GetRelation (const team *AnotherTeam) const {
   if (AnotherTeam != this) {
-    std::map<uLong, int>::const_iterator Iterator = Relation.find(AnotherTeam->ID);
+    std::map<feuLong, int>::const_iterator Iterator = Relation.find(AnotherTeam->ID);
     if (Iterator != Relation.end()) return Iterator->second;
     ABORT("Team %u dismissed!", AnotherTeam->ID);
   }

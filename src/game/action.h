@@ -66,7 +66,7 @@ public:
 
 protected:
   character *Actor;
-  uLong Flags;
+  feuLong Flags;
 };
 
 

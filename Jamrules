@@ -17,28 +17,23 @@ if $(WINDOZE) {
   HAVE_IMLIB2 = ;
   HAVE_LIBPNG = ;
 } else {
-  lib-config "sdl-config" ;
-  HAVE_IMLIB2 = [ lib-config-ex "pkg-config imlib2 --libs" ] ;
-  if $(FORCE_LIBPNG) || ! $(HAVE_IMLIB2) {
-    HAVE_LIBPNG = [ lib-config-ex "pkg-config libpng --libs" ] ;
-    HAVE_IMLIB2 = ;
-  } else {
-    HAVE_LIBPNG = ;
+  HAVE_SDL = [ pkg-config sdl ] ;
+  if ! $(HAVE_SDL) {
+    Exit "FATAL: you need SDL!" ;
   }
-}
-
-
-if $(DISABLE_IMLIB2) {
-  if ($HAVE_IMLIB2) {
-    Echo "MSG: disabling imlib2" ;
-    HAVE_IMLIB2 = ;
+  HAVE_MIXER = [ pkg-config SDL_mixer ] ;
+  if ! $(HAVE_MIXER) {
+    USE_SOUND = ;
   }
-}
-if $(DISABLE_LIBPNG) {
-  if ($HAVE_LIBPNG) {
-    Echo "MSG: disabling libpng" ;
-    HAVE_LIBPNG = ;
-  }
+  HAVE_IMLIB2 = [ pkg-config imlib2 ] ;
+  #if $(FORCE_LIBPNG) || ! $(HAVE_IMLIB2) {
+  #  HAVE_LIBPNG = [ lib-config-ex "pkg-config libpng --libs" ] ;
+  #  HAVE_IMLIB2 = ;
+  #} else {
+  #  HAVE_LIBPNG = ;
+  #}
+  HAVE_LIBPNG = ;
+  HAVE_ZLIB = [ pkg-config zlib ] ;
 }
 
 

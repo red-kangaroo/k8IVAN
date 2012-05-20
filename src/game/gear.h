@@ -340,12 +340,12 @@ ITEM(decosadshirt, bodyarmor)
   virtual void Be();
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
-  uLong GetEquippedTicks() { return EquippedTicks; }
-  void SetEquippedTicks(uLong What) { EquippedTicks = What; }
+  feuLong GetEquippedTicks() { return EquippedTicks; }
+  void SetEquippedTicks(feuLong What) { EquippedTicks = What; }
   virtual truth IsDecosAdShirt(ccharacter*) const { return true; }
  protected:
   virtual truth CalculateHasBe() const { return true; }
-  uLong EquippedTicks;
+  feuLong EquippedTicks;
 };
 
 ITEM(weepblade, meleeweapon)
@@ -546,7 +546,7 @@ ITEM(taiaha, meleeweapon)
   virtual alpha GetOutlineAlpha(int) const;
   virtual void PostConstruct();
   void BreakEffect(character*, cfestring&);
-  //uLong GetSpecialParameters() const;
+  //feuLong GetSpecialParameters() const;
   int Charges;
   int TimesUsed;
 };

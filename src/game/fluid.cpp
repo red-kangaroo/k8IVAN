@@ -529,7 +529,7 @@ void fluid::AddTrapName (festring &String, int) const {
 
 
 truth fluid::TryToUnStick (character *Victim, v2) {
-  uLong TrapID = GetTrapID();
+  feuLong TrapID = GetTrapID();
   int Sum = Victim->GetAttribute(ARM_STRENGTH) + Victim->GetAttribute(LEG_STRENGTH) + Victim->GetAttribute(DEXTERITY) + Victim->GetAttribute(AGILITY);
   int Modifier = Liquid->GetStickiness() * Liquid->GetVolume() / (Max(Sum, 1) * 500);
   if (!RAND_N(Max(Modifier, 2))) {

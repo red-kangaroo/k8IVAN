@@ -1334,7 +1334,7 @@ void bodypart::CalculateEmitation()
   }
 }
 
-void bodypart::CalculateMaxHP(uLong Flags)
+void bodypart::CalculateMaxHP(feuLong Flags)
 {
   int HPDelta = MaxHP - HP/*k8, OldMaxHP = MaxHP*/;
   MaxHP = 0;
@@ -2957,7 +2957,7 @@ void bodypart::ReceiveAcid (material *Material, cfestring &LocationName, sLong M
     for (sLong c = 0; c < Tries; ++c) if (!(RAND() % 100)) ++Damage;
     if (Modifier && !(RAND()%100000/Modifier)) ++Damage;
     if (Damage) {
-      uLong Minute = game::GetTotalMinutes();
+      feuLong Minute = game::GetTotalMinutes();
       character *Master = this->Master;
       if (Master->GetLastAcidMsgMin() != Minute && (Master->CanBeSeenByPlayer() || Master->IsPlayer())) {
         Master->SetLastAcidMsgMin(Minute);
@@ -2970,7 +2970,7 @@ void bodypart::ReceiveAcid (material *Material, cfestring &LocationName, sLong M
         }
       }
       Master->ReceiveBodyPartDamage(0, Damage, ACID, GetBodyPartIndex(), YOURSELF, false, false, false);
-      uLong DeathFlags = Material->IsStuckTo(Master) ? IGNORE_TRAPS : 0;
+      feuLong DeathFlags = Material->IsStuckTo(Master) ? IGNORE_TRAPS : 0;
       Master->CheckDeath(CONST_S("dissolved by ")+Material->GetName(), 0, DeathFlags);
     }
   }
@@ -3224,7 +3224,7 @@ void bodypart::UpdateFlags()
 
 void head::SignalPossibleUsabilityChange()
 {
-  uLong OldFlags = Flags;
+  feuLong OldFlags = Flags;
   UpdateFlags();
 
   if(!Master->IsInitializing() && HP > 0
@@ -3267,7 +3267,7 @@ void head::SignalPossibleUsabilityChange()
 
 void arm::SignalPossibleUsabilityChange()
 {
-  uLong OldFlags = Flags;
+  feuLong OldFlags = Flags;
   UpdateFlags();
 
   if(Flags != OldFlags && !Master->IsInitializing())
@@ -3276,7 +3276,7 @@ void arm::SignalPossibleUsabilityChange()
 
 void leg::SignalPossibleUsabilityChange()
 {
-  uLong OldFlags = Flags;
+  feuLong OldFlags = Flags;
   UpdateFlags();
 
   if(Flags != OldFlags && !Master->IsInitializing())

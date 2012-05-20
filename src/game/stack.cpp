@@ -17,7 +17,7 @@
 int stack::Selected;
 
 
-stack::stack (square *MotherSquare, entity* MotherEntity, uLong Flags) :
+stack::stack (square *MotherSquare, entity* MotherEntity, feuLong Flags) :
   Bottom(0), Top(0), MotherSquare(MotherSquare), MotherEntity(MotherEntity),
   Volume(0), Weight(0), Emitation(0), Flags(Flags), Items(0)
 {
@@ -623,7 +623,7 @@ truth stack::IsDangerous (ccharacter *Stepper) const {
 
 /* Returns true if something was duplicated.
    Max is the cap of items to be affected */
-truth stack::Duplicate (int Max, uLong Flags) {
+truth stack::Duplicate (int Max, feuLong Flags) {
   if (!GetItems()) return false;
   itemvector ItemVector;
   FillItemVector(ItemVector);
@@ -750,7 +750,7 @@ truth stack::TakeSomethingFrom (character *Opener, cfestring &ContainerName) {
 
 /* GUI used for instance by chests and bookcases (use ContainerID == 0 if
    the container isn't an item). Returns whether anything was done. */
-truth stack::PutSomethingIn (character *Opener, cfestring &ContainerName, sLong StorageVolume, uLong ContainerID) {
+truth stack::PutSomethingIn (character *Opener, cfestring &ContainerName, sLong StorageVolume, feuLong ContainerID) {
   if (!Opener->GetStack()->GetItems()) {
     ADD_MESSAGE("You have nothing to put in %s.", ContainerName.CStr());
     return false;

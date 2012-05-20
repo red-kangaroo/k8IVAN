@@ -234,7 +234,7 @@ tilemap::iterator igraph::AddUser(const graphicid& GI)
 
     if(SpecialFlags & ST_FLAMES)
     {
-      uLong SeedNFlags = (SpecialFlags >> ST_FLAME_SHIFT & 3) | (GI.Seed << 4);
+      feuLong SeedNFlags = (SpecialFlags >> ST_FLAME_SHIFT & 3) | (GI.Seed << 4);
       Bitmap->CreateFlames(RawBitmap, RawPos - GI.Position, SeedNFlags, Frame);
     }
 

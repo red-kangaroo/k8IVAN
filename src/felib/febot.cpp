@@ -45,19 +45,19 @@ febot::wordchain *febot::CreateWordChain (const febot::wordchain *WordChain, cfe
 
 void febot::Save (outputfile &SaveFile) const {
   /*
-  SaveFile << uLong(WordChainSet.size());
+  SaveFile << feuLong(WordChainSet.size());
   fwordset::const_iterator i1;
   */
   /* Speeds up saving tremendously for large files */
   /*
-  std::map<const fword*, uLong> FWordIndexMap;
-  uLong c;
+  std::map<const fword*, feuLong> FWordIndexMap;
+  feuLong c;
   for (i1 = FWordSet.begin(), c = 0; i1 != FWordSet.end(); ++i1, ++c) {
     SaveFile << i1->String;
     FWordIndexMap[&*i1] = c;
   }
   for (i1 = FWordSet.begin(); i1 != FWordSet.end(); ++i1) {
-    SaveFile << uLong(i1->Link.size());
+    SaveFile << feuLong(i1->Link.size());
     for(c = 0; c < i1->Link.size(); ++c)
     SaveFile << FWordIndexMap.find(i1->Link[c])->second;
   }
@@ -70,20 +70,20 @@ void febot::Load (inputfile &SaveFile) {
   Chain = CreateWordChain(Chain, "on");
   /*
   FWordSet.clear();
-  uLong MapSize;
+  feuLong MapSize;
   SaveFile >> MapSize;
   */
   /* Speeds up loading tremendously for large files */
   /*
-  std::map<uLong, fword*> FWordPtrMap;
-  for (uLong c = 0; c < MapSize; ++c)
+  std::map<feuLong, fword*> FWordPtrMap;
+  for (feuLong c = 0; c < MapSize; ++c)
     FWordPtrMap[c] = const_cast<fword *>(&*FWordSet.insert(FWordSet.end(), fword(ReadType<festring>(SaveFile))));
   for (fwordset::const_iterator i1 = FWordSet.begin(); i1 != FWordSet.end(); ++i1) {
-    uLong LinkSize;
+    feuLong LinkSize;
     SaveFile >> LinkSize;
     fword *FWord = const_cast<fword *>(&*i1);
     FWord->Link.resize(LinkSize);
-    for (uLong c = 0; c < LinkSize; ++c) FWord->Link[c] = FWordPtrMap.find(ReadType<uLong>(SaveFile))->second;
+    for (feuLong c = 0; c < LinkSize; ++c) FWord->Link[c] = FWordPtrMap.find(ReadType<feuLong>(SaveFile))->second;
   }
   */
 }

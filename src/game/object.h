@@ -103,7 +103,7 @@ protected:
   virtual truth AllowSparkling() const { return true; }
   virtual truth AllowRegularColors() const { return true; }
   virtual int GetWobbleData() const { return 0; }
-  truth RandomizeSparklePos(v2&, v2, int&, uLong, int, int) const;
+  truth RandomizeSparklePos(v2&, v2, int&, feuLong, int, int) const;
 
   virtual truth isBone () const { return false; }
 

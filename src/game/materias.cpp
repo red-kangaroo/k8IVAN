@@ -20,7 +20,7 @@ truth powder::IsExplosive() const { return !Wetness && material::IsExplosive(); 
 
 truth ironalloy::IsSparkling() const { return material::IsSparkling() && GetRustLevel() == NOT_RUSTED; }
 
-void organic::Be(uLong Flags)
+void organic::Be(feuLong Flags)
 {
   if(SpoilCheckCounter++ >= 50)
   {
@@ -94,7 +94,7 @@ void flesh::Load(inputfile& SaveFile)
   SaveFile >> SkinColor >> SkinColorSparkling >> InfectedByLeprosy;
 }
 
-void powder::Be(uLong)
+void powder::Be(feuLong)
 {
   if(Wetness > 0)
     --Wetness;

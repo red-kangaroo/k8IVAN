@@ -74,20 +74,20 @@ void rain::Draw(blitdata& BlitData) const
   for(c = 0; c < Drops; ++c)
     if(Drop[c].MaxAge)
     {
-      uLong Age = uShort(GET_TICK()) - Drop[c].StartTick;
+      feuLong Age = uShort(GET_TICK()) - Drop[c].StartTick;
 
       if(Age > Drop[c].MaxAge)
       {
-  Drop[c].MaxAge = 0;
-  continue;
+        Drop[c].MaxAge = 0;
+        continue;
       }
 
       v2 DropPos = v2(Drop[c].StartPos) + (Speed * int(Age) >> 8);
 
       if(DropPos.X < 0 || DropPos.Y < 0 || DropPos.X >= 16 || DropPos.Y >= 16)
       {
-  Drop[c].MaxAge = 0;
-  continue;
+        Drop[c].MaxAge = 0;
+        continue;
       }
 
       BlitData.Bitmap->AlphaPutPixel(DropPos + BlitData.Dest, Color, BlitData.Luminance, 255);

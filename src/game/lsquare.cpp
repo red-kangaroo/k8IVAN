@@ -23,9 +23,9 @@ sLong stackcontroller::StackIndex;
 int stackcontroller::LevelXSize, stackcontroller::LevelYSize;
 v2 stackcontroller::Center;
 
-uLong tickcontroller::Tick;
-uLong tickcontroller::ShiftedTick[4];
-uLong tickcontroller::ShiftedQuadriTick[4];
+feuLong tickcontroller::Tick;
+feuLong tickcontroller::ShiftedTick[4];
+feuLong tickcontroller::ShiftedQuadriTick[4];
 
 void tickcontroller::PrepareShiftedTick()
 {
@@ -386,7 +386,7 @@ struct emitationcontroller : public tickcontroller, public stackcontroller
       return false;
     }
   }
-  static uLong& GetTickReference(int X, int Y)
+  static feuLong& GetTickReference(int X, int Y)
   {
     return Map[X][Y]->SquarePartEmitationTick;
   }
@@ -396,7 +396,7 @@ struct emitationcontroller : public tickcontroller, public stackcontroller
     {
       lsquare* Square = Stack[c1];
       culong SquareTick = Square->SquarePartEmitationTick;
-      uLong TempID = ID;
+      feuLong TempID = ID;
 
       for(int c2 = 0; c2 < 4; ++c2)
   if((SquareTick & SquarePartTickMask[c2]) == ShiftedTick[c2])
@@ -413,7 +413,7 @@ struct emitationcontroller : public tickcontroller, public stackcontroller
              BlueLuxTable[XVal][YVal]));
     }
   }
-  static uLong ID;
+  static feuLong ID;
   static int MinNightAmbientLuminanceElement;
   static int EmitterPosXMinus16;
   static int EmitterPosYMinus16;
@@ -423,7 +423,7 @@ struct emitationcontroller : public tickcontroller, public stackcontroller
   static uChar** BlueLuxTable;
 };
 
-uLong emitationcontroller::ID;
+feuLong emitationcontroller::ID;
 int emitationcontroller::MinNightAmbientLuminanceElement;
 int emitationcontroller::EmitterPosXMinus16;
 int emitationcontroller::EmitterPosYMinus16;
@@ -432,7 +432,7 @@ uChar** emitationcontroller::RedLuxTable;
 uChar** emitationcontroller::GreenLuxTable;
 uChar** emitationcontroller::BlueLuxTable;
 
-void lsquare::Emitate(col24 Emitation, uLong IDFlags)
+void lsquare::Emitate(col24 Emitation, feuLong IDFlags)
 {
   if(game::IsDark(Emitation))
     return;
@@ -481,14 +481,14 @@ struct noxifycontroller : public stackcontroller
   }
   static int GetStartX(int) { return Center.X; }
   static int GetStartY(int) { return Center.Y; }
-  static uLong ID;
-  static uLong Tick;
+  static feuLong ID;
+  static feuLong Tick;
 };
 
-uLong noxifycontroller::ID;
-uLong noxifycontroller::Tick;
+feuLong noxifycontroller::ID;
+feuLong noxifycontroller::Tick;
 
-void lsquare::Noxify(col24 Emitation, uLong IDFlags)
+void lsquare::Noxify(col24 Emitation, feuLong IDFlags)
 {
   if(game::IsDark(Emitation))
     return;
@@ -508,7 +508,7 @@ void lsquare::Noxify(col24 Emitation, uLong IDFlags)
   mapmath<noxifycontroller>::DoArea();
 }
 
-truth lsquare::NoxifyEmitter(uLong ID)
+truth lsquare::NoxifyEmitter(feuLong ID)
 {
   emittervector::iterator i, End = Emitter.end();
 
@@ -524,7 +524,7 @@ truth lsquare::NoxifyEmitter(uLong ID)
   return false;
 }
 
-void lsquare::AlterLuminance(uLong ID, col24 NewLuminance)
+void lsquare::AlterLuminance(feuLong ID, col24 NewLuminance)
 {
   emittervector::iterator i, End = Emitter.end();
 
@@ -544,7 +544,7 @@ void lsquare::AlterLuminance(uLong ID, col24 NewLuminance)
   ChangeLuminance(Emitter.back().Emitation, NewLuminance);
 }
 
-void lsquare::AddSunLightEmitter(uLong ID)
+void lsquare::AddSunLightEmitter(feuLong ID)
 {
   sunemittervector::iterator i, End = SunEmitter.end();
 
@@ -646,7 +646,7 @@ void lsquare::CalculateLuminance()
   }
   else
   {
-    uLong BitMask = 0, LOSTick = game::GetLOSTick();
+    feuLong BitMask = 0, LOSTick = game::GetLOSTick();
 
     for(int c = 0; c < 4; ++c)
       if((SquarePartLastSeen >> (c << 3) & 0xFF) >= LOSTick)
@@ -1221,7 +1221,7 @@ truth lsquare::TryKey(item* Key, character* Applier)
   return true;
 }
 
-void lsquare::SignalSeen(uLong Tick)
+void lsquare::SignalSeen(feuLong Tick)
 {
   if(LastSeen < Tick - 2)
     Flags |= STRONG_NEW_DRAW_REQUEST;
@@ -2556,15 +2556,15 @@ truth lsquare::CalculateIsTransparent()
   }
 }
 
-void lsquare::CalculateSunLightLuminance(uLong SeenBitMask)
+void lsquare::CalculateSunLightLuminance(feuLong SeenBitMask)
 {
   sunemittervector::const_iterator i, SunEnd = SunEmitter.end();
   int S = 0, L = 0;
 
   for(i = SunEmitter.begin(); i != SunEnd; ++i)
   {
-    uLong ShadowFlag = 1 << EMITTER_SHADOW_SHIFT;
-    uLong SquarePartFlag = 1 << EMITTER_SQUARE_PART_SHIFT;
+    feuLong ShadowFlag = 1 << EMITTER_SHADOW_SHIFT;
+    feuLong SquarePartFlag = 1 << EMITTER_SQUARE_PART_SHIFT;
     for (int c = 0; c < 4; ++c, ShadowFlag <<= 1, SquarePartFlag <<= 1) {
       if (SeenBitMask & *i & SquarePartFlag) {
         if (*i & ShadowFlag) ++S; else ++L;
@@ -2632,7 +2632,7 @@ truth lsquare::DetectMaterial (cmaterial *Material) const {
   return false;
 }
 
-void lsquare::Reveal(uLong Tick, truth IgnoreDarkness)
+void lsquare::Reveal(feuLong Tick, truth IgnoreDarkness)
 {
   if(!Memorized)
     CreateMemorized();

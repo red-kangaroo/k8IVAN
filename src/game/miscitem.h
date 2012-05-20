@@ -251,7 +251,7 @@ ITEM(wand, item)
  protected:
   virtual void PostConstruct();
   void BreakEffect(character*, cfestring&);
-  uLong GetSpecialParameters() const;
+  feuLong GetSpecialParameters() const;
   int Charges;
   int TimesUsed;
 };
@@ -402,7 +402,7 @@ ITEM(magicalwhistle, whistle)
   virtual void Save(outputfile&) const;
   virtual void FinalProcessForBone();
  protected:
-  uLong LastUsed;
+  feuLong LastUsed;
 };
 
 ITEM(itemcontainer, lockableitem)
@@ -460,8 +460,8 @@ ITEM(beartrap, itemtrap<item>)
   virtual truth ReceiveDamage(character*, int, int, int);
   virtual truth NeedDangerSymbol() const { return IsActive(); }
   virtual void Fly(character*, int, int);
-  virtual uLong GetTrapID() const { return TrapData.TrapID; }
-  virtual uLong GetVictimID() const { return TrapData.VictimID; }
+  virtual feuLong GetTrapID() const { return TrapData.TrapID; }
+  virtual feuLong GetVictimID() const { return TrapData.VictimID; }
   virtual void UnStick() { TrapData.VictimID = 0; }
   virtual void UnStick(int I) { TrapData.BodyParts &= ~(1 << I); }
   virtual truth TryToUnStick(character*, v2);
@@ -533,7 +533,7 @@ ITEM(horn, item)
   virtual truth IsAppliable(ccharacter*) const { return true; }
   virtual void FinalProcessForBone();
  protected:
-  uLong LastUsed;
+  feuLong LastUsed;
 };
 
 ITEM(carrot, item)
@@ -555,7 +555,7 @@ ITEM(charmlyre, item)
   virtual void FinalProcessForBone();
  protected:
   virtual col16 GetMaterialColorB(int) const;
-  uLong LastUsed;
+  feuLong LastUsed;
 };
 
 ITEM(scrollofdetectmaterial, scroll)
@@ -612,9 +612,9 @@ ITEM(holyhandgrenade, item)
   virtual col16 GetMaterialColorB(int) const;
   virtual bool WillExplodeSoon() const;
  protected:
-  uLong PinPulledTick;
+  feuLong PinPulledTick;
   int Count;
-  uLong PinPullerID;
+  feuLong PinPullerID;
 };
 
 ITEM(pantheonbook, holybook)

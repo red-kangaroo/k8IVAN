@@ -40,7 +40,7 @@ template <class type> struct fearray;
 class femath {
 public:
   static sLong Rand ();
-  static void SetSeed (uLong);
+  static void SetSeed (feuLong);
   static sLong RandN (sLong N) { return sLong(double(N)*Rand()/0x80000000); }
   static sLong RandGood (sLong N) { return sLong(double(N)*Rand()/0x80000000); }
   static int WeightedRand (sLong *Possibility, sLong TotalPossibility);
@@ -56,9 +56,9 @@ public:
   static void GenerateFractalMap (int **Map, int Side, int StartStep, int Randomness);
 
 protected:
-  static uLong mt[];
+  static feuLong mt[];
   static sLong mti;
-  static uLong mtb[];
+  static feuLong mtb[];
   static sLong mtib;
 };
 
@@ -158,7 +158,7 @@ template <class controller> struct quadricontroller : public basequadricontrolle
 template <class controller> truth quadricontroller<controller>::Handler (int x, int y) {
   cint HalfX = x>>1, HalfY = y>>1;
   if (HalfX >= 0 && HalfY >= 0 && HalfX < XSize && HalfY < YSize) {
-    uLong& SquareTick = controller::GetTickReference(HalfX, HalfY);
+    feuLong& SquareTick = controller::GetTickReference(HalfX, HalfY);
     cint SquarePartIndex = (x&1)+((y&1)<<1);
     culong Mask = SquarePartTickMask[SquarePartIndex];
     if ((SquareTick & Mask) < controller::ShiftedTick[SquarePartIndex]) {

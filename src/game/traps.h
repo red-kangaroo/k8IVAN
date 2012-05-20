@@ -30,8 +30,8 @@ public:
   virtual void Load (inputfile &);
   virtual void StepOnEffect (character *);
   virtual int GetTrapType () const { return GetType(); }
-  virtual uLong GetTrapID () const { return TrapData.TrapID; }
-  virtual uLong GetVictimID () const { return TrapData.VictimID; }
+  virtual feuLong GetTrapID () const { return TrapData.TrapID; }
+  virtual feuLong GetVictimID () const { return TrapData.VictimID; }
   virtual void AddTrapName (festring &, int) const;
   virtual void UnStick () { TrapData.VictimID = 0; }
   virtual void UnStick (int I) { TrapData.BodyParts &= ~(1 << I); }

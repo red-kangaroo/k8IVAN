@@ -19,6 +19,10 @@
 # include <png.h>
 #endif
 
+#ifdef USE_ZLIB
+# include <zlib.h>
+#endif
+
 #include "bitmap.h"
 #include "graphics.h"
 #include "fesave.h"
@@ -487,36 +491,70 @@ void bitmap::SaveScaledIPU (cfestring &fileName, double scale) const {
   delete [] nbx;
   delete [] unp;
   // and save it
+#ifdef USE_ZLIB
+  gzFile fo = gzopen(fileName.CStr(), "wb9");
+  if (fo) {
+    uint16_t ii;
+    //
+    ii = 0x29a; gzwrite(fo, &ii, sizeof(ii));
+    ii = newX; gzwrite(fo, &ii, sizeof(ii));
+    ii = newY; gzwrite(fo, &ii, sizeof(ii));
+    gzwrite(fo, nb, newX*newY*3);
+    gzclose(fo);
+  }
+#else
   FILE *fo = fopen(fileName.CStr(), "wb");
   if (fo) {
     uint16_t ii;
+    //
     ii = 0x29a; fwrite(&ii, sizeof(ii), 1, fo);
     ii = newX; fwrite(&ii, sizeof(ii), 1, fo);
     ii = newY; fwrite(&ii, sizeof(ii), 1, fo);
     fwrite(nb, newX*newY*3, 1, fo);
     fclose(fo);
   }
+#endif
   delete [] nb;
 }
+
+
+#ifdef USE_ZLIB
+static truth inline xread (void *buf, unsigned int sz, gzFile fi) {
+  if (gzread(fi, buf, sz) != (int)sz) { gzclose(fi); return false; }
+  return true;
+}
+#else
+static truth inline xread (void *buf, unsigned int sz, FILE *fi) {
+  if (fread(fi, buf, sz, 1) != (size_t)sz) { fclose(fi); return false; }
+  return true;
+}
+#endif
 
 
 truth bitmap::LoadIPU (cfestring &fileName) {
   uint16_t ii = 0;
   int wdt = 0, hgt = 0;
+#ifdef USE_ZLIB
+# define xclose gzclose
+  gzFile fi = gzopen(fileName.CStr(), "rb");
+#else
+# define xclose fclose
   FILE *fi = fopen(fileName.CStr(), "rb");
+#endif
   if (!fi) return false;
-  if (fread(&ii, sizeof(ii), 1, fi) != 1) { fclose(fi); return false; }
-  if (ii != 0x29a) { fclose(fi); return false; }
-  if (fread(&ii, sizeof(ii), 1, fi) != 1) { fclose(fi); return false; }
-  if (ii < 1 || ii > 4096) { fclose(fi); return false; }
+  if (!xread(&ii, sizeof(ii), fi)) return false;
+  if (ii != 0x29a) { xclose(fi); return false; }
+  if (!xread(&ii, sizeof(ii), fi)) return false;
+  if (ii < 1 || ii > 4096) { xclose(fi); return false; }
   wdt = ii;
-  if (fread(&ii, sizeof(ii), 1, fi) != 1) { fclose(fi); return false; }
-  if (ii < 1 || ii > 4096) { fclose(fi); return false; }
+  if (!xread(&ii, sizeof(ii), fi)) return false;
+  if (ii < 1 || ii > 4096) { xclose(fi); return false; }
   hgt = ii;
   //fprintf(stderr, "%dx%d\n", wdt, hgt);
   unsigned char *nb = new unsigned char[wdt*hgt*3];
-  if (fread(nb, wdt*hgt*3, 1, fi) != 1) { delete [] nb; fclose(fi); return false; }
-  fclose(fi);
+  if (!xread(nb, wdt*hgt*3, fi)) { delete [] nb; xclose(fi); return false; }
+  xclose(fi);
+  //
   delete [] Image;
   delete [] AlphaMap;
   delete [] PriorityMap;
@@ -1252,7 +1290,7 @@ void bitmap::AlphaLuminanceBlit (cblitdata &BlitData) const {
 
 
 /* Only works for 16x16 pictures :( */
-void bitmap::CreateFlames (rawbitmap *RawBitmap, v2 RawPos, uLong SeedNFlags, int Frame) {
+void bitmap::CreateFlames (rawbitmap *RawBitmap, v2 RawPos, feuLong SeedNFlags, int Frame) {
   femath::SaveSeed();
   femath::SetSeed(SeedNFlags);
   int FlameTop[16], FlameBottom[16], FlamePhase[16];
@@ -1306,7 +1344,7 @@ void bitmap::CreateSparkle (v2 SparklePos, int Frame) {
 }
 
 
-void bitmap::CreateFlies (uLong Seed, int Frame, int FlyAmount) {
+void bitmap::CreateFlies (feuLong Seed, int Frame, int FlyAmount) {
   femath::SaveSeed();
   femath::SetSeed(Seed);
   for (int c = 0; c < FlyAmount; ++c) {
@@ -1323,7 +1361,7 @@ void bitmap::CreateFlies (uLong Seed, int Frame, int FlyAmount) {
 }
 
 
-void bitmap::CreateLightning (uLong Seed, col16 Color) {
+void bitmap::CreateLightning (feuLong Seed, col16 Color) {
   femath::SaveSeed();
   femath::SetSeed(Seed);
   v2 StartPos;
@@ -1389,7 +1427,7 @@ truth bitmap::CreateLightning (v2 StartPos, v2 Direction, int MaxLength, col16 C
       continue;
     }
     Counter = 0;
-    if (!mapmath<pixelvectorcontroller>::DoLine(StartPos.X, StartPos.Y, StartPos.X + Move.X, StartPos.Y + Move.Y) || uLong(MaxLength) <= PixelVector.size()) {
+    if (!mapmath<pixelvectorcontroller>::DoLine(StartPos.X, StartPos.Y, StartPos.X + Move.X, StartPos.Y + Move.Y) || feuLong(MaxLength) <= PixelVector.size()) {
       int Limit = Min<int>(PixelVector.size(), MaxLength);
       for (int c = 0; c < Limit; ++c) {
         PutPixel(PixelVector[c], Color);
@@ -1679,8 +1717,8 @@ void bitmap::InitRandMap () {
 v2 bitmap::RandomizePixel () const {
   if (!RandMap[1]) return ERROR_V2;
   sLong Rand = RAND();
-  uLong c, RandMask = 1;
-  uLong MapSize = XSizeTimesYSize << 1;
+  feuLong c, RandMask = 1;
+  feuLong MapSize = XSizeTimesYSize << 1;
   for (c = 2; c < MapSize; c <<= 1) if (RandMap[c + 1] && (!RandMap[c] || Rand & (RandMask <<= 1))) ++c;
   c = (c - MapSize) >> 1;
   return v2(c % mSize.X, c / mSize.X);
@@ -1689,8 +1727,8 @@ v2 bitmap::RandomizePixel () const {
 
 void bitmap::CalculateRandMap () {
   if (!AlphaMap) ABORT("Alpha map needed to calculate random map.");
-  uLong Size = XSizeTimesYSize;
-  for (uLong c = 0; c < Size; ++c) UpdateRandMap(c, AlphaMap[0][c]);
+  feuLong Size = XSizeTimesYSize;
+  for (feuLong c = 0; c < Size; ++c) UpdateRandMap(c, AlphaMap[0][c]);
 }
 
 
@@ -1713,8 +1751,8 @@ alpha bitmap::CalculateAlphaAverage () const {
   if (!AlphaMap) ABORT("Alpha map needed to calculate alpha average!");
   sLong Alphas = 0;
   sLong AlphaSum = 0;
-  uLong Size = XSizeTimesYSize;
-  for (uLong c = 0; c < Size; ++c) {
+  feuLong Size = XSizeTimesYSize;
+  for (feuLong c = 0; c < Size; ++c) {
     packalpha *AlphaPtr = &AlphaMap[0][c];
     if (*AlphaPtr) {
       AlphaSum += *AlphaPtr;
@@ -1748,7 +1786,7 @@ void cachedfont::PrintCharacter (cblitdata B) const {
     culong *FontPtr = reinterpret_cast<culong *>(*SrcLine + B.Src.X);
     culong *EndPtr = FontPtr+5;
     culong *MaskPtr = reinterpret_cast<culong *>(*SrcMaskLine + B.Src.X);
-    uLong *DestPtr = reinterpret_cast<uLong *>(*DestLine + B.Dest.X);
+    feuLong *DestPtr = reinterpret_cast<feuLong *>(*DestLine + B.Dest.X);
     for (; FontPtr != EndPtr; ++DestPtr, ++MaskPtr, ++FontPtr) *DestPtr = (*DestPtr & *MaskPtr) | *FontPtr;
   }
 }

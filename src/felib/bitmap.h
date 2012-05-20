@@ -33,7 +33,7 @@ struct blitdata {
     col24 Luminance;
   };
   col16 MaskColor;
-  uLong CustomData;
+  feuLong CustomData;
 };
 
 
@@ -110,12 +110,12 @@ public:
   alpha GetAlpha (v2 Pos) const { return AlphaMap[Pos.Y][Pos.X]; }
   void Outline (col16, alpha, priority);
   void FadeToScreen (bitmapeditor = 0);
-  void CreateFlames (rawbitmap *, v2, uLong, int);
+  void CreateFlames (rawbitmap *, v2, feuLong, int);
   truth IsValidPos (v2 What) const { return What.X >= 0 && What.Y >= 0 && What.X < mSize.X && What.Y < mSize.Y; }
   truth IsValidPos (int X, int Y) const { return X >= 0 && Y >= 0 && X < mSize.X && Y < mSize.Y; }
   void CreateSparkle (v2, int);
-  void CreateFlies (uLong, int, int);
-  void CreateLightning (uLong, col16);
+  void CreateFlies (feuLong, int, int);
+  void CreateLightning (feuLong, col16);
   truth CreateLightning (v2, v2, int, col16);
   packcol16 **GetImage () const { return Image; }
   packalpha **GetAlphaMap () const { return AlphaMap; }
@@ -142,8 +142,8 @@ public:
 
 protected:
   v2 mSize;
-  uLong XSizeTimesYSize : 31;
-  uLong FastFlag : 1;
+  feuLong XSizeTimesYSize : 31;
+  feuLong FastFlag : 1;
   packcol16 **Image;
   packalpha **AlphaMap;
   packpriority **PriorityMap;

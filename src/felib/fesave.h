@@ -21,6 +21,11 @@
 #include <map>
 #include <set>
 
+#ifdef USE_ZLIB
+# include <zlib.h>
+#endif
+
+
 #include "error.h"
 #include "festring.h"
 #include "fearray.h"
@@ -45,21 +50,23 @@ class outputfile;
 typedef std::map<festring, sLong> valuemap;
 
 
-/* fstream seems to bug with DJ GPP, so we use FILE* here */
 class outputfile {
 public:
   outputfile (cfestring &FileName, truth AbortOnErr=true);
   ~outputfile ();
 
-  void Put (char What) { fputc(What, Buffer); }
-  void Write (cchar *Offset, sLong Size) { fwrite(Offset, 1, Size, Buffer); }
+  void Put (char What);
+  void Write (cchar *Offset, sLong Size);
   truth IsOpen () { return (Buffer != 0); }
-  void Close () { fclose(Buffer); Buffer = 0; }
-  void Flush () { fflush(Buffer); }
-  void ReOpen ();
+  void Close ();
+  void Flush ();
 
 private:
+#ifdef USE_ZLIB
+  gzFile Buffer;
+#else
   FILE *Buffer;
+#endif
   festring FileName;
 };
 
@@ -81,20 +88,20 @@ public:
   festring ReadStringOrNumber (sLong *num, truth *isString, truth PreserveTerminator=false);
   v2 ReadVector2d ();
   rect ReadRect ();
-  int Get () { return fgetc(Buffer); }
-  int Unget (int ch) { return ungetc(ch, Buffer); }
-  void Read (char *Offset, sLong Size) { fread(Offset, 1, Size, Buffer); }
+  int Get ();
+  int Unget (int ch);
+  void Read (char *Offset, sLong Size);
   truth IsOpen () { return (Buffer != 0); }
-  truth Eof () { return feof(Buffer); }
-  void ClearFlags () { clearerr(Buffer); }
-  void SeekPosBegin (sLong Offset) { fseek(Buffer, Offset, SEEK_SET); }
-  void SeekPosCurrent (sLong Offset) { fseek(Buffer, Offset, SEEK_CUR); }
-  void SeekPosEnd (sLong Offset) { fseek(Buffer, Offset, SEEK_END); }
-  sLong TellPos () { return ftell(Buffer); }
-  uLong TellLine () { return TellLineOfPos(TellPos()); }
-  uLong TellLineOfPos (sLong);
+  truth Eof ();
+  void ClearFlags ();
+  void SeekPosBegin (sLong Offset);
+  void SeekPosCurrent (sLong Offset);
+  void SeekPosEnd (sLong Offset);
+  sLong TellPos ();
+  feuLong TellLine () { return TellLineOfPos(TellPos()); }
+  feuLong TellLineOfPos (sLong);
   cfestring &GetFileName () const { return FileName; }
-  void Close () { fclose(Buffer); Buffer = 0; }
+  void Close ();
 
   static truth fileExists (const festring &fname);
   static festring GetMyDir (void);
@@ -118,13 +125,20 @@ protected:
 
 protected:
   typedef std::map<festring, festring> VarMap;
+#ifdef USE_ZLIB
+  gzFile Buffer;
+#else
   FILE *Buffer;
+#endif
   festring FileName;
   const valuemap *ValueMap;
   truth lastWordWasString;
   VarMap mVars;
   InputFileGetVarFn mGetVar;
   std::stack<int> mIfStack;
+#ifdef USE_ZLIB
+  int mFileSize;
+#endif
 };
 
 
@@ -136,7 +150,7 @@ public:
 protected:
   void *buf;
   int bufSize;
-#ifdef WIN32
+#if defined(USE_ZLIB) || defined(WIN32)
   festring tfname;
 #endif
 };
@@ -156,7 +170,7 @@ inline void ReadData (uChar &Type, inputfile &SaveFile) { Type = SaveFile.ReadNu
 inline void ReadData (short &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
 inline void ReadData (uShort &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
 //inline void ReadData (sLong &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); } //k8:64
-inline void ReadData (uLong &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
+inline void ReadData (feuLong &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
 inline void ReadData (int &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
 inline void ReadData (packv2 &Type, inputfile &SaveFile) { Type = SaveFile.ReadVector2d(); }
 inline void ReadData (v2 &Type, inputfile &SaveFile) { Type = SaveFile.ReadVector2d(); }
@@ -240,7 +254,7 @@ inline inputfile &operator >> (inputfile &SaveFile, uShort &Value) {
 
 
 //RAW_SAVE_LOAD(sLong); //k8:64
-//RAW_SAVE_LOAD(uLong); //k8:64
+//RAW_SAVE_LOAD(feuLong); //k8:64
 RAW_SAVE_LOAD(int);
 RAW_SAVE_LOAD(uInt);
 RAW_SAVE_LOAD(double);
@@ -267,43 +281,43 @@ template <class type1, class type2> inline inputfile &operator >> (inputfile &Sa
 }
 
 template <class type> inline outputfile &operator << (outputfile &SaveFile, const std::vector<type> &Vector) {
-  SaveFile << uLong(Vector.size());
-  for (uLong c = 0; c < Vector.size(); ++c) SaveFile << Vector[c];
+  SaveFile << feuLong(Vector.size());
+  for (feuLong c = 0; c < Vector.size(); ++c) SaveFile << Vector[c];
   return SaveFile;
 }
 
 template <class type> inline inputfile &operator >> (inputfile &SaveFile, std::vector<type> &Vector) {
-  Vector.resize(ReadType<uLong>(SaveFile), type());
-  for (uLong c = 0; c < Vector.size(); ++c) SaveFile >> Vector[c];
+  Vector.resize(ReadType<feuLong>(SaveFile), type());
+  for (feuLong c = 0; c < Vector.size(); ++c) SaveFile >> Vector[c];
   return SaveFile;
 }
 
 template <class type> inline outputfile &operator << (outputfile &SaveFile, const std::deque<type> &Deque) {
-  SaveFile << uLong(Deque.size());
-  for (uLong c = 0; c < Deque.size(); ++c) SaveFile << Deque[c];
+  SaveFile << feuLong(Deque.size());
+  for (feuLong c = 0; c < Deque.size(); ++c) SaveFile << Deque[c];
   return SaveFile;
 }
 
 template <class type> inline inputfile &operator >> (inputfile &SaveFile, std::deque<type> &Deque) {
-  Deque.resize(ReadType<uLong>(SaveFile), type());
-  for (uLong c = 0; c < Deque.size(); ++c) SaveFile >> Deque[c];
+  Deque.resize(ReadType<feuLong>(SaveFile), type());
+  for (feuLong c = 0; c < Deque.size(); ++c) SaveFile >> Deque[c];
   return SaveFile;
 }
 
 template <class type> inline outputfile &operator << (outputfile &SaveFile, const std::list<type> &List) {
-  SaveFile << uLong(List.size());
+  SaveFile << feuLong(List.size());
   for (typename std::list<type>::const_iterator i = List.begin(); i != List.end(); ++i) SaveFile << *i;
   return SaveFile;
 }
 
 template <class type> inline inputfile &operator >> (inputfile &SaveFile, std::list<type> &List) {
-  List.resize(ReadType<uLong>(SaveFile), type());
+  List.resize(ReadType<feuLong>(SaveFile), type());
   for (typename std::list<type>::iterator i = List.begin(); i != List.end(); ++i) SaveFile >> *i;
   return SaveFile;
 }
 
 template <class type1, class type2> inline outputfile &operator << (outputfile &SaveFile, const std::map<type1, type2> &Map) {
-  SaveFile << uLong(Map.size());
+  SaveFile << feuLong(Map.size());
   for (typename std::map<type1, type2>::const_iterator i = Map.begin(); i != Map.end(); ++i) SaveFile << i->first << i->second;
   return SaveFile;
 }
@@ -311,10 +325,10 @@ template <class type1, class type2> inline outputfile &operator << (outputfile &
 template <class type1, class type2> inline inputfile &operator >> (inputfile &SaveFile, std::map<type1, type2> &Map) {
   Map.clear();
   type1 First;
-  uLong Size;
+  feuLong Size;
   SaveFile >> Size;
   typename std::map<type1, type2>::iterator i;
-  for (uLong c = 0; c < Size; ++c) {
+  for (feuLong c = 0; c < Size; ++c) {
     SaveFile >> First;
     i = Map.insert(Map.end(), std::make_pair(First, type2()));
     SaveFile >> i->second;
@@ -323,16 +337,16 @@ template <class type1, class type2> inline inputfile &operator >> (inputfile &Sa
 }
 
 template <class type> inline outputfile &operator << (outputfile &SaveFile, const std::set<type> &Set) {
-  SaveFile << uLong(Set.size());
+  SaveFile << feuLong(Set.size());
   for (typename std::set<type>::const_iterator i = Set.begin(); i != Set.end(); ++i) SaveFile << *i;
   return SaveFile;
 }
 
 template <class type> inline inputfile &operator >> (inputfile &SaveFile, std::set<type> &Set) {
   Set.clear();
-  uLong Size;
+  feuLong Size;
   SaveFile >> Size;
-  for (uLong c = 0; c < Size; ++c) {
+  for (feuLong c = 0; c < Size; ++c) {
     type Value;
     SaveFile >> Value;
     Set.insert(Value);

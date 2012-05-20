@@ -32,14 +32,14 @@ public:
   static int ReadKey ();
   static void InstallControlLoop (truth (*What)());
   static void DeInstallControlLoop (truth (*What)());
-  static uLong GetTick () { return Tick; }
+  static feuLong GetTick () { return Tick; }
   static truth ControlLoopsInstalled () { return Controls; }
   static void EnableControlLoops () { ControlLoopsEnabled = true; }
   static void DisableControlLoops () { ControlLoopsEnabled = false; }
   static truth ShiftIsDown ();
   static void Init ();
   static void SetQuitMessageHandler (truth (*What)()) { QuitMessageHandler = What; }
-  static uLong UpdateTick() { return Tick = SDL_GetTicks()/40; }
+  static feuLong UpdateTick() { return Tick = SDL_GetTicks()/40; }
 
   static void Delay (int ms);
 
@@ -50,7 +50,7 @@ private:
   static truth (*QuitMessageHandler)();
   static truth (*ControlLoop[MAX_CONTROLS])();
   static int Controls;
-  static uLong Tick;
+  static feuLong Tick;
   static truth ControlLoopsEnabled;
 };
 

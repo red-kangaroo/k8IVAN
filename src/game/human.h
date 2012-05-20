@@ -153,14 +153,14 @@ public:
   virtual void LeprosyHandler();
   virtual void DropRandomNonVitalBodypart();
   virtual void DropBodyPart(int);
-  virtual void DuplicateEquipment(character*, uLong);
+  virtual void DuplicateEquipment(character*, feuLong);
   virtual int GetAttributeAverage() const;
   virtual truth CanVomit() const;
   virtual truth CheckApply() const;
   virtual truth CanForceVomit() const { return TorsoIsAlive() && HasAUsableArm(); }
   virtual truth IsTransparent() const;
   virtual void ModifySituationDanger(double&) const;
-  virtual int RandomizeTryToUnStickBodyPart(uLong) const;
+  virtual int RandomizeTryToUnStickBodyPart(feuLong) const;
   virtual truth AllowUnconsciousness() const;
   virtual truth CanChokeOnWeb(web*) const;
   virtual truth BrainsHurt() const;
@@ -204,7 +204,7 @@ CHARACTER(playerkind, humanoid)
   playerkind(const playerkind&);
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
-  virtual void SetSoulID(uLong);
+  virtual void SetSoulID(feuLong);
   virtual truth SuckSoul(character*);
   virtual truth TryToRiseFromTheDead();
   virtual void FinalProcessForBone();
@@ -221,7 +221,7 @@ CHARACTER(playerkind, humanoid)
  protected:
   virtual bodypart* MakeBodyPart(int) const;
   virtual void PostConstruct();
-  uLong SoulID;
+  feuLong SoulID;
   col16 HairColor;
   col16 EyeColor;
   int Talent;
@@ -244,7 +244,7 @@ CHARACTER(petrus, humanoid)
  protected:
   virtual void CreateCorpse(lsquare*);
   virtual void GetAICommand();
-  uLong LastHealed;
+  feuLong LastHealed;
 };
 
 CHARACTER(farmer, humanoid)
@@ -504,7 +504,7 @@ CHARACTER(angel, humanoid)
   virtual int GetTorsoMainColor() const;
   virtual int GetArmMainColor() const;
   virtual void GetAICommand();
-  uLong LastHealed;
+  feuLong LastHealed;
 };
 
 CHARACTER(kamikazedwarf, humanoid)
@@ -610,7 +610,7 @@ CHARACTER(encourager, humanoid)
   virtual void FinalProcessForBone();
  protected:
   virtual void GetAICommand();
-  uLong LastHit;*/
+  feuLong LastHit;*/
  protected:
   virtual void GetAICommand() { StandIdleAI(); }
 };

@@ -56,7 +56,7 @@ typedef std::priority_queue<nodepointerstorer> nodequeue;
 typedef std::vector<item*> itemvector;
 typedef std::vector<character*> charactervector;
 typedef std::vector<emitter> emittervector;
-typedef std::vector<uLong> sunemittervector;
+typedef std::vector<feuLong> sunemittervector;
 typedef character* (*characterspawner)(int, int);
 
 struct node
@@ -86,7 +86,7 @@ struct explosion
   character* Terrorist;
   festring DeathMsg;
   v2 Pos;
-  uLong ID;
+  feuLong ID;
   int Strength;
   int RadiusSquare;
   int Size;
@@ -95,8 +95,8 @@ struct explosion
 
 struct beamdata
 {
-  beamdata(character*, cfestring&, int, uLong);
-  beamdata(character*, cfestring&, v2, col16, int, int, int, uLong);
+  beamdata(character*, cfestring&, int, feuLong);
+  beamdata(character*, cfestring&, v2, col16, int, int, int, feuLong);
   character* Owner;
   festring DeathMsg;
   v2 StartPos;
@@ -104,7 +104,7 @@ struct beamdata
   int BeamEffect;
   int Direction;
   int Range;
-  uLong SpecialParameters;
+  feuLong SpecialParameters;
 };
 
 inline beamdata::beamdata
@@ -112,7 +112,7 @@ inline beamdata::beamdata
   character* Owner,
   cfestring& DeathMsg,
   int Direction,
-  uLong SpecialParameters
+  feuLong SpecialParameters
 ) :
 Owner(Owner),
 DeathMsg(DeathMsg),
@@ -129,7 +129,7 @@ inline beamdata::beamdata
   int BeamEffect,
   int Direction,
   int Range,
-  uLong SpecialParameters
+  feuLong SpecialParameters
 ) :
 Owner(Owner),
 DeathMsg(DeathMsg),
@@ -220,7 +220,7 @@ class level : public area
   void InitSquarePartEmitationTicks();
   col24 GetAmbientLuminance() const { return AmbientLuminance; }
   void ForceEmitterNoxify(const emittervector&) const;
-  void ForceEmitterEmitation(const emittervector&, const sunemittervector&, uLong = 0) const;
+  void ForceEmitterEmitation(const emittervector&, const sunemittervector&, feuLong = 0) const;
   void UpdateLOS();
   void EnableGlobalRain();
   void DisableGlobalRain();
@@ -243,7 +243,7 @@ class level : public area
   truth GenerateWindows(int, int) const;
   void CreateRoomSquare(glterrain*, olterrain*, int, int, int, int) const;
   void EmitSunBeams();
-  void EmitSunBeam(v2, uLong, int) const;
+  void EmitSunBeam(v2, feuLong, int) const;
   void ChangeSunLight();
   void EmitSunLight(v2);
   lsquare*** Map;
@@ -266,7 +266,7 @@ class level : public area
   col24 SunLightEmitation;
   v2 SunLightDirection;
   col24 AmbientLuminance;
-  static uLong NextExplosionID;
+  static feuLong NextExplosionID;
   lsquare** SquareStack;
   col24 NightAmbientLuminance;
   int EnchantmentMinusChance;

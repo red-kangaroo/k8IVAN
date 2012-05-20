@@ -76,11 +76,11 @@ area* game::AreaInLoad;
 square* game::SquareInLoad;
 dungeon** game::Dungeon;
 int game::CurrentDungeonIndex;
-uLong game::NextCharacterID = 1;
-uLong game::NextItemID = 1;
-uLong game::NextTrapID = 1;
+feuLong game::NextCharacterID = 1;
+feuLong game::NextItemID = 1;
+feuLong game::NextTrapID = 1;
 team** game::Team;
-uLong game::LOSTick;
+feuLong game::LOSTick;
 v2 game::CursorPos(-1, -1);
 truth game::Zoom;
 truth game::Generating = false;
@@ -116,7 +116,7 @@ v2 game::GlobalRainSpeed;
 sLong game::GlobalRainTimeModifier;
 truth game::PlayerSumoChampion;
 truth game::PlayerSolicitusChampion;
-uLong game::SquarePartEmitationTick = 0;
+feuLong game::SquarePartEmitationTick = 0;
 sLong game::Turn;
 truth game::PlayerRunning;
 character* game::LastPetUnderCursor;
@@ -156,7 +156,7 @@ uChar ***game::LuxTable = 0;
 truth game::Running;
 character *game::Player;
 v2 game::Camera(0, 0);
-uLong game::Tick;
+feuLong game::Tick;
 gamescript *game::GameScript = 0;
 valuemap game::GlobalValueMap;
 dangermap game::DangerMap;
@@ -181,7 +181,7 @@ truth game::GoThroughWallsCheat;
 int game::QuestMonstersFound;
 bitmap *game::BusyAnimationCache[32];
 festring game::PlayerName;
-uLong game::EquipmentMemory[MAX_EQUIPMENT_SLOTS];
+feuLong game::EquipmentMemory[MAX_EQUIPMENT_SLOTS];
 olterrain *game::MonsterPortal;
 std::vector<v2> game::SpecialCursorPos;
 std::vector<int> game::SpecialCursorData;
@@ -200,56 +200,56 @@ void game::SetAbnormalMoveKey (int idx, char ch) {
 }
 
 
-void game::AddCharacterID (character *Char, uLong ID) {
+void game::AddCharacterID (character *Char, feuLong ID) {
 /*k8:???  if (CharacterIDMap.find(ID) != CharacterIDMap.end())
     int esko = esko = 2;*/
   CharacterIDMap.insert(std::make_pair(ID, Char));
 }
 
 
-void game::RemoveCharacterID (uLong ID) {
+void game::RemoveCharacterID (feuLong ID) {
 /*k8:???  if (CharacterIDMap.find(ID) == CharacterIDMap.end())
     int esko = esko = 2;*/
   CharacterIDMap.erase(CharacterIDMap.find(ID));
 }
 
 
-void game::AddItemID (item *Item, uLong ID) {
+void game::AddItemID (item *Item, feuLong ID) {
 /*k8:???  if (ItemIDMap.find(ID) != ItemIDMap.end())
     int esko = esko = 2;*/
   ItemIDMap.insert(std::make_pair(ID, Item));
 }
 
 
-void game::RemoveItemID (uLong ID) {
+void game::RemoveItemID (feuLong ID) {
 /*k8:???  if(ID && ItemIDMap.find(ID) == ItemIDMap.end())
     int esko = esko = 2;*/
   if (ID) ItemIDMap.erase(ItemIDMap.find(ID));
 }
 
 
-void game::UpdateItemID (item *Item, uLong ID) {
+void game::UpdateItemID (item *Item, feuLong ID) {
 /*k8:???  if(ItemIDMap.find(ID) == ItemIDMap.end())
     int esko = esko = 2;*/
   ItemIDMap.find(ID)->second = Item;
 }
 
 
-void game::AddTrapID (entity *Trap, uLong ID) {
+void game::AddTrapID (entity *Trap, feuLong ID) {
 /*k8:???  if(TrapIDMap.find(ID) != TrapIDMap.end())
     int esko = esko = 2;*/
   if (ID) TrapIDMap.insert(std::make_pair(ID, Trap));
 }
 
 
-void game::RemoveTrapID (uLong ID) {
+void game::RemoveTrapID (feuLong ID) {
 /*k8:???  if(ID && TrapIDMap.find(ID) == TrapIDMap.end())
     int esko = esko = 2;*/
   if (ID) TrapIDMap.erase(TrapIDMap.find(ID));
 }
 
 
-void game::UpdateTrapID (entity *Trap, uLong ID) {
+void game::UpdateTrapID (entity *Trap, feuLong ID) {
 /*k8:???  if(TrapIDMap.find(ID) == TrapIDMap.end())
     int esko = esko = 2;*/
   TrapIDMap.find(ID)->second = Trap;
@@ -1087,7 +1087,7 @@ sLong game::ScrollBarQuestion (cfestring &Topic, sLong BeginValue, sLong Step, s
 }
 
 
-uLong game::IncreaseLOSTick () {
+feuLong game::IncreaseLOSTick () {
   if (LOSTick != 0xFE) return LOSTick += 2;
   CurrentLevel->InitLastSeen();
   return LOSTick = 4;
@@ -1893,8 +1893,8 @@ inputfile &operator >> (inputfile &SaveFile, homedata *&HomeData) {
 }
 
 
-uLong game::CreateNewCharacterID (character *NewChar) {
-  uLong ID = NextCharacterID++;
+feuLong game::CreateNewCharacterID (character *NewChar) {
+  feuLong ID = NextCharacterID++;
 /*k8:???  if(CharacterIDMap.find(ID) != CharacterIDMap.end())
     int esko = esko = 2;*/
   CharacterIDMap.insert(std::make_pair(ID, NewChar));
@@ -1902,8 +1902,8 @@ uLong game::CreateNewCharacterID (character *NewChar) {
 }
 
 
-uLong game::CreateNewItemID (item *NewItem) {
-  uLong ID = NextItemID++;
+feuLong game::CreateNewItemID (item *NewItem) {
+  feuLong ID = NextItemID++;
 /*k8:???  if(ItemIDMap.find(ID) != ItemIDMap.end())
     int esko = esko = 2;*/
   if (NewItem) ItemIDMap.insert(std::make_pair(ID, NewItem));
@@ -1911,8 +1911,8 @@ uLong game::CreateNewItemID (item *NewItem) {
 }
 
 
-uLong game::CreateNewTrapID (entity *NewTrap) {
-  uLong ID = NextTrapID++;
+feuLong game::CreateNewTrapID (entity *NewTrap) {
+  feuLong ID = NextTrapID++;
 /*k8:???  if(TrapIDMap.find(ID) != TrapIDMap.end())
     int esko = esko = 2;*/
   if (NewTrap) TrapIDMap.insert(std::make_pair(ID, NewTrap));
@@ -1920,19 +1920,19 @@ uLong game::CreateNewTrapID (entity *NewTrap) {
 }
 
 
-character *game::SearchCharacter (uLong ID) {
+character *game::SearchCharacter (feuLong ID) {
   characteridmap::iterator Iterator = CharacterIDMap.find(ID);
   return Iterator != CharacterIDMap.end() ? Iterator->second : 0;
 }
 
 
-item *game::SearchItem (uLong ID) {
+item *game::SearchItem (feuLong ID) {
   itemidmap::iterator Iterator = ItemIDMap.find(ID);
   return Iterator != ItemIDMap.end() ? Iterator->second : 0;
 }
 
 
-entity *game::SearchTrap (uLong ID) {
+entity *game::SearchTrap (feuLong ID) {
   trapidmap::iterator Iterator = TrapIDMap.find(ID);
   return Iterator != TrapIDMap.end() ? Iterator->second : 0;
 }
@@ -2571,7 +2571,7 @@ int game::CalculateMinimumEmitationRadius (col24 E) {
 }
 
 
-uLong game::IncreaseSquarePartEmitationTicks () {
+feuLong game::IncreaseSquarePartEmitationTicks () {
   if ((SquarePartEmitationTick += 2) == 0x100) {
     CurrentLevel->InitSquarePartEmitationTicks();
     SquarePartEmitationTick = 2;
@@ -2782,7 +2782,7 @@ truth game::SelectPet (int Key) {
 }
 
 
-void game::CommandScreen (cfestring &Topic, uLong PossibleFlags, uLong ConstantFlags, uLong &VaryFlags, uLong &Flags) {
+void game::CommandScreen (cfestring &Topic, feuLong PossibleFlags, feuLong ConstantFlags, feuLong &VaryFlags, feuLong &Flags) {
   static cchar *CommandDescription[COMMAND_FLAGS] = {
     "Follow me",
     "Flee from enemies",
@@ -2829,12 +2829,12 @@ void game::CommandScreen (cfestring &Topic, uLong PossibleFlags, uLong ConstantF
 
 
 truth game::CommandAll () {
-  uLong PossibleFlags = 0, ConstantFlags = ALL_COMMAND_FLAGS, VaryFlags = 0, OldFlags = 0;
+  feuLong PossibleFlags = 0, ConstantFlags = ALL_COMMAND_FLAGS, VaryFlags = 0, OldFlags = 0;
   uInt c1, c2;
   for (c1 = 0; c1 < PetVector.size(); ++c1) {
     ConstantFlags &= PetVector[c1]->GetConstantCommandFlags();
-    uLong C = PetVector[c1]->GetCommandFlags();
-    uLong ThisPossible = PetVector[c1]->GetPossibleCommandFlags();
+    feuLong C = PetVector[c1]->GetCommandFlags();
+    feuLong ThisPossible = PetVector[c1]->GetPossibleCommandFlags();
     for (c2 = 0; c2 < COMMAND_FLAGS; ++c2)
       if (1 << c2 & PossibleFlags & ThisPossible && (1 << c2 & C) != (1 << c2 & OldFlags)) VaryFlags |= 1 << c2;
     PossibleFlags |= ThisPossible;
@@ -2844,15 +2844,15 @@ truth game::CommandAll () {
     ADD_MESSAGE("Not a single creature in your visible team can be commanded.");
     return false;
   }
-  uLong NewFlags = OldFlags;
+  feuLong NewFlags = OldFlags;
   CommandScreen(CONST_S("Issue commands to whole visible team"), PossibleFlags, ConstantFlags, VaryFlags, NewFlags);
   truth Change = false;
   for (c1 = 0; c1 < PetVector.size(); ++c1) {
     character *Char = PetVector[c1];
     if (!Char->IsConscious()) continue;
-    uLong OldC = Char->GetCommandFlags();
-    uLong ConstC = Char->GetConstantCommandFlags();
-    uLong ThisC = (NewFlags & Char->GetPossibleCommandFlags() & ~(ConstC|VaryFlags)) | (OldC & (ConstC|VaryFlags));
+    feuLong OldC = Char->GetCommandFlags();
+    feuLong ConstC = Char->GetConstantCommandFlags();
+    feuLong ThisC = (NewFlags & Char->GetPossibleCommandFlags() & ~(ConstC|VaryFlags)) | (OldC & (ConstC|VaryFlags));
     if (ThisC != OldC) Change = true;
     Char->SetCommandFlags(ThisC);
   }

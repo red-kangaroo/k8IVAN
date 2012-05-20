@@ -59,8 +59,8 @@ public:
   inline truth IsInside () const { return Flags & FLUID_INSIDE; }
   truth UseImage() const;
   virtual int GetTrapType () const { return Liquid->GetType() | FLUID_TRAP; }
-  virtual uLong GetTrapID () const { return TrapData.TrapID; }
-  virtual uLong GetVictimID () const { return TrapData.VictimID; }
+  virtual feuLong GetTrapID () const { return TrapData.TrapID; }
+  virtual feuLong GetVictimID () const { return TrapData.VictimID; }
   virtual void AddTrapName (festring &, int) const;
   virtual void UnStick () { TrapData.VictimID = 0; }
   virtual void UnStick (int I) { TrapData.BodyParts &= ~(1 << I); }
@@ -116,7 +116,7 @@ protected:
      or weapon is unequipped. There is no real need, since the existence
      of the fluid is very temporary anyway. */
   imagedata *GearImage;
-  uLong Flags;
+  feuLong Flags;
   festring LocationName;
   static const sLong BodyArmorPartPixels[];
 };

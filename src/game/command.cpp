@@ -1398,9 +1398,9 @@ truth commandsystem::WizardHeal (character *Char) {
     if (Char->GetBodyPart(c)) {
       Char->GetBodyPart(c)->RemoveAllFluids();
     } else if (Char->CanCreateBodyPart(c)) {
-      const std::list<uLong> &obp = Char->GetOriginalBodyPartID(c);
+      const std::list<feuLong> &obp = Char->GetOriginalBodyPartID(c);
       //
-      for (std::list<uLong>::const_iterator i = obp.begin(); i != obp.end(); ++i) {
+      for (std::list<feuLong>::const_iterator i = obp.begin(); i != obp.end(); ++i) {
         bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
         //
         if (OldBodyPart && OldBodyPart->CanRegenerate()) {

@@ -133,7 +133,7 @@ void object::UpdatePictures()
   UpdatePictures(GraphicData, ZeroPos, VisualEffects|GetSpecialFlags(), GetMaxAlpha(), GetGraphicsContainerIndex(), &object::GetBitmapPos);
 }
 
-truth object::RandomizeSparklePos(v2& SparklePos, v2 BPos, int& SparkleTime, uLong SeedBase, int SpecialFlags, int GraphicsContainerIndex) const
+truth object::RandomizeSparklePos(v2& SparklePos, v2 BPos, int& SparkleTime, feuLong SeedBase, int SpecialFlags, int GraphicsContainerIndex) const
 {
   static int SeedModifier = 1;
   femath::SaveSeed();

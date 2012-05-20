@@ -758,7 +758,7 @@ template<> void databasecreator<material>::CreateDataBaseMemberMap () {
 
 
 #define ADD_BASE_VALUE(name)\
-  if (Word == #name) game::GetGlobalValueMap()[CONST_S("Base")] = DataBase.*static_cast<databasemember<database, uLong database::*>*>(Data)->Member;
+  if (Word == #name) game::GetGlobalValueMap()[CONST_S("Base")] = DataBase.*static_cast<databasemember<database, feuLong database::*>*>(Data)->Member;
 
 
 template <class type> void databasecreator<type>::SetBaseValue(cfestring &, databasememberbase<database> *, database &) {}

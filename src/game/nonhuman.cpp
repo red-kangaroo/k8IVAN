@@ -1551,9 +1551,9 @@ void hattifattener::GetAICommand()
 void hattifattener::CreateCorpse(lsquare* Square)
 {
   level* Level = Square->GetLevel();
-  uLong StackSize = Level->AddRadiusToSquareStack(Square->GetPos(), 9);
+  feuLong StackSize = Level->AddRadiusToSquareStack(Square->GetPos(), 9);
   lsquare** SquareStack = Level->GetSquareStack();
-  uLong c;
+  feuLong c;
 
   for(c = 0; c < StackSize; ++c)
     SquareStack[c]->RemoveFlags(IN_SQUARE_STACK);

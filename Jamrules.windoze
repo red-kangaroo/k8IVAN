@@ -43,6 +43,5 @@ if $(WINDOZE) {
   }
 
   HDRS += wininc wininc/SDL ;
-  LINKLIBS += -Lwinlib -lm -lSDL ;
-  C++LINKLIBS += -Lwinlib -lm -lSDL ;
+  LINKLIBS.all += -Lwinlib -lm -lSDL -lz -lSDL_mixer ;
 }

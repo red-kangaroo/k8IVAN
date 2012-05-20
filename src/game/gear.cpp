@@ -1573,7 +1573,7 @@ void taiaha::BreakEffect(character* Terrorist, cfestring& DeathMsg)
   v2 Pos = GetPos();
   level* Level = GetLevel();
   RemoveFromSlot();
-  uLong StackSize = Level->AddRadiusToSquareStack(Pos, 2); //hardcode, default is 2 for most wands, but zero for fireballs
+  feuLong StackSize = Level->AddRadiusToSquareStack(Pos, 2); //hardcode, default is 2 for most wands, but zero for fireballs
   lsquare** SquareStack = Level->GetSquareStack();
 
   for (unsigned int c = 0; c < StackSize; ++c) SquareStack[c]->RemoveFlags(IN_SQUARE_STACK);

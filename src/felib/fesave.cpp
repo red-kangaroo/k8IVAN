@@ -29,6 +29,81 @@
 #include "femath.h"
 
 
+#ifdef USE_ZLIB
+# define Xgetc  gzgetc
+# define Xfeof  gzeof
+# define Xungc  gzungetc
+# define Xseek  gzseek
+# define Xtell  gztell
+# define Xclre  gzclearerr
+#else
+# define Xgetc  fgetc
+# define Xfeof  feof
+# define Xungc  ungetc
+# define Xseek  fseek
+# define Xtell  ftell
+# define Xclre  clearerr
+#endif
+
+
+////////////////////////////////////////////////////////////////////////////////
+outputfile::outputfile (cfestring &FileName, truth AbortOnErr) :
+#ifdef USE_ZLIB
+  Buffer(gzopen(FileName.CStr(), "wb9")),
+#else
+  Buffer(fopen(FileName.CStr(), "wb")),
+#endif
+  FileName(FileName)
+{
+  if (AbortOnErr && !IsOpen()) ABORT("Can't open %s for output!", FileName.CStr());
+}
+
+
+outputfile::~outputfile () {
+  Close();
+}
+
+
+void outputfile::Close () {
+  if (Buffer) {
+#ifdef USE_ZLIB
+    gzclose(Buffer);
+#else
+    fclose(Buffer);
+#endif
+    Buffer = 0;
+  }
+}
+
+
+void outputfile::Flush () {
+#ifdef USE_ZLIB
+  gzflush(Buffer, Z_FINISH);
+#else
+  fflush(Buffer);
+#endif
+}
+
+
+void outputfile::Put (char What) {
+#ifdef USE_ZLIB
+  gzputc(Buffer, What);
+#else
+  fputc(What, Buffer);
+#endif
+}
+
+
+void outputfile::Write (cchar *Offset, sLong Size) {
+#ifdef USE_ZLIB
+  gzwrite(Buffer, Offset, Size);
+#else
+  fwrite(Offset, 1, Size, Buffer);
+#endif
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 truth inputfile::fileExists (const festring &fname) {
 #ifndef WIN32
   struct stat st;
@@ -67,37 +142,121 @@ festring inputfile::GetMyDir (void) {
 }
 
 
-outputfile::outputfile (cfestring &FileName, truth AbortOnErr) :
-  Buffer(fopen(FileName.CStr(), "wb")),
-  FileName(FileName)
-{
-  if (AbortOnErr && !IsOpen()) ABORT("Can't open %s for output!", FileName.CStr());
-}
-
-
-outputfile::~outputfile () {
-  if (Buffer) fclose(Buffer);
-}
-
-
-void outputfile::ReOpen () {
-  fclose(Buffer);
-  Buffer = fopen(FileName.CStr(), "ab");
-}
-
-
 inputfile::inputfile (cfestring &FileName, const valuemap *ValueMap, truth AbortOnErr) :
+#ifdef USE_ZLIB
+  Buffer(gzopen(FileName.CStr(), "rb")),
+#else
   Buffer(fopen(FileName.CStr(), "rb")),
+#endif
   FileName(FileName),
   ValueMap(ValueMap),
   lastWordWasString(false)
+#ifdef USE_ZLIB
+  , mFileSize(-1)
+#endif
 {
   if (AbortOnErr && !IsOpen()) ABORT("File %s not found!", FileName.CStr());
 }
 
 
 inputfile::~inputfile () {
-  if (Buffer) fclose(Buffer);
+  Close();
+}
+
+
+void inputfile::Close () {
+  if (Buffer) {
+#ifdef USE_ZLIB
+    gzclose(Buffer);
+#else
+    fclose(Buffer);
+#endif
+    Buffer = 0;
+  }
+}
+
+
+int inputfile::Get () {
+  return Xgetc(Buffer);
+}
+
+
+int inputfile::Unget (int ch) {
+  return Xungc(ch, Buffer);
+}
+
+
+void inputfile::Read (char *Offset, sLong Size) {
+#ifdef USE_ZLIB
+  if (gzread(Buffer, Offset, Size) != Size) ABORT("File '%s' read error!", FileName.CStr());
+#else
+  if (fread(Offset, Size, 1, Buffer) != 1) ABORT("File '%s' read error!", FileName.CStr());
+#endif
+}
+
+
+truth inputfile::Eof () {
+  return Xfeof(Buffer);
+}
+
+
+void inputfile::SeekPosBegin (sLong Offset) {
+  if (Xseek(Buffer, Offset, SEEK_SET) < 0) ABORT("File '%s': seek error!", FileName.CStr());
+}
+
+
+void inputfile::SeekPosCurrent (sLong Offset) {
+  if (Xseek(Buffer, Offset, SEEK_CUR) < 0) ABORT("File '%s': seek error!", FileName.CStr());
+}
+
+
+#ifdef USE_ZLIB
+void inputfile::SeekPosEnd (sLong Offset) {
+  //HACKHACK: emulate this
+  if (mFileSize < 0) {
+    //SLOOOW, but we have to do that
+    int opos;
+    char *buffer, buf[512];
+    int bufsize;
+    //
+    for (bufsize = 256*1024; bufsize > (int)sizeof(buf); bufsize /= 2) {
+      if ((buffer = (char *)malloc(bufsize)) != NULL) break;
+    }
+    if (buffer == NULL) { buffer = buf; bufsize = sizeof(buf); }
+    //
+    //fprintf(stderr, "determining file size...\n");
+    mFileSize = opos = gztell(Buffer);
+    for (;;) {
+      int len = gzread(Buffer, buffer, bufsize);
+      //
+      if (len < 0) { mFileSize = -1; break; } // error
+      mFileSize += len;
+      if (len < bufsize) break; // eof reached
+    }
+    if (buffer != buf) free(buffer);
+    //fprintf(stderr, "file size: %d\n", ctx->filesize);
+  }
+  //
+  if (mFileSize < 0) ABORT("File '%s': seek error!", FileName.CStr());
+  //
+  if (gzseek(Buffer, mFileSize+Offset, SEEK_SET) < 0) ABORT("File '%s': seek error!", FileName.CStr());
+}
+
+#else
+
+void inputfile::SeekPosEnd (sLong Offset) {
+  if (fseek(Buffer, Offset, SEEK_END) < 0) ABORT("File '%s': seek error!", FileName.CStr());
+}
+#endif
+
+
+sLong inputfile::TellPos () {
+  return Xtell(Buffer);
+}
+
+
+void inputfile::ClearFlags () {
+  Xclre(Buffer);
 }
 
 
@@ -344,11 +503,11 @@ festring inputfile::ReadWord (truth AbortOnEOF) {
 
 
 void inputfile::SkipSpaces () {
-  while (!feof(Buffer)) {
-    int ch = fgetc(Buffer);
+  while (!Xfeof(Buffer)) {
+    int ch = Xgetc(Buffer);
     if (ch == EOF) break;
     if ((unsigned char)ch > ' ') {
-      ungetc(ch, Buffer);
+      Xungc(ch, Buffer);
       break;
     }
   }
@@ -364,14 +523,14 @@ void inputfile::SkipSpaces () {
 int inputfile::HandlePunct (festring &String, int Char, int Mode) {
   if (Char == '/') {
     // comment? (can be nested)
-    if (!feof(Buffer)) {
-      Char = fgetc(Buffer);
+    if (!Xfeof(Buffer)) {
+      Char = Xgetc(Buffer);
       if (Char == '*') {
         sLong StartPos = TellPos();
         int OldChar = 0, CommentLevel = 1;
         for (;;) {
-          if (feof(Buffer)) ABORT("Unterminated comment in file %s, beginning at line %d!", FileName.CStr(), TellLineOfPos(StartPos));
-          Char = fgetc(Buffer);
+          if (Xfeof(Buffer)) ABORT("Unterminated comment in file %s, beginning at line %d!", FileName.CStr(), TellLineOfPos(StartPos));
+          Char = Xgetc(Buffer);
           if (OldChar != '*' || Char != '/') {
             if (OldChar != '/' || Char != '*') OldChar = Char;
             else {
@@ -387,21 +546,21 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
       }
       if (Char == '/') {
         // comment (to eol)
-        while (!feof(Buffer)) {
-          int ch = fgetc(Buffer);
+        while (!Xfeof(Buffer)) {
+          int ch = Xgetc(Buffer);
           if (ch == '\n') break;
         }
         return PUNCT_CONTINUE;
       }
-      ungetc(Char, Buffer);
-      clearerr(Buffer);
+      Xungc(Char, Buffer);
+      Xclre(Buffer);
     }
-    if (Mode) ungetc('/', Buffer); else String << '/';
+    if (Mode) Xungc('/', Buffer); else String << '/';
     return PUNCT_RETURN;
   }
   //
   if (Mode) {
-    ungetc(Char, Buffer);
+    Xungc(Char, Buffer);
     return PUNCT_RETURN;
   }
   //
@@ -410,10 +569,10 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
     lastWordWasString = true;
     sLong StartPos = TellPos();
     for (;;) {
-      if (feof(Buffer)) ABORT("Unterminated string in file %s, beginning at line %d!", FileName.CStr(), TellLineOfPos(StartPos));
-      Char = fgetc(Buffer);
+      if (Xfeof(Buffer)) ABORT("Unterminated string in file %s, beginning at line %d!", FileName.CStr(), TellLineOfPos(StartPos));
+      Char = Xgetc(Buffer);
       if (Char == '\\') {
-        Char = fgetc(Buffer);
+        Char = Xgetc(Buffer);
         if (Char == EOF) ABORT("Unterminated string in file %s, beginning at line %d!", FileName.CStr(), TellLineOfPos(StartPos));
         switch (Char) {
           case 't': String << '\t'; break;
@@ -440,13 +599,13 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
     }
   }
   String << char(Char);
-  if (!feof(Buffer)) {
+  if (!Xfeof(Buffer)) {
     if (Char == '=' || Char == '<' || Char == '>' || Char == '!') {
-      Char = fgetc(Buffer);
-      if (Char == '=') String << char(Char); else ungetc(Char, Buffer);
+      Char = Xgetc(Buffer);
+      if (Char == '=') String << char(Char); else Xungc(Char, Buffer);
     } else if (Char == '&' || Char == '|') {
-      int ch = fgetc(Buffer);
-      if (Char == ch) String << char(ch); else ungetc(ch, Buffer);
+      int ch = Xgetc(Buffer);
+      if (Char == ch) String << char(ch); else Xungc(ch, Buffer);
     }
   }
   return PUNCT_RETURN;
@@ -457,11 +616,11 @@ void inputfile::readWordIntr (festring &String, truth AbortOnEOF) {
   int Mode = 0;
   String.Empty();
   lastWordWasString = false;
-  for (int Char = fgetc(Buffer); !feof(Buffer); Char = fgetc(Buffer)) {
+  for (int Char = Xgetc(Buffer); !Xfeof(Buffer); Char = Xgetc(Buffer)) {
     if (isalpha(Char) || Char == '_') {
       if (!Mode) Mode = MODE_WORD;
       else if (Mode == MODE_NUMBER) {
-        ungetc(Char, Buffer);
+        Xungc(Char, Buffer);
         return;
       }
       String << char(Char);
@@ -470,7 +629,7 @@ void inputfile::readWordIntr (festring &String, truth AbortOnEOF) {
     if (isdigit(Char)) {
       if (!Mode) Mode = MODE_NUMBER;
       else if (Mode == MODE_WORD) {
-        ungetc(Char, Buffer);
+        Xungc(Char, Buffer);
         return;
       }
       String << char(Char);
@@ -480,23 +639,23 @@ void inputfile::readWordIntr (festring &String, truth AbortOnEOF) {
     if (ispunct(Char) && HandlePunct(String, Char, Mode) == PUNCT_RETURN) return;
   }
   if (AbortOnEOF) ABORT("Unexpected end of file %s!", FileName.CStr());
-  if (Mode) clearerr(Buffer);
+  if (Mode) Xclre(Buffer);
 }
 
 
 char inputfile::ReadLetter (truth AbortOnEOF) {
-  for (int Char = fgetc(Buffer); !feof(Buffer); Char = fgetc(Buffer)) {
+  for (int Char = Xgetc(Buffer); !Xfeof(Buffer); Char = Xgetc(Buffer)) {
     if (isalpha(Char) || isdigit(Char)) return Char;
     if (ispunct(Char)) {
       if (Char == '/') {
-        if (!feof(Buffer)) {
-          Char = fgetc(Buffer);
+        if (!Xfeof(Buffer)) {
+          Char = Xgetc(Buffer);
           if (Char == '*') {
             sLong StartPos = TellPos();
             int OldChar = 0, CommentLevel = 1;
             for (;;) {
-              if (feof(Buffer)) ABORT("Unterminated comment in file %s, beginning at line %d!", FileName.CStr(), TellLineOfPos(StartPos));
-              Char = fgetc(Buffer);
+              if (Xfeof(Buffer)) ABORT("Unterminated comment in file %s, beginning at line %d!", FileName.CStr(), TellLineOfPos(StartPos));
+              Char = Xgetc(Buffer);
               if (OldChar != '*' || Char != '/') {
                 if (OldChar != '/' || Char != '*') OldChar = Char;
                 else {
@@ -510,7 +669,7 @@ char inputfile::ReadLetter (truth AbortOnEOF) {
             }
             continue;
           } else {
-            ungetc(Char, Buffer);
+            Xungc(Char, Buffer);
           }
         }
         return '/';
@@ -566,7 +725,7 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
           if (res[0] != ';' && res[0] != ',' && res[0] != ':') {
             ABORT("Invalid terminator in file %s, line %d!", FileName.CStr(), TellLine());
           }
-          if (PreserveTerminator) ungetc(res[0], Buffer);
+          if (PreserveTerminator) Xungc(res[0], Buffer);
         } else {
           ABORT("Terminator expected in file %s, line %d!", FileName.CStr(), TellLine());
         }
@@ -582,12 +741,12 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
     }
     if (Word.GetSize() == 1) {
       if (First == ';' || First == ',' || First == ':') {
-        if (CallLevel != HIGHEST || PreserveTerminator) ungetc(First, Buffer);
+        if (CallLevel != HIGHEST || PreserveTerminator) Xungc(First, Buffer);
         *num = Value;
         return res;
       }
       if (First == ')') {
-        if ((CallLevel != HIGHEST && CallLevel != 4) || PreserveTerminator) ungetc(')', Buffer);
+        if ((CallLevel != HIGHEST && CallLevel != 4) || PreserveTerminator) Xungc(')', Buffer);
         *num = Value;
         return res;
       }
@@ -604,7 +763,7 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       NumberCorrect = true;\
       continue;\
     } else {\
-      ungetc(#op[0], Buffer);\
+      Xungc(#op[0], Buffer);\
       *num = Value;\
       return res;\
     } \
@@ -620,12 +779,12 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
           NumberCorrect = true;
           continue;
         } else {
-          ungetc('<', Buffer);
-          ungetc('<', Buffer);
+          Xungc('<', Buffer);
+          Xungc('<', Buffer);
           *num = Value;
           return res;
         } else {
-          ungetc(Next, Buffer);
+          Xungc(Next, Buffer);
         }
       }
       if (First == '>') {
@@ -636,17 +795,17 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
           NumberCorrect = true;
           continue;
         } else {
-          ungetc('>', Buffer);
-          ungetc('>', Buffer);
+          Xungc('>', Buffer);
+          Xungc('>', Buffer);
           *num = Value;
           return res;
         } else {
-          ungetc(Next, Buffer);
+          Xungc(Next, Buffer);
         }
       }
       if (First == '(') {
         if (NumberCorrect) {
-          ungetc('(', Buffer);
+          Xungc('(', Buffer);
           *num = Value;
           return res;
         } else {
@@ -658,14 +817,14 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       if (First == '=' && CallLevel == HIGHEST) continue;
       if (First == '#') {
         // for #defines
-        ungetc('#', Buffer);
+        Xungc('#', Buffer);
         *num = Value;
         return res;
       }
     }
     /*
     if (Word == "enum" || Word == "bitenum") {
-      if (CallLevel != HIGHEST || PreserveTerminator) ungetc(';', Buffer);
+      if (CallLevel != HIGHEST || PreserveTerminator) Xungc(';', Buffer);
       *num = Value;
       return res;
     }
@@ -717,15 +876,15 @@ festring inputfile::ReadCode (truth AbortOnEOF) {
   char inString = 0;
   festring res;
   //
-  for (char Char = fgetc(Buffer); !feof(Buffer); Char = fgetc(Buffer)) {
+  for (char Char = Xgetc(Buffer); !Xfeof(Buffer); Char = Xgetc(Buffer)) {
     //fprintf(stderr, "char: [%c]; inString: %d; sqLevel: %d\n", (Char < 32 || Char > 126 ? '?' : Char), inString, sqLevel);
     if (inString) {
       res << Char;
       if (Char == inString) {
         inString = 0;
       } else if (Char == '\\') {
-        if (feof(Buffer)) break;
-        Char = fgetc(Buffer);
+        if (Xfeof(Buffer)) break;
+        Char = Xgetc(Buffer);
         res << Char;
       }
     } else {
@@ -736,16 +895,16 @@ festring inputfile::ReadCode (truth AbortOnEOF) {
         if (--sqLevel == 0) break;
         res << Char;
       } else if (Char == '/') {
-        if (feof(Buffer)) { res << Char; break; }
-        switch ((Char = fgetc(Buffer))) {
+        if (Xfeof(Buffer)) { res << Char; break; }
+        switch ((Char = Xgetc(Buffer))) {
           case '/': // eol comment
-            while (!feof(Buffer)) if (fgetc(Buffer) == '\n') break;
+            while (!Xfeof(Buffer)) if (Xgetc(Buffer) == '\n') break;
             break;
           case '*': // c-like comment
-            while (!feof(Buffer)) {
-              if (fgetc(Buffer) == '*') {
-                if (feof(Buffer)) break;
-                if (fgetc(Buffer) == '/') break;
+            while (!Xfeof(Buffer)) {
+              if (Xgetc(Buffer) == '*') {
+                if (Xfeof(Buffer)) break;
+                if (Xgetc(Buffer) == '/') break;
               }
             }
             break;
@@ -762,7 +921,7 @@ festring inputfile::ReadCode (truth AbortOnEOF) {
       }
     }
   }
-  if (AbortOnEOF && feof(Buffer)) ABORT("Unexpected end of file %s!", FileName.CStr());
+  if (AbortOnEOF && Xfeof(Buffer)) ABORT("Unexpected end of file %s!", FileName.CStr());
   return res;
 }
 
@@ -896,20 +1055,61 @@ void ReadData (fearray<festring> &Array, inputfile &SaveFile) {
 }
 
 
-uLong inputfile::TellLineOfPos (sLong Pos) {
-  uLong Line = 1;
+feuLong inputfile::TellLineOfPos (sLong Pos) {
+  feuLong Line = 1;
   sLong BackupPos = TellPos();
   SeekPosBegin(0);
-  while (TellPos() != Pos) { if (fgetc(Buffer) == '\n') ++Line; }
+  while (TellPos() != Pos) { if (Xgetc(Buffer) == '\n') ++Line; }
   if (TellPos() != BackupPos) SeekPosBegin(BackupPos);
   return Line;
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+#ifdef USE_ZLIB
 meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
   inputfile("", ValueMap, false)
 {
-  if (Buffer) fclose(Buffer);
+  Close();
+#ifdef WIN32
+  char nbuf[MAX_PATH+1], tfn[MAX_PATH+1];
+  GetTempPath(MAX_PATH, nbuf);
+  GetTempFileName(nbuf, "ivan", 0, tfn);
+  tfname = tfn;
+  FILE *fl = fopen(tfn, "wb");
+  fwrite(str.CStr(), str.GetSize(), 1, fl);
+  fclose(fl);
+  Buffer = gzopen(tfn, "rb");
+#else
+  char fname[1024];
+  int fd;
+  //
+  strcpy(fname, "/tmp/i.v.a.n.XXXXXX");
+  tfname = fname;
+  fd = mkstemp(fname);
+  if (fd < 0) ABORT("Can't create temporary file!");
+  write(fd, str.CStr(), str.GetSize());
+  close(fd);
+  Buffer = gzopen(fname, "rb");
+#endif
+  FileName = "<memory>";
+}
+
+
+meminputfile::~meminputfile () {
+  if (buf) free(buf);
+  Close();
+  unlink(tfname.CStr());
+}
+
+
+#else
+
+
+meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
+  inputfile("", ValueMap, false)
+{
+  Close();
 #ifdef WIN32
   char nbuf[MAX_PATH+1], tfn[MAX_PATH+1];
   GetTempPath(MAX_PATH, nbuf);
@@ -928,10 +1128,12 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
   FileName = "<memory>";
 }
 
+
 meminputfile::~meminputfile () {
   if (buf) free(buf);
+  Close();
 #ifdef WIN32
-  if (Buffer) fclose(Buffer);
-  unlink(tfname.CStr());
+  DeleteFile(tfname.CStr());
 #endif
 }
+#endif

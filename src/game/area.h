@@ -50,7 +50,7 @@ protected:
   square ***Map;
   uChar **FlagMap;
   int XSize, YSize;
-  uLong XSizeTimesYSize;
+  feuLong XSizeTimesYSize;
   rect Border;
   std::map<int, v2> EntryMap;
 };

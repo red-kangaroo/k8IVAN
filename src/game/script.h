@@ -254,7 +254,7 @@ protected:
   SCRIPT_MEMBER(fearray<contentscript<item> >, ItemsInside);
   SCRIPT_MEMBER(interval, Times);
   SCRIPT_MEMBER(interval, LifeExpectancy);
-  FAST_SCRIPT_MEMBER(uLong, Category);
+  FAST_SCRIPT_MEMBER(feuLong, Category);
   FAST_SCRIPT_MEMBER(sLong, MinPrice);
   FAST_SCRIPT_MEMBER(sLong, MaxPrice);
   FAST_SCRIPT_MEMBER(uChar, Team);
@@ -404,7 +404,7 @@ protected:
   SCRIPT_TRUTH_WITH_BASE(IsInside);
   SCRIPT_TRUTH_WITH_BASE(GenerateWindows);
   SCRIPT_TRUTH_WITH_BASE(UseFillSquareWalls);
-  SCRIPT_MEMBER_WITH_BASE(uLong, Flags);
+  SCRIPT_MEMBER_WITH_BASE(feuLong, Flags);
   SCRIPT_TRUTH_WITH_BASE(GenerateWards);
 };
 

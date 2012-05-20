@@ -28,8 +28,8 @@
 
 class festring {
 public:
-  typedef uLong sizetype;
-  typedef const uLong csizetype;
+  typedef feuLong sizetype;
+  typedef const feuLong csizetype;
   /* It can be proven that the code works even if OwnsData is left
      uninitialized. However, Valgrind reports this as a possible error
      which is annoying */
@@ -76,7 +76,7 @@ public:
   festring &operator << (int Int) { return Append(Int); }
   festring &operator << (uInt Int) { return Append((int)Int); } //k8:64
   //festring &operator << (sLong Int) { return Append(Int); } //k8:64
-  //festring &operator << (uLong Int) { return Append(Int); } //k8:64
+  //festring &operator << (feuLong Int) { return Append(Int); } //k8:64
   festring &operator << (time_t Int) { return Append((int64_t)Int); } //k8:64
   bool operator < (cfestring &) const;
   bool operator <= (cfestring &) const;

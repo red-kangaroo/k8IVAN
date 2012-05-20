@@ -57,7 +57,7 @@ void graphics::SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScre
     SDL_SetColorKey(Icon, SDL_SRCCOLORKEY, SDL_MapRGB(Icon->format, 255, 255, 255));
     SDL_WM_SetIcon(Icon, NULL);
   }
-  uLong Flags = SDL_SWSURFACE;
+  feuLong Flags = SDL_SWSURFACE;
   if (FullScreen) {
     SDL_ShowCursor(SDL_DISABLE);
     Flags |= SDL_FULLSCREEN;
@@ -85,8 +85,8 @@ void graphics::BlitDBToScreen () {
   SDL_LockSurface(TempSurface);
   packcol16 *SrcPtr = DoubleBuffer->GetImage()[0];
   packcol16 *DestPtr = static_cast<packcol16 *>(TempSurface->pixels);
-  uLong ScreenYMove = (TempSurface->pitch >> 1);
-  uLong LineSize = Res.X << 1;
+  feuLong ScreenYMove = (TempSurface->pitch >> 1);
+  feuLong LineSize = Res.X << 1;
   for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memmove(DestPtr, SrcPtr, LineSize);
   SDL_UnlockSurface(TempSurface);
   SDL_Surface *S = SDL_DisplayFormat(TempSurface);
@@ -97,8 +97,8 @@ void graphics::BlitDBToScreen () {
   if (SDL_MUSTLOCK(Screen) && SDL_LockSurface(Screen) < 0) ABORT("Can't lock screen");
   packcol16 *SrcPtr = DoubleBuffer->GetImage()[0];
   packcol16 *DestPtr = static_cast<packcol16 *>(Screen->pixels);
-  uLong ScreenYMove = (Screen->pitch >> 1);
-  uLong LineSize = Res.X << 1;
+  feuLong ScreenYMove = (Screen->pitch >> 1);
+  feuLong LineSize = Res.X << 1;
   for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memmove(DestPtr, SrcPtr, LineSize);
   if (SDL_MUSTLOCK(Screen)) SDL_UnlockSurface(Screen);
   SDL_UpdateRect(Screen, 0, 0, Res.X, Res.Y);
@@ -107,7 +107,7 @@ void graphics::BlitDBToScreen () {
 
 
 void graphics::SwitchMode () {
-  uLong Flags;
+  feuLong Flags;
   if (Screen->flags & SDL_FULLSCREEN) {
     SDL_ShowCursor(SDL_ENABLE);
     Flags = SDL_SWSURFACE;

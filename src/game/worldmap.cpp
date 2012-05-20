@@ -65,7 +65,7 @@ void worldmap::Save (outputfile &SaveFile) const {
   SaveFile.Write(reinterpret_cast<char*>(TypeBuffer[0]), XSizeTimesYSize*sizeof(uChar));
   SaveFile.Write(reinterpret_cast<char*>(AltitudeBuffer[0]), XSizeTimesYSize*sizeof(short));
   SaveFile.Write(reinterpret_cast<char*>(ContinentBuffer[0]), XSizeTimesYSize*sizeof(uChar));
-  for (uLong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->Save(SaveFile);
+  for (feuLong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->Save(SaveFile);
   SaveFile << Continent << PlayerGroup;
 }
 
@@ -459,12 +459,12 @@ void worldmap::Draw (truth) const {
 
 
 void worldmap::CalculateLuminances () {
-  for (uLong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->CalculateLuminance();
+  for (feuLong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->CalculateLuminance();
 }
 
 
 void worldmap::CalculateNeighbourBitmapPoses () {
-  for (uLong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->GetGWTerrain()->CalculateNeighbourBitmapPoses();
+  for (feuLong c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->GetGWTerrain()->CalculateNeighbourBitmapPoses();
 }
 
 

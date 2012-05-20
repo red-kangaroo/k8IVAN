@@ -56,7 +56,7 @@ class room
   void SetIndex(int What) { Index = What; }
   int GetIndex() const { return Index; }
   character* GetMaster() const;
-  void SetMasterID(uLong What) { MasterID = What; }
+  void SetMasterID(feuLong What) { MasterID = What; }
   virtual truth PickupItem(character*, item*, int) { return true; }
   virtual truth DropItem(character*, item*, int) { return true; }
   int GetDivineMaster() const { return DivineMaster; }
@@ -85,22 +85,22 @@ class room
   virtual truth IsOKToDestroyWalls(ccharacter*) const;
   virtual void AddItemEffect(item*) { };
   void FinalProcessForBone();
-  void SetFlags(uLong What) { Flags = What; }
+  void SetFlags(feuLong What) { Flags = What; }
   truth DontGenerateMonsters() const { return Flags & NO_MONSTER_GENERATION; }
   olterrain* GetWard() const;
   truth WardIsActive() const;
   virtual truth IsOKToTeleportInto() const;
  protected:
   mutable character* Master;
-  mutable uLong LastMasterSearchTick;
+  mutable feuLong LastMasterSearchTick;
   v2 Pos;
   v2 Size;
-  uLong MasterID;
+  feuLong MasterID;
   int Index;
   int DivineMaster;
-  uLong Flags;
+  feuLong Flags;
   mutable olterrain* Ward;
-  mutable uLong LastWardSearchTick;
+  mutable feuLong LastWardSearchTick;
 };
 
 #ifdef __FILE_OF_STATIC_ROOM_PROTOTYPE_DEFINITIONS__

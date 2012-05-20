@@ -33,7 +33,7 @@ void area::Initialize (int InitXSize, int InitYSize) {
 
 
 area::~area () {
-  for (uLong c = 0; c < XSizeTimesYSize; ++c) delete Map[0][c];
+  for (feuLong c = 0; c < XSizeTimesYSize; ++c) delete Map[0][c];
   delete [] Map;
   delete [] FlagMap;
 }

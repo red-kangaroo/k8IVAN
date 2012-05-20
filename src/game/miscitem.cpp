@@ -972,7 +972,7 @@ beartrap::beartrap(const beartrap& Trap) : mybase(Trap)
 
 truth beartrap::TryToUnStick(character* Victim, v2)
 {
-  uLong TrapID = GetTrapID();
+  feuLong TrapID = GetTrapID();
   int Modifier = GetBaseTrapDamage() * 40 / Max(Victim->GetAttribute(DEXTERITY) + Victim->GetAttribute(ARM_STRENGTH), 1);
 
   if(!RAND_N(Max(Modifier, 2)))
@@ -1905,9 +1905,9 @@ void wand::BreakEffect(character* Terrorist, cfestring& DeathMsg)
   v2 Pos = GetPos();
   level* Level = GetLevel();
   RemoveFromSlot();
-  uLong StackSize = Level->AddRadiusToSquareStack(Pos, GetBreakEffectRangeSquare());
+  feuLong StackSize = Level->AddRadiusToSquareStack(Pos, GetBreakEffectRangeSquare());
   lsquare** SquareStack = Level->GetSquareStack();
-  uLong c;
+  feuLong c;
 
   for(c = 0; c < StackSize; ++c)
     SquareStack[c]->RemoveFlags(IN_SQUARE_STACK);
@@ -2522,7 +2522,7 @@ void itemcontainer::SetLifeExpectancy(int Base, int RandPlus)
   Contained->SetLifeExpectancy(Base, RandPlus);
 }
 
-uLong wand::GetSpecialParameters() const
+feuLong wand::GetSpecialParameters() const
 {
   switch(GetConfig())
   {
@@ -2703,7 +2703,7 @@ truth holyhandgrenade::CalculateHasBe() const
 
 void holyhandgrenade::Be() {
   item::Be();
-  if(3 * (game::GetTick() - PinPulledTick) > (uLong)(Count) * 100)
+  if(3 * (game::GetTick() - PinPulledTick) > (feuLong)(Count) * 100)
   {
     ++Count;
     festring Msg = "A voice loudly declares: \"";

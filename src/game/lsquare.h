@@ -40,18 +40,18 @@ typedef truth (item::*sorter)(ccharacter*) const;
 
 struct emitter
 {
-  emitter(uLong ID, col24 Emitation) : ID(ID), Emitation(Emitation) { }
+  emitter(feuLong ID, col24 Emitation) : ID(ID), Emitation(Emitation) { }
   explicit emitter() { }
-  uLong ID;
+  feuLong ID;
   col24 Emitation;
 };
 
-inline uLong MakeEmitterID(v2 Pos)
+inline feuLong MakeEmitterID(v2 Pos)
 {
   return Pos.X + (Pos.Y << 8);
 }
 
-inline v2 ExtractPosFromEmitterID(uLong ID)
+inline v2 ExtractPosFromEmitterID(feuLong ID)
 {
   return v2(ID & 0xFF, (ID >> 8) & 0xFF);
 }
@@ -86,9 +86,9 @@ struct stackcontroller
 struct tickcontroller
 {
   static void PrepareShiftedTick();
-  static uLong Tick;
-  static uLong ShiftedTick[4];
-  static uLong ShiftedQuadriTick[4];
+  static feuLong Tick;
+  static feuLong ShiftedTick[4];
+  static feuLong ShiftedQuadriTick[4];
 };
 
 class lsquare : public square
@@ -105,9 +105,9 @@ class lsquare : public square
   virtual void AddCharacter(character*);
   virtual void RemoveCharacter();
   stack* GetStack() const { return Stack; }
-  void AlterLuminance(uLong, col24);
+  void AlterLuminance(feuLong, col24);
   void Emitate() { Emitate(Emitation); }
-  void Emitate(col24, uLong = 0);
+  void Emitate(col24, feuLong = 0);
   void Clean();
   truth Open(character*);
   truth Close(character*);
@@ -117,8 +117,8 @@ class lsquare : public square
   void SignalEmitationDecrease(col24);
   col24 GetEmitation() const { return Emitation; }
   void Noxify() { Noxify(Emitation); }
-  void Noxify(col24, uLong = 0);
-  truth NoxifyEmitter(uLong);
+  void Noxify(col24, feuLong = 0);
+  truth NoxifyEmitter(feuLong);
   cchar* GetEngraved() const { return Engraved; }
   truth Engrave(cfestring&);
   void UpdateMemorizedDescription(truth = false);
@@ -152,7 +152,7 @@ class lsquare : public square
   v2 DrawLightning(v2, sLong, int, truth = true);
   truth DipInto(item*, character*);
   truth TryKey(item*, character*);
-  void SignalSeen(uLong);
+  void SignalSeen(feuLong);
   void CalculateLuminance();
   void DrawStaticContents(blitdata&) const;
   void DrawMemorized(blitdata&) const;
@@ -237,16 +237,16 @@ class lsquare : public square
   void UnFreeze() { Flags &= ~FREEZED; }
   void InitLastSeen();
   void GetSideItemDescription(festring&, truth = false) const;
-  void AddSunLightEmitter(uLong);
+  void AddSunLightEmitter(feuLong);
   void SendSunLightSignals();
   const sunemittervector& GetSunEmitter() const { return SunEmitter; }
   void ZeroReSunEmitatedFlags();
   virtual truth HasBeenSeen() const { return truth(Memorized); }
   truth CalculateIsTransparent();
-  void CalculateSunLightLuminance(uLong);
+  void CalculateSunLightLuminance(feuLong);
   void CreateMemorized();
   truth DetectMaterial(cmaterial*) const;
-  void Reveal(uLong, truth = false);
+  void Reveal(feuLong, truth = false);
   void DestroyMemorized();
   void SwapMemorized(lsquare*);
   truth HasNoBorderPartners() const;
@@ -289,11 +289,11 @@ class lsquare : public square
   bitmap* FowMemorized;
   char* Engraved;
   glterrain** GroundBorderPartnerTerrain;
-  uLong GroundBorderPartnerInfo;
+  feuLong GroundBorderPartnerInfo;
   olterrain** OverBorderPartnerTerrain;
-  uLong OverBorderPartnerInfo;
-  uLong SquarePartEmitationTick;
-  uLong SquarePartLastSeen;
+  feuLong OverBorderPartnerInfo;
+  feuLong SquarePartEmitationTick;
+  feuLong SquarePartLastSeen;
   col24 Emitation;
   int SmokeAlphaSum;
   lsquare* NeighbourLSquare[8];

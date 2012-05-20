@@ -52,9 +52,9 @@ struct sortdata
 
 struct idholder
 {
-  idholder(uLong ID) : ID(ID) { }
+  idholder(feuLong ID) : ID(ID) { }
   idholder* Next;
-  uLong ID;
+  feuLong ID;
 };
 
 outputfile& operator<<(outputfile&, const idholder*);
@@ -279,7 +279,7 @@ class item : public object
   virtual void ChargeFully(character*) { }
   void SetSize(int Value) { Size = Value; }
   virtual int GetSize() const { return Size; }
-  uLong GetID() const { return ID; }
+  feuLong GetID() const { return ID; }
   virtual void TeleportRandomly();
   virtual int GetStrengthValue() const;
   slot* GetSlot(int I = 0) const { return Slot[I]; }
@@ -460,7 +460,7 @@ class item : public object
   void WeaponSkillHit(int);
   virtual void SetTeam(int) { }
   void SpecialGenerationHandler();
-  item* Duplicate(uLong = 0);
+  item* Duplicate(feuLong = 0);
   virtual void SetIsActive(truth) { }
   double GetBaseDamage() const;
   int GetBaseMinDamage() const;
@@ -471,7 +471,7 @@ class item : public object
   sLong GetNutritionValue() const;
   virtual void SignalSpoil(material*);
   virtual truth AllowSpoil() const;
-  item* DuplicateToStack(stack*, uLong = 0);
+  item* DuplicateToStack(stack*, feuLong = 0);
   virtual truth CanBePiledWith(citem*, ccharacter*) const;
   virtual sLong GetTotalExplosivePower() const { return 0; }
   virtual void Break(character*, int = YOURSELF);
@@ -588,7 +588,7 @@ class item : public object
   virtual DATA_BASE_TRUTH_WITH_PARAMETER(IsKamikazeWeapon, ccharacter*);
   virtual void AddTrapName(festring&, int) const;
   int GetMainMaterialRustLevel() const;
-  truth HasID(uLong What) const { return ID == What; }
+  truth HasID(feuLong What) const { return ID == What; }
   virtual truth Spoils() const;
   int GetMaxSpoilPercentage() const;
   truth HasPrice() const;
@@ -627,7 +627,7 @@ protected:
   static const prototype ProtoType;
   slot** Slot;
   int Size;
-  uLong ID;
+  feuLong ID;
   const database* DataBase;
   sLong Volume;
   sLong Weight;
@@ -636,7 +636,7 @@ protected:
   int FluidCount; // same as 'SquaresUnder'?
   int SquaresUnder;
   int LifeExpectancy;
-  uLong ItemFlags;
+  feuLong ItemFlags;
   truth mIsStepedOn;
 };
 

@@ -79,15 +79,11 @@ truth room::CheckKickSquare(ccharacter* Kicker, const lsquare* LSquare) const
 
 character* room::GetMaster() const
 {
-  uLong Tick = game::GetTick();
+  feuLong Tick = game::GetTick();
 
-  if(LastMasterSearchTick == Tick)
-    return Master;
-  else
-  {
-    LastMasterSearchTick = Tick;
-    return Master = game::SearchCharacter(MasterID);
-  }
+  if (LastMasterSearchTick == Tick) return Master;
+  LastMasterSearchTick = Tick;
+  return Master = game::SearchCharacter(MasterID);
 }
 
 
@@ -99,7 +95,7 @@ truth room::WardIsActive () const {
 
 
 olterrain *room::GetWard() const {
-  uLong Tick = game::GetTick();
+  feuLong Tick = game::GetTick();
   //
   if (LastWardSearchTick == Tick) {
     return Ward;

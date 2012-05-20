@@ -68,15 +68,15 @@ truth basequadricontroller::SectorCompletelyClear;
 #define TEMPERING_SHIFT_T(y) (y << 15)
 #define TEMPERING_SHIFT_L(y) (y >> 18)
 
-uLong femath::mt[N1]; /* the array for the state vector  */
+feuLong femath::mt[N1]; /* the array for the state vector  */
 sLong femath::mti = N1+1; /* mti==N+1 means mt[N] is not initialized */
 
 /* backups */
 
-uLong femath::mtb[N1];
+feuLong femath::mtb[N1];
 sLong femath::mtib;
 
-void femath::SetSeed (uLong Seed) {
+void femath::SetSeed (feuLong Seed) {
   /* setting initial seeds to mt[N] using         */
   /* the generator Line 25 of Table 1 in          */
   /* [KNUTH 1981, The Art of Computer Programming */
@@ -87,8 +87,8 @@ void femath::SetSeed (uLong Seed) {
 
 
 sLong femath::Rand () {
-  uLong y;
-  static uLong mag01[2]={0x0, MATRIX_A};
+  feuLong y;
+  static feuLong mag01[2]={0x0, MATRIX_A};
 
   /* mag01[x] = x * MATRIX_A  for x=0,1 */
 

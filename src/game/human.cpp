@@ -383,7 +383,7 @@ void priest::BeTalkedTo () {
   for (int c = 0; c < PLAYER->GetBodyParts(); ++c) {
     if (!PLAYER->GetBodyPart(c) && PLAYER->CanCreateBodyPart(c)) {
       truth HasOld = false;
-      for (std::list<uLong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
+      for (std::list<feuLong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
         bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
         if (OldBodyPart) {
           HasOld = true;
@@ -3398,7 +3398,7 @@ void playerkind::Load(inputfile& SaveFile)
   SaveFile >> SoulID >> HairColor >> EyeColor >> Talent >> Weakness >> IsBonePlayer >> IsClone;
 }
 
-void playerkind::SetSoulID(uLong What)
+void playerkind::SetSoulID(feuLong What)
 {
   SoulID = What;
 
@@ -4192,7 +4192,7 @@ void humanoid::DropBodyPart(int Index)
   }
 }
 
-void humanoid::DuplicateEquipment(character* Receiver, uLong Flags)
+void humanoid::DuplicateEquipment(character* Receiver, feuLong Flags)
 {
   character::DuplicateEquipment(Receiver, Flags);
   EnsureCurrentSWeaponSkillIsCorrect(CurrentRightSWeaponSkill, GetRightWielded());
@@ -4521,7 +4521,7 @@ void oree::CallForMonsters()
   delete ToBeCalled;
 }
 
-int humanoid::RandomizeTryToUnStickBodyPart(uLong PossibleBodyParts) const
+int humanoid::RandomizeTryToUnStickBodyPart(feuLong PossibleBodyParts) const
 {
   int Possible = 0, PossibleArray[3];
 
@@ -5053,7 +5053,7 @@ truth petrus::HealFully (character *ToBeHealed) {
   for (int c = 0; c < ToBeHealed->GetBodyParts(); ++c) {
     if (!ToBeHealed->GetBodyPart(c)) {
       bodypart* BodyPart = 0;
-      for (std::list<uLong>::const_iterator i = ToBeHealed->GetOriginalBodyPartID(c).begin(); i != ToBeHealed->GetOriginalBodyPartID(c).end(); ++i) {
+      for (std::list<feuLong>::const_iterator i = ToBeHealed->GetOriginalBodyPartID(c).begin(); i != ToBeHealed->GetOriginalBodyPartID(c).end(); ++i) {
         BodyPart = static_cast<bodypart *>(ToBeHealed->SearchForItem(*i));
         if (BodyPart) break;
       }
@@ -5375,7 +5375,7 @@ void mysteryman::BeTalkedTo () {
 void imperialist::BeTalkedTo () {
   decosadshirt *Shirt = static_cast<decosadshirt *>(PLAYER->SearchForItem(this, &item::IsDecosAdShirt));
   if (Shirt) {
-    uLong Reward = Shirt->GetEquippedTicks()/500;
+    feuLong Reward = Shirt->GetEquippedTicks()/500;
     if (Reward) {
       ADD_MESSAGE("%s smiles. \"I see you have advertised our company diligently. Here's %dgp as a token of my gratitude.\"", CHAR_NAME(DEFINITE), Reward);
       PLAYER->EditMoney(Reward);
@@ -5437,7 +5437,7 @@ void exiledpriest::healBodyParts () {
   for (int c = 0; c < PLAYER->GetBodyParts(); ++c) {
     if (!PLAYER->GetBodyPart(c) && PLAYER->CanCreateBodyPart(c)) {
       truth HasOld = false;
-      for (std::list<uLong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
+      for (std::list<feuLong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
         bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
         if (OldBodyPart) {
           HasOld = true;
@@ -5573,7 +5573,7 @@ void doctor::BeTalkedTo () {
   for (int c = 0; c < PLAYER->GetBodyParts(); ++c) {
     if (!PLAYER->GetBodyPart(c) && PLAYER->CanCreateBodyPart(c)) {
       truth HasOld = false;
-      for (std::list<uLong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
+      for (std::list<feuLong>::const_iterator i = PLAYER->GetOriginalBodyPartID(c).begin(); i != PLAYER->GetOriginalBodyPartID(c).end(); ++i) {
         bodypart *OldBodyPart = static_cast<bodypart *>(PLAYER->SearchForItem(*i));
         if (OldBodyPart) {
           HasOld = true;

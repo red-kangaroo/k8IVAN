@@ -152,11 +152,11 @@ inputfile& operator>>(inputfile&, killdata&);
 
 
 typedef std::map<configid, dangerid> dangermap;
-typedef std::map<uLong, character*> characteridmap;
-typedef std::map<uLong, item*> itemidmap;
-typedef std::map<uLong, entity*> trapidmap;
+typedef std::map<feuLong, character*> characteridmap;
+typedef std::map<feuLong, item*> itemidmap;
+typedef std::map<feuLong, entity*> trapidmap;
 typedef std::map<massacreid, killdata> massacremap;
-typedef std::map<uLong, uLong> boneidmap;
+typedef std::map<feuLong, feuLong> boneidmap;
 typedef std::vector<item*> itemvector;
 typedef std::vector<itemvector> itemvectorvector;
 typedef std::vector<character*> charactervector;
@@ -231,7 +231,7 @@ public:
   static void TriggerQuestForGoldenEagleShirt();
   static void CalculateGodNumber();
   static void IncreaseTick() { ++Tick; }
-  static uLong GetTick() { return Tick; }
+  static feuLong GetTick() { return Tick; }
   static festring GetAutoSaveFileName() { return AutoSaveFileName; }
   static int DirectionQuestion(cfestring&, truth = true, truth = false);
   static void RemoveSaves(truth = true);
@@ -252,17 +252,17 @@ public:
   static void SaveWorldMap(cfestring& = SaveName(""), truth = true);
   static worldmap* LoadWorldMap(cfestring& = SaveName(""));
   static void UpdateCamera();
-  static uLong CreateNewCharacterID(character*);
-  static uLong CreateNewItemID(item*);
-  static uLong CreateNewTrapID(entity*);
+  static feuLong CreateNewCharacterID(character*);
+  static feuLong CreateNewItemID(item*);
+  static feuLong CreateNewTrapID(entity*);
   static team* GetTeam(int I) { return Team[I]; }
   static int GetTeams() { return Teams; }
   static void Hostility(team*, team*);
   static void CreateTeams();
   static festring StringQuestion(cfestring&, col16, festring::sizetype, festring::sizetype, truth, stringkeyhandler = 0);
   static sLong NumberQuestion(cfestring&, int, truth = false);
-  static uLong IncreaseLOSTick();
-  static uLong GetLOSTick() { return LOSTick; }
+  static feuLong IncreaseLOSTick();
+  static feuLong GetLOSTick() { return LOSTick; }
   static void SendLOSUpdateRequest() { LOSUpdateRequested = true; }
   static void RemoveLOSUpdateRequest() { LOSUpdateRequested = false; }
   static character* GetPetrus() { return Petrus; }
@@ -318,17 +318,17 @@ public:
   static void InitPlayerAttributeAverage();
   static void UpdatePlayerAttributeAverage();
   static void CallForAttention(v2, int);
-  static character* SearchCharacter(uLong);
-  static item* SearchItem(uLong);
-  static entity* SearchTrap(uLong);
-  static void AddCharacterID(character*, uLong);
-  static void RemoveCharacterID(uLong);
-  static void AddItemID(item*, uLong);
-  static void RemoveItemID(uLong);
-  static void UpdateItemID(item*, uLong);
-  static void AddTrapID(entity*, uLong);
-  static void RemoveTrapID(uLong);
-  static void UpdateTrapID(entity*, uLong);
+  static character* SearchCharacter(feuLong);
+  static item* SearchItem(feuLong);
+  static entity* SearchTrap(feuLong);
+  static void AddCharacterID(character*, feuLong);
+  static void RemoveCharacterID(feuLong);
+  static void AddItemID(item*, feuLong);
+  static void RemoveItemID(feuLong);
+  static void UpdateItemID(item*, feuLong);
+  static void AddTrapID(entity*, feuLong);
+  static void RemoveTrapID(feuLong);
+  static void UpdateTrapID(entity*, feuLong);
   static int GetStoryState() { return StoryState; }
   static void SetStoryState(int What) { StoryState = What; }
   static int GetMondedrPass () { return MondedrPass; }
@@ -419,7 +419,7 @@ public:
   static void MakePlayerSolicitusChampion() { PlayerSolicitusChampion = true; }
   static v2 GetSunLightDirectionVector();
   static int CalculateMinimumEmitationRadius(col24);
-  static uLong IncreaseSquarePartEmitationTicks();
+  static feuLong IncreaseSquarePartEmitationTicks();
   static cint GetLargeMoveDirection(int I) { return LargeMoveDirection[I]; }
   static bool Wish(character*, cchar*, cchar*, bool canAbort=false);
   static festring DefaultQuestion(festring, festring&, stringkeyhandler = 0);
@@ -428,14 +428,14 @@ public:
   static void IncreaseTurn() { ++Turn; }
   static int GetTotalMinutes() { return Tick * 60 / 2000; }
   static truth PolymorphControlKeyHandler(int, festring&);
-  static uLong* GetEquipmentMemory() { return EquipmentMemory; }
+  static feuLong* GetEquipmentMemory() { return EquipmentMemory; }
   static truth PlayerIsRunning();
   static void SetPlayerIsRunning(truth What) { PlayerRunning = What; }
   static truth FillPetVector(cchar*);
   static truth CommandQuestion();
   static void NameQuestion();
   static v2 CommandKeyHandler(v2, int);
-  static void CommandScreen(cfestring&, uLong, uLong, uLong&, uLong&);
+  static void CommandScreen(cfestring&, feuLong, feuLong, feuLong&, feuLong&);
   static truth CommandAll();
   static double GetDangerFound() { return DangerFound; }
   static void SetDangerFound(double What) { DangerFound = What; }
@@ -502,18 +502,18 @@ private:
   static truth Running;
   static character* Player;
   static v2 Camera;
-  static uLong Tick;
+  static feuLong Tick;
   static festring AutoSaveFileName;
   static truth InWilderness;
   static worldmap* WorldMap;
   static area* AreaInLoad;
   static square* SquareInLoad;
   static dungeon** Dungeon;
-  static uLong NextCharacterID;
-  static uLong NextItemID;
-  static uLong NextTrapID;
+  static feuLong NextCharacterID;
+  static feuLong NextItemID;
+  static feuLong NextTrapID;
   static team** Team;
-  static uLong LOSTick;
+  static feuLong LOSTick;
   static truth LOSUpdateRequested;
   static character* Petrus;
   static truth Loading;
@@ -576,10 +576,10 @@ private:
   static sLong GlobalRainTimeModifier;
   static truth PlayerSumoChampion;
   static truth PlayerSolicitusChampion;
-  static uLong SquarePartEmitationTick;
+  static feuLong SquarePartEmitationTick;
   static cint LargeMoveDirection[];
   static sLong Turn;
-  static uLong EquipmentMemory[MAX_EQUIPMENT_SLOTS];
+  static feuLong EquipmentMemory[MAX_EQUIPMENT_SLOTS];
   static truth PlayerRunning;
   static character* LastPetUnderCursor;
   static charactervector PetVector;

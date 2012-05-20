@@ -34,7 +34,7 @@ void continent::Load(inputfile& SaveFile)
 
 void continent::AttachTo(continent* Continent)
 {
-  for(uLong c = 0; c < Member.size(); ++c)
+  for(feuLong c = 0; c < Member.size(); ++c)
     ContinentBuffer[Member[c].X][Member[c].Y] = Continent->Index;
 
   if(!Continent->Member.size())
@@ -50,7 +50,7 @@ void continent::GenerateInfo()
 {
   GTerrainAmount.resize(protocontainer<gwterrain>::GetSize() + 1);
 
-  for(uLong c = 0; c < Member.size(); ++c)
+  for(feuLong c = 0; c < Member.size(); ++c)
     ++GTerrainAmount[TypeBuffer[Member[c].X][Member[c].Y]];
 
   Name = CONST_S("number ");
@@ -65,7 +65,7 @@ v2 continent::GetRandomMember(int Type)
   v2* TypeContainer = new v2[Member.size()];
   sLong Index = 0;
 
-  for(uLong c = 0; c < Member.size(); ++c)
+  for(feuLong c = 0; c < Member.size(); ++c)
     if(TypeBuffer[Member[c].X][Member[c].Y] == Type)
     {
       TypeContainer[Index++] = Member[c];

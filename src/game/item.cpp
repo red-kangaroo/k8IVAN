@@ -240,7 +240,7 @@ truth item::Consume (character *Eater, sLong Amount) {
     ADD_MESSAGE("You feel that this was an evil deed.");
     Cannibalize();
   }
-  uLong ID = GetID();
+  feuLong ID = GetID();
   material *Garbage = ConsumeMaterial->EatEffect(Eater, Amount);
   item *NewConsuming = GetID() ? this : game::SearchItem(ID);
   material *NewConsumeMaterial = NewConsuming->GetConsumeMaterial(Eater);
@@ -532,7 +532,7 @@ void item::WeaponSkillHit(int Hits)
 
 /* Returns 0 if item cannot be cloned */
 
-item* item::Duplicate(uLong Flags)
+item* item::Duplicate(feuLong Flags)
 {
   if(!(Flags & IGNORE_PROHIBITIONS)
      && ((!(Flags & MIRROR_IMAGE) && !CanBeCloned())
@@ -666,7 +666,7 @@ void item::SignalSpoil(material*)
     game::AskForEscPress(CONST_S("Equipment destroyed!"));
 }
 
-item* item::DuplicateToStack(stack* CurrentStack, uLong Flags)
+item* item::DuplicateToStack(stack* CurrentStack, feuLong Flags)
 {
   item* Duplicated = Duplicate(Flags);
 
@@ -945,7 +945,7 @@ void item::PostProcessForBone () {
   game::RemoveItemID(ID);
 
   if (BI == game::GetBoneItemIDMap().end()) {
-    uLong NewID = game::CreateNewItemID(this);
+    feuLong NewID = game::CreateNewItemID(this);
     game::GetBoneItemIDMap().insert(std::make_pair(-ID, NewID));
     ID = NewID;
   } else {
@@ -957,7 +957,7 @@ void item::PostProcessForBone () {
   for (idholder* I = CloneMotherID; I; I = I->Next) {
     BI = game::GetBoneItemIDMap().find(I->ID);
     if (BI == game::GetBoneItemIDMap().end()) {
-      uLong NewCloneMotherID = game::CreateNewItemID(0);
+      feuLong NewCloneMotherID = game::CreateNewItemID(0);
       game::GetBoneItemIDMap().insert(std::make_pair(I->ID, NewCloneMotherID));
       I->ID = NewCloneMotherID;
     } else {
@@ -1489,7 +1489,7 @@ outputfile& operator<<(outputfile& SaveFile, const idholder* IdHolder)
 
 inputfile& operator>>(inputfile& SaveFile, idholder*& IdHolder)
 {
-  IdHolder = new idholder(ReadType<uLong>(SaveFile));
+  IdHolder = new idholder(ReadType<feuLong>(SaveFile));
   return SaveFile;
 }
 

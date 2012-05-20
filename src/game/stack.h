@@ -68,7 +68,7 @@ private:
 
 class stack {
 public:
-  stack (square *, entity *, uLong = 0);
+  stack (square *, entity *, feuLong = 0);
   ~stack ();
   void Load (inputfile &);
   void Draw (ccharacter *, blitdata &, int) const;
@@ -124,7 +124,7 @@ public:
   col24 GetSideEmitation (int);
   truth CanBeSeenBy (ccharacter *, int) const;
   truth IsDangerous (ccharacter *) const;
-  truth Duplicate (int, uLong = 0);
+  truth Duplicate (int, feuLong = 0);
   void MoveItemsTo (stack *);
   void MoveItemsTo (slot *);
   item *GetBottomItem (ccharacter *, truth) const;
@@ -135,7 +135,7 @@ public:
   static int GetSelected () { return Selected; }
   static void SetSelected (int What) { Selected = What; }
   truth TakeSomethingFrom (character *, cfestring&);
-  truth PutSomethingIn (character *, cfestring &, sLong, uLong);
+  truth PutSomethingIn (character *, cfestring &, sLong, feuLong);
   truth IsVisible () const { return !(Flags & HIDDEN); }
   int GetSpoiledItems () const;
   void SortAllItems (const sortdata &) const;
@@ -174,7 +174,7 @@ private:
   sLong Volume;
   sLong Weight;
   col24 Emitation : 24;
-  uLong Flags : 8;
+  feuLong Flags : 8;
   int Items;
 };
 

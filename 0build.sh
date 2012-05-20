@@ -74,6 +74,11 @@ if [ "$have_package" = "tan" ]; then
   defines="${defines} -DHAVE_IMLIB2"
 fi
 
+find_package zlib 1.2
+if [ "$have_package" = "tan" ]; then
+  defines="${defines} -DUSE_ZLIB"
+fi
+
 #find_package libpng 1.5
 #if [ "$have_package" = "tan" ]; then
 #  defines="${defines} -DHAVE_LIBPNG"

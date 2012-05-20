@@ -105,7 +105,7 @@ void festring::SlowAppend (char Char) {
   if (OldPtr) {
     sizetype OldSize = Size++;
     sizetype NewSize = OldSize+1;
-    uLong *DeletePtr = 0;
+    feuLong *DeletePtr = 0;
     if (OwnsData && !REFS(OldPtr)--) DeletePtr = REFSA(OldPtr);
     Reserved = NewSize|FESTRING_PAGE;
     char *NewPtr = 4+new char[Reserved+5];
@@ -134,7 +134,7 @@ void festring::SlowAppend (cchar *CStr, sizetype N) {
     sizetype OldSize = Size;
     sizetype NewSize = OldSize+N;
     Size = NewSize;
-    uLong *DeletePtr = 0;
+    feuLong *DeletePtr = 0;
     if (OwnsData && !REFS(OldPtr)--) DeletePtr = REFSA(OldPtr);
     Reserved = NewSize|FESTRING_PAGE;
     char *NewPtr = 4+new char[Reserved+5];
@@ -176,7 +176,7 @@ void festring::Resize (sizetype N, char C) {
   char *NewPtr;
   Size = N;
   if (OldSize < N) {
-    uLong *DeletePtr = 0;
+    feuLong *DeletePtr = 0;
     if (OwnsData && OldPtr) {
       if (!REFS(OldPtr)) {
         if (N <= Reserved) {
@@ -306,7 +306,7 @@ void festring::Insert (sizetype Pos, cchar *CStr, sizetype N) {
     if (Pos < OldSize) {
       // this implies Data != 0
       char *OldPtr = Data;
-      uLong *DeletePtr = 0;
+      feuLong *DeletePtr = 0;
       sizetype NewSize = OldSize+N;
       Size = NewSize;
       if (OwnsData) {
