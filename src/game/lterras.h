@@ -17,8 +17,7 @@
 
 
 #define HEADER_PHASE
-#include "olterrains/0list.cpp"
-#include "glterrains/0list.cpp"
+#include "lterrains/0list.cpp"
 #undef HEADER_PHASE
 
 
