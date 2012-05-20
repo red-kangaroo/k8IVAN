@@ -356,13 +356,13 @@ void soundsystem::playSound (const festring &Buffer) {
     if (!sf) return;
     if (!sf->chunk) {
       festring sndfile = game::GetGameDir()+"Sound/"+sf->filename;
-      fprintf(stderr, "loading sound: '%s'\n", sndfile.CStr());
+      //fprintf(stderr, "loading sound: '%s'\n", sndfile.CStr());
       sf->chunk = Mix_LoadWAV(sndfile.CStr());
     }
     if (sf->chunk) {
       for (int f = 0; f < SND_CHANNEL_COUNT; ++f) {
         if (!Mix_Playing(f)) {
-          fprintf(stderr, "starting sound: '%s'\n", sf->filename.CStr());
+          //fprintf(stderr, "starting sound: '%s'\n", sf->filename.CStr());
           Mix_Volume(f, ivanconfig::GetSoundVolume());
           Mix_PlayChannel(f, sf->chunk, 0);
           //Mix_SetPosition(f, angle, dist);

@@ -49,7 +49,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 outputfile::outputfile (cfestring &FileName, truth AbortOnErr) :
 #ifdef USE_ZLIB
-  Buffer(gzopen(FileName.CStr(), "wb9")),
+  Buffer(gzopen(FileName.CStr(), "wb")),
 #else
   Buffer(fopen(FileName.CStr(), "wb")),
 #endif
