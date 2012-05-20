@@ -7868,3 +7868,9 @@ void character::Slow () {
 void character::SurgicallyDetachBodyPart () {
   ADD_MESSAGE("You haven't got any extra bodyparts.");
 }
+
+
+truth character::CanHear() const
+{
+  return DataBase->CanHear && HasHead();
+}
