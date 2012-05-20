@@ -313,8 +313,8 @@ void inputfile::die (cfestring &msg) {
 // 2: comparisons
 // 3: &&
 // 4: ||
-const int maxCPrio = 4;
-const char *opers[5][7] = {
+static const int maxCPrio = 4;
+static const char *opers[5][7] = {
   {NULL},
   {NULL},
   {"<", ">", "<=", ">=", "==", "!=", NULL},
