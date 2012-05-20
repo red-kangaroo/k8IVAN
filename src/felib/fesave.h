@@ -150,9 +150,7 @@ public:
 protected:
   void *buf;
   int bufSize;
-#if defined(USE_ZLIB) || defined(WIN32)
   festring tfname;
-#endif
 };
 
 

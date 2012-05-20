@@ -525,7 +525,7 @@ static truth inline xread (void *buf, unsigned int sz, gzFile fi) {
 }
 #else
 static truth inline xread (void *buf, unsigned int sz, FILE *fi) {
-  if (fread(fi, buf, sz, 1) != (size_t)sz) { fclose(fi); return false; }
+  if (fread(buf, sz, 1, fi) != (size_t)sz) { fclose(fi); return false; }
   return true;
 }
 #endif

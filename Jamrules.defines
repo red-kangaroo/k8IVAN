@@ -62,6 +62,7 @@ if $(HAVE_IMLIB2) || $(HAVE_LIBPNG) {
 }
 
 if $(WINDOZE) { HAVE_ZLIB = tan ; }
+if $(WINDOZE) { HAVE_ZLIB = ; }
 
 if $(HAVE_ZLIB) && ! $(DISABLE_ZLIB) {
   Echo "MSG: support for compressed saves turned on" ;

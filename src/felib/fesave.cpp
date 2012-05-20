@@ -1068,7 +1068,10 @@ feuLong inputfile::TellLineOfPos (sLong Pos) {
 ////////////////////////////////////////////////////////////////////////////////
 #ifdef USE_ZLIB
 meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
-  inputfile("", ValueMap, false)
+  inputfile("", ValueMap, false),
+  buf(0),
+  bufSize(0),
+  tfname("")
 {
   Close();
 #ifdef WIN32
@@ -1084,9 +1087,10 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
   char fname[1024];
   int fd;
   //
-  strcpy(fname, "/tmp/i.v.a.n.XXXXXX");
-  tfname = fname;
+  strcpy(fname, "/tmp/ivan.XXXXXX");
   fd = mkstemp(fname);
+  tfname = fname;
+  fprintf(stderr, "[%s]\n", tfname.CStr());
   if (fd < 0) ABORT("Can't create temporary file!");
   write(fd, str.CStr(), str.GetSize());
   close(fd);
@@ -1107,7 +1111,10 @@ meminputfile::~meminputfile () {
 
 
 meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
-  inputfile("", ValueMap, false)
+  inputfile("", ValueMap, false),
+  buf(0),
+  bufSize(0),
+  tfname("")
 {
   Close();
 #ifdef WIN32
@@ -1121,7 +1128,7 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
   Buffer = fopen(tfn, "rb");
 #else
   bufSize = str.GetSize();
-  buf = malloc(bufSize+1);
+  buf = (char *)calloc(1, bufSize+1);
   memmove(buf, str.CStr(), bufSize);
   Buffer = fmemopen(buf, bufSize, "rb");
 #endif
@@ -1130,8 +1137,8 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
 
 
 meminputfile::~meminputfile () {
-  if (buf) free(buf);
   Close();
+  if (buf) free(buf);
 #ifdef WIN32
   DeleteFile(tfname.CStr());
 #endif
