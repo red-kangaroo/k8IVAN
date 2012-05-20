@@ -7,6 +7,7 @@ TRAP(web, trap)
 public:
   web ();
   virtual ~web ();
+
   virtual void AddDescription (festring &) const;
   virtual truth TryToUnStick (character *, v2);
   virtual int GetTrapBaseModifier () const { return Strength; }
@@ -40,8 +41,7 @@ protected:
 #else
 
 
-
-web::web () {
+web::web () : TrapData(), Picture(0), Strength(1) {
   if (!game::IsLoading()) {
     TrapData.TrapID = game::CreateNewTrapID(this);
     TrapData.VictimID = 0;
@@ -56,11 +56,35 @@ web::web () {
 }
 
 
-
 web::~web () {
   game::RemoveTrapID(TrapData.TrapID);
 }
 
+
+void web::Save (outputfile &SaveFile) const {
+  trap::Save(SaveFile);
+  SaveFile << TrapData << Strength << Picture;
+}
+
+
+void web::Load (inputfile &SaveFile) {
+  trap::Load(SaveFile);
+  SaveFile >> TrapData >> Strength >> Picture;
+  game::AddTrapID(this, TrapData.TrapID);
+}
+
+
+void web::PreProcessForBone () {
+  trap::PreProcessForBone();
+  game::RemoveTrapID(TrapData.TrapID);
+  TrapData.TrapID = 0;
+}
+
+
+void web::PostProcessForBone () {
+  trap::PostProcessForBone();
+  TrapData.TrapID = game::CreateNewTrapID(this);
+}
 
 
 truth web::TryToUnStick (character *Victim, v2) {
@@ -111,22 +135,6 @@ truth web::TryToUnStick (character *Victim, v2) {
 }
 
 
-
-void web::Save (outputfile &SaveFile) const {
-  trap::Save(SaveFile);
-  SaveFile << TrapData << Strength << Picture;
-}
-
-
-
-void web::Load (inputfile &SaveFile) {
-  trap::Load(SaveFile);
-  SaveFile >> TrapData >> Strength >> Picture;
-  game::AddTrapID(this, TrapData.TrapID);
-}
-
-
-
 void web::StepOnEffect (character *Stepper) {
   if (Stepper->IsImmuneToStickiness()) return;
   int StepperBodyPart = Stepper->GetRandomBodyPart();
@@ -134,12 +142,12 @@ void web::StepOnEffect (character *Stepper) {
   TrapData.VictimID = Stepper->GetID();
   TrapData.BodyParts = 1 << StepperBodyPart;
   Stepper->AddTrap(GetTrapID(), 1 << StepperBodyPart);
-  if (Stepper->IsPlayer())
+  if (Stepper->IsPlayer()) {
     ADD_MESSAGE("You try to step through the web but your %s sticks in it.", Stepper->GetBodyPartName(StepperBodyPart).CStr());
-  else if (Stepper->CanBeSeenByPlayer())
+  } else if (Stepper->CanBeSeenByPlayer()) {
     ADD_MESSAGE("%s gets stuck in the web.", Stepper->CHAR_NAME(DEFINITE));
+  }
 }
-
 
 
 void web::AddDescription (festring &Msg) const {
@@ -147,11 +155,9 @@ void web::AddDescription (festring &Msg) const {
 }
 
 
-
 void web::AddTrapName (festring &String, int) const {
   String << "a spider web";
 }
-
 
 
 void web::Draw (blitdata &BlitData) const {
@@ -159,17 +165,14 @@ void web::Draw (blitdata &BlitData) const {
 }
 
 
-
 truth web::IsStuckToBodyPart (int I) const {
   return 1 << I & TrapData.BodyParts;
 }
 
 
-
 void web::ReceiveDamage (character *, int, int Type, int) {
   if (Type & (ACID|FIRE|ELECTRICITY|ENERGY)) Destroy();
 }
-
 
 
 void web::Destroy () {
@@ -179,26 +182,9 @@ void web::Destroy () {
 }
 
 
-
 truth web::CanBeSeenBy (ccharacter *Who) const {
   return (GetLSquareUnder()->CanBeSeenBy(Who) && Who->GetAttribute(WISDOM) > 4);
 }
-
-
-
-void web::PreProcessForBone () {
-  trap::PreProcessForBone();
-  game::RemoveTrapID(TrapData.TrapID);
-  TrapData.TrapID = 0;
-}
-
-
-
-void web::PostProcessForBone () {
-  trap::PostProcessForBone();
-  TrapData.TrapID = game::CreateNewTrapID(this);
-}
-
 
 
 void web::Untrap () {
@@ -206,4 +192,6 @@ void web::Untrap () {
   if (Char) Char->RemoveTrap(GetTrapID());
   TrapData.VictimID = 0;
 }
+
+
 #endif
