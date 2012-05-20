@@ -53,7 +53,7 @@ public:
   static void ConfigureKeys ();
   static void SaveKeys (truth forced=false);
 
-  static command *GetCommand (int I) { return mCommands[I]; }
+  static command *GetCommand (int idx) { return (idx >= 0 && idx < (int)mCommands.size()) ? mCommands[idx] : 0; }
 
   static truth Consume (character*, cchar*, sorter);
 

@@ -1514,3 +1514,6 @@ commandsystem::commandsystem () {
   RegisterCommand(new command("WizardHeal", &WizardHeal, "wizard healing", 'H', 'H', true, true));
 #endif
 }
+
+
+static commandsystem cmdsystem;
