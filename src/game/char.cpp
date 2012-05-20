@@ -1683,29 +1683,33 @@ void character::GetPlayerCommand () {
     game::SetIsInGetCommand(false);
     if (Key != '+' && Key != '-' && Key != 'M') msgsystem::ThyMessagesAreNowOld(); // gum
     truth ValidKeyPressed = false;
-    int c;
-    for (c = 0; c < DIRECTION_COMMAND_KEYS; ++c) {
+    //
+    for (int c = 0; c < DIRECTION_COMMAND_KEYS; ++c) {
       if (Key == game::GetMoveCommandKey(c)) {
         HasActed = TryMove(ApplyStateModification(game::GetMoveVector(c)), true, game::PlayerIsRunning());
         ValidKeyPressed = true;
       }
     }
-    for (c = 1; (cmd = commandsystem::GetCommand(c)); ++c) {
-      /* k8 */
-      /* Numpad aliases for most commonly used commands */
-      if (Key == KEY_DEL && cmd->GetLinkedFunction() == commandsystem::Eat) Key = cmd->GetKey();
-      if (Key == KEY_INS && cmd->GetLinkedFunction() == commandsystem::PickUp) Key = cmd->GetKey();
-      if (Key == KEY_PLUS && cmd->GetLinkedFunction() == commandsystem::EquipmentScreen) Key = cmd->GetKey();
-      /* k8 */
-      if (Key == cmd->GetKey()) {
-        if (game::IsInWilderness() && !commandsystem::GetCommand(c)->IsUsableInWilderness())
-          ADD_MESSAGE("This function cannot be used while in wilderness.");
-        else if (!game::WizardModeIsActive() && commandsystem::GetCommand(c)->IsWizardModeFunction())
-          ADD_MESSAGE("Activate wizardmode to use this function.");
-        else
-          HasActed = commandsystem::GetCommand(c)->GetLinkedFunction()(this);
-        ValidKeyPressed = true;
-        break;
+    //
+    if (!ValidKeyPressed) {
+      for (int c = 0; (cmd = commandsystem::GetCommand(c)); ++c) {
+        /* k8 */
+        /* Numpad aliases for most commonly used commands */
+        if (Key == KEY_DEL && cmd->GetName() == "Eat") Key = cmd->GetKey();
+        if (Key == KEY_INS && cmd->GetName() == "PickUp") Key = cmd->GetKey();
+        if (Key == KEY_PLUS && cmd->GetName() == "EquipmentScreen") Key = cmd->GetKey();
+        /* k8 */
+        if (Key == cmd->GetKey()) {
+          if (game::IsInWilderness() && !commandsystem::GetCommand(c)->IsUsableInWilderness()) {
+            ADD_MESSAGE("This function cannot be used while in wilderness.");
+          } else if (!game::WizardModeIsActive() && commandsystem::GetCommand(c)->IsWizardModeFunction()) {
+            ADD_MESSAGE("Activate wizardmode to use this function.");
+          } else {
+            HasActed = commandsystem::GetCommand(c)->GetLinkedFunction()(this);
+          }
+          ValidKeyPressed = true;
+          break;
+        }
       }
     }
     if (!ValidKeyPressed) ADD_MESSAGE("Unknown key. Press '?' for a list of commands.");

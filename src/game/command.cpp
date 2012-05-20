@@ -36,6 +36,10 @@
 #endif
 
 
+#define COMMAND(name)  static truth name (character *Char)
+
+
+////////////////////////////////////////////////////////////////////////////////
 /* k8 */
 /* SLOOOOWWW! */
 static void cstrTrim (char *buf) {
@@ -50,7 +54,9 @@ static void cstrTrim (char *buf) {
 }
 
 
-command::command(truth (*LinkedFunction)(character *), cchar *Description, char Key1, char Key2, truth UsableInWilderness, truth WizardModeFunction) :
+////////////////////////////////////////////////////////////////////////////////
+command::command(cchar *name, truth (*LinkedFunction)(character *), cchar *Description, char Key1, char Key2, truth UsableInWilderness, truth WizardModeFunction) :
+  mName(name),
   LinkedFunction(LinkedFunction),
   Description(Description),
   Key1(Key1), Key2(Key2),
@@ -63,6 +69,7 @@ command::command(truth (*LinkedFunction)(character *), cchar *Description, char 
 char command::GetKey () const { return !ivanconfig::GetUseAlternativeKeys() ? Key1 : Key2; }
 
 
+////////////////////////////////////////////////////////////////////////////////
 static const char *adirNames[9] = {
   "dir-left-up",
   "dir-up",
@@ -103,8 +110,8 @@ void commandsystem::ConfigureKeys () {
       k1 = buf[0];
       k2 = buf[1];
     }
-    for (int f = 1; (cmd = commandsystem::GetCommand(f)) != 0; f++) {
-      if (!strcmp(buf+i1, cmd->GetDescription())) cmd->SetKeys(k1, k2);
+    for (int f = 0; (cmd = commandsystem::GetCommand(f)) != 0; ++f) {
+      if (!strcmp(buf+i1, cmd->GetName().CStr())) cmd->SetKeys(k1, k2);
     }
     for (int f = 0; f <= 8; f++) if (!strcmp(buf+i1, adirNames[f])) game::SetAbnormalMoveKey(f, k1);
   }
@@ -129,13 +136,13 @@ void commandsystem::SaveKeys (truth forced) {
   if (!fl) return;
   for (; isWizard < 2; isWizard++) {
     fputs(isWizard ? "\n# wizard actions\n" : "# actions\n", fl);
-    for (int f = 1; (cmd = commandsystem::GetCommand(f)) != 0; f++) {
+    for (int f = 0; (cmd = commandsystem::GetCommand(f)) != 0; ++f) {
       if (cmd->IsWizardModeFunction()) {
         if (!isWizard) continue;
       } else {
         if (isWizard) continue;
       }
-      cchar *dsc = cmd->GetDescription();
+      cchar *dsc = cmd->GetName().CStr();
       char k1 = cmd->GetKey1(), k2 = cmd->GetKey2();
       if (!dsc || !dsc[0]) continue;
       if (k1 && k2 && k1 != k2) fprintf(fl, "%c%c", k1, k2);
@@ -155,81 +162,44 @@ void commandsystem::SaveKeys (truth forced) {
 /* k8 */
 
 
-command *commandsystem::Command[] = {
-  0,
-  /* Sort according to description */
-  new command(&Apply, "apply", 'a', 'a', false),
-  new command(&Talk, "chat", 'C', 'C', false),
-  new command(&Close, "close", 'c', 'c', false),
-  new command(&Dip, "dip", '!', '!', false),
-  new command(&Dump, "dump potion/can contents", 'U', 'U', false),
-  new command(&Drink, "drink", 'D', 'D', true),
-  new command(&Drop, "drop", 'd', 'd', true),
-  new command(&Eat, "eat", 'e', 'e', true),
-  new command(&WhatToEngrave, "engrave", 'G', 'G', false),
-  new command(&EquipmentScreen, "equipment menu", 'E', 'E', true),
-  new command(&Go, "go", 'g', 'g', false),
-  new command(&GoDown, "go down/enter area", '>', '>', true),
-  new command(&GoUp, "go up", '<', '<', true),
-  new command(&IssueCommand, "issue command(s) to team member(s)", 'I', 'I', false),
-  new command(&Kick, "kick", 'k', 'K', false),
-  new command(&Look, "look", 'l', 'L', true),
-  new command(&AssignName, "name", 'n', 'n', false),
-  new command(&Offer, "offer", 'O', 'f', false),
-  new command(&Open, "open", 'o', 'O', false),
-  new command(&PickUp, "pick up", ',', ',', false),
-  new command(&Pray, "pray", 'p', 'p', false),
-  new command(&Quit, "quit", 'Q', 'Q', true),
-  new command(&Read, "read", 'r', 'r', false),
-  new command(&Rest, "rest/heal", 'h', 'h', true),
-  new command(&Save, "save game", 'S', 'S', true),
-  new command(&ScrollMessagesDown, "scroll messages down", '+', '+', true),
-  new command(&ScrollMessagesUp, "scroll messages up", '-', '-', true),
-  new command(&ShowConfigScreen, "show config screen", '\\', '\\', true),
-  new command(&ShowInventory, "show inventory", 'i', 'i', true),
-  new command(&ShowKeyLayout, "show key layout", '?', '?', true),
-  new command(&DrawMessageHistory, "show message history", 'M', 'M', true),
-  new command(&ShowWeaponSkills, "show weapon skills", '@', '@', true),
-  new command(&Search, "search", 's', 's', false),
-  new command(&Sit, "sit", '_', '_', false),
-  new command(&Throw, "throw", 't', 't', false),
-  new command(&ToggleRunning, "toggle running", 'u', 'U', true),
-  new command(&ForceVomit, "vomit", 'V', 'V', false),
-  new command(&NOP, "wait", '.', '.', true),
-  new command(&WieldInRightArm, "wield in right arm", 'w', 'w', true),
-  new command(&WieldInLeftArm, "wield in left arm", 'W', 'W', true),
-  new command(&Burn, "burn", 'B', 'B', false),
-#ifdef WIZARD
-  new command(&WizardMode, "wizard mode activation", 'X', 'X', true),
-#endif
-  new command(&Zap, "zap", 'z', 'z', false),
-#ifdef WIZARD
-  /* Sort according to key */
-  new command(&RaiseStats, "raise stats", '1', '1', true, true),
-  new command(&LowerStats, "lower stats", '2', '2', true, true),
-  new command(&SeeWholeMap, "see whole map", '3', '3', true, true),
-  new command(&WalkThroughWalls, "toggle walk through walls mode", '4', '4', true, true),
-  new command(&RaiseGodRelations, "raise your relations to the gods", '5', '5', true, true),
-  new command(&LowerGodRelations, "lower your relations to the gods", '6', '6', true, true),
-  new command(&WizardWish, "wish something", '=', '=', true, true),
-  new command(&GainDivineKnowledge, "gain knowledge of all gods", '\"', '\"', true, true),
-  new command(&GainAllItems, "gain all items", '$', '$', true, true),
-  new command(&SecretKnowledge, "reveal secret knowledge", '*', '*', true, true),
-  new command(&DetachBodyPart, "detach a limb", '0', '0', true, true),
-  new command(&SummonMonster, "summon monster", '&', '&', false, true),
-  new command(&LevelTeleport, "level teleport", '|', '|', false, true),
-  new command(&Possess, "possess creature", '{', '{', false, true),
-  new command(&Polymorph, "polymorph", '[', '[', true, true),
-  new command(&GetScroll, "get scroll", 'R', 'R', true, true),
-  new command(&OpenMondedr, "open Mondedr", 'm', 'm', true, true),
-  new command(&ShowCoords, "show current coordinates", '(', '(', true, true),
-  new command(&WizardHeal, "wizard healing", 'H', 'H', true, true),
-#endif
-  0
-};
+////////////////////////////////////////////////////////////////////////////////
+std::vector<command *> commandsystem::mCommands;
 
 
-truth commandsystem::GoUp (character *Char) {
+void commandsystem::RegisterCommand (command *cmd) {
+  for (unsigned int f = 0; f < mCommands.size(); ++f) {
+    if (mCommands[f]->GetName() == cmd->GetName()) {
+      // replace command
+      delete mCommands[f];
+      mCommands[f] = cmd;
+      return;
+    }
+  }
+  mCommands.push_back(cmd);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+static truth Consume (character* Char, cchar *ConsumeVerb, sorter Sorter) {
+  lsquare *Square = Char->GetLSquareUnder();
+  stack *Inventory = Char->GetStack();
+  stack *StackUnder = Square->GetStack();
+  if ((game::IsInWilderness() || !StackUnder->SortedItems(Char, Sorter)) && !Inventory->SortedItems(Char, Sorter)) {
+    ADD_MESSAGE("You have nothing to %s!", ConsumeVerb);
+    return false;
+  }
+  itemvector Item;
+  festring Question = CONST_S("What do you wish to ")+ConsumeVerb+'?';
+  if (!game::IsInWilderness() && StackUnder->SortedItems(Char, Sorter))
+    Inventory->DrawContents(Item, StackUnder, Char, Question, CONST_S("Items in your inventory"), CONST_S("Items on the ground"), CONST_S(""), 0, NO_MULTI_SELECT, Sorter);
+  else
+    Inventory->DrawContents(Item, Char, Question, NO_MULTI_SELECT, Sorter);
+  return !Item.empty() ? Char->ConsumeItem(Item[0], ConsumeVerb+CONST_S("ing")) : false;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+COMMAND(GoUp) {
   if (!Char->TryToUnStickTraps(ZERO_V2)) return false;
   /*if(!game::IsInWilderness() && game::WizardModeIsActive() && game::GetCurrentLevelIndex() >= 1)
     if(game::TryTravel(game::GetCurrentDungeonIndex(), game::GetCurrentLevelIndex() - 1, RANDOM, true))
@@ -252,7 +222,7 @@ truth commandsystem::GoUp (character *Char) {
 }
 
 
-truth commandsystem::GoDown (character *Char) {
+COMMAND(GoDown) {
   if (!Char->TryToUnStickTraps(ZERO_V2)) return false;
   /*if(!game::IsInWilderness() && game::WizardModeIsActive() && game::GetCurrentLevelIndex() < game::GetLevels() - 1)
     if(game::TryTravel(game::GetCurrentDungeonIndex(), game::GetCurrentLevelIndex() + 1, RANDOM, true))
@@ -273,7 +243,7 @@ truth commandsystem::GoDown (character *Char) {
 }
 
 
-truth commandsystem::Open (character *Char) {
+COMMAND(Open) {
   if (Char->CanOpen()) {
     int Key;
     truth OpenableItems = Char->GetStack()->SortedItems(Char, &item::IsOpenable);
@@ -297,7 +267,7 @@ truth commandsystem::Open (character *Char) {
 }
 
 
-truth commandsystem::Close (character *Char) {
+COMMAND(Close) {
   if (Char->CanOpen()) {
     int Dir = game::DirectionQuestion(CONST_S("What do you wish to close? [press a direction key]"), false);
     if (Dir != DIR_ERROR && Char->GetArea()->IsValidPos(Char->GetPos()+game::GetMoveVector(Dir)))
@@ -309,7 +279,7 @@ truth commandsystem::Close (character *Char) {
 }
 
 
-truth commandsystem::Drop (character *Char) {
+COMMAND(Drop) {
   if (!Char->GetStack()->GetItems()) {
     ADD_MESSAGE("You have nothing to drop!");
     return false;
@@ -343,7 +313,7 @@ truth commandsystem::Drop (character *Char) {
 }
 
 
-truth commandsystem::Eat (character *Char) {
+COMMAND(Eat) {
   if (!Char->CheckConsume(CONST_S("eat"))) return false;
   lsquare *Square = Char->GetLSquareUnder();
   if (!game::IsInWilderness() && Square->GetOLTerrain() && Square->GetOLTerrain()->HasEatEffect()) {
@@ -353,7 +323,7 @@ truth commandsystem::Eat (character *Char) {
 }
 
 
-truth commandsystem::Drink (character *Char) {
+COMMAND(Drink) {
   if (!Char->CheckConsume(CONST_S("drink"))) return false;
   lsquare *Square = Char->GetLSquareUnder();
   if (!game::IsInWilderness() && Square->GetOLTerrain() && Square->GetOLTerrain()->HasDrinkEffect()) {
@@ -363,25 +333,7 @@ truth commandsystem::Drink (character *Char) {
 }
 
 
-truth commandsystem::Consume (character* Char, cchar *ConsumeVerb, sorter Sorter) {
-  lsquare *Square = Char->GetLSquareUnder();
-  stack *Inventory = Char->GetStack();
-  stack *StackUnder = Square->GetStack();
-  if ((game::IsInWilderness() || !StackUnder->SortedItems(Char, Sorter)) && !Inventory->SortedItems(Char, Sorter)) {
-    ADD_MESSAGE("You have nothing to %s!", ConsumeVerb);
-    return false;
-  }
-  itemvector Item;
-  festring Question = CONST_S("What do you wish to ")+ConsumeVerb+'?';
-  if (!game::IsInWilderness() && StackUnder->SortedItems(Char, Sorter))
-    Inventory->DrawContents(Item, StackUnder, Char, Question, CONST_S("Items in your inventory"), CONST_S("Items on the ground"), CONST_S(""), 0, NO_MULTI_SELECT, Sorter);
-  else
-    Inventory->DrawContents(Item, Char, Question, NO_MULTI_SELECT, Sorter);
-  return !Item.empty() ? Char->ConsumeItem(Item[0], ConsumeVerb+CONST_S("ing")) : false;
-}
-
-
-truth commandsystem::ShowInventory (character *Char) {
+COMMAND(ShowInventory) {
   festring Title("Your inventory (total weight: ");
   Title << Char->GetStack()->GetWeight();
   Title << "g)";
@@ -390,7 +342,7 @@ truth commandsystem::ShowInventory (character *Char) {
 }
 
 
-truth commandsystem::PickUp (character *Char) {
+COMMAND(PickUp) {
   if (!Char->GetStackUnder()->GetVisibleItems(Char)) {
     ADD_MESSAGE("There is nothing here to pick up!");
     return false;
@@ -451,7 +403,7 @@ truth commandsystem::PickUp (character *Char) {
 }
 
 
-truth commandsystem::Quit (character *Char) {
+COMMAND(Quit) {
   if (game::TruthQuestion(CONST_S("Your quest is not yet compeleted! Really quit? [y/N]"))) {
     Char->ShowAdventureInfo();
     festring Msg = CONST_S("cowardly quit the game");
@@ -463,7 +415,7 @@ truth commandsystem::Quit (character *Char) {
 }
 
 
-truth commandsystem::Talk (character *Char) {
+COMMAND(Talk) {
   if (!Char->CheckTalk()) return false;
   character *ToTalk = 0;
   int Characters = 0;
@@ -497,7 +449,7 @@ truth commandsystem::Talk (character *Char) {
 }
 
 
-truth commandsystem::NOP (character *Char) {
+COMMAND(NOP) {
   Char->EditExperience(DEXTERITY, -25, 1<<3);
   Char->EditExperience(AGILITY, -25, 1<<3);
   Char->EditAP(-Char->GetStateAPGain(1000));
@@ -505,7 +457,7 @@ truth commandsystem::NOP (character *Char) {
 }
 
 
-truth commandsystem::Save (character *) {
+COMMAND(Save) {
   if (game::TruthQuestion(CONST_S("Do you truly wish to save and flee? [y/N]"))) {
     game::Save();
     if (game::WizardModeIsActive()) {
@@ -518,7 +470,7 @@ truth commandsystem::Save (character *) {
 }
 
 
-truth commandsystem::Read (character *Char) {
+COMMAND(Read) {
   if (!Char->CanRead() && !game::GetSeeWholeMapCheatMode()) {
     ADD_MESSAGE("You can't read.");
     return false;
@@ -542,7 +494,7 @@ truth commandsystem::Read (character *Char) {
 }
 
 
-truth commandsystem::Dip (character *Char) {
+COMMAND(Dip) {
   if (!Char->GetStack()->SortedItems(Char, &item::IsDippable) && !Char->EquipsSomething(&item::IsDippable)) {
     ADD_MESSAGE("You have nothing to dip!");
     return false;
@@ -593,29 +545,31 @@ truth commandsystem::Dip (character *Char) {
 }
 
 
-truth commandsystem::ShowKeyLayout (character *) {
+COMMAND(ShowKeyLayout) {
+  festring Buffer;
+  command *cmd;
+  //
   felist List(CONST_S("Keyboard Layout"));
   List.AddDescription(CONST_S(""));
   List.AddDescription(CONST_S("Key       Description"));
-  festring Buffer;
-  for (int c = 1; GetCommand(c); ++c) {
-    if (!GetCommand(c)->IsWizardModeFunction()) {
+  for (int c = 0; (cmd = commandsystem::GetCommand(c)); ++c) {
+    if (!cmd->IsWizardModeFunction()) {
       Buffer.Empty();
-      Buffer << GetCommand(c)->GetKey();
+      Buffer << cmd->GetKey();
       Buffer.Resize(10);
-      List.AddEntry(Buffer+GetCommand(c)->GetDescription(), LIGHT_GRAY);
+      List.AddEntry(Buffer+cmd->GetDescription(), LIGHT_GRAY);
     }
   }
   if (game::WizardModeIsActive()) {
     List.AddEntry(CONST_S(""), WHITE);
     List.AddEntry(CONST_S("Wizard mode functions:"), WHITE);
     List.AddEntry(CONST_S(""), WHITE);
-    for (int c = 1; GetCommand(c); ++c) {
-      if (GetCommand(c)->IsWizardModeFunction()) {
+    for (int c = 0; (cmd = commandsystem::GetCommand(c)); ++c) {
+      if (cmd->IsWizardModeFunction()) {
         Buffer.Empty();
-        Buffer << GetCommand(c)->GetKey();
+        Buffer << cmd->GetKey();
         Buffer.Resize(10);
-        List.AddEntry(Buffer+GetCommand(c)->GetDescription(), LIGHT_GRAY);
+        List.AddEntry(Buffer+cmd->GetDescription(), LIGHT_GRAY);
       }
     }
   }
@@ -625,7 +579,7 @@ truth commandsystem::ShowKeyLayout (character *) {
 }
 
 
-truth commandsystem::Look (character *Char) {
+COMMAND(Look) {
   festring Msg;
   if (!game::IsInWilderness()) Char->GetLevel()->AddSpecialCursors();
   if (!game::IsInWilderness())
@@ -638,7 +592,7 @@ truth commandsystem::Look (character *Char) {
 }
 
 
-truth commandsystem::WhatToEngrave (character *Char) {
+COMMAND(WhatToEngrave) {
   if (!Char->CanRead()) {
     ADD_MESSAGE("You can't even read.");
     return false;
@@ -648,7 +602,7 @@ truth commandsystem::WhatToEngrave (character *Char) {
 }
 
 
-truth commandsystem::Pray (character *Char) {
+COMMAND(Pray) {
   felist Panthenon(CONST_S("To Whom you want to address your prayers?"));
   Panthenon.SetEntryDrawer(game::GodEntryDrawer);
   int Known[GODS];
@@ -709,7 +663,7 @@ truth commandsystem::Pray (character *Char) {
 }
 
 
-truth commandsystem::Kick (character *Char) {
+COMMAND(Kick) {
   /** No multi-tile support */
   if (!Char->CheckKick()) return false;
   if (Char->GetBurdenState() == OVER_LOADED) {
@@ -740,7 +694,7 @@ truth commandsystem::Kick (character *Char) {
 }
 
 
-truth commandsystem::Offer (character *Char) {
+COMMAND(Offer) {
   if (!Char->CheckOffer()) return false;
   lsquare *Square = Char->GetLSquareUnder();
   if (Square->GetOLTerrain() && Square->GetOLTerrain()->AcceptsOffers()) {
@@ -765,13 +719,13 @@ truth commandsystem::Offer (character *Char) {
 }
 
 
-truth commandsystem::DrawMessageHistory (character *) {
+COMMAND(DrawMessageHistory) {
   msgsystem::DrawMessageHistory();
   return false;
 }
 
 
-truth commandsystem::Throw (character *Char) {
+COMMAND(Throw) {
   if (!Char->CheckThrow()) return false;
   if (!Char->GetStack()->GetItems()) {
     ADD_MESSAGE("You have nothing to throw!");
@@ -793,7 +747,7 @@ truth commandsystem::Throw (character *Char) {
 }
 
 
-truth commandsystem::Apply (character *Char) {
+COMMAND(Apply) {
   if (!Char->CanApply()) {
     ADD_MESSAGE("This monster type cannot apply.");
     return false;
@@ -808,7 +762,7 @@ truth commandsystem::Apply (character *Char) {
 }
 
 
-truth commandsystem::ForceVomit (character *Char) {
+COMMAND(ForceVomit) {
   if (Char->CanForceVomit()) {
     int Dir = game::DirectionQuestion(CONST_S("Where do you wish to vomit?  [press a direction key]"), false, true);
     if (Dir != DIR_ERROR) {
@@ -831,7 +785,7 @@ truth commandsystem::ForceVomit (character *Char) {
 }
 
 
-truth commandsystem::Zap (character *Char) {
+COMMAND(Zap) {
   if (!Char->CheckZap()) return false;
   if (!Char->PossessesItem(&item::IsZappable)) {
     ADD_MESSAGE("You have nothing to zap with, %s.", game::Insult());
@@ -851,7 +805,7 @@ truth commandsystem::Zap (character *Char) {
 }
 
 
-truth commandsystem::Rest (character *Char) {
+COMMAND(Rest) {
   if (Char->StateIsActivated(PANIC)) {
     ADD_MESSAGE("You are too scared to rest.");
     return false;
@@ -892,13 +846,13 @@ truth commandsystem::Rest (character *Char) {
 }
 
 
-truth commandsystem::Sit (character *Char) {
+COMMAND(Sit) {
   lsquare *Square = Char->GetLSquareUnder();
   return (Square->GetOLTerrain() && Square->GetOLTerrain()->SitOn(Char)) || Square->GetGLTerrain()->SitOn(Char);
 }
 
 
-truth commandsystem::Go (character *Char) {
+COMMAND(Go) {
   int Dir = game::DirectionQuestion(CONST_S("In what direction do you want to go? [press a direction key]"), false);
   if (Dir == DIR_ERROR) return false;
   go *Go = go::Spawn(Char);
@@ -919,36 +873,36 @@ truth commandsystem::Go (character *Char) {
 }
 
 
-truth commandsystem::ShowConfigScreen (character *) {
+COMMAND(ShowConfigScreen) {
   ivanconfig::Show();
   return false;
 }
 
 
-truth commandsystem::AssignName (character *) {
+COMMAND(AssignName) {
   game::NameQuestion();
   return false;
 }
 
 
-truth commandsystem::EquipmentScreen (character *Char) {
+COMMAND(EquipmentScreen) {
   return Char->EquipmentScreen(Char->GetStack(), 0);
 }
 
 
-truth commandsystem::ScrollMessagesDown (character *) {
+COMMAND(ScrollMessagesDown) {
   msgsystem::ScrollDown();
   return false;
 }
 
 
-truth commandsystem::ScrollMessagesUp (character *) {
+COMMAND(ScrollMessagesUp) {
   msgsystem::ScrollUp();
   return false;
 }
 
 
-truth commandsystem::ShowWeaponSkills (character *Char) {
+COMMAND(ShowWeaponSkills) {
   felist List(CONST_S("Your experience in weapon categories"));
   List.AddDescription(CONST_S(""));
   List.AddDescription(CONST_S("Category name                 Level     Points    Needed    Battle bonus"));
@@ -984,7 +938,7 @@ truth commandsystem::ShowWeaponSkills (character *Char) {
 }
 
 
-truth commandsystem::WieldInRightArm (character *Char) {
+COMMAND(WieldInRightArm) {
   if (!Char->CanUseEquipment()) ADD_MESSAGE("You cannot wield anything.");
   else if (Char->TryToChangeEquipment(Char->GetStack(), 0, RIGHT_WIELDED_INDEX)) {
     Char->DexterityAction(5);
@@ -994,7 +948,7 @@ truth commandsystem::WieldInRightArm (character *Char) {
 }
 
 
-truth commandsystem::WieldInLeftArm (character *Char) {
+COMMAND(WieldInLeftArm) {
   if (!Char->CanUseEquipment()) ADD_MESSAGE("You cannot wield anything.");
   else if (Char->TryToChangeEquipment(Char->GetStack(), 0, LEFT_WIELDED_INDEX)) {
     Char->DexterityAction(5);
@@ -1004,14 +958,14 @@ truth commandsystem::WieldInLeftArm (character *Char) {
 }
 
 
-truth commandsystem::Search (character *Char) {
+COMMAND(Search) {
   Char->Search(Char->GetAttribute(PERCEPTION) << 2);
   return true;
 }
 
 
 #ifdef WIZARD
-truth commandsystem::WizardMode (character *Char) {
+COMMAND(WizardMode) {
   if (!game::WizardModeIsActive()) {
     if (game::TruthQuestion(CONST_S("Do you want to cheat, cheater? This action cannot be undone. [y/N]"))) {
       game::ActivateWizardMode();
@@ -1041,19 +995,19 @@ truth commandsystem::WizardMode (character *Char) {
 }
 
 
-truth commandsystem::RaiseStats (character *Char) {
+COMMAND(RaiseStats) {
   Char->EditAllAttributes(1);
   return false;
 }
 
 
-truth commandsystem::LowerStats (character *Char) {
+COMMAND(LowerStats) {
   Char->EditAllAttributes(-1);
   return false;
 }
 
 
-truth commandsystem::GainAllItems (character *Char) {
+COMMAND(GainAllItems) {
   itemvectorvector AllItems;
   protosystem::CreateEveryItem(AllItems);
   stack *Stack = game::IsInWilderness() ? Char->GetStack() : Char->GetStackUnder();
@@ -1062,37 +1016,37 @@ truth commandsystem::GainAllItems (character *Char) {
 }
 
 
-truth commandsystem::SeeWholeMap (character *) {
+COMMAND(SeeWholeMap) {
   game::SeeWholeMap();
   return false;
 }
 
 
-truth commandsystem::WalkThroughWalls (character *) {
+COMMAND(WalkThroughWalls) {
   game::GoThroughWalls();
   return false;
 }
 
 
-truth commandsystem::RaiseGodRelations (character *) {
+COMMAND(RaiseGodRelations) {
   for (int c = 1; c <= GODS; ++c) game::GetGod(c)->AdjustRelation(50);
   return false;
 }
 
 
-truth commandsystem::LowerGodRelations (character *) {
+COMMAND(LowerGodRelations) {
   for (int c = 1; c <= GODS; ++c) game::GetGod(c)->AdjustRelation(-50);
   return false;
 }
 
 
-truth commandsystem::GainDivineKnowledge (character *) {
+COMMAND(GainDivineKnowledge) {
   for (int c = 1; c <= GODS; ++c) game::LearnAbout(game::GetGod(c));
   return false;
 }
 
 
-truth commandsystem::SecretKnowledge (character *Char) {
+COMMAND(SecretKnowledge) {
   felist List(CONST_S("Knowledge of the ancients"));
   List.AddEntry(CONST_S("Character attributes"), LIGHT_GRAY);
   List.AddEntry(CONST_S("Character attack info"), LIGHT_GRAY);
@@ -1227,13 +1181,13 @@ truth commandsystem::SecretKnowledge (character *Char) {
 }
 
 
-truth commandsystem::DetachBodyPart (character *Char) {
+COMMAND(DetachBodyPart) {
   Char->DetachBodyPart();
   return false;
 }
 
 
-truth commandsystem::SummonMonster (character *Char) {
+COMMAND(SummonMonster) {
   character *Summoned = 0;
   //
   while (!Summoned) {
@@ -1248,7 +1202,7 @@ truth commandsystem::SummonMonster (character *Char) {
 }
 
 
-truth commandsystem::LevelTeleport (character *) {
+COMMAND(LevelTeleport) {
   sLong Level = game::NumberQuestion(CONST_S("To which level?"), WHITE);
   if (Level <= 0 || Level > game::GetLevels()) {
     ADD_MESSAGE("There is no level %d in this dungeon, %s!", Level, game::Insult());
@@ -1262,7 +1216,7 @@ truth commandsystem::LevelTeleport (character *) {
 }
 
 
-truth commandsystem::Possess (character *Char) {
+COMMAND(Possess) {
   int Dir = game::DirectionQuestion(CONST_S("Choose creature to possess. [press a direction key]"), false);
   if (Dir == DIR_ERROR || !Char->GetArea()->IsValidPos(Char->GetPos() + game::GetMoveVector(Dir))) return false;
   character *ToPossess = Char->GetNearLSquare(Char->GetPos() + game::GetMoveVector(Dir))->GetCharacter();
@@ -1276,7 +1230,7 @@ truth commandsystem::Possess (character *Char) {
 }
 
 
-truth commandsystem::Polymorph (character *Char) {
+COMMAND(Polymorph) {
   character *NewForm;
   if (!Char->GetNewFormForPolymorphWithControl(NewForm)) return true;
   Char->Polymorph(NewForm, game::NumberQuestion(CONST_S("For how long?"), WHITE));
@@ -1284,7 +1238,7 @@ truth commandsystem::Polymorph (character *Char) {
 }
 
 
-truth commandsystem::GetScroll (character *Char) {
+COMMAND(GetScroll) {
   for (;;) {
     int sel = game::ListSelector(-1, CONST_S("Select scroll to add"),
       "Scroll of Wishing",
@@ -1333,7 +1287,7 @@ truth commandsystem::GetScroll (character *Char) {
 }
 
 
-truth commandsystem::WizardWish (character *Char) {
+COMMAND(WizardWish) {
   if (!game::Wish(PLAYER, "%s appears from nothing!", "Two %s appear from nothing!", true)) {
     ADD_MESSAGE("You changed your mind, didn't you, %s?", game::Insult());
   }
@@ -1341,7 +1295,7 @@ truth commandsystem::WizardWish (character *Char) {
 }
 
 
-truth commandsystem::OpenMondedr (character *Char) {
+COMMAND(OpenMondedr) {
   if (!game::GetMondedrPass()) {
     if (!game::IsInWilderness()) game::LoadWorldMap();
     v2 MondedrPos = game::GetWorldMap()->GetEntryPos(0, MONDEDR);
@@ -1359,7 +1313,7 @@ truth commandsystem::OpenMondedr (character *Char) {
 }
 
 
-truth commandsystem::ShowCoords (character *Char) {
+COMMAND(ShowCoords) {
   v2 xy = Char->GetPos();
   ADD_MESSAGE("Coordinates: X=%d; Y=%d", xy.X, xy.Y);
   return false;
@@ -1382,7 +1336,7 @@ static void dbp (character *Char, int idx) {
 */
 
 
-truth commandsystem::WizardHeal (character *Char) {
+COMMAND(WizardHeal) {
   /*
   truth newbp = game::TruthQuestion(CONST_S("Do you want completely new body? [y/N]"));
   if (newbp) {
@@ -1430,7 +1384,7 @@ truth commandsystem::WizardHeal (character *Char) {
 #endif
 
 
-truth commandsystem::ToggleRunning (character *Char) {
+COMMAND(ToggleRunning) {
   if (game::PlayerIsRunning() && PLAYER->StateIsActivated(PANIC) && PLAYER->GetTirednessState() != FAINTING) {
     ADD_MESSAGE("You are too scared to move at normal pace.");
     return false;
@@ -1444,7 +1398,7 @@ truth commandsystem::ToggleRunning (character *Char) {
 }
 
 
-truth commandsystem::Burn (character *Char) {
+COMMAND(Burn) {
   if (!Char->PossessesItem(&item::IsFlaming)) {
     ADD_MESSAGE("You have no flaming items, %s.", game::Insult());
     return false;
@@ -1469,7 +1423,7 @@ truth commandsystem::Burn (character *Char) {
 //FIXME: check for actor in that direction
 //FIXME: made actor/room owner hostile when containing material is acid, etc
 //FIXME: способ вылить точно на пол или на монстрика (зависит от ловкости?)
-truth commandsystem::Dump (character *Char) {
+COMMAND(Dump) {
   if (!Char->GetStack()->SortedItems(Char, &item::IsDumpable) && !Char->EquipsSomething(&item::IsDumpable)) {
     ADD_MESSAGE("You have nothing to dump!");
     return false;
@@ -1485,7 +1439,78 @@ truth commandsystem::Dump (character *Char) {
 }
 
 
-truth commandsystem::IssueCommand (character *Char) {
+COMMAND(IssueCommand) {
   if (!Char->CheckTalk()) return false;
   return game::CommandQuestion();
+}
+
+
+commandsystem::commandsystem () {
+  RegisterCommand(new command("Apply", &Apply, "apply", 'a', 'a', false));
+  RegisterCommand(new command("Talk", &Talk, "chat", 'C', 'C', false));
+  RegisterCommand(new command("Close", &Close, "close", 'c', 'c', false));
+  RegisterCommand(new command("Dip", &Dip, "dip", '!', '!', false));
+  RegisterCommand(new command("Dump", &Dump, "dump potion/can contents", 'U', 'U', false));
+  RegisterCommand(new command("Drink", &Drink, "drink", 'D', 'D', true));
+  RegisterCommand(new command("Drop", &Drop, "drop", 'd', 'd', true));
+  RegisterCommand(new command("Eat", &Eat, "eat", 'e', 'e', true));
+  RegisterCommand(new command("WhatToEngrave", &WhatToEngrave, "engrave", 'G', 'G', false));
+  RegisterCommand(new command("EquipmentScreen", &EquipmentScreen, "equipment menu", 'E', 'E', true));
+  RegisterCommand(new command("Go", &Go, "go", 'g', 'g', false));
+  RegisterCommand(new command("GoDown", &GoDown, "go down/enter area", '>', '>', true));
+  RegisterCommand(new command("GoUp", &GoUp, "go up", '<', '<', true));
+  RegisterCommand(new command("IssueCommand", &IssueCommand, "issue command(s) to team member(s)", 'I', 'I', false));
+  RegisterCommand(new command("Kick", &Kick, "kick", 'k', 'K', false));
+  RegisterCommand(new command("Look", &Look, "look", 'l', 'L', true));
+  RegisterCommand(new command("AssignName", &AssignName, "name", 'n', 'n', false));
+  RegisterCommand(new command("Offer", &Offer, "offer", 'O', 'f', false));
+  RegisterCommand(new command("Open", &Open, "open", 'o', 'O', false));
+  RegisterCommand(new command("PickUp", &PickUp, "pick up", ',', ',', false));
+  RegisterCommand(new command("Pray", &Pray, "pray", 'p', 'p', false));
+  RegisterCommand(new command("Quit", &Quit, "quit", 'Q', 'Q', true));
+  RegisterCommand(new command("Read", &Read, "read", 'r', 'r', false));
+  RegisterCommand(new command("Rest", &Rest, "rest/heal", 'h', 'h', true));
+  RegisterCommand(new command("Save", &Save, "save game", 'S', 'S', true));
+  RegisterCommand(new command("ScrollMessagesDown", &ScrollMessagesDown, "scroll messages down", '+', '+', true));
+  RegisterCommand(new command("ScrollMessagesUp", &ScrollMessagesUp, "scroll messages up", '-', '-', true));
+  RegisterCommand(new command("ShowConfigScreen", &ShowConfigScreen, "show config screen", '\\', '\\', true));
+  RegisterCommand(new command("ShowInventory", &ShowInventory, "show inventory", 'i', 'i', true));
+  RegisterCommand(new command("ShowKeyLayout", &ShowKeyLayout, "show key layout", '?', '?', true));
+  RegisterCommand(new command("DrawMessageHistory", &DrawMessageHistory, "show message history", 'M', 'M', true));
+  RegisterCommand(new command("ShowWeaponSkills", &ShowWeaponSkills, "show weapon skills", '@', '@', true));
+  RegisterCommand(new command("Search", &Search, "search", 's', 's', false));
+  RegisterCommand(new command("Sit", &Sit, "sit", '_', '_', false));
+  RegisterCommand(new command("Throw", &Throw, "throw", 't', 't', false));
+  RegisterCommand(new command("ToggleRunning", &ToggleRunning, "toggle running", 'u', 'U', true));
+  RegisterCommand(new command("ForceVomit", &ForceVomit, "vomit", 'V', 'V', false));
+  RegisterCommand(new command("NOP", &NOP, "wait", '.', '.', true));
+  RegisterCommand(new command("WieldInRightArm", &WieldInRightArm, "wield in right arm", 'w', 'w', true));
+  RegisterCommand(new command("WieldInLeftArm", &WieldInLeftArm, "wield in left arm", 'W', 'W', true));
+  RegisterCommand(new command("Burn", &Burn, "burn", 'B', 'B', false));
+#ifdef WIZARD
+  RegisterCommand(new command("WizardMode", &WizardMode, "wizard mode activation", 'X', 'X', true));
+#endif
+  RegisterCommand(new command("Zap", &Zap, "zap", 'z', 'z', false));
+#ifdef WIZARD
+  /* Sort according to key */
+  RegisterCommand(new command("RaiseStats", &RaiseStats, "raise stats", '1', '1', true, true));
+  RegisterCommand(new command("LowerStats", &LowerStats, "lower stats", '2', '2', true, true));
+  RegisterCommand(new command("SeeWholeMap", &SeeWholeMap, "see whole map", '3', '3', true, true));
+  RegisterCommand(new command("WalkThroughWalls", &WalkThroughWalls, "toggle walk through walls mode", '4', '4', true, true));
+  RegisterCommand(new command("RaiseGodRelations", &RaiseGodRelations, "raise your relations to the gods", '5', '5', true, true));
+  RegisterCommand(new command("LowerGodRelations", &LowerGodRelations, "lower your relations to the gods", '6', '6', true, true));
+  RegisterCommand(new command("WizardWish", &WizardWish, "wish something", '=', '=', true, true));
+  RegisterCommand(new command("GainDivineKnowledge", &GainDivineKnowledge, "gain knowledge of all gods", '\"', '\"', true, true));
+  RegisterCommand(new command("GainAllItems", &GainAllItems, "gain all items", '$', '$', true, true));
+  RegisterCommand(new command("SecretKnowledge", &SecretKnowledge, "reveal secret knowledge", '*', '*', true, true));
+  RegisterCommand(new command("DetachBodyPart", &DetachBodyPart, "detach a limb", '0', '0', true, true));
+  RegisterCommand(new command("SummonMonster", &SummonMonster, "summon monster", '&', '&', false, true));
+  RegisterCommand(new command("LevelTeleport", &LevelTeleport, "level teleport", '|', '|', false, true));
+  RegisterCommand(new command("Possess", &Possess, "possess creature", '{', '{', false, true));
+  RegisterCommand(new command("Polymorph", &Polymorph, "polymorph", '[', '[', true, true));
+  RegisterCommand(new command("GetScroll", &GetScroll, "get scroll", 'R', 'R', true, true));
+  RegisterCommand(new command("OpenMondedr", &OpenMondedr, "open Mondedr", 'm', 'm', true, true));
+  RegisterCommand(new command("ShowCoords", &ShowCoords, "show current coordinates", '(', '(', true, true));
+  RegisterCommand(new command("WizardHeal", &WizardHeal, "wizard healing", 'H', 'H', true, true));
+#endif
 }
