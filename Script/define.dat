@@ -817,6 +817,7 @@
   GRIZZLY_BEAR,
   CAVE_BEAR,
   POLAR_BEAR,
+  PANDA_BEAR,
 };
 
 
@@ -835,6 +836,11 @@
   CHIEFTAIN = 1,
   LORD,
   PATRIARCH,
+};
+
+
+#enum {
+  #AMBULATORY = 1,
 };
 
 

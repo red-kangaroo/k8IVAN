@@ -1,0 +1,18 @@
+charmlyre
+{
+  DefaultMainVolume = 1500;
+  StrengthModifier = 50;
+  BitmapPos = 64, 368;
+  FormModifier = 20;
+  DefaultSize = 50;
+  Roundness = 50;
+  Possibility = 5;
+  Category = TOOL;
+  MainMaterialConfig == UNICORN_HORN;
+  NameSingular = "lyre";
+  PostFix = "of charm";
+  Price = 1000;
+  CanBePiled = false;
+  AttachedGod = DULCIS;
+  WieldedBitmapPos = 176, 352;
+}

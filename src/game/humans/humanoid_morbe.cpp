@@ -11,7 +11,7 @@ protected:
   virtual void GetAICommand ();
 
 protected:
-  //ulong LastHealed;
+  //feuLong LastHealed;
 };
 
 

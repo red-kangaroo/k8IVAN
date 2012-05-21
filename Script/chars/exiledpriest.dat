@@ -1,0 +1,43 @@
+exiledpriest
+{
+
+  Config SILVA;
+  {
+    DefaultArmStrength = 10;
+    DefaultLegStrength = 10;
+    DefaultDexterity = 15;
+    DefaultAgility = 10;
+    DefaultEndurance = 10;
+    DefaultPerception = 24;
+    DefaultIntelligence = 20;
+    DefaultWisdom = 35;
+    DefaultCharisma = 30;
+    DefaultMana = 25;
+    TotalVolume = 60000;
+    TotalSize = 170;
+    HeadBitmapPos = 112, 0;
+    TorsoBitmapPos = 32, 208;
+    ArmBitmapPos = 64, 208;
+    LegBitmapPos = 0, 144;
+    SkinColor = rgb16(160, 100, 64);
+    HairColor = rgb16(80, 48, 32);
+    AttachedGod = SILVA;
+    NameSingular = "priestess";
+    PostFix = "of Silva";
+    Sex = FEMALE;
+    Cloak = NYMPH_HAIR cloak;
+    RightWielded = EBONY_WOOD EBONY_WOOD meleeweapon(QUARTER_STAFF) { Enchantment = 1; }
+    KnownCWeaponSkills == BLUNT_WEAPONS;
+    CWeaponSkillHits == 50;
+    RightSWeaponSkillHits = 20;
+    FriendlyReplies =
+    {
+      4,
+      "\"Silva is the goddess of nature, who protects all living things. Her earthly manifestation, located in the elven nation of Lunethia, is a giant holy tree which reaches the clouds.\"",
+      "\"In the old temple we had a marvellous altar carved from a branch of Silva Herself, but Decos made firewood out of it.\"",
+      "\"You cannot contact any god unless you know the right rituals. Alas, I'm unable to teach you any, since after the invasion the Attnamese forbade us to officially worship any god save Valpurus. I can therefore only help you as a healer.\"",
+      "\"With my holy powers, I'm capable of reattaching severed limbs and removing various diseases and poisons. For a price, of course. Should I not bring enough income to the colony, the occupiers would make me a banana grower, too.\"";
+    }
+    AutomaticallySeen = true;
+  }
+}

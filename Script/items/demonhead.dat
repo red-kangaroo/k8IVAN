@@ -1,0 +1,36 @@
+demonhead
+{
+  DefaultSize = 200;
+  Possibility = 1;
+  WeaponCategory = AXES;
+  DefaultMainVolume = 800;
+  DefaultSecondaryVolume = 2000; /* CLIVAN; old: 1600 */
+  StrengthModifier = 300;
+  BitmapPos = 64, 80;
+  FormModifier = 300;
+  Adjective = "extremely heavy";
+  NameSingular = "battle-axe";
+  PostFix = "named Demonhead";
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == EBONY_WOOD; /* CLIVAN; old: OCTIRON */
+  Roundness = 30;
+  IsTwoHanded = true;
+  Alias == "Demonhead";
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Price = 750;
+  AttachedGod = CRUENTUS;
+  WieldedBitmapPos = 160, 272;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH;
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 64, 96;
+    WieldedBitmapPos = 176, 272;
+    Price = 150;
+    EnchantmentPlusChance = 4;
+  }
+}

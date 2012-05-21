@@ -1,0 +1,36 @@
+mjolak /* meleeweapon-> */
+{
+  DefaultSize = 180;
+  Possibility = 1;
+  WeaponCategory = POLE_ARMS;
+  DefaultMainVolume = 400;
+  DefaultSecondaryVolume = 1000;
+  StrengthModifier = 200;
+  BitmapPos = 0, 80;
+  FormModifier = 115; /* CLIVAN; old: 225 */
+  MainMaterialConfig == METEORIC_STEEL;
+  SecondaryMaterialConfig == EBONY_WOOD;
+  Roundness = 20;
+  IsTwoHanded = true;
+  Adjective = "unholy";
+  NameSingular = "halberd";
+  PostFix = "named Mjolak";
+  ArticleMode = FORCE_THE;
+  Alias == "Mjolak";
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Price = 750;
+  AttachedGod = CRUENTUS;
+  WieldedBitmapPos = 160, 256;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH|PIERCE;
+
+  Config BROKEN;
+  {
+    Possibility = 0; /* CLIVAN; old: 2 */
+    BitmapPos = 32, 144;
+    Price = 150;
+    WieldedBitmapPos = 176, 256;
+    EnchantmentPlusChance = 4;
+  }
+}

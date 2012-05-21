@@ -1,0 +1,11 @@
+maptotombofxinroch /* locationmap-> */
+{
+  Possibility = 0;
+  Price = 50;
+  PostFix = "to the Tomb of Xinroch";
+  AttachedGod = SOPHOS;
+  ReadDifficulty = 50;
+  CanBeWished = false;
+  CanBeCloned = false;
+  IsPolymorphSpawnable = false;
+}

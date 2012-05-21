@@ -1,0 +1,28 @@
+constitution /* holybook-> */
+{
+  DefaultSize = 30;
+  Possibility = 0;
+  Category = BOOK;
+  DefaultMainVolume = 2500;
+  StrengthModifier = 150;
+  BitmapPos = 32, 32;
+  FormModifier = 20;
+  Adjective = "";
+  PostFix = "of Independent Tweraif";
+  NameSingular = "Constitution";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == PARCHMENT;
+  Price = 500;
+  Roundness = 70;
+  IsTwoHanded = true;
+  CreateDivineConfigurations = false;
+  AttachedGod = TERRA;
+  WieldedBitmapPos = 176, 144;
+  ReadDifficulty = 1500;
+  CanBeWished = false;
+  IsDestroyable = false;
+  IsMaterialChangeable = false;
+  IsPolymorphable = false;
+  CanBeCloned = false;
+  IsQuestItem = true;
+}

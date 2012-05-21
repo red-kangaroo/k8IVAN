@@ -1,0 +1,57 @@
+dog
+{
+  DefaultArmStrength = 5;
+  DefaultAgility = 15;
+  DefaultEndurance = 8;
+  DefaultPerception = 18;
+  DefaultIntelligence = 5;
+  DefaultWisdom = 5;
+  DefaultCharisma = 15;
+  DefaultMana = 0;
+  TotalVolume = 20000;
+  TorsoBitmapPos = 240, 16;
+  HostileReplies == "@Dd barks in fury.";
+  /* FriendlyReplies overridden */
+  TotalSize = 70;
+  SkinColor = rgb16(111, 74, 37);
+  NameSingular = "puppy";
+  NamePlural = "puppies";
+  BaseBiteStrength = 350;
+  CanBeGenerated = true;
+  CWeaponSkillHits == 20;
+  FleshMaterial = DOG_FLESH;
+  AttachedGod = SILVA;
+  Alias == "dog";
+  CanOpen = false; /*k8: ??? why this was removed? */
+  DeathMessage = "@Dd is killed.";
+  ScienceTalkAdjectiveAttribute =
+  {
+    16,
+    "arf", "r-ruff", "bark", "woof", "rowf",
+    "yip", "yap", "yelp", "[fart]", "snarl",
+    "bow-wow", "AHROUFF", "WOOF", "BARK", "grrrrrrr",
+    "aaaaoooooooooooo";
+  }
+  ScienceTalkSubstantiveAttribute =
+  {
+    16,
+    "arf", "r-ruff", "bark", "woof", "rowf",
+    "yip", "yap", "yelp", "[fart]", "snarl",
+    "bow-wow", "AHROUFF", "WOOF", "BARK", "grrrrrrr",
+    "aaaaoooooooooooo";
+  }
+  ScienceTalkPrefix == "";
+  ScienceTalkName =
+  {
+    16,
+    "arf", "r-ruff", "bark", "woof", "rowf",
+    "yip", "yap", "yelp", "[fart]", "snarl",
+    "bow-wow", "AHROUFF", "WOOF", "BARK", "grrrrrrr",
+    "aaaaoooooooooooo";
+  }
+  ScienceTalkPossibility = 90;
+  ScienceTalkIntelligenceModifier = 1;
+  ScienceTalkWisdomModifier = 2;
+  ScienceTalkIntelligenceRequirement = 3;
+  ScienceTalkWisdomRequirement = 4;
+}

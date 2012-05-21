@@ -1,0 +1,29 @@
+humanoid
+{
+  ClothColor = rgb16(111, 74, 37);
+  SkinColor = rgb16(230, 140, 100);
+  HairColor = rgb16(160, 80, 0);
+  EyeColor = rgb16(48, 8, 80);
+  BeltColor = rgb16(48, 48, 48);
+  BootColor = rgb16(16, 16, 16);
+  TorsoSpecialColor = 0;
+  ArmSpecialColor = 0;
+  LegSpecialColor = 0;
+  IsAbstract = true;
+  BaseUnarmedStrength = 150;
+  Sex = MALE;
+  CanUseEquipment = true;
+  CanKick = true;
+  CanTalk = true;
+  CanZap = true; /* if has at least one hand (hard coded) */
+  FleshMaterial = HUMAN_FLESH;
+  DeathMessage = "@Dd dies screaming."; /* overridden if has no head */
+  CanThrow = true;
+  CanApply = true;
+  IsImmuneToLeprosy = false;
+  WillCarryItems = true;
+  DisplacePriority = 0;
+  UndeadVersions = true;
+  KnownCWeaponSkills == UNARMED; // k8: CLIVAN omits this
+  CWeaponSkillHits == 1; /*k8: 19000;*/
+}

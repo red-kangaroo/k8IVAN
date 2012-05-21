@@ -1,0 +1,32 @@
+fruitbat
+{
+  DefaultArmStrength = 2;
+  DefaultAgility = 40;
+  DefaultEndurance = 8;
+  DefaultPerception = 24;
+  DefaultIntelligence = 7;
+  DefaultWisdom = 5;
+  DefaultCharisma = 10;
+  DefaultMana = 0;
+  StandVerb = "flying";
+  CanOpen = false;
+  TotalVolume = 1000;
+  TorsoBitmapPos = 464, 16;
+  HostileReplies == "@Dd squeaks rapaciously.";
+  FriendlyReplies == "@Dd squeaks happily.";
+  TotalSize = 20;
+  SkinColor = rgb16(190, 130, 64);
+  TorsoMainColor = rgb16(180, 180, 180);
+  NameSingular = "fruit bat";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 100;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  PanicLevel = 75;
+  FleshMaterial = BAT_FLESH;
+  AttachedGod = CLEPTIA;
+  ClassStates = INFRA_VISION; /* So that invisible player doesn't screw the AI */
+  BiteCapturesBodyPart = false;
+  MoveType = FLY;
+}

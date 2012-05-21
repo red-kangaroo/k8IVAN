@@ -1,0 +1,82 @@
+golem
+{
+  DefaultArmStrength = 0; /* depends on material */
+  DefaultLegStrength = 0; /* depends on material */
+  DefaultDexterity = 0; /* depends on material */
+  DefaultAgility = 0; /* depends on material */
+  DefaultEndurance = 0; /* has no effect */
+  DefaultPerception = 12;
+  DefaultIntelligence = 4;
+  DefaultWisdom = 4;
+  DefaultCharisma = 5;
+  DefaultMana = 5;
+  TotalVolume = 100000;
+  TorsoBitmapPos = 256, 0;
+  TotalSize = 250;
+  NameSingular = "golem";
+  CanBeGenerated = true;
+  Sex = UNDEFINED;
+  SkinColor = rgb16(160, 32, 16); /* for flesh golems */
+  EyeColor = rgb16(0, 0, 0);
+  HeadBitmapPos = 96, 256;
+  TorsoBitmapPos = 32, 256;
+  ArmBitmapPos = 64, 256;
+  LegBitmapPos = 0, 256;
+  CanUseEquipment = false;
+  CreateGolemMaterialConfigurations = true;
+  IsAbstract = true;
+  BaseUnarmedStrength = 500;
+  KnownCWeaponSkills == UNARMED;
+  CWeaponSkillHits == 50;
+  PanicLevel = 0;
+  HostileReplies == "Yes, master. Golem kill human. Golem then return."; /* No quotes! (golem engraves) */
+  FriendlyReplies == "Yes, master?";
+  /* FleshMaterial overridden */
+  DeathMessage = "The Holy Words of @dd fly away. The monster's magic fades and it vanishes in seconds.";
+  UsesNutrition = false;
+  AttachedGod = NONE;
+  ClassStates = GAS_IMMUNITY;
+  Frequency = 1500;
+  CanTalk = false;
+  CanRead = true;
+  BodyPartsDisappearWhenSevered = true;
+  DangerModifier = 75;
+  AlwaysUseMaterialAttributes = true;
+  IsEnormous = true;
+  CanChoke = false;
+  UndeadVersions = false;
+
+  Config ACIDOUS_BLOOD;
+  {
+    CanBeGenerated = false;
+    Adjective = "acidous blood";
+    AttachedGod = CRUENTUS;
+  }
+
+  Config SPIDER_SILK;
+  {
+    DefaultName = "experiment ZQ-29";
+    DangerModifier = 1500;
+    IsUnique = true;
+    CanBeWished = true;
+    Inventory = { 7, wand(WAND_OF_INVISIBILITY), wand(WAND_OF_TELEPORTATION), wand(WAND_OF_CLONING), scrollofchangematerial, holybook(SOPHOS), SPIDER_SILK bodyarmor(PLATE_MAIL), solstone; }
+    ClassStates = GAS_IMMUNITY|HASTE|INFRA_VISION|INVISIBLE|TELEPORT_CONTROL;
+    IsNameable = false;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    Adjective = "spider silk";
+    AttachedGod = SOPHOS;
+    CanBeConfused = false;
+    Frequency = 10000;
+    IsImmuneToItemTeleport = true;
+    TamingDifficulty = 35;
+  }
+
+  Config VALPURIUM;
+  {
+    Frequency = 1000;
+    DangerModifier = 500;
+    Adjective = "valpurium";
+    AttachedGod = VALPURUS;
+  }
+}

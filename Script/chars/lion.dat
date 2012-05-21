@@ -1,0 +1,27 @@
+lion
+{
+  DefaultArmStrength = 20;
+  DefaultAgility = 25;
+  DefaultEndurance = 15;
+  DefaultPerception = 24;
+  DefaultIntelligence = 7;
+  DefaultWisdom = 15;
+  DefaultCharisma = 20;
+  DefaultMana = 0;
+  TotalVolume = 100000;
+  TorsoBitmapPos = 576, 0;
+  HostileReplies == "@Dd growls furiously.";
+  FriendlyReplies == "@Dd growls happily.";
+  TotalSize = 200;
+  SkinColor = rgb16(200, 200, 112);
+  NameSingular = "lion";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 800;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 200;
+  FleshMaterial = LION_FLESH;
+  DeathMessage = "@Dd growls and is slain.";
+  AttachedGod = SILVA;
+  AutomaticallySeen = true;
+}

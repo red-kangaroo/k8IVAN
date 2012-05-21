@@ -1,0 +1,271 @@
+organic /* substances that spoil but are not flesh */
+{
+  SpoilModifier = 10000;
+  BodyFlags = Base&~USE_MATERIAL_ATTRIBUTES;
+
+  Config BANANA_FLESH;
+  {
+    StrengthValue = 3;
+    Density = 1200;
+    ConsumeType = CT_FRUIT;
+    NutritionValue = 1000;
+    Color = rgb16(224, 224, 0);
+    PriceModifier = 3000;
+    NameStem = "banana flesh";
+    Flexibility = 5;
+    AttachedGod = SILVA;
+  }
+
+  Config BANANA_PEEL;
+  {
+    StrengthValue = 5;
+    ConsumeType = CT_MISC_ORGANIC;
+    Density = 500;
+    Color = rgb16(224, 224, 0);
+    NameStem = "banana peel";
+    Flexibility = 10;
+    AttachedGod = SILVA;
+    NaturalForm = bananapeels;
+    BodyFlags = Base|USE_MATERIAL_ATTRIBUTES;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+  }
+
+  Config BONE;
+  {
+    StrengthValue = 40;
+    Density = 2000;
+    ConsumeType = CT_BONE;
+    Color = rgb16(210, 210, 210);
+    NutritionValue = 500;
+    NameStem = "bone";
+    ConsumeEndMessage = CEM_BONE;
+    SpoilModifier = 48000;
+    AttachedGod = MORTIFER;
+    HardenedMaterial = OMMEL_BONE;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+    NaturalForm = bone;
+  }
+
+  Config BREAD;
+  {
+    StrengthValue = 5;
+    ConsumeType = CT_PROCESSED;
+    Density = 250;
+    NutritionValue = 1000;
+    Color = rgb16(180, 96, 64);
+    PriceModifier = 3000;
+    NameStem = "bread";
+    Flexibility = 5;
+    SpoilModifier = 20000;
+    AttachedGod = SEGES;
+  }
+
+  Config CARROT_FLESH;
+  {
+    StrengthValue = 3;
+    ConsumeType = CT_FRUIT;
+    NameStem = "carrot flesh";
+    Effect = EFFECT_TRAIN_PERCEPTION;
+    EffectStrength = 1000;
+    AttachedGod = SILVA;
+    Color = rgb16(220, 120, 0);
+    Density = 1200;
+    NutritionValue = 1000;
+    PriceModifier = 5000;
+    Flexibility = 5;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_WISHED;
+  }
+
+  Config HOLY_BANANA_FLESH;
+  {
+    StrengthValue = 3;
+    Density = 1200;
+    ConsumeType = CT_FRUIT;
+    NutritionValue = 20000;
+    Color = rgb16(224, 224, 0);
+    PriceModifier = 3000;
+    NameStem = "holy banana flesh";
+    Flexibility = 10;
+    AttachedGod = SILVA;
+    Effect = EFFECT_HOLY_BANANA;
+    ConsumeEndMessage = CEM_HOLY_BANANA;
+    CommonFlags = Base|IS_VALUABLE&~(CAN_BE_WISHED|CAN_BE_MIRRORED);
+    BodyFlags = Base|IS_WARM;
+  }
+
+  Config HOLY_MANGO_FLESH;
+  {
+    StrengthValue = 3;
+    Density = 1200;
+    ConsumeType = CT_FRUIT;
+    NutritionValue = 20000;
+    Color = rgb16(250, 158, 74);
+    PriceModifier = 10000;
+    NameStem = "holy mango flesh";
+    Flexibility = 10;
+    AttachedGod = SILVA;
+    Effect = EFFECT_HOLY_MANGO;
+    ConsumeEndMessage = CEM_HOLY_MANGO;
+    CommonFlags = Base|IS_VALUABLE&~(CAN_BE_WISHED|CAN_BE_MIRRORED);
+    BodyFlags = Base|IS_WARM;
+  }
+
+  Config KIWI_FLESH;
+  {
+    StrengthValue = 3;
+    ConsumeType = CT_FRUIT;
+    Density = 1200;
+    NutritionValue = 1000;
+    Color = rgb16(160, 112, 32);
+    PriceModifier = 3000;
+    NameStem = "kiwi flesh";
+    Flexibility = 5;
+    AttachedGod = SILVA;
+  }
+
+  Config MANGO_FLESH;
+  {
+    StrengthValue = 3;
+    Density = 1200;
+    ConsumeType = CT_FRUIT;
+    NutritionValue = 1000;
+    Color = rgb16(250, 158, 74);
+    PriceModifier = 3000;
+    NameStem = "mango flesh";
+    Flexibility = 5;
+    AttachedGod = SILVA;
+  }
+
+  Config MUTANT_PLANT_FIBER;
+  {
+    StrengthValue = 7;
+    ConsumeType = CT_MISC_ORGANIC;
+    Density = 500;
+    Color = rgb16(111, 64, 37);
+    NameStem = "mutant plant fiber";
+    Flexibility = 10;
+    SpoilModifier = 10000;
+    Emitation = rgb24(140, 100, 100);
+    AttachedGod = SCABIES;
+    BodyFlags = Base|IS_ALIVE|IS_WARM|CAN_REGENERATE;
+    InteractionFlags = CAN_BURN;
+  }
+
+  Config OMMEL_BONE;
+  {
+    StrengthValue = 250;
+    Flexibility = 4;
+    Density = 750;
+    ConsumeType = CT_BONE;
+    Color = rgb16(210, 210, 210);
+    NutritionValue = 1000;
+    NameStem = "ommel bone";
+    ConsumeEndMessage = CEM_BONE;
+    SpoilModifier = 48000;
+    AttachedGod = MORTIFER;
+    Effect = EFFECT_OMMEL_BONE;
+    ConsumeEndMessage = CEM_OMMEL_BONE;
+    NameFlags = Base|USE_AN;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+    HardenedMaterial = OMMEL_TOOTH;
+  }
+
+  Config OMMEL_CERUMEN;
+  {
+    StrengthValue = 1;
+    Color = rgb16(180, 150, 50);
+    NutritionValue = 500;
+    PriceModifier = 10000;
+    NameStem = "ommel cerumen";
+    Effect = EFFECT_OMMEL_CERUMEN;
+    ConsumeEndMessage = CEM_OMMEL;
+    HitMessage = HM_OMMEL;
+    AttachedGod = SOPHOS;
+    Density = 500;
+    ConsumeType = CT_PROCESSED;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+    CommonFlags = Base|IS_VALUABLE&~(CAN_BE_WISHED|CAN_BE_MIRRORED);
+    NameFlags = Base|USE_AN;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+  }
+
+  Config OMMEL_TOOTH;
+  {
+    StrengthValue = 375;
+    Density = 5000;
+    ConsumeType = CT_BONE;
+    Color = rgb16(200, 200, 255);
+    NutritionValue = 1000;
+    NameStem = "ommel tooth";
+    ConsumeEndMessage = CEM_BONE;
+    SpoilModifier = 48000;
+    AttachedGod = MORTIFER;
+    // CLIVAN; old -- IntelligenceRequirement = 5;
+    IntelligenceRequirement = 20;
+    Effect = EFFECT_OMMEL_BONE;
+    ConsumeEndMessage = CEM_OMMEL_BONE;
+    NameFlags = Base|USE_AN;
+    CategoryFlags = Base|IS_SPARKLING|IS_GOLEM_MATERIAL;
+  }
+
+  Config PINEAPPLE_FLESH;
+  {
+    StrengthValue = 5;
+    ConsumeType = CT_FRUIT;
+    Density = 1200;
+    NutritionValue = 1000;
+    Color = rgb16(192, 112, 96);
+    PriceModifier = 3000;
+    NameStem = "pineapple flesh";
+    Flexibility = 5;
+    AttachedGod = SILVA;
+  }
+
+  Config PLANT_FIBER;
+  {
+    StrengthValue = 7;
+    ConsumeType = CT_MISC_ORGANIC;
+    Density = 500;
+    Color = rgb16(111, 64, 37);
+    NameStem = "plant fiber";
+    Flexibility = 10;
+    SpoilModifier = 20000;
+    AttachedGod = MORTIFER;
+    BodyFlags = Base|IS_ALIVE|CAN_REGENERATE;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+    InteractionFlags = CAN_BURN;
+  }
+
+  Config RYE_BREAD;
+  {
+    StrengthValue = 6;
+    ConsumeType = CT_PROCESSED;
+    Density = 300;
+    NutritionValue = 1700;
+    Color = rgb16(100, 75, 0);
+    PriceModifier = 2000;
+    NameStem = "rye bread";
+    Flexibility = 3;
+    SpoilModifier = 50000;
+    AttachedGod = SEGES;
+  }
+
+  Config SCHOOL_FOOD;
+  {
+    StrengthValue = 3;
+    ConsumeType = CT_MEAT;
+    Density = 1500;
+    NutritionValue = 500;
+    Color = rgb16(111, 74, 37);
+    ConsumeWisdomLimit = 0;
+    NameStem = "school food";
+    Effect = EFFECT_SCHOOL_FOOD;
+    ConsumeEndMessage = CEM_SCHOOL_FOOD;
+    HitMessage = HM_SCHOOL_FOOD;
+    Flexibility = 5;
+    AttachedGod = SCABIES;
+    PriceModifier = 1000;
+    SpoilModifier = 65000;
+    CommonFlags = Base&~(CAN_BE_WISHED|CAN_BE_MIRRORED);
+  }
+}

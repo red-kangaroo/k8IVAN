@@ -1,0 +1,90 @@
+petrusswife
+{
+  DefaultArmStrength = 7;
+  DefaultLegStrength = 7;
+  DefaultDexterity = 7;
+  DefaultAgility = 7;
+  DefaultEndurance = 7;
+  DefaultPerception = 21;
+  DefaultIntelligence = 8;
+  DefaultWisdom = 10;
+  DefaultCharisma = 80;
+  DefaultMana = 20;
+  Sex = FEMALE;
+  ClothColor = rgb16(150, 0, 0);
+  BeltColor = rgb16(180, 180, 0);
+  TorsoBitmapPos = 32, 160;
+  ArmBitmapPos = 64, 160;
+  LegBitmapPos = 0, 112;
+  TotalVolume = 40000;
+  TotalSize = 170;
+  CanRead = true;
+  NameSingular = "Petrus's wife";
+  NamePlural = "Petrus's wives";
+  ArticleMode = NO_ARTICLE;
+  IsAbstract = true;
+  PanicLevel = 95;
+  BaseUnarmedStrength = 200;
+  IsExtraCoward = true;
+  WieldedPosition = 0, -1;
+  HostileReplies == "\"Murderer! Just wait until Petrus finds you!\"";
+  FriendlyReplies =
+  {
+    5,
+    "\"I'm so sick jealous to those dolphins...\"",
+    "\"I'm Petrus's favorite, not she!\"",
+    "\"Why must Petrus stay in this forest? There isn't even a proper hairdresser here!\"",
+    "\"Being one of six wives is a dream job. Pay is good and you only have to work about one night a week!\"";
+    "\"That head on the wall looks really scary sometimes. Just like we were being watched.\"";
+  }
+  AttachedGod = DULCIS;
+  WillCarryItems = false;
+  IsExtraFragile = true;
+  Belt = chastitybelt(OCTAGONAL_LOCK);
+  UndeadVersions = false;
+
+  Config 1;
+  {
+    HairColor = rgb16(24, 24, 24);
+    HeadBitmapPos = 112, 0;
+    PostFix = "number 1";
+  }
+
+  Config 2;
+  {
+    HairColor = rgb16(24, 24, 24);
+    HeadBitmapPos = 112, 16;
+    PostFix = "number 2";
+  }
+
+  Config 3;
+  {
+    HairColor = rgb16(48, 40, 8);
+    HeadBitmapPos = 112, 0;
+    PostFix = "number 3";
+  }
+
+  Config 4;
+  {
+    DefaultIntelligence = 4; /* she's blond */
+    DefaultWisdom = 8;
+    DefaultCharisma = 85;
+    HairColor = rgb16(200, 96, 0);
+    HeadBitmapPos = 112, 32;
+    PostFix = "number 4";
+  }
+
+  Config 5;
+  {
+    HairColor = rgb16(60, 48, 24);
+    HeadBitmapPos = 112, 48;
+    PostFix = "number 5";
+  }
+
+  Config 6;
+  {
+    HairColor = rgb16(200, 0, 0);
+    HeadBitmapPos = 112, 64;
+    PostFix = "number 6";
+  }
+}

@@ -1,0 +1,17 @@
+kiwi
+{
+  DefaultSize = 10;
+  Possibility = 75;
+  Category = FOOD;
+  DefaultMainVolume = 50;
+  StrengthModifier = 50;
+  BitmapPos = 0, 384;
+  FormModifier = 10;
+  NameSingular = "kiwi";
+  MainMaterialConfig == KIWI_FLESH;
+  Roundness = 80;
+  AttachedGod = SILVA;
+  WieldedBitmapPos = 160, 368;
+  AllowEquip = false;
+  IsValuable = false;
+}

@@ -1,0 +1,32 @@
+wondersmellstaff
+{
+  DefaultSize = 220;
+  Possibility = 5;
+  WeaponCategory = BLUNT_WEAPONS;
+  StrengthModifier = 150;
+  BitmapPos = 64, 240;
+  FormModifier = 125;
+  DefaultMainVolume = 2000;
+  DefaultSecondaryVolume = 200;
+  NameSingular = "staff";
+  PostFix = "of wondrous smells";
+  MainMaterialConfig = { 4, TEAK_WOOD, EBONY_WOOD, ARCANITE, OCTIRON; }
+  SecondaryMaterialConfig == RUBY;
+  MaterialConfigChances = { 4, 250, 100, 50, 25; }
+  Roundness = 10;
+  IsTwoHanded = true;
+  AttachedGod = INFUSCOR;
+  WieldedBitmapPos = 160, 304;
+  Price = 500;
+  EnchantmentPlusChance = 5;
+
+  Config BROKEN;
+  {
+    Possibility = 5;
+    BitmapPos = 64, 256;
+    WieldedBitmapPos = 176, 304;
+    MainMaterialConfig = { 3, EBONY_WOOD, ARCANITE, OCTIRON; }
+    MaterialConfigChances = { 3, 100, 50, 25; }
+    EnchantmentPlusChance = 10;
+  }
+}

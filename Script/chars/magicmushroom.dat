@@ -1,0 +1,31 @@
+magicmushroom
+{
+  DefaultArmStrength = 6;
+  DefaultAgility = 3;
+  DefaultEndurance = 20;
+  DefaultPerception = 7;
+  DefaultIntelligence = 3;
+  DefaultWisdom = 3;
+  DefaultCharisma = 10;
+  DefaultMana = 7;
+  TotalVolume = 10000;
+  TorsoBitmapPos = 128, 32;
+  TotalSize = 60;
+  Adjective = "magical";
+  NameSingular = "mushroom";
+  HasEyes = false;
+  HasHead = false;
+  HasALeg = false;
+  UsesNutrition = false;
+  FleshMaterial = MAGIC_MUSHROOM_FLESH;
+  SkinColor = rgb16(200, 170, 170);
+  CanBeGenerated = true;
+  AttachedGod = SCABIES;
+  BaseUnarmedStrength = 300;
+  KnownCWeaponSkills == UNARMED;
+  CWeaponSkillHits == 20;
+  Frequency = 4500; /* CLIVAN; was: 5000 */
+  DangerModifier = 75;
+  StandVerb = "wobbling";
+  CanChoke = false;
+}

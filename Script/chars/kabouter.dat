@@ -1,0 +1,49 @@
+kabouter
+{
+  DefaultArmStrength = 8;
+  DefaultLegStrength = 8;
+  DefaultDexterity = 12;
+  DefaultAgility = 16;
+  DefaultEndurance = 14;
+  DefaultPerception = 20;
+  DefaultIntelligence = 10;
+  DefaultWisdom = 20;
+  DefaultCharisma = 40;
+  DefaultMana = 0;
+  SkinColor = rgb16(206, 140, 96);
+  EyeColor = rgb16(0, 123, 223);
+  HairColor = rgb16(180, 180, 180);
+  ClothColor = rgb16(140, 0, 0);
+  CapColor = rgb16(160, 0, 0);
+  TorsoSpecialColor = rgb16(255, 236, 0);
+  LegMainColor = rgb16(140, 0, 0);
+  BootColor = rgb16(64, 0, 0);
+  HeadBitmapPos = 96, 704;
+  TorsoBitmapPos = 32, 704;
+  ArmBitmapPos = 64, 704;
+  LegBitmapPos = 0, 704;
+  TotalVolume = 20000;
+  TotalSize = 90;
+  NameSingular = "kabouter";
+  HostileReplies == "@Dd grimaces furiously.";
+  FriendlyReplies == "@Dd smiles cheerfully.";
+  CanBeGenerated = true;
+  Sex = MALE;
+  RightWielded = SILVER BIRCH_WOOD meleeweapon(SICKLE);
+  KnownCWeaponSkills == SMALL_SWORDS;
+  CWeaponSkillHits == 30;
+  RightSWeaponSkillHits = 20;
+  PanicLevel = 50;
+  FleshMaterial = KABOUTER_FLESH;
+  DeathMessage = "@Dd dies with a yelp.";
+  AttachedGod = ATAVUS;
+  WieldedPosition = 2, 1;
+  Inventory = { 1, wand(WAND_OF_SLOW);}
+  FireResistance = 10;
+  ElectricityResistance = 10;
+  EnergyResistance = 10;
+  UndeadVersions = false;
+  RightBoot = BLACK_LEATHER boot { Enchantment = 1; }
+  Helmet = BLACK_LEATHER belt { Enchantment = 1; }
+  ClassStates = GAS_IMMUNITY|INFRA_VISION;
+}

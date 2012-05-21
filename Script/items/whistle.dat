@@ -1,0 +1,16 @@
+whistle
+{
+  Possibility = 50;
+  Category = TOOL;
+  DefaultMainVolume = 50;
+  StrengthModifier = 50;
+  BitmapPos = 0, 416;
+  FormModifier = 25;
+  DefaultSize = 30;
+  NameSingular = "whistle";
+  MainMaterialConfig == TIN;
+  Roundness = 10;
+  Price = 25;
+  AttachedGod = DULCIS;
+  WieldedBitmapPos = 160, 368;
+}

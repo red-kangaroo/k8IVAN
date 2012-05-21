@@ -1,0 +1,26 @@
+cauldron /* materialcontainer-> */
+{
+  Possibility = 0;
+  Category = POTION;
+  StrengthModifier = 350;
+  DefaultSize = 150;
+  DefaultMainVolume = 800000;
+  WeaponCategory = BLUNT_WEAPONS;
+  /*Category = POTION;*/
+  DefaultSecondaryVolume = 26000;
+  BitmapPos = 32, 432;
+  /*FormModifier = 25;*/
+  NameSingular = "cauldron";
+  MainMaterialConfig == COPPER;
+  SecondaryMaterialConfig = { 11, WATER, HEALING_LIQUID, OMMEL_URINE, POISON_LIQUID, VALDEMAR, ANTIDOTE_LIQUID, VODKA, TROLL_BLOOD, OMMEL_SWEAT, OMMEL_TEARS, SULPHURIC_ACID; }
+  MaterialConfigChances = { 11, 75, 50, 5, 50, 2, 10, 5, 25, 5, 5, 25; }
+  Roundness = 100;
+  CanBeBroken = false;
+  AttachedGod = NONE;
+  WieldedBitmapPos = 176, 144;
+  IsValuable = false;
+  TeleportPriority = 200;
+  ThrowItemTypes = THROW_POTION;
+  CanBeGeneratedInContainer = false;
+  CanBePickedUp = false;
+}

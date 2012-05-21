@@ -1,0 +1,57 @@
+mysticfrog
+{
+  DefaultArmStrength = 10;
+  DefaultAgility = 25;
+  DefaultEndurance = 12;
+  DefaultPerception = 18;
+  DefaultMana = 40;
+  BaseBiteStrength = 1000;
+  TotalVolume = 30000;
+  TorsoBitmapPos = 96, 0;
+  TotalSize = 50;
+  CWeaponSkillHits == 100;
+  IsPolymorphable = false;
+  IsAbstract = true;
+  ScienceTalkPossibility = 100;
+  CanChoke = false;
+
+  Config DARK;
+  {
+    DefaultIntelligence = 35;
+    DefaultWisdom = 25;
+    DefaultCharisma = 6;
+    BloodMaterial = DARK_FROG_BLOOD;
+    SkinColor = rgb16(60, 60, 60);
+    Adjective = "mystic dark";
+    CanBeGenerated = true;
+    ClassStates = INFRA_VISION|TELEPORT_CONTROL|INVISIBLE|ESP;
+    AttachedGod = INFUSCOR;
+    IgnoreDanger = true;
+    HPRequirementForGeneration = 400;
+    DayRequirementForGeneration = 40;
+    Frequency = 250;
+    PolymorphIntelligenceRequirement = 25;
+    ScienceTalkIntelligenceModifier = 100;
+    ScienceTalkWisdomModifier = 50;
+    ScienceTalkIntelligenceRequirement = 25;
+    ScienceTalkWisdomRequirement = 15;
+    FriendlyReplies == "@Dd croaks happily.";
+    IsCatacombCreature = true;
+  }
+
+  Config LIGHT;
+  {
+    DefaultIntelligence = 25;
+    DefaultWisdom = 35;
+    DefaultCharisma = 30;
+    SkinColor = rgb16(32, 88, 32);
+    Adjective = "mystic light";
+    ClassStates = TELEPORT_CONTROL|INVISIBLE|ESP;
+    AttachedGod = VALPURUS;
+    PolymorphIntelligenceRequirement = 15;
+    ScienceTalkIntelligenceModifier = 25;
+    ScienceTalkWisdomModifier = 50;
+    ScienceTalkIntelligenceRequirement = 20;
+    ScienceTalkWisdomRequirement = 30;
+  }
+}

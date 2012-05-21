@@ -1,0 +1,44 @@
+genefourxvesana
+{
+  DefaultArmStrength = 32;
+  DefaultAgility = 16;
+  DefaultEndurance = 20;
+  DefaultPerception = 32;
+  DefaultIntelligence = 24;
+  DefaultWisdom = 16;
+  DefaultCharisma = 3;
+  DefaultMana = 0;
+  TotalVolume = 60000;
+  TorsoBitmapPos = 128, 64;
+  TotalSize = 350;
+  Adjective = "grandmother carnivorous";
+  NameSingular = "mutant plant";
+  DefaultName = "genefourx vesana";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 1600;
+  SkinColor = rgb16(111, 64, 37);
+  TorsoMainColor = rgb16(0, 160, 0); /* the leaves */
+  TorsoSpecialColor = rgb16(220, 0, 0);
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 100;
+  PanicLevel = 0;
+  TamingDifficulty = NO_TAMING;
+  IsNameable = false;
+  IsUnique = true;
+  DeathMessage = "@Dd is brutally destroyed.";
+  BaseEmitation = rgb24(140, 100, 100);
+  FleshMaterial = MUTANT_PLANT_FIBER;
+  AttachedGod = SCABIES;
+  IsPlant = true;
+  CanOpen = false;
+  HostileReplies == "@Dd produces a gutteral roaring noise.";
+  FriendlyReplies == "@Dd produces a gutteral purring noise.";
+  ClassStates = INFRA_VISION;
+  HasALeg = false;
+  SpillsBlood = false;
+  Sweats = false;
+  StandVerb = "rooted";
+  IsRooted = true;
+  AllowUnconsciousness = false;
+  Sex = FEMALE;
+}

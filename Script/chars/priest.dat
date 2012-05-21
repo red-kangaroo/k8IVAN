@@ -1,0 +1,160 @@
+priest
+{
+  CanRead = true;
+  NameSingular = "priest";
+  CanBeCloned = false;
+  TamingDifficulty = NO_TAMING;
+  MoveType = WALK|SWIM;
+  IsAbstract = true;
+  Inventory == potion { Times = 2; SecondaryMaterial = ANTIDOTE_LIQUID; }
+
+  Config CLEPTIA;
+  {
+    DefaultArmStrength = 15;
+    DefaultLegStrength = 20;
+    DefaultDexterity = 15;
+    DefaultAgility = 15;
+    DefaultEndurance = 15;
+    DefaultPerception = 24;
+    DefaultIntelligence = 15;
+    DefaultWisdom = 25;
+    DefaultCharisma = 20;
+    DefaultMana = 20;
+    HeadBitmapPos = 112, 271;
+    TorsoBitmapPos = 48, 224;
+    ArmBitmapPos = 80, 64;
+    LegBitmapPos = 16, 160;
+    ClothColor = rgb16(50, 50, 50);
+    TotalVolume = 100000;
+    TotalSize = 180;
+    AttachedGod = CLEPTIA;
+    PostFix = "of Cleptia";
+    Helmet = HARDENED_LEATHER helmet { Enchantment = 2; }
+    BodyArmor = HARDENED_LEATHER bodyarmor(CHAIN_MAIL) { Enchantment = 2; }
+    Cloak = OMMEL_HAIR cloak { Enchantment = 2; }
+    Belt = OMMEL_HAIR belt { Enchantment = 2; }
+    RightWielded = OCTIRON meleeweapon(MACE) { Enchantment = 3; }
+    RightGauntlet = OMMEL_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = OMMEL_HAIR boot { Enchantment = 2; }
+    KnownCWeaponSkills == BLUNT_WEAPONS;
+    CWeaponSkillHits == 50;
+    RightSWeaponSkillHits = 20;
+    FriendlyReplies == "@Dd talks to you: \"They say the avatar of Cleptia is a guy named Sparrow Hat.\"";
+  }
+
+  Config SILVA;
+  {
+    DefaultArmStrength = 10;
+    DefaultLegStrength = 10;
+    DefaultDexterity = 15;
+    DefaultAgility = 10;
+    DefaultEndurance = 10;
+    DefaultPerception = 24;
+    DefaultIntelligence = 20;
+    DefaultWisdom = 35;
+    DefaultCharisma = 30;
+    DefaultMana = 25;
+    TotalVolume = 60000;
+    TotalSize = 170;
+    HeadBitmapPos = 112, 0;
+    TorsoBitmapPos = 32, 208;
+    ArmBitmapPos = 64, 208;
+    LegBitmapPos = 0, 144;
+    SkinColor = rgb16(160, 100, 64);
+    HairColor = rgb16(80, 48, 32);
+    AttachedGod = SILVA;
+    NameSingular = "priestess";
+    PostFix = "of Silva";
+    Sex = FEMALE;
+    Cloak = NYMPH_HAIR cloak;
+    RightWielded = EBONY_WOOD EBONY_WOOD meleeweapon(QUARTER_STAFF) { Enchantment = 1; }
+    KnownCWeaponSkills == BLUNT_WEAPONS;
+    CWeaponSkillHits == 50;
+    RightSWeaponSkillHits = 20;
+    FriendlyReplies =
+    {
+      4,
+      "\"Silva is the goddess of nature, who protects all living things. Her earthly manifestation, located in the elven nation of Lunethia, is a giant holy tree which reaches the clouds.\"",
+      "\"In the old temple we had a marvellous altar carved from a branch of Silva Herself, but Decos made firewood out of it.\"",
+      "\"You cannot contact any god unless you know the right rituals. Alas, I'm unable to teach you any, since after the invasion the Attnamese forbade us to officially worship any god save Valpurus. I can therefore only help you as a healer.\"",
+      "\"With my holy powers, I'm capable of reattaching severed limbs and removing various diseases and poisons. For a price, of course. Should I not bring enough income to the colony, the occupiers would make me a banana grower, too.\"";
+    }
+    AutomaticallySeen = true;
+  }
+
+  Config SOLICITU;
+  {
+    DefaultArmStrength = 15;
+    DefaultLegStrength = 20;
+    DefaultDexterity = 10;
+    DefaultAgility = 10;
+    DefaultEndurance = 15;
+    DefaultPerception = 24;
+    DefaultIntelligence = 15;
+    DefaultWisdom = 25;
+    DefaultCharisma = 20;
+    DefaultMana = 20;
+    CapColor = rgb16(180, 0, 80);
+    HeadBitmapPos = 96, 128;
+    TorsoBitmapPos = 32, 16;
+    ArmBitmapPos = 64, 16;
+    LegBitmapPos = 0, 32;
+    TotalVolume = 100000;
+    TotalSize = 180;
+    AttachedGod = LORICATUS;
+    PostFix = "of Solicitus";
+    Helmet = TIN helmet { Enchantment = 2; }
+    BodyArmor = COPPER bodyarmor(CHAIN_MAIL) { Enchantment = 2; }
+    Cloak = LEATHER cloak { Enchantment = 1; }
+    Belt = LEATHER belt { Enchantment = 1; }
+    RightWielded = CITRINE meleeweapon(AXE) { Enchantment = 2; }
+    RightGauntlet = LEATHER gauntlet { Enchantment = 1; }
+    RightBoot = LEATHER boot { Enchantment = 1; }
+    KnownCWeaponSkills == AXES;
+    CWeaponSkillHits == 50;
+    RightSWeaponSkillHits = 20;
+    FriendlyReplies =
+    {
+      5,
+      "@Dd explains: \"Solicitus, the toppled-god of Stress and Hopeless Situations was once an illustrious member of the blessed Pantheon. Alas, he wrote his Celestial Monograph on athiesm and the other gods cast him out.\"",
+      "\"If you devote yourself to my god Solicitus, he might just give you a copy of his Monograph! Neat huh? You should probably draw some liquid fear from the fountain first though.\"",
+      "\"I don't bother with fancy clothes, seeing as Insudo uses me for target practice...\"",
+      "\"Becoming Solicitus' Champion is not as complicated as it seems. You just have to ask him. I wouldn't exactly jump at the chance though, in fact I'd rather swallow a dead dark frog.\"",
+      "\"I agree, being a devout priest of a toppled-god who is himself an atheist, is a dubious vocation. But hey, at least I'm unique in this world!\"";
+    }
+  }
+
+  Config VALPURUS;
+  {
+    DefaultArmStrength = 15;
+    DefaultLegStrength = 20;
+    DefaultDexterity = 10;
+    DefaultAgility = 10;
+    DefaultEndurance = 15;
+    DefaultPerception = 24;
+    DefaultIntelligence = 15;
+    DefaultWisdom = 25;
+    DefaultCharisma = 20;
+    DefaultMana = 20;
+    CapColor = rgb16(180, 0, 80);
+    HeadBitmapPos = 96, 128;
+    TorsoBitmapPos = 32, 16;
+    ArmBitmapPos = 64, 16;
+    LegBitmapPos = 0, 32;
+    TotalVolume = 100000;
+    TotalSize = 180;
+    AttachedGod = VALPURUS;
+    PostFix = "of Valpurus";
+    Helmet = MITHRIL helmet { Enchantment = 2; }
+    BodyArmor = MITHRIL bodyarmor(CHAIN_MAIL) { Enchantment = 2; }
+    Cloak = NYMPH_HAIR cloak { Enchantment = 2; }
+    Belt = NYMPH_HAIR belt { Enchantment = 2; }
+    RightWielded = ARCANITE meleeweapon(MACE) { Enchantment = 3; }
+    RightGauntlet = NYMPH_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = NYMPH_HAIR boot { Enchantment = 2; }
+    KnownCWeaponSkills == BLUNT_WEAPONS;
+    CWeaponSkillHits == 50;
+    RightSWeaponSkillHits = 20;
+    FriendlyReplies == "@Dd talks to you: \"Valpurus the Great Frog is the highest of all gods. The Wise know that the world is really a square pancake which He carries on His back. This is why this Cathedral and the whole city of Attnam is dedicated to His worship.\" \"In thy prayers thou must understand He is a busy god who knows His importance. He will not help newbies. Thou shouldst only pray Him when He hath called thee a Champion!\"";
+  }
+}

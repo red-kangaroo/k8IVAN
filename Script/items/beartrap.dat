@@ -1,0 +1,29 @@
+beartrap
+{
+  MainMaterialConfig == IRON;
+  NameSingular = "bear trap";
+  Possibility = 100;
+  /* Program overrides BitmapPos always */
+  IsTwoHanded = true;
+  DefaultSize = 50;
+  DefaultMainVolume = 500;
+  FormModifier = 30;
+  Roundness = 30;
+  Price = 25;
+  CanBePiled = false;
+  CanBeBroken = true;
+  AttachedGod = CRUENTUS;
+  WieldedBitmapPos = 160, 128;
+  IsPolymorphable = false;
+  MainMaterialConfig = { 7, COPPER, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+  MaterialConfigChances = { 7, 200, 300, 500, 100, 50, 25, 1; }
+
+  Config BROKEN;
+  {
+    Possibility = 10;
+    BitmapPos = 48, 48;
+    Price = 0;
+    MainMaterialConfig = { 4, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    MaterialConfigChances = { 4, 100, 50, 25, 1; }
+  }
+}

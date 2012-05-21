@@ -1,0 +1,67 @@
+bunny
+{
+  DefaultEndurance = 16;
+  DefaultPerception = 18;
+  DefaultIntelligence = 10;
+  DefaultWisdom = 6;
+  DefaultCharisma = 10;
+  DefaultMana = 0;
+  TorsoBitmapPos = 160, 0;
+  HostileReplies == "@Dd squeals furiously.";
+  FriendlyReplies == "@Dd squeals happily.";
+  SkinColor = rgb16(90, 70, 60);
+  NameSingular = "bunny";
+  NamePlural = "bunnies";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 650;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  FleshMaterial = MUTANT_BUNNY_FLESH;
+  AttachedGod = SILVA;
+  IsAbstract = true;
+  CanOpen = false;
+  BloodMaterial = GLOWING_BLOOD;
+
+  Config ADULT_FEMALE;
+  {
+    Adjective = "adult female carnivorous mutant";
+    TotalVolume = 35000;
+    TorsoBitmapPos = 160, 0;
+    DefaultArmStrength = 8;
+    DefaultAgility = 30;
+    TotalSize = 45;
+  }
+
+  Config ADULT_MALE;
+  {
+    Adjective = "adult male carnivorous mutant";
+    TotalVolume = 40000;
+    TorsoBitmapPos = 160, 0;
+    DefaultArmStrength = 16;
+    DefaultAgility = 20;
+    TotalSize = 50;
+  }
+
+  Config BABY_FEMALE;
+  {
+    Adjective = "young female carnivorous mutant";
+    TotalVolume = 17500;
+    AttributeBonus = -50;
+    TorsoBitmapPos = 144, 0;
+    DefaultArmStrength = 4;
+    DefaultAgility = 15;
+    TotalSize = 90;
+  }
+
+  Config BABY_MALE;
+  {
+    Adjective = "young male carnivorous mutant";
+    TotalVolume = 20000;
+    AttributeBonus = -50;
+    TorsoBitmapPos = 144, 0;
+    DefaultArmStrength = 8;
+    DefaultAgility = 10;
+    TotalSize = 100;
+  }
+}

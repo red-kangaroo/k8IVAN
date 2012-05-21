@@ -1,0 +1,82 @@
+communist /* Ivan */
+{
+  DefaultArmStrength = 40;
+  DefaultLegStrength = 40;
+  DefaultDexterity = 20;
+  DefaultAgility = 20;
+  DefaultEndurance = 30;
+  DefaultPerception = 18;
+  DefaultIntelligence = 7;
+  DefaultWisdom = 6;
+  DefaultCharisma = 10;
+  DefaultMana = 5;
+  CriticalModifier = 4;
+  IsNameable = false;
+  ArmSpecialColor = rgb16(160, 0, 0);
+  BeltColor = rgb16(32, 32, 32);
+  ClothColor = rgb16(64, 56, 24);
+  HeadBitmapPos = 96, 176;
+  TorsoBitmapPos = 32, 144;
+  ArmBitmapPos = 64, 112;
+  LegBitmapPos = 0, 0;
+  TotalVolume = 120000;
+  TotalSize = 230;
+  CanRead = true;
+  NameSingular = "communist";
+  Alias == "Ivan";
+  ClassStates = INFRA_VISION;
+  Helmet = helmet(GOROVITS_FAMILY_GAS_MASK);
+  Cloak = OMMEL_HAIR cloak(CLOAK_OF_ELECTRICITY_RESISTANCE) { Enchantment = 2; }
+  BodyArmor = STEEL bodyarmor(PLATE_MAIL) { Enchantment = 2; }
+  Belt = TROLL_HIDE belt { Enchantment = 2; }
+  RightWielded = gorovitsweapon(GOROVITS_HAMMER);
+  LeftWielded = gorovitsweapon(GOROVITS_SICKLE);
+  RightRing = ring(RING_OF_FIRE_RESISTANCE);
+  LeftRing = ring(RING_OF_POISON_RESISTANCE);
+  KnownCWeaponSkills = { 5, UNARMED, SMALL_SWORDS, BLUNT_WEAPONS, AXES, POLE_ARMS; }
+  CWeaponSkillHits = { 5, 100, 200, 200, 100, 100; }
+  RightSWeaponSkillHits = 100;
+  LeftSWeaponSkillHits = 100;
+  RightGauntlet = PHOENIX_FEATHER gauntlet { Enchantment = 2; }
+  RightBoot = STEEL boot(BOOT_OF_AGILITY) { Enchantment = 2; }
+  PanicLevel = 33;
+  Inventory = { 3, lantern, fiftymillionroubles, potion { SecondaryMaterial = VODKA; Times = 5; } }
+  IsUnique = true;
+  CanBeWished = true;
+  DefaultName = "Ivan";
+  DeathMessage = "@Dd falls groaning bravely: \"Party revenges @nu\"!";
+  HostileReplies == "\"You capitalist! Lenin want @nu kill capitalists!\"";
+  FriendlyReplies =
+  {
+    11,
+    "\"Da, @nu like killing.\"",
+    "\"@Nu ruski specialist.\"",
+    "\"@Nu work. Else @nu nerve stapled.\"",
+    "\"Party mean big weapons. @Nu like big weapons. @Nu kill for Party.\"",
+    "\"CCCP roxxx.\"",
+    "\"@Nu like throw Ladas. You want compete?\"",
+    "\"Why AK not invented?\"",
+    "\"@Nu buy kyber eyes. @Nu see in dark.\"",
+    "\"Uncle Lenin live in Russia. Lenin strong guy. @Nu like.\"",
+    "\"Vodka strong, meat rotten.\"",
+    "\"Vladimir @nu best buddy. @Nu meet Vladimir first in magic test area near Voktsovadil.\"";
+  }
+  AttachedGod = LORICATUS;
+  ConstantCommandFlags = FLEE_FROM_ENEMIES;
+  IsEnormous = true;
+  ScienceTalkName =
+  {
+    21,
+    "materialism", "marxism", "leninism", "stalinism", "socialism",
+    "castroism", "maoism", "trotskyism", "anticapitalism", "agriculture",
+    "communism", "atheism", "hoxhaism", "class struggles", "socialist art",
+    "communitarianism", "bolshevism", "sickle smithing", "ballistics", "weaponry",
+    "vodka distillation";
+  }
+  ScienceTalkPossibility = 25;
+  ScienceTalkIntelligenceModifier = 10;
+  ScienceTalkWisdomModifier = 25;
+  ScienceTalkIntelligenceRequirement = 3;
+  ScienceTalkWisdomRequirement = 3;
+  IsAlcoholic = true;
+}

@@ -1,0 +1,10 @@
+scrollofcharging /* scroll-> */
+{
+  Possibility = 25;
+  Price = 500;
+  PostFix = "of charging";
+  CanBeCloned = false;
+  IsPolymorphSpawnable = false;
+  AttachedGod = SOPHOS;
+  ReadDifficulty = 500;
+}

@@ -1,0 +1,30 @@
+eptyron /* meleeweapon-> */
+{
+  DefaultSize = 100;
+  Possibility = 0;
+  WeaponCategory = AXES;
+  DefaultMainVolume = 150;
+  DefaultSecondaryVolume = 400;
+  BitmapPos = 16, 256;
+  FormModifier = 100;
+  StrengthModifier = 100;
+  Adjective = "blasphemous";
+  ArticleMode = FORCE_THE;
+  NameSingular = "axe";
+  PostFix = "named Eptyron";
+  MainMaterialConfig = { 7, LEAD, TIN, COPPER, BRONZE, IRON, STEEL, MITHRIL; }
+  SecondaryMaterialConfig = { 7, BIRCH_WOOD, OAK_WOOD, TEAK_WOOD, EBONY_WOOD, BRONZE, IRON, STEEL; }
+  MaterialConfigChances = { 7, 500, 1000, 750, 100, 25, 25, 5; }
+  Roundness = 15;
+  IsTwoHanded = true;
+  Alias == "Eptyron";
+  Price = 250;
+  AttachedGod = LORICATUS;
+  WieldedBitmapPos = 160, 176;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH;
+  CanBeBroken = false;
+  BaseEmitation = rgb24(100, 140, 100);
+
+/*
+}

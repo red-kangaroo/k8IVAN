@@ -1,0 +1,67 @@
+femaleslave
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 10;
+  DefaultDexterity = 10;
+  DefaultAgility = 10;
+  DefaultEndurance = 10;
+  DefaultPerception = 18;
+  DefaultIntelligence = 15;
+  DefaultWisdom = 25;
+  DefaultCharisma = 25;
+  DefaultMana = 5;
+  Sex = FEMALE;
+  SkinColor = rgb16(160, 100, 64);
+  HairColor = rgb16(80, 48, 32);
+  HeadBitmapPos = 112, 80;
+  TorsoBitmapPos = 32, 208;
+  ArmBitmapPos = 64, 208;
+  LegBitmapPos = 0, 144;
+  TotalVolume = 40000;
+  TotalSize = 170;
+  Adjective = "female";
+  RightWielded = palmbranch;
+  BaseUnarmedStrength = 200;
+  HostileReplies == "\"Yikes!\"";
+  IsAbstract = true;
+  IsExtraCoward = true;
+  CanRead = true;
+
+  Config ATTNAM;
+  {
+    NameSingular = "slave";
+    AttachedGod = MELLIS;
+    FriendlyReplies =
+    {
+      5,
+      "\"Praise our lord Petrus!\"",
+      "\"Does that toy frog really need us serving it?\"",
+      "\"I'm not a slave. I'm a high-ranking palm branch officer with a good career history.\"",
+      "\"I can tell you, serving Petrus is much more fun than pleasing that Decos bastard.\"",
+      "\"You seem oddly familiar. Oh! Isn't that the monkey smell of my home village!\"";
+    }
+  }
+
+  Config NEW_ATTNAM;
+  {
+    DefaultAgility = 15;
+    DefaultEndurance = 15;
+    DefaultIntelligence = 20;
+    DefaultWisdom = 30;
+    DefaultCharisma = 20;
+    NameSingular = "servant";
+    AttachedGod = SEGES;
+    FriendlyReplies =
+    {
+      7, /* 4 first are used before revolution */
+      "\"Thank Silva I don't have to gather bananas!\"",
+      "\"My sister got a promotion last year. I've heard she is now a very successful slave in the Cathedral of Attnam. I am so jealous!\"",
+      "\"Palm leaves are good for health. Mr. Decos loves their smell.\"",
+      "\"When I was a highly educated doctor in independent Tweraif, I didn't have to wear stupid bikinis all day long.\"",
+      "\"Our hero!\" @Dd shouts as @pp hugs you. \"Aargh! Go away, you're all sweaty and bloody!\"",
+      "\"Don't tell me you need a palm leaf expert, too.\"",
+      "\"Now it's my sister's turn to be jealous!\"";
+    }
+    AutomaticallySeen = true;
+  }
+}

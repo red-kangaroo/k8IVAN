@@ -1,0 +1,30 @@
+weepblade
+{
+  DefaultSize = 70;
+  Possibility = 10; /* CLIVAN: 0 */
+  WeaponCategory = SMALL_SWORDS;
+  DefaultMainVolume = 70;
+  DefaultSecondaryVolume = 30;
+  BitmapPos = 48, 240;
+  FormModifier = 80;
+  StrengthModifier = 90;
+  NameSingular = "blade";
+  Adjective = "weeping";
+  MainMaterialConfig = {6, MILKY_QUARTZ, QUARTZITE, ROSE_QUARTZ, PURPLE_CRYSTAL, BLUE_CRYSTAL, GREEN_CRYSTAL; }
+  SecondaryMaterialConfig = {6, MILKY_QUARTZ, QUARTZITE, ROSE_QUARTZ, PURPLE_CRYSTAL, BLUE_CRYSTAL, GREEN_CRYSTAL; }
+  MaterialConfigChances = {6, 420, 390, 364, 210, 195, 182; }
+  Roundness = 10;
+  Price = 250;
+  AttachedGod = SCABIES;
+  WieldedBitmapPos = 160, 16;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH|PIERCE;
+
+  Config BROKEN;
+  {
+    Possibility = 10; /* CLIVAN: 0 */
+    BitmapPos = 48, 272;
+    WieldedBitmapPos = 176, 208;
+    EnchantmentPlusChance = 4;
+  }
+}

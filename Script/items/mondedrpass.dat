@@ -1,0 +1,12 @@
+mondedrpass /* scroll-> */
+{
+  Adjective = "mondedr";
+  NameSingular = "pass";
+  IsDestroyable = false;
+  IsMaterialChangeable = false;
+  IsPolymorphable = false;
+  CanBeCloned = false;
+  AttachedGod = CLEPTIA;
+  Price = 2000;
+  Possibility = 10;
+}

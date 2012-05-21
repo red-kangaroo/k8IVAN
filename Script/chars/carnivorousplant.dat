@@ -1,0 +1,93 @@
+carnivorousplant
+{
+  DefaultArmStrength = 4;
+  DefaultAgility = 2;
+  DefaultEndurance = 7;
+  DefaultPerception = 6;
+  DefaultIntelligence = 3;
+  DefaultWisdom = 2;
+  DefaultCharisma = 3;
+  DefaultMana = 0;
+  CanOpen = false;
+  TotalVolume = 20000;
+  TorsoBitmapPos = 0, 16;
+  HostileReplies == "@Dd is silent.";
+  FriendlyReplies == "@Dd is silent.";
+  TotalSize = 100;
+  Adjective = "carnivorous";
+  NameSingular = "plant";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 300;
+  SkinColor = rgb16(111, 64, 37);
+  TorsoMainColor = rgb16(0, 160, 0); /* the leaves */
+  /* TorsoSpecialColor (the flower) is random */
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  PanicLevel = 0;
+  ClassStates = INFRA_VISION;
+  HasALeg = false;
+  FleshMaterial = PLANT_FIBER;
+  DeathMessage = "@Dd is destroyed.";
+  SpillsBlood = false;
+  Sweats = false;
+  StandVerb = "rooted";
+  AttachedGod = SILVA;
+  IsPlant = true;
+  IsRooted = true;
+  AllowUnconsciousness = false;
+  CanChoke = false;
+
+  Config GIANTIC;
+  {
+    AttributeBonus = 250;
+    TorsoBitmapPos = 80, 16;
+    Adjective = "giant carnivorous";
+    BaseBiteStrength = 700;
+    CWeaponSkillHits == 100;
+    TotalVolume = 40000;
+    TotalSize = 250;
+    IsEnormous = true;
+  }
+
+  Config GREATER;
+  {
+    AttributeBonus = 175;
+    TorsoBitmapPos = 96, 16;
+    Adjective = "greater carnivorous";
+    BaseBiteStrength = 500;
+    CWeaponSkillHits == 50;
+    TotalVolume = 30000;
+    TotalSize = 175;
+  }
+
+  Config LILY;
+  {
+    AttributeBonus = 250;
+    Adjective = "carnivorous";
+    TorsoBitmapPos = 80, 16;
+    NameSingular = "lily pad";
+    BaseBiteStrength = 1000;
+    CWeaponSkillHits == 100;
+    TotalVolume = 40000;
+    TotalSize = 250;
+    IsEnormous = true;
+    IsRooted = false;
+    MoveType = SWIM;
+    StandVerb = "sticking"; /*only used if not swimming*/
+  }
+
+  Config SHAMBLING;
+  {
+    AttributeBonus = 250;
+    Adjective = "shambling carnivorous";
+    TorsoBitmapPos = 80, 16;
+    BaseBiteStrength = 1000;
+    CWeaponSkillHits == 100;
+    TotalVolume = 40000;
+    TotalSize = 250;
+    IsEnormous = true;
+    IsRooted = false;
+    StandVerb = "skittering";
+  }
+}

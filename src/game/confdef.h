@@ -373,6 +373,7 @@
 #define GRIZZLY_BEAR 2
 #define CAVE_BEAR 3
 #define POLAR_BEAR 4
+#define PANDA_BEAR 5
 
 #define ZOMBIE_OF_KHAZ_ZADM 1
 
@@ -384,6 +385,8 @@
 #define CHIEFTAIN 1
 #define LORD 2
 #define PATRIARCH 3
+
+#define AMBULATORY 1
 
 #define GREATER 1
 #define GIANTIC 2

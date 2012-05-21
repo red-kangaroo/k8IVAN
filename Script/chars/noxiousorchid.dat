@@ -1,0 +1,66 @@
+noxiousorchid
+{
+  DefaultArmStrength = 4;
+  DefaultAgility = 2;
+  DefaultEndurance = 7;
+  DefaultPerception = 6;
+  DefaultIntelligence = 3;
+  DefaultWisdom = 2;
+  DefaultCharisma = 3;
+  DefaultMana = 0;
+  CanOpen = false;
+  TotalVolume = 20000;
+  TorsoBitmapPos = 256, 112;
+  HostileReplies == "@Dd gurgles balefully.";
+  FriendlyReplies == "@Dd gurgles pleasantly.";
+  TotalSize = 100;
+  Adjective = "noxious";
+  NameSingular = "orchid";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 300;
+  SkinColor = rgb16(0, 160, 0); /*the stalk */
+  TorsoMainColor = rgb16(218, 255, 0); /* the fluid */
+  /* TorsoSpecialColor (the flower) is random */
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  PanicLevel = 0;
+  ClassStates = INFRA_VISION;
+  HasALeg = false;
+  FleshMaterial = MUTANT_PLANT_FIBER;
+  DeathMessage = "@Dd is destroyed.";
+  SpillsBlood = false;
+  Sweats = false;
+  StandVerb = "rooted";
+  AttachedGod = SILVA;
+  IsPlant = true;
+  IsRooted = true;
+  AllowUnconsciousness = false;
+  CanChoke = false;
+  HasEyes = false;
+  HasHead = false;
+  UsesNutrition = false;
+
+  Config GIANTIC;
+  {
+    AttributeBonus = 250;
+    TorsoBitmapPos = 288, 112;
+    Adjective = "giant noxious";
+    BaseBiteStrength = 700;
+    CWeaponSkillHits == 100;
+    TotalVolume = 40000;
+    TotalSize = 250;
+    IsEnormous = true;
+  }
+
+  Config GREATER;
+  {
+    AttributeBonus = 175;
+    TorsoBitmapPos = 272, 112;
+    Adjective = "greater noxious";
+    BaseBiteStrength = 500;
+    CWeaponSkillHits == 50;
+    TotalVolume = 30000;
+    TotalSize = 175;
+  }
+}

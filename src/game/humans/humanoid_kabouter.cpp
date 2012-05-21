@@ -14,7 +14,7 @@ protected:
   int GetSpellAPCost () const;
 
 protected:
-  ulong LastTamed;
+  feuLong LastTamed;
 };
 
 

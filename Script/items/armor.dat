@@ -1,0 +1,6 @@
+armor
+{
+  IsAbstract = true;
+  CanBePiled = false;
+  CanBeEnchanted = true;
+}

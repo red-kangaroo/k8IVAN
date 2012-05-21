@@ -71,3 +71,10 @@
 #include "humans/humanoid_alchemist.cpp"
 #include "humans/humanoid_doctor.cpp"
 #include "humans/humanoid_vampire.cpp"
+
+#include "humans/humanoid_morbe.cpp"
+#include "humans/humanoid_forestman.cpp"
+#include "humans/humanoid_kabouter.cpp"
+#include "humans/humanoid_regii.cpp"
+#include "humans/humanoid_uldra.cpp"
+#include "humans/humanoid_UTFAOfficial.cpp"

@@ -1,0 +1,59 @@
+key
+{
+  /* Bug: CreateLockConfigurations = true before key doesn't work! */
+  DefaultSize = 10;
+  Possibility = 0;
+  Price = 50;
+  Category = TOOL;
+  DefaultMainVolume = 15;
+  StrengthModifier = 50;
+  BitmapPos = 16, 416;
+  FormModifier = 30;
+  NameSingular = "key";
+  MainMaterialConfig == BRONZE;
+  Roundness = 10;
+  AttachedGod = LORICATUS;
+  WieldedBitmapPos = 160, 368;
+  IsAbstract = true;
+
+  Config HEART_SHAPED_LOCK;
+  {
+    MainMaterialConfig == GOLD;
+    Adjective = "heart shaped";
+  }
+
+  Config HEXAGONAL_LOCK; {
+    Adjective = "hexagonal";
+  }
+
+  Config OCTAGONAL_LOCK;
+  {
+    MainMaterialConfig == OCTIRON;
+    UsesLongAdjectiveArticle = true;
+    Adjective = "octagonal";
+  }
+
+  Config PENTAGONAL_LOCK;
+  {
+    MainMaterialConfig == IRON;
+    Adjective = "pentagonal";
+  }
+
+  Config ROUND_LOCK;
+  {
+    Adjective = "round";
+    Possibility = 25;
+  }
+
+  Config SQUARE_LOCK;
+  {
+    Adjective = "square";
+    Possibility = 25;
+  }
+
+  Config TRIANGULAR_LOCK;
+  {
+    Adjective = "triangular";
+    Possibility = 25;
+  }
+}

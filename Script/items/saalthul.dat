@@ -1,0 +1,37 @@
+saalthul
+{
+  DefaultSize = 70;
+  Possibility = 1;
+  WeaponCategory = SMALL_SWORDS;
+  DefaultMainVolume = 60;
+  DefaultSecondaryVolume = 20;
+  BitmapPos = 48, 240;
+  FormModifier = 190; /* CLIVAN; old: 200 */
+  StrengthModifier = 135;
+  Adjective = "short";
+  NameSingular = "sword";
+  PostFix = "named Saal'thul";
+  MainMaterialConfig == MITHRIL;
+  SecondaryMaterialConfig == MITHRIL;
+  Roundness = 10;
+  Price = 500;
+  GearStates = INVISIBLE;
+  ArticleMode = FORCE_THE;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  Alias == "Saal'thul";
+  AttachedGod = CLEPTIA;
+  WieldedBitmapPos = 160, 32;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH|PIERCE;
+
+  Config BROKEN;
+  {
+    Possibility = 0; /* CLIVAN; old: 2 */
+    BitmapPos = 48, 272;
+    Price = 100;
+    GearStates = 0;
+    WieldedBitmapPos = 176, 208;
+    EnchantmentPlusChance = 4;
+  }
+}

@@ -1,0 +1,16 @@
+locationmap
+{
+  Category = SCROLL;
+  DefaultMainVolume = 250;
+  StrengthModifier = 25;
+  BitmapPos = 32, 448;
+  FormModifier = 20;
+  DefaultSize = 30;
+  NameSingular = "map";
+  MainMaterialConfig == PARCHMENT;
+  IsAbstract = true;
+  Roundness = 15;
+  WieldedBitmapPos = 176, 144;
+  AllowEquip = false;
+  TeleportPriority = 300;
+}

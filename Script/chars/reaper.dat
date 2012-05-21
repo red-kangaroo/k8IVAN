@@ -1,0 +1,52 @@
+reaper
+{
+  DefaultArmStrength = 20;
+  DefaultLegStrength = 20; /* not used */
+  DefaultDexterity = 25;
+  DefaultAgility = 50;
+  DefaultEndurance = 15;
+  DefaultPerception = 18;
+  DefaultIntelligence = 20;
+  DefaultWisdom = 25;
+  DefaultCharisma = 10;
+  DefaultMana = 50;
+  StandVerb = "floating";
+  TotalVolume = 200000;
+  TotalSize = 250;
+  CanRead = true;
+  NameSingular = "reaper";
+  ClothColor = rgb16(100, 100, 160);
+  HeadBitmapPos = 96, 95;
+  TorsoBitmapPos = 32, 272;
+  ArmBitmapPos = 64, 272;
+  /* LegBitmapPos is not used */
+  KnownCWeaponSkills == POLE_ARMS;
+  CWeaponSkillHits == 500;
+  RightSWeaponSkillHits = 200;
+  PanicLevel = 0;
+  BaseEmitation = rgb24(110, 110, 130);
+  HostileReplies == "\"I'm an invitation Mortifer personally sent!\"";
+  //FriendlyReplies == "\"You know, I've been on both sides; Mortifer is more of a party man but Valpurus is really boring. \"";
+  FriendlyReplies == "\"You know, I've been on both sides. Mortifer is a party god but Valpurus is too boring to hang around. \"";
+  // CLIVAN; old -- Belt = SPIDER_SILK belt;
+  FleshMaterial = BONE;
+  DeathMessage = "@Dd vanishes from existence.";
+  SpillsBlood = false;
+  Sweats = false;
+  AttachedGod = MORTIFER;
+  BodyPartsDisappearWhenSevered = true;
+  ClassStates = GAS_IMMUNITY|LEVITATION;
+  WieldedPosition = -1, -3;
+  CanChoke = false;
+  IsImmuneToStickiness = true;
+  UndeadVersions = false;
+  RightWielded = meleeweapon(SCYTHE);
+  IsCatacombCreature = true;
+  Frequency = 1000;
+  SkinColor = rgb16(160, 160, 160);
+  EyeColor = rgb16(0, 0, 0);
+  TorsoMainColor = rgb16(0, 0, 0);
+  LegMainColor = rgb16(160,160,160);
+  ArmMainColor = rgb16(0, 0, 0);
+  CanBeGenerated = true; // CLIVAN
+}

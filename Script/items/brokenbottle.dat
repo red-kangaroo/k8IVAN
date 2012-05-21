@@ -1,0 +1,19 @@
+brokenbottle /* cannot contain anything, so NOT bottle-> */
+{
+  DefaultSize = 10;
+  Possibility = 100;
+  Category = MISC;
+  DefaultMainVolume = 60;
+  StrengthModifier = 50;
+  BitmapPos = 16, 160;
+  FormModifier = 50;
+  NameSingular = "bottle";
+  Adjective = "broken";
+  MainMaterialConfig == GLASS;
+  Roundness = 70;
+  AttachedGod = NEFAS;
+  WieldedBitmapPos = 160, 128;
+  IsValuable = false;
+  DamageFlags = PIERCE;
+  IsSadistWeapon = true;
+}

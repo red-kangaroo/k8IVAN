@@ -1,0 +1,23 @@
+headofelpuri /* cannot wear helmet etc, so NOT head-> */
+{
+  Possibility = 0;
+  CanBeWished = false;
+  DefaultSize = 60;
+  IsDestroyable = false;
+  Category = MISC;
+  StrengthModifier = 150;
+  FormModifier = 15;
+  BitmapPos = 16, 0;
+  DefaultMainVolume = 25000;
+  NameSingular = "head";
+  PostFix = "of Elpuri";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == ELPURI_FLESH;
+  IsPolymorphable = false;
+  Roundness = 80;
+  IsTwoHanded = true;
+  CanBeCloned = false;
+  AttachedGod = SCABIES;
+  WieldedBitmapPos = 160, 144;
+  IsQuestItem = true;
+}

@@ -1,0 +1,38 @@
+haastseagle
+{
+  DefaultArmStrength = 60;
+  DefaultAgility = 30;
+  DefaultEndurance = 25;
+  DefaultPerception = 30;
+  DefaultIntelligence = 10;
+  DefaultWisdom = 7;
+  DefaultCharisma = 5;
+  DefaultMana = 0;
+  TorsoBitmapPos = 128, 128;
+  HostileReplies == "@Dd cries bloodcurdlingly.";
+  FriendlyReplies == "@Dd cries cheerfully.";
+  SkinColor = rgb16(128, 102, 70);
+  TorsoMainColor = rgb16(255, 255, 0);
+  TorsoSpecialColor = rgb16(148, 148, 120);
+  NameSingular = "haast's eagle";
+  Adjective = "enormous";
+  UsesLongAdjectiveArticle = true;
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 800;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 200;
+  FleshMaterial = EAGLE_FLESH;
+  AttachedGod = SILVA;
+  TotalSize = 200;
+  MoveType = FLY;
+  TotalVolume = 24000;
+  IsPolymorphable = false;
+  CanBeCloned = false;
+  StandVerb = "flying";
+  CanOpen = false;
+  CanBeGenerated = true;
+  /*ClassStates = INFRA_VISION;*/
+  BiteCapturesBodyPart = true;
+  MoveType = FLY;
+  IsCatacombCreature = false;
+}

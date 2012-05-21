@@ -1,0 +1,40 @@
+librarian
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 10;
+  DefaultDexterity = 5;
+  DefaultAgility = 5;
+  DefaultEndurance = 10;
+  DefaultPerception = 12;
+  DefaultIntelligence = 30;
+  DefaultWisdom = 15;
+  DefaultCharisma = 10;
+  DefaultMana = 20;
+  HairColor = rgb16(200, 200, 200);
+  ClothColor = rgb16(48, 48, 48);
+  ArmMainColor = rgb16(180, 180, 180);
+  HeadBitmapPos = 96, 224;
+  TorsoBitmapPos = 32, 80;
+  ArmBitmapPos = 64, 16;
+  LegBitmapPos = 0, 0;
+  TotalVolume = 80000;
+  TotalSize = 170;
+  CanRead = true;
+  NameSingular = "librarian";
+  PanicLevel = 50;
+  CanBeCloned = false;
+  DefaultMoney = 2000;
+  /* Replies depend on story state */
+  IsUnique = true;
+  IsNameable = false;
+  DefaultName = "Haathbar";
+  TamingDifficulty = NO_TAMING;
+  IsExtraCoward = true;
+  AttachedGod = SOPHOS;
+  PolymorphIntelligenceRequirement = 20;
+  ScienceTalkPossibility = 25;
+  ScienceTalkIntelligenceModifier = 100;
+  ScienceTalkWisdomModifier = 25;
+  ScienceTalkIntelligenceRequirement = 20;
+  ScienceTalkWisdomRequirement = 10;
+}

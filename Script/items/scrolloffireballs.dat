@@ -1,0 +1,11 @@
+scrolloffireballs /* scroll-> */
+{
+  Possibility = 15;
+  Price = 1000;
+  PostFix = "of fireballs";
+  Alias == "SoFB";
+  AttachedGod = LEGIFER;
+  ReadDifficulty = 1000;
+  IsPolymorphSpawnable = false;
+  CanBeCloned = false;
+}

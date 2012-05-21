@@ -1,0 +1,22 @@
+celestialmonograph /* holybook-> */
+{
+  DefaultSize = 30;
+  Possibility = 0;
+  Category = BOOK;
+  DefaultMainVolume = 2500;
+  StrengthModifier = 150;
+  BitmapPos = 80, 432;
+  FormModifier = 20;
+  Adjective = "celestial";
+  NameSingular = "monograph of Solicitus";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == PARCHMENT;
+  Price = 500;
+  Roundness = 70;
+  IsTwoHanded = true;
+  CreateDivineConfigurations = false;
+  AttachedGod = TERRA;
+  WieldedBitmapPos = 176, 144;
+  ReadDifficulty = 1500;
+  Alias == "monograph";
+}

@@ -1,0 +1,80 @@
+belt /* armor-> */
+{
+  DefaultSize = 150;
+  Possibility = 250;
+  WeaponCategory = WHIPS;
+  Category = BELT;
+  DefaultMainVolume = 250;
+  StrengthModifier = 100;
+  BitmapPos = 32, 384;
+  NameSingular = "belt";
+  MainMaterialConfig = { 4, HARDENED_LEATHER, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR; }
+  MaterialConfigChances = { 4, 1500, 500, 250, 100; }
+  Roundness = 10;
+  FormModifier = 5; /* this is multiplied by MainMaterial's flexibility */
+  WieldedBitmapPos = 160, 224;
+  BeltBitmapPos = 48, 432;
+  CanBeBroken = true;
+  EnchantmentPlusChance = 10;
+  DamageFlags = SLASH;
+  IsSadistWeapon = true;
+
+  Config BELT_OF_CARRYING;
+  {
+    Possibility = 10;
+    PostFix = "of carrying";
+    AffectsCarryingCapacity = true;
+    Price = 75;
+    BaseEnchantment = 1;
+    PriceIsProportionalToEnchantment = true;
+    AttachedGod = MELLIS;
+    MainMaterialConfig == TROLL_HIDE;
+    MaterialConfigChances == 100;
+    EnchantmentPlusChance = 2;
+  }
+
+  Config BROKEN|BELT_OF_CARRYING;
+  {
+    DefaultSize = 150;
+    Possibility = 20;
+    AffectsCarryingCapacity = false;
+    Price = 25;
+    BitmapPos = 80, 384;
+    EnchantmentPlusChance = 4;
+    BeltBitmapPos = 48, 512;
+  }
+
+  Config BELT_OF_LEVITATION;
+  {
+    DefaultMainVolume = 1; /* CLIVAN */
+    Possibility = 0;
+    PostFix = "of levitation";
+    GearStates = LEVITATION;
+    Price = 500;
+    AttachedGod = SILVA;
+    MainMaterialConfig == ANGEL_HAIR;
+    MaterialConfigChances == 100;
+    EnchantmentPlusChance = 0;
+  }
+
+  Config BROKEN|BELT_OF_LEVITATION;
+  {
+    DefaultMainVolume = 1; /* CLIVAN */
+    DefaultSize = 150;
+    GearStates = 0;
+    Price = 100;
+    BitmapPos = 80, 384;
+    BeltBitmapPos = 48, 512;
+  }
+
+  Config BROKEN;
+  {
+    DefaultSize = 150;
+    Possibility = 25;
+    MainMaterialConfig = { 5, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR, DRAGON_HIDE, MITHRIL; }
+    MaterialConfigChances = { 5, 500, 250, 100, 25, 10; }
+    BitmapPos = 80, 384;
+    EnchantmentPlusChance = 20;
+    BeltBitmapPos = 48, 512;
+  }
+}

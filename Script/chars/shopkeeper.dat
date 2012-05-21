@@ -1,0 +1,174 @@
+shopkeeper
+{
+  DefaultArmStrength = 20;
+  DefaultLegStrength = 30;
+  DefaultDexterity = 10;
+  DefaultAgility = 10;
+  DefaultEndurance = 20;
+  DefaultPerception = 30;
+  DefaultIntelligence = 25;
+  DefaultWisdom = 15;
+  DefaultCharisma = 30;
+  DefaultMana = 10;
+  DefaultMoney = 3000;
+  TorsoSpecialColor = rgb16(0, 96, 0);
+  HeadBitmapPos = 96, 64;
+  TorsoBitmapPos = 32, 32;
+  ArmBitmapPos = 64, 16;
+  LegBitmapPos = 0, 32;
+  TotalVolume = 150000;
+  TotalSize = 160;
+  NameSingular = "shopkeeper";
+  CanRead = true;
+  HostileReplies == "\"Criminal! Mellis bless my efforts of removing you!\"";
+  IsAbstract = true;
+  IsUnique = true;
+  CanBeWished = false;
+  IsNameable = false;
+  CanBeCloned = false;
+  IsPolymorphable = false;
+  Inventory == holybook(MELLIS);
+  TamingDifficulty = NO_TAMING;
+  AttachedGod = MELLIS;
+  CanBeConfused = false;
+  IsSadist = true;
+
+  Config ATTNAM;
+  {
+    Helmet = MITHRIL helmet { Enchantment = 1; }
+    Cloak = NYMPH_HAIR cloak { Enchantment = 1; }
+    BodyArmor = MITHRIL bodyarmor(CHAIN_MAIL) { Enchantment = 1; }
+    Belt = NYMPH_HAIR belt(BELT_OF_CARRYING) { Enchantment = 1; }
+    RightWielded = MITHRIL pickaxe { Enchantment = 2; }
+    RightGauntlet = NYMPH_HAIR gauntlet { Enchantment = 1; }
+    RightBoot = NYMPH_HAIR boot { Enchantment = 1; }
+    KnownCWeaponSkills == AXES;
+    CWeaponSkillHits == 200;
+    RightSWeaponSkillHits = 100;
+    DefaultName = "Hulbo";
+    FriendlyReplies =
+    {
+      4,
+      "@Dd sighs: \"If only I hadn't chosen a city in the middle of nowhere...\"",
+      "@Dd sighs: \"Mutant mushrooms ate the last caravan, and the one before it ran into an enner beast. It must be all Elpuri's doings!\"",
+      "\"You truly can't find better prices in this city! Indeed, you can't find ANY prices, since my store is a monopoly.\"",
+      "\"Don't try anything. The high priest is a friend of mine.\"";
+    }
+  }
+
+  Config DARK_FOREST;
+  {
+    AttributeBonus = 30;
+    Helmet = MITHRIL helmet { Enchantment = 2; }
+    Cloak = NYMPH_HAIR cloak { Enchantment = 2; }
+    BodyArmor = MITHRIL bodyarmor(CHAIN_MAIL) { Enchantment = 2; }
+    Belt = NYMPH_HAIR belt(BELT_OF_CARRYING) { Enchantment = 2; }
+    RightWielded = MITHRIL pickaxe { Enchantment = 3; }
+    RightGauntlet = NYMPH_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = NYMPH_HAIR boot { Enchantment = 2; }
+    KnownCWeaponSkills == AXES;
+    CWeaponSkillHits == 1000;
+    RightSWeaponSkillHits = 500;
+    DefaultName = "Kazu";
+    FriendlyReplies =
+    {
+      3,
+      "@Dd sighs: \"I wonder why I have so few customers these days...\"",
+      "\"The topmost reason why I work here is that the monsters devour tax collectors.\"",
+      "\"The monsters don't attack me, because of our mutually profitable contract.\"";
+    }
+  }
+
+
+  Config ELPURI_CAVE;
+  {
+    AttributeBonus = 25;
+    Helmet = MITHRIL helmet { Enchantment = 2; }
+    Cloak = NYMPH_HAIR cloak { Enchantment = 2; }
+    BodyArmor = MITHRIL bodyarmor(CHAIN_MAIL) { Enchantment = 2; }
+    Belt = NYMPH_HAIR belt(BELT_OF_CARRYING) { Enchantment = 2; }
+    RightWielded = MITHRIL pickaxe { Enchantment = 3; }
+    RightGauntlet = NYMPH_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = NYMPH_HAIR boot { Enchantment = 2; }
+    KnownCWeaponSkills == AXES;
+    CWeaponSkillHits == 1000;
+    RightSWeaponSkillHits = 500;
+    DefaultName = "Merka";
+    FriendlyReplies =
+    {
+      3,
+      "@Dd sighs: \"I wonder why I have so few customers these days...\"",
+      "\"The topmost reason why I work here is that the monsters devour tax collectors.\"",
+      "\"The monsters don't attack me, because of our mutually profitable contract.\"";
+    }
+  }
+
+  Config KHARAZ_ARAD_SHOP;
+  {
+    AttributeBonus = 25;
+    Helmet = MITHRIL helmet { Enchantment = 2; }
+    Cloak = NYMPH_HAIR cloak { Enchantment = 2; }
+    BodyArmor = MITHRIL bodyarmor(CHAIN_MAIL) { Enchantment = 2; }
+    Belt = NYMPH_HAIR belt(BELT_OF_CARRYING) { Enchantment = 2; }
+    RightWielded = MITHRIL pickaxe { Enchantment = 3; }
+    RightGauntlet = NYMPH_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = NYMPH_HAIR boot { Enchantment = 2; }
+    KnownCWeaponSkills == AXES;
+    CWeaponSkillHits == 1000;
+    RightSWeaponSkillHits = 500;
+    DefaultName = "Crow";
+    FriendlyReplies =
+    {
+      2,
+      "@Dd sighs: \"I wonder why I have so few customers these days...\"",
+      "\"Did you know I came from Mondedr? Before I left Raven gave me somes wares before I left.\"",
+    }
+   }
+
+  Config MONDEDR;
+  {
+    SkinColor = rgb16(0, 96, 0);
+    EyeColor = rgb16(200, 200, 0);
+    ClothColor = rgb16(48, 32, 16);
+    Helmet = MITHRIL helmet { Enchantment = 1; }
+    Cloak = NYMPH_HAIR cloak { Enchantment = 1; }
+    BodyArmor = MITHRIL bodyarmor(CHAIN_MAIL) { Enchantment = 1; }
+    Belt = NYMPH_HAIR belt(BELT_OF_CARRYING) { Enchantment = 1; }
+    RightWielded = MITHRIL pickaxe { Enchantment = 2; }
+    RightGauntlet = NYMPH_HAIR gauntlet { Enchantment = 1; }
+    RightBoot = NYMPH_HAIR boot { Enchantment = 1; }
+    KnownCWeaponSkills == AXES;
+    CWeaponSkillHits == 200;
+    RightSWeaponSkillHits = 100;
+    DefaultName = "Gobs";
+    FriendlyReplies =
+    {
+      2,
+      "\"Don't kill me! I am just an innocent bystander... Just don't ask where I got them hee-hee-hee.\"",
+      "\"I heard the previous owner of this shop, Crow, moved to Kharaz-Arad.\"";
+    }
+  }
+
+  Config NEW_ATTNAM;
+  {
+    AttributeBonus = -25;
+    Helmet = LEATHER helmet;
+    BodyArmor = LEATHER bodyarmor(PLATE_MAIL);
+    Belt = LEATHER belt(BELT_OF_CARRYING);
+    RightBoot = LEATHER boot;
+    HeadBitmapPos = 96, 64;
+    TorsoBitmapPos = 48, 192;
+    ArmBitmapPos = 64, 0;
+    LegBitmapPos = 0, 16;
+    DefaultName = "Zolku";
+    FriendlyReplies =
+    {
+      4,
+      "\"Welcome to the cheapest banana shop in the world!\"",
+      "@Dd sighs: \"It's depressing that the locals have so little purchasing power... But Mellis bless the tourists!\"",
+      "\"No, I don't sell spoiled food. Decos's alchemists have pumped so much magic potions into the soil that nothing here will go bad before you buy it.\"",
+      "\"I wish I was as brilliant an economic genius as the viceroy. Who would have thought levitating ostriches were so low-cost and efficient form of food delivery?\"";
+    }
+    AutomaticallySeen = true;
+  }
+}

@@ -1,0 +1,9 @@
+scrollofrepair /* scroll-> */
+{
+  Possibility = 55; /* CLIVAN; old: 50 */
+  Price = 250;
+  PostFix = "of repair";
+  Alias == "scroll of repairing";
+  AttachedGod = LORICATUS;
+  ReadDifficulty = 500;
+}

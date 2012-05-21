@@ -1,0 +1,30 @@
+shield /* armor-> */
+{
+  DefaultSize = 60;
+  Possibility = 250;
+  Category = SHIELD;
+  DefaultMainVolume = 350;
+  StrengthModifier = 150;
+  BitmapPos = 32, 336;
+  FormModifier = 15;
+  NameSingular = "shield";
+  MainMaterialConfig = { 14, PINE_WOOD, FIR_WOOD, BIRCH_WOOD, OAK_WOOD, TEAK_WOOD, EBONY_WOOD, COPPER, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_BONE, OMMEL_TOOTH; }
+  MaterialConfigChances = { 14, 350, 300, 250, 200, 150, 100, 1000, 750, 500, 100, 25, 25, 10, 5; }
+  Roundness = 95;
+  WeaponCategory = SHIELDS;
+  CanBeBroken = true;
+  WieldedBitmapPos = 128, 32;
+  EnchantmentPlusChance = 15;
+
+  Config BROKEN;
+  {
+    Possibility = 25;
+    DefaultSize = 40;
+    FormModifier = 20;
+    BitmapPos = 48, 224;
+    WieldedBitmapPos = 128, 48;
+    MainMaterialConfig = { 7, EBONY_WOOD, STEEL, METEORIC_STEEL, ARCANITE, MITHRIL, OCTIRON, ADAMANT; }
+    MaterialConfigChances = { 7, 100, 150, 25, 10, 25, 5, 5; }
+    EnchantmentPlusChance = 30;
+  }
+}

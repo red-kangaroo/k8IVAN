@@ -1,0 +1,37 @@
+thunderbird
+{
+  DefaultArmStrength = 2;
+  DefaultAgility = 40;
+  DefaultEndurance = 8;
+  DefaultPerception = 20;
+  DefaultIntelligence = 6;
+  DefaultWisdom = 5;
+  DefaultCharisma = 6;
+  DefaultMana = 0;
+  StandVerb = "flying";
+  CanOpen = false;
+  TotalVolume = 500;
+  TorsoBitmapPos = 560, 0;
+  HostileReplies == "@Dd peeps thunderously.";
+  FriendlyReplies == "@Dd chirps happily.";
+  TotalSize = 20;
+  SkinColor = rgb16(142, 100, 50);
+  TorsoMainColor = rgb16(220, 180, 0);
+  Adjective = "thunder";
+  NameSingular = "bird";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 400;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 50;
+  PanicLevel = 75;
+  FleshMaterial = THUNDER_BIRD_FLESH;
+  AttachedGod = SILVA;
+  BiteCapturesBodyPart = false;
+  MoveType = FLY;
+  BaseEmitation = rgb24(130, 130, 130);
+  DangerModifier = 500;
+  Frequency = 500;
+  HPRequirementForGeneration = 70;
+  DayRequirementForGeneration = 3;
+}

@@ -1,0 +1,101 @@
+wall
+{
+  IsAbstract = true;
+  CanBeDestroyed = true;
+  IsSafeToCreateDoor = true;
+  Walkability = ETHEREAL;
+  IsAlwaysTransparent = false;
+  BorderTilePriority = 100;
+  CreateWindowConfigurations = true;
+  MaterialColorC = rgb16(140, 96, 48);
+  MaterialColorD = rgb16(180, 180, 255);
+  ShowThingsUnder = false;
+  LeftOverItems == NaturalMaterialForm { MainMaterial = 0 { Volume = 500:1500; } Times = 1:4; }
+  IsWall = true;
+
+  Config BRICK_FINE;
+  {
+    DigMessage = "The wall is pretty hard, but you still manage to go through it.";
+    MainMaterialConfig == GRANITE;
+    NameSingular = "wall";
+    BitmapPos = 64, 272;
+    HPModifier = 150;
+    WindowBitmapPos = 96, 256;
+  }
+
+  Config BRICK_OLD;
+  {
+    DigMessage = "The piece of wall is very old and shabby. You dig it with ease.";
+    MainMaterialConfig == GRANITE;
+    UsesLongAdjectiveArticle = true;
+    Adjective = "old";
+    NameSingular = "wall";
+    BitmapPos = 16, 256;
+    HPModifier = 75;
+  }
+
+  Config BRICK_PRIMITIVE;
+  {
+    DigMessage = "The piece of wall is very old and shabby. You dig it with ease.";
+    MainMaterialConfig == BALSA_WOOD;
+    Adjective = "primitive";
+    NameSingular = "wall";
+    BitmapPos = 48, 272;
+    HPModifier = 75;
+    WindowBitmapPos = 80, 256;
+  }
+
+  Config BRICK_PRIMITIVE_PROPAGANDA;
+  {
+    DigMessage = "You break the wall down despite the uncomfortable feeling of being constantly watched.";
+    MainMaterialConfig == BALSA_WOOD;
+    Adjective = "primitive";
+    NameSingular = "wall";
+    PostFix = "and a poster with a picture of high priest Petrus, the ruler of the Attnamese Empire";
+    BitmapPos = 96, 272;
+    HPModifier = 75;
+  }
+
+  Config BRICK_PROPAGANDA;
+  {
+    DigMessage = "You break the wall down despite the uncomfortable feeling of being constantly watched.";
+    MainMaterialConfig == GRANITE;
+    NameSingular = "wall";
+    PostFix = "and a poster with a picture of high priest Petrus, the ruler of the Attnamese Empire";
+    BitmapPos = 80, 272;
+    HPModifier = 150;
+  }
+
+  Config BROKEN_WALL;
+  {
+    OKVisualEffects = MIRROR|FLIP;
+    DigMessage = "The ground is easy to dig.";
+    MainMaterialConfig == GRANITE;
+    MaterialColorB = rgb16(56, 56, 56);
+    Adjective = "broken";
+    NameSingular = "wall";
+    BitmapPos = 48, 288;
+    HPModifier = 25;
+  }
+
+  Config ICE_WALL;
+  {
+    OKVisualEffects = MIRROR|FLIP|ROTATE;
+    DigMessage = "The ice is pretty easy to dig.";
+    MainMaterialConfig == ICE;
+    NameSingular = "wall";
+    BitmapPos = 0, 32;
+    HPModifier = 40;
+  }
+
+  Config STONE_WALL;
+  {
+    OKVisualEffects = MIRROR|FLIP|ROTATE;
+    DigMessage = "The ground is hard to dig.";
+    MainMaterialConfig == GRANITE;
+    MaterialColorB = rgb16(56, 56, 56);
+    NameSingular = "wall";
+    BitmapPos = 0, 32;
+    HPModifier = 100;
+  }
+}

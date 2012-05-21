@@ -1,0 +1,458 @@
+flesh
+{
+  StrengthValue = 5;
+  ConsumeType = CT_MEAT;
+  Density = 1200;
+  NutritionValue = 20;
+  Color = rgb16(160, 32, 16);
+  NameStem = "flesh";
+  Flexibility = 5;
+  SpoilModifier = 10000;
+  PriceModifier = 60;
+  BodyFlags = Base|IS_ALIVE|IS_WARM|CAN_HAVE_PARASITE|CAN_REGENERATE&~USE_MATERIAL_ATTRIBUTES;
+  InteractionFlags = Base|IS_AFFECTED_BY_MUSTARD_GAS;
+
+  Config ANGEL_FLESH;
+  {
+    NameStem = "angel flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config BAT_FLESH;
+  {
+    NameStem = "bat flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config BEAR_FLESH;
+  {
+    NameStem = "raw bear flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config BEEF;
+  {
+    NutritionValue = 2500;
+    NameStem = "beef";
+    SpoilModifier = 20000;
+    PriceModifier = 8000;
+    AttachedGod = SEGES;
+    BodyFlags = Base&~CAN_HAVE_PARASITE;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+  }
+
+  Config BLACK_UNICORN_FLESH;
+  {
+    Color = rgb16(48, 48, 48);
+    NameStem = "black unicorn flesh";
+    PriceModifier = 100;
+    AttachedGod = DULCIS;
+    Effect = EFFECT_BLACK_UNICORN_FLESH;
+    ConsumeEndMessage = CEM_BLACK_UNICORN_FLESH;
+    ConsumeWisdomLimit = 10;
+    CommonFlags = Base|IS_VALUABLE;
+    BodyFlags = Base&~IS_WARM;
+  }
+
+  Config BLINK_DOG_FLESH;
+  {
+    NameStem = "blink dog flesh";
+    AttachedGod = MORTIFER;
+    Effect = EFFECT_TELEPORT_CONTROL;
+    PriceModifier = 120;
+    CommonFlags = Base|IS_VALUABLE;
+  }
+
+  Config BUFFALO_FLESH;
+  {
+    NameStem = "buffalo flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config CAT_FLESH;
+  {
+    NameStem = "cat flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config CHAMELEON_FLESH;
+  {
+    NameStem = "chameleon flesh";
+    Effect = EFFECT_POLYMORPH;
+    PriceModifier = 50;
+    ConsumeWisdomLimit = 7;
+    AttachedGod = SCABIES;
+  }
+
+  Config DAEMON_FLESH;
+  {
+    Color = rgb16(180, 0, 0);
+    NameStem = "daemon flesh";
+    Effect = EFFECT_POISON;
+    EffectStrength = 10;
+    ConsumeWisdomLimit = 8;
+    AttachedGod = MORTIFER;
+    InteractionFlags = Base&~CAN_DISSOLVE;
+    SpoilModifier = 100000;
+    StrengthValue = 50;
+    Density = 600;
+    Flexibility = 30;
+  }
+
+  Config DOG_FLESH;
+  {
+    NameStem = "dog flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config DOLPHIN_FLESH;
+  {
+    NameStem = "dolphin flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config DWARF_FLESH;
+  {
+    NameStem = "dwarf flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config EAGLE_FLESH;
+  {
+    NameStem = "eagle flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config ELPURI_FLESH;
+  {
+    ConsumeWisdomLimit = 0;
+    Effect = EFFECT_DARKNESS;
+    ConsumeEndMessage = CEM_FROG_FLESH;
+    HitMessage = HM_FROG_FLESH;
+    StrengthValue = 10;
+    Density = 2400;
+    NameStem = "Elpuri's flesh";
+    Color = rgb16(60, 60, 60);
+    AttachedGod = MORTIFER;
+    NameFlags = Base|USE_AN;
+    BodyFlags = Base&~IS_WARM;
+    InteractionFlags = Base&~CAN_DISSOLVE;
+  }
+
+  Config ENNER_BEAST_FLESH;
+  {
+    StrengthValue = 10;
+    Density = 1800;
+    ConsumeWisdomLimit = 0;
+    NameStem = "enner beast flesh";
+    AttachedGod = DULCIS;
+    NameFlags = Base|USE_AN;
+  }
+
+  Config FLOATING_EYE_FLESH;
+  {
+    NameStem = "floating eye flesh";
+    Density = 1000;
+    Effect = EFFECT_ESP;
+    AttachedGod = LEGIFER;
+    PriceModifier = 120;
+    CommonFlags = Base|IS_VALUABLE;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+  }
+
+  Config FOX_FLESH;
+  {
+    NameStem = "fox flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config FROG_FLESH;
+  {
+    ConsumeWisdomLimit = 0;
+    Effect = EFFECT_DARKNESS;
+    ConsumeEndMessage = CEM_FROG_FLESH;
+    HitMessage = HM_FROG_FLESH;
+    NameStem = "frog flesh";
+    AttachedGod = MORTIFER;
+    InteractionFlags = Base&~CAN_DISSOLVE;
+  }
+
+  Config GIBBERLING_FLESH;
+  {
+    NameStem = "gibberling flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config GOBLINOID_FLESH;
+  {
+    Color = rgb16(0, 128, 0);
+    NameStem = "green flesh";
+    NutritionValue = 15;
+    PriceModifier = 40;
+    AttachedGod = MORTIFER;
+  }
+
+  Config GRAY_UNICORN_FLESH;
+  {
+    Color = rgb16(112, 112, 112);
+    NameStem = "gray unicorn flesh";
+    PriceModifier = 100;
+    AttachedGod = LORICATUS;
+    Effect = EFFECT_GRAY_UNICORN_FLESH;
+    ConsumeEndMessage = CEM_GRAY_UNICORN_FLESH;
+    CommonFlags = Base|IS_VALUABLE;
+  }
+
+  Config HATTIFATTENER_FLESH;
+  {
+    NameStem = "hattifattener flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config HEDGEHOG_FLESH;
+  {
+    NameStem = "hedgehog flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config HUMAN_FLESH;
+  {
+    NameStem = "human flesh";
+    AttachedGod = MORTIFER;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+  }
+
+  Config JACKAL_FLESH;
+  {
+    NameStem = "jackal flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config KABOUTER_FLESH;
+  {
+    NameStem = "kabouter flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config KOBOLD_FLESH;
+  {
+    NutritionValue = 10;
+    ConsumeWisdomLimit = 6;
+    NameStem = "kobold flesh";
+    Effect = EFFECT_KOBOLD_FLESH;
+    ConsumeEndMessage = CEM_KOBOLD_FLESH;
+    HitMessage = HM_KOBOLD_FLESH;
+    PriceModifier = 0;
+    AttachedGod = MORTIFER;
+  }
+
+  Config LION_FLESH;
+  {
+    NameStem = "lion flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config MAGIC_MUSHROOM_FLESH;
+  {
+    NameStem = "magical mushroom";
+    Density = 600;
+    Effect = EFFECT_MAGIC_MUSHROOM;
+    ConsumeWisdomLimit = 10;
+    AttachedGod = NEFAS;
+    EffectStrength = 20;
+    PriceModifier = 150;
+    BodyFlags = Base&~IS_WARM;
+  }
+
+  Config MAGPIE_FLESH;
+  {
+    NameStem = "magpie flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config MAMMOTH_FLESH;
+  {
+    NameStem = "mammoth flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config MIND_WORM_FLESH;
+  {
+    NameStem = "sick spider flesh";
+    AttachedGod = SCABIES;
+  }
+
+  Config MOOSE_FLESH;
+  {
+    NameStem = "moose flesh";
+    AttachedGod = MORTIFER;
+    Effect = EFFECT_DETECTING;
+    EffectStrength = 1;
+    ConsumeWisdomLimit = 1;
+  }
+
+  Config MOUSE_FLESH;
+  {
+    NameStem = "mouse flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config MUSHROOM_FLESH;
+  {
+    NameStem = "mushroom";
+    Density = 600;
+    Effect = EFFECT_MUSHROOM;
+    ConsumeWisdomLimit = 10;
+    AttachedGod = NEFAS;
+    EffectStrength = 20;
+    PriceModifier = 100;
+    BodyFlags = Base&~IS_WARM;
+  }
+
+  Config MUTANT_ASS_FLESH;
+  {
+    NameStem = "mutant ass flesh";
+    Effect = EFFECT_POLYMORPH;
+    EffectStrength = 6;
+    Emitation = rgb24(140, 100, 100);
+    ConsumeWisdomLimit = 8;
+    AttachedGod = SCABIES;
+  }
+
+  Config MUTANT_BUNNY_FLESH;
+  {
+    NameStem = "mutant bunny flesh";
+    Effect = EFFECT_POLYMORPH;
+    EffectStrength = 6;
+    Emitation = rgb24(140, 100, 100);
+    ConsumeWisdomLimit = 8;
+    AttachedGod = SCABIES;
+  }
+
+  Config MUTANT_HEDGEHOG_FLESH;
+  {
+    NameStem = "mutant hedgehog flesh";
+    Effect = EFFECT_POLYMORPH;
+    EffectStrength = 6;
+    Emitation = rgb24(100, 100, 140);
+    ConsumeWisdomLimit = 8;
+    AttachedGod = SCABIES;
+  }
+
+  Config OKAPI_FLESH;
+  {
+    NameStem = "raw okapi flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config ORC_FLESH;
+  {
+    NameStem = "orc flesh";
+    AttachedGod = MORTIFER;
+    NutritionValue = 15;
+    ConsumeWisdomLimit = 15;
+  }
+
+  Config OSTRICH_FLESH;
+  {
+    NameStem = "ostrich flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config PORK;
+  {
+    NutritionValue = 2500;
+    NameStem = "pork";
+    SpoilModifier = 20000;
+    PriceModifier = 8000;
+    AttachedGod = SEGES;
+    BodyFlags = Base&~CAN_HAVE_PARASITE;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+  }
+
+  Config RAT_FLESH;
+  {
+    NameStem = "rat flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config SICK_SPIDER_FLESH;
+  {
+    NameStem = "sick spider flesh";
+    AttachedGod = SCABIES;
+  }
+
+  Config SKUNK_FLESH;
+  {
+    NameStem = "skunk flesh";
+    AttachedGod = MORTIFER;
+    Effect = EFFECT_POISON;
+    EffectStrength = 5;
+    ConsumeWisdomLimit = 4;
+  }
+
+  Config SNAKE_FLESH;
+  {
+    NameStem = "snake flesh";
+    Effect = EFFECT_POISON;
+    EffectStrength = 15;
+    ConsumeWisdomLimit = 3;
+    AttachedGod = MORTIFER;
+  }
+
+  Config SPIDER_FLESH;
+  {
+    NameStem = "spider flesh";
+    AttachedGod = MORTIFER;
+    Effect = EFFECT_POISON;
+    EffectStrength = 100;
+    ConsumeWisdomLimit = 3;
+  }
+
+  Config THUNDER_BIRD_FLESH;
+  {
+    NameStem = "thunderbird flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config ULDRA_FLESH;
+  {
+    NameStem = "uldra flesh";
+    AttachedGod = MORTIFER;
+  }
+
+  Config VAMPIRE_FLESH;
+  {
+    NameStem = "vampire flesh";
+    Effect = EFFECT_VAMPIRISM;
+    EffectStrength = 10;
+    ConsumeWisdomLimit = 10;
+    AttachedGod = MORTIFER;
+  }
+
+  Config WERE_WOLF_FLESH;
+  {
+    NameStem = "werewolf flesh";
+    Effect = EFFECT_LYCANTHROPY;
+    EffectStrength = 10;
+    ConsumeWisdomLimit = 10;
+    AttachedGod = MORTIFER;
+  }
+
+  Config WHITE_UNICORN_FLESH;
+  {
+    Color = rgb16(160, 160, 160);
+    NameStem = "white unicorn flesh";
+    PriceModifier = 100;
+    AttachedGod = MORTIFER;
+    Effect = EFFECT_WHITE_UNICORN_FLESH;
+    ConsumeEndMessage = CEM_WHITE_UNICORN_FLESH;
+    CommonFlags = Base|IS_VALUABLE;
+  }
+
+  Config WOLF_FLESH;
+  {
+    NameStem = "wolf flesh";
+    AttachedGod = MORTIFER;
+  }
+}

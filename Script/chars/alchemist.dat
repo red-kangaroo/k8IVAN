@@ -1,0 +1,49 @@
+alchemist
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 10;
+  DefaultDexterity = 12;
+  DefaultAgility = 18;
+  DefaultEndurance = 10;
+  DefaultPerception = 18;
+  DefaultIntelligence = 15;
+  DefaultWisdom = 10;
+  DefaultCharisma = 4;
+  DefaultMana = 20;
+  SkinColor = rgb16(60, 120, 120);
+  EyeColor = rgb16(180, 180, 0);
+  HairColor = rgb16(35, 35, 35);
+  ClothColor = rgb16(48, 48, 48);
+  LegMainColor = rgb16(111, 74, 37);
+  HeadBitmapPos = 112, 208;
+  TorsoBitmapPos = 48, 176;
+  ArmBitmapPos = 64, 176;
+  LegBitmapPos = 16, 112;
+  TotalVolume = 30000;
+  TotalSize = 90;
+  Adjective = "kobold";
+  NameSingular = "alchemist";
+  CanBeGenerated = true;
+  Sex = UNDEFINED;
+  RightWielded = BALSA_WOOD BALSA_WOOD meleeweapon(QUARTER_STAFF) { Enchantment = 1; }
+  KnownCWeaponSkills == POLE_ARMS;
+  CWeaponSkillHits == 20;
+  RightSWeaponSkillHits = 10;
+  PanicLevel = 50;
+  FleshMaterial = KOBOLD_FLESH;
+  DeathMessage = "@Dd dies yelling like a tortured hyena.";
+  WieldedPosition = 0, -1;
+  IsExtraFragile = true;
+  CanRead = true;
+  /*ClassStates = INFRA_VISION;*/
+  AttachedGod = INFUSCOR;
+  Cloak = LEATHER cloak;
+  Helmet = LEATHER helmet;
+  BodyArmor = LEATHER bodyarmor(PLATE_MAIL) { Enchantment = -1; }
+  DangerModifier = 100;
+  HPRequirementForGeneration = 50;
+  DayRequirementForGeneration = 2;
+  Frequency = 1000;
+  PolymorphIntelligenceRequirement = -10;
+  IsAlcoholic = true;
+}

@@ -1,0 +1,195 @@
+mistress
+{
+  DefaultArmStrength = 20;
+  DefaultLegStrength = 20;
+  DefaultDexterity = 40;
+  DefaultAgility = 40;
+  DefaultEndurance = 20;
+  DefaultPerception = 30;
+  DefaultIntelligence = 20;
+  DefaultWisdom = 20;
+  DefaultCharisma = 40;
+  DefaultMana = 10;
+  Sex = FEMALE;
+  SkinColor = rgb16(255, 212, 192);
+  HairColor = rgb16(200, 200, 200);
+  ClothColor = rgb16(35, 35, 35);
+  HeadBitmapPos = 112, 240;
+  TorsoBitmapPos = 48, 96;
+  ArmBitmapPos = 80, 80;
+  LegBitmapPos = 16, 32;
+  TotalVolume = 50000;
+  TotalSize = 180;
+  CanRead = true;
+  NameSingular = "mistress";
+  NamePlural = "mistresses";
+  CanBeGenerated = true;
+  BodyArmor = LEATHER bodyarmor(PLATE_MAIL);
+  RightGauntlet = LEATHER gauntlet;
+  RightBoot = LEATHER boot;
+  RightWielded = NYMPH_HAIR whip { Enchantment = 1; }
+  LeftWielded = NYMPH_HAIR whip { Enchantment = 1; }
+  KnownCWeaponSkills == WHIPS;
+  CWeaponSkillHits == 200;
+  RightSWeaponSkillHits = 200;
+  LeftSWeaponSkillHits = 200;
+  ClassStates = INFRA_VISION;
+  PanicLevel = 20;
+  Inventory = { 2, banana { Chance = 10; }, holybanana { Chance = 1; } }
+  HostileReplies == "\"Come closer, little boy, I'll teach you something...\"";
+  AttachedGod = NEFAS;
+  WieldedPosition = 0, -1;
+  FriendlyReplies =
+  {
+    3,
+    "\"What? You want more whip?\"",
+    "\"Ever participated in the weekly orgy at Nefas's High Temple? I guess not. You wouldn't have survived.\"",
+    "\"If you think I'm rough, you should avoid Sherarax, my queen. No man has ever lived through a night with her.\"";
+  }
+  ScienceTalkAdjectiveAttribute =
+  {
+    52,
+    "applied", "theoretical", "classical", "the future of", "queer",
+    "practical", "the secrets of", "ancient", "empirical", "statistical",
+    "the axioms of", "forbidden", "popular", "obscene", "ceremonial",
+    "environmental", "the code of", "modern", "hard", "unorthodox",
+    "the principle of", "oral", "commercial", "slippery", "scientific",
+
+    "the theory of", "educational", "recreational", "phallic", "gothic",
+    "motorized",  "tropical", "the purpose of", "happy", "political",
+    "the history of", "the creative uses of", "chaotic", "erotic", "arctic",
+    "experimental", "lewd", "clinical", "electrical", "nymphomaniacal",
+    "intellectual", "the origin of", "hot", "frictionless", "lesbian",
+
+    "the art of", "sick";
+  }
+  ScienceTalkSubstantiveAttribute =
+  {
+    4,
+    "New Age", "last century", "horseback", "pagan";
+  }
+  ScienceTalkPrefix =
+  {
+    19,
+    "", "", "", "", "",
+    "", "", "", "", "",
+    "ethno", "mega", "neo", "necro", "aero",
+    "pyro", "caco", "sado", "hetero";
+  }
+  ScienceTalkName =
+  {
+    52,
+    "impalement", "bondage", "slavery", "torture", "disembowelment",
+    "whipmaking", "orgies", "heresy", "brazen bulls", "necrophilia",
+    "masochism", "dentistry", "swedish", "feminism", "licking",
+    "mushrooms", "rock", "nefasim", "birth-control", "fetishes",
+    "testicle crushing", "pleasures", "anatomy", "pain", "sin",
+
+    "bananas", "bestiality", "agony", "Kama Sutra", "spanking",
+    "piercings", "adultery", "frottage", "thumbscrews", "egoism",
+    "beer", "castration", "watersports", "scaphism", "seduction",
+    "iron maidens", "fisting", "drugs", "lingerie", "tablillas",
+    "poker", "reproduction", "sake", "idolatry", "horror",
+
+    "sensory deprivation tanks", "hallucinations";
+  }
+  ScienceTalkPossibility = 95;
+  ScienceTalkIntelligenceModifier = 2;
+  ScienceTalkWisdomModifier = 1;
+  ScienceTalkIntelligenceRequirement = 6;
+  ScienceTalkWisdomRequirement = 3;
+  IsSadist = true;
+  IsMasochist = true;
+
+  Config QUEEN;
+  {
+    HairColor = rgb16(35, 35, 35);
+    AttributeBonus = 60;
+    BodyArmor = ANGEL_HAIR bodyarmor(PLATE_MAIL) { Enchantment = 4; }
+    Amulet = amulet(AMULET_OF_LIFE_SAVING);
+    Cloak = SPIDER_SILK cloak { Enchantment = 4; }
+    Belt = DRAGON_HIDE belt { Enchantment = 4; }
+    RightGauntlet = PHOENIX_FEATHER gauntlet(GAUNTLET_OF_DEXTERITY) { Enchantment = 4; }
+    RightRing = ring(RING_OF_TELEPORT_CONTROL);
+    LeftRing = ring(RING_OF_TELEPORTATION);
+    RightBoot = DRAGON_HIDE boot(BOOT_OF_KICKING) { Enchantment = 4; }
+    RightWielded = SPIDER_SILK whipofthievery { Enchantment = 5; }
+    LeftWielded = SPIDER_SILK chameleonwhip { Enchantment = 5; }
+    KnownCWeaponSkills = { 2, WHIPS, KICK; }
+    CWeaponSkillHits = { 2, 5000, 1000; }
+    RightSWeaponSkillHits = 5000;
+    LeftSWeaponSkillHits = 5000;
+    NameSingular = "mistress queen";
+    PanicLevel = 0;
+    ClassStates = INVISIBLE|HASTE|INFRA_VISION|ESP;
+    TamingDifficulty = 50;
+    IsUnique = true;
+    CanBeWished = true;
+    DefaultName = "Sherarax";
+    DangerModifier = 1500;
+    IsNameable = false;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    // CLIVAN; old -- Inventory = { 4, scrolloftaming, scrolloftaming, wand(WAND_OF_HASTE), wand(WAND_OF_HASTE); }
+    Inventory = { 5, scrolloftaming, scrolloftaming, wand(WAND_OF_HASTE), wand(WAND_OF_HASTE), solstone; }
+    CanBeConfused = false;
+    FireResistance = 40;
+    ElectricityResistance = 40;
+    EnergyResistance = 40;
+    IsImmuneToItemTeleport = true;
+    AllowUnconsciousness = false;
+    UndeadVersions = false;
+    IsImmuneToWhipOfThievery = true;
+  }
+
+  Config TORTURING_CHIEF;
+  {
+    HairColor = rgb16(200, 200, 0);
+    AttributeBonus = 15;
+    BodyArmor = NYMPH_HAIR bodyarmor(PLATE_MAIL) { Enchantment = 1; }
+    RightGauntlet = NYMPH_HAIR gauntlet { Enchantment = 1; }
+    RightBoot = NYMPH_HAIR boot { Enchantment = 1; }
+    RightWielded = OMMEL_HAIR whip { Enchantment = 2; }
+    LeftWielded = OMMEL_HAIR whip { Enchantment = 2; }
+    CWeaponSkillHits == 500;
+    RightSWeaponSkillHits = 500;
+    LeftSWeaponSkillHits = 500;
+    NameSingular = "mistress torturing chief";
+    PanicLevel = 15;
+  }
+
+  Config WAR_LADY;
+  {
+    HairColor = rgb16(80, 64, 32);
+    AttributeBonus = 45;
+    BodyArmor = PHOENIX_FEATHER bodyarmor(PLATE_MAIL) { Enchantment = 3; }
+    Cloak = PHOENIX_FEATHER cloak { Enchantment = 3; }
+    RightGauntlet = PHOENIX_FEATHER gauntlet { Enchantment = 3; }
+    RightBoot = PHOENIX_FEATHER boot { Enchantment = 3; }
+    RightWielded = ANGEL_HAIR RUBY whip(RUNED_WHIP) { Enchantment = 4; }
+    LeftWielded = ANGEL_HAIR RUBY whip(RUNED_WHIP) { Enchantment = 4; }
+    CWeaponSkillHits == 2000;
+    RightSWeaponSkillHits = 2000;
+    LeftSWeaponSkillHits = 2000;
+    NameSingular = "mistress warlady";
+    NamePlural = "mistress warladies";
+    PanicLevel = 5;
+    Inventory == Random { Category = RING; Chance = 10; }
+  }
+
+  Config WHIP_CHAMPION;
+  {
+    HairColor = rgb16(200, 0, 0);
+    AttributeBonus = 30;
+    BodyArmor = OMMEL_HAIR bodyarmor(PLATE_MAIL) { Enchantment = 2; }
+    RightGauntlet = OMMEL_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = OMMEL_HAIR boot { Enchantment = 2; }
+    RightWielded = PHOENIX_FEATHER whip(RUNED_WHIP) { Enchantment = 3; }
+    LeftWielded = PHOENIX_FEATHER whip(RUNED_WHIP) { Enchantment = 3; }
+    CWeaponSkillHits == 1000;
+    RightSWeaponSkillHits = 1000;
+    LeftSWeaponSkillHits = 1000;
+    NameSingular = "mistress whip champion";
+    PanicLevel = 10;
+  }
+}

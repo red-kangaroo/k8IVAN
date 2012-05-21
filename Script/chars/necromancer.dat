@@ -1,0 +1,95 @@
+necromancer
+{
+  HeadBitmapPos = 112, 128;
+  TorsoBitmapPos = 48, 352;
+  ArmBitmapPos = 80, 96;
+  LegBitmapPos = 16, 160;
+  ClothColor = rgb16(50, 50, 50);
+  EyeColor = rgb16(200, 0, 0);
+  BeltColor = rgb16(100, 100, 100);
+  ArmSpecialColor = rgb16(100, 100, 140);
+  CanRead = true;
+  CanBeGenerated = true;
+  ClassStates = INFRA_VISION;
+  HostileReplies == "@Dd yells: \"Death! Death!\"";
+  FriendlyReplies == "\"I see dead people.\"";
+  IgnoreDanger = true;
+  AttachedGod = INFUSCOR;
+  IsAbstract = true;
+  KnownCWeaponSkills == BLUNT_WEAPONS;
+  NameSingular = "necromancer";
+  IsExtraFragile = true;
+  IsSadist = true;
+  IsCatacombCreature = true;
+
+  Config APPRENTICE_NECROMANCER;
+  {
+    DefaultArmStrength = 15;
+    DefaultLegStrength = 15;
+    DefaultDexterity = 15;
+    DefaultAgility = 8;
+    DefaultEndurance = 15;
+    DefaultPerception = 21;
+    DefaultIntelligence = 15;
+    DefaultWisdom = 10;
+    DefaultCharisma = 10;
+    DefaultMana = 20;
+    UsesLongAdjectiveArticle = true;
+    Adjective = "apprentice";
+    TotalVolume = 60000;
+    TotalSize = 180;
+    Cloak = LEATHER cloak { Enchantment = 2; }
+    RightWielded = OAK_WOOD OAK_WOOD meleeweapon(QUARTER_STAFF) { Enchantment = 3; }
+    HPRequirementForGeneration = 50;
+    DayRequirementForGeneration = 5;
+    Frequency = 1500;
+    PanicLevel = 5;
+    CWeaponSkillHits == 50;
+    RightSWeaponSkillHits = 20;
+    LeftSWeaponSkillHits = 20;
+    CapColor = rgb16(150, 150, 100);
+    GauntletColor = rgb16(150, 150, 100);
+    PolymorphIntelligenceRequirement = 5;
+    Inventory = { 3, skull, Random { MaxPrice = 500; Category = WAND|SCROLL; Chance = 5; }, Random { MinPrice = 500; Category = WAND|SCROLL; Chance = 1; } }
+    ScienceTalkPossibility = 10;
+    ScienceTalkIntelligenceModifier = 5;
+    ScienceTalkWisdomModifier = 2;
+    ScienceTalkIntelligenceRequirement = 10;
+    ScienceTalkWisdomRequirement = 5;
+  }
+
+  Config MASTER_NECROMANCER;
+  {
+    DefaultArmStrength = 13;
+    DefaultLegStrength = 13;
+    DefaultDexterity = 20;
+    DefaultAgility = 6;
+    DefaultEndurance = 15;
+    DefaultPerception = 18;
+    DefaultIntelligence = 30;
+    DefaultWisdom = 15;
+    DefaultCharisma = 15;
+    DefaultMana = 30;
+    Adjective = "master";
+    TotalVolume = 70000;
+    TotalSize = 170;
+    Cloak = NYMPH_HAIR cloak { Enchantment = 3; }
+    RightWielded = TEAK_WOOD TEAK_WOOD meleeweapon(QUARTER_STAFF) { Enchantment = 4; }
+    HPRequirementForGeneration = 125;
+    DayRequirementForGeneration = 12;
+    Frequency = 1000;
+    PanicLevel = 0;
+    CWeaponSkillHits == 100;
+    RightSWeaponSkillHits = 50;
+    LeftSWeaponSkillHits = 50;
+    CapColor = rgb16(100, 100, 200);
+    GauntletColor = rgb16(100, 100, 200);
+    PolymorphIntelligenceRequirement = 20;
+    Inventory = { 5, BLUE_CRYSTAL skull { Chance = 20; }, PURPLE_CRYSTAL skull { Chance = 20; }, GREEN_CRYSTAL skull { Chance = 20; }, Random { MaxPrice = 500; Category = WAND|SCROLL; Chance = 10; }, Random { MinPrice = 500; Category = WAND|SCROLL; Chance = 3; } }
+    ScienceTalkPossibility = 50;
+    ScienceTalkIntelligenceModifier = 50;
+    ScienceTalkWisdomModifier = 25;
+    ScienceTalkIntelligenceRequirement = 20;
+    ScienceTalkWisdomRequirement = 10;
+  }
+}

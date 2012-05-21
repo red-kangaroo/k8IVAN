@@ -1,0 +1,9 @@
+arm /* bodypart-> */
+{
+  StrengthModifier = 100;
+  FormModifier = 15;
+  IsAbstract = true;
+  Roundness = 15;
+  WeaponCategory = BLUNT_WEAPONS;
+  WieldedBitmapPos = 160, 352;
+}
