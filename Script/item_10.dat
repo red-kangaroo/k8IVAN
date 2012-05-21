@@ -80,3 +80,73 @@ taiaha /* meleeweapon-> */
     EnchantmentPlusChance = 30;
   }
 }
+
+
+lynslag  /* meleeweapon-> */
+{
+  DefaultSize = 120;
+  Possibility = 1;
+  WeaponCategory = SMALL_SWORDS;
+  DefaultMainVolume = 50;
+  DefaultSecondaryVolume = 45;
+  BitmapPos = 129, 63;
+  FormModifier = 145;
+  StrengthModifier = 75;
+  NameSingular = "rapier";
+  PostFix = "named Lynslag";
+  Alias == "Lynslag";
+  MainMaterialConfig == MITHRIL;
+  SecondaryMaterialConfig == SAPPHIRE;
+  MaterialConfigChances = { 6, 100, 90, 80, 70, 25, 4; }
+  Roundness = 45;
+  AttachedGod = LEGIFER;
+  WieldedBitmapPos = 149, 449;
+  EnchantmentPlusChance = 2;
+  DamageFlags = PIERCE;
+
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 132, 94;
+    WieldedBitmapPos = 166, 449;
+    EnchantmentPlusChance = 6;
+  }
+}
+
+
+thievesgirdle /* armor-> (belt) */
+{
+  DefaultSize = 150;
+  Possibility = 6;
+  WeaponCategory = WHIPS;
+  Category = BELT;
+  DefaultMainVolume = 250;
+  StrengthModifier = 100;
+  BitmapPos = 32, 384;
+  NameSingular = "thieves' girdle";
+  Alias == "girdle";
+  MainMaterialConfig = { 4, HARDENED_LEATHER, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR; }
+  MaterialConfigChances = { 4, 1500, 500, 250, 100; }
+  Roundness = 10;
+  FormModifier = 10; /* this is multiplied by MainMaterial's flexibility */
+  WieldedBitmapPos = 160, 224;
+  BeltBitmapPos = 48, 432;
+  CanBeBroken = true;
+  EnchantmentPlusChance = 10;
+  DamageFlags = SLASH;
+  IsSadistWeapon = true;
+  AffectsDexterity = true;
+  AffectsAgility = true;
+  BaseEnchantment = 2;
+
+  Config BROKEN;
+  {
+    DefaultSize = 150;
+    Possibility = 2;
+    MainMaterialConfig = { 5, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR, DRAGON_HIDE, SPIDER_SILK; }
+    MaterialConfigChances = { 5, 0, 0, 50, 25, 5; }
+    BitmapPos = 80, 384;
+    EnchantmentPlusChance = 20;
+    BeltBitmapPos = 48, 512;
+  }
+}

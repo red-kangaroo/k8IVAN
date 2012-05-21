@@ -3,8 +3,10 @@
 #include "gears/armor_cloak.cpp"
 #include "gears/armor_boot.cpp"
 #include "gears/armor_gauntlet.cpp"
-#include "gears/armor_belt.cpp"
 #include "gears/armor_helmet.cpp"
+
+#include "gears/armor_belt.cpp"
+#include "gears/belt_thievesgirdle.cpp"
 
 #include "gears/armor_bodyarmor.cpp"
 #include "gears/bodyarmor_goldeneagleshirt.cpp"
@@ -49,6 +51,7 @@
 #include "gears/meleeweapon_kawai.cpp"
 #include "gears/meleeweapon_eptyron.cpp"
 #include "gears/meleeweapon_taiaha.cpp"
+#include "gears/meleeweapon_lynslag.cpp"
 
 #include "gears/whip_chameleonwhip.cpp"
 
