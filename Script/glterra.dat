@@ -49,5 +49,5 @@ glterrain
 }
 
 
-Include "glterras/liquidterrain.dat";
 Include "glterras/solidterrain.dat";
+Include "glterras/liquidterrain.dat";

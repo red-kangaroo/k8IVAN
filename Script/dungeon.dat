@@ -34,6 +34,6 @@ Include "dungeons/UT.dat";
 Include "dungeons/GC.dat";
 Include "dungeons/mondedr.dat";
 Include "dungeons/muntuo.dat";
-Include "dungeons/xinrochtomb.dat";
 Include "dungeons/dragontower.dat";
 Include "dungeons/darkforest.dat";
+Include "dungeons/xinrochtomb.dat";
