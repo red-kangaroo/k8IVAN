@@ -2456,6 +2456,31 @@ housewife
     "\"Petrus's wives are so arrogant towards us working class ones. Grr...\"",
     "\"If you men only knew!\"";
   }
+
+  Config MONDEDR;
+  {
+    LegMainColor = rgb16(0, 80, 180);
+    Cloak = CLOTH cloak;
+    Inventory == lantern;
+    FriendlyReplies =
+    {
+      2,
+      "\"If Mondedr wasn't on Petrus's wanted list it wouldn't be so dark all the time.\"",
+      "\"I heard the shopkeeper in town is a dirty one. I'd rather have the previous owner of the shop.\"";
+    }
+  }
+
+  Config DARK_FOREST;
+  {
+    LegMainColor = rgb16(120, 120, 120);
+    Cloak = CLOTH cloak;
+    FriendlyReplies =
+    {
+      2,
+      "\"Gah! Put me back in the jail cell! I don't want to end up with those ghastly UTFA floosies.\"",
+      "\"Just hurry and get me to Attnam already. Has that jeweller's shop opened up there yet?\"";
+    }
+  }
 }
 
 femaleslave
@@ -4850,6 +4875,36 @@ hedgehog
   AttachedGod = SILVA;
   AutomaticallySeen = true;
   CanOpen = false;
+
+  Config SONIC;
+  {
+    DefaultArmStrength = 20;
+    DefaultAgility = 65;
+    DefaultEndurance = 30;
+    DefaultPerception = 25;
+    DefaultIntelligence = 10;
+    DefaultWisdom = 10;
+    DefaultCharisma = 50;
+    Adjective = 0;
+    DefaultName = "Sonic";
+    Alias == "Sonic";
+    IsUnique = true;
+    SkinColor = rgb16(50, 50, 180);
+    FriendlyReplies = {
+      11,
+      "\"Way past cool!\"",
+      "\"I'm waaaiiitiiiinnng. \"",
+      "\"Up, over, and gone!.\"";
+      "\"Gotta juice and loose.\"";
+      "\"Let's go slo-mo!\"";
+      "\"'scuse me while I chunk my breakfeast...\"";
+      "\"Asta la vista!.\"";
+      "\"Gotta speed jeeves.\"";
+      "\"Let's do it to it.\"";
+      "\"It's juice and jam time.\"";
+      "\"Bummer majores!\"";
+    }
+  }
 }
 
 bunny
@@ -4994,6 +5049,13 @@ hattifattener
   Alias == "Hattivatti";
   AllowUnconsciousness = false;
   CanChoke = false;
+
+  Config FLOATIE;
+  {
+    Adjective = "levitating";
+    MoveType = FLY;
+    StandVerb = "floating";
+  }
 }
 
 necromancer

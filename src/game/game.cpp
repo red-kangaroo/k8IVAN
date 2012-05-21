@@ -53,8 +53,8 @@
 #define SAVE_FILE_VERSION 119 // Increment this if changes make savefiles incompatible
 #define BONE_FILE_VERSION 106 // Increment this if changes make bonefiles incompatible
 */
-#define SAVE_FILE_VERSION 124 // Increment this if changes make savefiles incompatible
-#define BONE_FILE_VERSION 109 // Increment this if changes make bonefiles incompatible
+#define SAVE_FILE_VERSION 125 // Increment this if changes make savefiles incompatible
+#define BONE_FILE_VERSION 110 // Increment this if changes make bonefiles incompatible
 
 #define LOADED    0
 #define NEW_GAME  1
@@ -98,6 +98,8 @@ int game::Masamune;
 int game::Muramasa;
 int game::LoricatusHammer;
 int game::Liberator;
+int game::OmmelBloodMission;
+int game::RegiiTalkState;
 /* */
 massacremap game::PlayerMassacreMap;
 massacremap game::PetMassacreMap;
@@ -389,6 +391,8 @@ truth game::Init (cfestring &Name) {
       Muramasa = 0;
       LoricatusHammer = 0;
       Liberator = 0;
+      OmmelBloodMission = 0;
+      RegiiTalkState = 0;
       /* */
       PlayerMassacreMap.clear();
       PetMassacreMap.clear();
@@ -773,6 +777,7 @@ truth game::Save (cfestring &SaveName) {
   SaveFile << AveragePlayerAgilityExperience;
   SaveFile << Teams << Dungeons << StoryState << PlayerRunning;
   SaveFile << MondedrPass << RingOfThieves << Masamune << Muramasa << LoricatusHammer << Liberator;
+  SaveFile << OmmelBloodMission << RegiiTalkState;
   SaveFile << PlayerMassacreMap << PetMassacreMap << MiscMassacreMap;
   SaveFile << PlayerMassacreAmount << PetMassacreAmount << MiscMassacreAmount;
   SaveArray(SaveFile, EquipmentMemory, MAX_EQUIPMENT_SLOTS);
@@ -823,12 +828,8 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> AveragePlayerDexterityExperience;
   SaveFile >> AveragePlayerAgilityExperience;
   SaveFile >> Teams >> Dungeons >> StoryState >> PlayerRunning;
-  SaveFile >> MondedrPass >> RingOfThieves >> Masamune >> Muramasa >> LoricatusHammer;
-  if (Version == SAVE_FILE_VERSION) {
-    SaveFile >> Liberator;
-  } else {
-    Liberator = 0;
-  }
+  SaveFile >> MondedrPass >> RingOfThieves >> Masamune >> Muramasa >> LoricatusHammer >> Liberator;
+  SaveFile >> OmmelBloodMission >> RegiiTalkState;
   SaveFile >> PlayerMassacreMap >> PetMassacreMap >> MiscMassacreMap;
   SaveFile >> PlayerMassacreAmount >> PetMassacreAmount >> MiscMassacreAmount;
   LoadArray(SaveFile, EquipmentMemory, MAX_EQUIPMENT_SLOTS);

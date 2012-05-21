@@ -115,17 +115,24 @@ void worldmap::Generate () {
         PerfectForAttnam.push_back(Continent[c]);
     }
     if (!PerfectForAttnam.size()) continue;
-
+    //
     v2 AttnamPos, ElpuriCavePos, NewAttnamPos, TunnelEntry, TunnelExit, MondedrPos, MuntuoPos;
+    v2 DragonTowerPos, DarkForestPos, XinrochTombPos;
     truth Correct = false;
     continent *PetrusLikes;
+    //
     for (int c1 = 0; c1 < 25; ++c1) {
       game::BusyAnimation();
+      //
       PetrusLikes = PerfectForAttnam[RAND() % PerfectForAttnam.size()];
       AttnamPos = PetrusLikes->GetRandomMember(EGForestType);
       ElpuriCavePos = PetrusLikes->GetRandomMember(SnowType);
       MondedrPos = PetrusLikes->GetRandomMember(SteppeType);
       MuntuoPos = PetrusLikes->GetRandomMember(LForestType);
+      DragonTowerPos = PetrusLikes->GetRandomMember(SteppeType);
+      DarkForestPos = PetrusLikes->GetRandomMember(LForestType);
+      XinrochTombPos = PetrusLikes->GetRandomMember(SnowType);
+      //
       for (int c2 = 1; c2 < 50; ++c2) {
         TunnelExit = PetrusLikes->GetMember(RAND() % PetrusLikes->GetSize());
         if (AttnamPos != TunnelExit && ElpuriCavePos != TunnelExit) {
@@ -203,20 +210,37 @@ void worldmap::Generate () {
       if (Correct) break;
     }
     if (!Correct) continue;
+    //
     GetWSquare(AttnamPos)->ChangeOWTerrain(attnam::Spawn());
     SetEntryPos(ATTNAM, AttnamPos);
     RevealEnvironment(AttnamPos, 1);
+    //
     GetWSquare(NewAttnamPos)->ChangeOWTerrain(newattnam::Spawn());
     SetEntryPos(NEW_ATTNAM, NewAttnamPos);
+    //
     SetEntryPos(ELPURI_CAVE, ElpuriCavePos);
+    //
     SetEntryPos(MONDEDR, MondedrPos);
+    //
     GetWSquare(TunnelEntry)->ChangeOWTerrain(underwatertunnel::Spawn());
     SetEntryPos(UNDER_WATER_TUNNEL, TunnelEntry);
+    //
     GetWSquare(TunnelExit)->ChangeOWTerrain(underwatertunnelexit::Spawn());
     SetEntryPos(UNDER_WATER_TUNNEL_EXIT, TunnelExit);
+    //
     GetWSquare(MuntuoPos)->ChangeOWTerrain(muntuo::Spawn());
     SetEntryPos(MUNTUO, MuntuoPos);
+    //
+    GetWSquare(DragonTowerPos)->ChangeOWTerrain(dragontower::Spawn());
+    SetEntryPos(DRAGON_TOWER, DragonTowerPos);
+    //
+    GetWSquare(DarkForestPos)->ChangeOWTerrain(darkforest::Spawn());
+    SetEntryPos(DARK_FOREST, DarkForestPos);
+    //
+    SetEntryPos(XINROCH_TOMB, XinrochTombPos);
+    //
     PLAYER->PutTo(NewAttnamPos);
+    //
     CalculateLuminances();
     CalculateNeighbourBitmapPoses();
     break;

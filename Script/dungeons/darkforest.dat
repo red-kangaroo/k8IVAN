@@ -1,0 +1,2141 @@
+Dungeon DARK_FOREST;
+{
+  Levels = 11;
+  Description = "deep forest";
+  ShortDescription = "DF";
+
+  LevelDefault
+  {
+    FillSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+    Size = 60, 60;
+    Rooms = 5;
+    Items = 0; /* this must be zero for these levels */
+    GenerateMonsters = true;
+    IsOnGround = true;
+    TeamDefault = MONSTER_TEAM;
+    LOSModifier = 64;
+    IgnoreDefaultSpecialSquares = false;
+    DifficultyBase = 30;
+    DifficultyDelta = 5;
+    MonsterAmountBase = 6;
+    MonsterAmountDelta = 3;
+    MonsterGenerationIntervalBase = 200;
+    MonsterGenerationIntervalDelta = -20;
+    CanGenerateBone = true;
+    ItemMinPriceBase = 10;
+    ItemMinPriceDelta = 5;
+    EnchantmentMinusChanceBase = -5;
+    EnchantmentMinusChanceDelta = 0;
+    EnchantmentPlusChanceBase = 6;
+    EnchantmentPlusChanceDelta = 2;
+    BackGroundType = GREEN_FRACTAL;
+    AutoReveal = false;
+    IsCatacomb = false;
+
+    RoomDefault
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      Size = 4:7,4:7;
+      AltarPossible = false;
+      WallSquare = solidterrain(GRASS_TERRAIN), LIME_STONE wall(BRICK_OLD);
+      FloorSquare = FIR_WOOD solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(GRASS_TERRAIN), FIR_WOOD door;
+      GenerateDoor = true;
+      DivineMaster = 0;
+      GenerateTunnel = false;
+      GenerateLanterns = false;
+      Type = ROOM_NORMAL;
+      GenerateFountains = false;
+      AllowLockedDoors = true;
+      AllowBoobyTrappedDoors = true;
+      Shape = RECTANGLE;
+      IsInside = true;
+      GenerateWindows = false;
+      UseFillSquareWalls = false;
+      Flags = 0;
+      GenerateWards = false;
+    }
+  }
+
+  Level 0;
+  {
+    Size = 50, 50;
+    LevelMessage = "You step inside the deep forest";
+    Rooms = 2;
+    Items = 1:5;
+
+    RoomDefault
+    {
+      AllowLockedDoors = false;
+    }
+
+    Room
+    {
+      Pos = 10,10;
+      Size = 6,4;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      WallSquare = solidterrain(GROUND), BASALT earth;
+      FloorSquare = solidterrain(GROUND), 0;
+      GenerateDoor = false;
+
+      OTerrainMap
+      {
+        Pos = 0,0;
+        Size = 6,4;
+        Types
+        {
+          # = 0;
+          $ = GRANITE wall(BRICK_OLD);
+          d = FIR_WOOD door;
+          % = BASALT earth;
+        }
+      }
+      {
+        %%%%%%
+        %....%
+        %..$.%
+        %$$$d$
+      }
+
+      Square, Pos 2,2;
+      {
+        OTerrain = stairs(STAIRS_DOWN) { AttachedArea = 1; }
+        EntryIndex = STAIRS_DOWN;
+      }
+    }
+
+    Room
+    {
+      Pos = 25:XSize-10,25:YSize-10;
+      Size = 5,5;
+      WallSquare = solidterrain(GRASS_TERRAIN), GRANITE wall(BRICK_OLD);
+      GenerateWindows = false;
+      AllowLockedDoors = false;
+      GenerateDoor = false;
+      GenerateLanterns = true;
+
+      OTerrainMap
+      {
+        Pos = 0,0;
+        Size = 5,5;
+        Types
+        {
+          # = 0;
+          $ = GRANITE wall(BRICK_OLD);
+          d = FIR_WOOD door;
+        }
+      }
+      {
+        $$$$$
+        $...$
+        $...$
+        $...$
+        $$d$$
+      }
+
+      CharacterMap
+      {
+        Pos = 1,1;
+        Size = 3,3;
+        Types
+        {
+          _ = 0;
+          # = 0;
+          b = fruitbat;
+
+        }
+      }
+      {
+        ..b
+        b..
+        .b.
+      }
+
+      GTerrainMap
+      {
+        Pos = 1,1;
+        Size = 3,3;
+        Types
+        {
+          # = FIR_WOOD solidterrain(PARQUET);
+        }
+      }
+      {
+        ###
+        ###
+        ###
+      }
+
+      ItemMap
+      {
+        Pos = 1,1;
+        Size = 3,3;
+        Types
+        {
+          C == OAK_WOOD itemcontainer(LARGE_CHEST) { ItemsInside = { 3, Random { MaxPrice = 150; Category = WEAPON|SHIELD; ConfigFlags = NO_BROKEN; Times = 3;}, Random { MaxPrice = 150; Category = HELMET|BELT; ConfigFlags = NO_BROKEN; Enchantment = 1; Times = 3;}, Random { MaxPrice = 63; Category = CLOAK|BODY_ARMOR; ConfigFlags = NO_BROKEN; Times = 2;} } }
+        }
+      }
+      {
+        .C.
+        ...
+        ...
+      }
+    }
+
+    Square, Pos 13, 14;
+    {
+      OTerrain = sign { Text = "UTFA Headquarters"; }
+    }
+
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(FIR);
+      Times = 300;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(PINE);
+      Times = 60;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(BIRCH);
+      Times = 30;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(OAK);
+      Times = 10;
+    }
+
+    Square, Pos 45,5;
+    {
+      OTerrain = stairs(WAYPOINT_DEEPER) { AttachedArea = 2; AttachedEntry = WAYPOINT_SHALLOWER; }
+      EntryIndex = WAYPOINT_DEEPER; /*EntryIndex = STAIRS_DOWN + 1;*/
+    }
+
+    Square, Pos 12, 45;
+    {
+      Character = forestman(ROVER) { Team = FORESTMAN_TEAM; }
+    }
+
+    Square, Pos 12, 43;
+    {
+      Character = forestman(ROVER) { Team = FORESTMAN_TEAM; }
+    }
+    Square, Pos 10, 43;
+    {
+      Character = forestman(ROVER) { Team = FORESTMAN_TEAM; }
+    }
+    Square, Pos 10, 45;
+    {
+      Character = forestman(ROVER) { Team = FORESTMAN_TEAM; }
+    }
+    Square, Pos 11, 44;
+    {
+      Character = forestman(BAND_LEADER) { Team = FORESTMAN_TEAM; Flags = IS_LEADER; }
+    }
+
+    Square, Pos 0, 45;
+    {
+      EntryIndex = STAIRS_UP;
+    }
+
+    Square, Pos 5, 45;
+    {
+      OTerrain = sign { Text = "The Deep Forest"; }
+    }
+    Square, Pos 6, 45;
+    {
+      Items == lantern;
+    }
+
+    Square, Pos 32, 45;
+    {
+      Character = kobold;
+    }
+
+    Square, Pos 32, 43;
+    {
+      Character = kobold;
+    }
+    Square, Pos 30, 43;
+    {
+      Character = kobold;
+    }
+    Square, Pos 30, 45;
+    {
+      Character = kobold(CHIEFTAIN);
+    }
+    Square, Pos 31, 44;
+    {
+      Character = kobold(LORD) { Flags = IS_LEADER; }
+    }
+  }
+
+  Level 1;/* underground store */
+  {
+    FillSquare = solidterrain(GROUND), BASALT earth;
+    TunnelSquare = solidterrain(GROUND), 0;
+    LevelMessage = "It is very dark in this underground store";
+    /*Description = "Underground Store";*/
+    ShortDescription = "DF Store";
+    Size = 44, 38;
+    Rooms = 2;
+    IsOnGround = false;
+    LOSModifier = 16;
+    BackGroundType = GRAY_FRACTAL;
+    CanGenerateBone = false;
+    GenerateMonsters = false;
+
+    RoomDefault
+    {
+      /*Pos = 2:XSize-5,2:YSize-5;
+      Size = 4:6,4:6;*/
+      WallSquare = solidterrain(GROUND), GRANITE wall(BRICK_OLD);
+      FloorSquare = FIR_WOOD solidterrain(PARQUET), 0;
+      DoorSquare = FIR_WOOD solidterrain(GROUND), FIR_WOOD door;
+      GenerateTunnel = true;
+      GenerateWards = false;
+  }
+
+  Room
+    {
+    Pos = 2:XSize-10,2:YSize-8;
+      Size = 8,5;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      GenerateTunnel = true;
+
+      OTerrainMap
+      {
+        Pos = 0,0;
+        Size = 8,5;
+        Types
+        {
+          # = 0;
+      $ = GRANITE wall(BRICK_OLD);
+      d = FIR_WOOD door;
+        }
+      }
+      {
+        $$$$$$$$
+        $......$
+        $......$
+        $......$
+        $$$$$$$$
+      }
+
+    Square, Random IN_ROOM|HAS_NO_OTERRAIN;
+      {
+          OTerrain = stairs(STAIRS_UP) { AttachedArea = 0; }
+          EntryIndex = STAIRS_UP;
+      }
+
+      Square, Random;
+      {
+      Items == brokenbottle;
+      Times = 3;
+      }
+
+    }
+
+  Room
+    {
+      Pos = 2:XSize-12,2:YSize-14;
+      Size = 11,13;
+      GenerateDoor = true;
+      GenerateTunnel = true;
+      Flags = NO_MONSTER_GENERATION;
+
+      OTerrainMap
+      {
+        Pos = 0,0;
+        Size = 11,13;
+        Types
+        {
+          # = 0;
+          $ = GRANITE wall(BRICK_OLD);
+          d = FIR_WOOD door;
+          = = olterraincontainer(BOOK_CASE) { ItemsInside = { 3, Random { MaxPrice = 500; Category = SCROLL; }, Random { MaxPrice = 500; Category = BOOK; }, scrollofdetectmaterial; } }
+        }
+      }
+      {
+        ...........
+        ...........
+        ..$$$$$$$..
+        ..=.....$..
+        ..$.....$..
+        ..$.....$..
+        ..$.....$..
+        ..$.....$..
+        ..$.....$..
+        ..$.....$..
+        ..$$$$$$$..
+        ...........
+        ...........
+      }
+
+    CharacterMap
+      {
+        Pos = 3,3;
+        Size = 5,7;
+        Types
+        {
+          _ = 0;
+          # = 0;
+          R = regii { Team = FORESTMAN_TEAM; }
+          O = UTFAOfficial { Team = FORESTMAN_TEAM; }
+        }
+      }
+      {
+        .....
+        O....
+        ...O.
+        .O...
+        ....O
+        O....
+        ..R..
+      }
+
+    Square, Random;
+      {
+      Items == can { SecondaryMaterial = BANANA_FLESH; }
+      Times = 2;
+      }
+    }
+  }
+
+  RandomLevel 2:3;
+  {
+    /*Room Dolphin Pond*/
+    Room
+    {
+      Pos = 20:XSize-30,20:YSize-30;
+      Size = 7,7;
+      GenerateLanterns = false;
+      GenerateWindows = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      GenerateFountains = false;
+      AltarPossible = false;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      GenerateWards = false;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+
+      OTerrainMap
+      {
+      Pos = 0,0;
+      Size = 7,7;
+        Types
+        {
+          $ = GRANITE wall(BRICK_OLD);
+        }
+      }
+      {
+        .......
+        .......
+        .......
+        .......
+        .......
+        .......
+        .......
+      }
+
+      GTerrainMap
+      {
+        Pos = 0,0;
+        Size = 7,7;
+        Types
+        {
+          # = WATER liquidterrain(POOL);
+          B = FIR_WOOD solidterrain(PARQUET);
+        }
+      }
+      {
+        #####..
+        ######.
+        #######
+        #######
+        #######
+        .######
+        ..#####
+      }
+      CharacterMap
+      {
+        Pos = 0,0;
+        Size = 7,7;
+        Types
+        {
+          d = dolphin;
+        }
+      }
+      {
+        .......
+        .......
+        ..d....
+        .......
+        .......
+        .......
+        .......
+      }
+    }
+
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = haastseagle;
+      Times = 1;
+    }
+  }
+
+  RandomLevel 2:3;
+  {
+    /*Dwarven minefield A*/
+    Room
+    {
+      Pos = 2:XSize-8,2:YSize-8;
+      Size = 6:10, 5:8;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = ROUND_CORNERS;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateWards = false;
+      IsInside = false;
+      Flags = NO_MONSTER_GENERATION;
+      UseFillSquareWalls = true;
+      GenerateWards = false;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+
+      Square, Random;
+      {
+        OTerrain = STEEL sign { Text = "Dwarven mine field 214"; }
+      }
+
+      Square, Random;
+      {
+        Items == Random { MinPrice = 100; Chance = 50; }
+        Times = 8;
+      }
+
+      Square, Random;
+      {
+        Items == Random { MinPrice = 500; Chance = 50; }
+        Times = 2;
+      }
+
+      Square, Random;
+      {
+        Items == mine { Team = MONSTER_TEAM; IsActive = true; Chance = 25; }
+        Times = 18;
+      }
+
+      Square, Random;
+      {
+        Items == mine(BIG_MINE) { Team = MONSTER_TEAM; IsActive = true; Chance = 25; }
+        Times = 6;
+      }
+    }
+  }
+
+  RandomLevel 3:4;
+  {
+    /*Dwarven minefield B*/
+    Room
+    {
+      Pos = 2:XSize-10,2:YSize-10;
+      Size = 5:8, 8:10;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = ROUND_CORNERS;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateWards = false;
+      IsInside = false;
+      Flags = NO_MONSTER_GENERATION;
+      UseFillSquareWalls = true;
+      GenerateWards = false;
+
+      Square, Random;
+      {
+        OTerrain = STEEL sign { Text = "Dwarven mine field 625"; }
+      }
+
+      Square, Random;
+      {
+        Items == Random { MinPrice = 200; Chance = 50; }
+        Times = 12;
+      }
+
+      Square, Random;
+      {
+        Items == Random { MinPrice = 500; Chance = 50; }
+        Times = 2;
+      }
+
+      Square, Random;
+      {
+        Items == mine { Team = MONSTER_TEAM; IsActive = true; Chance = 25; }
+        Times = 18;
+      }
+
+      Square, Random;
+      {
+        Items == mine(BIG_MINE) { Team = MONSTER_TEAM; IsActive = true; Chance = 25; }
+        Times = 6;
+      }
+    }
+  }
+
+  RandomLevel 3:4;
+  {
+    /*Room Rock cave with cave bears*/
+
+    Room /* mountain */
+    {
+      Pos = 2:XSize-10,2:YSize-10;
+      Size = 8, 8;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      GenerateFountains = false;
+      Shape = ROUND_CORNERS;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateWards = false;
+      UseFillSquareWalls = true;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+
+      OTerrainMap
+      {
+        Pos = 0,0;
+        Size = 8,8;
+        Types
+        {
+          % = LIME_STONE earth;
+          d = GRANITE door;
+        }
+      }
+      {
+        .%%%%%%.
+        %%..%.%%
+        %...d..%
+        %..%%..%
+        %%%%..%%
+        .%%...%.
+        ..%..%%.
+        ..%..%..
+      }
+
+      CharacterMap
+      {
+        Pos = 0,0;
+        Size = 8,8;
+
+        Types
+        {
+          c = bear(CAVE_BEAR);
+        }
+      }
+      {
+        ........
+        ........
+        ..c.....
+        .c......
+        ........
+        ........
+        ........
+        ........
+      }
+    }
+  }
+
+  RandomLevel 4:5;
+  {
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = necromancer(APPRENTICE);
+      Times = 1;
+    }
+  }
+
+  /*level 2 = chaotic shrine*/
+  /*level 3 = guaranteed benign Uldra*/
+  /*level 4 = shop (wherever this is, you can't generate bones)*/
+  /*level 5 = Rock formation and Lawful shrine*/
+  /*level 6 = catacomb with mutant bunny room and guaranteed vampire*/
+  /*level 7 = Morbe's abode*/
+  /*level 8 = Bridge level*/
+  /*level 9 = Underground Passage*/
+  /*level 10 = Prison Level*/
+
+  Level 2;
+  {
+    LevelMessage = "You step further inside the deep forest";
+    LOSModifier = 48;
+
+  RoomDefault
+    {
+      GenerateWards = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+    }
+
+    Room
+    {
+      Pos = 5:15,5:15;
+      Size = 1, 1;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateFountains = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = RECTANGLE;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      IsInside = false;
+      Flags = NO_MONSTER_GENERATION;
+      UseFillSquareWalls = true;
+      GenerateWards = false;
+
+      Square, Pos 0, 0;
+      {
+        OTerrain = stairs(WAYPOINT_SHALLOWER) { AttachedArea = 0; AttachedEntry = WAYPOINT_DEEPER; } /*STAIRS_DOWN + 1;*/
+        EntryIndex = WAYPOINT_SHALLOWER; /*EntryIndex = STAIRS_UP;*/
+      }
+    }
+
+    Room
+    {
+      Pos = XSize-15:XSize-5,XSize-15:XSize-5;
+      Size = 1, 1;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateFountains = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = RECTANGLE;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      IsInside = false;
+      Flags = NO_MONSTER_GENERATION;
+      UseFillSquareWalls = true;
+      GenerateWards = false;
+
+      Square, Pos 0, 0;
+      {
+        OTerrain = stairs(WAYPOINT_DEEPER) { AttachedArea = 3; AttachedEntry = WAYPOINT_SHALLOWER; }
+        EntryIndex = WAYPOINT_DEEPER;
+      }
+    }
+
+    /*holy shrine number 1*/
+    Room
+    {
+      Pos = 2:XSize-8,2:YSize-9;
+      Size = 4:7, 4:7;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = ROUND_CORNERS;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateWards = true;
+      IsInside = false;
+      Flags = NO_MONSTER_GENERATION;
+      UseFillSquareWalls = true;
+
+      Square, Random;
+      {
+        OTerrain = BASALT altar;
+      }
+      Square, Random;
+      {
+        Items == bone;
+        Times = 5;
+      }
+      Square, Random;
+      {
+        Items == skull;
+        Times = 2;
+      }
+
+      Square, Random;
+      {
+        Items == Random { MinPrice = 20; Chance = 50; }
+        Times = 4;
+      }
+
+      Square, Random;
+      {
+        Items == lantern;
+        Times = 2;
+      }
+    }
+
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(FIR);
+      Times = 600;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(PINE);
+      Times = 180;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(BIRCH);
+      Times = 90;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(OAK);
+      Times = 30;
+    }
+
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = kobold;
+      Times = 4:8;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = kobold(CHIEFTAIN);
+      Times = 1:2;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Items == TIN beartrap { Team = MONSTER_TEAM; IsActive = true; }
+      Times = 4:8;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Items == BRONZE beartrap { Team = MONSTER_TEAM; IsActive = true; }
+      Times = 2:4;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Items == METEORIC_STEEL beartrap { Team = MONSTER_TEAM; IsActive = true; }
+      Times = 0:2;
+    }
+  }
+
+  Level 3;
+  {
+    LOSModifier = 32;
+    LevelMessage = "You step further inside the deep forest";
+
+    RoomDefault
+    {
+      GenerateWards = false;
+    }
+
+    Room
+    {
+      Pos = 5:15,(YSize-15):(YSize-5);
+      Size = 1, 1;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateFountains = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = RECTANGLE;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      IsInside = false;
+      Flags = NO_MONSTER_GENERATION;
+      UseFillSquareWalls = true;
+      GenerateWards = false;
+
+      Square, Pos 0, 0;
+      {
+        OTerrain = stairs(WAYPOINT_SHALLOWER) { AttachedArea = 2; AttachedEntry = WAYPOINT_DEEPER; }
+        EntryIndex = WAYPOINT_SHALLOWER;
+      }
+    }
+
+    Room
+    {
+      Pos = XSize-15:XSize-5,5:15;
+      Size = 1, 1;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateFountains = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = RECTANGLE;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      IsInside = false;
+      Flags = NO_MONSTER_GENERATION;
+      UseFillSquareWalls = true;
+      GenerateWards = false;
+
+      Square, Pos 0, 0;
+      {
+        OTerrain = stairs(WAYPOINT_DEEPER) { AttachedArea = 4; AttachedEntry = WAYPOINT_SHALLOWER; }
+        EntryIndex = WAYPOINT_DEEPER;
+      }
+    }
+
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(FIR);
+      Times = 600;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(PINE);
+      Times = 180;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(BIRCH);
+      Times = 190;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(OAK);
+      Times = 30;
+    }
+
+    Square, Random;
+    {
+      Items == METEORIC_STEEL beartrap { Team = MONSTER_TEAM; IsActive = true; }
+      Times = 2:6;
+    }
+
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = bat;
+      Times = 4;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = magpie;
+      Times = 2;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+    Character = kobold;
+    Times = 4:8;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+    Character = kobold(CHIEFTAIN);
+    Times = 1:2;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+    Character = kobold(LORD);
+    Times = 1:2;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = hunter;
+      Times = 1;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = bear(BLACK_BEAR);
+      Times = 3:6;
+    }
+  }
+
+  Level 4;
+  {
+    LevelMessage = "You step further inside the deep forest";
+    LOSModifier = 32;
+    Size = 80, 40;
+    CanGenerateBone = false;
+
+  RoomDefault
+    {
+      GenerateWards = false;
+    }
+
+    Room
+    {
+      Pos = 1:7,5:YSize-5;
+      Size = 1, 1;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateFountains = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = RECTANGLE;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      IsInside = false;
+      Flags = NO_MONSTER_GENERATION;
+      UseFillSquareWalls = true;
+      GenerateWards = false;
+
+      Square, Pos 0, 0;
+      {
+        OTerrain = stairs(WAYPOINT_SHALLOWER) { AttachedArea = 3; AttachedEntry = WAYPOINT_DEEPER; }
+        EntryIndex = WAYPOINT_SHALLOWER;
+      }
+    }
+
+    Room
+    {
+      Pos = 70:78,5:YSize-5;
+      Size = 1, 1;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateFountains = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = RECTANGLE;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      IsInside = false;
+      Flags = NO_MONSTER_GENERATION;
+      UseFillSquareWalls = true;
+      GenerateWards = false;
+
+      Square, Pos 0, 0;
+      {
+        OTerrain = stairs(WAYPOINT_DEEPER) { AttachedArea = 5; AttachedEntry = WAYPOINT_SHALLOWER; }
+        EntryIndex = WAYPOINT_DEEPER;
+      }
+    }
+
+    Room
+    {
+      Size = 7,6;
+      AltarPossible = false;
+      DivineMaster = MELLIS;
+      Type = ROOM_SHOP;
+      GenerateFountains = false;
+      WallSquare = solidterrain(GRASS_TERRAIN), LIME_STONE wall(BRICK_OLD);
+      FloorSquare = FIR_WOOD solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(GRASS_TERRAIN), FIR_WOOD door;
+      UseFillSquareWalls = false;
+      GenerateDoor = true;
+      GenerateTunnel = false;
+      GenerateLanterns = true;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = RECTANGLE;
+      IsInside = true;
+      GenerateWindows = false;
+      Flags = 0;
+      GenerateWards = false;
+
+      CharacterMap
+      {
+        Pos = 1, 1;
+        Size = 5, 4;
+
+        Types
+        {
+          g = guard(FOREST_SHOP) { Team = 5; }
+          s = shopkeeper(DARK_FOREST) { Team = 5; Flags = IS_MASTER; }
+        }
+      }
+      {
+        g.s.g
+        .....
+        .....
+        g...g
+      }
+
+      ItemMap
+      {
+        Pos = 1, 1;
+        Size = 5, 4;
+
+        Types
+        {
+          b == Random { MinPrice = 100; MaxPrice = 10000; Category = GAUNTLET|BOOT; }
+          a == Random { MinPrice = 500; MaxPrice = 10000; Category = HELMET|CLOAK|BODY_ARMOR|BELT; }
+          d == Random { MinPrice = 200; MaxPrice = 10000; Category = RING|AMULET; }
+          w == Random { MinPrice = 500; MaxPrice = 10000; Category = WEAPON|SHIELD; }
+          e == Random { MinPrice = 50; MaxPrice = 10000; Category = FOOD|POTION; }
+          u == Random { MinPrice = 200; MaxPrice = 10000; Category = WAND|TOOL; }
+          r == Random { MinPrice = 200; MaxPrice = 10000; Category = SCROLL|BOOK; }
+          f == wand(WAND_OF_FIRE_BALLS);
+        }
+      }
+      {
+        .e.f.
+        wrwwu
+        uarae
+        .abd.
+      }
+    }
+
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(FIR);
+      Times = 600;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(PINE);
+      Times = 180;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(BIRCH);
+      Times = 120;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(OAK);
+      Times = 100;
+    }
+
+    Square, Random;
+    {
+      Items == METEORIC_STEEL beartrap { Team = MONSTER_TEAM; IsActive = true; }
+      Times = 2:6;
+    }
+
+    Square, Random NOT_IN_ROOM;
+    {
+    Character = eddy;
+    Times = 10;
+    }
+  }
+
+    Level 5; /* mountain level */
+  {
+    FillSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+    Size = 50, 50;
+    LevelMessage = "You step further inside the deep forest. In the distance you see an ominous looking rocky outcropping.";
+    GenerateMonsters = true;
+    Rooms = 3;
+    Items = 10:30;
+    IsOnGround = true;
+    TeamDefault = MONSTER_TEAM;
+    LOSModifier = 24;
+    IgnoreDefaultSpecialSquares = false;
+    CanGenerateBone = true;
+    BackGroundType = GREEN_FRACTAL;
+    DifficultyBase = 60;
+    IsCatacomb = false;
+
+  RoomDefault
+    {
+      GenerateWards = false;
+    }
+
+    Room /* mountain */
+    {
+      Pos = 19, 17;
+      Size = 25, 25;
+      AllowLockedDoors = true;
+      AllowBoobyTrappedDoors = true;
+      GenerateFountains = false;
+      Shape = ROUND_CORNERS;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateWards = false;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(GROUND), SAND_STONE earth;
+
+      OTerrainMap
+      {
+        Pos = 0,0;
+        Size = 25,25;
+        Types
+        {
+          % = OBSIDIAN earth;
+          d = OBSIDIAN door { Parameters = LOCKED; }
+        }
+      }
+      {
+      ....%%%%%%%%%%%%%..%%%%..
+      .%%%%%%%%%%%%%%%%%%%%%%%.
+      .%%%%%%%%%%%%%%%%%%%%%%%%
+      %%%%%%%%%%..%%%%%%%%%%%%.
+      %%%%%%%%%....%%%%%%%%%%%%
+      ..%%%%%%%%..%%%%%%%%%%%%%
+      %%%%%%%%%%%%%%%%%%%%%%%%.
+      %%%%%%%%%%%%%%%%%%%%%%%..
+      .%%%%%%%%%%%%%%%%%%%%%...
+      %%%%%%%%...%%%%%%%%%%....
+      %%%%%%%.....%%%%%%%%.....
+      .%%%%%%.....d.....d......
+      %%%%%%%.....%%%%%%%%.....
+      %%%%%%%%...%%%%%%%%%%....
+      %%%%%%%%%%%%%%%%%%%%%%...
+      .%%%%%%%%%%%%%%%%%%%%%%..
+      ..%%%%%%%%%%%%%%%%%%%%%%.
+      %%%%%%%%%%%%%%%%%%%%%%%..
+      %%%%%%%%%%%%%%%%%%%%%....
+      .%%%%%%%%%%%%%%%%%%..%%..
+      ..%%%%%%%%%%%%%%%%%......
+      ..%%%%%%%%%%%%%%%%%......
+      ...%%%%%%%%%%%%%%........
+      ......%%%%%%%%%%%%%......
+      ........%%%%%..%%%%......
+      }
+
+            GTerrainMap
+      {
+        Pos = 0,0;
+        Size = 25,25;
+        Types
+        {
+          % = LIME_STONE solidterrain(FLOOR);
+          _ = LIME_STONE solidterrain(FLOOR);
+          - = OAK_WOOD solidterrain(PARQUET);
+        }
+      }
+      {
+        ....%%%%%%%%%%%%%..%%%%..
+        .%%%%%%%%%%%%%%%%%%%%%%%.
+        .%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%__%%%%%%%%%%%%.
+        %%%%%%%%%____%%%%%%%%%%%%
+        ..%%%%%%%%__%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%.
+        %%%%%%%%%%%%%%%%%%%%%%%..
+        .%%%%%%%%%%%%%%%%%%%%%...
+        %%%%%%%%___%%%%%%%%%%....
+        %%%%%%%_____%%%%%%%%.....
+        .%%%%%%____________......
+        %%%%%%%_____%%%%%%%%.....
+        %%%%%%%%___%%%%%%%%%%....
+        %%%%%%%%%%%%%%%%%%%%%%...
+        .%%%%%%%%%%%%%%%%%%%%%%..
+        ..%%%%%%%%%%%%%%%%%%%%%%.
+        %%%%%%%%%%%%%%%%%%%%%%%..
+        %%%%%%%%%%%%%%%%%%%%%....
+        .%%%%%%%%%%%%%%%%%%..%%..
+        ..%%%%%%%%%%%%%%%%%......
+        ..%%%%%%%%%%%%%%%%%......
+        ...%%%%%%%%%%%%%%........
+        ......%%%%%%%%%%%%%......
+        ........%%%%%..%%%%......
+      }
+
+      Square, Pos 9, 12;
+      {
+      OTerrain = stairs(STAIRS_DOWN) { AttachedArea = 6; }
+      EntryIndex = STAIRS_DOWN;
+      }
+
+    }
+
+    /*holy shrine number 2*/
+    Room
+    {
+      Pos = 2:XSize-9,2:YSize-9;
+      Size = 6:8, 6:8;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = ROUND_CORNERS;
+      WallSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      FloorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      DoorSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      AltarPossible = false;
+      GenerateWards = true;
+      IsInside = false;
+      Flags = NO_MONSTER_GENERATION;
+      UseFillSquareWalls = true;
+
+      Square, Random;
+      {
+        OTerrain = BASALT altar;
+      }/*
+      Square, Random;
+      {
+        Items == wand;
+      }
+      Square, Random;
+      {
+        Items == scroll;
+        Times = 2;
+      }*/
+      Square, Random;
+      {
+        Items == Random { MinPrice = 100; Chance = 50; }
+        Times = 4;
+      }
+      Square, Random;
+      {
+        Items == lantern;
+        Times = 2;
+      }
+    }
+
+    Square, Pos 2,25;
+    {
+      OTerrain = stairs(WAYPOINT_SHALLOWER) { AttachedArea = 4; AttachedEntry = WAYPOINT_DEEPER; }
+      EntryIndex = WAYPOINT_SHALLOWER;
+    }
+
+    Square, Pos 47,25;
+    {
+    OTerrain = stairs(WAYPOINT_DEEPER) { AttachedArea = 8; AttachedEntry = WAYPOINT_SHALLOWER; }
+    EntryIndex = WAYPOINT_DEEPER; /*STAIRS_DOWN + 1;*/
+    }
+
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(FIR);
+      Times = 300;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(PINE);
+      Times = 90;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(BIRCH);
+      Times = 45;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(OAK);
+      Times = 15;
+    }
+  }
+
+  Level 6; /* 'Catacomb' style level */
+  {
+    FillSquare = solidterrain(GROUND), OBSIDIAN earth;
+    TunnelSquare = solidterrain(GROUND), 0;
+    LevelMessage = "It is very dark and smells musty here.";
+    /*Description = "Haunted Lair";*/
+    ShortDescription = "DF Cave";
+    Size = 36, 64;
+    Rooms = 12:16;
+    IsOnGround = false;
+    LOSModifier = 16;
+    BackGroundType = GRAY_FRACTAL;
+    CanGenerateBone = true;
+    IsCatacomb = true;
+    GenerateMonsters = true;
+    TeamDefault = MONSTER_TEAM;
+    IgnoreDefaultSpecialSquares = false;
+    MonsterGenerationIntervalBase = 100;
+    Items = 10:15;
+
+    RoomDefault
+    {
+      Pos = 5:XSize-10,5:YSize-10;
+      Size = 5:8,5:8;
+      WallSquare = solidterrain(GROUND), GRANITE wall(BRICK_OLD);
+      FloorSquare = FIR_WOOD solidterrain(PARQUET), 0;
+      DoorSquare = FIR_WOOD solidterrain(PARQUET), FIR_WOOD door;
+      GenerateTunnel = true;
+      GenerateWards = true;
+      AltarPossible = true;
+      GenerateDoor = true;
+      DivineMaster = 0;
+      GenerateLanterns = true;
+      Type = ROOM_NORMAL;
+      GenerateFountains = true;
+      AllowLockedDoors = true;
+      AllowBoobyTrappedDoors = true;
+      Shape = RECTANGLE;
+      IsInside = true;
+      GenerateWindows = false;
+      UseFillSquareWalls = false;
+      Flags = 0;
+    }
+
+    Room
+    {
+      Size = 7,7;
+      AltarPossible = false;
+      AllowLockedDoors = false;
+      Shape = ROUND_CORNERS;
+
+      CharacterMap
+      {
+        Pos = 1,1;
+        Size = 5,5;
+
+        Types
+        {
+          f = bunny(BABY_FEMALE);
+          m = bunny(BABY_MALE);
+          F = bunny(ADULT_FEMALE);
+          M = bunny(ADULT_MALE);
+          V = vampire { Inventory = { 3, scrollofenchantweapon, scrollofenchantarmor, solstone; } }
+        }
+      }
+      {
+        .fff.
+        mF.Fm
+        mFVFm
+        fMFMf
+        .mmm.
+      }
+    }
+
+    Square, Random;
+    {
+    Items == can { SecondaryMaterial = BANANA_FLESH; }
+    Times = 2;
+    }
+
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = stairs(STAIRS_UP) { AttachedArea = 5; AttachedEntry = STAIRS_DOWN; }
+      EntryIndex = STAIRS_UP;
+    }
+
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+    OTerrain = stairs(STAIRS_DOWN) { AttachedArea = 7; }
+    EntryIndex = STAIRS_DOWN;
+    }
+
+  }
+
+  Level 7; /* Morbe's level */
+  {
+    FillSquare = solidterrain(GROUND), OBSIDIAN earth;
+    TunnelSquare = solidterrain(GROUND), 0;
+    LevelMessage = "You smell the stench of all the world's pestillence.";
+    Description = "Morbe's Abode";
+    /*ShortDescription = "DF Cave";*/
+    Size = 40, 24;
+    Rooms = 1;
+    IsOnGround = false;
+    LOSModifier = 16;
+    BackGroundType = GRAY_FRACTAL;
+    AutoReveal = false;
+    CanGenerateBone = false;
+    IsCatacomb = false;
+    Items = 0;
+    GenerateMonsters = false;
+    TeamDefault = MONSTER_TEAM;
+    IgnoreDefaultSpecialSquares = false;
+    MonsterAmountBase = 0;
+    MonsterAmountDelta = 0;
+    MonsterGenerationIntervalBase = 0;
+    MonsterGenerationIntervalDelta = 0;
+    DifficultyBase = 30;
+    DifficultyDelta = 5;
+
+    RoomDefault
+    {
+      Pos = 5:XSize-15,5:YSize-15;
+      Size = 5:10,5:10;
+      WallSquare = solidterrain(GROUND), GRANITE wall(BRICK_OLD);
+      FloorSquare = LIME_STONE solidterrain(GROUND), 0;
+      DoorSquare = LIME_STONE solidterrain(GROUND), GRANITE door;
+      GenerateTunnel = false;
+      GenerateWards = false;
+      AltarPossible = false;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      Type = ROOM_NORMAL;
+      GenerateFountains = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = RECTANGLE;
+      IsInside = true;
+      GenerateWindows = false;
+      UseFillSquareWalls = true;
+      Flags = NO_MONSTER_GENERATION;
+    }
+
+    Room
+    {
+      Pos = 15,7;
+      Size = 9,9;
+      DivineMaster = SCABIES;
+      GenerateWards = false;
+
+      OTerrainMap
+      {
+        Pos = 1,1;
+        Size = 7,7;
+        Types
+        {
+          _ = 0;
+          # = 0;
+          $ = TIN wall(BRICK_OLD);
+          ^ = decoration(HOLY_TREE);
+          c = decoration(COUCH);
+          d = OAK_WOOD door;
+          A = BLACK_DIAMOND altar(SCABIES);
+        }
+      }
+      {
+        ...A...
+        .......
+        .......
+        .......
+        .......
+        .......
+        .......
+      }
+
+      CharacterMap
+      {
+        Pos = 1,1;
+        Size = 7,7;
+        Types
+        {
+          # = 0;
+          X = morbe { Team = MORBE_TEAM; }
+        }
+      }
+      {
+        .......
+        ..X....
+        .......
+        .......
+        .......
+        .......
+        .......
+      }
+
+      ItemMap
+      {
+        Pos = 1,1;
+        Size = 7,7;
+        Types
+        {
+          C == COPPER OMMEL_BLOOD cauldron;
+        }
+      }
+      {
+        .......
+        ....C..
+        .......
+        .......
+        .......
+        .......
+        .......
+      }
+
+      Square, Pos = 4, 6;
+      {
+        OTerrain = stairs(STAIRS_UP) { AttachedArea = 6; AttachedEntry = STAIRS_DOWN; }
+        EntryIndex = STAIRS_UP;
+      }
+    }
+  }
+
+  Level 8; /* The bridge level */
+  {
+    FillSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+    Size = 60, 30;
+    LevelMessage = "You step further inside the deep forest";
+    GenerateMonsters = true;
+    Rooms = 1;
+    Items = 5:10;
+    IsOnGround = true;
+    TeamDefault = MONSTER_TEAM;
+    LOSModifier = 24;
+    IgnoreDefaultSpecialSquares = false;
+    CanGenerateBone = true;
+    BackGroundType = GREEN_FRACTAL;
+    DifficultyBase = 70;
+    DifficultyDelta = 0;
+    MonsterAmountBase = 21;
+    MonsterGenerationIntervalBase = 80;
+    MonsterGenerationIntervalDelta = 0;
+    IsCatacomb = false;
+
+  RoomDefault
+    {
+      Pos = 36:50,1:20;
+      Size = 4:6,4:6;
+      AltarPossible = false;
+      WallSquare = WATER liquidterrain(POOL), 0;
+      FloorSquare = WATER liquidterrain(POOL), 0;
+      DoorSquare = solidterrain(GRASS_TERRAIN), FIR_WOOD door;
+      GenerateDoor = false;
+      DivineMaster = 0;
+      GenerateTunnel = false;
+      GenerateLanterns = false;
+      Type = ROOM_NORMAL;
+      GenerateFountains = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = true;
+      Shape = RECTANGLE;
+      IsInside = true;
+      GenerateWindows = false;
+      UseFillSquareWalls = false;
+      Flags = 0;
+    }
+
+    Room
+    {
+      Pos = 20:XSize-20,1;
+      Size = 1,1;
+      WallSquare = WATER liquidterrain(POOL), 0;
+      GenerateLanterns = false;
+      GenerateWindows = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      GenerateFountains = false;
+      AltarPossible = false;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+
+      OTerrainMap
+      {
+      Pos = 0,-1;
+      Size = 15,30;
+        Types
+        {
+          $ = GRANITE wall(BRICK_OLD);
+        }
+      }
+      {
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ....$$$$$$$....
+      ...............
+      ...............
+      ....$$$$$$$....
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      ...............
+      }
+
+      GTerrainMap
+      {
+        Pos = 0,-1;
+        Size = 15,30;
+        Types
+        {
+          # = WATER liquidterrain(POOL);
+          B = FIR_WOOD solidterrain(PARQUET);
+        }
+      }
+      {
+      #####..........
+      .#####.........
+      ..#####........
+      ...#####.......
+      ...#####.......
+      ...#####.......
+      ..#####........
+      .#####.........
+      .#####.........
+      ..#####........
+      ..#####........
+      ...#####.......
+      ...#####.......
+      ....#####......
+      .....#####.....
+      .....#####.....
+      ....BBBBBBB....
+      ....BBBBBBB....
+      .....#####.....
+      .....#####.....
+      ....#####......
+      ...#####.......
+      ...#####.......
+      ...#####.......
+      ....#####......
+      ....#####......
+      ...#####.......
+      ...#####.......
+      ...#####.......
+      ..#####........
+      }
+
+    }
+
+  Square, Pos 4,14;
+      {
+        OTerrain = stairs(WAYPOINT_SHALLOWER) { AttachedArea = 5; AttachedEntry = WAYPOINT_DEEPER;/* + 1; */}
+        EntryIndex = WAYPOINT_SHALLOWER;
+      }
+
+  Square, Pos 56,20;
+      {
+      OTerrain = stairs(STAIRS_DOWN) { AttachedArea = 9; }
+      EntryIndex = STAIRS_DOWN;
+      }
+
+  Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(FIR);
+      Times = 150;
+      }
+    Square, Random;
+    {
+      Items == METEORIC_STEEL beartrap { Team = MONSTER_TEAM; IsActive = true; }
+      Times = 0:3;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Items == STEEL beartrap { Team = MONSTER_TEAM; IsActive = true; }
+      Times = 0:3;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Items == ADAMANT beartrap { Team = MONSTER_TEAM; IsActive = true; }
+      Times = 0:1;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(BIRCH);
+      Times = 50;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(OAK);
+      Times = 20;
+    }
+  }
+
+  Level 9; /* Underground Passage */
+  {
+    FillSquare = solidterrain(GROUND), OBSIDIAN earth;
+    TunnelSquare = solidterrain(GROUND), 0;
+    /*Description = "Underground Passage";*/
+    ShortDescription = "DF Passage";
+    Size = 54, 54;
+    Rooms = 8:12;
+    Items = 5:10;
+    IsOnGround = false;
+    LOSModifier = 16;
+    BackGroundType = GRAY_FRACTAL;
+    CanGenerateBone = true;
+    IsCatacomb = false;
+    GenerateMonsters = true;
+    TeamDefault = MONSTER_TEAM;
+    IgnoreDefaultSpecialSquares = false;
+    MonsterAmountBase = 24;
+    MonsterGenerationIntervalBase = 60;
+    DifficultyBase = 90;
+
+    RoomDefault
+    {
+      Pos = 2:XSize-10,2:YSize-10;
+      Size = 5:8,5:8;
+      WallSquare = solidterrain(GROUND), GRANITE wall(BRICK_OLD);
+      FloorSquare = FIR_WOOD solidterrain(PARQUET), 0;
+      DoorSquare = FIR_WOOD solidterrain(PARQUET), FIR_WOOD door;
+      GenerateTunnel = true;
+      GenerateWards = false;
+      AltarPossible = true;
+      GenerateDoor = true;
+      DivineMaster = 0;
+      GenerateLanterns = true;
+      Type = ROOM_NORMAL;
+      GenerateFountains = true;
+      AllowLockedDoors = true;
+      AllowBoobyTrappedDoors = true;
+      Shape = RECTANGLE;
+      IsInside = true;
+      GenerateWindows = false;
+      UseFillSquareWalls = false;
+      Flags = 0;
+    }
+
+    Room
+    {
+      Size = 7,7;
+      AltarPossible = false;
+      AllowLockedDoors = false;
+      Shape = ROUND_CORNERS;
+
+      CharacterMap
+      {
+        Pos = 1,1;
+        Size = 5,5;
+
+        Types
+        {
+          a = alchemist;
+          w = warlock;
+          s = shaman;
+        }
+      }
+      {
+        .....
+        .awa.
+        .s.s.
+        .awa.
+        .....
+      }
+    }
+
+    Room
+    {
+      Size = 6,6;
+      AltarPossible = false;
+      AllowLockedDoors = false;
+      Shape = ROUND_CORNERS;
+
+      ItemMap
+      {
+        Pos = 1,1;
+        Size = 4,4;
+
+        Types
+        {
+          a == Random { MinPrice = 40; MaxPrice = 400; Category = HELMET|CLOAK|BODY_ARMOR; }
+          w == Random { MinPrice = 20; MaxPrice = 500; Category = WEAPON; }
+        }
+      }
+      {
+        .aa.
+        waaw
+        wwww
+        .ww.
+      }
+    }
+
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = stairs(STAIRS_UP) { AttachedArea = 8; AttachedEntry = STAIRS_DOWN; }
+      EntryIndex = STAIRS_UP;
+    }
+
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = stairs(STAIRS_UP) { AttachedArea = 10; AttachedEntry = STAIRS_UP; }
+      EntryIndex = STAIRS_UP + 1;
+    }
+  }
+
+  Level 10; /* Prison Level */
+  {
+    FillSquare = solidterrain(DARK_GRASS_TERRAIN), 0;
+    Size = 48, 48;
+    LevelMessage = "You sneak into the prison within the deep forest. You enter through the sewer, (ugh).";
+    Description = "the deep forest Prison level";
+    ShortDescription = "DF Prison";
+    GenerateMonsters = true;
+    Rooms = 1;
+    Items = 1:5;
+    IsOnGround = true;
+    TeamDefault = MONSTER_TEAM;
+    LOSModifier = 32;
+    IgnoreDefaultSpecialSquares = false;
+    CanGenerateBone = false;
+    BackGroundType = GREEN_FRACTAL;
+    DifficultyBase = 70;
+    DifficultyDelta = 0;
+    MonsterAmountBase = 40;
+    MonsterAmountDelta = 0;
+    MonsterGenerationIntervalBase = 60;
+    MonsterGenerationIntervalDelta = 0;
+    IsCatacomb = false;
+
+  RoomDefault
+    {
+      Pos = 2:36,2:36;
+      Size = 4:6,4:6;
+      AltarPossible = false;
+      WallSquare = solidterrain(GRASS_TERRAIN), wall(BRICK_OLD);
+      FloorSquare = FIR_WOOD solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(GRASS_TERRAIN), FIR_WOOD door;
+      GenerateDoor = false;
+      DivineMaster = 0;
+      GenerateTunnel = false;
+      GenerateLanterns = false;
+      Type = ROOM_NORMAL;
+      GenerateFountains = false;
+      AllowLockedDoors = true;
+      AllowBoobyTrappedDoors = false;
+      Shape = RECTANGLE;
+      IsInside = true;
+      GenerateWindows = false;
+      UseFillSquareWalls = false;
+      Flags = 0;
+
+    }
+
+    Room /* PRISON */
+    {
+      Pos = 7,3;
+      Size = 34, 23;
+      WallSquare = solidterrain(GRASS_TERRAIN), GRANITE wall(BRICK_OLD);
+      FloorSquare = FIR_WOOD solidterrain(PARQUET), 0;
+      GenerateLanterns = true;
+      GenerateWindows = false;
+      AllowLockedDoors = true;
+      AllowBoobyTrappedDoors = true;
+      GenerateFountains = false;
+      AltarPossible = false;
+      GenerateDoor = false;
+      GenerateLanterns = false;
+      Flags = NO_MONSTER_GENERATION;
+
+      OTerrainMap
+      {
+      Pos = 0,0;
+      Size = 34,23;
+      Types
+      {
+        # = 0;
+        $ = GRANITE wall(BRICK_OLD);
+        % = OCTIRON wall(BRICK_OLD);
+        d = FIR_WOOD door;
+        D = STEEL door(PENTAGONAL_LOCK) { Parameters = LOCKED; }
+        f = fountain;
+        b = STEEL barwall;
+        @ = STEEL door(BARDOOR|PENTAGONAL_LOCK) { Parameters = LOCKED; }
+        B = STEEL brokendoor(BARDOOR);
+        k = OCTIRON barwall;
+      }
+      }
+      {
+        $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+        $%%%%%%%...$$$$$$$$$$$$$.......$.$
+        $%..%..%$$$$..$..$..$..$$$%%%%%%$$
+        $%..%..D...$..$..$..$..$$$%....%.$
+        $%%%%%%%...$b@$bB$b@$b@$$$%....%.$
+        $%..%..D..................D....%.$
+        $%..%..k..................%....%.$
+        $%%D%%%%.....$b@$b@$b@$bB$%%%%%%.$
+        $.$.......$..$..$..$..$..$$$$$$$.$
+        $.$.......$..$..$..$..$..$$....$.$
+        $$$$$$$$$$$..$$$$$$$$$$$$$$$$$$$$$
+        $.$.....$......................$.$
+        $.$.....$......................$.$
+        $.$.....d......................$.$
+        $.$.....$.....$.$.$.$..........$.$
+        $.$.....$....$$$$$$$$....$.....$.$
+        $.$.....$....$.$.$.$.....$.....$.$
+        $.$$$$$$$................$..f..$.$
+        $.$.....d................$.....$.$
+        $.$.....$................$.....$.$
+        $$$$$$$$$$$$$$$$d$$$$$$$$$$$$$$$$$
+        $.$............$.$.............$.$
+        $$$$$$$$$$$$$$$$d$$$$$$$$$$$$$$$$$
+      }
+
+      CharacterMap
+      {
+        Pos = 0,0;
+        Size = 34, 23;
+        Types
+        {
+          _ = 0;
+          $ = 0;
+          % = 0;
+          b = 0;
+          B = 0;
+          d = 0;
+          D = 0;
+          @ = 0;
+          k = 0;
+          o = orc(OFFICER);
+          j = goblin(JAILER);
+          W = goblin(PRISON_WARDEN);
+          m = mistress { Team = NEW_ATTNAM_TEAM; }
+          w = werewolfwolf { Team = NEW_ATTNAM_TEAM; }
+          c = chameleon { Team = NEW_ATTNAM_TEAM; }
+          s = slave(DARK_FOREST) { Team = NEW_ATTNAM_TEAM; }
+          S = femaleslave(NEW_ATTNAM) { Team = NEW_ATTNAM_TEAM; }
+          F = forestman(ROVER) { Team = NEW_ATTNAM_TEAM; }
+          C = dog;
+          H = housewife(DARK_FOREST) {Team = FORESTMAN_TEAM;}
+          M = mangogrower {Team = NEW_ATTNAM_TEAM;}
+        }
+      }
+      {
+        $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+        $%%%%%%%...$$$$$$$$$$$$$.......$.$
+        $%..%w.%$$$$H.$..$s.$M.$$$%%%%%%$$
+        $%..%..D..j$..$..$..$..$$$%....%.$
+        $%%%%%%%...$b@$bB$b@$b@$$$%....%.$
+        $%c.%m.D..................D....%.$
+        $%..%..k.................j%....%.$
+        $%%D%%%%.....$b@$b@$b@$bB$%%%%%%.$
+        $.$.......$..$..$..$..$..$$$$$$$.$
+        $.$.j.....$..$.S$.s$C.$..$$....$.$
+        $$$$$$$$$$$..$$$$$$$$$$$$$$$$$$$$$
+        $.$.....$......................$.$
+        $.$.....$......................$.$
+        $.$.j...d......................$.$
+        $.$.....$.....$.$.$.$..........$.$
+        $.$.....$....$$$$$$$$....$.....$.$
+        $.$..W..$....$.$.$.$.....$.....$.$
+        $.$$$$$$$................$.....$.$
+        $.$.....d................$.....$.$
+        $.$.....$................$.....$.$
+        $$$$$$$$$$$$$$$$d$$$$$$$$$$$$$$$$$
+        $.$............$.$.............$.$
+        $$$$$$$$$$$$$$$$d$$$$$$$$$$$$$$$$$
+      }
+
+      ItemMap
+      {
+        Pos = 0,0;
+        Size = 34,23;
+        Types
+        {
+          $ == 0;
+          % == 0;
+          b == bone;
+          s == skull;
+          B == backpack;
+          C == TIN itemcontainer(SMALL_CHEST) { Parameters = ~LOCKED; ItemsInside = { 1, key(PENTAGONAL_LOCK); } }
+          2 == lantern { SquarePosition = DOWN; }
+          3 == lantern { SquarePosition = RIGHT; }
+          4 == lantern { SquarePosition = LEFT; }
+          5 == lantern { SquarePosition = UP; }
+          a == Random { MinPrice = 40; MaxPrice = 80; Category = HELMET|CLOAK|BODY_ARMOR; }
+          w == Random { MinPrice = 20; MaxPrice = 60; Category = WEAPON; }
+          c == constitution;
+          M == mangoseedling;
+        }
+      }
+      {
+        $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+        $%%%%%%%...$$$$$$$$$$$$$..b....$.$
+        $%.b%..%$2$$..$b.$..$..$$$%%%%%%$$
+        $%s.%......$..$..$..$..$$$%M..c%.$
+        $%%%%%%%...2..$..$..$..$2$%....%.$
+        $%..%..........................%.$
+        $%..%.....................%...B%.$
+        $%%.%%%%.....$..5..$..$..$%%%%%%.$
+        $.$.......$..$..$..$b.$..$$$$$$$.$
+        $.$.......$..$..$..$.s$..$$....$.$
+        $$$$$$5$$$$..$$$2$$$$$$$$2$$$$$$$$
+        $.$.....$......................$.$
+        $.$.....$......................$.$
+        $.4............................$s$
+        $.$.....$.....$.$.$.5..........$.$
+        $.$.....4....$$$$$$$$....3.....4.$
+        $b$C....$....$.$.$.$.....$.....$.$
+        $.$$$$$$$................$.....$.$
+        $b$aw.a..................$.....$.$
+        $.$.aw.w$................$.....$.$
+        $$$$$$$$$$$$5$$$.$$$$5$$$$$$$$$$$$
+        $.$....s...b...$.$......b..b...$.$
+        $$$$$$$$$$$$$$$$.$$$$$$$$$$$$$$$$$
+      }
+    }
+
+    Square, Pos 35, 21; /*entry via the sewer, no returns */
+    {
+      EntryIndex = STAIRS_UP;
+    }
+
+/* this works, for posterity
+    Square, Pos 5,5;
+    {
+      OTerrain = stairs(STAIRS_UP) { AttachedArea = 9; AttachedEntry = STAIRS_UP + 1; }
+      EntryIndex = STAIRS_UP;
+    }*/
+
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = goblin(BERSERKER);
+      Times = 8;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = goblin(BUTCHER);
+      Times = 4;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = orc(SLAUGHTERER);
+      Times = 4;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = orc(SQUAD_LEADER);
+      Times = 2;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = orc;
+      Times = 12;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = orc(OFFICER);
+      Times = 1;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = bat;
+      Times = 2;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = magpie;
+      Times = 2;
+    }
+    Square, Random NOT_IN_ROOM;
+    {
+      Character = kobold(LORD);
+      Times = 12;
+    }
+
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(FIR);
+      Times = 100;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(BIRCH);
+      Times = 30;
+    }
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(OAK);
+      Times = 10;
+    }
+  }
+}

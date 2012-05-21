@@ -227,7 +227,6 @@ Dungeon MUNTUO;
       Times = 1:2;
     }
 
-/*
     Square, Random NOT_IN_ROOM;
     {
       Character = okapi { Team = SOLICITUS_TEAM; }
@@ -237,7 +236,6 @@ Dungeon MUNTUO;
     {
       Character = firefox { Team = SOLICITUS_TEAM; }
     }
-*/
 
     Square, Pos 25, 41;
     {

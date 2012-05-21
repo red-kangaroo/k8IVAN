@@ -1352,6 +1352,61 @@ truth character::HasGoldenEagleShirt () const {
 }
 
 
+truth character::HasOmmelBlood () const {
+  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i)
+    if (i->IsKleinBottle() && i->GetSecondaryMaterial() && i->GetSecondaryMaterial()->GetConfig() == OMMEL_BLOOD) return true;
+  //
+  for (int c = 0; c < GetEquipments(); ++c) {
+    item *Item = GetEquipment(c);
+    //
+    if (Item && Item->IsKleinBottle() && Item->GetSecondaryMaterial() && Item->GetSecondaryMaterial()->GetConfig() == OMMEL_BLOOD) return true;
+  }
+  return false; //combineequipmentpredicates()(this, &item::IsKleinBottle, 1);
+}
+
+
+truth character::CurdleOmmelBlood () const {
+  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) {
+    if (i->IsKleinBottle() && i->GetSecondaryMaterial() && i->GetSecondaryMaterial()->GetConfig() == OMMEL_BLOOD) {
+      i->ChangeSecondaryMaterial(MAKE_MATERIAL(CURDLED_OMMEL_BLOOD));
+      return true;
+    }
+  }
+  //
+  for (int c = 0; c < GetEquipments(); ++c) {
+    item *Item = GetEquipment(c);
+    //
+    if (Item && Item->IsKleinBottle() && Item->GetSecondaryMaterial() && Item->GetSecondaryMaterial()->GetConfig() == OMMEL_BLOOD) {
+      Item->ChangeSecondaryMaterial(MAKE_MATERIAL(CURDLED_OMMEL_BLOOD));
+      return true;
+    }
+  }
+  return false; //combineequipmentpredicates()(this, &item::IsKleinBottle, 1);
+}
+
+
+truth character::RemoveCurdledOmmelBlood () {
+  for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) {
+    if (i->IsKleinBottle() && i->GetSecondaryMaterial() && i->GetSecondaryMaterial()->GetConfig() == CURDLED_OMMEL_BLOOD) {
+      (*i)->RemoveFromSlot();
+      (*i)->SendToHell();
+      return true;
+    }
+  }
+  //
+  for (int c = 0; c < GetEquipments(); ++c) {
+    item *Item = GetEquipment(c);
+    //
+    if (Item && Item->IsKleinBottle() && Item->GetSecondaryMaterial() && Item->GetSecondaryMaterial()->GetConfig() == CURDLED_OMMEL_BLOOD) {
+      Item->RemoveFromSlot();
+      Item->SendToHell();
+      return true;
+    }
+  }
+  return false;
+}
+
+
 int character::GeneralRemoveItem (ItemCheckerCB chk, truth allItems) {
   truth done;
   int cnt = 0;

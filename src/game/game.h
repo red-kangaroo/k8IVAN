@@ -343,6 +343,10 @@ public:
   static void SetLoricatusHammer (int What) { LoricatusHammer = What; }
   static int GetLiberator () { return Liberator; }
   static void SetLiberator (int What) { Liberator = What; }
+  static int GetOmmelBloodMission() { return OmmelBloodMission; }
+  static void SetOmmelBloodMission(int What) { OmmelBloodMission = What; }
+  static int GetRegiiTalkState() { return RegiiTalkState; }
+  static void SetRegiiTalkState(int What) { RegiiTalkState = What; }
   static void SetIsInGetCommand(truth What) { InGetCommand = What; }
   static truth IsInGetCommand() { return InGetCommand; }
   static festring GetHomeDir();
@@ -542,6 +546,8 @@ private:
   static int Muramasa;
   static int LoricatusHammer;
   static int Liberator;
+  static int OmmelBloodMission;
+  static int RegiiTalkState;
   static truth InGetCommand;
   static truth PlayerHurtByExplosion;
   static area* CurrentArea;

@@ -252,6 +252,7 @@ class item : public object
   virtual truth IsPetrussNut() const { return false; }
   virtual truth IsGoldenEagleShirt() const { return false; }
   virtual truth IsMoneyBag () const { return false; }
+  virtual truth IsKleinBottle () const { return false; }
   virtual truth CanBeRead(character*) const { return false; }
   virtual truth Read(character*);
   virtual void FinishReading(character*) { }
@@ -482,6 +483,7 @@ class item : public object
   virtual double GetDamageBonus() const { return 0.; }
   virtual void DrawContents(ccharacter*) { }
   virtual truth IsBroken() const;
+  virtual truth IsFood() const;
   virtual int GetEnchantment() const { return 0; }
   sLong GetEnchantedPrice(int) const;
   virtual item* Fix();
@@ -612,6 +614,7 @@ class item : public object
   virtual truth IsBottle () const { return false; }
   virtual truth IsCan () const { return false; }
   virtual truth IsScroll () const { return false; }
+  virtual truth IsMango () const { return false; }
 
 protected:
   virtual cchar* GetBreakVerb() const;

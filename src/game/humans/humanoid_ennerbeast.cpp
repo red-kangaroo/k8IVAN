@@ -49,6 +49,10 @@ truth ennerbeast::Hit(character* Enemy, v2, int, int)
     Char->ReceiveDamage(this, ScreamStrength, SOUND, ALL, YOURSELF, true);
     Char->CheckDeath(CONST_S("killed @bkp scream"), this);
     msgsystem::LeaveBigMessageMode();
+
+    if (Char->IsPlayer() && Char->HasOmmelBlood() && CanBeSeenByPlayer()) {
+      if (Char->CurdleOmmelBlood()) ADD_MESSAGE("Your vial of Ommel Blood vibrates and it contents curdles with the scream of the Enner Beast."); 
+    }
   }
 
   GetNearLSquare(x, y)->GetStack()->ReceiveDamage(this, ScreamStrength, SOUND);

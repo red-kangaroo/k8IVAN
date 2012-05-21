@@ -185,3 +185,68 @@ Extend priest
     }
   }
 }
+
+morbe /* high priestess of scabies */
+{
+  CanRead = true;
+  TamingDifficulty = NO_TAMING;
+  MoveType = WALK|SWIM;
+  Inventory == potion { Times = 2; SecondaryMaterial = ANTIDOTE_LIQUID; }
+  DefaultArmStrength = 20;
+  DefaultLegStrength = 20;
+  DefaultDexterity = 40;
+  DefaultAgility = 40;
+  DefaultEndurance = 10;
+  DefaultPerception = 30;
+  DefaultIntelligence = 30;
+  DefaultWisdom = 45;
+  DefaultCharisma = 40;
+  DefaultMana = 40;
+  TotalVolume = 45000;
+  TotalSize = 180;
+  HeadBitmapPos = 112, 256;
+  TorsoBitmapPos = 32, 160;
+  ArmBitmapPos = 64, 208;
+  LegBitmapPos = 16, 160;
+  SkinColor = rgb16(160, 200, 160);
+  HairColor = rgb16(160, 48, 48);
+  ClothColor = rgb16(160, 60, 160);
+  EyeColor = rgb16(180, 0, 160);
+  BaseEmitation = rgb16(125, 160, 125);
+  AttachedGod = SCABIES;
+  NameSingular = "high priestess";
+  PostFix = "of Scabies";
+  Sex = FEMALE;
+  Cloak = HESSIAN_CLOTH cloak;
+  RightWielded = RUBY daggerofvenom { Enchantment = 4; }
+  KnownCWeaponSkills == SMALL_SWORDS;
+  CWeaponSkillHits == 500;
+  RightSWeaponSkillHits = 200;
+  /* Replies overridden */
+  AutomaticallySeen = true;
+  IsNameable = false;
+  IsUnique = true;
+  IsPolymorphable = false;
+  Amulet = amulet(AMULET_OF_VANITY);
+  BodyArmor = RUBY bodyarmor(PLATE_MAIL) { Enchantment = 4; }
+  Cloak = DAEMON_FLESH cloak(CLOAK_OF_ELECTRICITY_RESISTANCE) { Enchantment = 4; }
+  Belt = ELPURI_FLESH belt { Enchantment = 4; }
+  RightGauntlet = DRAGON_HIDE gauntlet(GAUNTLET_OF_STRENGTH) { Enchantment = 4; }
+  RightRing = ring(RING_OF_FIRE_RESISTANCE);
+  LeftRing = ring(RING_OF_POISON_RESISTANCE);
+  RightBoot = SPIDER_SILK boot(BOOT_OF_AGILITY) { Enchantment = 4; }
+  PanicLevel = 0;
+  CanBeCloned = false;
+  DefaultName = "Morbe";
+  DeathMessage = "The high priestess vanishes from the bowels of Valpurus.";
+  BodyPartsDisappearWhenSevered = true;
+  CanBeConfused = false;
+  EnergyResistance = 50;
+  IsImmuneToLeprosy = true;
+  IsImmuneToItemTeleport = true;
+  AllowUnconsciousness = false;
+  DisplacePriority = 10;
+  UndeadVersions = false;
+  IsImmuneToWhipOfThievery = true;
+  IsExtraFragile = true;
+}

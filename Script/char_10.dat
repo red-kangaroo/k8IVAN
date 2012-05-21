@@ -365,7 +365,6 @@ doctor
   Frequency = 2000;
 }
 
-
 vampire
 {
   DefaultArmStrength = 20;

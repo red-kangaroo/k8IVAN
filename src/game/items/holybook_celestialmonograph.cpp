@@ -3,13 +3,13 @@ ITEM(celestialmonograph, holybook)
 {
 public:
   virtual void FinishReading (character *);
+
 protected:
-  virtual col16 GetMaterialColorA(int) const;
+  virtual col16 GetMaterialColorA (int) const;
 };
 
 
 #else
-
 
 
 void celestialmonograph::FinishReading (character *Reader) {
@@ -23,7 +23,6 @@ void celestialmonograph::FinishReading (character *Reader) {
     SendToHell();
   }
 }
-
 
 
 col16 celestialmonograph::GetMaterialColorA (int) const {

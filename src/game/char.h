@@ -307,6 +307,10 @@ public:
   truth HasHeadOfElpuri () const;
   truth HasGoldenEagleShirt () const;
   truth HasPetrussNut () const;
+  truth HasCurdledBlood() const;
+  truth HasOmmelBlood() const;
+  truth CurdleOmmelBlood() const;
+  truth RemoveCurdledOmmelBlood();
   truth RemoveEncryptedScroll ();
   truth RemoveMondedrPass ();
   truth RemoveRingOfThieves ();

@@ -864,6 +864,12 @@
 
 
 #enum {
+  ROVER = 1,
+  BAND_LEADER,
+};
+
+
+#enum {
   FIELD_MOUSE = 1,
   LABORATORY_MOUSE,
 };
@@ -872,6 +878,10 @@
 #define THIN_PIG 1
 
 #define STARVED_OX 1
+
+#define FLOATIE 1
+
+#define SONIC 1
 
 
 /* Least significant bit defines sex */
@@ -1025,7 +1035,6 @@
   UNDER_WATER_TUNNEL,
   MONDEDR,
   MUNTUO,
-  // undone
   DRAGON_TOWER,
   DARK_FOREST,
   XINROCH_TOMB,

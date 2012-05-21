@@ -401,12 +401,17 @@
 #define ELDER 3
 #define ARCH_MAGE 4
 
+#define ROVER 1
+#define BAND_LEADER 2
+
 #define FIELD_MOUSE 1
 #define LABORATORY_MOUSE 2
 
 #define THIN_PIG 1
 
 #define STARVED_OX 1
+
+#define FLOATIE 1
 
 /* Least significant bit defines sex */
 

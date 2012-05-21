@@ -1,3 +1,10 @@
+#ifndef HEADER_PHASE
+#include "worldmap.h"
+#include "wsquare.h"
+#include "wterras.h"
+#endif
+
+
 #include "items/item_avatarofvalpurus.cpp"
 #include "items/item_bananapeels.cpp"
 #include "items/item_bone.cpp"
@@ -9,6 +16,7 @@
 #include "items/item_gorovitscopyoflenin.cpp"
 #include "items/item_headofelpuri.cpp"
 #include "items/item_holyhandgrenade.cpp"
+#include "items/item_holymango.cpp"
 #include "items/item_horn.cpp"
 #include "items/item_key.cpp"
 #include "items/item_kiwi.cpp"
@@ -25,6 +33,9 @@
 #include "items/item_stick.cpp"
 #include "items/item_ullrbone.cpp"
 #include "items/item_wand.cpp"
+
+#include "items/item_locationmap.cpp"
+#include "items/locationmap_maptotombofxinroch.cpp"
 
 #include "items/item_mango.cpp"
 #include "items/item_mangoseedling.cpp"
@@ -45,8 +56,11 @@
 #include "items/materialcontainer_backpack.cpp"
 #include "items/materialcontainer_banana.cpp"
 #include "items/materialcontainer_can.cpp"
+#include "items/materialcontainer_cauldron.cpp"
 #include "items/materialcontainer_gasgrenade.cpp"
+#include "items/materialcontainer_kleinbottle.cpp"
 #include "items/materialcontainer_potion.cpp"
+
 #include "items/lockableitem_itemcontainer.cpp"
 
 #include "items/banana_holybanana.cpp"
@@ -64,6 +78,7 @@
 #include "items/scroll_scrollofdetectmaterial.cpp"
 #include "items/scroll_scrollofenchantarmor.cpp"
 #include "items/scroll_scrollofenchantweapon.cpp"
+#include "items/scroll_scrolloffireballs.cpp"
 #include "items/scroll_scrollofgolemcreation.cpp"
 #include "items/scroll_scrollofhardenmaterial.cpp"
 #include "items/scroll_scrollofrepair.cpp"

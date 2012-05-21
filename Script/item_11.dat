@@ -49,3 +49,132 @@ mangoseedling
   HasSecondaryMaterial = false;
   IsValuable = true;
 }
+
+holymango
+{
+  WeaponCategory = BLUNT_WEAPONS;
+  Possibility = 2;
+  Category = FOOD;
+  DefaultMainVolume = 250;
+  StrengthModifier = 150;
+  FormModifier = 250;
+  DefaultSize = 30;
+  Price = 1000;
+  Adjective = "holy";
+  NameSingular = "mango";
+  NamePlural = "mangoes";
+  PostFix = "of Oren Ordent";
+  ArticleMode = FORCE_THE;
+  IsPolymorphable = false;
+  Roundness = 90;
+  BitmapPos = 0, 432;
+  CanBePiled = false;
+  CanBeBroken = false;
+  MainMaterialConfig == HOLY_MANGO_FLESH;
+  BaseEmitation = rgb24(160, 140, 110);
+  WieldedBitmapPos = 176, 144;
+  CanBeCloned = false;
+  CanBeMirrored = false;
+  AllowEquip = true;
+  IsValuable = true;
+  AttachedGod = SILVA;
+}
+
+locationmap
+{
+  Category = SCROLL;
+  DefaultMainVolume = 250;
+  StrengthModifier = 25;
+  BitmapPos = 32, 448;
+  FormModifier = 20;
+  DefaultSize = 30;
+  NameSingular = "map";
+  MainMaterialConfig == PARCHMENT;
+  IsAbstract = true;
+  Roundness = 15;
+  WieldedBitmapPos = 176, 144;
+  AllowEquip = false;
+  TeleportPriority = 300;
+}
+
+maptotombofxinroch /* locationmap-> */
+{
+  Possibility = 0;
+  Price = 50;
+  PostFix = "to the Tomb of Xinroch";
+  AttachedGod = SOPHOS;
+  ReadDifficulty = 50;
+  CanBeWished = false;
+  CanBeCloned = false;
+  IsPolymorphSpawnable = false;
+}
+
+cauldron /* materialcontainer-> */
+{
+  Possibility = 0;
+  Category = POTION;
+  StrengthModifier = 350;
+  DefaultSize = 150;
+  DefaultMainVolume = 800000;
+  WeaponCategory = BLUNT_WEAPONS;
+  /*Category = POTION;*/
+  DefaultSecondaryVolume = 26000;
+  BitmapPos = 32, 432;
+  /*FormModifier = 25;*/
+  NameSingular = "cauldron";
+  MainMaterialConfig == COPPER;
+  SecondaryMaterialConfig = { 11, WATER, HEALING_LIQUID, OMMEL_URINE, POISON_LIQUID, VALDEMAR, ANTIDOTE_LIQUID, VODKA, TROLL_BLOOD, OMMEL_SWEAT, OMMEL_TEARS, SULPHURIC_ACID; }
+  MaterialConfigChances = { 11, 75, 50, 5, 50, 2, 10, 5, 25, 5, 5, 25; }
+  Roundness = 100;
+  CanBeBroken = false;
+  AttachedGod = NONE;
+  WieldedBitmapPos = 176, 144;
+  IsValuable = false;
+  TeleportPriority = 200;
+  ThrowItemTypes = THROW_POTION;
+  CanBeGeneratedInContainer = false;
+  CanBePickedUp = false;
+}
+
+kleinbottle /* materialcontainer-> */
+{
+  DefaultSize = 30;
+  Possibility = 0;
+  WeaponCategory = BLUNT_WEAPONS;
+  Category = POTION;
+  DefaultMainVolume = 60;
+  DefaultSecondaryVolume = 1000;
+  StrengthModifier = 50;
+  BitmapPos = 80, 464;
+  FormModifier = 25;
+  NameSingular = "klein bottle";
+  MainMaterialConfig == GLASS;
+  SecondaryMaterialConfig == WATER;
+  /*MaterialConfigChances == 0;*/
+  /*Alias = { 2, "potion", "drink"; }*/
+  Roundness = 70;
+  CanBeBroken = false;
+  AttachedGod = SOPHOS;
+  WieldedBitmapPos = 176, 144;
+  IsValuable = true;
+  TeleportPriority = 200;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  IsQuestItem = true;
+  CanBeWished = false;
+  IsMaterialChangeable = true;
+  IsPolymorphSpawnable = false;
+  IsPolymorphable = false;
+}
+
+scrolloffireballs /* scroll-> */
+{
+  Possibility = 15;
+  Price = 1000;
+  PostFix = "of fireballs";
+  Alias == "sofb";
+  AttachedGod = LEGIFER;
+  ReadDifficulty = 1000;
+  IsPolymorphSpawnable = false;
+  CanBeCloned = false;
+}
