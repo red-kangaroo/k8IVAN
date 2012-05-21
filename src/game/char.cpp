@@ -6498,7 +6498,9 @@ void character::RegenerateStamina () {
   if (GetTirednessState() != UNTIRED) {
     EditExperience(ENDURANCE, 50, 1);
     if (Sweats() && TorsoIsAlive() && !RAND_N(30) && !game::IsInWilderness()) {
-      sLong Volume = sLong(0.05 * sqrt(GetBodyVolume()));
+      // Sweat amount proportional to endurance also
+      //sLong Volume = sLong(0.05 * sqrt(GetBodyVolume()));
+      sLong Volume = long(0.05*sqrt(GetBodyVolume()*GetAttribute(ENDURANCE)/10));
       if (GetTirednessState() == FAINTING) Volume <<= 1;
       for (int c = 0; c < SquaresUnder; ++c) GetLSquareUnder(c)->SpillFluid(0, CreateSweat(Volume), false, false);
     }

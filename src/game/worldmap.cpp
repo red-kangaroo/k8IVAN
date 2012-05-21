@@ -108,7 +108,7 @@ void worldmap::Generate () {
     CalculateContinents();
     std::vector<continent*> PerfectForAttnam, PerfectForNewAttnam;
     for (uInt c = 1; c < Continent.size(); ++c) {
-      if (Continent[c]->GetSize() > 25 && Continent[c]->GetSize() < 1000 &&
+      if (Continent[c]->GetSize() > 25 && Continent[c]->GetSize() < 700 && // 1000 is the previous value. It was lowered to make continents smaller
           Continent[c]->GetGTerrainAmount(EGForestType) &&
           Continent[c]->GetGTerrainAmount(SnowType) &&
           Continent[c]->GetGTerrainAmount(SteppeType))

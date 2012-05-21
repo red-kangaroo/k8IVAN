@@ -488,6 +488,25 @@ stairs /* olterrain-> */
     BitmapPos = 0, 192;
     IsUpLink = true;
   }
+
+  Config WAYPOINT_DEEPER; /*stairs_down*/
+  {
+    PostFix = "leading onward";
+    BitmapPos = 48, 112;
+    DigMessage = "The milestone is too hard to dig.";
+    MaterialColorB = rgb16(160, 120, 0);
+    NameSingular = "milestone";
+  }
+
+  Config WAYPOINT_SHALLOWER; /*stairs_up*/
+  {
+    PostFix = "leading back";
+    BitmapPos = 48, 96;
+    IsUpLink = true;
+    DigMessage = "The milestone is too hard to dig.";
+    MaterialColorB = rgb16(160, 120, 0);
+    NameSingular = "milestone";
+  }
 }
 
 portal /* stairs -> */
