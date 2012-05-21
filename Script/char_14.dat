@@ -1,0 +1,46 @@
+mangogrower
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 15;
+  DefaultDexterity = 10;
+  DefaultAgility = 20;
+  DefaultEndurance = 15;
+  DefaultPerception = 15;
+  DefaultIntelligence = 20;
+  DefaultWisdom = 30;
+  DefaultCharisma = 10;
+  DefaultMana = 5;
+  TotalVolume = 80000;
+  TotalSize = 170;
+  NameSingular = "mango grower";
+  RightGauntlet = HARDENED_LEATHER gauntlet;
+  SkinColor = rgb16(128, 80, 48);
+  HairColor = rgb16(80, 48, 32);
+  ClothColor = rgb16(56, 48, 20);
+  HeadBitmapPos = 96, 0;
+  TorsoBitmapPos = 32, 0;
+  ArmBitmapPos = 64, 64;
+  LegBitmapPos = 0, 288;
+  Inventory == mango { Times = 10; }
+  TamingDifficulty = NO_TAMING;
+  HostileReplies == "\"Mango POWER!\"";
+  AttachedGod = SILVA;
+  CanRead = true;
+  FriendlyReplies =
+  {
+    6,
+    "@Dd curses: \"I hate bananas. I will go and grow Mangos forthwith.\"",
+    "\"I was ex-prime-minister before Attnam invaded our peaceful land and I was jailed.\"",
+    "\"1 + 1 = ... I don't remember. It been so long in this rotten jail!\"",
+    "@Dd seems very joyful. \"Maybe I can be prime-minister again?\"",
+    "\"I knew you would come to save us!\"",
+    "\"Kill Petrus for us, too!\"";
+  }
+  AutomaticallySeen = true;
+  ScienceTalkPossibility = 10;
+  ScienceTalkIntelligenceModifier = 10;
+  ScienceTalkWisdomModifier = 25;
+  ScienceTalkIntelligenceRequirement = 5;
+  ScienceTalkWisdomRequirement = 10;
+  IsMasochist = true;
+}

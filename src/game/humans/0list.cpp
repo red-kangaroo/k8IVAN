@@ -11,7 +11,9 @@
 #include "humans/angel_insudo.cpp"
 
 #include "humans/humanoid_kamikazedwarf.cpp"
+#include "humans/kamikazedwarf_rookiekamikazedwarf.cpp"
 #include "humans/kamikazedwarf_veterankamikazedwarf.cpp"
+#include "humans/kamikazedwarf_grenadierdwarf.cpp"
 
 #include "humans/humanoid_axethrowerdwarf.cpp"
 
@@ -44,6 +46,7 @@
 #include "humans/humanoid_orc.cpp"
 #include "humans/humanoid_cossack.cpp"
 #include "humans/humanoid_bananagrower.cpp"
+#include "humans/humanoid_mangogrower.cpp"
 #include "humans/humanoid_imperialist.cpp"
 #include "humans/humanoid_smith.cpp"
 #include "humans/humanoid_elder.cpp"

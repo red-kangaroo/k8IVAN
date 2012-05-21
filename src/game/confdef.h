@@ -251,6 +251,7 @@
 #define TIP_SWORD 20
 #define KNUCKLE 21
 #define RAPIER 22
+#define GREAT_AXE 23
 
 #define GOROVITS_HAMMER 1
 #define GOROVITS_SICKLE 2

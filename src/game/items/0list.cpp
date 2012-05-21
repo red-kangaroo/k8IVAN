@@ -26,6 +26,9 @@
 #include "items/item_ullrbone.cpp"
 #include "items/item_wand.cpp"
 
+#include "items/item_mango.cpp"
+#include "items/item_mangoseedling.cpp"
+
 #include "items/item_stone.cpp"
 #include "items/stone_solstone.cpp"
 

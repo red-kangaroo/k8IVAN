@@ -1,0 +1,51 @@
+mango
+{
+  WeaponCategory = BLUNT_WEAPONS;
+  DefaultSize = 20;
+  Possibility = 0;
+  Category = FOOD;
+  DefaultMainVolume = 250;
+  StrengthModifier = 100;
+  BitmapPos = 0, 432;
+  FormModifier = 10;
+  NameSingular = "mango";
+  NamePlural = "mangoes";
+  MainMaterialConfig == MANGO_FLESH;
+  Roundness = 90;
+  AttachedGod = SILVA;
+  WieldedBitmapPos = 176, 144;
+  IsValuable = false;
+  CanBeBroken = false;
+  AllowEquip = false;
+  IsSadistWeapon = true;
+}
+
+mangoseedling
+{
+  DefaultSize = 15;
+  Category = MISC;
+  DefaultMainVolume = 20000;
+  NameSingular = "seedling of a holy mango tree";
+  NamePlural = "seedlings of a holy mango tree";
+  FormModifier = 15;
+  AttachedGod = VALPURUS;
+  Possibility = 0;
+  Price = 10000;
+  MainMaterialConfig == BALSA_WOOD;
+  /*Adjective = "holy";*/
+  Alias == "seedling";
+  CanBeWished = false;
+  IsPolymorphSpawnable = false;
+  BitmapPos = 64, 480;
+  BaseEmitation = 0;
+  Roundness = 10;
+  IsPolymorphable = false;
+  IsTwoHanded = true;
+  CanBeCloned = false;
+  CanBePiled = false;
+  AttachedGod = SILVA;
+  WieldedBitmapPos = 176, 0;
+  IsQuestItem = true;
+  HasSecondaryMaterial = false;
+  IsValuable = true;
+}

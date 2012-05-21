@@ -633,6 +633,7 @@
   TIP_SWORD,
   KNUCKLE,
   RAPIER,
+  GREAT_AXE,
 };
 
 

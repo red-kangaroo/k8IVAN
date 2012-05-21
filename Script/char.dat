@@ -3300,63 +3300,6 @@ kamikazedwarf
   }
 }
 
-axethrowerdwarf
-{
-  DefaultArmStrength = 20;
-  DefaultLegStrength = 20;
-  DefaultDexterity = 20;
-  DefaultAgility = 10;
-  DefaultEndurance = 12;
-  DefaultPerception = 18;
-  DefaultIntelligence = 10;
-  DefaultWisdom = 5;
-  DefaultCharisma = 10;
-  DefaultMana = 10;
-  HeadBitmapPos = 112, 160;
-  TorsoBitmapPos = 48, 16;
-  ArmBitmapPos = 80, 0;
-  LegBitmapPos = 0, 208;
-  HairColor = rgb16(144, 72, 0);
-  BeltColor = rgb16(72, 56, 16);
-  TotalVolume = 50000;
-  TotalSize = 100;
-  CanRead = true;
-  NameSingular = "axethrower dwarf";
-  NamePlural = "axethrower dwarves";
-  CanBeGenerated = true; //false
-  CreateDivineConfigurations = true;
-  IsAbstract = true;
-  /* Equipment initialization is overridden */
-  PanicLevel = 1;
-  Inventory == IRON meleeweapon(AXE) {Times = 6;}
-  FleshMaterial = DWARF_FLESH;
-  DeathMessage = "@Dd dies in agony.";
-  IgnoreDanger = true;
-  //HPRequirementForGeneration = 60;
-  //DayRequirementForGeneration = 6;
-  Frequency = 300; //0
-  HostileReplies == "\"In the name of @Gd I will slash you to pieces!\"";
-  AttachedGod = NONE;
-  UndeadVersions = false;
-  WieldedPosition = -1, -2;
-  FriendlyReplies =
-  {
-    4,
-    "\"Would you like me to teach you the best way to slice tomatoes?\"",
-    "@Dd shouts: \"Death to disbelievers!\"",
-    "@Dd praises @Gd with numerous hymns. @Pp is obviously a very devoted follower.",
-    "\"One day, Holy War will break out, hopefully I will earn my backpack by then!\"";
-  }
-  IsRangedAttacker = true;
-  KnownCWeaponSkills == AXES;
-  CWeaponSkillHits == 100;
-  RightSWeaponSkillHits = 50;
-  UsesLongArticle = true;
-  WhatCategoryToThrow = WEAPON;
-  WhatWeaponConfigToThrow = AXE;
-  WhatThrowItemTypesToThrow = THROW_AXE;
-}
-
 mammoth
 {
   DefaultArmStrength = 80;
@@ -5341,6 +5284,37 @@ blinkdog
   AttachedGod = SOPHOS;
   DangerModifier = 50;
   FleshMaterial = BLINK_DOG_FLESH;
+}
+
+rookiekamikazedwarf
+{
+  AttributeBonus = -20;
+  DefaultIntelligence = 10;
+  DefaultWisdom = 5;
+  Adjective = "rookie kamikaze";
+  Inventory == backpack { SecondaryMaterial = GUN_POWDER { Volume = 10000; } }
+  Frequency = 200;
+  IsAbstract = true;
+  DeathMessage = "@Dd dies screaming in agony.";
+  CreateDivineConfigurations = true;
+  HPRequirementForGeneration = 58;
+  DayRequirementForGeneration = 5;
+  UndeadVersions = false;
+  FriendlyReplies =
+  {
+    6,
+    "\"I love @Gd, but don't you think there are better ways to show devotion and loyalty?\"",
+    "\"Look, the commander gave me these explosives! Do you think it's enough to do the job?\"",
+    "@Dd yells: \"Er... Death to disbelievers!\"",
+    "You ask @Dd if @Pp know any good songs. @Pp confesses: \"I don't know any hymns to @Gd! Please don't tell anyone.\"",
+    "@Dd bargains with you. \"You won't think any less of me if I just throw some weapons now and then, will you? It's just that I am considering joining the grenadiers.\"",
+    "@Dd seems stoic. \"My devotion to @Gd must be perfect. I must go on to a glorious end.\"";
+  }
+  IsRangedAttacker = true;
+  WhatThrowItemTypesToThrow = THROW_AXE;
+  KnownCWeaponSkills == AXES;
+  CWeaponSkillHits == 100;
+  RightSWeaponSkillHits = 50;
 }
 
 veterankamikazedwarf
