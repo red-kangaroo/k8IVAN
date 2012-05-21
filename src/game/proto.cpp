@@ -301,7 +301,9 @@ character* protosystem::CreateMonster(cfestring& What, int SpecialFlags, truth O
     if(!Char->HasBeenSeen() && !game::WizardModeIsActive())
     {
       ADD_MESSAGE("You have no idea what this creature is like.");
-      delete Char;
+      //delete Char;
+      //k8:delete Char;
+      Char->SendToHell(); // equipment
       return 0;
     }
     else

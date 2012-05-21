@@ -166,6 +166,10 @@ Dungeon UNDER_WATER_TUNNEL;
       AllowBoobyTrappedDoors = false;
       Shape = ROUND_CORNERS;
 
+      if @player_name == "_k8_";
+        DivineMaster = CRUENTUS;
+      endif
+
       Square, Pos 2,2;
       {
         OTerrain = stairs(STAIRS_UP);
@@ -177,6 +181,18 @@ Dungeon UNDER_WATER_TUNNEL;
       {
         Items == lantern;
       }
+
+      if @player_name == "_k8_";
+        Square, Pos 2,2;
+        {
+          Items == RUBY daggerofvenom { Enchantment = 4; }
+        }
+
+        Square, Pos 2,3;
+        {
+          OTerrain = STEEL altar(CRUENTUS);
+        }
+      endif
 
       Square, Pos 2,1;
       {

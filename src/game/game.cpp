@@ -306,6 +306,7 @@ truth game::Init (cfestring &Name) {
   LOSTick = 2;
   DangerFound = 0;
   CausePanicFlag = false;
+  pool::KillBees();
   //???
   switch (Load(SaveName(PlayerName))) {
     case LOADED: {
@@ -330,7 +331,6 @@ truth game::Init (cfestring &Name) {
         "nearby crocodile bay. However, at this point something unusual happened.\n"
         "You were summoned to the mansion of Richel Decos, the viceroy of the\n"
         "colony, and were led directly to him."));
-
       iosystem::TextScreen(CONST_S(
         "\"I have a task for you, citizen\", said the viceroy picking his golden\n"
         "teeth, \"The market price of bananas has taken a deep dive and yet the\n"
@@ -349,7 +349,6 @@ truth game::Init (cfestring &Name) {
         "like the diamonds of the imperial treasury. Not that you would believe a\n"
         "word. The point is that tomorrow you can finally forget your home and\n"
         "face the untold adventures ahead."));
-
       globalwindowhandler::InstallControlLoop(AnimationController);
       SetIsRunning(true);
       InWilderness = true;
@@ -365,7 +364,6 @@ truth game::Init (cfestring &Name) {
       Player->SetAssignedName(PlayerName);
       Player->SetTeam(GetTeam(0));
       Player->SetNP(SATIATED_LEVEL);
-
       for (int c = 0; c < ATTRIBUTES; ++c) {
         if (c != ENDURANCE) Player->EditAttribute(c, (RAND()&1)-(RAND()&1));
         Player->EditExperience(c, 500, 1<<11);
@@ -373,6 +371,10 @@ truth game::Init (cfestring &Name) {
       Player->SetMoney(Player->GetMoney()+RAND()%11);
       GetTeam(0)->SetLeader(Player);
       InitDangerMap();
+      //
+      pool::KillBees();
+      if (Player->IsEnabled()) { Player->Disable(); Player->Enable(); }
+      //
       Petrus = 0;
       InitDungeons();
       SetCurrentArea(WorldMap = new worldmap(128, 128));
@@ -487,6 +489,7 @@ void game::Run () {
           NecroCounter += 50;
         } else {
           delete Char;
+          //Char->SendToHell(); // k8:equipment
         }
       }
 
@@ -1566,14 +1569,17 @@ int game::Menu (bitmap *BackGround, v2 Pos, cfestring &Topic, cfestring &sMS, co
 
 void game::InitDangerMap () {
   truth First = true;
+  pool::RegisterState(false);
+  //fprintf(stderr, "game::InitDangerMap(): START\n");
   for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     BusyAnimation();
     const character::prototype *Proto = protocontainer<character>::GetProto(c1);
-    const character::database*const *ConfigData = Proto->GetConfigData();
+    const character::database *const *ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 0; c2 < ConfigSize; ++c2) {
       if (!ConfigData[c2]->IsAbstract) {
         int Config = ConfigData[c2]->Config;
+        //
         if (First) {
           NextDangerIDType = c1;
           NextDangerIDConfigIndex = c2;
@@ -1581,58 +1587,79 @@ void game::InitDangerMap () {
         }
         character *Char = Proto->Spawn(Config, NO_EQUIPMENT|NO_PIC_UPDATE|NO_EQUIPMENT_PIC_UPDATE);
         double NakedDanger = Char->GetRelativeDanger(Player, true);
+        //fprintf(stderr, " game::InitDangerMap(): 00\n");
         delete Char;
+        //Char->SendToHell(); // k8: equipment
         Char = Proto->Spawn(Config, NO_PIC_UPDATE|NO_EQUIPMENT_PIC_UPDATE);
         double EquippedDanger = Char->GetRelativeDanger(Player, true);
+        //fprintf(stderr, " game::InitDangerMap(): 01\n");
         delete Char;
+        //Char->SendToHell(); // k8: equipment
         DangerMap[configid(c1, Config)] = dangerid(NakedDanger, EquippedDanger);
       }
     }
   }
+  pool::RegisterState(true);
+  //fprintf(stderr, "game::InitDangerMap(): DONE\n");
 }
 
 
 void game::CalculateNextDanger () {
   if (IsInWilderness() || !*CurrentLevel->GetLevelScript()->GenerateMonsters()) return;
   const character::prototype *Proto = protocontainer<character>::GetProto(NextDangerIDType);
-  const character::database*const *ConfigData = Proto->GetConfigData();
+  const character::database *const *ConfigData = Proto->GetConfigData();
   const character::database *DataBase = ConfigData[NextDangerIDConfigIndex];
   dangermap::iterator DangerIterator = DangerMap.find(configid(NextDangerIDType, DataBase->Config));
   team *Team = GetTeam(PLAYER_TEAM);
   if (DataBase && DangerIterator != DangerMap.end()) {
+    //fprintf(stderr, "game::CalculateNextDanger(): START\n");
+    pool::RegisterState(false);
     character *Char = Proto->Spawn(DataBase->Config, NO_EQUIPMENT|NO_PIC_UPDATE|NO_EQUIPMENT_PIC_UPDATE);
     std::list<character*>::const_iterator i;
     double DangerSum = Player->GetRelativeDanger(Char, true);
-    for (i = Team->GetMember().begin(); i != Team->GetMember().end(); ++i)
-      if ((*i)->IsEnabled() && !(*i)->IsTemporary() && !RAND_N(10))
-    DangerSum += (*i)->GetRelativeDanger(Char, true)/4;
+    for (i = Team->GetMember().begin(); i != Team->GetMember().end(); ++i) {
+      if ((*i)->IsEnabled() && !(*i)->IsTemporary() && !RAND_N(10)) DangerSum += (*i)->GetRelativeDanger(Char, true)/4;
+    }
     double CurrentDanger = 1/DangerSum;
     double NakedDanger = DangerIterator->second.NakedDanger;
+    //fprintf(stderr, " game::CalculateNextDanger(): 00\n");
     delete Char;
+    //Char->SendToHell(); // k8: equipment
     if (NakedDanger > CurrentDanger) DangerIterator->second.NakedDanger = (NakedDanger*9+CurrentDanger)/10;
     Char = Proto->Spawn(DataBase->Config, NO_PIC_UPDATE|NO_EQUIPMENT_PIC_UPDATE);
     DangerSum = Player->GetRelativeDanger(Char, true);
-    for (i = Team->GetMember().begin(); i != Team->GetMember().end(); ++i)
-      if ((*i)->IsEnabled() && !(*i)->IsTemporary() && !RAND_N(10))
-    DangerSum += (*i)->GetRelativeDanger(Char, true) / 4;
+    for (i = Team->GetMember().begin(); i != Team->GetMember().end(); ++i) {
+      if ((*i)->IsEnabled() && !(*i)->IsTemporary() && !RAND_N(10)) DangerSum += (*i)->GetRelativeDanger(Char, true) / 4;
+    }
     CurrentDanger = 1/DangerSum;
     double EquippedDanger = DangerIterator->second.EquippedDanger;
+    //fprintf(stderr, " game::CalculateNextDanger(): 01\n");
     delete Char;
+    //Char->SendToHell(); // k8: equipment
+    pool::RegisterState(true);
     if (EquippedDanger > CurrentDanger) DangerIterator->second.EquippedDanger = (EquippedDanger*9+CurrentDanger)/10;
-    if (++NextDangerIDConfigIndex < Proto->GetConfigSize()) return;
+    if (++NextDangerIDConfigIndex < Proto->GetConfigSize()) {
+      //fprintf(stderr, "game::CalculateNextDanger(): EXIT0\n");
+      return;
+    }
     for (;;) {
       if (++NextDangerIDType >= protocontainer<character>::GetSize()) NextDangerIDType = 1;
       Proto = protocontainer<character>::GetProto(NextDangerIDType);
       ConfigData = Proto->GetConfigData();
       int ConfigSize = Proto->GetConfigSize();
+      //
       for (int c = 0; c < ConfigSize; ++c) {
         if (!ConfigData[c]->IsAbstract) {
           NextDangerIDConfigIndex = c;
+          //fprintf(stderr, "game::CalculateNextDanger(): EXIT1\n");
           return;
         }
       }
     }
-  } else ABORT("It is dangerous to go ice fishing in the summer.");
+    //fprintf(stderr, "game::CalculateNextDanger(): DONE\n");
+  } else {
+    ABORT("It is dangerous to go ice fishing in the summer.");
+  }
 }
 
 

@@ -1182,9 +1182,11 @@ void item::SendNewDrawAndMemorizedUpdateRequest() const
     for(int c = 0; c < SquaresUnder; ++c)
       if(Slot[c])
       {
-  lsquare* Square = GetLSquareUnder(c);
-  Square->SendNewDrawRequest();
-  Square->SendMemorizedUpdateRequest();
+  lsquare *Square = GetLSquareUnder(c);
+  if (Square) {
+    Square->SendNewDrawRequest();
+    Square->SendMemorizedUpdateRequest();
+  }
       }
 }
 

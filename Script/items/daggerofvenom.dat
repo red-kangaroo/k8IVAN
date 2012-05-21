@@ -12,7 +12,7 @@ daggerofvenom
   PostFix = "of venom";
   MainMaterialConfig = {7, OMMEL_BONE, OMMEL_TOOTH, ILLITHIUM, BRONZE, STEEL, ARCANITE, MITHRIL; }
   SecondaryMaterialConfig = {7, OMMEL_BONE, OMMEL_TOOTH, ILLITHIUM, BRONZE, STEEL, ARCANITE, MITHRIL; }
-  // this is frin CLIVAN; i (k8) don't like it -- SecondaryMaterialConfig = {7, EMERALD, EMERALD, EMERALD, EMERALD, EMERALD, EMERALD, EMERALD; }
+  // this is from CLIVAN; i (k8) don't like it -- SecondaryMaterialConfig = {7, EMERALD, EMERALD, EMERALD, EMERALD, EMERALD, EMERALD, EMERALD; }
   MaterialConfigChances = {7, 72, 48, 80, 225, 144, 100, 90; }
   Roundness = 20;
   Price = 150;

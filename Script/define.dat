@@ -648,9 +648,9 @@
   CHAIN_MAIL = 1,
   PLATE_MAIL,
   ARMOR_OF_GREAT_HEALTH,
-
   DRAGON_CUIRASS,
   ARMOR_OF_THE_OMMEL,
+  FILTHY_TUNIC,
 };
 
 
@@ -724,6 +724,7 @@
   AMULET_OF_LIFE_SAVING = 1,
   AMULET_OF_ESP,
   AMULET_OF_WARDING,
+  AMULET_OF_VANITY,
 };
 
 
@@ -796,6 +797,8 @@
   BUTCHER,
   PRINCE,
   KING,
+  JAILER,
+  PRISON_WARDEN,
 };
 
 
@@ -840,7 +843,7 @@
 
 
 #enum {
-  #AMBULATORY = 1,
+  AMBULATORY = 1,
 };
 
 
@@ -1070,24 +1073,26 @@
 #define RECTANGLE 1
 #define ROUND_CORNERS 2
 
-#define VALPURUS 1
-#define LEGIFER 2
-#define ATAVUS 3
-#define DULCIS 4
-#define SEGES 5
-#define SOPHOS 6
-#define TERRA 7
-#define SILVA 7
-#define LORICATUS 8
-#define MELLIS 9
-#define CLEPTIA 10
-#define NEFAS 11
-#define SCABIES 12
-#define INFUSCOR 13
-#define CRUENTUS 14
-#define MORTIFER 15
-#define ATHEIST 16
-#define SOLICITU 17
+#enum {
+  VALPURUS = 1,
+  LEGIFER,
+  ATAVUS,
+  DULCIS,
+  SEGES,
+  SOPHOS,
+  SILVA,
+  LORICATUS,
+  MELLIS,
+  CLEPTIA,
+  NEFAS,
+  SCABIES,
+  INFUSCOR,
+  CRUENTUS,
+  MORTIFER,
+  ATHEIST,
+  SOLICITU,
+};
+#define TERRA SILVA
 
 #define MAX_PRICE 2147483647
 

@@ -30,6 +30,14 @@ struct v2;
 class entity {
   friend class pool;
 public:
+  static void *operator new (size_t size);
+  static void operator delete (void *p);
+
+  static truth IsInDeadSet (entity *e);
+  static truth IsInLiveSet (entity *e);
+  static void BurnDeadSet ();
+
+public:
   entity(int);
   entity(const entity&);
   virtual ~entity();
@@ -70,6 +78,11 @@ public:
 protected:
   col24 Emitation;
   feuLong Flags;
+  truth mInPool;
+  truth mInHell;
+
+private:
+  entity();
 
 private:
   entity *Last;

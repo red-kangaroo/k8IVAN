@@ -3371,6 +3371,7 @@ bodypart *character::CreateBodyPart (int I, int SpecialFlags) {
   BodyPart->SetSize(GetBodyPartSize(I, GetTotalSize()));
   BodyPart->SetBloodMaterial(GetBloodMaterial());
   BodyPart->SetNormalMaterial(Material->GetConfig());
+  BodyPart->SetHP(1);
   SetBodyPart(I, BodyPart);
   BodyPart->InitSpecialAttributes();
   if (!(SpecialFlags & NO_PIC_UPDATE)) UpdateBodyPartPicture(I, false);
@@ -7467,7 +7468,10 @@ int character::RandomizeHurtBodyPart (feuLong BodyParts) const {
     }
     /*k8: ??? if(!Index) int esko = esko = 2;*/
   }
-  if (!Index) abort();
+  if (!Index) {
+    fprintf(stderr, "FATAL: RandomizeHurtBodyPart -- Index==0\n");
+    abort();
+  }
   return BodyPartIndex[RAND_N(Index)];
 }
 

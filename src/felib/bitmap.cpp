@@ -1606,6 +1606,9 @@ void bitmap::MaskedPriorityBlit (cblitdata &BlitData) const {
   int NewRedLuminance = (B.Luminance >> 7 & 0x1F800) - 0x10000;
   int NewGreenLuminance = (B.Luminance >> 4 & 0xFE0) - 0x800;
   int NewBlueLuminance = (B.Luminance >> 2 & 0x3F) - 0x20;
+  //
+  if (B.Dest.X < 0) B.Dest.X = 0; //FIXME: k8: ???
+  //
   for (int y = 0; y < B.Border.Y; ++y) {
     cpackcol16 *SrcPtr = &SrcImage[B.Src.Y + y][B.Src.X];
     cpackpriority *SrcPriorityPtr = &SrcPriorityMap[B.Src.Y + y][B.Src.X];

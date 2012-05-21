@@ -262,6 +262,7 @@
 #define ARMOR_OF_GREAT_HEALTH 3
 #define DRAGON_CUIRASS 4
 #define ARMOR_OF_THE_OMMEL 5
+#define FILTHY_TUNIC 6
 
 #define CHEAP 1
 #define EXPENSIVE 2
@@ -313,6 +314,8 @@
 
 #define AMULET_OF_LIFE_SAVING 1
 #define AMULET_OF_ESP 2
+#define AMULET_OF_WARDING 3
+#define AMULET_OF_VANITY 4
 
 #define FULL_HELMET 1
 #define HELM_OF_PERCEPTION 2
@@ -361,6 +364,8 @@
 #define BUTCHER 2
 #define PRINCE 3
 #define KING 4
+#define JAILER 5
+#define PRISON_WARDEN 6
 
 #define CONICAL 1
 #define FLAT 2

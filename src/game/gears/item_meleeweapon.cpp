@@ -142,8 +142,7 @@ sLong meleeweapon::GetPrice() const
   WeaponStrengthModifier *= WeaponStrengthModifier;
   WeaponStrengthModifier *= GetMainMaterial()->GetWeight();
   WeaponStrengthModifier *= Max((10 + Enchantment) * 0.1, 0.1);
-  return sLong(WeaponStrengthModifier / (20000000.0 * sqrt(GetWeight())))
-    + GetEnchantedPrice(Enchantment);
+  return sLong(WeaponStrengthModifier / (20000000.0 * sqrt(GetWeight()))) + GetEnchantedPrice(Enchantment);
 }
 
 

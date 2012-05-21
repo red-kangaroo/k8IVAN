@@ -23,6 +23,10 @@ class pool
   static void AddToHell(entity*);
   static void BurnHell();
   static void Be();
+  static void DeadEntity (entity*);
+  static truth IsBurningHell ();
+  static void KillBees ();
+  static void RegisterState (truth doreg);
  private:
   static entity* FirstEntity;
   static entity* LastEntity;

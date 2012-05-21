@@ -580,7 +580,9 @@ void level::GenerateNewMonsters (int HowMany, truth ConsiderPlayer) {
       int Modifier = Time.Day-EDIT_ATTRIBUTE_DAY_MIN;
       if (Modifier > 0) Char->EditAllAttributes(Modifier>>EDIT_ATTRIBUTE_DAY_SHIFT);
     } else {
-      delete Char;
+      //delete Char;
+      //k8:delete Char;
+      Char->SendToHell(); // equipment
     }
   }
 }
