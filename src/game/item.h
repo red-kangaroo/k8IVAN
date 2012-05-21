@@ -498,6 +498,7 @@ class item : public object
   virtual int GetCarryingBonus() const { return 0; }
   virtual truth IsBanana() const { return false; }
   virtual truth IsEncryptedScroll() const { return false; }
+  virtual truth IsMangoSeedling() const { return false; }
   virtual truth IsMondedrPass () const { return false; }
   virtual truth IsRingOfThieves () const { return false; }
   cchar* GetStrengthValueDescription() const;

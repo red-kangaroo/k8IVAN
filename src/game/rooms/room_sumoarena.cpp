@@ -1,14 +1,13 @@
 #ifdef HEADER_PHASE
 ROOM(sumoarena, room) {
 public:
-  virtual void DestroyTerrain(character*);
-  virtual void HostileAction(character*) const;
-  virtual truth CheckDestroyTerrain(character*);
+  virtual void DestroyTerrain (character *);
+  virtual void HostileAction (character *) const;
+  virtual truth CheckDestroyTerrain (character *);
 };
 
 
 #else
-
 
 
 void sumoarena::DestroyTerrain (character *Who) {
@@ -16,11 +15,9 @@ void sumoarena::DestroyTerrain (character *Who) {
 }
 
 
-
 void sumoarena::HostileAction (character *Guilty) const {
   if (Guilty) Guilty->GetTeam()->Hostility(game::GetTeam(NEW_ATTNAM_TEAM));
 }
-
 
 
 truth sumoarena::CheckDestroyTerrain (character *Infidel) {
@@ -32,4 +29,6 @@ truth sumoarena::CheckDestroyTerrain (character *Infidel) {
   }
   return false;
 }
+
+
 #endif

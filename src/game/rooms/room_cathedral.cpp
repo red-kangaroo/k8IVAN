@@ -2,28 +2,30 @@
 ROOM(cathedral, room) {
 public:
   cathedral();
-  virtual void Enter(character*);
-  virtual truth PickupItem(character*, item*, int);
-  virtual truth DropItem(character*, item*, int);
-  virtual void KickSquare(character*, lsquare*);
-  virtual truth ConsumeItem(character*, item*, int);
-  virtual void SetEntered(truth What) { Entered = What; }
-  virtual void Save(outputfile&) const;
-  virtual void Load(inputfile&);
-  virtual truth AllowDropGifts() const { return false; }
-  virtual truth Drink(character*) const;
-  virtual truth HasDrinkHandler() const { return true; }
-  virtual truth Dip(character*) const;
-  virtual truth HasDipHandler() const { return true; }
-  virtual void TeleportSquare(character*, lsquare*);
-  virtual truth AllowSpoil(citem*) const { return false; }
-  virtual int GetGodRelationAdjustment() const { return -150; }
-  virtual truth AllowKick(ccharacter*,const lsquare*) const;
-  virtual void HostileAction(character*) const;
-  virtual truth AllowAltarPolymorph() const { return false; }
-  virtual truth AllowFoodSearch() const { return false; }
-  virtual void AddItemEffect(item*);
-  character* FindRandomExplosiveReceiver() const;
+
+  virtual void Enter (character *);
+  virtual truth PickupItem (character *, item *, int);
+  virtual truth DropItem (character *, item *, int);
+  virtual void KickSquare (character *, lsquare *);
+  virtual truth ConsumeItem (character *, item *, int);
+  virtual void SetEntered (truth What) { Entered = What; }
+  virtual void Save (outputfile &) const;
+  virtual void Load (inputfile &);
+  virtual truth AllowDropGifts () const { return false; }
+  virtual truth Drink (character *) const;
+  virtual truth HasDrinkHandler () const { return true; }
+  virtual truth Dip (character *) const;
+  virtual truth HasDipHandler () const { return true; }
+  virtual void TeleportSquare (character *, lsquare*);
+  virtual truth AllowSpoil (citem *) const { return false; }
+  virtual int GetGodRelationAdjustment () const { return -150; }
+  virtual truth AllowKick (ccharacter *, const lsquare *) const;
+  virtual void HostileAction (character *) const;
+  virtual truth AllowAltarPolymorph () const { return false; }
+  virtual truth AllowFoodSearch () const { return false; }
+  virtual void AddItemEffect (item *);
+  character *FindRandomExplosiveReceiver () const;
+
 protected:
   truth Entered;
 };
@@ -32,6 +34,22 @@ protected:
 #else
 
 
+cathedral::cathedral () {
+  SetEntered(false);
+}
+
+
+void cathedral::Save (outputfile &SaveFile) const {
+  room::Save(SaveFile);
+  SaveFile << Entered;
+}
+
+
+void cathedral::Load (inputfile &SaveFile) {
+  room::Load(SaveFile);
+  SaveFile >> Entered;
+}
+
 
 void cathedral::Enter (character *Visitor) {
   if (Visitor->IsPlayer() && !Entered) {
@@ -39,7 +57,6 @@ void cathedral::Enter (character *Visitor) {
     Entered = true;
   }
 }
-
 
 
 truth cathedral::PickupItem (character *Visitor, item *Item, int) {
@@ -57,7 +74,6 @@ truth cathedral::PickupItem (character *Visitor, item *Item, int) {
 }
 
 
-
 truth cathedral::DropItem (character *Visitor, item *Item, int) {
   if (game::GetStoryState() == 2 || game::GetTeam(ATTNAM_TEAM)->GetRelation(Visitor->GetTeam()) == HOSTILE) return true;
   if (Visitor->IsPlayer()) {
@@ -72,7 +88,6 @@ truth cathedral::DropItem (character *Visitor, item *Item, int) {
 }
 
 
-
 void cathedral::KickSquare (character *Kicker, lsquare *Square) {
   if (!AllowKick(Kicker, Square) && Kicker->IsPlayer() && game::GetStoryState() != 2 &&
       game::GetTeam(ATTNAM_TEAM)->GetRelation(Kicker->GetTeam()) != HOSTILE) {
@@ -80,7 +95,6 @@ void cathedral::KickSquare (character *Kicker, lsquare *Square) {
     Kicker->GetTeam()->Hostility(game::GetTeam(ATTNAM_TEAM));
   }
 }
-
 
 
 truth cathedral::ConsumeItem (character *HungryMan, item *, int) {
@@ -94,21 +108,6 @@ truth cathedral::ConsumeItem (character *HungryMan, item *, int) {
   }
   return false;
 }
-
-
-
-void cathedral::Save (outputfile &SaveFile) const {
-  room::Save(SaveFile);
-  SaveFile << Entered;
-}
-
-
-
-void cathedral::Load (inputfile &SaveFile) {
-  room::Load(SaveFile);
-  SaveFile >> Entered;
-}
-
 
 
 truth cathedral::Drink (character *Thirsty) const {
@@ -125,7 +124,6 @@ truth cathedral::Drink (character *Thirsty) const {
 }
 
 
-
 void cathedral::TeleportSquare (character *Teleporter, lsquare *Square) {
   if (game::GetStoryState() == 2 || !Teleporter || (game::GetTeam(ATTNAM_TEAM)->GetRelation(Teleporter->GetTeam()) == HOSTILE)) return;
   if (Teleporter->IsPlayer() && Square->GetStack()->GetItems()) {
@@ -135,11 +133,10 @@ void cathedral::TeleportSquare (character *Teleporter, lsquare *Square) {
 }
 
 
-
 truth cathedral::Dip (character *Thirsty) const {
   if (game::GetStoryState() == 2 || game::GetTeam(ATTNAM_TEAM)->GetRelation(Thirsty->GetTeam()) == HOSTILE) return true;
   if (Thirsty->IsPlayer()) {
-    /* What if it's not water? */
+    /*FIXME: What if it's not water? */
     ADD_MESSAGE("Stealing the precious water of the Cathedral is prohibited.");
     if (game::TruthQuestion(CONST_S("Are you sure you want to dip? [y/N]"))) {
       Thirsty->GetTeam()->Hostility(game::GetTeam(ATTNAM_TEAM));
@@ -150,23 +147,14 @@ truth cathedral::Dip (character *Thirsty) const {
 }
 
 
-
-cathedral::cathedral () {
-  SetEntered(false);
-}
-
-
-
 truth cathedral::AllowKick (ccharacter *Char, const lsquare *LSquare) const {
   return (game::GetTeam(ATTNAM_TEAM)->GetRelation(Char->GetTeam()) == HOSTILE || !LSquare->GetStack()->GetItems());
 }
 
 
-
 void cathedral::HostileAction (character *Guilty) const {
   if (game::GetStoryState() != 2 && Guilty) Guilty->GetTeam()->Hostility(game::GetTeam(ATTNAM_TEAM));
 }
-
 
 
 void cathedral::AddItemEffect (item *Dropped) {
@@ -195,7 +183,6 @@ void cathedral::AddItemEffect (item *Dropped) {
 }
 
 
-
 character *cathedral::FindRandomExplosiveReceiver () const {
   std::vector<character *> ListOfDwarfs;
   for (std::list<character *>::const_iterator i = game::GetTeam(ATTNAM_TEAM)->GetMember().begin(); i != game::GetTeam(ATTNAM_TEAM)->GetMember().end(); ++i) {
@@ -204,4 +191,6 @@ character *cathedral::FindRandomExplosiveReceiver () const {
   if (ListOfDwarfs.empty()) return 0;
   return ListOfDwarfs[RAND_N(ListOfDwarfs.size())];
 }
+
+
 #endif
