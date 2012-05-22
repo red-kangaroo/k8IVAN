@@ -35,8 +35,6 @@ public:
   static void operator delete (void *p);
 
 public:
-  static truth IsInDeadSet (entity *e);
-  static void BurnDeadSet ();
   static int GetUniqueMemoryMark (entity *e);
   static void DumpDeadSet ();
 

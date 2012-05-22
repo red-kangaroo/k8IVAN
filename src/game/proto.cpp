@@ -62,8 +62,9 @@ character *protosystem::BalancedCreateMonster () {
 
     for (int i = 0; i < 25; ++i) {
       configid Chosen = Possible[RAND_GOOD(Possible.size())];
-      const character::prototype* Proto = protocontainer<character>::GetProto(Chosen.Type);
+      const character::prototype *Proto = protocontainer<character>::GetProto(Chosen.Type);
       character *Monster = Proto->Spawn(Chosen.Config);
+      //
       if (c >= 100 ||
           ((Monster->GetFrequency() == 10000 || Monster->GetFrequency() > RAND_GOOD(10000)) &&
            (Monster->IsUnique() ||

@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include <set>
 
+#include "game.h"
+
 
 //#define xlogf(...)  do { fprintf(stderr, __VA_ARGS__); fflush(stderr); } while (0)
 #define xlogf(...)
@@ -21,11 +23,120 @@
 ////////////////////////////////////////////////////////////////////////////////
 typedef std::set<entity *> EntitySet;
 
-static EntitySet beSets[2]; // sets of entities which Be() method should be called
-static EntitySet dontDo; // entities that was removed on the current step
-static EntitySet hellSets[2]; // set of entities that should be burned
-static int curBeSet = 0;
-static int curHellSet = 0;
+typedef struct EntityListItem {
+  struct EntityListItem *next;
+  entity *e;
+} EntityListItem;
+
+
+typedef struct EntityList {
+  struct EntityListIterator *iterators;
+  struct EntityListItem *head;
+  struct EntityListItem *tail;
+  EntitySet *items;
+} EntityList;
+
+
+typedef struct EntityListIterator {
+  struct EntityListIterator *next;
+  EntityList *owner;
+  EntityListItem *nextitem;
+} EntityListIterator;
+
+
+////////////////////////////////////////////////////////////////////////////////
+static void elInitialize (EntityList *el) {
+  memset(el, 0, sizeof(*el));
+  el->items = new EntitySet();
+}
+
+
+static bool elIsInList (EntityList *el, entity *e) {
+  EntitySet::const_iterator it = el->items->find(e);
+  //
+  return (it != el->items->end());
+}
+
+
+static void elAddItem (EntityList *el, entity *e) {
+  EntitySet::const_iterator it = el->items->find(e);
+  //
+  if (it == el->items->end()) {
+    EntityListItem *i = (EntityListItem *)calloc(1, sizeof(EntityListItem));
+    //
+    el->items->insert(e);
+    i->e = e;
+    i->next = NULL;
+    if (el->tail != NULL) el->tail->next = i; else el->head = i;
+    el->tail = i;
+  }
+}
+
+
+static void elRemoveItem (EntityList *el, entity *e) {
+  EntitySet::iterator it = el->items->find(e);
+  //
+  if (it != el->items->end()) {
+    EntityListItem *p = NULL, *i;
+    //
+    el->items->erase(it);
+    //
+    for (i = el->head; i != NULL; p = i, i = i->next) if (i->e == e) break;
+    if (i == NULL) { fprintf(stderr, "FATAL: elRemoveItem() desync!\n"); abort(); }
+    //
+    for (EntityListIterator *eit = el->iterators; eit != NULL; eit = eit->next) {
+      if (eit->nextitem == i) eit->nextitem = i->next;
+    }
+    //
+    if (p != NULL) p->next = i->next; else el->head = i->next;
+    if (i->next == NULL) el->tail = p;
+    free(i);
+  }
+}
+
+
+static entity *elInitIterator (EntityList *el, EntityListIterator *it) {
+  memset(it, 0, sizeof(*it));
+  it->owner = el;
+  it->nextitem = (el->head != NULL ? el->head->next : NULL);
+  it->next = el->iterators;
+  el->iterators = it;
+  return (el->head != NULL ? el->head->e : NULL);
+}
+
+
+static void elRemoveIterator (EntityListIterator *it) {
+  if (it->owner != NULL) {
+    if (it->owner->iterators == it) {
+      it->owner->iterators = it->next;
+    } else {
+      EntityListIterator *p = NULL, *c;
+      //
+      for (c = it->owner->iterators; c != NULL; p = c, c = c->next) if (c == it) break;
+      if (c == NULL || p == NULL) { fprintf(stderr, "FATAL: elRemoveIterator() desync!\n"); abort(); }
+      p->next = it->next;
+    }
+    memset(it, 0, sizeof(*it));
+  }
+}
+
+
+static entity *elIteratorNext (EntityListIterator *it) {
+  if (it->nextitem != NULL) {
+    entity *e = it->nextitem->e;
+    //
+    it->nextitem = it->nextitem->next;
+    return e;
+  } else {
+    elRemoveIterator(it);
+  }
+  return NULL;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+static EntityList beList;
+static EntityList hellList;
 
 
 static bool burningHell = false; // is we burning lost souls?
@@ -34,43 +145,12 @@ static bool doRegister = true; // nothing %-)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-static truth isInBeSet (int idx, entity *p) {
-  EntitySet::const_iterator it = beSets[idx].find(p);
-  return (it != beSets[idx].end());
+pool::pool () {
+  elInitialize(&beList);
+  elInitialize(&hellList);
 }
 
 
-static truth isInHell (entity *p) {
-  EntitySet::const_iterator it = hellSets[curHellSet].find(p);
-  return (it != hellSets[curHellSet].end());
-}
-
-
-static truth isDontDo (entity *p) {
-  EntitySet::const_iterator it = dontDo.find(p);
-  return (it != dontDo.end());
-}
-
-
-static void removeFromHell (entity *p) {
-  EntitySet::const_iterator it = hellSets[curHellSet].find(p);
-  if (it != hellSets[curHellSet].end()) hellSets[curHellSet].erase(p);
-}
-
-
-static void removeFromDontDo (entity *p) {
-  EntitySet::const_iterator it = dontDo.find(p);
-  if (it != dontDo.end()) dontDo.erase(p);
-}
-
-
-static void removeFromBeSet (int idx, entity *p) {
-  EntitySet::const_iterator it = beSets[idx].find(p);
-  if (it != beSets[idx].end()) beSets[idx].erase(p);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
 truth pool::IsBurningHell () {
   return burningHell;
 }
@@ -85,55 +165,69 @@ void pool::RegisterState (truth doreg) {
 /* Calls the Be() function of each self-changeable entity during each tick,
  * thus allowing acting characters, spoiling food etc. */
 void pool::Be () {
-  EntitySet newBe, leftBe;
+  EntityListIterator it;
+  entity *e;
   //
   if (burningHell) { fprintf(stderr, "FATAL: started to being while burning souls!\n"); entity::DumpDeadSet(); abort(); }
   if (doBeing) { fprintf(stderr, "FATAL: started to being while already being!\n"); entity::DumpDeadSet(); abort(); }
   //
-  xlogf("Be: START (%u:%u)\n", beSets[curBeSet].size(), beSets[curBeSet^1].size());
+  xlogf("Be: START\n");
   doBeing = true;
   //
-  for (EntitySet::const_iterator i = beSets[curBeSet].begin(); i != beSets[curBeSet].end(); ++i) {
-    if (!entity::IsInDeadSet(*i) && !isInHell(*i) && !isDontDo(*i)) {
-      int mmark = entity::GetUniqueMemoryMark(*i);
-      xlogf("Be: %p (%d)\n", *i, mmark);
-      (*i)->Be();
-      if (entity::GetUniqueMemoryMark(*i) != mmark) {
-        fprintf(stderr, "FATAL: entity polymorphed while being!\n");
-        entity::DumpDeadSet();
-        abort();
+  try {
+    for (e = elInitIterator(&beList, &it); e != NULL; e = elIteratorNext(&it)) {
+      int mmark = entity::GetUniqueMemoryMark(e);
+      //
+      xlogf("Be: %p (%d)\n", e, mmark);
+      e->Be();
+      if (it.owner == NULL) break; // aborted
+      if (elIsInList(&beList, e)) {
+        if (entity::GetUniqueMemoryMark(e) != mmark) {
+          fprintf(stderr, "FATAL: entity polymorphed while being!\n");
+          entity::DumpDeadSet();
+          abort();
+        }
       }
     }
+  } catch (...) {
+    elRemoveIterator(&it);
+    throw;
   }
-  // swap sets
-  for (EntitySet::const_iterator i = beSets[curBeSet].begin(); i != beSets[curBeSet].end(); ++i) {
-    if (!entity::IsInDeadSet(*i) && !isInHell(*i) && !isDontDo(*i)) beSets[curBeSet^1].insert(*i);
-  }
-  beSets[curBeSet].clear();
-  curBeSet ^= 1;
-  dontDo.clear();
+  elRemoveIterator(&it);
   //
   doBeing = false;
-  xlogf("Be: DONE (%u:%u)\n", beSets[curBeSet].size(), beSets[curBeSet^1].size());
+  xlogf("Be: DONE\n");
+}
+
+
+void pool::AbortBe () {
+  doBeing = false;
+  for (EntityListIterator *eit = beList.iterators; eit != NULL; eit = eit->next) { eit->owner = NULL; eit->nextitem = NULL; }
+  beList.iterators = NULL;
 }
 
 
 void pool::BurnHell () {
-  EntitySet newBe;
+  EntityListIterator it;
+  entity *e;
   //
+  if (!game::IsRunning()) AbortBe();
   if (burningHell) { fprintf(stderr, "FATAL: started to burning souls while already burning souls!\n"); entity::DumpDeadSet(); abort(); }
   if (doBeing) { fprintf(stderr, "FATAL: started to burning souls while being!\n"); entity::DumpDeadSet(); abort(); }
   //
   burningHell = true;
-  xlogf("BurnHell: START (%u)\n", hellSets[curHellSet].size());
+  xlogf("BurnHell: START\n");
   //
-  for (EntitySet::const_iterator i = hellSets[curHellSet].begin(); i != hellSets[curHellSet].end(); ++i) {
-    if (!entity::IsInDeadSet(*i)) delete (*i);
+  try {
+    for (e = elInitIterator(&hellList, &it); e != NULL; e = elIteratorNext(&it)) {
+      delete e;
+      elRemoveItem(&hellList, e);
+    }
+  } catch (...) {
+    elRemoveIterator(&it);
+    throw;
   }
-  hellSets[curHellSet].clear();
-  curHellSet ^= 1;
-  //
-  entity::BurnDeadSet();
+  elRemoveIterator(&it);
   //
   burningHell = false;
   xlogf("BurnHell: DONE\n");
@@ -151,71 +245,49 @@ void pool::KillBees () {
 }
 
 
-void pool::Add (entity *Entity) {
-  if (doRegister && Entity) {
-    if (entity::IsInDeadSet(Entity)) {
-      fprintf(stderr, "FATAL: trying to disguise zombie as living critter!\n");
-      entity::DumpDeadSet();
-      abort();
-    }
-    //
-    if (burningHell && isInHell(Entity)) {
-      fprintf(stderr, "FATAL: trying to resurrect the soul while burning!\n");
-      entity::DumpDeadSet();
-      abort();
-    }
-    //
-    removeFromHell(Entity);
-    curHellSet ^= 1; removeFromHell(Entity); curHellSet ^= 1;
-    //
-    if (doBeing) {
-      // system is living, add to 'future' set
-      if (!isInBeSet(curBeSet^1, Entity)) {
-        xlogf("Add: %p\n", Entity);
-        beSets[curBeSet^1].insert(Entity);
-      }
-    } else {
-      // system is frozen, add to 'current' set
-      if (!isInBeSet(curBeSet, Entity)) {
-        xlogf("Add: %p\n", Entity);
-        beSets[curBeSet].insert(Entity);
-        if (isDontDo(Entity)) removeFromDontDo(Entity);
-      }
+void pool::Add (entity *e) {
+  if (doRegister && e) {
+    elRemoveItem(&hellList, e);
+    if (!elIsInList(&beList, e)) {
+      elAddItem(&beList, e);
+      xlogf("Add: %p\n", e);
     }
   }
 }
 
 
-void pool::Remove (entity *Entity) {
-  if (doRegister && Entity) {
-    if (doBeing) {
-      // system is living, add to 'dontDo' set
-      if (!isDontDo(Entity)) {
-        xlogf("Remove: %p\n", Entity);
-        dontDo.insert(Entity);
-      }
-    } else {
-      // system is frozen, remove from 'current' set
-      if (isInBeSet(curBeSet, Entity)) {
-        xlogf("Remove: %p\n", Entity);
-        removeFromBeSet(curBeSet, Entity);
-      }
+void pool::Remove (entity *e) {
+  if (doRegister && e) {
+    if (elIsInList(&beList, e)) {
+      xlogf("Remove: %p\n", e);
+      elRemoveItem(&beList, e);
     }
   }
 }
 
 
-void pool::AddToHell (entity *Entity) {
-  if (doRegister && Entity) {
-    Remove(Entity); // burn it with fire!
-    if (isInHell(Entity)) {
-      xlogf("AddToHell: %p\n", Entity);
-      if (burningHell) curHellSet ^= 1;
-      hellSets[curHellSet].insert(Entity);
-      if (burningHell) curHellSet ^= 1;
+void pool::AddToHell (entity *e) {
+  if (doRegister && e) {
+    Remove(e); // burn it with fire!
+    if (!elIsInList(&hellList, e)) {
+      xlogf("AddToHell: %p\n", e);
+      elAddItem(&hellList, e);
+    }
+  }
+}
+
+
+void pool::RemoveFromHell (entity *e) {
+  if (doRegister && e) {
+    if (elIsInList(&hellList, e)) {
+      xlogf("RemoveFromHell: %p\n", e);
+      elRemoveItem(&hellList, e);
     }
   }
 }
 
 
 #undef xlogf
+
+
+static pool poolsingleton;

@@ -19,13 +19,17 @@ class entity;
 
 class pool {
 public:
+  pool ();
+
   static void Add (entity *);
   static void Remove (entity *);
   static void AddToHell (entity *);
+  static void RemoveFromHell (entity *);
   static void BurnHell ();
   static void Be ();
   static truth IsBurningHell ();
   static void KillBees ();
+  static void AbortBe ();
   //
   static void RegisterState (truth doreg);
 };

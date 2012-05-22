@@ -1528,14 +1528,18 @@ v2 game::NameKeyHandler (v2 CursorPos, int Key) {
 
 
 void game::End (festring DeathMessage, truth Permanently, truth AndGoToMenu) {
+  pool::AbortBe();
   globalwindowhandler::DeInstallControlLoop(AnimationController);
   SetIsRunning(false);
   if (Permanently || !WizardModeIsReallyActive()) RemoveSaves(Permanently);
   if (Permanently && !WizardModeIsReallyActive()) {
     highscore HScore;
+    //
     if (HScore.LastAddFailed()) {
       iosystem::TextScreen(CONST_S("You didn't manage to get onto the high score list.\n\n\n\n")+GetPlayerName()+", "+DeathMessage+"\nRIP");
-    } else HScore.Draw();
+    } else {
+      HScore.Draw();
+    }
   }
   if (AndGoToMenu) {
     /* This prevents monster movement etc. after death. */
@@ -2449,6 +2453,7 @@ truth game::TryToEnterSumoArena () {
   }
   ADD_MESSAGE("\"So you want to compete? Okay, I'll explain the rules. First, I'll make a mirror image out of us both. We'll enter the arena and fight till one is knocked out. Use of any equipment is not allowed. Note that we will not gain experience from fighting as a mirror image, but won't get really hurt, either. However, controlling the image is exhausting and you can get hungry very quickly.\"");
   if (!TruthQuestion("Do you want to challenge him? [y/N]")) return false;
+  pool::AbortBe();
   SumoWrestling = true;
   character *MirrorPlayer = Player->Duplicate(IGNORE_PROHIBITIONS);
   character *MirrorSumo = Sumo->Duplicate(IGNORE_PROHIBITIONS);
@@ -2479,6 +2484,7 @@ truth game::TryToExitSumoArena () {
     if (TruthQuestion("Do you really wish to give up? [y/N]")) return EndSumoWrestling(LOST);
     return false;
   } else {
+    pool::AbortBe();
     Player->Remove();
     GetCurrentLevel()->CollectEverything(IVector, CVector);
     GetCurrentDungeon()->SaveLevel(SaveName(), 1);
@@ -2498,6 +2504,7 @@ truth game::TryToExitSumoArena () {
 
 
 truth game::EndSumoWrestling (int Result) {
+  pool::AbortBe();
   msgsystem::LeaveBigMessageMode();
   if (Result == LOST) AskForKeyPress("You lose. [press any key to continue]");
   else if (Result == WON) AskForKeyPress("You win! [press any key to continue]");
@@ -2554,7 +2561,7 @@ truth game::EndSumoWrestling (int Result) {
     DrawEverything();
   }
   Player->EditNP(-25000);
-  Player->CheckStarvationDeath(CONST_S("exhausted after controlling a mirror image for too sLong"));
+  Player->CheckStarvationDeath(CONST_S("exhausted after controlling a mirror image for too long"));
   throw areachangerequest();
   return true;
 }
