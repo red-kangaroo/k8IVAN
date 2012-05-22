@@ -30,6 +30,8 @@ class team {
 public:
   team ();
   team (feuLong);
+  virtual ~team () {}
+
   void SetRelation (team *, int);
   int GetRelation (const team *) const;
   void Hostility (team *);

@@ -5,6 +5,7 @@ ITEM(leg, bodypart)
   leg() : StrengthBonus(0), AgilityBonus(0) { }
   leg(const leg&);
   virtual ~leg();
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual int GetTotalResistance(int) const;

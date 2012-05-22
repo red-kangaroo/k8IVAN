@@ -5,6 +5,7 @@ ITEM(itemcontainer, lockableitem)
   itemcontainer();
   itemcontainer(const itemcontainer&);
   virtual ~itemcontainer();
+
   virtual truth Open(character*);
   virtual void Load(inputfile&);
   virtual void Save(outputfile&) const;

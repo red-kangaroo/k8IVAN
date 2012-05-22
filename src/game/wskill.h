@@ -22,12 +22,14 @@ class inputfile;
 class weaponskill {
 public:
   weaponskill () : Level(0), Hits(0), HitCounter(0) {}
+  virtual ~weaponskill () {}
+
   int GetLevel () const { return Level; }
   int GetHits () const { return Hits; }
   truth Tick ();
   truth AddHit (int);
   truth SubHit (int);
-  virtual ~weaponskill () {}
+
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
   virtual int GetLevelMap (int) const = 0;
@@ -43,6 +45,8 @@ protected:
 
 class cweaponskill : public weaponskill {
 public:
+  virtual ~cweaponskill () {}
+
   virtual int GetLevelMap (int) const;
   virtual feuLong GetUnuseTickMap (int) const;
   virtual int GetUnusePenaltyMap (int) const;
@@ -69,6 +73,8 @@ class sweaponskill : public weaponskill {
 public:
   sweaponskill () : ID(0), Weight(0), Config(0) {}
   sweaponskill (citem *);
+  virtual ~sweaponskill () {}
+
   virtual int GetLevelMap (int) const;
   virtual feuLong GetUnuseTickMap (int) const;
   virtual int GetUnusePenaltyMap (int) const;

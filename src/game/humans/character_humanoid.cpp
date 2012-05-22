@@ -8,6 +8,7 @@ public:
   humanoid () : CurrentRightSWeaponSkill(0), CurrentLeftSWeaponSkill(0) { }
   humanoid (const humanoid &);
   virtual ~humanoid ();
+
   virtual truth CanWield () const;
   virtual truth Hit (character *, v2, int, int = 0);
   virtual int GetSize () const;

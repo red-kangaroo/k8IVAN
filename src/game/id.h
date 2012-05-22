@@ -20,10 +20,11 @@ class festring;
 #define CHAR_NAME(Case) GetName(Case).CStr()
 #define CHAR_DESCRIPTION(Case) GetDescription(Case).CStr()
 
-class id
-{
+class id {
  public:
-  virtual ~id () { }
+  virtual ~id () {}
+
+ public:
   virtual void AddName(festring&, int, int) const;
   virtual festring GetName(int, int) const;
   virtual void AddName(festring&, int) const;

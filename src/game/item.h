@@ -62,12 +62,16 @@ inputfile& operator>>(inputfile&, idholder*&);
 
 class itemlock
 {
- public:
+public:
   typedef itemprototype prototype;
+
+public:
   itemlock() : Locked(false) { }
+  virtual ~itemlock () { }
+
+public:
   void Save(outputfile&) const;
   void Load(inputfile&);
-  virtual ~itemlock () { }
   virtual truth TryKey(item*, character*);
   virtual int GetVirtualConfig() const = 0;
   virtual void SetVirtualConfig(int, int = 0) = 0;
@@ -207,7 +211,10 @@ class itemprototype
 {
  public:
   friend class databasecreator<item>;
+
   itemprototype(const itemprototype*, itemspawner, itemcloner, cchar*);
+  virtual ~itemprototype () {}
+
   item* Spawn(int Config = 0, int SpecialFlags = 0) const { return Spawner(Config, SpecialFlags); }
   item* SpawnAndLoad(inputfile&) const;
   item* Clone(citem* Item) const { return Cloner(Item); }
@@ -238,10 +245,13 @@ class item : public object
   friend class databasecreator<item>;
   typedef itemprototype prototype;
   typedef itemdatabase database;
+
+ public:
   item();
   item(citem&);
   virtual ~item();
 
+ public:
   inline truth IsSteppedOn () const { return mIsStepedOn; }
   inline void SetSteppedOn (truth v) { mIsStepedOn = v; }
 

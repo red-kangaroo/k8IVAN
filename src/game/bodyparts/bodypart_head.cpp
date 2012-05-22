@@ -5,6 +5,7 @@ ITEM(head, bodypart)
   head();
   head(const head&);
   virtual ~head();
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual int GetTotalResistance(int) const;

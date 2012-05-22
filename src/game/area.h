@@ -29,6 +29,8 @@ public:
   area ();
   area (int, int);
   virtual ~area ();
+
+public:
   virtual void Draw (truth) const = 0;
   void Save (outputfile &) const;
   void Load (inputfile &);

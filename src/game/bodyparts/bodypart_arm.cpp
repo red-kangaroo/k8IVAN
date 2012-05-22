@@ -5,6 +5,7 @@ ITEM(arm, bodypart)
   arm() : StrengthBonus(0), DexterityBonus(0) { }
   arm(const arm&);
   virtual ~arm();
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual int GetTotalResistance(int) const;

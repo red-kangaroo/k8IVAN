@@ -69,7 +69,8 @@ private:
 class stack {
 public:
   stack (square *, entity *, feuLong = 0);
-  ~stack ();
+  virtual ~stack ();
+
   void Load (inputfile &);
   void Draw (ccharacter *, blitdata &, int) const;
   void AddItem (item *, truth = true);

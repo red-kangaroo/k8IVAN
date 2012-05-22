@@ -21,10 +21,12 @@ class rain : public entity
  public:
   /* Come To The Dark Side */
   rain* Next;
- public:
+
+public:
   rain() : entity(HAS_BE), Next(0), Drop(0), Drops(0), OwnLiquid(0) { }
   rain(liquid*, lsquare*, v2, int, truth);
-  ~rain();
+  virtual ~rain();
+
   virtual void Be();
   void Save(outputfile&) const;
   void Load(inputfile&);

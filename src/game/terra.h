@@ -21,6 +21,7 @@ class terrain
 {
  public:
   virtual ~terrain() {}
+
   virtual void StepOn(character*) { }
   virtual cchar* SurviveMessage() const;
   virtual cchar* MonsterSurviveMessage() const;
@@ -34,12 +35,16 @@ class terrain
 class gterrain : public terrain
 {
  public:
+  virtual ~gterrain () {}
+
   virtual int GetEntryDifficulty() const = 0;
 };
 
 class oterrain : public terrain
 {
  public:
+  virtual ~oterrain () {}
+
   virtual truth Enter(truth) const = 0;
   virtual int GetRestModifier() const { return 1; }
   virtual void ShowRestMessage(character*) const { }

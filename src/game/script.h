@@ -126,6 +126,7 @@ class script {
 public:
   typedef std::map<cchar *, scriptmemberbase script::*, charcomparer> datamap;
   virtual ~script () {}
+
   virtual void ReadFrom (inputfile &) = 0;
   virtual void Save (outputfile& SaveFile) const { SaveDataMap (GetDataMap (), SaveFile); }
   virtual void Load (inputfile& SaveFile) { LoadDataMap (GetDataMap (), SaveFile); }
@@ -148,6 +149,8 @@ inline inputfile &operator >> (inputfile &SaveFile, script &Script) { Script.Loa
 class scriptwithbase : public script {
 public:
   scriptwithbase () : Base (0) {}
+  virtual ~scriptwithbase () {}
+
   const scriptwithbase *GetBase () const { return Base; }
   virtual void SetBase (const scriptwithbase *What) { Base = What; }
 
@@ -159,6 +162,9 @@ protected:
 class posscript : public script {
 public:
   typedef posscript scripttype;
+
+  virtual ~posscript () {}
+
   virtual void ReadFrom (inputfile &);
   truth GetRandom () const { return Random; }
   static void InitDataMap ();
@@ -180,6 +186,9 @@ protected:
 class materialscript : public script {
 public:
   typedef materialscript scripttype;
+
+  virtual ~materialscript () {}
+
   virtual void ReadFrom (inputfile &);
   int GetConfig () const { return Config; }
   void SetConfig (int What) { Config = What; }
@@ -201,7 +210,10 @@ protected:
 class basecontentscript : public script {
 public:
   typedef basecontentscript scripttype;
+
   basecontentscript ();
+  virtual ~basecontentscript () {}
+
   virtual void ReadFrom (inputfile &);
   int GetContentType () const { return ContentType; }
   truth IsValid () const { return ContentType || Random; }
@@ -324,7 +336,10 @@ protected:
 class squarescript : public script {
 public:
   typedef squarescript scripttype;
+
   squarescript ();
+  virtual ~squarescript () {}
+
   virtual void ReadFrom (inputfile &);
   static void InitDataMap ();
 
@@ -372,6 +387,9 @@ typedef contentmap<olterrain> olterraincontentmap;
 class roomscript : public scriptwithbase {
 public:
   typedef roomscript scripttype;
+
+  virtual ~roomscript () {}
+
   void ReadFrom (inputfile &);
   const std::list<squarescript>& GetSquare () const;
   virtual void Save (outputfile &) const;
@@ -412,6 +430,9 @@ protected:
 class levelscript : public scriptwithbase {
 public:
   typedef levelscript scripttype;
+
+  virtual ~levelscript () {}
+
   void ReadFrom (inputfile &);
   const std::list<squarescript>& GetSquare () const;
   const std::list<roomscript>& GetRoom () const;
@@ -465,8 +486,10 @@ protected:
 class dungeonscript : public script {
 public:
   typedef dungeonscript scripttype;
+
   dungeonscript ();
   virtual ~dungeonscript ();
+
   virtual void ReadFrom (inputfile &);
   const std::map<int, levelscript>& GetLevel () const;
   void RandomizeLevels ();
@@ -489,6 +512,9 @@ protected:
 class teamscript : public script {
 public:
   typedef teamscript scripttype;
+
+  virtual ~teamscript () {}
+
   virtual void ReadFrom (inputfile &);
   const std::vector<std::pair<int, int> >& GetRelation () const;
   virtual void Save (outputfile &) const;
@@ -506,6 +532,9 @@ protected:
 class gamescript : public script {
 public:
   typedef gamescript scripttype;
+
+  virtual ~gamescript () {}
+
   virtual void ReadFrom (inputfile &);
   const std::list<std::pair<int, teamscript> > &GetTeam () const;
   const std::map<int, dungeonscript> &GetDungeon () const;

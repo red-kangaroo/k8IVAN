@@ -57,6 +57,9 @@ class sysbase : public base
     T->Initialize(Config, SpecialFlags);
     return T;
   }
+
+  virtual ~sysbase () {}
+
   static type* Clone(const type* T) { return new type(*T); }
   virtual const prototype* FindProtoType() const { return &ProtoType; }
   static const prototype ProtoType;
@@ -68,6 +71,9 @@ class simplesysbase : public base
  public:
   typedef simplesysbase<type, base, prototype> mybase;
   static type* Spawn() { return new type; }
+
+  virtual ~simplesysbase () {}
+
   virtual const prototype* GetProtoType() const { return &ProtoType; }
   static const prototype ProtoType;
 };

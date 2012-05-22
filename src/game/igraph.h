@@ -83,9 +83,10 @@ struct graphicdata
 outputfile& operator<<(outputfile&, const graphicdata&);
 inputfile& operator>>(inputfile&, graphicdata&);
 
-class igraph
-{
- public:
+class igraph {
+public:
+  virtual ~igraph () {}
+
   static void Init();
   static void DeInit();
   static cbitmap* GetWTerrainGraphic() { return Graphic[GR_WTERRAIN]; }

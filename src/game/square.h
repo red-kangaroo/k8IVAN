@@ -29,6 +29,7 @@ class square
  public:
   square(area*, v2);
   virtual ~square();
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual void AddCharacter(character*);

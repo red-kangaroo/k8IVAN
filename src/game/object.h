@@ -31,6 +31,7 @@ public:
   object ();
   object (const object &);
   virtual ~object ();
+
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
   virtual void UpdatePictures ();

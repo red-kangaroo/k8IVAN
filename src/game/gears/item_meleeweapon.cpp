@@ -2,9 +2,10 @@
 ITEM(meleeweapon, item)
 {
  public:
-  meleeweapon() { }
-  meleeweapon(const meleeweapon&);
-  virtual ~meleeweapon();
+  meleeweapon () {}
+  meleeweapon (const meleeweapon &);
+  virtual ~meleeweapon ();
+
   virtual truth HitEffect(character*, character*, v2, int, int, truth);
   virtual void DipInto(liquid*, character*);
   virtual sLong GetPrice() const;
@@ -63,82 +64,88 @@ ITEM(meleeweapon, item)
 #else
 
 
-
 void meleeweapon::SetSecondaryMaterial(material* What, int SpecialFlags) { SetMaterial(SecondaryMaterial, What, GetDefaultSecondaryVolume(), SpecialFlags); }
-
-
-
 void meleeweapon::ChangeSecondaryMaterial(material* What, int SpecialFlags) { ChangeMaterial(SecondaryMaterial, What, GetDefaultSecondaryVolume(), SpecialFlags); }
-
-
-
 void meleeweapon::InitMaterials(material* M1, material* M2, truth CUP) { ObjectInitMaterials(MainMaterial, M1, GetDefaultMainVolume(), SecondaryMaterial, M2, GetDefaultSecondaryVolume(), CUP); }
-
-
-
 double meleeweapon::GetTHVBonus() const { return Enchantment * .5; }
-
-
-
 double meleeweapon::GetDamageBonus() const { return Enchantment; }
-
-
-
 col16 meleeweapon::GetDripColor() const { return Fluid[0]->GetLiquid()->GetColor(); }
-
-
-
 truth meleeweapon::IsDippable(ccharacter*) const { return !Fluid; }
-
-
-
 truth meleeweapon::AllowRegularColors() const { return SecondaryMaterial->GetVolume(); }
-
-
-
 v2 meleeweapon::GetWieldedBitmapPos(int I) const { return SecondaryMaterial->GetVolume() ? item::GetWieldedBitmapPos(I) : v2(160, 128); }
-
-
-
 void meleeweapon::InitMaterials(const materialscript* M, const materialscript* S, truth CUP) { InitMaterials(M->Instantiate(), S->Instantiate(), CUP); }
+alpha meleeweapon::GetAlphaB(int) const { return SecondaryMaterial->GetAlpha(); }
+int meleeweapon::GetRustDataB() const { return SecondaryMaterial->GetRustData(); }
+col16 meleeweapon::GetMaterialColorC(int Frame) const { return SecondaryMaterial->GetVolume() ? GetMaterialColorA(Frame) : TRANSPARENT_COLOR; }
 
 
-
-truth meleeweapon::HitEffect(character* Enemy, character*, v2, int BodyPartIndex, int, truth BlockedByArmour)
-{
-  if(!BlockedByArmour && Fluid)
-  {
-    truth Success = false;
-    fluidvector FluidVector;
-    FillFluidVector(FluidVector);
-
-    for(uInt c = 0; c < FluidVector.size(); ++c)
-      if(FluidVector[c]->Exists()
-   && FluidVector[c]->GetLiquid()->HitEffect(Enemy, Enemy->GetBodyPart(BodyPartIndex)))
-  Success = true;
-
-    return Success;
-  }
-  else
-    return false;
+material *meleeweapon::GetMaterial (int I) const {
+  return !I ? MainMaterial : SecondaryMaterial;
 }
 
 
+col16 meleeweapon::GetMaterialColorB (int) const {
+  return SecondaryMaterial->GetVolume() ? SecondaryMaterial->GetColor() : TRANSPARENT_COLOR;
+}
 
-void meleeweapon::DipInto(liquid* Liquid, character* Dipper)
+
+meleeweapon::meleeweapon (const meleeweapon &MW) : mybase(MW), Enchantment(MW.Enchantment) {
+  CopyMaterial(MW.SecondaryMaterial, SecondaryMaterial);
+}
+
+
+meleeweapon::~meleeweapon () {
+  delete SecondaryMaterial;
+}
+
+
+void meleeweapon::PostConstruct()
 {
-  if(Dipper->IsPlayer())
-    ADD_MESSAGE("%s is now covered with %s.", CHAR_NAME(DEFINITE), Liquid->GetName(false, false).CStr());
+  Enchantment = GetBaseEnchantment();
+}
 
+
+void meleeweapon::Save (outputfile &SaveFile) const {
+  item::Save(SaveFile);
+  SaveFile << Enchantment;
+  SaveFile << SecondaryMaterial;
+}
+
+
+void meleeweapon::Load (inputfile &SaveFile) {
+  item::Load(SaveFile);
+  SaveFile >> Enchantment;
+  LoadMaterial(SaveFile, SecondaryMaterial);
+}
+
+
+truth meleeweapon::HitEffect (character *Enemy, character *, v2, int BodyPartIndex, int, truth BlockedByArmour) {
+  if (!BlockedByArmour && Fluid) {
+    truth Success = false;
+    fluidvector FluidVector;
+    //
+    FillFluidVector(FluidVector);
+    for (uInt c = 0; c < FluidVector.size(); ++c) {
+      if (FluidVector[c]->Exists() && FluidVector[c]->GetLiquid()->HitEffect(Enemy, Enemy->GetBodyPart(BodyPartIndex))) {
+        Success = true;
+      }
+    }
+    return Success;
+  }
+  return false;
+}
+
+
+void meleeweapon::DipInto (liquid *Liquid, character *Dipper) {
+  if (Dipper->IsPlayer()) ADD_MESSAGE("%s is now covered with %s.", CHAR_NAME(DEFINITE), Liquid->GetName(false, false).CStr());
   SpillFluid(Dipper, Liquid);
   Dipper->DexterityAction(10);
 }
 
 
-
-sLong meleeweapon::GetPrice() const
-{
+sLong meleeweapon::GetPrice () const {
   double WeaponStrengthModifier = GetFormModifier() * GetMainMaterial()->GetStrengthValue();
+  //
   WeaponStrengthModifier *= WeaponStrengthModifier;
   WeaponStrengthModifier *= GetMainMaterial()->GetWeight();
   WeaponStrengthModifier *= Max((10 + Enchantment) * 0.1, 0.1);
@@ -146,82 +153,21 @@ sLong meleeweapon::GetPrice() const
 }
 
 
-
-void meleeweapon::Save(outputfile& SaveFile) const
-{
-  item::Save(SaveFile);
-  SaveFile << Enchantment;
-  SaveFile << SecondaryMaterial;
-}
-
-
-
-void meleeweapon::Load(inputfile& SaveFile)
-{
-  item::Load(SaveFile);
-  SaveFile >> Enchantment;
-  LoadMaterial(SaveFile, SecondaryMaterial);
-}
-
-
-
-material* meleeweapon::GetMaterial(int I) const
-{
-  return !I ? MainMaterial : SecondaryMaterial;
-}
-
-
-
-col16 meleeweapon::GetMaterialColorB(int) const
-{
-  return SecondaryMaterial->GetVolume() ? SecondaryMaterial->GetColor() : TRANSPARENT_COLOR;
-}
-
-
-
-alpha meleeweapon::GetAlphaB(int) const
-{
-  return SecondaryMaterial->GetAlpha();
-}
-
-
-
-meleeweapon::~meleeweapon()
-{
-  delete SecondaryMaterial;
-}
-
-
-
-meleeweapon::meleeweapon(const meleeweapon& MW) : mybase(MW), Enchantment(MW.Enchantment)
-{
-  CopyMaterial(MW.SecondaryMaterial, SecondaryMaterial);
-}
-
-
-
-void meleeweapon::AddInventoryEntry(ccharacter* Viewer, festring& Entry, int, truth ShowSpecialInfo) const // never piled
-{
+// never piled
+void meleeweapon::AddInventoryEntry (ccharacter *Viewer, festring &Entry, int, truth ShowSpecialInfo) const {
   AddName(Entry, INDEFINITE);
-
-  if(ShowSpecialInfo)
-  {
+  if (ShowSpecialInfo) {
     Entry << " [" << GetWeight() << "g, DAM " << GetBaseMinDamage() << '-' << GetBaseMaxDamage();
     Entry << ", " << GetBaseToHitValueDescription();
-
-    if(!IsBroken() && !IsWhip())
-      Entry << ", " << GetStrengthValueDescription();
-
+    if (!IsBroken() && !IsWhip()) Entry << ", " << GetStrengthValueDescription();
+    //
     int CWeaponSkillLevel = Viewer->GetCWeaponSkillLevel(this);
     int SWeaponSkillLevel = Viewer->GetSWeaponSkillLevel(this);
-
-    if(CWeaponSkillLevel || SWeaponSkillLevel)
-      Entry << ", skill " << CWeaponSkillLevel << '/' << SWeaponSkillLevel;
-
+    //
+    if (CWeaponSkillLevel || SWeaponSkillLevel) Entry << ", skill " << CWeaponSkillLevel << '/' << SWeaponSkillLevel;
     Entry << ']';
   }
 }
-
 
 
 void meleeweapon::SignalSpoil (material *Material) {
@@ -239,231 +185,154 @@ void meleeweapon::SignalSpoil (material *Material) {
 }
 
 
-
-void meleeweapon::AddPostFix(festring& String, int Case) const
-{
+void meleeweapon::AddPostFix (festring &String, int Case) const {
   item::AddPostFix(String, Case);
-
-  if(Fluid)
-  {
+  if (Fluid) {
     String << " covered with ";
     fluid::AddFluidInfo(Fluid[0], String);
   }
-
-  if(Enchantment > 0)
-    String << " +" << Enchantment;
-  else if(Enchantment < 0)
-    String << ' ' << Enchantment;
+  if (Enchantment > 0) String << " +" << Enchantment;
+  else if (Enchantment < 0) String << ' ' << Enchantment;
 }
 
 
-
-void meleeweapon::Be()
-{
+void meleeweapon::Be () {
   item::Be();
-
-  if(Exists() && SecondaryMaterial->GetVolume())
-    SecondaryMaterial->Be(ItemFlags);
+  if (Exists() && SecondaryMaterial->GetVolume()) SecondaryMaterial->Be(ItemFlags);
 }
 
 
-
-int meleeweapon::GetSparkleFlags() const
-{
-  return (MainMaterial->IsSparkling() ? SPARKLING_A|(SecondaryMaterial->GetVolume() ? SPARKLING_C : 0) : 0)
-    | (SecondaryMaterial->IsSparkling() ? SPARKLING_B : 0);
+int meleeweapon::GetSparkleFlags () const {
+  return
+    (MainMaterial->IsSparkling() ? SPARKLING_A|(SecondaryMaterial->GetVolume() ? SPARKLING_C : 0) : 0) |
+    (SecondaryMaterial->IsSparkling() ? SPARKLING_B : 0);
 }
 
 
-
-void meleeweapon::SetEnchantment(int Amount)
-{
+void meleeweapon::SetEnchantment (int Amount) {
   Enchantment = Amount;
   SignalEnchantmentChange();
 }
 
 
-
-void meleeweapon::EditEnchantment(int Amount)
-{
+void meleeweapon::EditEnchantment (int Amount) {
   Enchantment += Amount;
   SignalEnchantmentChange();
 }
 
 
-
-int meleeweapon::GetStrengthValue() const
-{
-  return Max<int>(sLong(GetStrengthModifier()) * GetMainMaterial()->GetStrengthValue() / 2000 + Enchantment, 0);
+int meleeweapon::GetStrengthValue () const {
+  return Max<int>(sLong(GetStrengthModifier())*GetMainMaterial()->GetStrengthValue()/2000+Enchantment, 0);
 }
 
 
-
-void meleeweapon::PostConstruct()
-{
-  Enchantment = GetBaseEnchantment();
-}
-
-
-
-int meleeweapon::GetSpoilLevel() const
-{
+int meleeweapon::GetSpoilLevel () const {
   int MainSpoilLevel = MainMaterial->GetSpoilLevel();
-
-  if(SecondaryMaterial->GetVolume())
-    return Max(MainSpoilLevel, SecondaryMaterial->GetSpoilLevel());
-  else
-    return MainSpoilLevel;
+  //
+  if (SecondaryMaterial->GetVolume()) return Max(MainSpoilLevel, SecondaryMaterial->GetSpoilLevel());
+  return MainSpoilLevel;
 }
 
 
-
-void meleeweapon::GenerateMaterials()
-{
+void meleeweapon::GenerateMaterials () {
   int Chosen = RandomizeMaterialConfiguration();
-  const fearray<sLong>& MMC = GetMainMaterialConfig();
-  InitMaterial(MainMaterial,
-         MAKE_MATERIAL(MMC.Data[MMC.Size == 1 ? 0 : Chosen]),
-         GetDefaultMainVolume());
-  const fearray<sLong>& SMC = GetSecondaryMaterialConfig();
-  InitMaterial(SecondaryMaterial,
-         MAKE_MATERIAL(SMC.Data[SMC.Size == 1 ? 0 : Chosen]),
-         GetDefaultSecondaryVolume());
+  //
+  const fearray<sLong> &MMC = GetMainMaterialConfig();
+  InitMaterial(MainMaterial, MAKE_MATERIAL(MMC.Data[MMC.Size == 1 ? 0 : Chosen]), GetDefaultMainVolume());
+  //
+  const fearray<sLong> &SMC = GetSecondaryMaterialConfig();
+  InitMaterial(SecondaryMaterial, MAKE_MATERIAL(SMC.Data[SMC.Size == 1 ? 0 : Chosen]), GetDefaultSecondaryVolume());
 }
 
 
-
-int meleeweapon::GetRustDataB() const
-{
-  return SecondaryMaterial->GetRustData();
-}
-
-
-
-void meleeweapon::TryToRust(sLong LiquidModifier)
-{
+void meleeweapon::TryToRust (sLong LiquidModifier) {
   item::TryToRust(LiquidModifier);
-
-  if(SecondaryMaterial->GetVolume() && SecondaryMaterial->TryToRust(LiquidModifier))
-    SecondaryMaterial->SetRustLevel(SecondaryMaterial->GetRustLevel() + 1);
+  if (SecondaryMaterial->GetVolume() && SecondaryMaterial->TryToRust(LiquidModifier)) {
+    SecondaryMaterial->SetRustLevel(SecondaryMaterial->GetRustLevel()+1);
+  }
 }
 
 
-
-material* meleeweapon::GetConsumeMaterial(ccharacter* Consumer, materialpredicate Predicate) const
-{
-  if((SecondaryMaterial->*Predicate)()
-     && SecondaryMaterial->GetVolume()
-     && Consumer->CanConsume(SecondaryMaterial))
+material *meleeweapon::GetConsumeMaterial (ccharacter *Consumer, materialpredicate Predicate) const {
+  if ((SecondaryMaterial->*Predicate)() && SecondaryMaterial->GetVolume() && Consumer->CanConsume(SecondaryMaterial)) {
     return SecondaryMaterial;
-  else
-    return item::GetConsumeMaterial(Consumer, Predicate);
+  }
+  return item::GetConsumeMaterial(Consumer, Predicate);
 }
 
 
-
-material* meleeweapon::RemoveMaterial(material* Material)
-{
-  if(Material == MainMaterial)
-    return RemoveMainMaterial();
-  else
-    return RemoveSecondaryMaterial();
+material *meleeweapon::RemoveMaterial (material *Material) {
+  if (Material == MainMaterial) return RemoveMainMaterial();
+  return RemoveSecondaryMaterial();
 }
 
 
-
-material* meleeweapon::RemoveMainMaterial()
-{
+material *meleeweapon::RemoveMainMaterial () {
   truth Equipped = PLAYER->Equips(this);
-
-  if(SecondaryMaterial->GetVolume())
-  {
-    item* Lump = SecondaryMaterial->CreateNaturalForm(SecondaryMaterial->GetVolume());
+  //
+  if (SecondaryMaterial->GetVolume()) {
+    item *Lump = SecondaryMaterial->CreateNaturalForm(SecondaryMaterial->GetVolume());
+    //
     DonateFluidsTo(Lump);
     DonateIDTo(Lump);
     DonateSlotTo(Lump);
-  }
-  else
+  } else {
     RemoveFromSlot();
-
-  if(Equipped)
-    game::AskForEscPress(CONST_S("Equipment destroyed!"));
-
+  }
+  //
+  if (Equipped) game::AskForEscPress(CONST_S("Equipment destroyed!"));
   SendToHell();
   return 0;
 }
 
 
-
-material* meleeweapon::RemoveSecondaryMaterial()
-{
+material *meleeweapon::RemoveSecondaryMaterial () {
   SecondaryMaterial->SetVolume(0);
-
-  if(!IsBroken())
+  //
+  if (!IsBroken()) {
     Break(0);
-  else
-  {
+  } else {
     RedistributeFluids();
     UpdatePictures();
     SendNewDrawAndMemorizedUpdateRequest();
   }
-
   return 0;
 }
 
 
-
-pixelpredicate meleeweapon::GetFluidPixelAllowedPredicate() const
-{
-  if(SecondaryMaterial->GetVolume())
-    return &rawbitmap::IsTransparent;
-  else
-    return &rawbitmap::IsMaterialColor1;
+pixelpredicate meleeweapon::GetFluidPixelAllowedPredicate () const {
+  if (SecondaryMaterial->GetVolume()) return &rawbitmap::IsTransparent;
+  return &rawbitmap::IsMaterialColor1;
 }
 
 
-
-void meleeweapon::CalculateEmitation()
-{
+void meleeweapon::CalculateEmitation () {
   Emitation = GetBaseEmitation();
-
-  if(MainMaterial)
-    game::CombineLights(Emitation, MainMaterial->GetEmitation());
-
-  if(SecondaryMaterial->GetVolume())
-    game::CombineLights(Emitation, SecondaryMaterial->GetEmitation());
+  //
+  if (MainMaterial) game::CombineLights(Emitation, MainMaterial->GetEmitation());
+  if (SecondaryMaterial->GetVolume()) game::CombineLights(Emitation, SecondaryMaterial->GetEmitation());
 }
 
 
-
-truth meleeweapon::CalculateHasBe() const
-{
-  return LifeExpectancy
-    || (MainMaterial && MainMaterial->HasBe())
-    || (SecondaryMaterial
-  && SecondaryMaterial->GetVolume()
-  && SecondaryMaterial->HasBe());
+truth meleeweapon::CalculateHasBe () const {
+  return
+    LifeExpectancy || (MainMaterial && MainMaterial->HasBe()) ||
+    (SecondaryMaterial && SecondaryMaterial->GetVolume() && SecondaryMaterial->HasBe());
 }
 
 
-
-item* meleeweapon::Fix()
-{
+item *meleeweapon::Fix () {
   SecondaryMaterial->SetVolumeNoSignals(GetDefaultSecondaryVolume());
   return item::Fix();
 }
 
 
-
-sLong meleeweapon::GetMaterialPrice() const
-{
-  return MainMaterial->GetRawPrice() + SecondaryMaterial->GetRawPrice();
+sLong meleeweapon::GetMaterialPrice () const {
+  return MainMaterial->GetRawPrice()+SecondaryMaterial->GetRawPrice();
 }
 
 
-
-void meleeweapon::CalculateEnchantment()
-{
+void meleeweapon::CalculateEnchantment () {
   Enchantment -= femath::LoopRoll(game::GetCurrentLevel()->GetEnchantmentMinusChance(), 5);
   Enchantment += femath::LoopRoll(game::GetCurrentLevel()->GetEnchantmentPlusChance(), 5);
   Enchantment -= femath::LoopRoll(GetEnchantmentMinusChance(), 5);
@@ -471,9 +340,4 @@ void meleeweapon::CalculateEnchantment()
 }
 
 
-
-col16 meleeweapon::GetMaterialColorC(int Frame) const
-{
-  return SecondaryMaterial->GetVolume() ? GetMaterialColorA(Frame) : TRANSPARENT_COLOR;
-}
 #endif

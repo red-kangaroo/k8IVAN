@@ -29,64 +29,63 @@ struct v2;
 
 class entity {
   friend class pool;
+
 public:
   static void *operator new (size_t size);
   static void operator delete (void *p);
 
+public:
   static truth IsInDeadSet (entity *e);
-  static truth IsInLiveSet (entity *e);
   static void BurnDeadSet ();
+  static int GetUniqueMemoryMark (entity *e);
+  static void DumpDeadSet ();
 
 public:
-  entity(int);
-  entity(const entity&);
-  virtual ~entity();
-  virtual void Be() { }
-  truth Exists() const { return Flags & EXISTS; }
-  void SendToHell();
-  truth IsEnabled() const { return Flags & HAS_BE; }
-  void Enable();
-  void Disable();
-  virtual square* GetSquareUnderEntity(int = 0) const = 0;
-  virtual void SignalVolumeAndWeightChange() { }
-  col24 GetEmitation() const { return Emitation; }
-  virtual void SignalEmitationIncrease(col24) { }
-  virtual void SignalEmitationDecrease(col24) { }
-  virtual truth ContentsCanBeSeenBy(ccharacter*) const { return false; }
-  virtual truth AllowSpoil() const { return false; }
-  virtual void SignalSpoil(material*) { }
-  virtual void SignalSpoilLevelChange(material*) { }
-  virtual truth IsOnGround() const = 0;
-  virtual truth AllowContentEmitation() const { return true; }
-  virtual void SignalRustLevelChange() { }
-  virtual material* RemoveMaterial(material*) { return 0; }
-  virtual character* TryNecromancy(character*) { return 0; }
-  virtual void SignalDisappearance() { }
-  virtual void SpecialEatEffect(character*, int) { }
-  virtual feuLong GetTrapID() const { return 0; }
-  virtual feuLong GetVictimID() const { return 0; }
-  virtual void AddTrapName(festring&, int) const { }
-  virtual void UnStick() { }
-  virtual void UnStick(int) { }
-  virtual truth TryToUnStick(character*, v2);
-  virtual int GetTrapType() const { return 0; }
-  void AddFlags(feuLong What) { Flags |= What; }
-  void RemoveFlags(feuLong What) { Flags &= ~What; }
-  virtual truth IsStuckTo(ccharacter*) const { return false; }
-  virtual ccharacter* FindCarrier() const { return 0; }
+  entity (int);
+  entity (const entity &);
+  virtual ~entity ();
+
+  virtual void Be () {}
+  virtual square *GetSquareUnderEntity (int = 0) const = 0;
+  virtual void SignalVolumeAndWeightChange () {}
+  col24 GetEmitation () const { return Emitation; }
+  virtual void SignalEmitationIncrease (col24) {}
+  virtual void SignalEmitationDecrease (col24) {}
+  virtual truth ContentsCanBeSeenBy (ccharacter *) const { return false; }
+  virtual truth AllowSpoil () const { return false; }
+  virtual void SignalSpoil (material *) {}
+  virtual void SignalSpoilLevelChange (material *) {}
+  virtual truth IsOnGround () const = 0;
+  virtual truth AllowContentEmitation () const { return true; }
+  virtual void SignalRustLevelChange () {}
+  virtual material *RemoveMaterial (material*) { return 0; }
+  virtual character *TryNecromancy (character*) { return 0; }
+  virtual void SignalDisappearance () {}
+  virtual void SpecialEatEffect (character *, int) {}
+  virtual feuLong GetTrapID () const { return 0; }
+  virtual feuLong GetVictimID () const { return 0; }
+  virtual void AddTrapName (festring &, int) const {}
+  virtual void UnStick () {}
+  virtual void UnStick (int) {}
+  virtual truth TryToUnStick (character *, v2) { return false; }
+  virtual int GetTrapType () const { return 0; }
+  virtual truth IsStuckTo (ccharacter *) const { return false; }
+  virtual ccharacter *FindCarrier () const { return 0; }
+
+  truth Exists () const { return Flags & EXISTS; }
+  void SendToHell ();
+  truth IsEnabled () const { return Flags & HAS_BE; }
+  void Enable ();
+  void Disable ();
+  void AddFlags (feuLong What) { Flags |= What; }
+  void RemoveFlags (feuLong What) { Flags &= ~What; }
 
 protected:
   col24 Emitation;
   feuLong Flags;
-  truth mInPool;
-  truth mInHell;
 
 private:
-  entity();
-
-private:
-  entity *Last;
-  entity *Next;
+  entity (); // no such constructor
 
 public:
   festring mOnEvents;

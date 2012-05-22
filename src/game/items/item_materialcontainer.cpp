@@ -5,6 +5,7 @@ ITEM(materialcontainer, item)
   materialcontainer() { }
   materialcontainer(const materialcontainer&);
   virtual ~materialcontainer();
+
   virtual material* GetSecondaryMaterial() const { return SecondaryMaterial; }
   virtual void SetSecondaryMaterial(material*, int = 0);
   virtual void ChangeSecondaryMaterial(material*, int = 0);

@@ -257,6 +257,8 @@ class characterprototype {
   friend class protosystem;
 public:
   characterprototype (const characterprototype *, characterspawner, charactercloner, cchar *);
+  virtual ~characterprototype () {}
+
   character *Spawn (int Config=0, int SpecialFlags=0) const { return Spawner(Config, SpecialFlags); }
   character *SpawnAndLoad(inputfile &) const;
   character *Clone(ccharacter *Char) const { return Cloner(Char); }
@@ -286,12 +288,17 @@ public:
 class character : public entity, public id {
   friend class databasecreator<character>;
   friend class corpse;
+
 public:
   typedef characterprototype prototype;
   typedef characterdatabase database;
+
+public:
   character ();
   character (ccharacter &);
   virtual ~character ();
+
+public:
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
   virtual truth CanWield () const { return false; }

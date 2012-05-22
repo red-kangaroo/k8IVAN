@@ -51,6 +51,8 @@ inputfile &operator >> (inputfile &, trapdata &);
 class itemtrapbase {
 public:
   itemtrapbase () : Active(false) {}
+  virtual ~itemtrapbase () {}
+
   void Save (outputfile &) const;
   void Load (inputfile &);
   void SetIsActive (truth);
@@ -58,7 +60,7 @@ public:
   void Search (ccharacter *, int);
   void FinalProcessForBone ();
   void TeleportRandomly ();
-  virtual ~itemtrapbase () {}
+
   virtual void SendNewDrawAndMemorizedUpdateRequest () const = 0;
   virtual festring GetName (int) const = 0;
   virtual void UpdatePictures () = 0;
@@ -122,6 +124,8 @@ template <class base> inline truth itemtrap<base>::CanBeSeenBy (ccharacter *View
 class trapprototype {
 public:
   trapprototype (trapspawner truth, cchar *);
+  virtual ~trapprototype () {}
+
   trap *SpawnAndLoad (inputfile &) const;
   cchar *GetClassID () const { return ClassID; }
   int GetIndex () const { return Index; }
@@ -142,6 +146,7 @@ public:
   typedef trapprototype prototype;
   trap ();
   virtual ~trap ();
+
   virtual square *GetSquareUnderEntity (int = 0) const;
   void SetLSquareUnder (lsquare *What) { LSquareUnder = What; }
   lsquare *GetLSquareUnder () const { return LSquareUnder; }

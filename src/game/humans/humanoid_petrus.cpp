@@ -4,6 +4,7 @@ CHARACTER(petrus, humanoid)
  public:
   petrus();
   virtual ~petrus();
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual void BeTalkedTo();

@@ -26,6 +26,7 @@ class wsquare : public square {
 public:
   wsquare (worldmap *, v2);
   virtual ~wsquare ();
+
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
   void Draw (blitdata &);

@@ -100,8 +100,11 @@ class lsquare : public square
   friend struct areacontroller;
   friend struct emitationcontroller;
   friend struct noxifycontroller;
+
+ public:
   lsquare(level*, v2);
   virtual ~lsquare();
+
   virtual void AddCharacter(character*);
   virtual void RemoveCharacter();
   stack* GetStack() const { return Stack; }

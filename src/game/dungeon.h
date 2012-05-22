@@ -26,7 +26,7 @@ class dungeon {
 public:
   dungeon ();
   dungeon (int Index);
-  ~dungeon ();
+  virtual ~dungeon ();
 
   truth PrepareLevel (int Index, truth Visual=true); // returns whether the level has been visited before
   void SaveLevel (cfestring &SaveName, int Number, truth DeleteAfterwards=true);

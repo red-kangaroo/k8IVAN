@@ -146,6 +146,7 @@ class level : public area
  public:
   level();
   virtual ~level();
+
   void Generate(int);
   v2 GetRandomSquare(ccharacter* = 0, int = 0, const rect* = 0) const;
   void GenerateMonsters();

@@ -32,6 +32,9 @@ public:
   typedef typename type::database database;
   typedef typename type::prototype prototype;
   typedef std::map<festring, databasememberbase<database> *> databasemembermap;
+
+  virtual ~databasecreator () {}
+
   static void ReadFrom (const festring &baseFileName);
   static void FindDataBase (const database *&, const prototype *, int);
   static void InstallDataBase (type *, int);
@@ -49,6 +52,8 @@ private:
 
 class databasesystem {
 public:
+  virtual ~databasesystem () {}
+
   static void Initialize ();
 };
 

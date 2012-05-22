@@ -27,6 +27,8 @@ class continent {
 public:
   continent ();
   continent (int);
+  virtual ~continent () {}
+
   void AttachTo (continent *);
   void Add (v2);
   void Save (outputfile &) const;

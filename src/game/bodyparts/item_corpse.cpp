@@ -5,6 +5,7 @@ ITEM(corpse, item)
   corpse() { }
   corpse(const corpse&);
   virtual ~corpse();
+
   virtual int GetOfferValue(int) const;
   virtual double GetWeaponStrength() const;
   virtual truth CanBeEatenByAI(ccharacter*) const;

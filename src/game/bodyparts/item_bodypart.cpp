@@ -6,6 +6,7 @@ ITEM(bodypart, item)
   bodypart() : Master(0) { }
   bodypart(const bodypart&);
   virtual ~bodypart();
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual int GetGraphicsContainerIndex() const;

@@ -30,6 +30,8 @@ class roomprototype
 {
  public:
   roomprototype(roomspawner, cchar*);
+  virtual ~roomprototype () {}
+
   room* Spawn() const { return Spawner(); }
   room* SpawnAndLoad(inputfile&) const;
   cchar* GetClassID() const { return ClassID; }
@@ -42,10 +44,13 @@ class roomprototype
 
 class room
 {
- public:
+public:
   typedef roomprototype prototype;
+
+public:
   room() : LastMasterSearchTick(0), MasterID(0), LastWardSearchTick(0) { }
   virtual ~room() { }
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual void Enter(character*) { }

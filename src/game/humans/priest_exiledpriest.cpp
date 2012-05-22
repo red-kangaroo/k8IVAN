@@ -4,6 +4,7 @@ CHARACTER(exiledpriest, priest)
 public:
   exiledpriest ();
   virtual ~exiledpriest ();
+
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
   virtual void BeTalkedTo ();

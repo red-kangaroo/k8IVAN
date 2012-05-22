@@ -24,10 +24,11 @@ struct materialdatabase;
 
 typedef god* (*godspawner)();
 
-class godprototype
-{
+class godprototype {
  public:
-  godprototype(godspawner, cchar*);
+  godprototype (godspawner, cchar*);
+  virtual ~godprototype () {}
+
   god* Spawn() const { return Spawner(); }
   god* SpawnAndLoad(inputfile&) const;
   cchar* GetClassID() const { return ClassID; }
@@ -38,18 +39,22 @@ class godprototype
   cchar* ClassID;
 };
 
-class god
-{
+class god {
  protected:
   virtual void PrayGoodEffect() = 0;
   virtual void PrayBadEffect() = 0;
   int Relation, LastPray;
   sLong Timer;
   truth Known;
+
  public:
   typedef godprototype prototype;
+
+ public:
   god();
-  virtual ~god () { }
+  virtual ~god () {}
+
+ public:
   virtual void Pray();
   virtual cchar* GetName() const = 0;
   virtual cchar* GetDescription() const = 0;

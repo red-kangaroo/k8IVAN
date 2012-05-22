@@ -18,6 +18,9 @@ class lockable : public base, public lockbase
 {
  public:
   typedef typename lockbase::prototype prototype;
+
+  virtual ~lockable () {}
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual truth IsOpenable(ccharacter*) const { return true; }

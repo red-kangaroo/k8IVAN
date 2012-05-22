@@ -5,6 +5,7 @@ ITEM(beartrap, itemtrap<item>)
   beartrap();
   beartrap(const beartrap&);
   virtual ~beartrap();
+
   virtual void Load(inputfile&);
   virtual void Save(outputfile&) const;
   virtual void StepOnEffect(character*);

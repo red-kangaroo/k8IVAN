@@ -24,9 +24,10 @@ class square;
 
 class slot
 {
- public:
+public:
   slot() : Item(0) { }
   virtual ~slot() {}
+
   virtual void Empty() = 0;
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
@@ -55,7 +56,10 @@ class stackslot : public slot
  public:
   friend class stack;
   friend class stackiterator;
+
   stackslot(stack* MotherStack, stackslot* Last) : MotherStack(MotherStack), Last(Last), Next(0) { }
+  virtual ~stackslot () {}
+
   virtual void Empty();
   virtual void AddFriendItem(item*) const;
   virtual truth IsOnGround() const;
@@ -80,6 +84,8 @@ class stackslot : public slot
 class bodypartslot : public slot
 {
  public:
+  virtual ~bodypartslot () {}
+
   virtual void Empty();
   character* GetMaster() const { return Master; }
   void SetMaster(character* What) { Master = What; }
@@ -100,6 +106,8 @@ class bodypartslot : public slot
 class gearslot : public slot
 {
  public:
+  virtual ~gearslot () {}
+
   virtual void Empty();
   bodypart* GetBodyPart() const { return BodyPart; }
   void SetBodyPart(bodypart* What) { BodyPart = What; }

@@ -28,6 +28,7 @@ public:
   worldmap (int, int);
   worldmap ();
   virtual ~worldmap ();
+
   void Generate ();
   void Save (outputfile &) const;
   void Load (inputfile &);

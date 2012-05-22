@@ -68,6 +68,8 @@ class lterrain : public object
 {
  public:
   lterrain() : LSquareUnder(0) { }
+  virtual ~lterrain () {}
+
   virtual void Load(inputfile&);
   virtual truth Open(character*) { return false; }
   virtual truth Close(character*) { return false; }
@@ -127,7 +129,10 @@ class glterrainprototype
 {
  public:
   friend class databasecreator<glterrain>;
+
   glterrainprototype(const glterrainprototype*, glterrainspawner, cchar*);
+  virtual ~glterrainprototype () {}
+
   glterrain* Spawn(int Config = 0, int SpecialFlags = 0) const { return Spawner(Config, SpecialFlags); }
   glterrain* SpawnAndLoad(inputfile&) const;
   cchar* GetClassID() const { return ClassID; }
@@ -156,6 +161,9 @@ class glterrain : public lterrain, public gterrain
   friend class databasecreator<glterrain>;
   typedef glterrainprototype prototype;
   typedef glterraindatabase database;
+
+  virtual ~glterrain () {}
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual int GetEntryDifficulty() const { return 1; }
@@ -227,7 +235,10 @@ class olterrainprototype
 {
  public:
   friend class databasecreator<olterrain>;
+
   olterrainprototype(const olterrainprototype*, olterrainspawner, cchar*);
+  virtual ~olterrainprototype () {}
+
   olterrain* Spawn(int Config = 0, int SpecialFlags = 0) const { return Spawner(Config, SpecialFlags); }
   olterrain* SpawnAndLoad(inputfile&) const;
   cchar* GetClassID() const { return ClassID; }
@@ -256,6 +267,9 @@ class olterrain : public lterrain, public oterrain
   friend class databasecreator<olterrain>;
   typedef olterrainprototype prototype;
   typedef olterraindatabase database;
+
+  virtual ~olterrain () {}
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual truth Enter(truth) const;

@@ -73,7 +73,10 @@ class materialprototype
 {
  public:
   friend class databasecreator<material>;
+
   materialprototype(const materialprototype*, materialspawner, materialcloner, cchar*);
+  virtual ~materialprototype () {}
+
   material* Spawn(int Config, sLong Volume = 0) const { return Spawner(Config, Volume, false); }
   material* SpawnAndLoad(inputfile&) const;
   material* Clone(cmaterial* Material) const { return Cloner(Material); }
@@ -104,9 +107,12 @@ class material
   friend class databasecreator<material>;
   typedef materialprototype prototype;
   typedef materialdatabase database;
+
+ public:
   material(int NewConfig, sLong InitVolume = 0, truth Load = false) : MotherEntity(0) { Initialize(NewConfig, InitVolume, Load); }
   material() : MotherEntity(0) { }
   virtual ~material() { }
+
   void AddName(festring&, truth = false, truth = true) const;
   festring GetName(truth = false, truth = true) const;
   material* TakeDipVolumeAway();
@@ -237,6 +243,9 @@ class materialsysbase : public base
     return M;
   }
   static material* Clone(const type* T) { return new type(*T); }
+
+  virtual ~materialsysbase () {}
+
   virtual const materialprototype* FindProtoType() const { return &ProtoType; }
   static const materialprototype ProtoType;
 };

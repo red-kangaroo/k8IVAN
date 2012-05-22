@@ -33,6 +33,7 @@ class smoke : public entity
   smoke();
   smoke(gas*, lsquare*);
   virtual ~smoke();
+
   virtual void Be();
   virtual void Draw(blitdata&) const;
   virtual square* GetSquareUnderEntity(int = 0) const;

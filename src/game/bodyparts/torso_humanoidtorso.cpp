@@ -5,6 +5,7 @@ ITEM(humanoidtorso, torso)
   humanoidtorso();
   humanoidtorso(const humanoidtorso&);
   virtual ~humanoidtorso();
+
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual int GetTotalResistance(int) const;

@@ -27,6 +27,7 @@ class wterrain {
 public:
   wterrain () : WSquareUnder(0), AnimationFrames(1) {}
   virtual ~wterrain () {}
+
   virtual void Load (inputfile &);
   v2 GetPos () const { return WSquareUnder->GetPos(); }
   void SetWSquareUnder (wsquare *What) { WSquareUnder = What; }
@@ -50,6 +51,8 @@ protected:
 class gwterrainprototype {
 public:
   gwterrainprototype (gwterrainspawner, cchar *);
+  virtual ~gwterrainprototype () {}
+
   gwterrain *Spawn () const { return Spawner(); }
   gwterrain *SpawnAndLoad (inputfile &) const;
   cchar *GetClassID () const { return ClassID; }
@@ -68,6 +71,9 @@ public:
 class gwterrain : public wterrain, public gterrain {
 public:
   typedef gwterrainprototype prototype;
+
+  virtual ~gwterrain () {}
+
   virtual void Save (outputfile &) const;
   void Draw (blitdata &) const;
   virtual int GetPriority () const = 0;
@@ -85,6 +91,8 @@ protected:
 class owterrainprototype {
 public:
   owterrainprototype (owterrainspawner, cchar *);
+  virtual ~owterrainprototype () {}
+
   owterrain *Spawn () const { return Spawner(); }
   owterrain *SpawnAndLoad (inputfile &) const;
   cchar *GetClassID () const { return ClassID; }
@@ -100,6 +108,9 @@ private:
 class owterrain : public wterrain, public oterrain {
 public:
   typedef owterrainprototype prototype;
+
+  virtual ~owterrain () {}
+
   virtual void Save (outputfile &) const;
   void Draw (blitdata &) const;
   virtual const prototype *GetProtoType () const = 0;
