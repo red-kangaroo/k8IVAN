@@ -40,10 +40,17 @@ truth lobhse::SpecialBiteEffect(character* Char, v2, int, int, truth BlockedByAr
 
 void lobhse::GetAICommand()
 {
-  if(MoveRandomly())
-    return;
-
-  EditAP(-1000);
+  StandIdleAI();
+  if (MoveRandomly()) {
+    web *Web = web::Spawn();
+    //
+    Web->SetStrength(GetConfig() == LARGE ? 50 : 100);
+    if (GetLSquareUnder()->AddTrap(Web)) {
+      if (CanBeSeenByPlayer()) ADD_MESSAGE("%s spins a web.", CHAR_NAME(DEFINITE));
+      EditAP(-1000);
+      return;
+    }
+  }
 }
 
 
