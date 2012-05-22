@@ -329,7 +329,7 @@ Dungeon ATTNAM;
           I == ring(RING_OF_INVISIBILITY);
           E == amulet(AMULET_OF_ESP);
           S == GOLD GOLD meleeweapon(LONG_SWORD);
-          U == DIAMOND helmet(HELM_OF_UNDERSTANDING);
+          U == DIAMOND helmet(HELM_OF_BRILLIANCE);
           A == GOLD helmet(HELM_OF_ATTRACTIVITY);
           L == oillamp;
           P == GOLD bodyarmor(PLATE_MAIL);
