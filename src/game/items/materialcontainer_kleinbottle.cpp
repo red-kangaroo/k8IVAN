@@ -6,7 +6,7 @@ ITEM(kleinbottle, materialcontainer)
   virtual void DipInto (liquid *, character *);
   virtual liquid *CreateDipLiquid ();
   virtual truth IsDippable (ccharacter *) const { return !SecondaryMaterial; }
-  virtual truth IsDumpable (ccharacter *) const { return SecondaryMaterial != 0; }
+  virtual truth IsDumpable (ccharacter *) const { return false; } // can't dump!
   virtual material *GetConsumeMaterial (ccharacter *, materialpredicate = TrueMaterialPredicate) const;
   //virtual void Break (character *, int); // cannot be broken, remove this
   //virtual truth IsDipDestination (ccharacter *) const; // cannot be dipped into
