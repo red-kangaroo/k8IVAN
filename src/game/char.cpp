@@ -3870,7 +3870,7 @@ void character::BeginTemporaryState (sLong State, int Counter) {
   int Index;
   if (State == POLYMORPHED) ABORT("No Polymorphing with BeginTemporaryState!");
   for (Index = 0; Index < STATES; ++Index) if (1 << Index == State) break;
-  if (Index == STATES) ABORT("BeginTemporaryState works only when State == 2 ^ n!");
+  if (Index == STATES) ABORT("BeginTemporaryState works only when State == 2^n!");
   if (TemporaryStateIsActivated(State)) {
     int OldCounter = GetTemporaryStateCounter(State);
     if (OldCounter != PERMANENT) EditTemporaryStateCounter(State, Max(Counter, 50-OldCounter));
@@ -6614,7 +6614,7 @@ void character::ReceiveWhiteUnicorn (sLong Amount) {
 void character::DecreaseStateCounter (sLong State, int Counter) {
   int Index;
   for (Index = 0; Index < STATES; ++Index) if (1 << Index == State) break;
-  if (Index == STATES) ABORT("DecreaseTemporaryStateCounter works only when State == 2 ^ n!");
+  if (Index == STATES) ABORT("DecreaseTemporaryStateCounter works only when State == 2^n!");
   if (TemporaryState & State) {
     if (TemporaryStateCounter[Index] == PERMANENT || (TemporaryStateCounter[Index] += Counter) <= 0) {
       TemporaryState &= ~State;
