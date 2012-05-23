@@ -54,7 +54,9 @@ kawai /* meleeweapon-> */
     BaseEnchantment = 64;
     Roundness = 10;
     CanFlame = true;
+    CanBeGenerated = false;
   }
+
 /*
   Config BROKEN;
   {
