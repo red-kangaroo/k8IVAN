@@ -59,3 +59,4 @@ typedef lockable<belt, itemlock> lockablebelt;
 #include "belt_thievesgirdle.cpp"
 
 #include "meleeweapon_kawai.cpp"
+#include "meleeweapon_superkawai.cpp"

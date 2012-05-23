@@ -283,4 +283,5 @@ Include "items/tipswordofpenetration.dat";
 Include "items/thievesgirdle.dat";
 Include "items/lynslag.dat";
 Include "items/kawai.dat";
+Include "items/superkawai.dat";
 Include "items/moneybag.dat";

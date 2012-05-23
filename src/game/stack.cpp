@@ -124,9 +124,9 @@ void stack::Save (outputfile &SaveFile) const {
     SaveFile << uShort(0);
     return;
   }
-  int SavedItems = 0;
+  uShort SavedItems = 0;
   for (stackiterator i1 = GetBottom(); i1.HasItem(); ++i1) if (i1->IsMainSlot(&i1.GetSlot())) ++SavedItems;
-  SaveFile << (uShort)SavedItems;
+  SaveFile << SavedItems;
   /* Save multitiled items only to one stack */
   for (stackiterator i2 = GetBottom(); i2.HasItem(); ++i2) if (i2->IsMainSlot(&i2.GetSlot())) SaveFile << i2.GetSlot();
 }

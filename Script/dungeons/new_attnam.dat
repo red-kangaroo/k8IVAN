@@ -492,8 +492,8 @@ Dungeon NEW_ATTNAM;
     if @player_name == "_k8_";
       //Square, Pos 10,23; { Items == kawai; }
       //Square, Pos 12,23; { Items == kawai; }
-      Square, Pos 1,33; { Items == kawai(SUPER); }
-      Square, Pos 2,33; { Items == kawai(SUPER); }
+      Square, Pos 1,33; { Items == superkawai; }
+      Square, Pos 2,33; { Items == superkawai; }
       //Square, Pos 4,33; { Items == eptyron; }
       //Square, Pos 5,33; { Items == taiaha; }
       //Square, Pos 9, 23; { Character = assassin { Team = MONSTER_TEAM; } }
