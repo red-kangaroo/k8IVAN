@@ -1,3 +1,7 @@
+if ! $(THIS_IS_K8JAM) {
+  Exit "You need k8jam to build Awish! Download it here: http://repo.or.cz/w/k8jam.git" ;
+}
+if $(WINDOZE) { OPT = default ; OPTIM_STANDARD = -O2 -march=i686 -mtune=i686 ; }
 set-profile ;
 set-default-locations ;
 if ! $(WINDOZE) { OPTIM.all += -Wno-narrowing ; }
@@ -42,6 +46,26 @@ softinclude $(TOP)/Jamrules.windoze ;
 softinclude $(TOP)/Jamrules.push ;
 
 
+rule C++SDLMain {
+  local n ;
+
+  for n in $(<) {
+    #echo "$(n:S)" ;
+    C++Main "$(<)$(SUFEXE)" : $(>) ;
+    C++LINKLIBS on "$(<)$(SUFEXE)" += -lm ;
+    LinkLibraries "$(<)$(SUFEXE)" : libfelib.a ;
+    if $(WINDOZE) {
+      if ! $(NOSOUND) { WINDOZE_SDL_MIXER = $(TOP)/windoze/libs/SDL_mixer.dll ; } else { WINDOZE_SDL_MIXER = ; }
+      #C++LINKLIBS on "$(<)$(SUFEXE)" += -Lwinlib -lz ;
+      LinkSharedLibraries "$(<)$(SUFEXE)" :
+        $(TOP)/windoze/libs/SDL.dll
+        $(WINDOZE_SDL_MIXER)
+      ;
+    }
+  }
+}
+
+
 if ! $(NOGDB) {
   OPTIM.all += -g ;
   LINKFLAGS.all += -g ;
@@ -50,10 +74,4 @@ if ! $(NOGDB) {
   LINKFLAGS.all += -s ;
 }
 
-#CCFLAGS += -DNDEBUG ;
-#C++FLAGS += -DNDEBUG ;
-#CCFLAGS += -Wall ;
-#C++FLAGS += -Wall ;
-
-LINKLIBS.all += -lm ;
-#C++LINKLIBS.all += -lm ;
+#if ! $(WINDOZE) { LINKLIBS.all += -lm ; }

@@ -1,7 +1,7 @@
 SubDir TOP src game ;
 
 
-gamesources =
+C++SDLMain ivan :
   actset.cpp
   areaset.cpp
   charset.cpp
@@ -28,10 +28,6 @@ gamesources =
   wmapset.cpp
   wskill.cpp
 ;
-
-
-C++Main ivan : $(gamesources) ;
-LinkLibraries ivan : libfelib.a ;
 
 
 SubInclude TOP src felib ;

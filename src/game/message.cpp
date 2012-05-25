@@ -14,7 +14,7 @@
 
 #ifndef DISABLE_SOUND
 # include "regex.h"
-# include <SDL/SDL_mixer.h>
+# include <SDL_mixer.h>
 #endif
 
 #include "message.h"
