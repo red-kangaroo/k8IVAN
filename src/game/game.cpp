@@ -985,7 +985,8 @@ void game::SetPlayer (character *NP) {
 
 void game::InitDungeons () {
   Dungeons = *GetGameScript()->GetDungeons()+1;
-  Dungeon = new dungeon*[Dungeons];
+  //fprintf(stderr, "dungeon count: %d\n", Dungeons);
+  Dungeon = new dungeon *[Dungeons];
   Dungeon[0] = 0;
   for (int c = 1; c < Dungeons; ++c) {
     Dungeon[c] = new dungeon(c);
