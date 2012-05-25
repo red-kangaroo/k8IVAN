@@ -1008,6 +1008,7 @@
 
 
 /* Hard-coded teams */
+// just add your own to enum
 #enum {
   PLAYER_TEAM,
   MONSTER_TEAM,
@@ -1036,6 +1037,7 @@
 #define ATTACHABLE (16|NOT_IN_ROOM) /* overrides IN_ROOM */
 #define HAS_NO_OTERRAIN 32
 
+// dungeon indicies; just add your own to enum
 #enum {
   RANDOM,
   ELPURI_CAVE,
