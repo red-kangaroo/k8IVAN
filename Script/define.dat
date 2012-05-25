@@ -1053,6 +1053,9 @@
 #define KHARAZ_ARAD_SHOP 127
 #define UNDER_WATER_TUNNEL_EXIT 128
 
+/* dungeon tags */
+#define ALL_DUNGEONS  32767
+
 #define VESANA_LEVEL 2
 #define CRYSTAL_LEVEL 3
 #define SPIDER_LEVEL 4

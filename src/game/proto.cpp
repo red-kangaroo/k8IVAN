@@ -19,6 +19,9 @@ sLong protosystem::ItemCategoryPossibility[ITEM_CATEGORIES];
 sLong protosystem::TotalItemPossibility;
 
 
+#include "confdef.h"
+
+
 character *protosystem::BalancedCreateMonster () {
   for (int c = 0; ; ++c) {
     double MinDifficulty = game::GetMinDifficulty(), MaxDifficulty = MinDifficulty*25;
@@ -30,6 +33,19 @@ character *protosystem::BalancedCreateMonster () {
       for (int c = 0; c < ConfigSize; ++c) {
         const character::database *DataBase = ConfigData[c];
         if (!DataBase->IsAbstract && DataBase->CanBeGenerated) {
+          {
+            truth allowed = false;
+            const fearray<int> &dlist = DataBase->AllowedDungeons;
+            //
+            //if (dlist[0] != ALL_DUNGEONS) fprintf(stderr, "(%u) [%d] [%d]\n", dlist.Size, dlist[0], game::GetCurrentDungeonIndex());
+            for (uInt f = 0; f < dlist.Size; ++f) {
+              if (dlist[f] == ALL_DUNGEONS || dlist[f] == game::GetCurrentDungeonIndex()) {
+                allowed = true;
+                break;
+              }
+            }
+            if (!allowed) continue;
+          }
           if (DataBase->IsUnique && DataBase->Flags & HAS_BEEN_GENERATED) continue;
           truth IsCatacomb = *game::GetCurrentLevel()->GetLevelScript()->IsCatacomb();
           if ((IsCatacomb && !DataBase->IsCatacombCreature) || (!IsCatacomb && DataBase->CanBeGeneratedOnlyInTheCatacombs)) continue;

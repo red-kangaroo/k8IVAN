@@ -249,6 +249,7 @@ struct characterdatabase : public databasebase {
   truth IsRangedAttacker;
   int WhatCategoryToThrow;
   int WhatWeaponConfigToThrow;
+  fearray<int> AllowedDungeons;
 };
 
 
@@ -634,6 +635,7 @@ public:
   DATA_BASE_TRUTH(IsRangedAttacker);
   DATA_BASE_VALUE(int, WhatCategoryToThrow);
   DATA_BASE_VALUE(int, WhatWeaponConfigToThrow);
+  DATA_BASE_VALUE(const fearray<int>&, AllowedDungeons);
   int GetType () const { return GetProtoType()->GetIndex(); }
   void TeleportRandomly (truth = false);
   truth TeleportNear (character *);
@@ -1135,6 +1137,7 @@ public:
   void Haste ();
   void Slow ();
   virtual void SurgicallyDetachBodyPart ();
+  truth IsAllowedInDungeon (int dunIndex);
 
  protected:
   static truth DamageTypeDestroysBodyPart (int);

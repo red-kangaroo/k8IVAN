@@ -503,5 +503,6 @@
 #define ROOM_BANANA_DROP_AREA 5
 #define ROOM_SUMO_ARENA 6
 
+#define ALL_DUNGEONS  32767
 
 #endif

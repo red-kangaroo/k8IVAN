@@ -4123,9 +4123,8 @@ character *character::PolymorphRandomly (int MinDanger, int MaxDanger, int Time)
   if (StateIsActivated(POLYMORPH_CONTROL)) {
     if (IsPlayer()) {
       if (!GetNewFormForPolymorphWithControl(NewForm)) return NewForm;
-    }
-    else {
-      NewForm = protosystem::CreateMonster(MinDanger * 10, MaxDanger * 10, NO_EQUIPMENT);
+    } else {
+      NewForm = protosystem::CreateMonster(MinDanger*10, MaxDanger*10, NO_EQUIPMENT);
     }
   } else {
     NewForm = protosystem::CreateMonster(MinDanger, MaxDanger, NO_EQUIPMENT);
@@ -7951,4 +7950,18 @@ void character::SurgicallyDetachBodyPart () {
 truth character::CanHear() const
 {
   return DataBase->CanHear && HasHead();
+}
+
+
+truth character::IsAllowedInDungeon (int dunIndex) {
+  const fearray<int> &dlist = GetAllowedDungeons();
+  //
+  for (uInt f = 0; f < dlist.Size; ++f) {
+    if (dlist[f] == ALL_DUNGEONS || dlist[f] == dunIndex) {
+      fprintf(stderr, "OK!\n");
+      return true;
+    }
+  }
+  fprintf(stderr, "NO!\n");
+  return false;
 }

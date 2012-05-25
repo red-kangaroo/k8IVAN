@@ -561,6 +561,13 @@ void level::GenerateNewMonsters (int HowMany, truth ConsiderPlayer) {
   for (int c1 = 0; c1 < HowMany; ++c1) {
     v2 Pos;
     character *Char = protosystem::BalancedCreateMonster();
+    // gum solution
+    /*
+    while (!Char->IsAllowedInDungeon(GetDungeon()->GetIndex())) {
+      delete Char;
+      Char = protosystem::BalancedCreateMonster();
+    }
+    */
     //
     Char->CalculateEnchantments();
     for (int c2 = 0; c2 < 30; ++c2) {
@@ -580,9 +587,9 @@ void level::GenerateNewMonsters (int HowMany, truth ConsiderPlayer) {
       int Modifier = Time.Day-EDIT_ATTRIBUTE_DAY_MIN;
       if (Modifier > 0) Char->EditAllAttributes(Modifier>>EDIT_ATTRIBUTE_DAY_SHIFT);
     } else {
-      //delete Char;
+      delete Char;
       //k8:delete Char;
-      Char->SendToHell(); // equipment
+      //Char->SendToHell(); // equipment
     }
   }
 }

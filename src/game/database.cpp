@@ -545,6 +545,7 @@ template<> void databasecreator<character>::CreateDataBaseMemberMap () {
   ADD_MEMBER(WhatCategoryToThrow);
   ADD_MEMBER(WhatWeaponConfigToThrow);
   ADD_MEMBER(WhatThrowItemTypesToThrow);
+  ADD_MEMBER(AllowedDungeons);
 }
 
 

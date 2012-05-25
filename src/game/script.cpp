@@ -408,6 +408,7 @@ cchar *contentscript<olterrain>::GetClassID () const { return "olterrain"; }
 void contentscript<character>::InitDataMap () {
   INIT_ENTRY(Inventory);
   INIT_ENTRY(WayPoint);
+  INIT_ENTRY(AllowedDungeons);
   INIT_ENTRY(Team);
   INIT_ENTRY(Flags);
 }
@@ -421,13 +422,6 @@ character *contentscript<character>::Instantiate (int SpecialFlags) const {
   character *Instance = contentscripttemplate<character>::BasicInstantiate(SpecialFlags);
   //
   //fprintf(stderr, "instantiating character '%s'\n", Instance->GetNameSingular().CStr());
-  //
-  /*
-  if (Instance->GetNameSingular() == "vampire") {
-    delete Instance;
-    return 0;
-  }
-  */
   //
   if (!mCode.IsEmpty()) {
     game::ClearEventData();

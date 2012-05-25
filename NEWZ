@@ -26,3 +26,7 @@ The enchant bonus is divised by 2, because the bonus value is added to
 each arm or leg. A +1 Dexterity bonus will add +0.5 Dexterity to each
 arm so (could be invisible for a +1 item so, unless you're Dexterity is
 already a bit trained).
+
+
+new character field:
+AllowedDungeons == ALL_DUNGEONS; // example: AllowedDungeons = { 2, UNDER_WATER_TUNNEL, MONDEDR; }
