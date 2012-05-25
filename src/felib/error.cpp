@@ -20,10 +20,11 @@
 #define set_new_handler  std::set_new_handler
 
 #include "error.h"
+#include "fesave.h"
 
 
 /* Shouldn't be initialized here! */
-cchar *globalerrorhandler::BugMsg = "\n\nPlease don't send your bug reports, i don't give a shit.\n";
+cchar *globalerrorhandler::BugMsg = "\n\nPlease don't send your bug reports, i cannot into coding!\n";
 
 void (*globalerrorhandler::OldNewHandler) () = 0;
 
@@ -44,13 +45,41 @@ void globalerrorhandler::DeInstall () {
 
 
 void globalerrorhandler::Abort (cchar *Format, ...) {
-  char Buffer[512];
-  va_list AP;
-  va_start(AP, Format);
-  vsnprintf(Buffer, sizeof(Buffer)-1, Format, AP);
-  va_end(AP);
-  strcat(Buffer, BugMsg);
-  std::cout << Buffer << std::endl;
+  char Buffer[2048];
+  char *bufptr = Buffer;
+  int bufsz = (int)sizeof(Buffer)-1;
+  //
+  for (;;) {
+    va_list ap;
+    int n;
+    char *np;
+    //
+    va_start(ap, Format);
+    n = vsnprintf(bufptr, bufsz, Format, ap);
+    va_end(ap);
+    if (n > -1 && n < bufsz) break;
+    if (n < -1) n = bufsz+4096;
+    np = (char *)realloc((bufptr == Buffer ? NULL : bufptr), n+1);
+    if (np == NULL) exit(4); //FIXME
+  }
+  //
+  fprintf(stderr, "%s%s", bufptr, BugMsg);
+  //
+  {
+    festring mydir = inputfile::GetMyDir();
+#ifdef WIN32
+    mydir << "\\";
+#else
+    mydir << "/";
+#endif
+    mydir << "crash.log";
+    FILE *fo = fopen(mydir.CStr(), "a");
+    //
+    if (fo) {
+      fprintf(fo, "============================================================\n%s\n", bufptr);
+      fclose(fo);
+    }
+  }
   exit(4);
 }
 
