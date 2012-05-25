@@ -1045,6 +1045,7 @@ void game::Hostility (team *Attacker, team *Defender) {
 
 void game::CreateTeams () {
   Teams = *GetGameScript()->GetTeams();
+  //fprintf(stderr, "team count: %d\n", Teams);
   Team = new team*[Teams];
   int c;
   for (c = 0; c < Teams; ++c) {

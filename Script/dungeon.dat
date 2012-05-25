@@ -21,8 +21,9 @@
 
 /* Team and dungeon data for the game */
 
+//don't need this anymore
 //Dungeons = 9;
-Teams = 17;
+//Teams = 17;
 
 
 Include "teams.dat";

@@ -543,6 +543,7 @@ public:
   virtual void Load (inputfile &);
   static void InitDataMap ();
   const int *GetDungeons () const { mDungeons = (int)Dungeon.size(); return &mDungeons; }
+  const int *GetTeams () const { mTeams = (int)Team.size(); return &mTeams; }
 
 protected:
   virtual const datamap &GetDataMap () const { return DataMap; }
@@ -550,8 +551,9 @@ protected:
   std::list<std::pair<int, teamscript> > Team;
   std::map<int, dungeonscript> Dungeon;
   mutable int mDungeons;
+  mutable int mTeams;
   //SCRIPT_MEMBER(int, Dungeons);
-  SCRIPT_MEMBER(int, Teams);
+  //SCRIPT_MEMBER(int, Teams);
 };
 
 

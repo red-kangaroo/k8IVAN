@@ -1052,7 +1052,7 @@ const std::map<int, dungeonscript>& gamescript::GetDungeon() const { return Dung
 
 void gamescript::InitDataMap () {
   //INIT_ENTRY(Dungeons);
-  INIT_ENTRY(Teams);
+  //INIT_ENTRY(Teams);
 }
 
 
