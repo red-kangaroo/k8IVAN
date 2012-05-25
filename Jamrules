@@ -55,11 +55,13 @@ rule C++SDLMain {
     C++LINKLIBS on "$(<)$(SUFEXE)" += -lm ;
     LinkLibraries "$(<)$(SUFEXE)" : libfelib.a ;
     if $(WINDOZE) {
-      if ! $(NOSOUND) { WINDOZE_SDL_MIXER = $(TOP)/windoze/libs/SDL_mixer.dll ; } else { WINDOZE_SDL_MIXER = ; }
+      if $(USE_SOUND) { WINDOZE_SDL_MIXER = $(TOP)/windoze/libs/SDL_mixer.dll ; } else { WINDOZE_SDL_MIXER = ; }
       #C++LINKLIBS on "$(<)$(SUFEXE)" += -Lwinlib -lz ;
+      if $(HAVE_ZLIB) { WINDOZE_ZLIB = $(TOP)/windoze/libs/zlib1.dll ; } else { WINDOZE_ZLIB = ;  }
       LinkSharedLibraries "$(<)$(SUFEXE)" :
         $(TOP)/windoze/libs/SDL.dll
         $(WINDOZE_SDL_MIXER)
+        $(WINDOZE_ZLIB)
       ;
     }
   }
@@ -73,5 +75,3 @@ if ! $(NOGDB) {
   OPTIM.all += -s ;
   LINKFLAGS.all += -s ;
 }
-
-#if ! $(WINDOZE) { LINKLIBS.all += -lm ; }
