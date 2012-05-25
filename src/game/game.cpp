@@ -48,6 +48,7 @@
 #include "fetime.h"
 #include "balance.h"
 #include "confdef.h"
+#include "wmapset.h"
 
 #define SAVE_FILE_VERSION 126 // Increment this if changes make savefiles incompatible
 #define BONE_FILE_VERSION 111 // Increment this if changes make bonefiles incompatible
@@ -299,6 +300,7 @@ truth game::Init (cfestring &Name) {
   mkdir(GetBoneDir().CStr());
 #endif
 
+  ::InitPlaces();
   LOSTick = 2;
   DangerFound = 0;
   CausePanicFlag = false;

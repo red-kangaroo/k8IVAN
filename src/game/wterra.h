@@ -12,6 +12,8 @@
 #ifndef __WTERRA_H__
 #define __WTERRA_H__
 
+#include "cont.h"
+#include "worldmap.h"
 #include "terra.h"
 #include "wsquare.h"
 #include "festring.h"
@@ -120,6 +122,12 @@ public:
   virtual int GetAttachedEntry () const;
   virtual truth Enter (truth) const;
   virtual int GetWalkability () const;
+
+  virtual truth IsSuitableContinent (continent *);
+  virtual truth WantPetrusContinent () const { return true; } // for now they all should want it
+  virtual truth IsAttnam () const { return false; }
+  virtual truth IsHidden () const { return false; }
+  virtual truth IsRevealed () const { return false; }
 
 public:
   festring mOnEvents;

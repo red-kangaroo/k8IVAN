@@ -140,3 +140,13 @@ truth owterrain::Enter (truth DirectionUp) const {
   }
   return game::TryTravel(GetAttachedDungeon(), GetAttachedArea(), GetAttachedEntry());
 }
+
+
+// base ivan thing
+truth owterrain::IsSuitableContinent (continent *Continent) {
+  return
+    (Continent->GetSize() > 25 && Continent->GetSize() < 700 && // 1000 is the previous value. It was lowered to make continents smaller
+     Continent->GetGTerrainAmount(EGForestType) &&
+     Continent->GetGTerrainAmount(SnowType) &&
+     Continent->GetGTerrainAmount(SteppeType));
+}

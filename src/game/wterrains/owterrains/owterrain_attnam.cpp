@@ -5,6 +5,8 @@ public:
   virtual cchar *GetNameStem () const;
   virtual v2 GetBitmapPos (int) const;
   virtual int GetAttachedDungeon () const;
+  virtual truth IsAttnam () const { return true; }
+  virtual truth IsRevealed () const { return true; }
 };
 
 

@@ -185,6 +185,7 @@ struct FuncArg {
 
 class game {
 public:
+  static void InitPlaces ();
   static truth Init(cfestring& = CONST_S(""));
   static void DeInit();
   static void Run();

@@ -25,6 +25,11 @@ static const int DirX[8] = { -1, -1, -1, 0, 0, 1, 1, 1 };
 static const int DirY[8] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
 
+std::vector<owterrain *> worldmap::Places;
+std::vector<int> worldmap::PlaceTypes;
+std::vector<int> worldmap::PlaceDungeons;
+std::vector<PlaceSpawner> worldmap::PlaceSpawners;
+
 worldmap::worldmap () {}
 continent *worldmap::GetContinentUnder (v2 Pos) const { return Continent[ContinentBuffer[Pos.X][Pos.Y]]; }
 v2 worldmap::GetEntryPos (ccharacter *, int I) const { return EntryMap.find(I)->second; }
@@ -100,144 +105,191 @@ void worldmap::Load (inputfile &SaveFile) {
 void worldmap::Generate () {
   Alloc2D(OldAltitudeBuffer, XSize, YSize);
   Alloc2D(OldTypeBuffer, XSize, YSize);
+  //
+  //fprintf(stderr, "places: %u\n", Places.size());
   for (;;) {
+    PlacePosition.clear();
+    PlaceRevealed.clear();
+    PlaceContinent.clear();
+    for (unsigned int f = 0; f < Places.size(); ++f) {
+      PlacePosition.push_back(ERROR_V2);
+      PlaceRevealed.push_back(false);
+      PlaceContinent.push_back(0);
+    }
+    //
     RandomizeAltitude();
     SmoothAltitude();
     GenerateClimate();
     SmoothClimate();
     CalculateContinents();
-    std::vector<continent*> PerfectForAttnam, PerfectForNewAttnam;
-    for (uInt c = 1; c < Continent.size(); ++c) {
-      if (Continent[c]->GetSize() > 25 && Continent[c]->GetSize() < 700 && // 1000 is the previous value. It was lowered to make continents smaller
-          Continent[c]->GetGTerrainAmount(EGForestType) &&
-          Continent[c]->GetGTerrainAmount(SnowType) &&
-          Continent[c]->GetGTerrainAmount(SteppeType))
-        PerfectForAttnam.push_back(Continent[c]);
+    //
+    std::vector<continent *> PerfectForAttnam, PerfectForNewAttnam;
+    continent *PetrusLikes = 0;
+    int nearPetrusCount = 0;
+    //
+    // find places for attnam
+    for (unsigned int f = 0; f < Places.size(); ++f) {
+      if (Places[f]->IsAttnam()) {
+        for (uInt c = 1; c < Continent.size(); ++c) {
+          if (Places[f]->IsSuitableContinent(Continent[c])) PerfectForAttnam.push_back(Continent[c]);
+        }
+      } else if (Places[f]->WantPetrusContinent()) {
+        ++nearPetrusCount;
+      }
     }
     if (!PerfectForAttnam.size()) continue;
+    // try to place all 'near petrus' places
+    while (PerfectForAttnam.size() > 0) {
+      int pno = RAND()%PerfectForAttnam.size();
+      int nphit = 0;
+      //
+      PetrusLikes = PerfectForAttnam[pno];
+      for (unsigned int f = 0; f < Places.size(); ++f) {
+        if (!Places[f]->IsAttnam() && Places[f]->WantPetrusContinent() && Places[f]->IsSuitableContinent(PetrusLikes)) {
+          ++nphit;
+        }
+      }
+      if (nphit == nearPetrusCount) break; // ok
+      // try again
+      PetrusLikes = 0;
+    }
+    if (!PetrusLikes) continue; // alas
+    //TODO: try non-petrus-wants
     //
-    v2 AttnamPos, ElpuriCavePos, NewAttnamPos, TunnelEntry, TunnelExit, MondedrPos, MuntuoPos;
-    v2 DragonTowerPos, DarkForestPos, XinrochTombPos;
+    v2 NewAttnamPos, TunnelEntry, TunnelExit;
+    //v2 AttnamPos, ElpuriCavePos, NewAttnamPos, TunnelEntry, TunnelExit, MondedrPos, MuntuoPos;
+    //v2 DragonTowerPos, DarkForestPos, XinrochTombPos;
     truth Correct = false;
-    continent *PetrusLikes;
+    for (unsigned int f = 0; f < Places.size(); ++f) {
+      if (Places[f]->IsAttnam() || Places[f]->WantPetrusContinent()) PlacePosition[f] = ERROR_V2;
+    }
     //
     for (int c1 = 0; c1 < 25; ++c1) {
       game::BusyAnimation();
       //
-      PetrusLikes = PerfectForAttnam[RAND() % PerfectForAttnam.size()];
-      AttnamPos = PetrusLikes->GetRandomMember(EGForestType);
-      ElpuriCavePos = PetrusLikes->GetRandomMember(SnowType);
-      MondedrPos = PetrusLikes->GetRandomMember(SteppeType);
-      MuntuoPos = PetrusLikes->GetRandomMember(LForestType);
-      DragonTowerPos = PetrusLikes->GetRandomMember(SteppeType);
-      DarkForestPos = PetrusLikes->GetRandomMember(LForestType);
-      XinrochTombPos = PetrusLikes->GetRandomMember(SnowType);
+      //PetrusLikes = PerfectForAttnam[RAND() % PerfectForAttnam.size()];
+      for (unsigned int f = 0; f < Places.size(); ++f) {
+        if (Places[f]->IsAttnam() || Places[f]->WantPetrusContinent()) {
+          PlacePosition[f] = PetrusLikes->GetRandomMember(PlaceTypes[f]);
+        }
+      }
       //
       for (int c2 = 1; c2 < 50; ++c2) {
-        TunnelExit = PetrusLikes->GetMember(RAND() % PetrusLikes->GetSize());
-        if (AttnamPos != TunnelExit && ElpuriCavePos != TunnelExit) {
-          for (int d1 = 0; d1 < 8; ++d1) {
-            v2 Pos = TunnelExit + game::GetMoveVector(d1);
-            if (IsValidPos(Pos) && AltitudeBuffer[Pos.X][Pos.Y] <= 0) {
-              int Distance = 3+(RAND() & 3);
-              truth Error = false;
-              TunnelEntry = Pos;
-              for (int c2 = 0; c2 < Distance; ++c2) {
-                TunnelEntry += game::GetMoveVector(d1);
-                if (!IsValidPos(TunnelEntry) || AltitudeBuffer[TunnelEntry.X][TunnelEntry.Y] > 0) {
+        truth tunnelExitOkPos = true;
+        //
+        TunnelExit = PetrusLikes->GetMember(RAND()%PetrusLikes->GetSize());
+        for (unsigned int f = 0; f < Places.size(); ++f) {
+          if (PlacePosition[f] != ERROR_V2) {
+            if (PlacePosition[f] == TunnelExit) { tunnelExitOkPos = false; break; }
+          }
+        }
+        if (!tunnelExitOkPos) continue;
+        //
+        for (int d1 = 0; d1 < 8; ++d1) {
+          v2 Pos = TunnelExit+game::GetMoveVector(d1);
+          //
+          if (IsValidPos(Pos) && AltitudeBuffer[Pos.X][Pos.Y] <= 0) {
+            int Distance = 3+(RAND() & 3);
+            truth Error = false;
+            int x, y;
+            int Counter = 0;
+            //
+            TunnelEntry = Pos;
+            for (int c2 = 0; c2 < Distance; ++c2) {
+              TunnelEntry += game::GetMoveVector(d1);
+              if (!IsValidPos(TunnelEntry) || AltitudeBuffer[TunnelEntry.X][TunnelEntry.Y] > 0) { Error = true; break; }
+            }
+            if (Error) continue;
+            for (x = TunnelEntry.X-3; x <= TunnelEntry.X+3; ++x) {
+              for (y = TunnelEntry.Y-3; y <= TunnelEntry.Y+3; ++y, ++Counter) {
+                if (Counter != 0 && Counter != 6 && Counter != 42 && Counter != 48 &&
+                    (!IsValidPos(x, y) || AltitudeBuffer[x][y] > 0 || AltitudeBuffer[x][y] < -350)) {
                   Error = true;
                   break;
                 }
               }
-              if (Error) continue;
-              int x, y;
-              int Counter = 0;
-              for (x = TunnelEntry.X - 3; x <= TunnelEntry.X + 3; ++x) {
-                for (y = TunnelEntry.Y - 3; y <= TunnelEntry.Y + 3; ++y, ++Counter)
-                  if (Counter != 0 && Counter != 6 && Counter != 42 && Counter != 48 &&
-                      (!IsValidPos(x, y) || AltitudeBuffer[x][y] > 0 || AltitudeBuffer[x][y] < -350)) {
-                    Error = true;
-                    break;
-                  }
-                if (Error) break;
-              }
-              if (Error) continue;
-              Error = true;
-              for (x = 0; x < XSize; ++x)
-                if (TypeBuffer[x][TunnelEntry.Y] == JungleType) {
-                  Error = false;
-                  break;
-                }
-              if (Error) continue;
-              Counter = 0;
-              for (x = TunnelEntry.X - 2; x <= TunnelEntry.X + 2; ++x)
-                for (y = TunnelEntry.Y - 2; y <= TunnelEntry.Y + 2; ++y, ++Counter)
-                  if (Counter != 0 && Counter != 4 && Counter != 20 && Counter != 24)
-                    AltitudeBuffer[x][y] /= 2;
-              AltitudeBuffer[TunnelEntry.X][TunnelEntry.Y] = 1 + RAND() % 50;
-              TypeBuffer[TunnelEntry.X][TunnelEntry.Y] = JungleType;
-              GetWSquare(TunnelEntry)->ChangeGWTerrain(jungle::Spawn());
-              int NewAttnamIndex;
-              for (NewAttnamIndex = RAND() & 7; NewAttnamIndex == 7 - d1; NewAttnamIndex = RAND() & 7);
-              NewAttnamPos = TunnelEntry+game::GetMoveVector(NewAttnamIndex);
-              static const int DiagonalDir[4] = { 0, 2, 5, 7 };
-              static const int NotDiagonalDir[4] = { 1, 3, 4, 6 };
-              static const int AdjacentDir[4][2] = { { 0, 1 }, { 0, 2 }, { 1, 3 }, { 2, 3 } };
-              truth Raised[] = { false, false, false, false };
-              int d2;
-              for (d2 = 0; d2 < 4; ++d2)
-                if (NotDiagonalDir[d2] != 7 - d1 && (NotDiagonalDir[d2] == NewAttnamIndex || !(RAND() & 2))) {
-                  v2 Pos = TunnelEntry+game::GetMoveVector(NotDiagonalDir[d2]);
-                  AltitudeBuffer[Pos.X][Pos.Y] = 1 + RAND() % 50;
-                  TypeBuffer[Pos.X][Pos.Y] = JungleType;
-                  GetWSquare(Pos)->ChangeGWTerrain(jungle::Spawn());
-                  Raised[d2] = true;
-                }
-              for (d2 = 0; d2 < 4; ++d2)
-                if (DiagonalDir[d2] != 7 - d1 && (DiagonalDir[d2] == NewAttnamIndex || (Raised[AdjacentDir[d2][0]] && Raised[AdjacentDir[d2][1]] && !(RAND() & 2)))) {
-                  v2 Pos = TunnelEntry+game::GetMoveVector(DiagonalDir[d2]);
-                  AltitudeBuffer[Pos.X][Pos.Y] = 1 + RAND() % 50;
-                  TypeBuffer[Pos.X][Pos.Y] = JungleType;
-                  GetWSquare(Pos)->ChangeGWTerrain(jungle::Spawn());
-                }
-              Correct = true;
-              break;
+              if (Error) break;
             }
+            if (Error) continue;
+            Error = true;
+            for (x = 0; x < XSize; ++x) if (TypeBuffer[x][TunnelEntry.Y] == JungleType) { Error = false; break; }
+            if (Error) continue;
+            Counter = 0;
+            for (x = TunnelEntry.X - 2; x <= TunnelEntry.X+2; ++x) {
+              for (y = TunnelEntry.Y - 2; y <= TunnelEntry.Y+2; ++y, ++Counter) {
+                if (Counter != 0 && Counter != 4 && Counter != 20 && Counter != 24) AltitudeBuffer[x][y] /= 2;
+              }
+            }
+            AltitudeBuffer[TunnelEntry.X][TunnelEntry.Y] = 1+RAND()%50;
+            TypeBuffer[TunnelEntry.X][TunnelEntry.Y] = JungleType;
+            GetWSquare(TunnelEntry)->ChangeGWTerrain(jungle::Spawn());
+            //
+            int NewAttnamIndex;
+            for (NewAttnamIndex = RAND()&7; NewAttnamIndex == 7-d1; NewAttnamIndex = RAND()&7) ;
+            NewAttnamPos = TunnelEntry+game::GetMoveVector(NewAttnamIndex);
+            //
+            static const int DiagonalDir[4] = { 0, 2, 5, 7 };
+            static const int NotDiagonalDir[4] = { 1, 3, 4, 6 };
+            static const int AdjacentDir[4][2] = { { 0, 1 }, { 0, 2 }, { 1, 3 }, { 2, 3 } };
+            truth Raised[] = { false, false, false, false };
+            //
+            for (int d2 = 0; d2 < 4; ++d2) {
+              if (NotDiagonalDir[d2] != 7-d1 && (NotDiagonalDir[d2] == NewAttnamIndex || !(RAND()&2))) {
+                v2 Pos = TunnelEntry+game::GetMoveVector(NotDiagonalDir[d2]);
+                AltitudeBuffer[Pos.X][Pos.Y] = 1+RAND()%50;
+                TypeBuffer[Pos.X][Pos.Y] = JungleType;
+                GetWSquare(Pos)->ChangeGWTerrain(jungle::Spawn());
+                Raised[d2] = true;
+              }
+            }
+            for (int d2 = 0; d2 < 4; ++d2) {
+              if (DiagonalDir[d2] != 7-d1 &&
+                  (DiagonalDir[d2] == NewAttnamIndex ||
+                   (Raised[AdjacentDir[d2][0]] && Raised[AdjacentDir[d2][1]] && !(RAND()&2)))) {
+                v2 Pos = TunnelEntry+game::GetMoveVector(DiagonalDir[d2]);
+                //
+                AltitudeBuffer[Pos.X][Pos.Y] = 1+RAND()%50;
+                TypeBuffer[Pos.X][Pos.Y] = JungleType;
+                GetWSquare(Pos)->ChangeGWTerrain(jungle::Spawn());
+              }
+            }
+            Correct = true;
+            break;
           }
-          if (Correct) break;
         }
+        if (Correct) break;
       }
       if (Correct) break;
     }
     if (!Correct) continue;
     //
-    GetWSquare(AttnamPos)->ChangeOWTerrain(attnam::Spawn());
-    SetEntryPos(ATTNAM, AttnamPos);
-    RevealEnvironment(AttnamPos, 1);
-    //
-    GetWSquare(NewAttnamPos)->ChangeOWTerrain(newattnam::Spawn());
-    SetEntryPos(NEW_ATTNAM, NewAttnamPos);
-    //
-    SetEntryPos(ELPURI_CAVE, ElpuriCavePos);
-    //
-    SetEntryPos(MONDEDR, MondedrPos);
-    //
-    GetWSquare(TunnelEntry)->ChangeOWTerrain(underwatertunnel::Spawn());
-    SetEntryPos(UNDER_WATER_TUNNEL, TunnelEntry);
-    //
-    GetWSquare(TunnelExit)->ChangeOWTerrain(underwatertunnelexit::Spawn());
-    SetEntryPos(UNDER_WATER_TUNNEL_EXIT, TunnelExit);
-    //
-    GetWSquare(MuntuoPos)->ChangeOWTerrain(muntuo::Spawn());
-    SetEntryPos(MUNTUO, MuntuoPos);
-    //
-    GetWSquare(DragonTowerPos)->ChangeOWTerrain(dragontower::Spawn());
-    SetEntryPos(DRAGON_TOWER, DragonTowerPos);
-    //
-    GetWSquare(DarkForestPos)->ChangeOWTerrain(darkforest::Spawn());
-    SetEntryPos(DARK_FOREST, DarkForestPos);
-    //
-    SetEntryPos(XINROCH_TOMB, XinrochTombPos);
+    // tunnel entry, tunnel exit and New Attnam are ok, spawn
+    for (unsigned int f = 0; f < Places.size(); ++f) {
+      switch (PlaceDungeons[f]) {
+        case NEW_ATTNAM:
+          GetWSquare(NewAttnamPos)->ChangeOWTerrain(PlaceSpawners[f]());
+          SetEntryPos(NEW_ATTNAM, NewAttnamPos);
+          PlacePosition[f] = NewAttnamPos;
+          break;
+        case UNDER_WATER_TUNNEL:
+          GetWSquare(TunnelEntry)->ChangeOWTerrain(PlaceSpawners[f]());
+          SetEntryPos(UNDER_WATER_TUNNEL, TunnelEntry);
+          PlacePosition[f] = TunnelEntry;
+          break;
+        case UNDER_WATER_TUNNEL_EXIT:
+          GetWSquare(TunnelExit)->ChangeOWTerrain(PlaceSpawners[f]());
+          SetEntryPos(UNDER_WATER_TUNNEL_EXIT, TunnelExit);
+          PlacePosition[f] = TunnelExit;
+          break;
+      }
+    }
+    // spawn others
+    for (unsigned int f = 0; f < Places.size(); ++f) {
+      if (!Places[f]->IsAttnam() && !Places[f]->WantPetrusContinent()) continue;
+      if (!Places[f]->IsHidden()) GetWSquare(PlacePosition[f])->ChangeOWTerrain(PlaceSpawners[f]());
+      SetEntryPos(PlaceDungeons[f], PlacePosition[f]);
+      if (Places[f]->IsRevealed()) RevealEnvironment(PlacePosition[f], 1);
+    }
     //
     PLAYER->PutTo(NewAttnamPos);
     //
@@ -532,3 +584,12 @@ void worldmap::UpdateLOS () {
     for (int y = Rect.Y1; y <= Rect.Y2; ++y)
       if (sLong(HypotSquare(Pos.X-x, Pos.Y-y)) <= RadiusSquare) Map[x][y]->SignalSeen();
 }
+
+
+void worldmap::RegisterPlace (owterrain *plc, cint ttype, cint didx, PlaceSpawner spawner) {
+  Places.push_back(plc);
+  PlaceTypes.push_back(ttype);
+  PlaceDungeons.push_back(didx);
+  PlaceSpawners.push_back(spawner);
+}
+

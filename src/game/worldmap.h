@@ -19,8 +19,12 @@
 
 class wsquare;
 class continent;
+class owterrain;
 
 typedef std::vector<character *> charactervector;
+
+
+typedef owterrain *(*PlaceSpawner) ();
 
 
 class worldmap : public area {
@@ -57,6 +61,8 @@ public:
   wsquare ***GetMap () const { return Map; }
   void UpdateLOS ();
 
+  static void RegisterPlace (owterrain *, cint ttype, cint didx, PlaceSpawner spawner);
+
 protected:
   wsquare ***Map;
   std::vector<continent *> Continent;
@@ -66,6 +72,15 @@ protected:
   short **OldAltitudeBuffer;
   uChar **ContinentBuffer;
   charactervector PlayerGroup;
+  //
+  std::vector<v2> PlacePosition;
+  std::vector<truth> PlaceRevealed;
+  std::vector<continent *> PlaceContinent;
+  //
+  static std::vector<owterrain *> Places;
+  static std::vector<int> PlaceTypes;
+  static std::vector<int> PlaceDungeons;
+  static std::vector<PlaceSpawner> PlaceSpawners;
 };
 
 
