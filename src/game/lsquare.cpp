@@ -926,18 +926,16 @@ void lsquare::SetLTerrain(glterrain* NewGround, olterrain* NewOver)
   GetLevel()->SetWalkability(Pos, GetTheoreticalWalkability());
 }
 
-void lsquare::ApplyScript(const squarescript* SquareScript, room* Room)
-{
-  if(SquareScript->AttachRequired())
-    GetLevel()->AddToAttachQueue(Pos);
 
+void lsquare::ApplyScript (const squarescript *SquareScript, room *Room) {
+  if (SquareScript->AttachRequired()) GetLevel()->AddToAttachQueue(Pos);
+  //
   int EntryIndex = SquareScript->GetEntryIndex();
-
-  if(EntryIndex != NO_ENTRY)
-    GetLevel()->SetEntryPos(EntryIndex, Pos);
-
-  const contentscript<character>* CharacterScript = SquareScript->GetCharacter();
-
+  //
+  if (EntryIndex != NO_ENTRY) GetLevel()->SetEntryPos(EntryIndex, Pos);
+  //
+  const contentscript<character> *CharacterScript = SquareScript->GetCharacter();
+  //
   if (CharacterScript) {
     character *Char = CharacterScript->Instantiate();
     //
@@ -950,52 +948,67 @@ void lsquare::ApplyScript(const squarescript* SquareScript, room* Room)
       if (Room && CharacterScript->GetFlags() & IS_MASTER) Room->SetMasterID(Char->GetID());
     }
   }
-
+  //
   const fearray<contentscript<item> >* Items = SquareScript->GetItems();
-
-  if(Items)
-    for(uInt c1 = 0; c1 < Items->Size; ++c1)
-    {
-      const interval* TimesPtr = Items->Data[c1].GetTimes();
+  //
+  if (Items) {
+    for (uInt c1 = 0; c1 < Items->Size; ++c1) {
+      const interval *TimesPtr = Items->Data[c1].GetTimes();
       int Times = TimesPtr ? TimesPtr->Randomize() : 1;
-
-      for(int c2 = 0; c2 < Times; ++c2)
-      {
-  item* Item = Items->Data[c1].Instantiate();
-
-  if(Item)
-  {
-    int SquarePosition = Items->Data[c1].GetSquarePosition();
-
-    if(SquarePosition != CENTER)
-      Item->SignalSquarePositionChange(SquarePosition);
-
-    GetStack()->AddItem(Item);
-    Item->SpecialGenerationHandler();
-  }
+      //
+      for (int c2 = 0; c2 < Times; ++c2) {
+        item *Item = Items->Data[c1].Instantiate();
+        //
+        if (Item) {
+          int SquarePosition = Items->Data[c1].GetSquarePosition();
+          //
+          if (SquarePosition != CENTER) Item->SignalSquarePositionChange(SquarePosition);
+          GetStack()->AddItem(Item);
+          Item->SpecialGenerationHandler();
+        }
       }
     }
-
-  const contentscript<glterrain>* GLTerrainScript = SquareScript->GetGTerrain();
-
-  if(GLTerrainScript)
-  {
+  }
+  //
+  const contentscript<glterrain> *GLTerrainScript = SquareScript->GetGTerrain();
+  //
+  if (GLTerrainScript) {
     GetLevel()->AddFlag(Pos, FORBIDDEN);
     ChangeGLTerrain(GLTerrainScript->Instantiate());
-
+    //
     if (GLTerrainScript->IsInside()) {
       if (*GLTerrainScript->IsInside()) Flags |= INSIDE; else Flags &= ~INSIDE;
     }
   }
-
-  const contentscript<olterrain>* OLTerrainScript = SquareScript->GetOTerrain();
-
-  if(OLTerrainScript)
-  {
+  //
+  const contentscript<olterrain> *OLTerrainScript = SquareScript->GetOTerrain();
+  //
+  if (OLTerrainScript) {
+    olterrain *terra = OLTerrainScript->Instantiate();
+    //
     GetLevel()->AddFlag(Pos, FORBIDDEN);
-    ChangeOLTerrain(OLTerrainScript->Instantiate());
+    // check for random altars
+    if (terra->AcceptsOffers()) {
+      //FIXME: make IsAltar()? for now only altars can accept offers
+      if (Room->GetDivineMaster()) {
+        //if (Terrain->GetConfig() != RoomClass->GetDivineMaster()) ABORT("Random altar in room with DivineMaster!");
+        if (terra->GetConfig() != Room->GetDivineMaster()) {
+          // force altar type
+          fprintf(stderr, "forced altar!\n");
+          delete terra;
+          terra = altar::Spawn(Room->GetDivineMaster());
+        }
+      } else {
+        // no DivineMaster yet, assign it
+        fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", terra->GetConfig());
+        Room->SetDivineMaster(terra->GetConfig());
+      }
+    }
+    //
+    ChangeOLTerrain(terra);
   }
 }
+
 
 truth lsquare::CanBeSeenByPlayer(truth IgnoreDarkness) const
 {

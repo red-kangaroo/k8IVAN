@@ -245,9 +245,10 @@ void level::CreateItems (int Amount) {
 
 truth level::MakeRoom (const roomscript *RoomScript) {
   game::BusyAnimation();
+  //
   v2 Pos = RoomScript->GetPos()->Randomize();
   v2 Size = RoomScript->GetSize()->Randomize();
-
+  //
   if (Pos.X+Size.X > XSize-2) return false;
   if (Pos.Y+Size.Y > YSize-2) return false;
 
@@ -258,6 +259,7 @@ truth level::MakeRoom (const roomscript *RoomScript) {
   }
 
   room *RoomClass = protocontainer<room>::GetProto(*RoomScript->GetType())->Spawn();
+  //
   RoomClass->SetPos(Pos);
   RoomClass->SetSize(Size);
   RoomClass->SetFlags(*RoomScript->GetFlags());
@@ -266,7 +268,7 @@ truth level::MakeRoom (const roomscript *RoomScript) {
   game::BusyAnimation();
 
   std::vector<v2> OKForDoor, Inside, Border;
-
+  //
   GenerateRectangularRoom(OKForDoor, Inside, Border, RoomScript, RoomClass, Pos, Size);
   game::BusyAnimation();
 
@@ -339,6 +341,7 @@ truth level::MakeRoom (const roomscript *RoomScript) {
   }
 
   const charactercontentmap *CharacterMap = RoomScript->GetCharacterMap();
+  //
   if (CharacterMap) {
     v2 CharPos(Pos + *CharacterMap->GetPos());
     const contentscript<character> *CharacterScript;
@@ -363,6 +366,7 @@ truth level::MakeRoom (const roomscript *RoomScript) {
   }
 
   const itemcontentmap *ItemMap = RoomScript->GetItemMap();
+  //
   if (ItemMap) {
     v2 ItemPos(Pos + *ItemMap->GetPos());
     const fearray<contentscript<item> >* ItemScript;
@@ -393,6 +397,7 @@ truth level::MakeRoom (const roomscript *RoomScript) {
   }
 
   const glterraincontentmap *GTerrainMap = RoomScript->GetGTerrainMap();
+  //
   if (GTerrainMap) {
     v2 GTerrainPos(Pos + *GTerrainMap->GetPos());
     const contentscript<glterrain> *GTerrainScript;
@@ -402,6 +407,7 @@ truth level::MakeRoom (const roomscript *RoomScript) {
       for (int y = 0; y < GTerrainMap->GetSize()->Y; ++y) {
         if (IsValidScript(GTerrainScript = GTerrainMap->GetContentScript(x, y))) {
           lsquare *Square = Map[GTerrainPos.X+x][GTerrainPos.Y+y];
+          //
           Square->ChangeGLTerrain(GTerrainScript->Instantiate());
           if (GTerrainScript->IsInside()) {
             if (*GTerrainScript->IsInside()) Square->Flags |= INSIDE; else Square->Flags &= ~INSIDE;
@@ -412,6 +418,7 @@ truth level::MakeRoom (const roomscript *RoomScript) {
   }
 
   const olterraincontentmap *OTerrainMap = RoomScript->GetOTerrainMap();
+  //
   if (OTerrainMap) {
     v2 OTerrainPos(Pos + *OTerrainMap->GetPos());
     const contentscript<olterrain> *OTerrainScript;
@@ -421,6 +428,23 @@ truth level::MakeRoom (const roomscript *RoomScript) {
       for (int y = 0; y < OTerrainMap->GetSize()->Y; ++y) {
         if (IsValidScript(OTerrainScript = OTerrainMap->GetContentScript(x, y))) {
           olterrain *Terrain = OTerrainScript->Instantiate();
+          //
+          if (Terrain->AcceptsOffers()) {
+            //FIXME: make IsAltar()? for now only altars can accept offers
+            if (RoomClass->GetDivineMaster()) {
+              //if (Terrain->GetConfig() != RoomClass->GetDivineMaster()) ABORT("Random altar in room with DivineMaster!");
+              if (Terrain->GetConfig() != RoomClass->GetDivineMaster()) {
+                // force altar type
+                fprintf(stderr, "forced altar!\n");
+                delete Terrain;
+                Terrain = altar::Spawn(RoomClass->GetDivineMaster());
+              }
+            } else {
+              // no DivineMaster yet, assign it
+              fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", Terrain->GetConfig());
+              RoomClass->SetDivineMaster(Terrain->GetConfig());
+            }
+          }
           Map[OTerrainPos.X+x][OTerrainPos.Y+y]->ChangeOLTerrain(Terrain);
         }
       }
@@ -428,6 +452,7 @@ truth level::MakeRoom (const roomscript *RoomScript) {
   }
 
   const std::list<squarescript> Square = RoomScript->GetSquare();
+  //
   for (std::list<squarescript>::const_iterator i = Square.begin(); i != Square.end(); ++i) {
     game::BusyAnimation();
     const squarescript *Script = &*i;
@@ -440,6 +465,7 @@ truth level::MakeRoom (const roomscript *RoomScript) {
       if (Script->GetPosition()->GetRandom()) {
         const rect *ScriptBorders = Script->GetPosition()->GetBorders();
         rect Borders = ScriptBorders ? *ScriptBorders+Pos : rect(Pos, Pos+Size-v2(1, 1));
+        //
         SquarePos = GetRandomSquare(0, Script->GetPosition()->GetFlags(), &Borders);
       } else {
         SquarePos = Pos+Script->GetPosition()->GetVector();
