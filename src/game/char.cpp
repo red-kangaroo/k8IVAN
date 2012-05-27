@@ -2425,7 +2425,7 @@ void character::ShowNewPosInfo () const {
         if (Feel) {
           ADD_MESSAGE("You feel %s lying here.", PileVector[0][0]->GetName(INDEFINITE, PileVector[0].size()).CStr());
         } else {
-          if (ivanconfig::GetShowFullItemDesc()) {
+          if (ivanconfig::GetShowFullItemDesc() && PileVector[0][0]->AllowDetailedDescription()) {
             festring text;
             //
             PileVector[0][0]->AddInventoryEntry(PLAYER, text, PileVector[0].size(), true);

@@ -626,6 +626,8 @@ class item : public object
   virtual truth IsScroll () const { return false; }
   virtual truth IsMango () const { return false; }
 
+  virtual truth AllowDetailedDescription () const { return false; }
+
 protected:
   virtual cchar* GetBreakVerb() const;
   virtual sLong GetMaterialPrice() const;

@@ -20,6 +20,7 @@ ITEM(armor, item)
   virtual void CalculateEnchantment();
   virtual double GetTHVBonus() const;
   virtual double GetDamageBonus() const;
+  virtual truth AllowDetailedDescription () const { return true; }
  protected:
   virtual void AddPostFix(festring&, int) const;
   virtual void PostConstruct();
