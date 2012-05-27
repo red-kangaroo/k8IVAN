@@ -6457,8 +6457,10 @@ void character::DonateEquipmentTo (character *Character) {
 
 
 void character::ReceivePeaSoup (sLong) {
-  lsquare *Square = GetLSquareUnder();
-  if (Square->IsFlyable()) Square->AddSmoke(gas::Spawn(FART, 250));
+  if (!game::IsInWilderness()) {
+    lsquare *Square = GetLSquareUnder();
+    if (Square->IsFlyable()) Square->AddSmoke(gas::Spawn(FART, 250));
+  }
 }
 
 
