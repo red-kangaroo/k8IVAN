@@ -42,6 +42,7 @@ public:
   static truth GetStopOnSeenItems () { return StopOnSeenItems.Value; }
   static truth GetConfirmScrollReading () { return ConfirmScrollReading.Value; }
   static truth GetUseMaximumCompression () { return UseMaximumCompression.Value; }
+  static truth GetShowFullItemDesc () { return ShowFullItemDesc.Value; }
   static sLong ApplyContrastTo (sLong);
   static void Save () { configsystem::Save(); }
   static void Load () { configsystem::Load(); }
@@ -102,8 +103,8 @@ private:
   static truthoption StopOnSeenItems;
   static truthoption ConfirmScrollReading;
   static truthoption UseMaximumCompression;
-  /*k8*/
   static col24 ContrastLuminance;
+  static truthoption ShowFullItemDesc;
 };
 
 

@@ -14,8 +14,7 @@ COMMAND(PickUp) {
       int Amount = PileVector[0].size();
       if (Amount > 1) Amount = game::ScrollBarQuestion(CONST_S("How many ")+PileVector[0][0]->GetName(PLURAL)+'?', Amount, 1, 0, Amount, 0, WHITE, LIGHT_GRAY, DARK_GRAY);
       if (!Amount) return false;
-      if ((!PileVector[0][0]->GetRoom() ||
-           PileVector[0][0]->GetRoom()->PickupItem(Char, PileVector[0][0], Amount)) &&
+      if ((!PileVector[0][0]->GetRoom() || PileVector[0][0]->GetRoom()->PickupItem(Char, PileVector[0][0], Amount)) &&
           PileVector[0][0]->CheckPickUpEffect(Char)) {
         if (PileVector[0][0]->IsCorpse() && ivanconfig::GetConfirmCorpses()) {
           //if (!game::TruthQuestion(CONST_S("Do you really want to pick up the corpse? [y/N]"))) return false;

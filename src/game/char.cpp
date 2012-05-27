@@ -2420,9 +2420,28 @@ void character::ShowNewPosInfo () const {
 
     if (PileVector.size()) {
       truth Feel = !GetLSquareUnder()->IsTransparent() || GetLSquareUnder()->IsDark();
+      //
       if (PileVector.size() == 1) {
-        if (Feel) ADD_MESSAGE("You feel %s lying here.", PileVector[0][0]->GetName(INDEFINITE, PileVector[0].size()).CStr());
-        else ADD_MESSAGE("%s %s lying here.", PileVector[0][0]->GetName(INDEFINITE, PileVector[0].size()).CStr(), PileVector[0].size() == 1 ? "is" : "are");
+        if (Feel) {
+          ADD_MESSAGE("You feel %s lying here.", PileVector[0][0]->GetName(INDEFINITE, PileVector[0].size()).CStr());
+        } else {
+          if (ivanconfig::GetShowFullItemDesc()) {
+            festring text;
+            //
+            PileVector[0][0]->AddInventoryEntry(PLAYER, text, PileVector[0].size(), true);
+            //fprintf(stderr, "invdsc     : [%s]\n", text.CStr());
+            ADD_MESSAGE("%s %s lying here.", text.CStr(), PileVector[0].size() == 1 ? "is" : "are");
+          } else {
+            ADD_MESSAGE("%s %s lying here.", PileVector[0][0]->GetName(INDEFINITE, PileVector[0].size()).CStr(), PileVector[0].size() == 1 ? "is" : "are");
+          }
+          /*
+          fprintf(stderr, "description: [%s]\n", PileVector[0][0]->GetDescription(INDEFINITE).CStr());
+          fprintf(stderr, "strength   : [%s]\n", PileVector[0][0]->GetStrengthValueDescription());
+          fprintf(stderr, "basetohit  : [%s]\n", PileVector[0][0]->GetBaseToHitValueDescription());
+          fprintf(stderr, "baseblock  : [%s]\n", PileVector[0][0]->GetBaseBlockValueDescription());
+          fprintf(stderr, "extdsc     : [%s]\n", PileVector[0][0]->GetExtendedDescription().CStr());
+          */
+        }
       } else {
         int Items = 0;
         for (uInt c = 0; c < PileVector.size(); ++c) {
