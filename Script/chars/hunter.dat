@@ -33,9 +33,8 @@ hunter
   PanicLevel = 20;
   Inventory == beartrap;
   HostileReplies == "\"Your head will look fine above my fireplace!\"";
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    5,
     "\"A man is not a man unless he has lost his left arm in a battle against a polar bear.\"",
     "\"Bears, ogres, slaves, farmers... Ah, there's so much to hunt here!\"",
     "\"I am the Great White Hunter. Get out of My way!\"",
@@ -43,26 +42,23 @@ hunter
     "\"It is good Petrus had his predecessor assassinated. Can you believe it, the dude tried to take from us our natural right to carry a spear in the street!\"";
   }
   AttachedGod = LORICATUS;
-  ScienceTalkAdjectiveAttribute =
+  ScienceTalkAdjectiveAttribute :=
   {
-    16,
     "!hunting", "!laying traps for", "!tracking", "!stuffing", "!techniques of slaying",
     "!the locations of the vital organs of", "!the joy of defeating", "!capturing", "!ambushing", "!sharpshooting",
     "!preemptively striking against", "!ridding the world of all", "!skinning", "!lynching", "!eliminating the threat of",
     "!chasing";
   }
-  ScienceTalkSubstantiveAttribute =
+  ScienceTalkSubstantiveAttribute :=
   {
-    17,
     "black", "dangerous", "baby", "young", "wild",
     "fierce", "endangered", "mad", "rare", "giant",
     "evil", "malicious", "injured", "weak", "tasty",
     "sick", "fat";
   }
   ScienceTalkPrefix == "";
-  ScienceTalkName =
+  ScienceTalkName :=
   {
-    74,
     "slaves", "farmers", "communists", "prisoners", "witches",
     "goblins", "orcs", "kobolds", "gibberlings", "stray cats",
     "neighbour's pets", "reindeer", "deer", "elk", "moose",

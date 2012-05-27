@@ -39,16 +39,14 @@ mistress
   HostileReplies == "\"Come closer, little boy, I'll teach you something...\"";
   AttachedGod = NEFAS;
   WieldedPosition = 0, -1;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    3,
     "\"What? You want more whip?\"",
     "\"Ever participated in the weekly orgy at Nefas's High Temple? I guess not. You wouldn't have survived.\"",
     "\"If you think I'm rough, you should avoid Sherarax, my queen. No man has ever lived through a night with her.\"";
   }
-  ScienceTalkAdjectiveAttribute =
+  ScienceTalkAdjectiveAttribute :=
   {
-    52,
     "applied", "theoretical", "classical", "the future of", "queer",
     "practical", "the secrets of", "ancient", "empirical", "statistical",
     "the axioms of", "forbidden", "popular", "obscene", "ceremonial",
@@ -63,22 +61,19 @@ mistress
 
     "the art of", "sick";
   }
-  ScienceTalkSubstantiveAttribute =
+  ScienceTalkSubstantiveAttribute :=
   {
-    4,
     "New Age", "last century", "horseback", "pagan";
   }
-  ScienceTalkPrefix =
+  ScienceTalkPrefix :=
   {
-    19,
     "", "", "", "", "",
     "", "", "", "", "",
     "ethno", "mega", "neo", "necro", "aero",
     "pyro", "caco", "sado", "hetero";
   }
-  ScienceTalkName =
+  ScienceTalkName :=
   {
-    52,
     "impalement", "bondage", "slavery", "torture", "disembowelment",
     "whipmaking", "orgies", "heresy", "brazen bulls", "necrophilia",
     "masochism", "dentistry", "swedish", "feminism", "licking",

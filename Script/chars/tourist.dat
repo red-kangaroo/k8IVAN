@@ -36,9 +36,8 @@ tourist
     CapColor = rgb16(40, 40, 40);
     AttackStyle = USE_ARMS|USE_LEGS|USE_HEAD;
     HostileReplies == "\"Daddy!!! Hit this man!!! He teases me!!!\"";
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      4,
       "\"A real native!!! Can I touch him, mommy? Can I? Can I?\"",
       "\"I wanna see you sacrifice someone to tree gods!!!\"",
       "\"Mister, can you catch me a demon spider? I wanna bring one home as a pet!!!\"",
@@ -70,9 +69,8 @@ tourist
     LegMainColor = rgb16(50, 100, 132);
     CapColor = rgb16(200, 200, 0);
     HostileReplies == "\"Violence is barbaric. Couldn't we settle this little dispute of ours in a court of law?\"";
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      6,
       "\"Don't you barbarians really eat anything but fruits? I need some greasy sausages badly!\"",
       "\"We're from Bazaria, the great trader nation, where every coin has equal rights. Richel Decos was our fellow countryman before he bought this town from the Attnamese.\"",
       "\"Back home I plan commercials acted during theatre play breaks.\"",
@@ -108,9 +106,8 @@ tourist
     LegSpecialColor = rgb16(60,50,60);
     AttackStyle = USE_ARMS|USE_LEGS;
     HostileReplies == "\"Help! A horribly hideous cannibal aborigine wants to capture me, hit me in the head with his club, drag me into a smelly sinister cave and mate with me!\"";
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      5,
       "\"I heard natives like you paint every inch of their body, dance complex ritual dances around a big bonfire and utter forbidden voodoo spells. When will you begin?\"",
       "\"Why are all the villagers so sweaty? Can't they try to wash themselves often enough at least when civilized people are around?\"",
       "\"I so love bananas! This is a heaven!\"",

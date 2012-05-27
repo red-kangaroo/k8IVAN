@@ -40,9 +40,8 @@ hedgehog
     Alias == "Sonic";
     IsUnique = true;
     SkinColor = rgb16(50, 50, 180);
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      11,
       "\"Way past cool!\"",
       "\"I'm waaaiiitiiiinnng. \"",
       "\"Up, over, and gone!.\"";

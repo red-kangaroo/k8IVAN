@@ -31,9 +31,8 @@ femaleslave
   {
     NameSingular = "slave";
     AttachedGod = MELLIS;
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      5,
       "\"Praise our lord Petrus!\"",
       "\"Does that toy frog really need us serving it?\"",
       "\"I'm not a slave. I'm a high-ranking palm branch officer with a good career history.\"",
@@ -51,9 +50,9 @@ femaleslave
     DefaultCharisma = 20;
     NameSingular = "servant";
     AttachedGod = SEGES;
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      7, /* 4 first are used before revolution */
+      /* 4 first are used before revolution */
       "\"Thank Silva I don't have to gather bananas!\"",
       "\"My sister got a promotion last year. I've heard she is now a very successful slave in the Cathedral of Attnam. I am so jealous!\"",
       "\"Palm leaves are good for health. Mr. Decos loves their smell.\"",

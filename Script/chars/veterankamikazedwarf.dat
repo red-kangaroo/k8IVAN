@@ -13,9 +13,8 @@ veterankamikazedwarf
   HPRequirementForGeneration = 80; // CLIVAN
   DayRequirementForGeneration = 8; // CLIVAN
   UndeadVersions = false; // CLIVAN
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    6,
     "\"Everyone believes I failed intentionally. Never! My loyalty to @Gd is spotless!\"",
     "\"The commander gave me too few explosives! It wasn't my fault!\"",
     "@Dd shouts: \"Death to disbelievers!\"",

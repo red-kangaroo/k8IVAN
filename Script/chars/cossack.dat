@@ -33,9 +33,8 @@ cossack
   DeathMessage = "@Dd falls shouting: \"Hope there's vodka in hell!";
   HostileReplies == "@Dd shouts wildly: \"For Tataria!\"";
   AttachedGod = SILVA;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    4,
     "\"Graah! Eating raw flesh makes one feel so masculine and powerful! (and sick)\"",
     "\"It surely is cold on this island. Remembers me of my six years in Siberia after breaking into the local pub's booze cellar...\"",
     "\"What, why have I no horse? Er, I lost it in poker.\"",

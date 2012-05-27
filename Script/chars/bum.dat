@@ -22,15 +22,13 @@ bum
   LegBitmapPos = 142, 679;
   CWeaponSkillHits == 50;
   RightSWeaponSkillHits = 20;
-  HostileReplies = {
-    2,
+  HostileReplies := {
     "\"I hope you have alcohol on you.\"";
     "@Dd yells gibberish while in bum rage.";
   }
   IsAlcoholic = true;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    4,
     "\"One time Petrus decided to add a law that prohibits alcohol, but too many townspersons could not handle the law. Petrus decided to add a contradicting law to say that alcohol is a'okay.\"",
     "@Dd tells you extremely poor jokes.";
     "@Dd rants: \"I'm sick and tired of those social security bastards I tell ya! I sold my furniture the welfare gave me for booze, and when they gave me more they decided to screw them straight into the floor.\"",

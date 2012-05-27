@@ -27,9 +27,8 @@ elder
   CanRead = true;
   Inventory == holybook(SILVA);
   HostileReplies == "\"I knew those hippos couldn't raise anything decent!\"";
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    10,
     "\"So you're leaving? The stars tell me you will fight glorious battles, meet interesting people, find out suprising things and eventually die a violent death. Good luck.\"",
     "\"I remember still clearly when we first found you in the jungle. You were five and had seemingly been raised by hippos since birth.\"",
     "\"Even though you have lived here, you are somehow different from the Tweraifians, I can sense it. Is it your aggressive and wild character or your stupidity that separates us? Or is it just that your skin is white and our black?\"",

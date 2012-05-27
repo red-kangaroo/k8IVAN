@@ -124,9 +124,9 @@ character
   IsImmuneToItemTeleport = false;
   AlwaysUseMaterialAttributes = false;
   IsEnormous = false;
-  ScienceTalkAdjectiveAttribute =
+  ScienceTalkAdjectiveAttribute :=
   {
-    142,
+    //142,
     "", "applied", "recent", "dark", "linear",
     "molecular", "theoretical", "classical", "the future of", "queer",
     "multilinear", "fundamental", "mythical", "nuclear", "loop quantum",
@@ -162,17 +162,17 @@ character
     "arctic", "the proofs of", "mortal", "teleological", "sick",
     "the principle of", "kinetic";
   }
-  ScienceTalkSubstantiveAttribute =
+  ScienceTalkSubstantiveAttribute :=
   {
-    17,
+    //17,
     "New Age", "military", "space", "neutronium", "punishment",
     "last century", "mass", "horseback", "tachyon", "singularity",
     "antimatter", "superstring", "nerd", "crystal", "free market",
     "hybrid", "probability";
   }
-  ScienceTalkPrefix =
+  ScienceTalkPrefix :=
   {
-    51,
+    //51,
     "", "", "", "", "",
     "", "", "", "", "",
     "macro", "nano", "neuro", "semi", "hemi",
@@ -186,9 +186,9 @@ character
     "aero", "pyro", "helio", "caco", "pseudo",
     "thermo";
   }
-  ScienceTalkName =
+  ScienceTalkName :=
   {
-    265,
+    //265,
     "sanitation", "relativity", "physics", "mathematics", "philosophy",
     "numerology", "slavery", "mechanics", "magicks", "architecture",
     "archaeology", "logic", "fiction", "questions", "theology",

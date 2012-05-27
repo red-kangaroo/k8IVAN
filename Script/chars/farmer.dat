@@ -23,9 +23,8 @@ farmer
   CWeaponSkillHits == 50;
   RightSWeaponSkillHits = 20;
   HostileReplies == "\"Did you think I use this axe only to chop wood?\"";
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    4,
     "\"Crops are so lousy around here. Perhaps because the summer lasts two weeks.\"",
     "@Dd seems suspicious. \"You look like one from Luppliva! Go away!\"",
     "@Dd sighs: \"Again polar bears ate my cattle...\"",
@@ -37,9 +36,8 @@ farmer
   ScienceTalkWisdomModifier = 10;
   ScienceTalkIntelligenceRequirement = 10;
   ScienceTalkWisdomRequirement = 10;
-  ScienceTalkName =
+  ScienceTalkName :=
   {
-    10,
     "agriculture", "apiculture", "aquaculture", "horticulture", "silviculture",
     "herbalism", "plants", "breeding", "snow", "forestry";
   }
@@ -50,9 +48,8 @@ farmer
     TorsoSpecialColor = rgb16(0, 0, 96);
     Cloak = CLOTH cloak;
     Inventory == lantern;
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      3,
       "\"I wish our crops are as good as Attnam's. It's always dark here!\"",
       "@Dd sighs: \"I tried to talk peace with the Attamese passing my herd but all they did was slaughter them...\"",
       "\"That dirty bastard goblin keeps hogging all our crop space for not paying my non-existant rental fee!\"";

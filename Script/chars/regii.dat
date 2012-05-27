@@ -45,11 +45,7 @@ regii
   AttachedGod = MELLIS;
   CanBeConfused = false;
   IsPolymorphable = false;
-  FriendlyReplies =
-  {
-    1,
-    "\"How goes your preparation for the mission brother?\"";
-  }
+  FriendlyReplies == "\"How goes your preparation for the mission brother?\"";
   AutomaticallySeen = true;
   ScienceTalkPossibility = 0;
   UndeadVersions = false;

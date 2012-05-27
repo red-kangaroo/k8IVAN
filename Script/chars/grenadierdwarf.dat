@@ -11,9 +11,8 @@ grenadierdwarf
   HPRequirementForGeneration = 100;
   DayRequirementForGeneration = 10;
   UndeadVersions = false;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    4,
     "\"As you see, I have been promoted to the glorious ranks of the grenadiers. @Gd be praised!\"",
     "\"My grenade throwing abilities were too important to be lost to the wanton cause of martyrdom!\"",
     "@Dd shouts: \"Death to disbelievers!\"",

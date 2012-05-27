@@ -1,9 +1,8 @@
 frog
 {
   HostileReplies == "@Dd croaks angrily.";
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    4,
     "@Dd frolics in religious ecstasy.",
     "@Dd croaks with pious joy.",
     "@Dd jumps up and down in enlightened trance.",

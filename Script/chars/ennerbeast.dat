@@ -36,9 +36,8 @@ ennerbeast
   Inventory == horn(FEAR);
   IsUnique = true; /* currently */
   HostileReplies == "Aighee!";
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    4,
     "\"Fishing is fun! Do you fish?\"",
     "\"And then I got that perch weighting fifty stones...\"",
     "\"I only want to talk but everyone is rude and dies when I try.\"",

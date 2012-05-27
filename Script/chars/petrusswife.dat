@@ -28,9 +28,8 @@ petrusswife
   IsExtraCoward = true;
   WieldedPosition = 0, -1;
   HostileReplies == "\"Murderer! Just wait until Petrus finds you!\"";
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    5,
     "\"I'm so sick jealous to those dolphins...\"",
     "\"I'm Petrus's favorite, not she!\"",
     "\"Why must Petrus stay in this forest? There isn't even a proper hairdresser here!\"",

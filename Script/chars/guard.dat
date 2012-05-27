@@ -37,12 +37,7 @@ guard
     LeftSWeaponSkillHits = 10;
     PanicLevel = 25;
     ClothColor = rgb16(80, 80, 80);
-    FriendlyReplies =
-    {
-      2,
-      "\"Don't you dare take anything from the vault\"",
-      "\"Don't you dare take anything from the vault\"",
-    }
+    FriendlyReplies == "\"Don't you dare take anything from the vault\"";
   }
 
   Config ELITE;
@@ -66,9 +61,8 @@ guard
     TotalVolume = 80000;
     ClothColor = rgb16(220, 220, 220);
     NaturalSparkleFlags = CLOTH_COLOR;
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      5,
       "@Dd sounds annoyed. \"Why do I have to work with these amateurs? They can't beat a rookie dark knight properly!\"",
       "\"Don't believe Haedlac if he boasts with that enner beast. In reality he fled immediately and the monster stepped on a land mine while chasing him.\"",
       "@Dd shouts excited: \"Attnam victoor!\"",
@@ -110,12 +104,7 @@ guard
     CanBeConfused = false;
     NaturalSparkleFlags = CLOTH_COLOR;
     IsImmuneToItemTeleport = true;
-    FriendlyReplies =
-    {
-      2,
-      "\"Don't you dare take anything from the vault\"",
-      "\"Don't you dare take anything from the vault\"",
-    }
+    FriendlyReplies == "\"Don't you dare take anything from the vault\"";
     AllowUnconsciousness = false;
     DisplacePriority = 4;
     UndeadVersions = false;
@@ -134,9 +123,8 @@ guard
     LeftSWeaponSkillHits = 20;
     PanicLevel = 20;
     ClothColor = rgb16(110, 110, 110);
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      4,
       "@Dd states in a very serious tone: \"My job is vital for the safety of the nation. No one knows what Petrus would do if something happened to his most dear lovers, or one of them escaped.\"",
       "\"Don't you dare to touch any of the ladies!\"",
       "\"And everyone said I didn't have the balls to achieve a high status in the guard! Hah!\"",
@@ -158,9 +146,8 @@ guard
     LeftSWeaponSkillHits = 500;
     PanicLevel = 15;
     ClothColor = rgb16(100, 100, 100);
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      5,
       "@Dd says gravely: \"You don't have a life. Get it as a shop guard.\"",
       "@Dd seems very suspicious. \"Don't even think of stealing anything.\"",
       "\"Yes, this is a dangerous place to work, but our boss pays us well.\"",
@@ -200,9 +187,8 @@ guard
     CanBeConfused = false;
     NaturalSparkleFlags = CLOTH_COLOR;
     Inventory == key(HEXAGONAL_LOCK);
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      5,
       "\"And this medal I got after killing my first enner beast using ingenious tactical maneuvers...\"",
       "\"My grand-grand-father, Sir Haedlac Galladon IV, once told me that when the young Petrus lead the Revolution, his beard was only one feet long. Not that I would believe such urban legends.\"",
       "\"In addition to all my other responsibilities, I am the head of the Attnamese Bureau of Investigation. By the way, you love mangos and hate bananas.\"",
@@ -241,9 +227,8 @@ guard
     PanicLevel = 25;
     AttachedGod = CLEPTIA;
     ClothColor = rgb16(80, 80, 80);
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      3,
       "\"Even us guards are allowed to steal from our enemies.\"",
       "\"They say Mondedr is not invisible, but hard to find.\"",
       "\"I heard that a long time ago Petrus tried to search for Mondedr but Raven added legs to it so Petrus could give up searching.\"",
@@ -264,9 +249,8 @@ guard
     LeftSWeaponSkillHits = 100;
     PanicLevel = 20;
     ClothColor = rgb16(220, 220, 220);
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      5,
       "@Dd shudders in the freezing air. \"Boy this rusty plate mail is cold in winter!\"",
       "@Dd sighs: \"Why didn't I choose an office career... An inquisitor, for instance.\"",
       "@Dd seems very suspicious. \"Do you have the papers?\"",
@@ -287,9 +271,8 @@ guard
     CWeaponSkillHits = { 2, 20, 20; }
     PanicLevel = 50;
     ClothColor = rgb16(130, 80, 30);
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      4,
       "@Dd says sadly: \"Back then I used to love bananas. One day the master guard slipped on a peel I'd dropped. Guess where I got transferred?\"",
       "\"Lions killed a couple of banana growers again. Hope they're now satisfied and don't attack us.\"",
       "\"This place's as hot as the elemental plane of fire! I want back home.\"",
@@ -320,9 +303,8 @@ guard
     TotalVolume = 90000;
     ClothColor = rgb16(200, 200, 240);
     NaturalSparkleFlags = CLOTH_COLOR;
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      6,
       "@Dd boasts. \"I am here to watch over Solicitus, that he be safe from harm, and the world be safe from him!\"",
       "@Dd warns: \"Pay no attention to the counsels of Solicitus! They will only lead you to disaster.\"",
       "@Dd sighs: \"You know, watching over a toppled-god all these years has been tedious. How I long for adventure!\"",
@@ -347,9 +329,8 @@ guard
     LeftSWeaponSkillHits = 500;
     PanicLevel = 15;
     ClothColor = rgb16(100, 100, 100);
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      5,
       "@Dd says gravely: \"You don't have a life. Get it as a shop guard.\"",
       "@Dd seems very suspicious. \"Don't even think of stealing anything.\"",
       "\"Yes, this is a dangerous place to work, but our boss pays us well.\"",
@@ -370,9 +351,8 @@ guard
     LeftSWeaponSkillHits = 10;
     PanicLevel = 25;
     ClothColor = rgb16(80, 80, 80);
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      4,
       "@Dd says gravely: \"You don't have a life. Get it in the army.\"",
       "\"Don't even think of breaking rules.\"",
       "\"The high priest is my idol. I would want a sword as big as his!\"",

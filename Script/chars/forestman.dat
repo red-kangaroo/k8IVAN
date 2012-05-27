@@ -44,9 +44,8 @@ forestman
     HairColor = rgb16(220, 220, 220);
     DeathMessage = "@Dd dies yelling \"FREEDOM FOR TWERAIF!\"";
     HostileReplies == "\"Piss off!\"";
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      4,
       "\"Hullo there traveller. We're UTFA.\"";
       "@Dd steps forward \"I am the leader of our roving band of Forest Men (UTFA Soldiery).\"";
       "@Dd embraces you \"Have you come to redeem us?\"";
@@ -74,9 +73,8 @@ forestman
     HairColor = rgb16(100, 100, 100);
     DeathMessage = "@Dd dies yelling \"FREEDOM!\"";
     HostileReplies == "\"Get lost!\"";
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      4,
       "\"Hullo there friend!\"";
       "@Dd salutes you solemnly \"Solidarity Brother!\"";
       "@Dd grasps your shoulder \"Have you seen Molly? Is he well?\"";

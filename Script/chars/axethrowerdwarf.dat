@@ -37,9 +37,8 @@ axethrowerdwarf /*this guy has been superseded by the rookie kamikaze dwarf */
   AttachedGod = NONE;
   UndeadVersions = false;
   WieldedPosition = -1, -2;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    4,
     "\"Would you like me to teach you the best way to slice tomatoes?\"",
     "@Dd shouts: \"Death to disbelievers!\"",
     "@Dd praises @Gd with numerous hymns. @Pp is obviously a very devoted follower.",

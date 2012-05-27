@@ -26,9 +26,8 @@ mangogrower
   HostileReplies == "\"Mango POWER!\"";
   AttachedGod = SILVA;
   CanRead = true;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    6,
     "@Dd curses: \"I hate bananas. I will go and grow Mangos forthwith.\"",
     "\"I was ex-prime-minister before Attnam invaded our peaceful land and I was jailed.\"",
     "\"1 + 1 = ... I don't remember. It been so long in this rotten jail!\"",

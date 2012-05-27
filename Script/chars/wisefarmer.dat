@@ -22,9 +22,8 @@ wisefarmer
   CWeaponSkillHits == 50;
   RightSWeaponSkillHits = 20;
   HostileReplies == "\"Wanderer, your future says you will face wretched agony-- please allow me to spare you the pain.\"";
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    5,
     "\"I would rather grow a share of crops in hell than stay alive.\"",
     "@Dd gives you a blank stare. \"To succeed in your quest, you must look at life like it is a double-edged blade.\"",
     "\"Having both invincibility and immortality... a thought too painful for me.\"",
@@ -37,9 +36,8 @@ wisefarmer
   ScienceTalkWisdomModifier = 10;
   ScienceTalkIntelligenceRequirement = 10;
   ScienceTalkWisdomRequirement = 10;
-  ScienceTalkName =
+  ScienceTalkName :=
   {
-    10,
     "agriculture", "apiculture", "aquaculture", "horticulture", "silviculture",
     "herbalism", "plants", "breeding", "snow", "forestry";
   }

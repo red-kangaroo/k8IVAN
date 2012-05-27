@@ -38,9 +38,8 @@ kamikazedwarf
   AttachedGod = NONE;
   UndeadVersions = false;
   WieldedPosition = -1, -2;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    4,
     "\"Would you like me to teach you the best suicidal bombing tactics?\"",
     "@Dd shouts: \"Death to disbelievers!\"",
     "@Dd praises @Gd with numerous hymns. @Pp is obviously a very devoted follower.",

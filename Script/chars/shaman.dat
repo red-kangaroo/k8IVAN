@@ -58,9 +58,8 @@ shaman
   WhatWeaponConfigToThrow = DAGGER;
   WhatThrowItemTypesToThrow = THROW_POTION;
   IsAlcoholic = true;
-  ScienceTalkName =
+  ScienceTalkName :=
   {
-    10,
     "killing", "murder", "rape", "torture", "burns",
     "cannibalism", "slaughtering", "malice", "axes", "blood";
   }

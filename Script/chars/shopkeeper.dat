@@ -46,9 +46,8 @@ shopkeeper
     CWeaponSkillHits == 200;
     RightSWeaponSkillHits = 100;
     DefaultName = "Hulbo";
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      4,
       "@Dd sighs: \"If only I hadn't chosen a city in the middle of nowhere...\"",
       "@Dd sighs: \"Mutant mushrooms ate the last caravan, and the one before it ran into an enner beast. It must be all Elpuri's doings!\"",
       "\"You truly can't find better prices in this city! Indeed, you can't find ANY prices, since my store is a monopoly.\"",
@@ -70,9 +69,8 @@ shopkeeper
     CWeaponSkillHits == 1000;
     RightSWeaponSkillHits = 500;
     DefaultName = "Kazu";
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      3,
       "@Dd sighs: \"I wonder why I have so few customers these days...\"",
       "\"The topmost reason why I work here is that the monsters devour tax collectors.\"",
       "\"The monsters don't attack me, because of our mutually profitable contract.\"";
@@ -94,9 +92,8 @@ shopkeeper
     CWeaponSkillHits == 1000;
     RightSWeaponSkillHits = 500;
     DefaultName = "Merka";
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      3,
       "@Dd sighs: \"I wonder why I have so few customers these days...\"",
       "\"The topmost reason why I work here is that the monsters devour tax collectors.\"",
       "\"The monsters don't attack me, because of our mutually profitable contract.\"";
@@ -117,9 +114,8 @@ shopkeeper
     CWeaponSkillHits == 1000;
     RightSWeaponSkillHits = 500;
     DefaultName = "Crow";
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      2,
       "@Dd sighs: \"I wonder why I have so few customers these days...\"",
       "\"Did you know I came from Mondedr? Before I left Raven gave me somes wares before I left.\"",
     }
@@ -141,9 +137,8 @@ shopkeeper
     CWeaponSkillHits == 200;
     RightSWeaponSkillHits = 100;
     DefaultName = "Gobs";
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      2,
       "\"Don't kill me! I am just an innocent bystander... Just don't ask where I got them hee-hee-hee.\"",
       "\"I heard the previous owner of this shop, Crow, moved to Kharaz-Arad.\"";
     }
@@ -161,9 +156,8 @@ shopkeeper
     ArmBitmapPos = 64, 0;
     LegBitmapPos = 0, 16;
     DefaultName = "Zolku";
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      4,
       "\"Welcome to the cheapest banana shop in the world!\"",
       "@Dd sighs: \"It's depressing that the locals have so little purchasing power... But Mellis bless the tourists!\"",
       "\"No, I don't sell spoiled food. Decos's alchemists have pumped so much magic potions into the soil that nothing here will go bad before you buy it.\"",

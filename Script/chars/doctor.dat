@@ -26,9 +26,8 @@ doctor
   CanRead = true;
   HostileReplies == "\"Bacillus! I surgically detach your every limb!\"";
   DeathMessage = "@Dd is dead before he hits the ground.";
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    4,
     "\"I can re-attach limb, chop limb, cure disease or perform acupuncture, yes yes. But first we make payment to Party. \"",
     "\"Who need god when scalpel does same job? \"",
     "\"I once was employed by great-frog priest to make eunuch for Attnam cathedral. You want be eunuch?\"",

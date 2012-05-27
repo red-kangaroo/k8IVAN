@@ -32,9 +32,9 @@ sumowrestler
   IsPolymorphable = false;
   PanicLevel = 10;
   BaseUnarmedStrength = 100;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    9, /* 6 first are used before the revolution */
+    /* 6 first are used before the revolution */
     "@Dd smiles broadly: \"'Tis the perfect occupation, this. I eat like kings! Or at least like kings who only eat bananas.\"",
     "\"The ancient rules of this traditional martial art were designed by Mr. Decos himself, so don't complain about them.\"",
     "\"My real name is Alfred, but the viceroy said it wasn't exotic enough for this job.\"",

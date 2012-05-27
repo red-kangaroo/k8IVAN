@@ -46,9 +46,9 @@ imperialist
   AttachedGod = MELLIS;
   CanBeConfused = false;
   IsPolymorphable = false;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    7, /* the last isn't used if the player is a sumo champion */
+    /* the last isn't used if the player is a sumo champion */
     "\"And they said levitating ostriches had no future! Hah!",
     "\"Poor people shouldn't complain - after all it's their own fault.\"",
     "\"Why can't those darn tax collectors ever believe an honest but poor enterpreneur who says he can't pay? Hmmm. I wonder if my room has something to do with it?\"",
@@ -58,9 +58,8 @@ imperialist
     "\"What? You're still here? What the hell I pay you for? Wait, I don't pay you anything. Never mind.\"";
   }
   AutomaticallySeen = true;
-  ScienceTalkAdjectiveAttribute =
+  ScienceTalkAdjectiveAttribute :=
   {
-    81,
     "applied",  "recent", "theoretical", "classical", "the future of",
     "fundamental", "legendary", "higher", "elementary", "practical",
     "artificial", "the wonders of", "modern", "empirical", "statistical",
@@ -82,24 +81,21 @@ imperialist
     "happy", "the blessings of", "ancient", "flexible", "laissez-faire",
     "the magnificence of";
   }
-  ScienceTalkSubstantiveAttribute =
+  ScienceTalkSubstantiveAttribute :=
   {
-    7,
     "New Age", "space", "last century", "mass", "free market",
     "hybrid", "probability";
   }
-  ScienceTalkPrefix =
+  ScienceTalkPrefix :=
   {
-    18,
     "", "", "", "", "",
     "macro", "ethno", "hyper", "trans", "geo",
     "mega", "cosmo", "meta", "super", "ego",
     "pseudo", "eroto", "neo";
   }
 
-  ScienceTalkName =
+  ScienceTalkName :=
   {
-    37,
     "commercials", "lockouts", "banking", "profits", "egoism",
     "bazaars", "corporations", "sackings", "advertising", "capitalism",
     "monopolies", "!M.U.L.E.", "tax cuts", "bargaining", "brands",

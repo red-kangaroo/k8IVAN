@@ -46,9 +46,8 @@ communist /* Ivan */
   DefaultName = "Ivan";
   DeathMessage = "@Dd falls groaning bravely: \"Party revenges @nu\"!";
   HostileReplies == "\"You capitalist! Lenin want @nu kill capitalists!\"";
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    11,
     "\"Da, @nu like killing.\"",
     "\"@Nu ruski specialist.\"",
     "\"@Nu work. Else @nu nerve stapled.\"",
@@ -64,9 +63,8 @@ communist /* Ivan */
   AttachedGod = LORICATUS;
   ConstantCommandFlags = FLEE_FROM_ENEMIES;
   IsEnormous = true;
-  ScienceTalkName =
+  ScienceTalkName :=
   {
-    21,
     "materialism", "marxism", "leninism", "stalinism", "socialism",
     "castroism", "maoism", "trotskyism", "anticapitalism", "agriculture",
     "communism", "atheism", "hoxhaism", "class struggles", "socialist art",

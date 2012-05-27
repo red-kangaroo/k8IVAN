@@ -30,9 +30,8 @@ encourager
   TamingDifficulty = NO_TAMING;
   HostileReplies == "\"Ah! Again me kick ye!\"";
   AttachedGod = MELLIS;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    4;
     "@Dd shouts harshly: \"Work! Work! Bring food to yer betters!\"",
     "@Dd shouts almost sadly: \"Gonna leave, man? Pity. Me kinda liked kicking ya.\"",
     "@Dd screams at your face: \"Me talented shouter. That made everyone in Attnam jealous. Me was sent here and told to never come back.\"",

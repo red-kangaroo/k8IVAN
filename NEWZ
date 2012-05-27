@@ -36,3 +36,8 @@ new room field:
 AllowedDivineMasters = { 3, CLEPTIA, SCABIES, CRUENTUS; }
 will be used for random altars
 room with altar now will have it's divine master autoassigned
+
+
+the long-awaited array syntax without counters:
+
+name := { item, item, ... }

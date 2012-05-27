@@ -26,9 +26,9 @@ bananagrower
   HostileReplies == "\"Banana POWER!\"";
   AttachedGod = SILVA;
   CanRead = true;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    9, /* 6 first are used before the revolution */
+    /* 6 first are used before the revolution */
     "@Dd curses: \"I hate bananas. I wish I still was @pd.\"",
     "\"I was @pd before Attnam invaded our peaceful land.\"",
     "@Dd glances thoughtfully to the sky: \"Our climate is truly optimal for bananas. It rains all the time here. Damn.\"",

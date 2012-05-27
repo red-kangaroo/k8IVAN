@@ -52,9 +52,8 @@ mouse
     ScienceTalkWisdomModifier = 5;
     ScienceTalkIntelligenceRequirement = 45;
     ScienceTalkWisdomRequirement = 45;
-    ScienceTalkName =
+    ScienceTalkName :=
     {
-      10,
       "Life", "the Universe", "Everything", "5D chat shows", "computer architectonics",
       "cheese", "experiments", "Ultimate Questions", "pan-dimensionality", "On-Turning";
     }

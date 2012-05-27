@@ -24,26 +24,23 @@ dog
   Alias == "dog";
   CanOpen = false; /*k8: ??? why this was removed? */
   DeathMessage = "@Dd is killed.";
-  ScienceTalkAdjectiveAttribute =
+  ScienceTalkAdjectiveAttribute :=
   {
-    16,
     "arf", "r-ruff", "bark", "woof", "rowf",
     "yip", "yap", "yelp", "[fart]", "snarl",
     "bow-wow", "AHROUFF", "WOOF", "BARK", "grrrrrrr",
     "aaaaoooooooooooo";
   }
-  ScienceTalkSubstantiveAttribute =
+  ScienceTalkSubstantiveAttribute :=
   {
-    16,
     "arf", "r-ruff", "bark", "woof", "rowf",
     "yip", "yap", "yelp", "[fart]", "snarl",
     "bow-wow", "AHROUFF", "WOOF", "BARK", "grrrrrrr",
     "aaaaoooooooooooo";
   }
   ScienceTalkPrefix == "";
-  ScienceTalkName =
+  ScienceTalkName :=
   {
-    16,
     "arf", "r-ruff", "bark", "woof", "rowf",
     "yip", "yap", "yelp", "[fart]", "snarl",
     "bow-wow", "AHROUFF", "WOOF", "BARK", "grrrrrrr",

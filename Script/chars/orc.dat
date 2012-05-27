@@ -45,9 +45,8 @@ orc
   ScienceTalkWisdomModifier = 1;
   ScienceTalkIntelligenceRequirement = 3;
   ScienceTalkWisdomRequirement = 3;
-  ScienceTalkName =
+  ScienceTalkName :=
   {
-    10,
     "killing", "murder", "rape", "torture", "burns",
     "cannibalism", "slaughtering", "malice", "axes", "blood";
   }

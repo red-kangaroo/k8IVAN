@@ -762,7 +762,7 @@ Dungeon DARK_FOREST;
       IsInside = false;
       Flags = NO_MONSTER_GENERATION;
       UseFillSquareWalls = true;
-      //AllowedDivineMasters = { 3, CLEPTIA, SCABIES, CRUENTUS; }
+      //AllowedDivineMasters := { CLEPTIA, SCABIES, CRUENTUS; }
 
       Square, Random;
       {

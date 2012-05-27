@@ -31,9 +31,8 @@ housewife
   HostileReplies == "\"Face my rolling pin! Graah!\"";
   AttachedGod = SEGES;
   WieldedPosition = 0, -1;
-  FriendlyReplies =
+  FriendlyReplies :=
   {
-    5,
     "\"Can you help me find my husband? He is hiding somewhere. He's that farmer who's just been mugged with a frying pan.\"",
     "\"Yesterday a bear rushed through my kitchen wall and ruined all my pies. Animals are truly annoying. Why can't we just burn the whole forest down?\"",
     "\"Wolves ate my seventh daughter last week. Damn. It'll take eight years to produce an equally good replacement worker.\"",
@@ -45,9 +44,8 @@ housewife
   {
     LegMainColor = rgb16(120, 120, 120);
     Cloak = CLOTH cloak;
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      2,
       "\"Gah! Put me back in the jail cell! I don't want to end up with those ghastly UTFA floosies.\"",
       "\"Just hurry and get me to Attnam already. Has that jeweller's shop opened up there yet?\"";
     }
@@ -58,9 +56,8 @@ housewife
     LegMainColor = rgb16(0, 80, 180);
     Cloak = CLOTH cloak;
     Inventory == lantern;
-    FriendlyReplies =
+    FriendlyReplies :=
     {
-      2,
       "\"If Mondedr wasn't on Petrus's wanted list it wouldn't be so dark all the time.\"",
       "\"I heard the shopkeeper in town is a dirty one. I'd rather have the previous owner of the shop.\"";
     }
