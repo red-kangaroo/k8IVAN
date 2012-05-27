@@ -48,7 +48,7 @@ truth bananadroparea::DropItem (character *Dropper, item *Item, int) {
       game::DrawEverything();
       PLAYER->ShowAdventureInfo();
       festring Msg = CONST_S("restored Tweraif to independence and continued to further adventures");
-      Dropper->AddScoreEntry(Msg, 1, false);
+      Dropper->AddScoreEntry(Msg, 1.1, false);
       game::End(Msg);
     } else {
       if (Dropper->IsPlayer() && !game::TweraifIsFree()) ADD_MESSAGE("You feel that the climate is not quite right for growing mangoes.");
