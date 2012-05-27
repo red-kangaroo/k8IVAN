@@ -1,7 +1,12 @@
 if $(WINDOZE) {
+  HDRS += $(TOP)/windoze/include ;
   HDRS += $(TOP)/windoze/include/SDL ;
   #WINDOZE_THREADS = ;
-  WINSUBSYS = "windows" ;
+  if ! $(NT) || $(NO_CONSOLE) {
+    WINSUBSYS = "windows" ;
+  } else {
+    WINSUBSYS = "console" ;
+  }
   #WINLIBS += -lkernel32 ;
   windoze-fix ;
 }
