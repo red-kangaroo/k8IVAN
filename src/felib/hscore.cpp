@@ -79,7 +79,7 @@ void highscore::Draw () const {
     List.AddEntry(Desc, c == uInt(LastAdd) ? WHITE : LIGHT_GRAY, 13);
   }
   List.SetFlags(FADE);
-  List.SetPageLength(40);
+  List.SetPageLength(26);
   List.Draw();
 }
 

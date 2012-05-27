@@ -80,7 +80,7 @@ felist::felist (cfestring &Topic, col16 TopicColor, uInt Maximum) :
   Selected(0),
   Pos(10, 10),
   Width(780),
-  PageLength(30),
+  PageLength(26),
   BackColor(0),
   Flags(SELECTABLE|FADE),
   UpKey(KEY_UP),
@@ -236,10 +236,12 @@ uInt felist::Draw () {
 }
 
 
-static festring Str;
+//static festring Str;
 
 truth felist::DrawPage (bitmap *Buffer) const {
   uInt LastFillBottom = Pos.Y+23+Description.size()*10;
+  festring Str;
+  //
   DrawDescription(Buffer);
   uInt c, i; // c == entry index, i == selectable index
   int selIdx = -1;
