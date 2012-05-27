@@ -986,48 +986,50 @@ void lsquare::ApplyScript (const squarescript *SquareScript, room *Room) {
   if (OLTerrainScript) {
     olterrain *terra = OLTerrainScript->Instantiate();
     //
-    GetLevel()->AddFlag(Pos, FORBIDDEN);
-    // check for random altars
-    if (terra->AcceptsOffers()) {
-      //FIXME: make IsAltar()? for now only altars can accept offers
-      if (Room->GetDivineMaster()) {
-        //if (Terrain->GetConfig() != RoomClass->GetDivineMaster()) ABORT("Random altar in room with DivineMaster!");
-        if (terra->GetConfig() != Room->GetDivineMaster()) {
-          // force altar type
-          fprintf(stderr, "forced altar!\n");
-          delete terra;
-          terra = altar::Spawn(Room->GetDivineMaster());
-        }
-      } else {
-        // no DivineMaster yet, assign it
-        const fearray<int> *am = Room->GetScript()->GetAllowedDivineMasters();
-        //
-        if (am && am->Size > 0) {
-          int Owner = am->GetRandomElement();
-          //
-          /*
-          fprintf(stderr, "AllowedDivineMasters:");
-          for (uInt f = 0; f < am->Size; ++f) fprintf(stderr, " %d", (*am)[f]);
-          fprintf(stderr, "\n");
-          */
-          //
-          if (Owner < 1 || Owner > GODS) ABORT("Your god is a bad god!");
-          //
-          if (terra->GetConfig() != Owner) {
-            fprintf(stderr, "recreating altar %d --> %d\n", terra->GetConfig(), Owner);
+    if (terra) {
+      GetLevel()->AddFlag(Pos, FORBIDDEN);
+      // check for random altars
+      if (terra->AcceptsOffers()) {
+        //FIXME: make IsAltar()? for now only altars can accept offers
+        if (Room->GetDivineMaster()) {
+          //if (Terrain->GetConfig() != RoomClass->GetDivineMaster()) ABORT("Random altar in room with DivineMaster!");
+          if (terra->GetConfig() != Room->GetDivineMaster()) {
+            // force altar type
+            fprintf(stderr, "forced altar!\n");
             delete terra;
-            terra = altar::Spawn(Owner);
+            terra = altar::Spawn(Room->GetDivineMaster());
+          }
+        } else {
+          // no DivineMaster yet, assign it
+          const fearray<int> *am = Room->GetScript()->GetAllowedDivineMasters();
+          //
+          if (am && am->Size > 0) {
+            int Owner = am->GetRandomElement();
+            //
+            /*
+            fprintf(stderr, "AllowedDivineMasters:");
+            for (uInt f = 0; f < am->Size; ++f) fprintf(stderr, " %d", (*am)[f]);
+            fprintf(stderr, "\n");
+            */
+            //
+            if (Owner < 1 || Owner > GODS) ABORT("Your god is a bad god!");
+            //
+            if (terra->GetConfig() != Owner) {
+              fprintf(stderr, "recreating altar %d --> %d\n", terra->GetConfig(), Owner);
+              delete terra;
+              terra = altar::Spawn(Owner);
+            } else {
+              fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", terra->GetConfig());
+            }
           } else {
             fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", terra->GetConfig());
           }
-        } else {
-          fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", terra->GetConfig());
+          Room->SetDivineMaster(terra->GetConfig());
         }
-        Room->SetDivineMaster(terra->GetConfig());
       }
+      //
+      ChangeOLTerrain(terra);
     }
-    //
-    ChangeOLTerrain(terra);
   }
 }
 
