@@ -425,6 +425,7 @@ protected:
   SCRIPT_TRUTH_WITH_BASE(UseFillSquareWalls);
   SCRIPT_MEMBER_WITH_BASE(feuLong, Flags);
   SCRIPT_TRUTH_WITH_BASE(GenerateWards);
+  SCRIPT_MEMBER_WITH_BASE(fearray<int>, AllowedDivineMasters);
 };
 
 

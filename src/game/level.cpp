@@ -260,6 +260,7 @@ truth level::MakeRoom (const roomscript *RoomScript) {
 
   room *RoomClass = protocontainer<room>::GetProto(*RoomScript->GetType())->Spawn();
   //
+  RoomClass->SetScript(RoomScript);
   RoomClass->SetPos(Pos);
   RoomClass->SetSize(Size);
   RoomClass->SetFlags(*RoomScript->GetFlags());
@@ -282,7 +283,15 @@ truth level::MakeRoom (const roomscript *RoomScript) {
   }
 
   if (*RoomScript->AltarPossible() && !(RAND()%5)) {
-    int Owner = 1+RAND()%GODS;
+    int Owner;
+    const fearray<int> *am = RoomScript->GetAllowedDivineMasters();
+    //
+    if (!am || am->Size == 0) {
+      Owner = 1+RAND()%GODS;
+    } else {
+      Owner = am->GetRandomElement();
+      if (Owner < 1 || Owner > GODS) ABORT("Your god is a bad god!");
+    }
     //
     GetLSquare(Inside[RAND()%Inside.size()])->ChangeOLTerrain(altar::Spawn(Owner));
     game::GetGod(Owner)->SignalRandomAltarGeneration(Inside);

@@ -23,6 +23,7 @@ class festring;
 class outputfile;
 class inputfile;
 class character;
+class roomscript;
 
 typedef room* (*roomspawner)();
 
@@ -48,8 +49,8 @@ public:
   typedef roomprototype prototype;
 
 public:
-  room() : LastMasterSearchTick(0), MasterID(0), LastWardSearchTick(0) { }
-  virtual ~room() { }
+  room() : LastMasterSearchTick(0), MasterID(0), LastWardSearchTick(0), RoomScript(0) {}
+  virtual ~room() {}
 
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
@@ -95,6 +96,10 @@ public:
   olterrain* GetWard() const;
   truth WardIsActive() const;
   virtual truth IsOKToTeleportInto() const;
+
+  inline const roomscript *GetScript () const { return RoomScript; }
+  inline void SetScript (const roomscript *s) { RoomScript = s; }
+
  protected:
   mutable character* Master;
   mutable feuLong LastMasterSearchTick;
@@ -106,6 +111,7 @@ public:
   feuLong Flags;
   mutable olterrain* Ward;
   mutable feuLong LastWardSearchTick;
+  const roomscript *RoomScript;
 };
 
 #ifdef __FILE_OF_STATIC_ROOM_PROTOTYPE_DEFINITIONS__

@@ -1000,7 +1000,29 @@ void lsquare::ApplyScript (const squarescript *SquareScript, room *Room) {
         }
       } else {
         // no DivineMaster yet, assign it
-        fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", terra->GetConfig());
+        const fearray<int> *am = Room->GetScript()->GetAllowedDivineMasters();
+        //
+        if (am && am->Size > 0) {
+          int Owner = am->GetRandomElement();
+          //
+          /*
+          fprintf(stderr, "AllowedDivineMasters:");
+          for (uInt f = 0; f < am->Size; ++f) fprintf(stderr, " %d", (*am)[f]);
+          fprintf(stderr, "\n");
+          */
+          //
+          if (Owner < 1 || Owner > GODS) ABORT("Your god is a bad god!");
+          //
+          if (terra->GetConfig() != Owner) {
+            fprintf(stderr, "recreating altar %d --> %d\n", terra->GetConfig(), Owner);
+            delete terra;
+            terra = altar::Spawn(Owner);
+          } else {
+            fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", terra->GetConfig());
+          }
+        } else {
+          fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", terra->GetConfig());
+        }
         Room->SetDivineMaster(terra->GetConfig());
       }
     }

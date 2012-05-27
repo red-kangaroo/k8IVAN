@@ -685,7 +685,7 @@ Dungeon DARK_FOREST;
     LevelMessage = "You step further inside the deep forest";
     LOSModifier = 48;
 
-  RoomDefault
+    RoomDefault
     {
       GenerateWards = false;
       AllowLockedDoors = false;
@@ -762,6 +762,7 @@ Dungeon DARK_FOREST;
       IsInside = false;
       Flags = NO_MONSTER_GENERATION;
       UseFillSquareWalls = true;
+      //AllowedDivineMasters = { 3, CLEPTIA, SCABIES, CRUENTUS; }
 
       Square, Random;
       {

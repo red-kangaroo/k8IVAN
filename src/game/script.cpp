@@ -715,6 +715,7 @@ void roomscript::InitDataMap()
   INIT_ENTRY(UseFillSquareWalls);
   INIT_ENTRY(Flags);
   INIT_ENTRY(GenerateWards);
+  INIT_ENTRY(AllowedDivineMasters);
 }
 
 void roomscript::ReadFrom(inputfile& SaveFile)

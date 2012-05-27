@@ -7,7 +7,7 @@ COMMAND(Offer) {
       return false;
     }
     int master = Square->GetDivineMaster();
-    if (!master) { ADD_MESSAGE("Somehow you feel that no god will hear you here."); return; }
+    if (!master) { ADD_MESSAGE("Somehow you feel that no god will hear you here."); return false; }
     item *Item = Char->GetStack()->DrawContents(Char, CONST_S("What do you want to offer?"));
     if (Item) {
       if (game::GetGod(Square->GetDivineMaster())->ReceiveOffer(Item)) {
