@@ -12,7 +12,7 @@
 
 /* Compiled through roomset.cpp */
 
-roomprototype::roomprototype(roomspawner Spawner, cchar *ClassID) : Spawner(Spawner), ClassID(ClassID) {
+roomprototype::roomprototype (roomspawner Spawner, cchar *ClassID) : Spawner(Spawner), ClassID(ClassID) {
   Index = protocontainer<room>::Add(this);
 }
 
