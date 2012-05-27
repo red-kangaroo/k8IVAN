@@ -84,8 +84,8 @@ public:
   festring ReadWord (truth AbortOnEOF=true);
   void ReadWord (festring &str, truth AbortOnEOF=true, truth skipIt=false);
   char ReadLetter (truth AbortOnEOF=true);
-  sLong ReadNumber (int CallLevel=0xFF, truth PreserveTerminator=false);
-  festring ReadStringOrNumber (sLong *num, truth *isString, truth PreserveTerminator=false);
+  sLong ReadNumber (int CallLevel=HIGHEST, truth PreserveTerminator=false, truth *wasCloseBrc=0);
+  festring ReadStringOrNumber (sLong *num, truth *isString, truth PreserveTerminator=false, truth *wasCloseBrc=0);
   v2 ReadVector2d ();
   rect ReadRect ();
   int Get ();
@@ -115,7 +115,7 @@ public:
   void die (cfestring &msg);
 
 protected:
-  festring ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator);
+  festring ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc);
   int HandlePunct (festring &String, int Char, int Mode);
 
   festring findVar (cfestring &name, truth *found) const;

@@ -606,6 +606,9 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
     } else if (Char == '&' || Char == '|') {
       int ch = Xgetc(Buffer);
       if (Char == ch) String << char(ch); else Xungc(ch, Buffer);
+    } else if (Char == ':') {
+      Char = Xgetc(Buffer);
+      if (Char == '=') String << char(Char); else Xungc(Char, Buffer);
     }
   }
   return PUNCT_RETURN;
@@ -685,13 +688,14 @@ char inputfile::ReadLetter (truth AbortOnEOF) {
 /* Reads a number or a formula from inputfile. Valid values could be for
    instance "3", "5 * 4+5", "2+Variable%4" etc. */
 //sLong inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
-festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator) {
+festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc) {
   sLong Value = 0;
   festring Word;
   truth NumberCorrect = false;
   truth firstWord = true;
   *isString = false;
   *num = 0;
+  if (wasCloseBrc) *wasCloseBrc = false;
   festring res;
   for (;;) {
     ReadWord(Word);
@@ -740,7 +744,8 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       continue;
     }
     if (Word.GetSize() == 1) {
-      if (First == ';' || First == ',' || First == ':') {
+      if (First == ';' || First == ',' || First == ':' || (wasCloseBrc && First == '}')) {
+        if (First == '}' && wasCloseBrc) *wasCloseBrc = true;
         if (CallLevel != HIGHEST || PreserveTerminator) Xungc(First, Buffer);
         *num = Value;
         return res;
@@ -926,16 +931,16 @@ festring inputfile::ReadCode (truth AbortOnEOF) {
 }
 
 
-sLong inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
+sLong inputfile::ReadNumber (int CallLevel, truth PreserveTerminator, truth *wasCloseBrc) {
   sLong num = 0;
   truth isString = false;
-  ReadNumberIntr(CallLevel, &num, &isString, false, PreserveTerminator);
+  ReadNumberIntr(CallLevel, &num, &isString, false, PreserveTerminator, wasCloseBrc);
   return num;
 }
 
 
-festring inputfile::ReadStringOrNumber (sLong *num, truth *isString, truth PreserveTerminator) {
-  return ReadNumberIntr(0xFF, num, isString, true, PreserveTerminator);
+festring inputfile::ReadStringOrNumber (sLong *num, truth *isString, truth PreserveTerminator, truth *wasCloseBrc) {
+  return ReadNumberIntr(HIGHEST, num, isString, true, PreserveTerminator, wasCloseBrc);
 }
 
 
@@ -1014,19 +1019,33 @@ void ReadData (fearray<sLong> &Array, inputfile &SaveFile) {
   Array.Clear();
   festring Word;
   SaveFile.ReadWord(Word);
-  //if (Word == "=") SaveFile.ReadWord(Word);
   if (Word == "==") {
     Array.Allocate(1);
     Array.Data[0] = SaveFile.ReadNumber();
-    return;
+  } else if (Word == ":=") {
+    SaveFile.ReadWord(Word);
+    if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+    //
+    std::vector<sLong> v;
+    //
+    for (;;) {
+      truth wasCloseBrc = false;
+      sLong n = SaveFile.ReadNumber(HIGHEST, false, &wasCloseBrc);
+      if (wasCloseBrc) break;
+      v.push_back(n);
+    }
+    Array.Allocate(v.size());
+    for (unsigned int f = 0; f < v.size(); ++f) Array.Data[f] = v[f];
+  } else if (Word == "=") {
+    SaveFile.ReadWord(Word);
+    if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+    fearray<sLong>::sizetype Size = SaveFile.ReadNumber();
+    Array.Allocate(Size);
+    for (fearray<sLong>::sizetype c = 0; c < Size; ++c) Array.Data[c] = SaveFile.ReadNumber();
+    if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  } else {
+    ABORT("Array syntax error: '=', '==' or ':=' expected in file %s, line %d!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   }
-  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %d!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
-  SaveFile.ReadWord(Word);
-  if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
-  fearray<sLong>::sizetype Size = SaveFile.ReadNumber();
-  Array.Allocate(Size);
-  for (fearray<sLong>::sizetype c = 0; c < Size; ++c) Array.Data[c] = SaveFile.ReadNumber();
-  if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
 }
 
 
@@ -1034,24 +1053,40 @@ void ReadData (fearray<festring> &Array, inputfile &SaveFile) {
   Array.Clear();
   festring Word;
   SaveFile.ReadWord(Word);
-  //if (Word == "=") SaveFile.ReadWord(Word);
   if (Word == "==") {
     Array.Allocate(1);
     SaveFile.ReadWord(Array.Data[0]);
     if (SaveFile.ReadWord() != ";") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
-    return;
-  }
-  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %d!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
-  SaveFile.ReadWord(Word);
-  if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
-  fearray<festring>::sizetype Size = SaveFile.ReadNumber();
-  Array.Allocate(Size);
-  for (fearray<festring>::sizetype c = 0; c < Size; ++c) {
-    SaveFile.ReadWord(Array.Data[c]);
+  } else if (Word == ":=") {
     SaveFile.ReadWord(Word);
-    if (Word != "," && Word != ";") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+    if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+    //
+    std::vector<festring> v;
+    //
+    for (;;) {
+      SaveFile.ReadWord(Word);
+      if (Word == "}") break;
+      v.push_back(Word);
+      SaveFile.ReadWord(Word);
+      if (Word == "}") break;
+      if (Word != "," && Word != ";") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+    }
+    Array.Allocate(v.size());
+    for (unsigned int f = 0; f < v.size(); ++f) Array.Data[f] = v[f];
+  } else if (Word == "=") {
+    SaveFile.ReadWord(Word);
+    if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+    fearray<festring>::sizetype Size = SaveFile.ReadNumber();
+    Array.Allocate(Size);
+    for (fearray<festring>::sizetype c = 0; c < Size; ++c) {
+      SaveFile.ReadWord(Array.Data[c]);
+      SaveFile.ReadWord(Word);
+      if (Word != "," && Word != ";") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+    }
+    if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  } else {
+    ABORT("Array syntax error: '=', '==' or ':=' expected in file %s, line %d!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
   }
-  if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
 }
 
 
