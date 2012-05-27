@@ -30,3 +30,9 @@ already a bit trained).
 
 new character field:
 AllowedDungeons == ALL_DUNGEONS; // example: AllowedDungeons = { 2, UNDER_WATER_TUNNEL, MONDEDR; }
+
+
+new room field:
+AllowedDivineMasters = { 3, CLEPTIA, SCABIES, CRUENTUS; }
+will be used for random altars
+room with altar now will have it's divine master autoassigned
