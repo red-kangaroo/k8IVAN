@@ -115,6 +115,7 @@ public:
   void die (cfestring &msg);
 
   inline int TokenLine () const { return mTokenLine; }
+  inline int CurrentLine () const { return mCurrentLine; }
 
 protected:
   festring ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc);

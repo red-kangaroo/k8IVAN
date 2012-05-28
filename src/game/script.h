@@ -69,22 +69,30 @@ class inputfile;
 
 struct scriptmemberbase {
   virtual ~scriptmemberbase () {}
+
   virtual void ReadFrom (inputfile &) = 0;
   virtual void Save (outputfile &) const = 0;
   virtual void Load (inputfile &) = 0;
   virtual void Replace (scriptmemberbase &) = 0;
+
+  festring SrcFile;
+  int SrcLine;
 };
 
 
 template <class type> struct scriptmember : public scriptmemberbase {
-  virtual ~scriptmember () { delete Member; }
-  scriptmember () : Member (0) {}
+  scriptmember () : SrcFile(""), SrcLine(0), Member(0) {}
   scriptmember (const scriptmember& Data) : scriptmemberbase (Data), Member (Data.Member ? new type (*Data.Member) : 0) {}
-  scriptmember& operator= (const scriptmember &);
+  virtual ~scriptmember () { delete Member; }
+
+  scriptmember &operator = (const scriptmember &);
   virtual void ReadFrom (inputfile &);
   virtual void Replace (scriptmemberbase &);
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
+
+  festring SrcFile;
+  int SrcLine;
   type *Member;
 };
 
@@ -96,7 +104,7 @@ template <class type, class scripttype> inline const type *GetMemberOf (const sc
 }
 
 
-template <class type> inline scriptmember<type>& scriptmember<type>::operator = (const scriptmember<type> &Data) {
+template <class type> inline scriptmember<type> &scriptmember<type>::operator = (const scriptmember<type> &Data) {
   if (Member) {
     if (Data.Member) {
       *Member = *Data.Member;
@@ -104,8 +112,12 @@ template <class type> inline scriptmember<type>& scriptmember<type>::operator = 
       delete Member;
       Member = 0;
     }
+    SrcFile = Data.SrcFile;
+    SrcLine = Data.SrcLine;
   } else if (Data.Member) {
     Member = new type (*Data.Member);
+    SrcFile = "";
+    SrcLine = 0;
   }
   return *this;
 }
@@ -114,10 +126,12 @@ template <class type> inline scriptmember<type>& scriptmember<type>::operator = 
 template <class type> struct fastscriptmember : public scriptmemberbase {
   fastscriptmember () {}
   fastscriptmember (type Member) : Member (Member) {}
+
   virtual void ReadFrom (inputfile &);
   virtual void Replace (scriptmemberbase &);
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
+
   type Member;
 };
 
@@ -128,8 +142,11 @@ public:
   virtual ~script () {}
 
   virtual void ReadFrom (inputfile &) = 0;
-  virtual void Save (outputfile& SaveFile) const { SaveDataMap (GetDataMap (), SaveFile); }
-  virtual void Load (inputfile& SaveFile) { LoadDataMap (GetDataMap (), SaveFile); }
+  virtual void Save (outputfile &SaveFile) const;
+  virtual void Load (inputfile &SaveFile);
+
+  inline cfestring &GetSrcFile () const { return SrcFile; }
+  inline int GetSrcLine () const { return SrcLine; }
 
 protected:
   truth ReadMember (inputfile&, cfestring &);
@@ -138,17 +155,21 @@ protected:
   virtual const datamap& GetDataMap () const = 0;
   virtual void SaveDataMap (const datamap &, outputfile &) const;
   virtual void LoadDataMap (const datamap &, inputfile &);
+
+protected:
+  festring SrcFile;
+  int SrcLine;
 };
 
 
-inline void ReadData (script &Type, inputfile &SaveFile) { Type.ReadFrom (SaveFile); }
+static inline void ReadData (script &Type, inputfile &SaveFile) { Type.ReadFrom(SaveFile); }
 inline outputfile &operator << (outputfile &SaveFile, const script &Script) { Script.Save (SaveFile); return SaveFile; }
 inline inputfile &operator >> (inputfile &SaveFile, script &Script) { Script.Load (SaveFile); return SaveFile; }
 
 
 class scriptwithbase : public script {
 public:
-  scriptwithbase () : Base (0) {}
+  scriptwithbase () : script(), Base (0) {}
   virtual ~scriptwithbase () {}
 
   const scriptwithbase *GetBase () const { return Base; }
@@ -163,6 +184,7 @@ class posscript : public script {
 public:
   typedef posscript scripttype;
 
+public:
   virtual ~posscript () {}
 
   virtual void ReadFrom (inputfile &);
@@ -187,6 +209,7 @@ class materialscript : public script {
 public:
   typedef materialscript scripttype;
 
+public:
   virtual ~materialscript () {}
 
   virtual void ReadFrom (inputfile &);
@@ -211,6 +234,7 @@ class basecontentscript : public script {
 public:
   typedef basecontentscript scripttype;
 
+public:
   basecontentscript ();
   virtual ~basecontentscript () {}
 
@@ -231,8 +255,8 @@ protected:
   static datamap DataMap;
   SCRIPT_MEMBER(materialscript, MainMaterial);
   SCRIPT_MEMBER(materialscript, SecondaryMaterial);
-  uShort ContentType : 15;
-  truth Random : 1;
+  uShort ContentType;
+  truth Random;
   uShort Config;
   FAST_SCRIPT_MEMBER(uChar, Parameters);
   festring mCode;
@@ -254,6 +278,8 @@ template <class type> class contentscript;
 template <> class contentscript<item> : public contentscripttemplate<item> {
 public:
   typedef contentscript<item> scripttype;
+
+public:
   contentscript<item> ();
   item *InstantiateBasedOnMaterial (int, int = 0) const;
   item *Instantiate (int = 0) const;
@@ -262,6 +288,8 @@ public:
 protected:
   virtual const datamap& GetDataMap () const { return DataMap; }
   virtual cchar *GetClassID () const;
+
+protected:
   static datamap DataMap;
   SCRIPT_MEMBER(fearray<contentscript<item> >, ItemsInside);
   SCRIPT_MEMBER(interval, Times);
@@ -285,6 +313,8 @@ truth IsValidScript (const fearray<contentscript<item> > *);
 template <> class contentscript<character> : public contentscripttemplate<character> {
 public:
   typedef contentscript<character> scripttype;
+
+public:
   contentscript<character> ();
   character *Instantiate (int = 0) const;
   static void InitDataMap ();
@@ -292,6 +322,8 @@ public:
 protected:
   virtual const datamap& GetDataMap () const { return DataMap; }
   virtual cchar *GetClassID () const;
+
+protected:
   static datamap DataMap;
   SCRIPT_MEMBER(fearray<contentscript<item> >, Inventory);
   SCRIPT_MEMBER(fearray<packv2>, WayPoint);
@@ -304,6 +336,8 @@ protected:
 template <> class contentscript<glterrain> : public contentscripttemplate<glterrain> {
 public:
   typedef contentscript<glterrain> scripttype;
+
+public:
   glterrain *Instantiate (int SpecialFlags = 0) const { return contentscripttemplate<glterrain>::BasicInstantiate (SpecialFlags); }
   static void InitDataMap ();
 
@@ -311,6 +345,8 @@ protected:
   virtual const datamap& GetDataMap () const { return DataMap; }
   static datamap DataMap;
   virtual cchar *GetClassID () const;
+
+protected:
   SCRIPT_TRUTH(IsInside);
 };
 
@@ -318,6 +354,8 @@ protected:
 template <> class contentscript<olterrain> : public contentscripttemplate<olterrain> {
 public:
   typedef contentscript<olterrain> scripttype;
+
+public:
   contentscript<olterrain> ();
   olterrain *Instantiate (int = 0) const;
   static void InitDataMap ();
@@ -326,6 +364,8 @@ protected:
   virtual const datamap& GetDataMap () const { return DataMap; }
   static datamap DataMap;
   virtual cchar *GetClassID () const;
+
+protected:
   SCRIPT_MEMBER(fearray<contentscript<item> >, ItemsInside);
   SCRIPT_MEMBER(festring, Text);
   FAST_SCRIPT_MEMBER(uChar, VisualEffects);
@@ -338,6 +378,7 @@ class squarescript : public script {
 public:
   typedef squarescript scripttype;
 
+public:
   squarescript ();
   virtual ~squarescript () {}
 
@@ -345,7 +386,9 @@ public:
   static void InitDataMap ();
 
 protected:
-  virtual const datamap& GetDataMap () const { return DataMap; }
+  virtual const datamap &GetDataMap () const { return DataMap; }
+
+protected:
   static datamap DataMap;
   SCRIPT_MEMBER(posscript, Position);
   SCRIPT_MEMBER(contentscript<character>, Character);
@@ -361,6 +404,8 @@ protected:
 template <class type, class contenttype = contentscript<type> > class contentmap : public script {
 public:
   typedef contentmap scripttype;
+
+public:
   contentmap ();
   virtual ~contentmap ();
   virtual void ReadFrom (inputfile &);
@@ -370,7 +415,9 @@ public:
   static void InitDataMap ();
 
 protected:
-  virtual const datamap& GetDataMap () const { return DataMap; }
+  virtual const datamap &GetDataMap () const { return DataMap; }
+
+protected:
   static datamap DataMap;
   std::pair<int, contenttype*> **ContentMap;
   std::map<int, contenttype> SymbolMap;
@@ -389,16 +436,19 @@ class roomscript : public scriptwithbase {
 public:
   typedef roomscript scripttype;
 
+public:
   virtual ~roomscript () {}
 
   void ReadFrom (inputfile &);
-  const std::list<squarescript>& GetSquare () const;
+  const std::list<squarescript> &GetSquare () const;
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
   static void InitDataMap ();
 
 protected:
   virtual const datamap& GetDataMap () const { return DataMap; }
+
+protected:
   static datamap DataMap;
   std::list<squarescript> Square;
   SCRIPT_MEMBER_WITH_BASE(charactercontentmap, CharacterMap);
@@ -433,6 +483,7 @@ class levelscript : public scriptwithbase {
 public:
   typedef levelscript scripttype;
 
+public:
   virtual ~levelscript () {}
 
   void ReadFrom (inputfile &);
@@ -445,7 +496,9 @@ public:
   static void InitDataMap ();
 
 protected:
-  virtual const datamap& GetDataMap () const { return DataMap; }
+  virtual const datamap &GetDataMap () const { return DataMap; }
+
+protected:
   static datamap DataMap;
   std::list<squarescript> Square;
   std::list<roomscript> Room;
@@ -489,6 +542,7 @@ class dungeonscript : public script {
 public:
   typedef dungeonscript scripttype;
 
+public:
   dungeonscript ();
   virtual ~dungeonscript ();
 
@@ -515,6 +569,7 @@ class teamscript : public script {
 public:
   typedef teamscript scripttype;
 
+public:
   virtual ~teamscript () {}
 
   virtual void ReadFrom (inputfile &);
@@ -524,7 +579,9 @@ public:
   static void InitDataMap ();
 
 protected:
-  virtual const datamap& GetDataMap () const { return DataMap; }
+  virtual const datamap &GetDataMap () const { return DataMap; }
+
+protected:
   static datamap DataMap;
   std::vector<std::pair<int, int> > Relation;
   SCRIPT_MEMBER(int, KillEvilness);
@@ -535,6 +592,7 @@ class gamescript : public script {
 public:
   typedef gamescript scripttype;
 
+public:
   virtual ~gamescript () {}
 
   virtual void ReadFrom (inputfile &);
@@ -549,6 +607,8 @@ public:
 
 protected:
   virtual const datamap &GetDataMap () const { return DataMap; }
+
+protected:
   static datamap DataMap;
   std::list<std::pair<int, teamscript> > Team;
   std::map<int, dungeonscript> Dungeon;
