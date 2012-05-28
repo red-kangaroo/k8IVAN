@@ -913,23 +913,23 @@ festring inputfile::ReadCode (truth AbortOnEOF) {
   for (int Char = Get(); !Eof(); Char = Get()) {
     //fprintf(stderr, "char: [%c]; inString: %d; sqLevel: %d\n", (Char < 32 || Char > 126 ? '?' : Char), inString, sqLevel);
     if (inString) {
-      res << Char;
+      res << ((char)Char);
       if (Char == inString) {
         inString = 0;
       } else if (Char == '\\') {
         if (Eof()) break;
         Char = Get();
-        res << Char;
+        res << ((char)Char);
       }
     } else {
       if (Char == '[') {
         ++sqLevel;
-        res << Char;
+        res << ((char)Char);
       } else if (Char == ']') {
         if (--sqLevel == 0) break;
-        res << Char;
+        res << ((char)Char);
       } else if (Char == '/') {
-        if (Eof()) { res << Char; break; }
+        if (Eof()) { res << ((char)Char); break; }
         switch ((Char = Get())) {
           case '/': // eol comment
             while (!Eof()) if (Get() == '\n') break;
@@ -944,14 +944,14 @@ festring inputfile::ReadCode (truth AbortOnEOF) {
             break;
           default:
             res << '/';
-            res << Char;
+            res << ((char)Char);
             break;
         }
       } else if (Char == '"' || Char == '\'') {
-        res << Char;
-        inString = Char;
+        res << ((char)Char);
+        inString = ((char)Char);
       } else {
-        res << Char;
+        res << ((char)Char);
       }
     }
   }
