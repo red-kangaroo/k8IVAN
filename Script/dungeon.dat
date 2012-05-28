@@ -22,13 +22,12 @@
 /* Team and dungeon data for the game */
 
 //don't need this anymore
-//Dungeons = 9;
-//Teams = 17;
 
 
 Include "teams.dat";
 
 
+//Dungeons = 9;
 Include "dungeons/new_attnam.dat";
 Include "dungeons/attnam.dat";
 Include "dungeons/UT.dat";

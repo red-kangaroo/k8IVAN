@@ -250,6 +250,7 @@ struct characterdatabase : public databasebase {
   int WhatCategoryToThrow;
   int WhatWeaponConfigToThrow;
   fearray<int> AllowedDungeons;
+  fearray<festring> LevelTags;
 };
 
 
@@ -636,6 +637,7 @@ public:
   DATA_BASE_VALUE(int, WhatCategoryToThrow);
   DATA_BASE_VALUE(int, WhatWeaponConfigToThrow);
   DATA_BASE_VALUE(const fearray<int>&, AllowedDungeons);
+  DATA_BASE_VALUE(const fearray<festring>&, LevelTags);
   int GetType () const { return GetProtoType()->GetIndex(); }
   void TeleportRandomly (truth = false);
   truth TeleportNear (character *);

@@ -595,15 +595,8 @@ void level::FiatLux () {
 void level::GenerateNewMonsters (int HowMany, truth ConsiderPlayer) {
   for (int c1 = 0; c1 < HowMany; ++c1) {
     v2 Pos;
-    character *Char = protosystem::BalancedCreateMonster();
+    character *Char = protosystem::BalancedCreateMonster(this);
     // gum solution
-    /*
-    while (!Char->IsAllowedInDungeon(GetDungeon()->GetIndex())) {
-      delete Char;
-      Char = protosystem::BalancedCreateMonster();
-    }
-    */
-    //
     Char->CalculateEnchantments();
     for (int c2 = 0; c2 < 30; ++c2) {
       Pos = GetRandomSquare(Char);

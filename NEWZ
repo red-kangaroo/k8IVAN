@@ -39,5 +39,12 @@ room with altar now will have it's divine master autoassigned
 
 
 the long-awaited array syntax without counters:
-
 name := { item, item, ... }
+
+
+Level can be taged with
+Tag = "arbitrary string";
+
+character can have
+LevelTags := { "UT level 0", "UT level 1"; }
+to allow spawning only on levels with specified tags. "*" means 'any tag or no tag at all'.

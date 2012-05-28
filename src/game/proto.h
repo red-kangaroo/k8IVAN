@@ -26,6 +26,7 @@ class character;
 class item;
 class material;
 class god;
+class level;
 template <class type> class databasecreator;
 struct itemdatabase;
 
@@ -72,7 +73,7 @@ template <class type> inline int protocontainer<type>::SearchCodeName (cfestring
 
 class protosystem {
 public:
-  static character* BalancedCreateMonster();
+  static character* BalancedCreateMonster(level *);
   static item* BalancedCreateItem(sLong = 0, sLong = MAX_PRICE, sLong = ANY_CATEGORY, int = 0, int = 0, int = 0, truth = false);
   static character* CreateMonster(int = 1, int = 999999, int = 0);
   static character* CreateMonster(cfestring&, int = 0, truth = true);

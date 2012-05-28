@@ -20,9 +20,10 @@ sLong protosystem::TotalItemPossibility;
 
 
 #include "confdef.h"
+#include "level.h"
 
 
-character *protosystem::BalancedCreateMonster () {
+character *protosystem::BalancedCreateMonster (level *lvl) {
   for (int c = 0; ; ++c) {
     double MinDifficulty = game::GetMinDifficulty(), MaxDifficulty = MinDifficulty*25;
     std::vector<configid> Possible;
@@ -32,7 +33,9 @@ character *protosystem::BalancedCreateMonster () {
       int ConfigSize = Proto->GetConfigSize();
       for (int c = 0; c < ConfigSize; ++c) {
         const character::database *DataBase = ConfigData[c];
+        //
         if (!DataBase->IsAbstract && DataBase->CanBeGenerated) {
+          // check allowed dungeons
           {
             truth allowed = false;
             const fearray<int> &dlist = DataBase->AllowedDungeons;
@@ -46,7 +49,25 @@ character *protosystem::BalancedCreateMonster () {
             }
             if (!allowed) continue;
           }
-          if (DataBase->IsUnique && DataBase->Flags & HAS_BEEN_GENERATED) continue;
+          // check allowed tags
+          if (lvl && lvl->GetLevelScript() && lvl->GetLevelScript()->GetTag() && !lvl->GetLevelScript()->GetTag()->IsEmpty()) {
+            const fearray<festring> &tlist = DataBase->LevelTags;
+            //
+            if (tlist.Size > 0) {
+              truth allowed = false;
+              cfestring *tag = lvl->GetLevelScript()->GetTag();
+              //
+              //fprintf(stderr, "looking for level tag [%s]\n", tag->CStr());
+              for (uInt f = 0; f < tlist.Size; ++f) {
+                //fprintf(stderr, " tag #%u: [%s]\n", f, tlist[f].CStr());
+                //if (tlist[f] == *tag) fprintf(stderr, "TAG HIT: [%s]\n", tag->CStr());
+                if (tlist[f] == "*" || tlist[f] == *tag) { allowed = true; break; }
+              }
+              if (!allowed) continue;
+            }
+          }
+          //
+          if (DataBase->IsUnique && (DataBase->Flags&HAS_BEEN_GENERATED)) continue;
           truth IsCatacomb = *game::GetCurrentLevel()->GetLevelScript()->IsCatacomb();
           if ((IsCatacomb && !DataBase->IsCatacombCreature) || (!IsCatacomb && DataBase->CanBeGeneratedOnlyInTheCatacombs)) continue;
           configid ConfigID(Type, ConfigData[c]->Config);

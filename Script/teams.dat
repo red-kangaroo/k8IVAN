@@ -1,7 +1,4 @@
 /*
- * WARNING! be sure to add ALL team definitions, even empty ones (see PLAYER_TEAM and MONSTER_TEAM as example)!
- */
-/*
  * Description of hard-coded teams:
  * 0 == PLAYER_TEAM == Player and pets
  * 1 == MONSTER_TEAM == Monsters, default relation to other teams == hostile
@@ -22,13 +19,8 @@
  * 16 == MORBE_TEAM
  */
 
-Team PLAYER_TEAM;
-{
-}
-
-Team MONSTER_TEAM;
-{
-}
+//don't need this anymore
+//Teams = 17;
 
 Team ATTNAM_TEAM;
 {

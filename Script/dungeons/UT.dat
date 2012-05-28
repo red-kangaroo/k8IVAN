@@ -81,13 +81,13 @@ Dungeon UNDER_WATER_TUNNEL;
       AltarPossible = false;
       Size = 7,7;
       Flags = NO_MONSTER_GENERATION;
-          UseFillSquareWalls = true;
+      UseFillSquareWalls = true;
 
-                Square, Random;
-    {
-      Items == Random { MinPrice = 250; MaxPrice = 2000; }
-          Times = 3:9;
-    }
+      Square, Random;
+      {
+        Items == Random { MinPrice = 250; MaxPrice = 2000; }
+        Times = 3:9;
+      }
 
       OTerrainMap
       {
@@ -113,6 +113,7 @@ Dungeon UNDER_WATER_TUNNEL;
     IgnoreDefaultSpecialSquares = true;
     MonsterAmountBase = 5;
     CanGenerateBone = false;
+    Tag = "UT level 0";
 
     RoomDefault
     {

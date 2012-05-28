@@ -25,6 +25,7 @@ hedgehog
   AttachedGod = SILVA;
   AutomaticallySeen = true;
   CanOpen = false;
+  //LevelTags := { "UT level 0", "UT level 1", "*"; }
 
   Config SONIC;
   {

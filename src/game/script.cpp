@@ -192,8 +192,8 @@ template <class scriptmemberptr> void InitMember (script::datamap &DataMap, ccha
   DataMap[Identifier] = reinterpret_cast<scriptmemberbase script::*>(DataMember);
 }
 
-#define INIT_ENTRY(name) InitMember(DataMap, #name, &scripttype::name##Holder)
 
+#define INIT_ENTRY(name) InitMember(DataMap, #name, &scripttype::name##Holder)
 #define INIT(name, value) name##Holder(value)
 
 
@@ -442,6 +442,7 @@ void contentscript<character>::InitDataMap () {
   INIT_ENTRY(Inventory);
   INIT_ENTRY(WayPoint);
   INIT_ENTRY(AllowedDungeons);
+  INIT_ENTRY(LevelTags);
   INIT_ENTRY(Team);
   INIT_ENTRY(Flags);
 }
@@ -813,6 +814,7 @@ void levelscript::InitDataMap () {
   INIT_ENTRY(IsCatacomb);
   INIT_ENTRY(EnterImage);
   INIT_ENTRY(EnterTextDisplacement);
+  INIT_ENTRY(Tag);
 }
 
 
@@ -1040,14 +1042,33 @@ void gamescript::ReadFrom (inputfile &SaveFile) {
   for (SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false)) {
     if (Word == "Dungeon") {
       int Index = SaveFile.ReadNumber();
-      std::pair<std::map<int, dungeonscript>::iterator, bool> Return = Dungeon.insert(std::make_pair(Index, dungeonscript()));
+      //
+      if (Index < 0 || Index > 16383) ABORT("Invalid dungeon number (%d) in game script file %s line %d!", Index, SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+      if (mDungeons < Index) mDungeons = Index;
+      //fprintf(stderr, "dungeon: %d; mDungeons: %d\n", Index, mDungeons);
+      std::pair<dungeonlist::iterator, bool> Return = Dungeon.insert(std::make_pair(Index, dungeonscript()));
+      //
       if (Return.second) Return.first->second.ReadFrom(SaveFile);
       else ABORT("Dungeon #%d defined again in game script file %s line %d!", Index, SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
       continue;
     }
     if (Word == "Team") {
       int Index = SaveFile.ReadNumber();
-      Team.push_back(std::pair<int, teamscript>(Index, teamscript()));
+      //
+      if (Index < 0 || Index > 16383) ABORT("Invalid team number (%d) in game script file %s line %d!", Index, SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+      for (teamlist::const_iterator it = Team.begin(); it != Team.end(); ++it) {
+        if (it->first == Index) ABORT("Team #%d redefinition in file %s at line %d!", Index, SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+      }
+      if (mTeams < Index+1) mTeams = Index+1;
+      /*
+      {
+        fprintf(stderr, "new team #%d\n", Index);
+        fprintf(stderr, "defined teams:\n");
+        for (teamlist::const_iterator it = Team.begin(); it != Team.end(); ++it) fprintf(stderr, " %d\n", it->first);
+      }
+      */
+      //
+      Team.push_back(teamlistitem(Index, teamscript()));
       Team.back().second.ReadFrom(SaveFile);
       continue;
     }

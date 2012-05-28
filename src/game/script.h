@@ -330,6 +330,7 @@ protected:
   SCRIPT_MEMBER(fearray<contentscript<item> >, Inventory);
   SCRIPT_MEMBER(fearray<packv2>, WayPoint);
   SCRIPT_MEMBER(fearray<int>, AllowedDungeons);
+  SCRIPT_MEMBER(fearray<festring>, LevelTags);
   FAST_SCRIPT_MEMBER(uChar, Team);
   FAST_SCRIPT_MEMBER(uChar, Flags);
 };
@@ -537,6 +538,7 @@ protected:
   SCRIPT_TRUTH_WITH_BASE(IsCatacomb);
   SCRIPT_MEMBER_WITH_BASE(festring, EnterImage);
   SCRIPT_MEMBER_WITH_BASE(v2, EnterTextDisplacement);
+  SCRIPT_MEMBER_WITH_BASE(festring, Tag);
 };
 
 
@@ -593,29 +595,32 @@ protected:
 class gamescript : public script {
 public:
   typedef gamescript scripttype;
+  typedef std::pair<int, teamscript> teamlistitem;
+  typedef std::list<teamlistitem> teamlist;
+  typedef std::map<int, dungeonscript> dungeonlist;
 
 public:
   virtual ~gamescript () {}
 
   virtual void ReadFrom (inputfile &);
-  const std::list<std::pair<int, teamscript> > &GetTeam () const;
+  const teamlist &GetTeam () const;
   const std::map<int, dungeonscript> &GetDungeon () const;
   void RandomizeLevels ();
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
   static void InitDataMap ();
-  const int *GetDungeons () const { mDungeons = (int)Dungeon.size(); return &mDungeons; }
-  const int *GetTeams () const { mTeams = (int)Team.size(); return &mTeams; }
+  inline const int *GetDungeons () const { /*mDungeons = (int)Dungeon.size();*/ return &mDungeons; }
+  inline const int *GetTeams () const { /*mTeams = (int)Team.size();*/ return &mTeams; }
 
 protected:
   virtual const datamap &GetDataMap () const { return DataMap; }
 
 protected:
   static datamap DataMap;
-  std::list<std::pair<int, teamscript> > Team;
-  std::map<int, dungeonscript> Dungeon;
-  mutable int mDungeons;
-  mutable int mTeams;
+  teamlist Team;
+  dungeonlist Dungeon;
+  int mDungeons;
+  int mTeams;
   //SCRIPT_MEMBER(int, Dungeons);
   //SCRIPT_MEMBER(int, Teams);
 };
