@@ -24,7 +24,7 @@
 #include "proto.h"
 
 
-int Main (int argc, char **argv) {
+int Main (int argc, char *argv[]) {
   if (argc > 1 && (!strcmp(argv[1], "--version") || !strcmp(argv[1], "-v"))) {
     std::cout << "Iter Vehemens ad Necem version " << IVAN_VERSION << std::endl;
     return 0;
@@ -91,9 +91,10 @@ int Main (int argc, char **argv) {
 #ifdef WIN32
 # include <windows.h>
 int PASCAL WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow) {
-  //return Main(argc, argv);
-  //FIXME:
-  static char *argv[2] = { "ivan.exe", NULL };
+  static char *argv[2];
+  //
+  argv[0] = strdup("ivan.exe");
+  argv[1] = NULL;
   return Main(1, argv);
 }
 #endif
