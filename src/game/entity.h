@@ -12,6 +12,8 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
+#include "ivancommon.h"
+
 #include <list>
 
 #include "ivandef.h"

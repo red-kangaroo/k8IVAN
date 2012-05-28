@@ -12,6 +12,8 @@
 #ifndef __COMMAND_H__
 #define __COMMAND_H__
 
+#include "ivancommon.h"
+
 #include <vector>
 
 #include "ivandef.h"

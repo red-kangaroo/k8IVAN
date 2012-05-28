@@ -13,6 +13,8 @@
 #ifndef __SQUARE_H__
 #define __SQUARE_H__
 
+#include "ivancommon.h"
+
 #include "festring.h"
 #include "ivandef.h"
 #include "v2.h"

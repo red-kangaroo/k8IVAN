@@ -12,6 +12,8 @@
 #ifndef __ICONF_H__
 #define __ICONF_H__
 
+#include "ivancommon.h"
+
 #include "config.h"
 #include "v2.h"
 

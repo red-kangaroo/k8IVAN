@@ -13,7 +13,10 @@
 #ifndef __SLOT_H__
 #define __SLOT_H__
 
+#include "ivancommon.h"
+
 #include "typedef.h"
+
 
 class item;
 class character;
@@ -21,6 +24,7 @@ class outputfile;
 class inputfile;
 class bodypart;
 class square;
+
 
 class slot
 {

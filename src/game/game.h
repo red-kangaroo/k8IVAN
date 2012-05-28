@@ -13,6 +13,8 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#include "ivancommon.h"
+
 #include <ctime>
 #include <map>
 #include <stack>

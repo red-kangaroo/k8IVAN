@@ -12,7 +12,10 @@
 #ifndef __DUNGEON_H__
 #define __DUNGEON_H__
 
+#include "ivancommon.h"
+
 #include "v2.h"
+
 
 class level;
 class outputfile;

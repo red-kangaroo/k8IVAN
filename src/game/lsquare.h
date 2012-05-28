@@ -9,17 +9,20 @@
  *  along with this file for more details
  *
  */
-
 #ifndef __LSQUARE_H__
 #define __LSQUARE_H__
+
+#include "ivancommon.h"
 
 #include "level.h"
 #include "dungeon.h"
 #include "lterra.h"
 
+
 #ifndef LIGHT_BORDER
-#define LIGHT_BORDER 80
+# define LIGHT_BORDER  (80)
 #endif
+
 
 class stack;
 class glterrain;

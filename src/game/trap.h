@@ -12,6 +12,8 @@
 #ifndef __TRAP_H__
 #define __TRAP_H__
 
+#include "ivancommon.h"
+
 #include <set>
 
 #include "entity.h"

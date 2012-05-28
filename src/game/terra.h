@@ -12,6 +12,8 @@
 #ifndef __TERRA_H__
 #define __TERRA_H__
 
+#include "ivancommon.h"
+
 #include "typedef.h"
 
 class character;

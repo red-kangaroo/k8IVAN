@@ -9,11 +9,13 @@
  *  along with this file for more details
  *
  */
-
 #ifndef __ROOM_H__
 #define __ROOM_H__
 
+#include "ivancommon.h"
+
 #include "v2.h"
+
 
 class room;
 class item;
@@ -24,6 +26,7 @@ class outputfile;
 class inputfile;
 class character;
 class roomscript;
+
 
 typedef room* (*roomspawner)();
 

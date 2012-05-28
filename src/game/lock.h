@@ -9,9 +9,11 @@
  *  along with this file for more details
  *
  */
-
 #ifndef __LOCK_H__
 #define __LOCK_H__
+
+#include "ivancommon.h"
+
 
 template <class base, class lockbase>
 class lockable : public base, public lockbase

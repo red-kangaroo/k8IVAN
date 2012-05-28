@@ -12,9 +12,12 @@
 #ifndef __MESSAGE_H__
 #define __MESSAGE_H__
 
+#include "ivancommon.h"
+
 #include <vector>
 #include "v2.h"
 #include "festring.h"
+
 
 #define ADD_MESSAGE  msgsystem::AddMessage
 

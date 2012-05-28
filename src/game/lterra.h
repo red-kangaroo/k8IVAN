@@ -12,6 +12,8 @@
 #ifndef __LTERRA_H__
 #define __LTERRA_H__
 
+#include "ivancommon.h"
+
 #include "object.h"
 #include "terra.h"
 #include "script.h"

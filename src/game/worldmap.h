@@ -12,6 +12,8 @@
 #ifndef __WORLDMAP_H__
 #define __WORLDMAP_H__
 
+#include "ivancommon.h"
+
 #include <vector>
 
 #include "area.h"

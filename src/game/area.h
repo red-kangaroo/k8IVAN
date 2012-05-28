@@ -12,6 +12,8 @@
 #ifndef __AREA_H__
 #define __AREA_H__
 
+#include "ivancommon.h"
+
 #include <map>
 
 #include "rect.h"

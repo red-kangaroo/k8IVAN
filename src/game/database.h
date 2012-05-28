@@ -12,6 +12,8 @@
 #ifndef __DATABASE_H__
 #define __DATABASE_H__
 
+#include "ivancommon.h"
+
 #include <map>
 
 #include "typedef.h"

@@ -12,6 +12,8 @@
 #ifndef __PROTO_H__
 #define __PROTO_H__
 
+#include "ivancommon.h"
+
 #include <map>
 #include <vector>
 

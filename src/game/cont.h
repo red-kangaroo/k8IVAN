@@ -13,6 +13,8 @@
 #ifndef __CONT_H__
 #define __CONT_H__
 
+#include "ivancommon.h"
+
 #include <vector>
 
 #include "v2.h"

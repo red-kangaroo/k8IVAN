@@ -9,6 +9,8 @@
  *  along with this file for more details
  *
  */
+#include "ivancommon.h"
+
 #include <iostream>
 
 #include "game.h"

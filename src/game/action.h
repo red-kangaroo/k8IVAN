@@ -12,6 +12,8 @@
 #ifndef __ACTION_H__
 #define __ACTION_H__
 
+#include "ivancommon.h"
+
 #include "typedef.h"
 #include "ivandef.h"
 

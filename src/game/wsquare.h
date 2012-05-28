@@ -12,6 +12,8 @@
 #ifndef __WSQUARE_H__
 #define __WSQUARE_H__
 
+#include "ivancommon.h"
+
 #include "square.h"
 #include "worldmap.h"
 

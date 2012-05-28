@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 #ifndef __IVANDEF_H__
 #define __IVANDEF_H__
 
@@ -26,6 +25,8 @@
  *    and independent enough (do not require other headers)
  * 3. class construction macros used in multiple .h files
  */
+
+#include "ivancommon.h"
 
 #include "v2.h"
 

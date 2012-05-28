@@ -12,6 +12,8 @@
 #ifndef __STACK_H__
 #define __STACK_H__
 
+#include "ivancommon.h"
+
 #include <vector>
 
 #include "lsquare.h"

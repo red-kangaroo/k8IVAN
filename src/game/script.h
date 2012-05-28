@@ -12,6 +12,8 @@
 #ifndef __SCRIPT_H__
 #define __SCRIPT_H__
 
+#include "ivancommon.h"
+
 #include <list>
 #include <map>
 

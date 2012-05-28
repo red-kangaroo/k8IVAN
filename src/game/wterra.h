@@ -12,6 +12,8 @@
 #ifndef __WTERRA_H__
 #define __WTERRA_H__
 
+#include "ivancommon.h"
+
 #include "cont.h"
 #include "worldmap.h"
 #include "terra.h"

@@ -12,6 +12,8 @@
 #ifndef __TEAM_H__
 #define __TEAM_H__
 
+#include "ivancommon.h"
+
 #include <vector>
 #include <list>
 #include <map>

@@ -13,6 +13,8 @@
 #ifndef __ITEM_H__
 #define __ITEM_H__
 
+#include "ivancommon.h"
+
 #include <cmath>
 
 #include "object.h"
@@ -618,7 +620,7 @@ class item : public object
   void Slow();
   void SendMemorizedUpdateRequest() const;
 
-  //FIXME:k8: is there such function already?
+  //FIXME:k8: are there such functions already? can we use RTTI?
   virtual truth IsCorpse () const { return false; }
   virtual truth IsBodyPart () const { return false; }
   virtual truth IsBottle () const { return false; }

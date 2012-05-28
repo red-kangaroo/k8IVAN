@@ -13,6 +13,8 @@
 #ifndef __SMOKE_H__
 #define __SMOKE_H__
 
+#include "ivancommon.h"
+
 #include <vector>
 
 #include "entity.h"

@@ -9,9 +9,10 @@
  *  along with this file for more details
  *
  */
-
 #ifndef __MATERIA_H__
 #define __MATERIA_H__
+
+#include "ivancommon.h"
 
 #include "script.h"
 #include "ivandef.h"

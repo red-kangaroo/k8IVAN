@@ -9,13 +9,16 @@
  *  along with this file for more details
  *
  */
-#ifndef WMAPSET_H
-#define WMAPSET_H
+#ifndef __IVANCOMMON_H__
+#define __IVANCOMMON_H__
 
-#include "ivancommon.h"
+#include <cstdlib>
+#include <exception> // for std::bad_alloc
+#include <new>
 
 
-extern void InitPlaces ();
+void *operator new (size_t size) throw (std::bad_alloc);
+void operator delete (void *p) throw ();
 
 
 #endif

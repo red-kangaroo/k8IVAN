@@ -13,8 +13,11 @@
 #ifndef __ILOOPS_H__
 #define __ILOOPS_H__
 
+#include "ivancommon.h"
+
 #include "feloops.h"
 #include "char.h"
+
 
 struct combinebodypartpredicates : public combinepredicates<ccharacter, bodypart>
 {

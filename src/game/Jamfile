@@ -2,6 +2,7 @@ SubDir TOP src game ;
 
 
 C++SDLMain ivan :
+  ivancommon.cpp
   actset.cpp
   areaset.cpp
   charset.cpp

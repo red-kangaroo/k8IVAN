@@ -12,6 +12,8 @@
 #ifndef __WSKILL_H__
 #define __WSKILL_H__
 
+#include "ivancommon.h"
+
 #include "ivandef.h"
 
 

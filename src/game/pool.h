@@ -13,6 +13,8 @@
 #ifndef __POOL_H__
 #define __POOL_H__
 
+#include "ivancommon.h"
+
 
 class entity;
 

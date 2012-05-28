@@ -13,10 +13,13 @@
 #ifndef __IGRAPH_H__
 #define __IGRAPH_H__
 
+#include "ivancommon.h"
+
 #include <map>
 
 #include "ivandef.h"
 #include "femath.h"
+
 
 class bitmap;
 class rawbitmap;
@@ -24,10 +27,10 @@ class outputfile;
 class inputfile;
 class festring;
 
+
 /* memcmp doesn't like alignment of structure members */
 
-struct graphicid
-{
+struct graphicid {
   graphicid() { }
   bool operator<(const graphicid&) const;
   uShort BitmapPosX NO_ALIGNMENT;
