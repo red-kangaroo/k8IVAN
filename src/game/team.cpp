@@ -14,12 +14,12 @@
 
 
 team::team() : Leader(0), ID(0), KillEvilness(0) {
-  fprintf(stderr, "team:team()!!!\n");
+  //fprintf(stderr, "team:team()!!!\n");
 }
 
 
 team::team(feuLong aID) : Leader(0), ID(aID), KillEvilness(0) {
-  fprintf(stderr, "team:team(%u)\n", ID);
+  //fprintf(stderr, "team:team(%u)\n", ID);
 }
 
 

@@ -348,6 +348,9 @@ truth game::Init (cfestring &Name) {
         "word. The point is that tomorrow you can finally forget your home and\n"
         "face the untold adventures ahead."));
       globalwindowhandler::InstallControlLoop(AnimationController);
+      LOSTick = 2;
+      DangerFound = 0;
+      CausePanicFlag = false;
       SetIsRunning(true);
       InWilderness = true;
       iosystem::TextScreen(CONST_S("Generating game...\n\nThis may take some time, please wait."), ZERO_V2, WHITE, false, true, &BusyAnimation);
@@ -442,17 +445,26 @@ truth game::Init (cfestring &Name) {
 
 
 void game::DeInit () {
+  pool::BurnHell();
   delete WorldMap;
   WorldMap = 0;
-  int c;
-  for (c = 1; c < Dungeons; ++c) delete Dungeon[c];
-  delete [] Dungeon;
-  for (c = 1; c <= GODS; ++c) delete God[c]; // sorry, Valpuri!
-  delete [] God;
-  pool::BurnHell();
-  for (c = 0; c < Teams; ++c) delete Team[c];
-  delete [] Team;
+  if (Dungeon) {
+    for (int c = 1; c < Dungeons; ++c) delete Dungeon[c];
+    delete [] Dungeon;
+    Dungeon = 0;
+  }
+  if (God) {
+    for (int c = 1; c <= GODS; ++c) delete God[c]; // sorry, Valpuri!
+    delete [] God;
+    God = 0;
+  }
+  if (Team) {
+    for (int c = 0; c < Teams; ++c) delete Team[c];
+    delete [] Team;
+    Team = 0;
+  }
   delete GameScript;
+  GameScript = 0;
   msgsystem::Format();
   DangerMap.clear();
 }
@@ -811,11 +823,10 @@ int game::Load (cfestring &SaveName) {
   int Version;
   SaveFile >> Version;
   if (Version != SAVE_FILE_VERSION) {
-    if (true || Version != 120) {
-      if (!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is incompatible with the new version.\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY))
-        return NEW_GAME;
-      else
-        return BACK;
+    if (!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is incompatible with the new version.\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY)) {
+      return NEW_GAME;
+    } else {
+      return BACK;
     }
   }
   SaveFile >> GameScript >> CurrentDungeonIndex >> CurrentLevelIndex >> Camera;
@@ -834,16 +845,15 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> PlayerMassacreMap >> PetMassacreMap >> MiscMassacreMap;
   SaveFile >> PlayerMassacreAmount >> PetMassacreAmount >> MiscMassacreAmount;
   LoadArray(SaveFile, EquipmentMemory, MAX_EQUIPMENT_SLOTS);
-  int c;
-  for (c = 0; c < ATTRIBUTES; ++c) SaveFile >> OldAttribute[c] >> NewAttribute[c] >> LastAttributeChangeTick[c];
+  for (int c = 0; c < ATTRIBUTES; ++c) SaveFile >> OldAttribute[c] >> NewAttribute[c] >> LastAttributeChangeTick[c];
   Dungeon = new dungeon*[Dungeons];
   Dungeon[0] = 0;
-  for (c = 1; c < Dungeons; ++c) SaveFile >> Dungeon[c];
+  for (int c = 1; c < Dungeons; ++c) SaveFile >> Dungeon[c];
   God = new god*[GODS+1];
   God[0] = 0;
-  for (c = 1; c <= GODS; ++c) SaveFile >> God[c];
+  for (int c = 1; c <= GODS; ++c) SaveFile >> God[c];
   Team = new team*[Teams];
-  for (c = 0; c < Teams; ++c) SaveFile >> Team[c];
+  for (int c = 0; c < Teams; ++c) SaveFile >> Team[c];
   if (InWilderness) {
     SetCurrentArea(LoadWorldMap(SaveName));
     CurrentWSquareMap = WorldMap->GetMap();
@@ -857,10 +867,12 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> Pos >> PlayerName;
   SetPlayer(GetCurrentArea()->GetSquare(Pos)->GetCharacter());
   if (!PLAYER) {
-    if (!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is broken due to bug in I.V.A.N.\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY))
+    DeInit();
+    if (!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is broken due to bug in I.V.A.N.\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY)) {
       return NEW_GAME;
-    else
+    } else {
       return BACK;
+    }
   }
   msgsystem::Load(SaveFile);
   SaveFile >> DangerMap >> NextDangerIDType >> NextDangerIDConfigIndex;
