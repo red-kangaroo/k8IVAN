@@ -282,7 +282,7 @@ Dungeon UNDER_WATER_TUNNEL;
 
       Square, Pos 5,0;
       {
-        //OTerrain = 0; //k8: WTF?! what this means?
+        OTerrain = 0; //k8: this makes entry
         AttachRequired = true;
       }
     }
