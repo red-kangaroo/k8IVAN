@@ -17,7 +17,7 @@ COMMAND(GetScroll) {
     if (sel < 0) break;
     festring sname;
     sLong amount = game::NumberQuestion(CONST_S("How many scrolls do you want?"), WHITE, true);
-    if (amount < 1) amount = 1;
+    if (amount < 0) break;
     for (sLong f = amount; f > 0; --f) {
       switch (sel) {
         case 0: sname = "Wishing"; Char->GetStack()->AddItem(scrollofwishing::Spawn()); break;
