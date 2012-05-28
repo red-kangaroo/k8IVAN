@@ -7610,6 +7610,59 @@ truth character::PossessesItem (sorter Sorter) const {
 }
 
 
+truth character::MoreThanOnePossessesItem (sorter Sorter) const {
+  if (Sorter) {
+    int count = 0;
+    //
+    for (int c = 0; c < BodyParts; ++c) {
+      bodypart *BodyPart = GetBodyPart(c);
+      //
+      if (BodyPart && (Sorter == 0 || (BodyPart->*Sorter)(this))) {
+        if (++count > 1) return true;
+      }
+    }
+    for (int c = 0; c < GetEquipments(); ++c) {
+      item *Equipment = GetEquipment(c);
+      //
+      if (Equipment && (Sorter == 0 || (Equipment->*Sorter)(this))) {
+        if (++count > 1) return true;
+      }
+    }
+    for (int c = 0; c < GetStack()->GetItems(); ++c) {
+      item *Stk = GetStack()->GetItem(c);
+      //
+      if (Stk && (Sorter == 0 || (Stk->*Sorter)(this))) {
+        if (++count > 1) return true;
+      }
+    }
+    return false;
+  }
+  return false;
+}
+
+
+item *character::FirstPossessesItem (sorter Sorter) const {
+  if (Sorter) {
+    for (int c = 0; c < BodyParts; ++c) {
+      bodypart *BodyPart = GetBodyPart(c);
+      //
+      if (BodyPart && (Sorter == 0 || (BodyPart->*Sorter)(this))) return BodyPart;
+    }
+    for (int c = 0; c < GetEquipments(); ++c) {
+      item *Equipment = GetEquipment(c);
+      //
+      if (Equipment && (Sorter == 0 || (Equipment->*Sorter)(this))) return Equipment;
+    }
+    for (int c = 0; c < GetStack()->GetItems(); ++c) {
+      item *Stk = GetStack()->GetItem(c);
+      //
+      if (Stk && (Sorter == 0 || (Stk->*Sorter)(this))) return Stk;
+    }
+  }
+  return 0;
+}
+
+
 /* 0 <= I <= 1 */
 cchar *character::GetRunDescriptionLine (int I) const {
   if (!GetRunDescriptionLineOne().IsEmpty()) return !I ? GetRunDescriptionLineOne().CStr() : GetRunDescriptionLineTwo().CStr();

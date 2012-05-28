@@ -1102,6 +1102,8 @@ public:
   virtual truth IsPlayerKind () const { return false; }
   truth HasBodyPart (sorter) const;
   truth PossessesItem (sorter) const;
+  truth MoreThanOnePossessesItem (sorter) const;
+  item *FirstPossessesItem (sorter Sorter) const;
   truth IsFlying () const { return GetMoveType() & FLY; }
   virtual cchar *GetRunDescriptionLine (int) const;
   void VomitAtRandomDirection (int);
