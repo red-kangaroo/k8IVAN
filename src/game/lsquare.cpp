@@ -1029,6 +1029,8 @@ void lsquare::ApplyScript (const squarescript *SquareScript, room *Room) {
       }
       //
       ChangeOLTerrain(terra);
+    } else {
+      fprintf(stderr, "WARNING: LTerra spawn error [lsquare] in file %s, line %d\n", OLTerrainScript->GetSrcFile().CStr(), OLTerrainScript->GetSrcLine());
     }
   }
 }
