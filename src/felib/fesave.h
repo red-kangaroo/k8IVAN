@@ -89,7 +89,7 @@ public:
   v2 ReadVector2d ();
   rect ReadRect ();
   int Get ();
-  int Unget (int ch);
+  void Unget (int ch);
   void Read (char *Offset, sLong Size);
   truth IsOpen () { return (Buffer != 0); }
   truth Eof ();
@@ -98,8 +98,8 @@ public:
   void SeekPosCurrent (sLong Offset);
   void SeekPosEnd (sLong Offset);
   sLong TellPos ();
-  feuLong TellLine () { return TellLineOfPos(TellPos()); }
-  feuLong TellLineOfPos (sLong);
+  //feuLong TellLine () { return TellLineOfPos(TellPos()); }
+  //feuLong TellLineOfPos (sLong);
   cfestring &GetFileName () const { return FileName; }
   void Close ();
 
@@ -113,6 +113,8 @@ public:
   void setGetVarCB (InputFileGetVarFn cb) { mGetVar = cb; }
 
   void die (cfestring &msg);
+
+  inline int TokenLine () const { return mTokenLine; }
 
 protected:
   festring ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc);
@@ -139,6 +141,10 @@ protected:
 #ifdef USE_ZLIB
   int mFileSize;
 #endif
+  int mCharBuf[4];
+  int mCharBufPos;
+  int mCurrentLine;
+  int mTokenLine;
 };
 
 
@@ -188,14 +194,14 @@ template <class type> inline void ReadData (fearray<type> &Array, inputfile &Sav
     ReadData(Array.Data[0], SaveFile);
     return;
   }
-  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %u!", SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %u!", SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
   SaveFile.ReadWord(Word);
-  if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %u!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %u!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
   typedef typename fearray<type>::sizetype sizetype;
   sizetype Size = SaveFile.ReadNumber();
   Array.Allocate(Size);
   for (sizetype c = 0; c < Size; ++c) ReadData(Array.Data[c], SaveFile);
-  if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %u!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %u!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
 }
 
 

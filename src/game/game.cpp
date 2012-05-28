@@ -1370,7 +1370,7 @@ void game::LoadGlobalValueMap (inputfile &fl) {
   for (fl.ReadWord(word, false); !fl.Eof(); fl.ReadWord(word, false)) {
     if (word == "Include") {
       word = fl.ReadWord();
-      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TellLine());
+      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
       //fprintf(stderr, "loading: %s\n", word.CStr());
       inputfile incf(game::GetGameDir()+"Script/"+word, &game::GetGlobalValueMap());
       LoadGlobalValueMap(incf);
@@ -1378,16 +1378,16 @@ void game::LoadGlobalValueMap (inputfile &fl) {
     }
     if (word == "Message") {
       word = fl.ReadWord();
-      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TellLine());
+      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
       fprintf(stderr, "MESSAGE: %s\n", word.CStr());
       continue;
     }
-    if (word != "#") ABORT("Illegal datafile define in file %s on line %d!", fl.GetFileName().CStr(), fl.TellLine());
+    if (word != "#") ABORT("Illegal datafile define in file %s on line %d!", fl.GetFileName().CStr(), fl.TokenLine());
     fl.ReadWord(word, true);
     if (word == "enum" || word == "bitenum") {
       truth isBit = word == "bitenum";
       sLong idx = 0;
-      if (fl.ReadWord() != "{") ABORT("'{' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TellLine());
+      if (fl.ReadWord() != "{") ABORT("'{' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
       festring idName;
       truth done = false;
       while (!done) {
@@ -1403,7 +1403,7 @@ void game::LoadGlobalValueMap (inputfile &fl) {
           // set current index
           idx = fl.ReadNumber();
         } else {
-          if (word != "," && word != ";" && word != "}") ABORT("',' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TellLine());
+          if (word != "," && word != ";" && word != "}") ABORT("',' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
           if (word == "}") done = true;
         }
         if (idName.GetSize() > 0) {
@@ -1416,7 +1416,7 @@ void game::LoadGlobalValueMap (inputfile &fl) {
       fl.SkipSpaces();
       int ch = fl.Get();
       if (ch != EOF && ch != ';') fl.Unget(ch);
-      //if (fl.ReadWord() != ";") ABORT("';' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TellLine());
+      //if (fl.ReadWord() != ";") ABORT("';' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
       continue;
     }
     if (word == "define") {
@@ -1425,7 +1425,7 @@ void game::LoadGlobalValueMap (inputfile &fl) {
       GlobalValueMap.insert(std::make_pair(word, v));
       continue;
     }
-    ABORT("Illegal datafile define in file %s on line %d!", fl.GetFileName().CStr(), fl.TellLine());
+    ABORT("Illegal datafile define in file %s on line %d!", fl.GetFileName().CStr(), fl.TokenLine());
   }
 }
 
@@ -3135,7 +3135,7 @@ int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args, inputfile
           if (isStr) args.push_back(FuncArg(s)); else args.push_back(FuncArg(n));
           fl->ReadWord(s, true);
           if (s == ";") return args.size();
-          if (s != ",") ABORT("',' expected in file %s line %d!", fl->GetFileName().CStr(), fl->TellLine());
+          if (s != ",") ABORT("',' expected in file %s line %d!", fl->GetFileName().CStr(), fl->TokenLine());
         }
         // never reached
       case 's':
@@ -3147,11 +3147,11 @@ int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args, inputfile
     if (f == types.GetSize()-1) {
       if (noterm) break;
       fl->ReadWord(s, true);
-      if (s != ";") ABORT("';' expected in file %s line %d!", fl->GetFileName().CStr(), fl->TellLine());
+      if (s != ";") ABORT("';' expected in file %s line %d!", fl->GetFileName().CStr(), fl->TokenLine());
       break;
     } else {
       fl->ReadWord(s, true);
-      if (s != ",") ABORT("',' expected in file %s line %d!", fl->GetFileName().CStr(), fl->TellLine());
+      if (s != ",") ABORT("',' expected in file %s line %d!", fl->GetFileName().CStr(), fl->TokenLine());
     }
   }
   return args.size();
@@ -3170,7 +3170,7 @@ truth game::GetWord (festring &w) {
     }
     if (w == "Include") {
       fl->ReadWord(w, true);
-      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TellLine());
+      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TokenLine());
       w = game::GetGameDir()+"Script/"+w;
       inputfile *fl = new inputfile(w, &game::GetGlobalValueMap(), true);
       fl->setGetVarCB(game::ldrGetVar);
@@ -3179,7 +3179,7 @@ truth game::GetWord (festring &w) {
     }
     if (w == "Message") {
       fl->ReadWord(w, true);
-      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TellLine());
+      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TokenLine());
       fprintf(stderr, "MESSAGE: %s\n", w.CStr());
       continue;
     }
@@ -3192,7 +3192,7 @@ void game::SkipBlock (truth brcEaten) {
   festring w;
   if (!brcEaten) {
     mFEStack.top()->ReadWord(w, true);
-    if (w != "{") ABORT("'{' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    if (w != "{") ABORT("'{' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
   }
   int cnt = 1;
   for (;;) {
@@ -3211,7 +3211,7 @@ truth game::DoOnEvent (truth brcEaten, truth AllowScript) {
   festring w;
   if (!brcEaten) {
     mFEStack.top()->ReadWord(w, true);
-    if (w != "{") ABORT("'{' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    if (w != "{") ABORT("'{' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
   }
   for (;;) {
     if (!GetWord(w)) {
@@ -3220,13 +3220,13 @@ truth game::DoOnEvent (truth brcEaten, truth AllowScript) {
     }
     //fprintf(stderr, "  :[%s]\n", w.CStr());
     if (w == "}") {
-      if (AllowScript) ABORT("Unexpected '}' in AllowScript file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+      if (AllowScript) ABORT("Unexpected '}' in AllowScript file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
       break;
     }
     if (w == ";") continue;
     if (w == "@") {
       mFEStack.top()->ReadWord(w, true);
-      if (mFEStack.top()->ReadWord(true) != "=") ABORT("'=' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+      if (mFEStack.top()->ReadWord(true) != "=") ABORT("'=' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
       //fprintf(stderr, "setvar: %s\n", w.CStr());
       if (w == "money") {
         sLong n = mFEStack.top()->ReadNumber(true);
@@ -3238,7 +3238,7 @@ truth game::DoOnEvent (truth brcEaten, truth AllowScript) {
         mResult = mFEStack.top()->ReadNumber(true);
         continue;
       }
-      ABORT("Unknown var [%s] in file %s at line %d!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+      ABORT("Unknown var [%s] in file %s at line %d!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
     } else {
       //mFEStack.top()->ReadWord(w, true);
       std::vector<FuncArg> args;
@@ -3267,19 +3267,19 @@ truth game::DoOnEvent (truth brcEaten, truth AllowScript) {
         continue;
       }
       if (w == "EatThisEvent") {
-        if (AllowScript) ABORT("'EatThisEvent' forbidden in AllowScripts in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+        if (AllowScript) ABORT("'EatThisEvent' forbidden in AllowScripts in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
         eaten = true;
         continue;
       }
       if (w == "Disallow") {
-        if (!AllowScript) ABORT("'Disallow' forbidden in not-AllowScripts in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+        if (!AllowScript) ABORT("'Disallow' forbidden in not-AllowScripts in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
         eaten = false;
         continue;
       }
-      ABORT("Unknown function [%s] in file %s at line %d!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
-      //if (mFEStack.top()->ReadWord() != ";") ABORT("';' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+      ABORT("Unknown function [%s] in file %s at line %d!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
+      //if (mFEStack.top()->ReadWord() != ";") ABORT("';' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
     }
-    //ABORT("Invalid term in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    //ABORT("Invalid term in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
   }
   //fprintf(stderr, "------------\n");
   return eaten;
@@ -3330,7 +3330,7 @@ truth game::RunOnEvent (cfestring &ename) {
   //
   festring w;
   while (GetWord(w)) {
-    if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
     mFEStack.top()->ReadWord(w, true);
     truth doIt = (w==ename);
     if (doIt && !res) {
@@ -3357,7 +3357,7 @@ truth game::RunOnEventStr (cfestring &ename, cfestring &str) {
   //fprintf(stderr, "event: [%s]\n", ename.CStr());
   //fprintf(stderr, "---\n%s---\n", str.CStr());
   while (GetWord(w)) {
-    if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TellLine());
+    if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
     mFEStack.top()->ReadWord(w, true);
     //fprintf(stderr, "on: [%s]\n", w.CStr());
     truth doIt = (w==ename);

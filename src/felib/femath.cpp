@@ -216,7 +216,7 @@ void ReadData(interval &I, inputfile &SaveFile) {
   SaveFile.ReadWord(Word);
   if (Word == ";" || Word == ",") I.Max = I.Min;
   else if (Word == ":") I.Max = Max(SaveFile.ReadNumber(), I.Min);
-  else ABORT("Odd interval terminator %s detected, file %s line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TellLine());
+  else ABORT("Odd interval terminator %s detected, file %s line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
 }
 
 
