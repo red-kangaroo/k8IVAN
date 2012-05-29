@@ -10,3 +10,10 @@ if $(WINDOZE) {
   #WINLIBS += -lkernel32 ;
   windoze-fix ;
 }
+
+if $(NT) {
+  CC = $(CC) -pipe -static-libgcc ;
+  C++ = $(C++) -pipe -static-libgcc -static-libstdc++ ;
+  LINK = $(LINK) -pipe -static-libgcc ;
+  C++LINK = $(C++LINK) -pipe -static-libgcc -static-libstdc++ ;
+}
