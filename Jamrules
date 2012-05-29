@@ -5,14 +5,11 @@ if $(WINDOZE) { OPT = default ; OPTIM_STANDARD = -O2 -march=i686 -mtune=i686 ; }
 if $(NT) { WINDOZE = 1 ; }
 set-profile ;
 set-default-locations ;
-if ! $(WINDOZE) {
-  OPTIM.all += -Wno-narrowing ;
-} else {
-  OPTIM = [ remove-std99-flags $(OPTIM) ] ;
-  C++OPTIM = [ remove-std99-flags $(C++OPTIM) ] ;
-  OPTIM.all += -static-libgcc -static-libstdc++ ;
-  LINKFLAGS.all += -static-libgcc -static-libstdc++ ;
-}
+OPTIM.all += -Wno-narrowing ;
+## if $(WINDOZE) {
+##   OPTIM.all += -static-libgcc -static-libstdc++ ;
+##   LINKFLAGS.all += -static-libgcc -static-libstdc++ ;
+## }
 
 HDRS += $(TOP)/src/felib ;
 
