@@ -365,9 +365,9 @@ public:
   void DeActivateTemporaryState (sLong What) { TemporaryState &= ~What; }
   void ActivateEquipmentState (sLong What) { EquipmentState |= What; }
   void DeActivateEquipmentState (sLong What) { EquipmentState &= ~What; }
-  truth TemporaryStateIsActivated (sLong What) const { return TemporaryState & What; }
+  truth TemporaryStateIsActivated (sLong What) const;
   truth EquipmentStateIsActivated (sLong What) const { return EquipmentState & What; }
-  truth StateIsActivated (sLong What) const { return TemporaryState & What || EquipmentState & What; }
+  truth StateIsActivated (sLong What) const;
   truth LoseConsciousness (int, truth = false);
   void SetTemporaryStateCounter (sLong, int);
   void DeActivateVoluntaryAction (cfestring & = CONST_S(""));
@@ -460,6 +460,7 @@ public:
   virtual int GetEquipments () const { return 0; }
   virtual sorter EquipmentSorter (int) const { return 0; }
   virtual void SetEquipment (int, item *) {}
+  truth IsESPBlockedByEquipment () const;
   void AddHealingLiquidConsumeEndMessage () const;
   void AddSchoolFoodConsumeEndMessage () const;
   void AddSchoolFoodHitMessage () const;

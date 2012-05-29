@@ -8047,3 +8047,31 @@ truth character::IsAllowedInDungeon (int dunIndex) {
   fprintf(stderr, "NO!\n");
   return false;
 }
+
+
+truth character::IsESPBlockedByEquipment () const {
+  for (int c = 0; c < GetEquipments(); ++c) {
+    item *Item = GetEquipment(c);
+    //
+    if (Item && Item->IsHelmet(this) &&
+        ((Item->GetMainMaterial() && Item->GetMainMaterial()->BlockESP()) ||
+         (Item->GetSecondaryMaterial() && Item->GetSecondaryMaterial()->BlockESP()))) return true;
+  }
+  return false;
+}
+
+
+truth character::TemporaryStateIsActivated (sLong What) const {
+  if ((What&ESP) && (TemporaryState&ESP) && IsESPBlockedByEquipment()) {
+    return ((TemporaryState&What)&(~ESP));
+  }
+  return (TemporaryState & What);
+}
+
+
+truth character::StateIsActivated (sLong What) const {
+  if ((What&ESP) && ((TemporaryState|EquipmentState)&ESP) && IsESPBlockedByEquipment()) {
+    return ((TemporaryState&What)&(~ESP)) || ((EquipmentState&What)&(~ESP));
+  }
+  return (TemporaryState & What) || (EquipmentState & What);
+}

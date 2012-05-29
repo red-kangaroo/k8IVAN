@@ -262,11 +262,6 @@ class item : public object
   virtual double GetWeaponStrength() const;
   virtual truth Open(character*);
   truth Consume(character*, sLong);
-  virtual truth IsHeadOfElpuri() const { return false; }
-  virtual truth IsPetrussNut() const { return false; }
-  virtual truth IsGoldenEagleShirt() const { return false; }
-  virtual truth IsMoneyBag () const { return false; }
-  virtual truth IsKleinBottle () const { return false; }
   virtual truth CanBeRead(character*) const { return false; }
   virtual truth Read(character*);
   virtual void FinishReading(character*) { }
@@ -285,10 +280,8 @@ class item : public object
   virtual truth Polymorph(character*, stack*);
   virtual truth CheckPickUpEffect(character*) { return true; }
   virtual void StepOnEffect(character*) { }
-  virtual truth IsTheAvatar() const { return false; }
   virtual void SignalSquarePositionChange(int);
   virtual truth CanBeEatenByAI(ccharacter*) const;
-  virtual truth IsExplosive() const { return false; }
   virtual void Save(outputfile&) const;
   virtual void Load(inputfile&);
   virtual void ChargeFully(character*) { }
@@ -304,7 +297,6 @@ class item : public object
   void MoveTo(stack*);
   truth IsMainSlot(const slot* What) const { return Slot[0] == What; }
   static cchar* GetItemCategoryName(sLong);
-  virtual truth IsConsumable() const { return true; }
   truth IsEatable(ccharacter*) const;
   truth IsDrinkable(ccharacter*) const;
   virtual truth IsOpenable(ccharacter*) const { return false; }
@@ -344,7 +336,6 @@ class item : public object
   virtual int GetBodyPartIndex() const { return 0xFF; }
   const database* GetDataBase() const { return DataBase; }
   virtual truth CanOpenLockType(int) const { return false; }
-  virtual truth IsWhip() const { return false; }
   DATA_BASE_VALUE(const prototype*, ProtoType);
   DATA_BASE_VALUE(int, Config);
   virtual DATA_BASE_TRUTH_WITH_PARAMETER(IsDestroyable, ccharacter*);
@@ -498,8 +489,6 @@ class item : public object
   virtual double GetTHVBonus() const { return 0.; }
   virtual double GetDamageBonus() const { return 0.; }
   virtual void DrawContents(ccharacter*) { }
-  virtual truth IsBroken() const;
-  virtual truth IsFood() const;
   virtual int GetEnchantment() const { return 0; }
   sLong GetEnchantedPrice(int) const;
   virtual item* Fix();
@@ -514,11 +503,6 @@ class item : public object
   void ResetSpoiling();
   virtual void SetItemsInside(const fearray<contentscript<item> >&, int) { }
   virtual int GetCarryingBonus() const { return 0; }
-  virtual truth IsBanana() const { return false; }
-  virtual truth IsEncryptedScroll() const { return false; }
-  virtual truth IsMangoSeedling() const { return false; }
-  virtual truth IsMondedrPass () const { return false; }
-  virtual truth IsRingOfThieves () const { return false; }
   cchar* GetStrengthValueDescription() const;
   cchar* GetBaseToHitValueDescription() const;
   cchar* GetBaseBlockValueDescription() const;
@@ -533,7 +517,6 @@ class item : public object
   virtual sLong GetTruePrice() const;
   virtual void Search(ccharacter*, int) { }
   virtual head* Behead() { return 0; }
-  virtual truth IsGorovitsFamilyRelic() const { return false; }
   virtual truth EffectIsGood() const { return false; }
 #ifdef WIZARD
   virtual void AddAttackInfo(felist&) const;
@@ -577,7 +560,6 @@ class item : public object
   virtual truth AllowFluidBe() const { return true; }
   virtual truth IsRusted() const;
   virtual void RemoveRust();
-  virtual truth IsBananaPeel() const { return false; }
   void SetSpoilPercentage(int);
   virtual pixelpredicate GetFluidPixelAllowedPredicate() const;
   void RedistributeFluids();
@@ -590,7 +572,6 @@ class item : public object
   virtual void GenerateMaterials();
   virtual void InitMaterials(const materialscript*, const materialscript*, truth);
   int GetSquarePosition() const { return (Flags & SQUARE_POSITION_BITS) >> SQUARE_POSITION_SHIFT; }
-  virtual truth IsLanternOnWall() const { return false; }
   virtual void DestroyBodyPart(stack*) { SendToHell(); }
   int GetLifeExpectancy() const { return LifeExpectancy; }
   virtual void SetLifeExpectancy(int, int);
@@ -622,6 +603,26 @@ class item : public object
   void Haste();
   void Slow();
   void SendMemorizedUpdateRequest() const;
+
+  virtual truth IsHeadOfElpuri() const { return false; }
+  virtual truth IsPetrussNut() const { return false; }
+  virtual truth IsGoldenEagleShirt() const { return false; }
+  virtual truth IsMoneyBag () const { return false; }
+  virtual truth IsKleinBottle () const { return false; }
+  virtual truth IsTheAvatar() const { return false; }
+  virtual truth IsExplosive() const { return false; }
+  virtual truth IsConsumable() const { return true; }
+  virtual truth IsWhip() const { return false; }
+  virtual truth IsBroken() const;
+  virtual truth IsFood() const;
+  virtual truth IsBanana() const { return false; }
+  virtual truth IsEncryptedScroll() const { return false; }
+  virtual truth IsMangoSeedling() const { return false; }
+  virtual truth IsMondedrPass () const { return false; }
+  virtual truth IsRingOfThieves () const { return false; }
+  virtual truth IsGorovitsFamilyRelic() const { return false; }
+  virtual truth IsBananaPeel() const { return false; }
+  virtual truth IsLanternOnWall() const { return false; }
 
   //FIXME:k8: are there such functions already? can we use RTTI?
   virtual truth IsCorpse () const { return false; }

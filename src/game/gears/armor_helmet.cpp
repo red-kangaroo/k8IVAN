@@ -1,12 +1,13 @@
 #ifdef HEADER_PHASE
 ITEM(helmet, armor)
 {
- public:
+public:
   virtual truth IsGorovitsFamilyRelic() const;
   virtual sLong GetPrice() const;
   virtual truth IsHelmet(ccharacter*) const { return true; }
   virtual truth IsInCorrectSlot(int) const;
- protected:
+
+protected:
   virtual col16 GetMaterialColorB(int) const;
   virtual col16 GetMaterialColorC(int) const;
 };

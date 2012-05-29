@@ -1155,6 +1155,7 @@ solid
     AttachedGod = LORICATUS;
     HardenedMaterial = COPPER;
     CategoryFlags = Base|IS_METAL|IS_GOLEM_MATERIAL;
+    BlockESP = true;
   }
 
   Config TROLL_HIDE;

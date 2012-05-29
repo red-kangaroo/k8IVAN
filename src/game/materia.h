@@ -68,6 +68,7 @@ struct materialdatabase : public databasebase
   int IntelligenceRequirement;
   int Stickiness;
   truth DisablesPanicWhenConsumed;
+  truth BlockESP;
 };
 
 class materialprototype
@@ -199,10 +200,7 @@ class material
   truth True() const { return true; }
   void FinishConsuming(character*);
   sLong GetVolume() const { return Volume; }
-  sLong GetWeight() const
-  {
-    return Volume ? sLong(double(Volume) * GetDensity() / 1000) : 0;
-  }
+  sLong GetWeight() const { return Volume ? sLong(double(Volume) * GetDensity() / 1000) : 0; }
   void EditVolume(sLong What) { SetVolume(Volume + What); }
   void SetVolume(sLong);
   void SetVolumeNoSignals(sLong What) { Volume = What; }
@@ -222,6 +220,7 @@ class material
   material* Duplicate() const { return DataBase->ProtoType->Clone(this); }
   truth IsStuckTo(ccharacter*) const;
   DATA_BASE_TRUTH(DisablesPanicWhenConsumed);
+  DATA_BASE_TRUTH(BlockESP);
  protected:
   virtual void PostConstruct() { }
   void Initialize(int, sLong, truth);

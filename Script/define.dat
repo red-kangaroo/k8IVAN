@@ -418,14 +418,14 @@
   OMMEL_TOOTH,
   RYE_BREAD,
   MANGO_FLESH,
-  HOLY_MANGO_FLESH
-}
+  HOLY_MANGO_FLESH,
+};
 
 
 /*#define GAS_ID (4096 * 3)*/
-#define GAS_ID  (3 << 12)
+//#define GAS_ID  (3 << 12)
 #enum {
-  GAS_ID  = (3 << 12),
+  GAS_ID = (3 << 12),
   AIR,
   MAGICAL_AIR,
   SMOKE,
@@ -824,7 +824,9 @@
 };
 
 
-#define ZOMBIE_OF_KHAZ_ZADM 1
+#enum {
+  ZOMBIE_OF_KHAZ_ZADM = 1,
+};
 
 
 #enum {
@@ -884,13 +886,24 @@
 };
 
 
-#define THIN_PIG 1
+#enum {
+  THIN_PIG = 1,
+};
 
-#define STARVED_OX 1
 
-#define FLOATIE 1
+#enum {
+  STARVED_OX = 1,
+};
 
-#define SONIC 1
+
+#enum {
+  FLOATIE = 1,
+};
+
+
+#enum {
+  SONIC = 1,
+};
 
 
 /* Least significant bit defines sex */
@@ -924,8 +937,10 @@
 };
 
 
-#define HATCHLING  1
-#define BOIL       2
+#enum {
+  HATCHLING = 1,
+  BOIL
+};
 
 
 #enum {
@@ -941,8 +956,10 @@
 };
 
 
-#define POOL  1
-#define UNDERGROUND_LAKE  2
+#enum {
+  POOL = 1,
+  UNDERGROUND_LAKE,
+};
 
 
 #enum {
@@ -993,14 +1010,24 @@
 #define WAYPOINT_SHALLOWER 1200
 #define FOUNTAIN           65535
 
-#define BOOK_CASE  1
-#define CHEST_OF_DRAWERS  2
-#define SHELF  3
 
-#define BROKEN_BARWALL  1
+#enum {
+  BOOK_CASE = 1,
+  CHEST_OF_DRAWERS,
+  SHELF,
+};
 
-#define BARDOOR  1
-#define SECRET_DOOR  2
+
+#enum {
+  BROKEN_BARWALL = 1,
+};
+
+
+#enum {
+  BARDOOR = 1,
+  SECRET_DOOR,
+};
+
 
 #define WORLD_MAP  255
 
@@ -1101,13 +1128,17 @@
 
 #define MAX_PRICE 2147483647
 
-#define ROOM_NORMAL 1
-#define ROOM_SHOP 2
-#define ROOM_CATHEDRAL 3
-#define ROOM_LIBRARY 4
-#define ROOM_BANANA_DROP_AREA 5
-#define ROOM_SUMO_ARENA 6
-#define ROOM_VAULT 7
+
+#enum {
+  ROOM_NORMAL = 1,
+  ROOM_SHOP,
+  ROOM_CATHEDRAL,
+  ROOM_LIBRARY,
+  ROOM_BANANA_DROP_AREA,
+  ROOM_SUMO_ARENA,
+  ROOM_VAULT,
+};
+
 
 #define BEAM_POLYMORPH 0
 #define BEAM_STRIKE 1

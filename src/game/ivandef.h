@@ -638,7 +638,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define STAIRS_DOWN 200
 #define WAYPOINT_DEEPER 1100
 #define WAYPOINT_SHALLOWER 1200
-#define FOUNTAIN 0xFFFF
+//#define FOUNTAIN 0xFFFF  // in confdef.h
 
 #define NO_LIMIT 0xFFFF
 
