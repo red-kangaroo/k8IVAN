@@ -67,6 +67,16 @@ character *protosystem::BalancedCreateMonster (level *lvl) {
               }
               if (!allowed) continue;
             }
+          } else {
+            // level have no tag
+            const fearray<festring> &tlist = DataBase->LevelTags;
+            //
+            if (tlist.Size > 0) {
+              truth allowed = false;
+              //
+              for (uInt f = 0; f < tlist.Size; ++f) if (tlist[f] == "*") { allowed = true; break; }
+              if (!allowed) continue;
+            }
           }
           //
           if (DataBase->IsUnique && (DataBase->Flags&HAS_BEEN_GENERATED)) continue;
@@ -213,6 +223,16 @@ item *protosystem::BalancedCreateItem (level *lvl, sLong MinPrice, sLong MaxPric
               //if (tlist[f] == *tag) fprintf(stderr, "TAG HIT: [%s]\n", tag->CStr());
               if (tlist[f] == "*" || tlist[f] == *tag) { allowed = true; break; }
             }
+            if (!allowed) continue;
+          }
+        } else {
+          // level have no tag
+          const fearray<festring> &tlist = ChosenDataBase->LevelTags;
+          //
+          if (tlist.Size > 0) {
+            truth allowed = false;
+            //
+            for (uInt f = 0; f < tlist.Size; ++f) if (tlist[f] == "*") { allowed = true; break; }
             if (!allowed) continue;
           }
         }

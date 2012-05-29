@@ -13,5 +13,6 @@ scroll
   WieldedBitmapPos = 176, 144;
   AllowEquip = false;
   TeleportPriority = 300;
-  LevelTags := { "UT level 0", "UT level 1", "*"; }
+  //LevelTags := { "UT level 0", "UT level 1", "*"; }
+  //LevelTags := { "nowhere"; }
 }

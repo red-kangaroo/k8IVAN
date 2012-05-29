@@ -32,6 +32,7 @@ meleeweapon
     DamageFlags = SLASH;
     IsThrowingWeapon = true;
     ThrowItemTypes = THROW_AXE;
+    //LevelTags := { "nowhere"; }
   }
 
   Config BROKEN|AXE;
