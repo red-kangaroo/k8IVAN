@@ -438,7 +438,7 @@ public:
   virtual void SwitchToDig (item *, v2) {}
   virtual void SetRightWielded (item *) {}
   virtual void SetLeftWielded (item *) {}
-  truth IsPassableSquare (const v2 xy) const { return IsPassableSquare(xy.X, xy.Y); }
+  truth IsPassableSquare (cv2 xy) const { return IsPassableSquare(xy.X, xy.Y); }
   truth IsPassableSquare (int x, int y) const;
   truth IsInCorridor () const;
   truth IsInCorridor (int x, int y) const;

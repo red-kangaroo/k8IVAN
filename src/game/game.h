@@ -192,6 +192,7 @@ public:
   static void DeInit();
   static void Run();
   static int GetMoveCommandKey(int);
+  static int MoveVectorToDirection (cv2 &mv); // -1: none
   static cv2 GetMoveVector(int I) { return MoveVector[I]; }
   static cv2 GetRelativeMoveVector(int I) { return RelativeMoveVector[I]; }
   static cv2 GetBasicMoveVector(int I) { return BasicMoveVector[I]; }

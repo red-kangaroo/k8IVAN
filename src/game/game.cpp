@@ -188,6 +188,13 @@ cbitmap *game::EnterImage;
 v2 game::EnterTextDisplacement;
 
 
+// -1: none
+int game::MoveVectorToDirection (cv2 &mv) {
+  for (int c = 0; c < 9; ++c) if (MoveVector[c] == mv) return c;
+  return -1;
+}
+
+
 char game::GetAbnormalMoveKey (int idx) {
   if (idx < 0 || idx > 8) return 0;
   return MoveAbnormalCommandKey[idx];
