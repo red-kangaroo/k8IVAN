@@ -441,8 +441,6 @@ cchar *contentscript<olterrain>::GetClassID () const { return "olterrain"; }
 void contentscript<character>::InitDataMap () {
   INIT_ENTRY(Inventory);
   INIT_ENTRY(WayPoint);
-  INIT_ENTRY(AllowedDungeons);
-  INIT_ENTRY(LevelTags);
   INIT_ENTRY(Team);
   INIT_ENTRY(Flags);
 }
@@ -530,7 +528,7 @@ item *contentscript<item>::Instantiate (int SpecialFlags) const {
   //
   if (Chance != 100 && Chance <= RAND_N(100)) return 0;
   if (Random) {
-    Instance = protosystem::BalancedCreateItem(GetMinPrice(), GetMaxPrice(), GetCategory(), SpecialFlags, GetConfigFlags());
+    Instance = protosystem::BalancedCreateItem(0, GetMinPrice(), GetMaxPrice(), GetCategory(), SpecialFlags, GetConfigFlags());
   } else {
     Instance = contentscripttemplate<item>::BasicInstantiate(SpecialFlags);
   }
@@ -888,6 +886,7 @@ void levelscript::SetBase (const scriptwithbase *What) {
 
 void levelscript::Save (outputfile &SaveFile) const {
   script::Save(SaveFile);
+  //if (Tag) SaveFile << Tag; else SaveFile << "";
   SaveFile << Square << Room;
 }
 

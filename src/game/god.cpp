@@ -47,7 +47,7 @@ void god::Pray()
   if(!Category)
     Category = ANY_CATEGORY;
 
-  item* Gift = protosystem::BalancedCreateItem(Relation / 2, Relation * 2, Category, 0, 0, GetType());
+  item* Gift = protosystem::BalancedCreateItem(0, Relation / 2, Relation * 2, Category, 0, 0, GetType());
 
   if(Gift)
   {
@@ -505,7 +505,7 @@ void god::SignalRandomAltarGeneration(const std::vector<v2>& RoomSquare)
       Category = ANY_CATEGORY;
 
     sLong MaxPrice = 250 + femath::LoopRoll(95, 500) * 10;
-    item* Item = protosystem::BalancedCreateItem(0, MaxPrice, Category, 0, 0, GetType());
+    item* Item = protosystem::BalancedCreateItem(0, 0, MaxPrice, Category, 0, 0, GetType());
 
     if(Item)
     {

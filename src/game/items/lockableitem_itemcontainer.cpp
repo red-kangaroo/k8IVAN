@@ -62,7 +62,7 @@ void itemcontainer::PostConstruct()
 
   for(int c = 0; c < ItemNumber; ++c)
   {
-    item* NewItem = protosystem::BalancedCreateItem();
+    item* NewItem = protosystem::BalancedCreateItem(0);
     sLong Volume = NewItem->GetVolume();
 
     if(NewItem->HandleInPairs())

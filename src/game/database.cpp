@@ -659,6 +659,8 @@ template<> void databasecreator<item>::CreateDataBaseMemberMap () {
   ADD_MEMBER(IsThrowingWeapon);
   ADD_MEMBER(ThrowItemTypes);
   ADD_MEMBER(CanFlame);
+  ADD_MEMBER(LevelTags);
+  ADD_MEMBER(AllowedDungeons);
 }
 
 

@@ -1597,6 +1597,14 @@ void character::Load (inputfile &SaveFile) {
   if (IsEnabled() && !game::IsInWilderness()) {
     for (int c = 1; c < GetSquaresUnder(); ++c) GetSquareUnder(c)->SetCharacter(this);
   }
+
+  /*
+  const fearray<festring> &lt = GetLevelTags();
+  if (lt.Size > 1) {
+    fprintf(stderr, "====\n");
+    for (uInt f = 0; f < lt.Size; ++f) fprintf(stderr, " %u: [%s]\n", f, lt[f].CStr());
+  }
+  */
 }
 
 

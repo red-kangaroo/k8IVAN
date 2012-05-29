@@ -73,8 +73,8 @@ template <class type> inline int protocontainer<type>::SearchCodeName (cfestring
 
 class protosystem {
 public:
-  static character* BalancedCreateMonster(level *);
-  static item* BalancedCreateItem(sLong = 0, sLong = MAX_PRICE, sLong = ANY_CATEGORY, int = 0, int = 0, int = 0, truth = false);
+  static character* BalancedCreateMonster(level * = 0);
+  static item* BalancedCreateItem(level * = 0, sLong = 0, sLong = MAX_PRICE, sLong = ANY_CATEGORY, int = 0, int = 0, int = 0, truth = false);
   static character* CreateMonster(int = 1, int = 999999, int = 0);
   static character* CreateMonster(cfestring&, int = 0, truth = true);
   static item* CreateItem(cfestring&, truth = true);

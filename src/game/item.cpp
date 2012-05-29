@@ -225,7 +225,7 @@ truth item::Polymorph (character *Polymorpher, stack *CurrentStack) {
     stack *Stack = CurrentStack->GetLSquareUnder()->GetStackOfAdjacentSquare(GetSquarePosition());
     if (Stack) CurrentStack = Stack;
   }
-  CurrentStack->AddItem(protosystem::BalancedCreateItem(0, MAX_PRICE, ANY_CATEGORY, 0, 0, 0, true));
+  CurrentStack->AddItem(protosystem::BalancedCreateItem(0, 0, MAX_PRICE, ANY_CATEGORY, 0, 0, 0, true));
   RemoveFromSlot();
   SendToHell();
   return true;
@@ -303,6 +303,13 @@ void item::Load (inputfile &SaveFile) {
     if (Fluid) Fluid = 0; //FIXME: MEMORY LEAK
     FluidCount = 0;
   }
+  /*
+  const fearray<festring> &lt = GetLevelTags();
+  if (lt.Size > 1) {
+    fprintf(stderr, "====\n");
+    for (uInt f = 0; f < lt.Size; ++f) fprintf(stderr, " %u: [%s]\n", f, lt[f].CStr());
+  }
+  */
 }
 
 

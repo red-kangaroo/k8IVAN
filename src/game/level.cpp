@@ -233,7 +233,7 @@ void level::CreateItems (int Amount) {
     //
     for (int x = 0; x < Amount; ++x) {
       v2 Pos = GetRandomSquare();
-      item *Item = protosystem::BalancedCreateItem(MinPrice, MAX_PRICE, ANY_CATEGORY, 0, IGNORE_BROKEN_PRICE);
+      item *Item = protosystem::BalancedCreateItem(this, MinPrice, MAX_PRICE, ANY_CATEGORY, 0, IGNORE_BROKEN_PRICE);
       //
       Item->CalculateEnchantment();
       Map[Pos.X][Pos.Y]->Stack->AddItem(Item);

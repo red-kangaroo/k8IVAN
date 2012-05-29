@@ -174,7 +174,7 @@ truth fountain::Drink (character *Drinker) {
         } break;
         case 6:
           if (!RAND_N(5)) {
-            item *ToBeCreated = protosystem::BalancedCreateItem(0, MAX_PRICE, RING);
+            item *ToBeCreated = protosystem::BalancedCreateItem(0, 0, MAX_PRICE, RING);
             GetLSquareUnder()->AddItem(ToBeCreated);
             if (ToBeCreated->CanBeSeenByPlayer()) ADD_MESSAGE("There's something sparkling in the water.");
             break;

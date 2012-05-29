@@ -329,8 +329,6 @@ protected:
   static datamap DataMap;
   SCRIPT_MEMBER(fearray<contentscript<item> >, Inventory);
   SCRIPT_MEMBER(fearray<packv2>, WayPoint);
-  SCRIPT_MEMBER(fearray<int>, AllowedDungeons);
-  SCRIPT_MEMBER(fearray<festring>, LevelTags);
   FAST_SCRIPT_MEMBER(uChar, Team);
   FAST_SCRIPT_MEMBER(uChar, Flags);
 };

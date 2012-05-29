@@ -207,6 +207,8 @@ struct itemdatabase : public databasebase
   truth IsThrowingWeapon;
   sLong ThrowItemTypes;
   truth CanFlame;
+  fearray<festring> LevelTags;
+  fearray<int> AllowedDungeons;
 };
 
 class itemprototype
@@ -442,6 +444,8 @@ class item : public object
   DATA_BASE_TRUTH(IsThrowingWeapon);
   DATA_BASE_VALUE(sLong, ThrowItemTypes);
   DATA_BASE_TRUTH(CanFlame);
+  DATA_BASE_VALUE(const fearray<festring> &, LevelTags);
+  DATA_BASE_VALUE(const fearray<int> &, AllowedDungeons);
   truth CanBeSoldInLibrary(character* Librarian) const { return CanBeRead(Librarian); }
   virtual truth TryKey(item*, character*) { return false; }
   sLong GetBlockModifier() const;
@@ -531,7 +535,6 @@ class item : public object
   virtual head* Behead() { return 0; }
   virtual truth IsGorovitsFamilyRelic() const { return false; }
   virtual truth EffectIsGood() const { return false; }
-  //virtual truth GetCanFlame () const { return CanFlame; }
 #ifdef WIZARD
   virtual void AddAttackInfo(felist&) const;
   void AddMiscellaneousInfo(felist&) const;

@@ -24,6 +24,8 @@ sLong protosystem::TotalItemPossibility;
 
 
 character *protosystem::BalancedCreateMonster (level *lvl) {
+  if (!lvl) lvl = game::GetCurrentLevel();
+  //
   for (int c = 0; ; ++c) {
     double MinDifficulty = game::GetMinDifficulty(), MaxDifficulty = MinDifficulty*25;
     std::vector<configid> Possible;
@@ -117,7 +119,7 @@ character *protosystem::BalancedCreateMonster (level *lvl) {
 }
 
 
-item *protosystem::BalancedCreateItem (sLong MinPrice, sLong MaxPrice, sLong RequiredCategory, int SpecialFlags, int ConfigFlags, int RequiredGod, truth Polymorph) {
+item *protosystem::BalancedCreateItem (level *lvl, sLong MinPrice, sLong MaxPrice, sLong RequiredCategory, int SpecialFlags, int ConfigFlags, int RequiredGod, truth Polymorph) {
   typedef item::database database;
   database **PossibleCategory[ITEM_CATEGORIES];
   int PossibleCategorySize[ITEM_CATEGORIES];
@@ -125,6 +127,9 @@ item *protosystem::BalancedCreateItem (sLong MinPrice, sLong MaxPrice, sLong Req
   int PossibleCategories = 0;
   sLong TotalPossibility = 0;
   sLong database::*PartialPossibilitySumPtr;
+  //
+  if (!lvl) lvl = game::GetCurrentLevel();
+  //
   if (RequiredCategory == ANY_CATEGORY) {
     PartialPossibilitySumPtr = &database::PartialPossibilitySum;
     PossibleCategory[0] = ItemConfigData;
@@ -134,6 +139,7 @@ item *protosystem::BalancedCreateItem (sLong MinPrice, sLong MaxPrice, sLong Req
     PossibleCategories = 1;
   } else {
     PartialPossibilitySumPtr = &database::PartialCategoryPossibilitySum;
+    //
     for (sLong CategoryIndex = 0, Category = 1; CategoryIndex < ITEM_CATEGORIES; ++CategoryIndex, Category <<= 1) {
       if (Category & RequiredCategory) {
         PossibleCategory[PossibleCategories] = ItemCategoryData[CategoryIndex];
@@ -144,20 +150,25 @@ item *protosystem::BalancedCreateItem (sLong MinPrice, sLong MaxPrice, sLong Req
       }
     }
   }
-
+  //
   for (int c0 = 0;; ++c0) {
     for (int c1 = 0; c1 < BALANCED_CREATE_ITEM_ITERATIONS; ++c1) {
       sLong Rand = RAND_GOOD(TotalPossibility);
       int Category;
-      if (RequiredCategory == ANY_CATEGORY) Category = 0;
-      else {
+      //
+      if (RequiredCategory == ANY_CATEGORY) {
+        Category = 0;
+      } else {
         for (int c2 = 0;; ++c2) if (PartialCategoryPossibilitySum[c2] > Rand) { Category = c2; break; }
         if (Category) Rand -= PartialCategoryPossibilitySum[Category-1];
       }
+      //
       const database *const *ChosenCategory = PossibleCategory[Category];
       const database *ChosenDataBase;
-      if (ChosenCategory[0]->PartialCategoryPossibilitySum > Rand) ChosenDataBase = ChosenCategory[0];
-      else {
+      //
+      if (ChosenCategory[0]->PartialCategoryPossibilitySum > Rand) {
+        ChosenDataBase = ChosenCategory[0];
+      } else {
         sLong A = 0;
         sLong B = PossibleCategorySize[Category] - 1;
         for (;;) {
@@ -170,8 +181,42 @@ item *protosystem::BalancedCreateItem (sLong MinPrice, sLong MaxPrice, sLong Req
           }
         }
       }
+      //
       int Config = ChosenDataBase->Config;
+      //
       if ((!(ConfigFlags & NO_BROKEN) || !(Config & BROKEN)) && (!Polymorph || ChosenDataBase->IsPolymorphSpawnable)) {
+        // check allowed dungeons
+        {
+          truth allowed = false;
+          const fearray<int> &dlist = ChosenDataBase->AllowedDungeons;
+          //
+          //if (dlist[0] != ALL_DUNGEONS) fprintf(stderr, "(%u) [%d] [%d]\n", dlist.Size, dlist[0], game::GetCurrentDungeonIndex());
+          for (uInt f = 0; f < dlist.Size; ++f) {
+            if (dlist[f] == ALL_DUNGEONS || dlist[f] == game::GetCurrentDungeonIndex()) {
+              allowed = true;
+              break;
+            }
+          }
+          if (!allowed) continue;
+        }
+        // check allowed tags
+        if (lvl && lvl->GetLevelScript() && lvl->GetLevelScript()->GetTag() && !lvl->GetLevelScript()->GetTag()->IsEmpty()) {
+          const fearray<festring> &tlist = ChosenDataBase->LevelTags;
+          //
+          if (tlist.Size > 0) {
+            truth allowed = false;
+            cfestring *tag = lvl->GetLevelScript()->GetTag();
+            //
+            //fprintf(stderr, "looking for level tag [%s]\n", tag->CStr());
+            for (uInt f = 0; f < tlist.Size; ++f) {
+              //fprintf(stderr, " tag #%u: [%s]\n", f, tlist[f].CStr());
+              //if (tlist[f] == *tag) fprintf(stderr, "TAG HIT: [%s]\n", tag->CStr());
+              if (tlist[f] == "*" || tlist[f] == *tag) { allowed = true; break; }
+            }
+            if (!allowed) continue;
+          }
+        }
+        //
         item *Item = ChosenDataBase->ProtoType->Spawn(Config, SpecialFlags);
         truth GodOK = !RequiredGod || Item->GetAttachedGod() == RequiredGod;
         /* Optimization, GetTruePrice() may be rather slow */
