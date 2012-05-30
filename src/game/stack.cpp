@@ -488,6 +488,7 @@ void stack::GetVisibleItemsV (ccharacter *Viewer, std::vector<item *> &vi) {
 
 truth stack::HasSomethingFunny (ccharacter *Viewer, truth seeCorpses, truth seeUnstepped) {
   std::vector<item *> vi;
+  //
   GetVisibleItemsV(Viewer, vi);
   for (unsigned int f = 0; f < vi.size(); f++) {
     if (!vi[f]->CanBePickedUp()) continue;

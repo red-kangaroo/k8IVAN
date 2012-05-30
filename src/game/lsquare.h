@@ -271,6 +271,8 @@ class lsquare : public square
   bool TeleportAllFluidsAway();
   bool TeleportAllTrapsAway();
   void AddSpecialCursors();
+  inline truth IsGoSeen () const { return mGoSeen; }
+  inline void SetGoSeen (truth v) { mGoSeen = v; }
  protected:
   void ChangeLuminance(col24&, col24);
   void RemoveLuminance(col24&);
@@ -309,6 +311,7 @@ class lsquare : public square
   col24 SecondarySunLightEmitation;
   uShort LastExplosionID;
   uChar RoomIndex;
+  truth mGoSeen;
 };
 
 inline truth lsquare::IsDark() const

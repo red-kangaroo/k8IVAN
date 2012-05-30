@@ -50,8 +50,8 @@
 #include "confdef.h"
 #include "wmapset.h"
 
-#define SAVE_FILE_VERSION 128 // Increment this if changes make savefiles incompatible
-#define BONE_FILE_VERSION 113 // Increment this if changes make bonefiles incompatible
+#define SAVE_FILE_VERSION 129 // Increment this if changes make savefiles incompatible
+#define BONE_FILE_VERSION 114 // Increment this if changes make bonefiles incompatible
 
 #define LOADED    0
 #define NEW_GAME  1

@@ -729,13 +729,30 @@ void character::Move (v2 MoveTo, truth TeleportMove, truth Run) {
   if (!IsEnabled()) return;
   /* Test whether the player is stuck to something */
   if (!TeleportMove && !TryToUnStickTraps(MoveTo-GetPos())) return;
-  if (Run && !IsPlayer() && TorsoIsAlive() && (Stamina <= 10000 / Max(GetAttribute(LEG_STRENGTH), 1) ||
-      (!StateIsActivated(PANIC) && Stamina < MaxStamina >> 2)))
+  if (Run && !IsPlayer() && TorsoIsAlive() &&
+      (Stamina <= 10000/Max(GetAttribute(LEG_STRENGTH), 1) || (!StateIsActivated(PANIC) && Stamina < MaxStamina>>2))) {
     Run = false;
+  }
   RemoveTraps();
   if (GetBurdenState() != OVER_LOADED || TeleportMove) {
     lsquare *OldSquareUnder[MAX_SQUARES_UNDER];
+    //
     if (!game::IsInWilderness()) {
+     if (IsPlayer()) {
+       // idiotic code!
+       area *ca = GetSquareUnder()->GetArea();
+       //
+       for (int f = 0; f < 8; ++f) {
+         v2 np = GetPos()+game::GetMoveVector(f);
+         //
+         if (np.X >= 0 && np.Y >= 0 && np.X < ca->GetXSize() && np.Y < ca->GetYSize()) {
+           lsquare *sq = static_cast<lsquare *>(ca->GetSquare(np.X, np.Y));
+           //
+           sq->SetGoSeen(true);
+         }
+       }
+      }
+      //
       for (int c = 0; c < GetSquaresUnder(); ++c) OldSquareUnder[c] = GetLSquareUnder(c);
     }
     Remove();
@@ -743,11 +760,11 @@ void character::Move (v2 MoveTo, truth TeleportMove, truth Run) {
     if (!TeleportMove) {
       /* Multitiled creatures should behave differently, maybe? */
       if (Run) {
-        int ED = GetSquareUnder()->GetEntryDifficulty();
-        EditAP(-GetMoveAPRequirement(ED) >> 1);
-        EditNP(-24 * ED);
-        EditExperience(AGILITY, 125, ED << 7);
-        int Base = 10000;
+        int ED = GetSquareUnder()->GetEntryDifficulty(), Base = 10000;
+        //
+        EditAP(-GetMoveAPRequirement(ED)>>1);
+        EditNP(-24*ED);
+        EditExperience(AGILITY, 125, ED<<7);
         if (IsPlayer()) {
           switch (GetHungerState()) {
             case SATIATED: Base = 11000; break;
@@ -755,12 +772,13 @@ void character::Move (v2 MoveTo, truth TeleportMove, truth Run) {
             case OVER_FED: Base = 15000; break;
           }
         }
-        EditStamina(-Base / Max(GetAttribute(LEG_STRENGTH), 1), true);
+        EditStamina(-Base/Max(GetAttribute(LEG_STRENGTH), 1), true);
       } else {
         int ED = GetSquareUnder()->GetEntryDifficulty();
+        //
         EditAP(-GetMoveAPRequirement(ED));
-        EditNP(-12 * ED);
-        EditExperience(AGILITY, 75, ED << 7);
+        EditNP(-12*ED);
+        EditExperience(AGILITY, 75, ED<<7);
       }
     }
     if (IsPlayer()) ShowNewPosInfo();
@@ -769,6 +787,7 @@ void character::Move (v2 MoveTo, truth TeleportMove, truth Run) {
   } else {
     if (IsPlayer()) {
       cchar *CrawlVerb = StateIsActivated(LEVITATION) ? "float" : "crawl";
+      //
       ADD_MESSAGE("You try very hard to %s forward. But your load is too heavy.", CrawlVerb);
     }
     EditAP(-1000);
@@ -2638,6 +2657,7 @@ cv2 character::GetDiagonalForDirs (int moveDir, int newDir) const {
   ABORT("wtf in character::GetDiagonalForDirs()");
 }
 
+
 /*
  * try to walk in the given dir
  * can do two steps without a turn and still in corridor?
@@ -2676,7 +2696,11 @@ int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir, truth *m
           }
         }
         dirlogf("CheckCorridorMove: can't do second step; moveDir=%d; newDir=%d\n", moveDir, newDir);
-        if (newDir < 0) ABORT("wtd in character::CheckCorridorMove()");
+        if (newDir < 0) {
+          // dead end, will stop
+          //ABORT("wtd in character::CheckCorridorMove()");
+          return moveDir;
+        }
         // we should do diagonal move
         moveVector = GetDiagonalForDirs(moveDir, newDir);
         // if this is 'one-tile-turn', we should not change the direction to newDir
@@ -2760,8 +2784,8 @@ void character::GoOn (go *Go, truth FirstStep) {
     // state modified the direction, move and stop
     dirlogf("move affected by state\n");
     if (TryMove(MoveVector, true, game::PlayerIsRunning())) {
-      if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
       game::DrawEverything();
+      if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
     }
     Go->Terminate(false);
     return;
@@ -2815,6 +2839,7 @@ void character::GoOn (go *Go, truth FirstStep) {
   dirlogf("trying to make the move\n");
   // stop near the dangerous square (fuckin' copypasta)
   Squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
+  //
   for (int c = 0; c < Squares; ++c) {
     if ((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) ||
         MoveToSquare[c]->IsDangerous(this)) {
@@ -2831,11 +2856,37 @@ void character::GoOn (go *Go, truth FirstStep) {
   //
   // stop on the square with something interesting
   if (!doStop) {
-    for (int c = 0; c < Squares; ++c) {
-      if (MoveToSquare[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
-        dirlogf(" stepped on something interesting\n");
-        doStop = true;
-        break;
+    // idiotic code!
+    area *ca = GetSquareUnder()->GetArea();
+    v2 npos = GetPos()+MoveVector;
+    //
+    for (int f = 0; f < MDIR_STAND; ++f) {
+      v2 np = npos+game::GetMoveVector(f);
+      //
+      if (np.X >= 0 && np.Y >= 0 && np.X < ca->GetXSize() && np.Y < ca->GetYSize()) {
+        lsquare *sq = static_cast<lsquare *>(ca->GetSquare(np.X, np.Y));
+        olterrain *terra = sq->GetOLTerrain();
+        //
+        if (terra) {
+          dirlogf("** OK terra at %d; door: %s; seen: %s\n", f, (terra->IsDoor() ? "yes" : "no"), (sq->IsGoSeen() ? "yes" : "no"));
+          if (terra->IsDoor()) {
+            if (ivanconfig::GetStopOnSeenDoors() || !sq->IsGoSeen()) {
+              dirlogf(" *** stop near the door\n");
+              doStop = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+    //
+    if (!doStop) {
+      for (int c = 0; c < Squares; ++c) {
+        if (MoveToSquare[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
+          dirlogf(" stepped near something interesting\n");
+          doStop = true;
+          break;
+        }
       }
     }
   }
@@ -2847,8 +2898,8 @@ void character::GoOn (go *Go, truth FirstStep) {
   if (!moveOk || BeginSquare == GetSquareUnder() || (CurrentRoomIndex && (OldRoomIndex != CurrentRoomIndex))) {
     dirlogf(" stopped\n");
     if (moveOk) {
-      if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
       game::DrawEverything();
+      if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
     }
     Go->Terminate(false);
     return;
@@ -2859,8 +2910,8 @@ void character::GoOn (go *Go, truth FirstStep) {
     Go->SetIsWalkingInOpen(!IsInCorridor(moveDir));
   }
   //
-  if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
   game::DrawEverything();
+  if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
   if (doStop) Go->Terminate(false);
 }
 

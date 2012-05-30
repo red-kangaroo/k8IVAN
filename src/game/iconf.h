@@ -42,6 +42,7 @@ public:
   static int GetGoingDelay () { return GoingDelay.Value; }
   static truth GetStopOnCorpses () { return StopOnCorpses.Value; }
   static truth GetStopOnSeenItems () { return StopOnSeenItems.Value; }
+  static truth GetStopOnSeenDoors () { return StopOnSeenDoors.Value; }
   static truth GetConfirmScrollReading () { return ConfirmScrollReading.Value; }
   static truth GetUseMaximumCompression () { return UseMaximumCompression.Value; }
   static truth GetShowFullItemDesc () { return ShowFullItemDesc.Value; }
@@ -103,6 +104,7 @@ private:
   static numberoption GoingDelay;
   static truthoption StopOnCorpses;
   static truthoption StopOnSeenItems;
+  static truthoption StopOnSeenDoors;
   static truthoption ConfirmScrollReading;
   static truthoption UseMaximumCompression;
   static col24 ContrastLuminance;

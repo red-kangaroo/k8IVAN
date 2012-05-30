@@ -582,6 +582,7 @@ void lsquare::Save(outputfile& SaveFile) const
 {
   Stack->Save(SaveFile); // This must be before square::Save! (Note: This comment is years old. It's probably obsolete)
   square::Save(SaveFile);
+  SaveFile << mGoSeen;
   SaveFile << GLTerrain << OLTerrain;
   SaveFile << Emitter << SunEmitter;
   SaveFile << Emitation << Engraved << Luminance;
@@ -600,6 +601,7 @@ void lsquare::Load(inputfile& SaveFile)
   Stack->Load(SaveFile); // This must be before square::Load! (Note: This comment is years old. It's probably obsolete)
   Stack->SetMotherSquare(this);
   square::Load(SaveFile);
+  SaveFile >> mGoSeen;
   SaveFile >> GLTerrain >> OLTerrain;
   SaveFile >> Emitter >> SunEmitter;
   SaveFile >> Emitation >> Engraved >> Luminance;
