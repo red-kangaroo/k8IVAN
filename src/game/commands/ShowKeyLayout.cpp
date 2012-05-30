@@ -6,7 +6,7 @@ COMMAND(ShowKeyLayout) {
   List.AddDescription(CONST_S(""));
   List.AddDescription(CONST_S("Key       Description"));
   for (int c = 0; (cmd = commandsystem::GetCommand(c)); ++c) {
-    if (!cmd->IsWizardModeFunction()) {
+    if (!cmd->IsWizardModeFunction() && (!game::WizardModeIsActive() && cmd->GetName() != "WizardMode")) {
       Buffer.Empty();
       Buffer << cmd->GetKey();
       Buffer.Resize(10);
