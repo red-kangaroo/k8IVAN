@@ -2513,8 +2513,8 @@ truth character::MoveRandomlyInRoom () {
 }
 
 
-#define dirlogf(...)  do { fprintf(stderr, __VA_ARGS__); } while (0)
-//#define dirlogf(...)  ((void)0)
+//#define dirlogf(...)  do { fprintf(stderr, __VA_ARGS__); } while (0)
+#define dirlogf(...)  ((void)0)
 
 
 /*
@@ -2647,8 +2647,10 @@ cv2 character::GetDiagonalForDirs (int moveDir, int newDir) const {
  *  go in non-ortho dir, set prevdir to last ortho-dir from corridor tracing
  */
 // only for ortho-dirs; assume that the char is in corridor
-int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir) const {
+int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir, truth *markAsTurn) const {
   v2 ps1(pos+(moveVector = game::GetMoveVector(moveDir)));
+  //
+  if (markAsTurn) *markAsTurn = true;
   //
   if (IsPassableSquare(ps1)) {
     // we can do first step in the given dir
@@ -2681,6 +2683,17 @@ int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir) const {
         if (IsPassableSquare(ps1+game::GetMoveVector(newDir)+game::GetMoveVector(moveDir))) {
           // yes, this is 'one-tile-turn'
           dirlogf("CheckCorridorMove: one-tile-turn, don't change dir\n");
+          /* 'g'o bug:
+           *
+           * ####.######
+           * ####*......
+           * ..@..######
+           * ######
+           *
+           * 'g'o right: should stop at '*', but it just goes right
+           */
+          if (markAsTurn) *markAsTurn = IsInCorridor(ps1+game::GetMoveVector(newDir), newDir);
+          //
           newDir = moveDir;
         }
         return newDir;
@@ -2754,7 +2767,7 @@ void character::GoOn (go *Go, truth FirstStep) {
     return;
   }
   //
-  truth doStop = false;
+  truth doStop = false, markAsTurn = false;
   //
   if (!FirstStep) {
     // continuous walking
@@ -2785,7 +2798,7 @@ void character::GoOn (go *Go, truth FirstStep) {
        // ok, we can do this move
     } else {
       // ortho-walking thru the corridor
-      int newDir = CheckCorridorMove(MoveVector, GetPos(), moveDir);
+      int newDir = CheckCorridorMove(MoveVector, GetPos(), moveDir, &markAsTurn);
       //
       if (newDir < 0) {
         // ah, something weird; stop right here
@@ -2827,7 +2840,7 @@ void character::GoOn (go *Go, truth FirstStep) {
     }
   }
   //
-  Go->SetPrevWasTurn(MoveVector.X && MoveVector.Y); // diagonal move?
+  Go->SetPrevWasTurn(markAsTurn && MoveVector.X && MoveVector.Y); // diagonal move?
   //
   truth moveOk = TryMove(MoveVector, true, game::PlayerIsRunning());
   //
