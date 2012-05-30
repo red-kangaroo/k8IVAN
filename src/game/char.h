@@ -438,11 +438,14 @@ public:
   virtual void SwitchToDig (item *, v2) {}
   virtual void SetRightWielded (item *) {}
   virtual void SetLeftWielded (item *) {}
-  truth IsPassableSquare (cv2 xy) const { return IsPassableSquare(xy.X, xy.Y); }
   truth IsPassableSquare (int x, int y) const;
-  truth IsInCorridor () const;
-  truth IsInCorridor (int x, int y) const;
-  truth IsInCorridor (const v2 dir) const;
+  truth IsPassableSquare (cv2 xy) const { return IsPassableSquare(xy.X, xy.Y); }
+  truth IsInCorridor (int x, int y, int moveDir) const;
+  inline truth IsInCorridor (cv2 pos, int moveDir) const { return IsInCorridor(pos.X, pos.Y, moveDir); }
+  inline truth IsInCorridor (int moveDir) const { return IsInCorridor(GetPos(), moveDir); }
+  void CountPossibleMoveDirs (cv2 pos, int *odirs, int *ndirs, int exclideDir=-1) const;
+  int CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir) const; // -1: not in corridor; return new moveDir and moveVector
+  cv2 GetDiagonalForDirs (int moveDir, int newDir) const;
   void GoOn (go *, truth = false);
   virtual truth CheckKick () const;
   virtual int OpenMultiplier () const { return 2; }
@@ -1258,6 +1261,8 @@ public:
   trapdata *TrapData;
   expmodifiermap ExpModifierMap;
   int CounterToMindWormHatch;
+  //
+  int mPrevMoveDir;
 };
 
 

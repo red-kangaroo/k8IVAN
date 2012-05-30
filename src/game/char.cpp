@@ -2513,288 +2513,322 @@ truth character::MoveRandomlyInRoom () {
 }
 
 
-truth character::IsPassableSquare (int x, int y) const {
-  area *ca = GetSquareUnder()->GetArea();
-  if (x < 0 || y < 0 || x >= ca->GetXSize() || y >= ca->GetYSize()) return false;
-  lsquare *sq = static_cast<lsquare *>(ca->GetSquare(x, y));
-  return sq && CanMoveOn(sq);
-}
+#define dirlogf(...)  do { fprintf(stderr, __VA_ARGS__); } while (0)
+//#define dirlogf(...)  ((void)0)
 
 
-truth character::IsInCorridor () const {
-  return IsInCorridor(GetPos().X, GetPos().Y);
-}
+/*
+ * 0: up-left
+ * 1: up
+ * 2: up-right
+ * 3: left
+ * 4: right
+ * 5: down-left
+ * 6: down
+ * 7: down-right
+ * 8: stand still
+ */
+enum {
+  MDIR_UP_LEFT,
+  MDIR_UP,
+  MDIR_UP_RIGHT,
+  MDIR_LEFT,
+  MDIR_RIGHT,
+  MDIR_DOWN_LEFT,
+  MDIR_DOWN,
+  MDIR_DOWN_RIGHT,
+  MDIR_STAND
+};
 
 
-static const int revDir[8] = { 7, 6, 5, 4, 3, 3, 1, 0 };
+static const int revDir[8] = { MDIR_DOWN_RIGHT, MDIR_DOWN, MDIR_DOWN_LEFT, MDIR_RIGHT, MDIR_LEFT, MDIR_UP_RIGHT, MDIR_UP, MDIR_UP_LEFT };
 static const bool orthoDir[8] = { false, true, false, true, true, false, true, false };
 
 
-truth character::IsInCorridor (int x, int y) const {
-  int od = 0, nod = 0;
-  //
-  for (int f = 0; f < 8; ++f) {
-    v2 mv(game::GetMoveVector(f));
+// only for ortho moveDir
+static inline truth IsDirExcluded (int moveDir, int dir) {
+  if (moveDir == dir) return true;
+  switch (moveDir) {
+    case MDIR_UP: return (dir == MDIR_UP_LEFT || dir == MDIR_UP_RIGHT);
+    case MDIR_LEFT: return (dir == MDIR_UP_LEFT || dir == MDIR_DOWN_LEFT);
+    case MDIR_RIGHT: return (dir == MDIR_UP_RIGHT || dir == MDIR_DOWN_RIGHT);
+    case MDIR_DOWN: return (dir == MDIR_DOWN_LEFT || dir == MDIR_DOWN_RIGHT);
+  }
+  return false;
+}
+
+
+truth character::IsPassableSquare (int x, int y) const {
+  if (x >= 0 && y >= 0) {
+    area *ca = GetSquareUnder()->GetArea();
+    lsquare *sq;
     //
-    if (IsPassableSquare(x+mv.X, y+mv.Y)) {
-      if (orthoDir[f]) ++od; else ++nod;
+    if (x >= ca->GetXSize() || y >= ca->GetYSize()) return false;
+    sq = static_cast<lsquare *>(ca->GetSquare(x, y));
+    return sq && CanMoveOn(sq);
+  }
+  return false;
+}
+
+
+void character::CountPossibleMoveDirs (cv2 pos, int *odirs, int *ndirs, int exclideDir) const {
+  if (odirs) *odirs = 0;
+  if (ndirs) *ndirs = 0;
+  for (int f = 0; f < 8; ++f) {
+    if (!IsDirExcluded(exclideDir, f)) {
+      if (IsPassableSquare(pos+game::GetMoveVector(f))) {
+        if (orthoDir[f]) {
+          if (odirs) ++(*odirs);
+        } else {
+          if (ndirs) ++(*ndirs);
+        }
+      }
     }
   }
-  return (od <= 2 && nod <= 1);
-/*
-  if (!IsPassableSquare(x, y-1) && !IsPassableSquare(x, y+1)) return true;
-  if (!IsPassableSquare(x-1, y) && !IsPassableSquare(x+1, y)) return true;
-  if (IsPassableSquare(x, y-1) && IsPassableSquare(x, y+1) &&
-      (IsPassableSquare(x-1, y) || IsPassableSquare(x+1, y))) return false;
-  if (IsPassableSquare(x-1, y) && IsPassableSquare(x+1, y) &&
-      (IsPassableSquare(x, y-1) || IsPassableSquare(x, y+1))) return false;
-  if (!IsPassableSquare(x-1, y-1) && !IsPassableSquare(x+1, y-1) &&
-      !IsPassableSquare(x-1, y+1) && !IsPassableSquare(x+1, y+1)) return true;
-  return false;
-*/
-}
-
-
-truth character::IsInCorridor (const v2 dir) const {
-  v2 nxy = GetPos()+dir;
-  return IsInCorridor(nxy.X, nxy.Y);
 }
 
 
 /*
-truth character::CheckForCorridor (v2 pos, int steps, int dir) {
-  while (steps > 0) {
-    v2 np = pos+game::GetMoveVector(dir);
+ * in corridor (for orto-dirs):
+ * count dirs excluding ortho-dir we going:
+ * if there is one or less ortho-dirs and one or less non-ortho-dirs, we are in corridor
+ */
+// only for ortho-dirs
+truth character::IsInCorridor (int x, int y, int moveDir) const {
+  int od = 0, nd = 0;
+  //
+  dirlogf("IsInCorridor(%d,%d,%d)\n", x, y, moveDir);
+  // reverse moveDir
+  moveDir = (moveDir >= 0 && moveDir < MDIR_STAND ? revDir[moveDir] : -1);
+  dirlogf(" reversedDir: %d\n", moveDir);
+  CountPossibleMoveDirs(v2(x, y), &od, &nd, moveDir);
+  dirlogf(" possibleDirs: (%d:%d)\n", od, nd);
+  dirlogf(" IsInCorridor: %s\n", ((od <= 1 && nd <= 1) ? "yes" : "no"));
+  return (od <= 1 && nd <= 1);
+}
+
+
+cv2 character::GetDiagonalForDirs (int moveDir, int newDir) const {
+  switch (moveDir) {
+    case MDIR_UP:
+      switch (newDir) {
+        case MDIR_LEFT: return game::GetMoveVector(MDIR_UP_LEFT);
+        case MDIR_RIGHT: return game::GetMoveVector(MDIR_UP_RIGHT);
+      }
+      break;
+    case MDIR_DOWN:
+      switch (newDir) {
+        case MDIR_LEFT: return game::GetMoveVector(MDIR_DOWN_LEFT);
+        case MDIR_RIGHT: return game::GetMoveVector(MDIR_DOWN_RIGHT);
+      }
+      break;
+    case MDIR_LEFT:
+      switch (newDir) {
+        case MDIR_UP: return game::GetMoveVector(MDIR_UP_LEFT);
+        case MDIR_DOWN: return game::GetMoveVector(MDIR_DOWN_LEFT);
+      }
+      break;
+    case MDIR_RIGHT:
+      switch (newDir) {
+        case MDIR_UP: return game::GetMoveVector(MDIR_UP_RIGHT);
+        case MDIR_DOWN: return game::GetMoveVector(MDIR_DOWN_RIGHT);
+      }
+      break;
   }
-  return true;
+  ABORT("wtf in character::GetDiagonalForDirs()");
 }
-*/
 
-//#define dirlogf(...)  do { fprintf(stderr, __VA_ARGS__); } while (0)
-#define dirlogf(...)  ((void)0)
+/*
+ * try to walk in the given dir
+ * can do two steps without a turn and still in corridor?
+ * yes:
+ *  just go
+ * no:
+ *  go in non-ortho dir, set prevdir to last ortho-dir from corridor tracing
+ */
+// only for ortho-dirs; assume that the char is in corridor
+int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir) const {
+  v2 ps1(pos+(moveVector = game::GetMoveVector(moveDir)));
+  //
+  if (IsPassableSquare(ps1)) {
+    // we can do first step in the given dir
+    // check if we will be in corridor after it
+    dirlogf("CheckCorridorMove: can do first step\n");
+    if (IsInCorridor(ps1, moveDir)) {
+      // check second step
+      v2 ps2(ps1+moveVector);
+      //
+      dirlogf("CheckCorridorMove: still in corridor after the first step\n");
+      if (IsPassableSquare(ps2)) {
+        // can do second step
+        dirlogf("CheckCorridorMove: can do second step\n");
+        return moveDir;
+      } else {
+        // can't do second step; but we still in corridor, so we should make a turn
+        int newDir = -1; // direction to turn
+        //
+        for (int f = 0; f < MDIR_STAND; ++f) {
+          if (f != moveDir && orthoDir[f] && f != revDir[moveDir] && IsPassableSquare(ps1+game::GetMoveVector(f))) {
+            newDir = f;
+            break;
+          }
+        }
+        dirlogf("CheckCorridorMove: can't do second step; moveDir=%d; newDir=%d\n", moveDir, newDir);
+        if (newDir < 0) ABORT("wtd in character::CheckCorridorMove()");
+        // we should do diagonal move
+        moveVector = GetDiagonalForDirs(moveDir, newDir);
+        // if this is 'one-tile-turn', we should not change the direction to newDir
+        if (IsPassableSquare(ps1+game::GetMoveVector(newDir)+game::GetMoveVector(moveDir))) {
+          // yes, this is 'one-tile-turn'
+          dirlogf("CheckCorridorMove: one-tile-turn, don't change dir\n");
+          newDir = moveDir;
+        }
+        return newDir;
+      }
+    }
+    dirlogf("CheckCorridorMove: can do one or two steps; move forward\n");
+    // can do one or two steps; just move forward
+    return moveDir;
+  }
+  dirlogf("CheckCorridorMove: dead end\n");
+  // can't go, assume invalid direction
+  return -1;
+}
 
 
 void character::GoOn (go *Go, truth FirstStep) {
-  //dirlogf("corridor: %s\n", IsInCorridor() ? "tan" : "ona");
-  if (FirstStep) Go->SetIsWalkingInOpen(!IsInCorridor());
+  dirlogf("=== character::GoOn; dir=%d; pos=(%d,%d) ===\n", Go->GetDirection(), GetPos().X, GetPos().Y);
+  if (FirstStep) {
+    dirlogf("FirstStep\n");
+    mPrevMoveDir = Go->GetDirection();
+    Go->SetIsWalkingInOpen(!IsInCorridor(Go->GetDirection()));
+  }
   //
   v2 MoveVector = ApplyStateModification(game::GetMoveVector(Go->GetDirection()));
-  int moveDir;
-  //int moveDir = game::MoveVectorToDirection(MoveVector);
-  //int moveDir = (game::MoveVectorToDirection(MoveVector) != Go->GetDirection() ? game::MoveVectorToDirection(MoveVector) : Go->GetDirection());
-  //int moveDir = Go->GetDirection();
   lsquare *MoveToSquare[MAX_SQUARES_UNDER];
   int Squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
-  //
-  if (Go->prevWasTurn()) {
-    moveDir = Go->GetDirection();
-  } else {
-    moveDir = game::MoveVectorToDirection(MoveVector);
-  }
+  int moveDir = game::MoveVectorToDirection(MoveVector);
   //
   if (!Squares || !CanMoveOn(MoveToSquare[0])) {
-  dirlogf("gostop: 000 (dir=%d)\n", game::MoveVectorToDirection(MoveVector));
+    dirlogf("just can't move\n");
     Go->Terminate(false);
     return;
   }
   //
-  if (!FirstStep && /*!Go->prevWasTurn() &&*/ !Go->IsWalkingInOpen() && !IsInCorridor(MoveVector)) {
-    dirlogf("moved to open place!\n");
-    Go->Terminate(false);
-    return;
+  if (!FirstStep) {
+    if (Go->IsWalkingInOpen() != !IsInCorridor(GetPos()+MoveVector, moveDir)) {
+      dirlogf("moved to/from open place\n");
+      Go->Terminate(false);
+      return;
+    }
+    //
+    uInt OldRoomIndex = GetLSquareUnder()->GetRoomIndex();
+    uInt CurrentRoomIndex = MoveToSquare[0]->GetRoomIndex();
+    //
+    if (OldRoomIndex && (CurrentRoomIndex != OldRoomIndex)) {
+      // room about to be changed, stop here
+      dirlogf("room about to be changed\n");
+      Go->Terminate(false);
+      return;
+    }
   }
-  //
-  uInt OldRoomIndex = GetLSquareUnder()->GetRoomIndex();
-  uInt CurrentRoomIndex = MoveToSquare[0]->GetRoomIndex();
-  //
-  if ((OldRoomIndex && (CurrentRoomIndex != OldRoomIndex)) && !FirstStep) {
-    // room changed, stop here
-    dirlogf("gostop: 001\n");
-    Go->Terminate(false);
-    return;
-  }
-  //
+  // stop near the dangerous square
   for (int c = 0; c < Squares; ++c) {
     if ((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) ||
         MoveToSquare[c]->IsDangerous(this)) {
-      dirlogf("gostop: 002\n");
+      dirlogf("sense the danger\n");
       Go->Terminate(false);
       return;
     }
+    //
   }
   //
-  /*
-   * 0: up-left
-   * 1: up
-   * 2: up-right
-   * 3: left
-   * 4: right
-   * 5: down-left
-   * 6: down
-   * 7: down-right
-   * 8: stand still
-   */
-  //
-  int OKDirectionsCounter = 0, odc = 0;
-  //
-  for (int d = 0; d < GetNeighbourSquares(); ++d) {
-    lsquare *Square = GetNeighbourLSquare(d);
-    //
-    if (Square && CanMoveOn(Square)) ++OKDirectionsCounter;
-  }
-  //
-  int nDir = -1;
-  //
-  dirlogf("moveDir=%d; ortho=%s; inOpen=%s\n", moveDir, (orthoDir[moveDir] ? "yes" : "no"), (Go->IsWalkingInOpen() ? "yes" : "no"));
-  dirlogf("OKDirectionsCounter=%d\n", OKDirectionsCounter);
-  if (orthoDir[moveDir] && !Go->IsWalkingInOpen()) {
-    // check if there is dead end forward and we have only one turn
-    //FIXME: will this work on the edge?
-    v2 nxy = GetPos()+MoveVector; // next
-    v2 nxyff = nxy+MoveVector; // next-next
-    //
-    odc = 0; // # of allowed dirs
-    dirlogf("(%d,%d) (%d,%d) (%d,%d)\n", GetPos().X, GetPos().Y, nxy.X, nxy.Y, nxyff.X, nxyff.Y);
-    dirlogf("checking for turn: sqf=%s, sqff=%s\n",
-      (IsPassableSquare(nxy) ? "yes" : "no"),
-      (IsPassableSquare(nxyff) ? "yes" : "no"));
-    if (IsPassableSquare(nxy) && !IsPassableSquare(nxyff)) {
-      // dead end found; this can be turn
-      // check only ortho dirs, ignore forward and backward
-      dirlogf("TURN!\n");
-      for (int d = 0; d < GetNeighbourSquares(); ++d) {
-        if (d == moveDir || d == revDir[moveDir] || !orthoDir[d]) continue;
-        if (IsPassableSquare(nxy+game::GetMoveVector(d))) { nDir = d; ++odc; }
-      }
+  if (moveDir != Go->GetDirection()) {
+    // state modified the direction, move and stop
+    dirlogf("move affected by state\n");
+    if (TryMove(MoveVector, true, game::PlayerIsRunning())) {
+      if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
+      game::DrawEverything();
     }
-    //dirlogf("*: %d; nDir: %d\n", odc, nDir);
+    Go->Terminate(false);
+    return;
   }
   //
-  bool doStop = false;
-  //
-  dirlogf("odc=%d\n", odc);
-  if (!Go->IsWalkingInOpen()) {
-    // in the corridor
-    //dirlogf("dc: %d\n", OKDirectionsCounter);
-    if (Go->prevWasTurn()) {
-      dirlogf("PrevWasTurn!\n");
-      Go->SetPrevWasTurn(false);
-    } else if (odc == 1) {
-      // if we will step on something, stop
-      dirlogf("ODC1\n");
-      for (int d = 0; d < GetNeighbourSquares(); ++d) {
-        lsquare *Square = GetNeighbourLSquare(d);
-        //
-        if (Square && Square->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
-          //newDir = -1;
-          doStop = true;
-          break;
-        }
-      }
-      // follow the turn; 3: back, forward and turn
-      if (!doStop) {
-        int newDir = -1;
-        //
-        switch (nDir) {
-          case 1: // up
-            if (moveDir == 3) newDir = 0;
-            else if (moveDir == 4) newDir = 2;
-            break;
-          case 3: // left
-            if (moveDir == 1) newDir = 0;
-            else if (moveDir == 6) newDir = 5;
-            break;
-          case 4: // right
-            if (moveDir == 1) newDir = 2;
-            else if (moveDir == 6) newDir = 7;
-            break;
-          case 6: // down
-            if (moveDir == 3) newDir = 5;
-            else if (moveDir == 4) newDir = 7;
-            break;
-        }
-        //if (newDir < 0) ABORT("go error");
-        if (newDir < 0) { Go->Terminate(false); return; }
-        //
-        lsquare *Square = GetNeighbourLSquare(newDir);
-        //
-        if (Square && CanMoveOn(Square)) {
-          // fuckin' copypasta
-          MoveVector = ApplyStateModification(game::GetMoveVector(newDir));
-          int squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
-          //
-          if (squares) {
-            for (int c = 0; c < squares; ++c) {
-              if ((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) ||
-                  MoveToSquare[c]->IsDangerous(this)) {
-                newDir = -1;
-                break;
-              }
-            }
-          } else {
-            newDir = -1;
-          }
-        }
-        if (newDir < 0) { Go->Terminate(false); return; }
-        newDir = nDir;
-        dirlogf("newDir: %d\n", newDir);
-        // 'one-tile-offset' case
-        Go->SetPrevWasTurn(true);
-        {
-          v2 nxy = GetPos()+MoveVector; // next
-          v2 nxyff = nxy+game::GetMoveVector(moveDir); // next-next
-          //lsquare *sqf = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxy));
-          //lsquare *sqff = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxyff));
-          //
-          if (IsPassableSquare(nxyff)) {
-            // don't change direction, this is just a simple 'one-tile-offset'
-            newDir = moveDir;//Go->GetDirection();
-            //Go->SetPrevWasTurn(false);
-            dirlogf("one-tile-offset; newDir=%d\n", newDir);
-          } else {
-            // this is the real turn
-            dirlogf("real turn\n");
-          }
-        }
-        //
-        Go->SetDirection(newDir);
-        /*
-        v2 nxyf = GetPos()+MoveVector+game::GetMoveVector(newDir);
-        v2 nxyff = nxyf+game::GetMoveVector(newDir);
-        lsquare *sqf = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxyf));
-        lsquare *sqff = static_cast<lsquare *>(GetSquareUnder()->GetArea()->GetSquare(nxyff));
-        if (sqf && CanMoveOn(sqf)) {
-          Go->SetPrevWasTurn(sqff && CanMoveOn(sqff));
-        }
-        */
-      }
-    } else if (!IsInCorridor()) {
-      dirlogf("OutOfCorridor\n");
-      Go->Terminate(false);
-      return;
+  if (!FirstStep) {
+    // continuous walking
+    if (Go->IsWalkingInOpen() || !orthoDir[moveDir]) {
+      // walking in open space or diagonal walking
+      v2 newPos(GetPos()+MoveVector);
+      int ood, ond, nod, nnd;
+      /*
+       * open: stop if # of possible dirs in next step != # of possible dirs in current step
+       *       (or next step is in corridor)
+       */
+       dirlogf("open walking\n");
+       if (IsInCorridor(newPos, moveDir)) {
+         // trying to enter the corridor, stop right here
+         dirlogf("entering the corridor\n");
+         Go->Terminate(false);
+         return;
+       }
+       CountPossibleMoveDirs(GetPos(), &ood, &ond);
+       CountPossibleMoveDirs(newPos, &nod, &nnd);
+       if (ood != ond || nod != nnd) {
+         // # of directions to walk to changed, stop right here
+         dirlogf("# of directions changed from (%d:%d) to (%d%d)\n", ood, ond, nod, nnd);
+         Go->Terminate(false);
+         return;
+       }
+       // ok, we can do this move
     } else {
-      dirlogf("just moving\n");
+      // ortho-walking thru the corridor
+      int newDir = CheckCorridorMove(MoveVector, GetPos(), moveDir);
+      //
+      if (newDir < 0) {
+        // ah, something weird; stop right here
+        Go->Terminate(false);
+        return;
+      }
+      Go->SetDirection(newDir); // perform possible turn
     }
   } else {
-    Go->SetPrevWasTurn(false);
-    //if (OKDirectionsCounter <= 2) Go->SetIsWalkingInOpen(false);
-    Go->SetIsWalkingInOpen(!IsInCorridor());
+    // first step, just do it
+  }
+  // now try to perform the move
+  //
+  dirlogf("trying to make the move\n");
+  // stop near the dangerous square (fuckin' copypasta)
+  Squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
+  for (int c = 0; c < Squares; ++c) {
+    if ((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) ||
+        MoveToSquare[c]->IsDangerous(this)) {
+      dirlogf(" danger!\n");
+      Go->Terminate(false);
+      return;
+    }
+    //
   }
   //
+  truth doStop = false;
   square *BeginSquare = GetSquareUnder();
+  uInt OldRoomIndex = GetLSquareUnder()->GetRoomIndex();
+  uInt CurrentRoomIndex = MoveToSquare[0]->GetRoomIndex();
   //
-  if (!doStop) {
-    for (int c = 0; c < Squares; ++c) {
-      if (MoveToSquare[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
-        doStop = true;
-        break;
-      }
+  // stop on the square with something interesting
+  for (int c = 0; c < Squares; ++c) {
+    if (MoveToSquare[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
+      dirlogf(" stepped on something interesting\n");
+      doStop = true;
+      break;
     }
   }
+  //
+  //Go->SetPrevWasTurn(false);
   //
   truth moveOk = TryMove(MoveVector, true, game::PlayerIsRunning());
   //
   if (!moveOk || BeginSquare == GetSquareUnder() || (CurrentRoomIndex && (OldRoomIndex != CurrentRoomIndex))) {
+    dirlogf(" stopped\n");
     if (moveOk) {
       if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
       game::DrawEverything();
@@ -2803,13 +2837,9 @@ void character::GoOn (go *Go, truth FirstStep) {
     return;
   }
   //
-  if (doStop/* || GetStackUnder()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())*/) {
-    Go->Terminate(false);
-  }
-  //
   if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
-  //
   game::DrawEverything();
+  if (doStop) Go->Terminate(false);
 }
 
 
