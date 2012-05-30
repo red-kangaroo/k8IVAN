@@ -2716,7 +2716,7 @@ void character::GoOn (go *Go, truth FirstStep) {
   }
   //
   if (!FirstStep) {
-    if (Go->IsWalkingInOpen() != !IsInCorridor(GetPos()+MoveVector, moveDir)) {
+    if (!Go->GetPrevWasTurn() && Go->IsWalkingInOpen() != !IsInCorridor(GetPos(), moveDir)) {
       dirlogf("moved to/from open place\n");
       Go->Terminate(false);
       return;
@@ -2754,6 +2754,8 @@ void character::GoOn (go *Go, truth FirstStep) {
     return;
   }
   //
+  truth doStop = false;
+  //
   if (!FirstStep) {
     // continuous walking
     if (Go->IsWalkingInOpen() || !orthoDir[moveDir]) {
@@ -2776,8 +2778,9 @@ void character::GoOn (go *Go, truth FirstStep) {
        if (ood != ond || nod != nnd) {
          // # of directions to walk to changed, stop right here
          dirlogf("# of directions changed from (%d:%d) to (%d%d)\n", ood, ond, nod, nnd);
-         Go->Terminate(false);
-         return;
+         //Go->Terminate(false);
+         //return;
+         doStop = true;
        }
        // ok, we can do this move
     } else {
@@ -2809,21 +2812,22 @@ void character::GoOn (go *Go, truth FirstStep) {
     //
   }
   //
-  truth doStop = false;
   square *BeginSquare = GetSquareUnder();
   uInt OldRoomIndex = GetLSquareUnder()->GetRoomIndex();
   uInt CurrentRoomIndex = MoveToSquare[0]->GetRoomIndex();
   //
   // stop on the square with something interesting
-  for (int c = 0; c < Squares; ++c) {
-    if (MoveToSquare[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
-      dirlogf(" stepped on something interesting\n");
-      doStop = true;
-      break;
+  if (!doStop) {
+    for (int c = 0; c < Squares; ++c) {
+      if (MoveToSquare[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
+        dirlogf(" stepped on something interesting\n");
+        doStop = true;
+        break;
+      }
     }
   }
   //
-  //Go->SetPrevWasTurn(false);
+  Go->SetPrevWasTurn(MoveVector.X && MoveVector.Y); // diagonal move?
   //
   truth moveOk = TryMove(MoveVector, true, game::PlayerIsRunning());
   //
@@ -2835,6 +2839,11 @@ void character::GoOn (go *Go, truth FirstStep) {
     }
     Go->Terminate(false);
     return;
+  }
+  //
+  if (FirstStep) {
+    mPrevMoveDir = Go->GetDirection();
+    Go->SetIsWalkingInOpen(!IsInCorridor(moveDir));
   }
   //
   if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());

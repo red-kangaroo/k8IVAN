@@ -15,7 +15,7 @@ public:
   virtual cchar *GetDescription () const;
   virtual truth ShowEnvironment () const { return false; }
 
-  inline truth prevWasTurn () const { return mPrevWasTurn; }
+  inline truth GetPrevWasTurn () const { return mPrevWasTurn; }
   inline void SetPrevWasTurn (truth v) { mPrevWasTurn = v; }
 
 protected:
