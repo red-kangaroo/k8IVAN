@@ -2775,9 +2775,9 @@ void character::GoOn (go *Go, truth FirstStep) {
        }
        CountPossibleMoveDirs(GetPos(), &ood, &ond);
        CountPossibleMoveDirs(newPos, &nod, &nnd);
-       if (ood != ond || nod != nnd) {
+       if (ood != nod || ond != nnd) {
          // # of directions to walk to changed, stop right here
-         dirlogf("# of directions changed from (%d:%d) to (%d%d)\n", ood, ond, nod, nnd);
+         dirlogf("# of directions changed from (%d:%d) to (%d:%d)\n", ood, ond, nod, nnd);
          //Go->Terminate(false);
          //return;
          doStop = true;
