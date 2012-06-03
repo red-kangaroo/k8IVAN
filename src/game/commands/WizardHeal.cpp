@@ -39,6 +39,7 @@ COMMAND(WizardHeal) {
   if (Char->TemporaryStateIsActivated(LEPROSY)) Char->DeActivateTemporaryState(LEPROSY);
   if (Char->TemporaryStateIsActivated(LYCANTHROPY)) Char->DeActivateTemporaryState(LYCANTHROPY);
   if (Char->TemporaryStateIsActivated(VAMPIRISM)) Char->DeActivateTemporaryState(VAMPIRISM);
+  if (Char->TemporaryStateIsActivated(PANIC)) Char->DeActivateTemporaryState(PANIC);
   //
   ADD_MESSAGE("Wizard healing...");
   return false;
