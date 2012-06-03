@@ -355,6 +355,8 @@ truth game::Init (cfestring &Name) {
         "like the diamonds of the imperial treasury. Not that you would believe a\n"
         "word. The point is that tomorrow you can finally forget your home and\n"
         "face the untold adventures ahead."));
+      pool::RemoveEverything(); // memory leak!
+      CurrentLevel = 0;
       globalwindowhandler::InstallControlLoop(AnimationController);
       LOSTick = 2;
       DangerFound = 0;

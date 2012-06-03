@@ -73,6 +73,17 @@ static void elAddItem (EntityList *el, entity *e) {
 }
 
 
+static void elClear (EntityList *el) {
+  while (el->head != NULL) {
+    EntityListItem *i = el->head;
+    //
+    el->head = i->next;
+    free(i);
+  }
+  el->items->clear();
+}
+
+
 static void elRemoveItem (EntityList *el, entity *e) {
   EntitySet::iterator it = el->items->find(e);
   //
@@ -284,6 +295,12 @@ void pool::RemoveFromHell (entity *e) {
       elRemoveItem(&hellList, e);
     }
   }
+}
+
+
+void pool::RemoveEverything () {
+  elClear(&beList);
+  elClear(&hellList);
 }
 
 

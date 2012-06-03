@@ -34,6 +34,8 @@ public:
   static void AbortBe ();
   //
   static void RegisterState (truth doreg);
+  //
+  static void RemoveEverything (); // don't delete!
 };
 
 
