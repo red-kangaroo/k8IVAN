@@ -2658,6 +2658,14 @@ cv2 character::GetDiagonalForDirs (int moveDir, int newDir) const {
 }
 
 
+truth character::IsInTunnelDeadEnd () const {
+  int od, nd;
+  //
+  CountPossibleMoveDirs(GetPos(), &od, &nd, -1);
+  return (od <= 1 && nd == 0);
+}
+
+
 /*
  * try to walk in the given dir
  * can do two steps without a turn and still in corridor?

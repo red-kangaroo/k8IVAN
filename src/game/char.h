@@ -446,6 +446,7 @@ public:
   void CountPossibleMoveDirs (cv2 pos, int *odirs, int *ndirs, int exclideDir=-1) const;
   int CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir, truth *markAsTurn) const; // -1: not in corridor; return new moveDir and moveVector
   cv2 GetDiagonalForDirs (int moveDir, int newDir) const;
+  truth IsInTunnelDeadEnd () const;
   void GoOn (go *, truth = false);
   virtual truth CheckKick () const;
   virtual int OpenMultiplier () const { return 2; }

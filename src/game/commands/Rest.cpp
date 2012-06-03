@@ -1,5 +1,5 @@
 COMMAND(Rest) {
-  if (Char->StateIsActivated(PANIC)) {
+  if (Char->StateIsActivated(PANIC) && !Char->IsInTunnelDeadEnd()) {
     ADD_MESSAGE("You are too scared to rest.");
     return false;
   }
