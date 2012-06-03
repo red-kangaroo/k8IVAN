@@ -50,8 +50,8 @@
 #include "confdef.h"
 #include "wmapset.h"
 
-#define SAVE_FILE_VERSION 129 // Increment this if changes make savefiles incompatible
-#define BONE_FILE_VERSION 114 // Increment this if changes make bonefiles incompatible
+#define SAVE_FILE_VERSION 130 // Increment this if changes make savefiles incompatible
+#define BONE_FILE_VERSION 115 // Increment this if changes make bonefiles incompatible
 
 #define LOADED    0
 #define NEW_GAME  1
@@ -174,6 +174,7 @@ festring game::DefaultSummonMonster;
 festring game::DefaultWish;
 festring game::DefaultChangeMaterial;
 festring game::DefaultDetectMaterial;
+festring game::DefaultTeam;
 truth game::WizardMode;
 int game::SeeWholeMapCheatMode;
 truth game::GoThroughWallsCheat;
@@ -370,7 +371,7 @@ truth game::Init (cfestring &Name) {
       CreateGods();
       SetPlayer(playerkind::Spawn());
       Player->SetAssignedName(PlayerName);
-      Player->SetTeam(GetTeam(0));
+      Player->SetTeam(GetTeam(PLAYER_TEAM));
       Player->SetNP(SATIATED_LEVEL);
       for (int c = 0; c < ATTRIBUTES; ++c) {
         if (c != ENDURANCE) Player->EditAttribute(c, (RAND()&1)-(RAND()&1));
@@ -413,10 +414,11 @@ truth game::Init (cfestring &Name) {
       DefaultWish.Empty();
       DefaultChangeMaterial.Empty();
       DefaultDetectMaterial.Empty();
+      DefaultTeam.Empty();
       Player->GetStack()->AddItem(encryptedscroll::Spawn());
       if (ivanconfig::GetDefaultPetName() != "_none_") {
         character *Doggie = dog::Spawn();
-        Doggie->SetTeam(GetTeam(0));
+        Doggie->SetTeam(GetTeam(PLAYER_TEAM));
         GetWorldMap()->GetPlayerGroup().push_back(Doggie);
         Doggie->SetAssignedName(ivanconfig::GetDefaultPetName());
       }
@@ -815,7 +817,7 @@ truth game::Save (cfestring &SaveName) {
   msgsystem::Save(SaveFile);
   SaveFile << DangerMap << NextDangerIDType << NextDangerIDConfigIndex;
   SaveFile << DefaultPolymorphTo << DefaultSummonMonster;
-  SaveFile << DefaultWish << DefaultChangeMaterial << DefaultDetectMaterial;
+  SaveFile << DefaultWish << DefaultChangeMaterial << DefaultDetectMaterial << DefaultTeam;
   SaveFile << GetTimeSpent();
   /* or in more readable format: time() - LastLoad + TimeAtLastLoad */
   SaveFile << PlayerHasReceivedAllGodsKnownBonus;
@@ -884,7 +886,7 @@ int game::Load (cfestring &SaveName) {
   msgsystem::Load(SaveFile);
   SaveFile >> DangerMap >> NextDangerIDType >> NextDangerIDConfigIndex;
   SaveFile >> DefaultPolymorphTo >> DefaultSummonMonster;
-  SaveFile >> DefaultWish >> DefaultChangeMaterial >> DefaultDetectMaterial;
+  SaveFile >> DefaultWish >> DefaultChangeMaterial >> DefaultDetectMaterial >> DefaultTeam;
   SaveFile >> TimePlayedBeforeLastLoad;
   SaveFile >> PlayerHasReceivedAllGodsKnownBonus;
   LastLoad = time(0);
@@ -1078,6 +1080,14 @@ void game::CreateTeams () {
     if (KillEvilness) GetTeam(i->first)->SetKillEvilness(*KillEvilness);
     if (i->second.GetName()) GetTeam(i->first)->SetName(*i->second.GetName());
   }
+}
+
+
+team *game::FindTeam (cfestring &name) {
+  for (int c = 0; c < Teams; ++c) {
+    if (Team[c]->GetName().CompareIgnoreCase(name) == 0) return Team[c];
+  }
+  return 0;
 }
 
 

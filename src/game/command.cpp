@@ -266,10 +266,11 @@ commandsystem::commandsystem () {
   RegisterCommand(new command("Possess", &Possess, "possess creature", '{', '{', false, true));
   RegisterCommand(new command("Polymorph", &Polymorph, "polymorph", '[', '[', true, true));
   RegisterCommand(new command("GetScroll", &GetScroll, "get scroll", 'R', 'R', true, true));
-  RegisterCommand(new command("OpenMondedr", &OpenMondedr, "open Mondedr", 'm', 'm', true, true));
+  RegisterCommand(new command("OpenMondedr", &OpenMondedr, "open Mondedr", 'M', 'M', true, true));
   RegisterCommand(new command("ShowCoords", &ShowCoords, "show current coordinates", '(', '(', true, true));
   RegisterCommand(new command("WizardHeal", &WizardHeal, "wizard healing", 'H', 'H', true, true));
-  RegisterCommand(new command("WizardBlow", &WizardBlow, "wizard blowing", '%', '%', true, true));
+  RegisterCommand(new command("WizardBlow", &WizardBlow, "wizard blowing", '%', '%', false, true));
+  RegisterCommand(new command("WizardTeam", &WizardTeam, "wizard teaming", '/', '/', false, true));
 #endif
 }
 

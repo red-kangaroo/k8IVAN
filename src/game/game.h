@@ -367,6 +367,7 @@ public:
   static festring& GetDefaultSummonMonster() { return DefaultSummonMonster; }
   static festring& GetDefaultChangeMaterial() { return DefaultChangeMaterial; }
   static festring& GetDefaultDetectMaterial() { return DefaultDetectMaterial; }
+  static festring& GetDefaultTeam() { return DefaultTeam; }
   static void SignalDeath(ccharacter*, ccharacter*, festring);
   static void DisplayMassacreLists();
   static void DisplayMassacreList(const massacremap&, cchar*, sLong);
@@ -477,6 +478,9 @@ public:
 
   static truth CheckDropLeftover (item *i);
 
+  static team *FindTeam (cfestring &name);
+  //static team *FindTeam (const char *name);
+
   static void ClearEventData ();
   // return 'true' if event is 'eaten'
   static truth RunOnEvent (cfestring &ename);
@@ -563,6 +567,7 @@ private:
   static festring DefaultWish;
   static festring DefaultChangeMaterial;
   static festring DefaultDetectMaterial;
+  static festring DefaultTeam;
   static massacremap PlayerMassacreMap;
   static massacremap PetMassacreMap;
   static massacremap MiscMassacreMap;

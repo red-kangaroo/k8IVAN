@@ -32,7 +32,7 @@ void morbe::CreateCorpse (lsquare *Square) {
     //
     v2 Where = game::GetCurrentLevel()->GetRandomSquare(Angel);
     //
-    Angel->SetTeam(game::GetTeam(4));
+    Angel->SetTeam(game::GetTeam(VALPURUS_ANGEL_TEAM));
     Angel->PutTo(Where);
     if (Angel->CanBeSeenByPlayer()) ++Seen;
   }
