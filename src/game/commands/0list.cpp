@@ -63,4 +63,5 @@
 #include "commands/WizardHeal.cpp"
 #include "commands/WizardMode.cpp"
 #include "commands/WizardWish.cpp"
+#include "commands/WizardBlow.cpp"
 #endif

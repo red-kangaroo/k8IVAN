@@ -52,6 +52,8 @@ public:
   int GetMembers () const { return Member.size(); }
   int GetEnabledMembers () const;
   void MoveMembersTo (charactervector &);
+  cfestring &GetName () const { return Name; }
+  void SetName (cfestring &newname) { Name = newname; }
 
 private:
   character *Leader;
@@ -59,6 +61,7 @@ private:
   std::list<character *> Member;
   feuLong ID;
   int KillEvilness;
+  festring Name;
 };
 
 

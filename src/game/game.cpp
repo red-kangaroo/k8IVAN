@@ -1064,12 +1064,11 @@ void game::CreateTeams () {
   Teams = *GetGameScript()->GetTeams();
   //fprintf(stderr, "team count: %d\n", Teams);
   Team = new team*[Teams];
-  int c;
-  for (c = 0; c < Teams; ++c) {
+  for (int c = 0; c < Teams; ++c) {
     Team[c] = new team(c);
     for (int i = 0; i < c; ++i) Team[i]->SetRelation(Team[c], UNCARING);
   }
-  for (c = 0; c < Teams; ++c) if (c != 1) Team[1]->SetRelation(Team[c], HOSTILE);
+  for (int c = 0; c < Teams; ++c) if (c != MONSTER_TEAM) Team[MONSTER_TEAM]->SetRelation(Team[c], HOSTILE);
   const std::list<std::pair<int, teamscript> >& TeamScript = GetGameScript()->GetTeam();
   for (std::list<std::pair<int, teamscript> >::const_iterator i = TeamScript.begin(); i != TeamScript.end(); ++i) {
     for (uInt c = 0; c < i->second.GetRelation().size(); ++c) {
@@ -1077,6 +1076,7 @@ void game::CreateTeams () {
     }
     cint *KillEvilness = i->second.GetKillEvilness();
     if (KillEvilness) GetTeam(i->first)->SetKillEvilness(*KillEvilness);
+    if (i->second.GetName()) GetTeam(i->first)->SetName(*i->second.GetName());
   }
 }
 

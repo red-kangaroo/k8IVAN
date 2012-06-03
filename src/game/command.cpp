@@ -269,6 +269,7 @@ commandsystem::commandsystem () {
   RegisterCommand(new command("OpenMondedr", &OpenMondedr, "open Mondedr", 'm', 'm', true, true));
   RegisterCommand(new command("ShowCoords", &ShowCoords, "show current coordinates", '(', '(', true, true));
   RegisterCommand(new command("WizardHeal", &WizardHeal, "wizard healing", 'H', 'H', true, true));
+  RegisterCommand(new command("WizardBlow", &WizardBlow, "wizard blowing", '%', '%', true, true));
 #endif
 }
 

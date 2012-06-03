@@ -987,6 +987,7 @@ const std::vector<std::pair<int, int> > &teamscript::GetRelation () const { retu
 
 void teamscript::InitDataMap () {
   INIT_ENTRY(KillEvilness);
+  INIT_ENTRY(Name);
 }
 
 

@@ -22,46 +22,64 @@
 //don't need this anymore
 //Teams = 17;
 
+Team PLAYER_TEAM;
+{
+  Name = "Player";
+}
+
+Team MONSTER_TEAM;
+{
+  Name = "Monster";
+}
+
 Team ATTNAM_TEAM;
 {
+  Name = "Attnam";
   Relation PLAYER_TEAM, UNCARING;
   KillEvilness = 50;
 }
 
 Team SUMO_TEAM;
 {
+  Name = "Sumo";
   Relation PLAYER_TEAM, HOSTILE;
 }
 
 Team VALPURUS_ANGEL_TEAM; /* Spawned hostile angels */
 {
+  Name = "Valpurus Angel";
   Relation PLAYER_TEAM, HOSTILE;
   Relation MONSTER_TEAM, UNCARING;
 }
 
 Team GC_SHOPKEEPER_TEAM; /* Dungeon shopkeepers */
 {
+  Name = "Shopkeeper";
   Relation MONSTER_TEAM, UNCARING;
   KillEvilness = 100;
 }
 
 Team IVAN_TEAM;
 {
+  Name = "Ivan";
   KillEvilness = 100;
 }
 
 Team NEW_ATTNAM_TEAM;
 {
+  Name = "New Attnam";
   KillEvilness = 50;
 }
 
 Team COLONIST_TEAM;
 {
+  Name = "Colonist";
   Relation NEW_ATTNAM_TEAM, FRIEND;
 }
 
 Team TOURIST_GUIDE_TEAM;
 {
+  Name = "Tourist Guide";
   Relation NEW_ATTNAM_TEAM, FRIEND;
   Relation COLONIST_TEAM, FRIEND;
   KillEvilness = 50;
@@ -69,6 +87,7 @@ Team TOURIST_GUIDE_TEAM;
 
 Team TOURIST_TEAM;
 {
+  Name = "Tourist";
   Relation NEW_ATTNAM_TEAM, FRIEND;
   Relation COLONIST_TEAM, FRIEND;
   KillEvilness = 10;
@@ -76,36 +95,42 @@ Team TOURIST_TEAM;
 
 Team BETRAYED_TEAM;
 {
+  Name = "Betrayed";
   Relation PLAYER_TEAM, HOSTILE;
   KillEvilness = 10;
 }
 
 Team MONDEDR_TEAM;
 {
+  Name = "Mondedr";
   Relation PLAYER_TEAM, FRIEND;
   KillEvilness = 50;
 }
 
 Team KHARAZ_ARAD_TEAM;
 {
+  Name = "Kharaz Arad";
   Relation PLAYER_TEAM, FRIEND;
   KillEvilness = 50;
 }
 
 Team FORESTMAN_TEAM;
 {
+  Name = "Forestman";
   Relation MONSTER_TEAM, UNCARING;
   KillEvilness = 50;
 }
 
 Team SOLICITUS_TEAM;
 {
+  Name = "Solicitus";
   Relation MONSTER_TEAM, UNCARING;
   KillEvilness = 50;
 }
 
 Team MORBE_TEAM;
 {
+  Name = "Morbe";
   Relation MONSTER_TEAM, UNCARING;
   KillEvilness = 50;
 }

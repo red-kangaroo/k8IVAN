@@ -587,6 +587,7 @@ protected:
   static datamap DataMap;
   std::vector<std::pair<int, int> > Relation;
   SCRIPT_MEMBER(int, KillEvilness);
+  SCRIPT_MEMBER(festring, Name);
 };
 
 

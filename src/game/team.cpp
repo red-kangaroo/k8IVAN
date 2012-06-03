@@ -24,12 +24,12 @@ team::team(feuLong aID) : Leader(0), ID(aID), KillEvilness(0) {
 
 
 void team::Save (outputfile &SaveFile) const {
-  SaveFile << ID << Relation << KillEvilness;
+  SaveFile << ID << Relation << KillEvilness << Name;
 }
 
 
 void team::Load (inputfile &SaveFile) {
-  SaveFile >> ID >> Relation >> KillEvilness;
+  SaveFile >> ID >> Relation >> KillEvilness >> Name;
 }
 
 
