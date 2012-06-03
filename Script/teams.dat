@@ -30,6 +30,7 @@ Team PLAYER_TEAM;
 Team MONSTER_TEAM;
 {
   Name = "Monster";
+  Relation PLAYER_TEAM, HOSTILE; // don't really need this, 'cause monsters are forced hostile to everyone
 }
 
 Team ATTNAM_TEAM;
