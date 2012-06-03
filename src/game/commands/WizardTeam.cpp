@@ -11,7 +11,8 @@ COMMAND(WizardTeam) {
       if (Temp == "none") return false;
       t = game::FindTeam(Temp);
     }
-    ToTeam->ChangeTeam(game::GetTeam(MONSTER_TEAM));
+    //ToTeam->ChangeTeam(game::GetTeam(MONSTER_TEAM));
+    ToTeam->ChangeTeam(t);
     //ToTeam->SetRelation(ToTeam->GetRelation(PLAYER->GetTeam()))
     ADD_MESSAGE("Team changed.");
   } else {
