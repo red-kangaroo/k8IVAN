@@ -69,7 +69,7 @@ void material::Save(outputfile& SaveFile) const
 void material::Load(inputfile& SaveFile)
 {
   SaveFile >> Volume;
-  databasecreator<material>::InstallDataBase(this, ReadType<uShort>(SaveFile));
+  databasecreator<material>::InstallDataBase(this, ReadType(uShort, SaveFile));
 }
 
 truth material::Effect(character* Char, int BodyPart, sLong Amount)

@@ -372,7 +372,7 @@ void basecontentscript::Load (inputfile &SaveFile) {
   SaveFile >> SrcFile >> SrcLine;
   LoadDataMap(GetDataMap(), SaveFile);
   LoadDataMap(DataMap, SaveFile);
-  ContentType = ReadType<uShort>(SaveFile);
+  ContentType = ReadType(uShort, SaveFile);
   Random = SaveFile.Get();
   SaveFile >> Config;
 }
@@ -705,7 +705,7 @@ template <class type, class contenttype> void contentmap<type, contenttype>::Loa
   Alloc2D(ContentMap, Size.X, Size.Y);
   for (int y = 0; y < Size.Y; ++y) {
     for (int x = 0; x < Size.X; ++x) {
-      int Char = ReadType<char>(SaveFile);
+      int Char = ReadType(char, SaveFile);
       //
       ContentMap[x][y] = std::make_pair(Char, &SymbolMap.find(Char)->second);
     }

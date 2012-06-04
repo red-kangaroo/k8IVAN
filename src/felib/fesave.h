@@ -32,13 +32,13 @@
 
 
 #define RAW_SAVE_LOAD(type) \
-inline outputfile& operator<<(outputfile& SaveFile, type Value) { \
-  SaveFile.Write(reinterpret_cast<char*>(&Value), sizeof(Value)); \
+inline outputfile &operator << (outputfile &SaveFile, type Value) { \
+  SaveFile.Write(reinterpret_cast<char *>(&Value), sizeof(Value)); \
   return SaveFile; \
 } \
  \
-inline inputfile& operator>>(inputfile& SaveFile, type& Value) { \
-  SaveFile.Read(reinterpret_cast<char*>(&Value), sizeof(Value)); \
+inline inputfile &operator >> (inputfile &SaveFile, type &Value) { \
+  SaveFile.Read(reinterpret_cast<char *>(&Value), sizeof(Value)); \
   return SaveFile; \
 }
 
@@ -164,11 +164,15 @@ protected:
 /* Reads a binary form variable of type type and returns it.
  * An inputfile template member function would be far more elegant,
  * but VC doesn't seem to understand it. */
-template <class type> inline type ReadType (inputfile &SaveFile) {
+template <class type> inline type _ReadType_ (inputfile &SaveFile, const char *tag) {
   type Variable;
+  //
+  //fprintf(stderr, "ReadType: [%s]\n", tag);
   SaveFile >> Variable;
   return Variable;
 }
+
+#define ReadType(typename,fl)  _ReadType_<typename>(fl, #typename)
 
 inline void ReadData (char &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
 inline void ReadData (uChar &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
@@ -185,6 +189,7 @@ void ReadData (festring &, inputfile &);
 void ReadData (fearray<sLong> &, inputfile &);
 void ReadData (fearray<festring> &, inputfile &);
 
+//TODO: add ':=' syntax
 template <class type> inline void ReadData (fearray<type> &Array, inputfile &SaveFile) {
   Array.Clear();
   festring Word;
@@ -292,7 +297,7 @@ template <class type> inline outputfile &operator << (outputfile &SaveFile, cons
 }
 
 template <class type> inline inputfile &operator >> (inputfile &SaveFile, std::vector<type> &Vector) {
-  Vector.resize(ReadType<feuLong>(SaveFile), type());
+  Vector.resize(ReadType(feuLong, SaveFile), type());
   for (feuLong c = 0; c < Vector.size(); ++c) SaveFile >> Vector[c];
   return SaveFile;
 }
@@ -304,7 +309,7 @@ template <class type> inline outputfile &operator << (outputfile &SaveFile, cons
 }
 
 template <class type> inline inputfile &operator >> (inputfile &SaveFile, std::deque<type> &Deque) {
-  Deque.resize(ReadType<feuLong>(SaveFile), type());
+  Deque.resize(ReadType(feuLong, SaveFile), type());
   for (feuLong c = 0; c < Deque.size(); ++c) SaveFile >> Deque[c];
   return SaveFile;
 }
@@ -316,7 +321,7 @@ template <class type> inline outputfile &operator << (outputfile &SaveFile, cons
 }
 
 template <class type> inline inputfile &operator >> (inputfile &SaveFile, std::list<type> &List) {
-  List.resize(ReadType<feuLong>(SaveFile), type());
+  List.resize(ReadType(feuLong, SaveFile), type());
   for (typename std::list<type>::iterator i = List.begin(); i != List.end(); ++i) SaveFile >> *i;
   return SaveFile;
 }

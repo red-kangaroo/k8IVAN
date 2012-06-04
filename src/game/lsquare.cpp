@@ -608,9 +608,9 @@ void lsquare::Load(inputfile& SaveFile)
   SaveFile >> SmokeAlphaSum >> (uChar&)Flags >> Memorized;
   Flags &= INSIDE|DESCRIPTION_CHANGE; //only these flags are loaded
   Flags |= MEMORIZED_UPDATE_REQUEST;
-  SecondarySunLightEmitation = ReadType<col24>(SaveFile);
-  RoomIndex = ReadType<uChar>(SaveFile);
-  SunLightLuminance = ReadType<col24>(SaveFile);
+  SecondarySunLightEmitation = ReadType(col24, SaveFile);
+  RoomIndex = ReadType(uChar, SaveFile);
+  SunLightLuminance = ReadType(col24, SaveFile);
   LoadLinkedList(SaveFile, Fluid);
   LoadLinkedList(SaveFile, Smoke);
   LoadLinkedList(SaveFile, Rain);

@@ -49,7 +49,7 @@ void glterrain::Save(outputfile& SaveFile) const
 void glterrain::Load(inputfile& SaveFile)
 {
   lterrain::Load(SaveFile);
-  databasecreator<glterrain>::InstallDataBase(this, ReadType<uShort>(SaveFile));
+  databasecreator<glterrain>::InstallDataBase(this, ReadType(uShort, SaveFile));
 }
 
 void olterrain::Save(outputfile& SaveFile) const
@@ -63,7 +63,7 @@ void olterrain::Save(outputfile& SaveFile) const
 void olterrain::Load(inputfile& SaveFile)
 {
   lterrain::Load(SaveFile);
-  databasecreator<olterrain>::InstallDataBase(this, ReadType<uShort>(SaveFile));
+  databasecreator<olterrain>::InstallDataBase(this, ReadType(uShort, SaveFile));
   SaveFile >> HP;
 }
 

@@ -845,7 +845,7 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> Tick >> Turn >> InWilderness >> NextCharacterID >> NextItemID >> NextTrapID >> NecroCounter;
   SaveFile >> SumoWrestling >> PlayerSumoChampion >> GlobalRainTimeModifier;
   SaveFile >> PlayerSolicitusChampion;
-  femath::SetSeed(ReadType<sLong>(SaveFile));
+  femath::SetSeed(ReadType(sLong, SaveFile));
   SaveFile >> AveragePlayerArmStrengthExperience;
   SaveFile >> AveragePlayerLegStrengthExperience;
   SaveFile >> AveragePlayerDexterityExperience;
@@ -2253,7 +2253,7 @@ truth game::PrepareRandomBone (int LevelIndex) {
     BoneName = GetBoneDir()+"bon"+CurrentDungeonIndex+LevelIndex+BoneIndex;
     inputfile BoneFile(BoneName, 0, false);
     if (BoneFile.IsOpen() && !(RAND() & 7)) {
-      if (ReadType<int>(BoneFile) != BONE_FILE_VERSION) {
+      if (ReadType(int, BoneFile) != BONE_FILE_VERSION) {
         BoneFile.Close();
         remove(BoneName.CStr());
         continue;

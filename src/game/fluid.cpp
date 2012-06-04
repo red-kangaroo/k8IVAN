@@ -145,7 +145,7 @@ void fluid::Load (inputfile &SaveFile) {
   LSquareUnder = static_cast<lsquare *>(game::GetSquareInLoad());
   SaveFile >> TrapData;
   game::AddTrapID(this, TrapData.TrapID);
-  Liquid = static_cast<liquid *>(ReadType<material *>(SaveFile));
+  Liquid = static_cast<liquid *>(ReadType(material *, SaveFile));
   Liquid->SetMotherEntity(this);
   Emitation = Liquid->GetEmitation();
   SaveFile >> LocationName >> Flags;

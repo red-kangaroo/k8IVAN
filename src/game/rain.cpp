@@ -149,12 +149,12 @@ void rain::Save(outputfile& SaveFile) const
 void rain::Load(inputfile& SaveFile)
 {
   OwnLiquid = 1;
-  LSquareUnder = static_cast<lsquare*>(game::GetSquareInLoad());
-  Liquid = static_cast<liquid*>(ReadType<material*>(SaveFile));
+  LSquareUnder = static_cast<lsquare *>(game::GetSquareInLoad());
+  Liquid = static_cast<liquid *>(ReadType(material *, SaveFile));
   Liquid->SetMotherEntity(this);
   Emitation = Liquid->GetEmitation();
   SaveFile >> Speed;
-  Team = ReadType<uChar>(SaveFile);
+  Team = ReadType(uChar, SaveFile);
   SpeedAbs = sLong(sqrt(Speed.GetLengthSquare()));
 }
 

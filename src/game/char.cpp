@@ -1588,7 +1588,7 @@ void character::Load (inputfile &SaveFile) {
   SaveFile >> HomeData >> BlocksSinceLastTurn >> CommandFlags;
   SaveFile >> WarnFlags;
   WarnFlags &= ~WARNED;
-  Flags |= ReadType<uShort>(SaveFile) & ~ENTITY_FLAGS;
+  Flags |= ReadType(uShort, SaveFile) & ~ENTITY_FLAGS;
 
   for (int c = 0; c < BodyParts; ++c) {
     SaveFile >> BodyPartSlot[c] >> OriginalBodyPartID[c];
@@ -1603,7 +1603,7 @@ void character::Load (inputfile &SaveFile) {
 
   for (int c = 0; c < STATES; ++c) SaveFile >> TemporaryStateCounter[c];
 
-  if (SaveFile.Get()) SetTeam(game::GetTeam(ReadType<feuLong>(SaveFile)));
+  if (SaveFile.Get()) SetTeam(game::GetTeam(ReadType(feuLong, SaveFile)));
 
   if (SaveFile.Get()) GetTeam()->SetLeader(this);
 
@@ -1611,7 +1611,7 @@ void character::Load (inputfile &SaveFile) {
 
   for (int c = 0; c < AllowedWeaponSkillCategories; ++c) SaveFile >> CWeaponSkill[c];
 
-  databasecreator<character>::InstallDataBase(this, ReadType<uShort>(SaveFile));
+  databasecreator<character>::InstallDataBase(this, ReadType(uShort, SaveFile));
 
   if (IsEnabled() && !game::IsInWilderness()) {
     for (int c = 1; c < GetSquaresUnder(); ++c) GetSquareUnder(c)->SetCharacter(this);

@@ -206,7 +206,7 @@ void bitmap::Load (inputfile &SaveFile) {
     Alloc2D(PriorityMap, mSize.Y, mSize.X);
     SaveFile.Read(reinterpret_cast<char *>(PriorityMap[0]), XSizeTimesYSize*sizeof(packpriority));
   }
-  FastFlag = ReadType<uChar>(SaveFile);
+  FastFlag = ReadType(uChar, SaveFile);
 }
 
 
@@ -1230,7 +1230,7 @@ outputfile &operator << (outputfile &SaveFile, cbitmap *Bitmap) {
 
 inputfile &operator >> (inputfile &SaveFile, bitmap *&Bitmap) {
   if (SaveFile.Get()) {
-    Bitmap = new bitmap(ReadType<v2>(SaveFile));
+    Bitmap = new bitmap(ReadType(v2, SaveFile));
     Bitmap->Load(SaveFile);
   } else {
     Bitmap = 0;

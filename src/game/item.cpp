@@ -283,11 +283,11 @@ void item::Save (outputfile &SaveFile) const {
 
 void item::Load (inputfile &SaveFile) {
   object::Load(SaveFile);
-  int ver = ReadType<uShort>(SaveFile);
+  int ver = ReadType(uShort, SaveFile);
   if (ver != 0) ABORT("invalid item version in savefile: %d", ver);
   SaveFile >> mIsStepedOn;
-  databasecreator<item>::InstallDataBase(this, ReadType<uShort>(SaveFile));
-  Flags |= ReadType<uShort>(SaveFile) & ~ENTITY_FLAGS;
+  databasecreator<item>::InstallDataBase(this, ReadType(uShort, SaveFile));
+  Flags |= ReadType(uShort, SaveFile) & ~ENTITY_FLAGS;
   SaveFile >> Size >> ID >> LifeExpectancy >> ItemFlags;
   LoadLinkedList(SaveFile, CloneMotherID);
   if (LifeExpectancy) Enable();
@@ -1499,7 +1499,7 @@ outputfile& operator<<(outputfile& SaveFile, const idholder* IdHolder)
 
 inputfile& operator>>(inputfile& SaveFile, idholder*& IdHolder)
 {
-  IdHolder = new idholder(ReadType<feuLong>(SaveFile));
+  IdHolder = new idholder(ReadType(feuLong, SaveFile));
   return SaveFile;
 }
 

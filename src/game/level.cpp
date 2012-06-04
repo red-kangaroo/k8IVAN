@@ -537,7 +537,7 @@ void level::Load (inputfile &SaveFile) {
   area::Load(SaveFile);
   Map = reinterpret_cast<lsquare ***>(area::Map);
   SaveFile >> Room;
-  GlobalRainLiquid = static_cast<liquid *>(ReadType<material *>(SaveFile));
+  GlobalRainLiquid = static_cast<liquid *>(ReadType(material *, SaveFile));
   SaveFile >> GlobalRainSpeed;
 
   if (GlobalRainLiquid) GlobalRainLiquid->SetVolumeNoSignals(0);
