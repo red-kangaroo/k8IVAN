@@ -1,16 +1,9 @@
 if ! $(THIS_IS_K8JAM) {
   Exit "You need k8jam to build Awish! Download it here: http://repo.or.cz/w/k8jam.git" ;
 }
-if $(WINDOZE) { OPT = default ; OPTIM_STANDARD = -O2 -march=i686 -mtune=i686 ; }
-if $(NT) { WINDOZE = 1 ; }
 set-profile ;
 set-default-locations ;
 OPTIM.all += -Wno-narrowing ;
-## if $(WINDOZE) {
-##   OPTIM.all += -static-libgcc -static-libstdc++ ;
-##   LINKFLAGS.all += -static-libgcc -static-libstdc++ ;
-## }
-
 HDRS += $(TOP)/src/felib ;
 
 
@@ -21,33 +14,26 @@ if $(USE_SOUND) = 0 || $(USE_SOUND) = "ona" || $(USE_SOUND) = "no" || $(USE_SOUN
 }
 
 
-if $(WINDOZE) {
-  Echo "MSG: windoze build" ;
-  HAVE_IMLIB2 = ;
-  HAVE_LIBPNG = ;
-} else {
-  HAVE_SDL = [ pkg-config sdl ] ;
-  if ! $(HAVE_SDL) {
-    Exit "FATAL: you need SDL!" ;
-  }
-  HAVE_MIXER = [ pkg-config SDL_mixer ] ;
-  if ! $(HAVE_MIXER) {
-    USE_SOUND = ;
-  }
-  HAVE_IMLIB2 = [ pkg-config imlib2 ] ;
-  #if $(FORCE_LIBPNG) || ! $(HAVE_IMLIB2) {
-  #  HAVE_LIBPNG = [ lib-config-ex "pkg-config libpng --libs" ] ;
-  #  HAVE_IMLIB2 = ;
-  #} else {
-  #  HAVE_LIBPNG = ;
-  #}
-  HAVE_LIBPNG = ;
-  HAVE_ZLIB = [ pkg-config zlib ] ;
+HAVE_SDL = [ pkg-config sdl ] ;
+if ! $(HAVE_SDL) {
+  Exit "FATAL: you need SDL!" ;
 }
+HAVE_MIXER = [ pkg-config SDL_mixer ] ;
+if ! $(HAVE_MIXER) {
+  USE_SOUND = ;
+}
+HAVE_IMLIB2 = [ pkg-config imlib2 ] ;
+#if $(FORCE_LIBPNG) || ! $(HAVE_IMLIB2) {
+#  HAVE_LIBPNG = [ lib-config-ex "pkg-config libpng --libs" ] ;
+#  HAVE_IMLIB2 = ;
+#} else {
+#  HAVE_LIBPNG = ;
+#}
+HAVE_LIBPNG = ;
+HAVE_ZLIB = [ pkg-config zlib ] ;
 
 
 include $(TOP)/Jamrules.defines ;
-softinclude $(TOP)/Jamrules.windoze ;
 softinclude $(TOP)/Jamrules.push ;
 
 
@@ -59,16 +45,6 @@ rule C++SDLMain {
     C++Main "$(<)$(SUFEXE)" : $(>) ;
     C++LINKLIBS on "$(<)$(SUFEXE)" += -lm ;
     LinkLibraries "$(<)$(SUFEXE)" : libfelib.a ;
-    if $(WINDOZE) {
-      if $(USE_SOUND) { WINDOZE_SDL_MIXER = $(TOP)/SDL_mixer.dll ; } else { WINDOZE_SDL_MIXER = ; }
-      #C++LINKLIBS on "$(<)$(SUFEXE)" += -Lwinlib -lz ;
-      if $(HAVE_ZLIB) { WINDOZE_ZLIB = $(TOP)/zlib1.dll ; } else { WINDOZE_ZLIB = ;  }
-      LinkSharedLibraries "$(<)$(SUFEXE)" :
-        $(TOP)/SDL.dll
-        $(WINDOZE_SDL_MIXER)
-        $(WINDOZE_ZLIB)
-      ;
-    }
   }
 }
 

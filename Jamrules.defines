@@ -61,7 +61,6 @@ if $(HAVE_IMLIB2) || $(HAVE_LIBPNG) {
   }
 }
 
-if $(WINDOZE) { HAVE_ZLIB = tan ; }
 if $(DISABLE_ZLIB) { HAVE_ZLIB = ; }
 
 if $(HAVE_ZLIB) {
