@@ -194,11 +194,7 @@ void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
         case SDLK_SYSREQ: case SDLK_PRINT: {
           /*DOUBLE_BUFFER->Save(festring(getenv("HOME")) + "/Scrshot.bmp");*/
           festring dir = inputfile::GetMyDir()+"/SShots";
-#ifndef WIN32
           mkdir(dir.CStr(), 0755);
-#else
-          mkdir(dir.CStr());
-#endif
           for (int f = 0; f < 1000; f++) {
             char buf[16];
             sprintf(buf, "%03d", f);

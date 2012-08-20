@@ -21,10 +21,6 @@
 
 #include <cctype>
 
-#ifdef WIN32
-# include <windows.h>
-#endif
-
 #include "fesave.h"
 #include "femath.h"
 
@@ -105,22 +101,15 @@ void outputfile::Write (cchar *Offset, sLong Size) {
 
 ////////////////////////////////////////////////////////////////////////////////
 truth inputfile::fileExists (const festring &fname) {
-#ifndef WIN32
   struct stat st;
   if (stat(fname.CStr(), &st)) return false;
   if (!S_ISREG(st.st_mode)) return false;
   return access(fname.CStr(), R_OK) == 0;
-#else
-  FILE *fl = fopen(fname.CStr(), "rb");
-  if (fl) fclose(fl);
-  return fl != 0;
-#endif
 }
 
 
 festring inputfile::GetMyDir (void) {
   char myDir[8192];
-#ifndef WIN32
   char buf[128];
   pid_t mypid = getpid();
   memset(myDir, 0, sizeof(myDir));
@@ -131,13 +120,6 @@ festring inputfile::GetMyDir (void) {
     if (!p) strcpy(myDir, "."); else *p = '\0';
   }
   if (myDir[strlen(myDir)-1] == '/') myDir[strlen(myDir)-1] = '\0';
-#else
-  char *p;
-  memset(myDir, 0, sizeof(myDir));
-  GetModuleFileName(GetModuleHandle(NULL), myDir, sizeof(myDir)-1);
-  p = strrchr(myDir, '\\');
-  if (!p) strcpy(myDir, "."); else *p = '\0';
-#endif
   return myDir;
 }
 
@@ -1143,16 +1125,6 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
   tfname("")
 {
   Close();
-#ifdef WIN32
-  char nbuf[MAX_PATH+1], tfn[MAX_PATH+1];
-  GetTempPath(MAX_PATH, nbuf);
-  GetTempFileName(nbuf, "ivan", 0, tfn);
-  tfname = tfn;
-  FILE *fl = fopen(tfn, "wb");
-  fwrite(str.CStr(), str.GetSize(), 1, fl);
-  fclose(fl);
-  Buffer = gzopen(tfn, "rb");
-#else
   char fname[1024];
   int fd;
   //
@@ -1164,7 +1136,6 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
   write(fd, str.CStr(), str.GetSize());
   close(fd);
   Buffer = gzopen(fname, "rb");
-#endif
   FileName = "<memory>";
 }
 
@@ -1186,21 +1157,10 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
   tfname("")
 {
   Close();
-#ifdef WIN32
-  char nbuf[MAX_PATH+1], tfn[MAX_PATH+1];
-  GetTempPath(MAX_PATH, nbuf);
-  GetTempFileName(nbuf, "ivan", 0, tfn);
-  tfname = tfn;
-  FILE *fl = fopen(tfn, "wb");
-  fwrite(str.CStr(), str.GetSize(), 1, fl);
-  fclose(fl);
-  Buffer = fopen(tfn, "rb");
-#else
   bufSize = str.GetSize();
   buf = (char *)calloc(1, bufSize+1);
   memmove(buf, str.CStr(), bufSize);
   Buffer = fmemopen(buf, bufSize, "rb");
-#endif
   FileName = "<memory>";
 }
 
@@ -1208,8 +1168,5 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
 meminputfile::~meminputfile () {
   Close();
   if (buf) free(buf);
-#ifdef WIN32
-  DeleteFile(tfname.CStr());
-#endif
 }
 #endif

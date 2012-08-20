@@ -18,11 +18,7 @@
 
 #include "felibdef.h"
 
-#ifndef WIN32
-# define LONG_LONG_PFORMAT  "%lld"
-#else
-# define LONG_LONG_PFORMAT  "%I64d"
-#endif
+#define LONG_LONG_PFORMAT  "%lld"
 
 #define FESTRING_PAGE 0x7F
 

@@ -3,6 +3,6 @@ SubDir TOP src ;
 
 SubInclude TOP src felib ;
 SubInclude TOP src game ;
-if ! $(WINDOZE) && $(BUILD_TOOLS) {
+if $(BUILD_TOOLS) {
   SubInclude TOP src tools ;
 }

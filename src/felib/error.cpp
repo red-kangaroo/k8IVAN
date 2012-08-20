@@ -67,12 +67,7 @@ void globalerrorhandler::Abort (cchar *Format, ...) {
   //
   {
     festring mydir = inputfile::GetMyDir();
-#ifdef WIN32
-    mydir << "\\";
-#else
-    mydir << "/";
-#endif
-    mydir << "crash.log";
+    mydir << "/" << "crash.log";
     FILE *fo = fopen(mydir.CStr(), "a");
     //
     if (fo) {

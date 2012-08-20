@@ -1095,11 +1095,7 @@ void character::Die (ccharacter *Killer, cfestring &Msg, feuLong DeathFlags) {
     game::DrawEverything();
     if (game::TruthQuestion(CONST_S("Do you want to save screenshot? [y/n]"), REQUIRES_ANSWER)) {
       festring dir = inputfile::GetMyDir()+"/DeathShots";
-#ifndef WIN32
       mkdir(dir.CStr(), 0755);
-#else
-      mkdir(dir.CStr());
-#endif
       festring timestr;
       time_t t = time(NULL);
       struct tm *ts = localtime(&t);

@@ -88,15 +88,3 @@ int Main (int argc, char *argv[]) {
     }
   }
 }
-
-
-#ifdef WIN32
-# include <windows.h>
-int PASCAL WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow) {
-  static char *argv[2];
-  //
-  argv[0] = strdup("ivan.exe");
-  argv[1] = NULL;
-  return Main(1, argv);
-}
-#endif

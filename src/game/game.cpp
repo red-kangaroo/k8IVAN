@@ -15,11 +15,6 @@
 
 #include <sys/stat.h>
 #include <sys/types.h>
-#ifdef WIN32
-# include <unistd.h>
-# include <windows.h>
-#endif
-
 #include "whandler.h"
 #include "hscore.h"
 #include "rawbit.h"
@@ -300,13 +295,8 @@ truth game::Init (cfestring &Name) {
     PlayerName = Name;
   }
 
-#ifndef WIN32
   mkdir(GetSaveDir().CStr(), S_IRWXU|S_IRWXG);
   mkdir(GetBoneDir().CStr(), S_IRWXU|S_IRWXG);
-#else
-  mkdir(GetSaveDir().CStr());
-  mkdir(GetBoneDir().CStr());
-#endif
 
   ::InitPlaces();
   LOSTick = 2;
