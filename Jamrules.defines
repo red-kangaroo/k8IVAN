@@ -40,7 +40,7 @@ if $(USE_SOUND) {
 
 if $(HAVE_IMLIB2) {
   Echo "MSG: imlib2 found" ;
-  lib-config "pkg-config imlib2" ;
+  #lib-config "pkg-config imlib2" ;
   DEFINES += HAVE_IMLIB2 ;
 }
 

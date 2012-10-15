@@ -1,40 +1,16 @@
 if ! $(THIS_IS_K8JAM) {
-  Exit "You need k8jam to build Awish! Download it here: http://repo.or.cz/w/k8jam.git" ;
+  Exit "You need k8jam to build I.V.A.N.! Download it here: http://repo.or.cz/w/k8jam.git" ;
 }
+
 set-profile ;
 set-default-locations ;
+
 OPTIM.all += -Wno-narrowing ;
+
 HDRS += $(TOP)/src/felib ;
 
 
-if $(USE_SOUND) = 0 || $(USE_SOUND) = "ona" || $(USE_SOUND) = "no" || $(USE_SOUND) = "n" {
-  USE_SOUND = ;
-} else {
-  USE_SOUND = 1 ;
-}
-
-
-HAVE_SDL = [ pkg-config sdl ] ;
-if ! $(HAVE_SDL) {
-  Exit "FATAL: you need SDL!" ;
-}
-HAVE_MIXER = [ pkg-config SDL_mixer ] ;
-if ! $(HAVE_MIXER) {
-  USE_SOUND = ;
-}
-HAVE_IMLIB2 = [ pkg-config imlib2 ] ;
-#if $(FORCE_LIBPNG) || ! $(HAVE_IMLIB2) {
-#  HAVE_LIBPNG = [ lib-config-ex "pkg-config libpng --libs" ] ;
-#  HAVE_IMLIB2 = ;
-#} else {
-#  HAVE_LIBPNG = ;
-#}
 HAVE_LIBPNG = ;
-HAVE_ZLIB = [ pkg-config zlib ] ;
-
-
-include $(TOP)/Jamrules.defines ;
-softinclude $(TOP)/Jamrules.push ;
 
 
 rule C++SDLMain {
@@ -56,3 +32,12 @@ if ! $(NOGDB) {
   OPTIM.all += -s ;
   LINKFLAGS.all += -s ;
 }
+
+
+softinclude $(TOP)/Jamrules.local ;
+softinclude $(TOP)/Jamrules.local.k8 ;
+softinclude $(TOP)/Jamrules.configure ;
+softinclude $(TOP)/Jamrules.libs ;
+softinclude $(TOP)/Jamrules.install ;
+softinclude $(TOP)/Jamrules.push ;
+include $(TOP)/Jamrules.defines ;
