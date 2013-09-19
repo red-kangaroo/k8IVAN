@@ -1,25 +1,36 @@
+PROJECT_NAME = I.V.A.N. ;
+
+-configure-enable-disable-vars- +=
+  "sound"   USE_SOUND   "auto"  "enable sound"
+  "zlib"    USE_ZLIB    "auto"  "use ZLib"
+  "imlib2"  USE_IMLIB2  "auto"  "use imlib2"
+;
+
+
 rule -configure- {
-  -configure-pkg-config- "SDL" : sdl : : : "you need SDL to compile I.V.A.N.!" ;
+  -configure-pkg-config-necessary-
+    "SDL"  "sdl < 2"
+  ;
   #
-  if $(USE_SOUND) = "0" {
-    -configure-add-line- "# no sound" ;
+  if ! $(USE_SOUND) {
+    -configure-add-line- "# sound disabled" ;
     -configure-add-line- "USE_SOUND = ;" ;
   } else {
     -configure-pkg-config- "SDL Mixer" : SDL_mixer : "USE_SOUND = 1 ;" : "USE_SOUND = ;" ;
   }
   #
-  if $(ZLIB) = "0" {
+  if ! $(USE_ZLIB) {
     -configure-add-line- "# ZLib disabled" ;
     -configure-add-line- "DISABLE_ZLIB = 1 ;" ;
   } else {
-    -configure-pkg-config- "ZLib" : zlib : "HAVE_ZLIB = 1 ;" ;
+    -configure-pkg-config- "ZLib" : zlib : "HAVE_ZLIB = 1 ;\nDISABLE_ZLIB = ;" : "HAVE_ZLIB = ;\bDISABLE_ZLIB = 1 ;" ;
   }
   #
-  if $(IMLIB) = "0" || $(IMLIB2) = "0" {
+  if ! $(USE_IMLIB2) {
     -configure-add-line- "# imlib2 disabled" ;
     -configure-add-line- "DISABLE_IMLIB2 = 1 ;" ;
   } else {
-    -configure-pkg-config- "imlib2" : imlib2 : "HAVE_IMLIB2 = 1 ;" ;
+    -configure-pkg-config- "imlib2" : imlib2 : "HAVE_IMLIB2 = 1 ;\nDISABLE_IMLIB2 = ;" : "HAVE_IMLIB2 = ;\nDISABLE_IMLIB2 = 1 ;" ;
   }
 }
 
