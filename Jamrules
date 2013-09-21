@@ -1,16 +1,19 @@
 if ! $(THIS_IS_K8JAM) {
   Exit "You need k8jam to build I.V.A.N.! Download it here: http://repo.or.cz/w/k8jam.git" ;
 }
+include $(TOP)/Jamrules.configure ;
 
 set-profile ;
 set-default-locations ;
 
 OPTIM.all += -Wno-narrowing ;
 
+if $(DEBUG) { DEFINES += DEBUG_BUILD ; }
+
 HDRS += $(TOP)/src/felib ;
 
 
-HAVE_LIBPNG = ;
+#HAVE_LIBPNG = ;
 
 
 rule C++SDLMain {
@@ -36,8 +39,6 @@ if ! $(NOGDB) {
 
 softinclude $(TOP)/Jamrules.local ;
 softinclude $(TOP)/Jamrules.local.k8 ;
-softinclude $(TOP)/Jamrules.configure ;
 softinclude $(TOP)/Jamrules.libs ;
 softinclude $(TOP)/Jamrules.install ;
 softinclude $(TOP)/Jamrules.push ;
-include $(TOP)/Jamrules.defines ;

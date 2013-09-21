@@ -4,6 +4,10 @@ PROJECT_NAME = I.V.A.N. ;
   "sound"   USE_SOUND   "auto"  "enable sound"
   "zlib"    USE_ZLIB    "auto"  "use ZLib"
   "imlib2"  USE_IMLIB2  "auto"  "use imlib2"
+  #
+  "wizard"        USE_WIZARD        "tan"  "disable 'wizard' mode"
+  "global-saves"  USE_GLOBAL_SAVES  ""     "enable global saves"
+  "pngshots"      USE_PNG_SHOTS     "tan"  "disable png savegame shots (use IPU)"
 ;
 
 
@@ -14,23 +18,51 @@ rule -configure- {
   #
   if ! $(USE_SOUND) {
     -configure-add-line- "# sound disabled" ;
-    -configure-add-line- "USE_SOUND = ;" ;
+    -configure-add-line- "DEFINES += DISABLE_SOUND ;" ;
   } else {
-    -configure-pkg-config- "SDL Mixer" : SDL_mixer : "USE_SOUND = 1 ;" : "USE_SOUND = ;" ;
+    -configure-pkg-config- "SDL Mixer" : SDL_mixer : : "DEFINES += DISABLE_SOUND ;" ;
   }
   #
   if ! $(USE_ZLIB) {
     -configure-add-line- "# ZLib disabled" ;
-    -configure-add-line- "DISABLE_ZLIB = 1 ;" ;
   } else {
-    -configure-pkg-config- "ZLib" : zlib : "HAVE_ZLIB = 1 ;\nDISABLE_ZLIB = ;" : "HAVE_ZLIB = ;\bDISABLE_ZLIB = 1 ;" ;
+    if ! [ -configure-pkg-config- "ZLib" : zlib : "DEFINES += USE_ZLIB ;" ] { USE_ZLIB = ; }
   }
   #
   if ! $(USE_IMLIB2) {
     -configure-add-line- "# imlib2 disabled" ;
-    -configure-add-line- "DISABLE_IMLIB2 = 1 ;" ;
   } else {
-    -configure-pkg-config- "imlib2" : imlib2 : "HAVE_IMLIB2 = 1 ;\nDISABLE_IMLIB2 = ;" : "HAVE_IMLIB2 = ;\nDISABLE_IMLIB2 = 1 ;" ;
+    if ! [ -configure-pkg-config- "imlib2" : imlib2 : "DEFINES += HAVE_IMLIB2 ;" ] { USE_IMLIB2 = ; }
+  }
+  #
+  ### if $(HAVE_LIBPNG) {
+  ###   Echo "MSG: libpng found" ;
+  ###   lib-config "pkg-config libpng" ;
+  ###   DEFINES += HAVE_LIBPNG ;
+  ### }
+  #
+  -configure-add-line- "# other options" ;
+  if $(USE_WIZARD) {
+    Echo "CFG: wizard mode enabled" ;
+    -configure-add-line- "DEFINES += WIZARD ;" ;
+  }
+  #
+  if $(USE_GLOBAL_SAVES) {
+    Echo "CFG: using global saves" ;
+  } else {
+    Echo "CFG: using local saves" ;
+    -configure-add-line- "DEFINES += LOCAL_SAVES ;" ;
+  }
+  #
+  if $(USE_ZLIB) {
+    Echo "CFG: support for compressed saves turned on" ;
+  }
+  # USE_LIBPNG
+  if $(USE_IMLIB2) && $(USE_PNG_SHOTS) {
+    Echo "CFG: savegame screenshots will be in PNG format" ;
+  } else {
+    Echo "CFG: savegame screenshots will be in internal format" ;
+    -configure-add-line- "DEFINES += SGAME_SHOTS_IPU ;" ;
   }
 }
 
