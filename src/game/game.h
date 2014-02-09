@@ -470,7 +470,7 @@ public:
   static void SetEnterImage(cbitmap* What) { EnterImage = What; }
   static void SetEnterTextDisplacement (v2 What) { EnterTextDisplacement = What; }
 
-  static int ListSelector (int defsel, cfestring &title, ...); // defsel<0: first
+  static int ListSelector (int defsel, const cfestring title, ...); // defsel<0: first
   static int ListSelectorArray (int defsel, cfestring &title, const char *items[]); // defsel<0: first
 
   static char GetAbnormalMoveKey (int idx);

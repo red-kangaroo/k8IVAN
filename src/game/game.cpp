@@ -3093,7 +3093,7 @@ static int doListSelector (felist &list, int defsel, int cnt) {
 }
 
 
-int game::ListSelector (int defsel, cfestring &title, ...) {
+int game::ListSelector (int defsel, const cfestring title, ...) {
   int cnt = 0;
   va_list items;
   va_start(items, title);
