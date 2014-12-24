@@ -1,9 +1,0 @@
-scrollofchangematerial /* scroll-> */
-{
-  Possibility = 15; /* CLIVAN; old: 5 */
-  Price = 2000;
-  PostFix = "of change material";
-  Alias == "SoCM";
-  AttachedGod = LORICATUS;
-  ReadDifficulty = 2000;
-}

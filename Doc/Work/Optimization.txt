@@ -1,5 +1,0 @@
-level::RandomSquare()
-spoiling & applyexperience
-reduce the number of CalculateNeighbourBitmapPoses calls
-DrawMemorized may be called too often
-ChangeAlpha

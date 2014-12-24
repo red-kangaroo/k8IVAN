@@ -1,8 +1,0 @@
-monsterportal
-{
-  DigMessage = "The portal is magically protected from your feeble attack.";
-  MainMaterialConfig == SILVER;
-  MaterialColorB = rgb16(0, 0, 90);
-  NameSingular = "magic portal";
-  AttachedGod = MORTIFER;
-}

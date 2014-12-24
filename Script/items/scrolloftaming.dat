@@ -1,8 +1,0 @@
-scrolloftaming /* scroll-> */
-{
-  Possibility = 25;
-  Price = 500;
-  PostFix = "of taming";
-  AttachedGod = DULCIS;
-  ReadDifficulty = 100;
-}

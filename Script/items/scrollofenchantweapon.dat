@@ -1,9 +1,0 @@
-scrollofenchantweapon /* scroll-> */
-{
-  Possibility = 60; /* CLIVAN; old: 40 */
-  Price = 250;
-  PostFix = "of enchant weapon";
-  AttachedGod = SOPHOS;
-  Alias == "SoEW";
-  ReadDifficulty = 500;
-}

@@ -1,8 +1,0 @@
-on game_start /* char: player */
-{
-  if @player_name == "_k8_";
-    //SetMoney 66666;
-    @money = 66666;
-    AddMessage "debug mode: money set to ", @money;
-  endif
-}

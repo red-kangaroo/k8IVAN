@@ -1,9 +1,0 @@
-scrollofenchantarmor /* scroll-> */
-{
-  Possibility = 80;
-  Price = 250;
-  PostFix = "of enchant armor";
-  AttachedGod = SOPHOS;
-  Alias == "SoEA";
-  ReadDifficulty = 500;
-}

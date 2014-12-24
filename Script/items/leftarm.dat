@@ -1,4 +1,0 @@
-leftarm /* bodypart->arm-> */
-{
-  NameSingular = "left arm";
-}

@@ -1,8 +1,0 @@
-scrollofgolemcreation /* scroll-> */
-{
-  Possibility = 10;
-  Price = 750;
-  PostFix = "of golem creation";
-  AttachedGod = SOPHOS;
-  ReadDifficulty = 1000;
-}

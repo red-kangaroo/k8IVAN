@@ -1,8 +1,0 @@
-scrollofdetectmaterial /* scroll-> */
-{
-  Possibility = 50;
-  Price = 25;
-  PostFix = "of detect material";
-  AttachedGod = LEGIFER;
-  ReadDifficulty = 200;
-}

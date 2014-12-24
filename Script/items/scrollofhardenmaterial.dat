@@ -1,9 +1,0 @@
-scrollofhardenmaterial /* scroll-> */
-{
-  Possibility = 60; /* CLIVAN; old: 50 */
-  Price = 500;
-  PostFix = "of harden material";
-  Alias == "SoHM";
-  AttachedGod = LORICATUS;
-  ReadDifficulty = 500;
-}

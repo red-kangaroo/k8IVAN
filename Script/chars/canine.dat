@@ -1,7 +1,0 @@
-canine
-{
-  IsAbstract = true;
-  ConsumeFlags = CT_FRUIT|CT_MEAT|CT_LIQUID|CT_PROCESSED|CT_BONE;
-  AttackStyle = USE_HEAD;
-  KnownCWeaponSkills == BITE;
-}

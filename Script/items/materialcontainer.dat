@@ -1,5 +1,0 @@
-materialcontainer
-{
-  IsAbstract = true;
-  HasSecondaryMaterial = true;
-}

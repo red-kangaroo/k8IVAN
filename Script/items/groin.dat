@@ -1,8 +1,0 @@
-groin /* bodypart-> */
-{
-  StrengthModifier = 150;
-  FormModifier = 10;
-  NameSingular = "groin";
-  Roundness = 40;
-  WieldedBitmapPos = 160, 128;
-}

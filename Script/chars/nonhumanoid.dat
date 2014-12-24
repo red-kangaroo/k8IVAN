@@ -1,5 +1,0 @@
-nonhumanoid
-{
-  IsAbstract = true;
-  DisplacePriority = -1;
-}
