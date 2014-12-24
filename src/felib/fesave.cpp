@@ -109,6 +109,9 @@ truth inputfile::fileExists (const festring &fname) {
 
 
 festring inputfile::GetMyDir (void) {
+#ifdef IVAN_DATA_DIR
+  return IVAN_DATA_DIR;
+#else
   char myDir[8192];
   char buf[128];
   pid_t mypid = getpid();
@@ -121,6 +124,7 @@ festring inputfile::GetMyDir (void) {
   }
   if (myDir[strlen(myDir)-1] == '/') myDir[strlen(myDir)-1] = '\0';
   return myDir;
+#endif
 }
 
 

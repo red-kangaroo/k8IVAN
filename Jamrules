@@ -13,6 +13,16 @@ if $(DEBUG) { DEFINES += DEBUG_BUILD ; }
 HDRS += $(TOP)/src/felib ;
 
 
+if $(PREFIX) {
+  IVAN_DATA_DIR = share/ivan ;
+} else {
+  IVAN_DATA_DIR = ;
+}
+
+if $(IVAN_DATA_DIR) {
+  DEFINES += "IVAN_DATA_DIR=\\\"$(PREFIX)/$(IVAN_DATA_DIR)\\\"" ;
+}
+
 #HAVE_LIBPNG = ;
 
 

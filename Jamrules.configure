@@ -5,17 +5,42 @@ PROJECT_NAME = I.V.A.N. ;
   "zlib"    USE_ZLIB    "auto"  "use ZLib"
   "imlib2"  USE_IMLIB2  "auto"  "use imlib2"
   #
-  "wizard"        USE_WIZARD        "tan"  "disable 'wizard' mode"
-  "global-saves"  USE_GLOBAL_SAVES  ""     "enable global saves"
+  "wizard"        USE_WIZARD        "auto"  "disable 'wizard' mode"
+  "global-saves"  USE_GLOBAL_SAVES  "auto"  "enable saves in \$HOME"
   "pngshots"      USE_PNG_SHOTS     "tan"  "disable png savegame shots (use IPU)"
 ;
+
+
+rule -configure-preinit- {
+  #USE_WIZARD
+}
 
 
 rule -configure- {
   -configure-pkg-config-necessary-
     "SDL"  "sdl < 2"
   ;
-  #
+
+  local has-prefix = ;
+  for local ca in $(JAMCONFIGARGS) {
+    if [ Match '^--prefix=.+$' : $(ca) ] {
+      has-prefix = tan ;
+      break ;
+    }
+  }
+
+  if $(has-prefix) {
+    # this is 'install' version, fix options
+    if $(USE_WIZARD) == "auto" { USE_WIZARD = ; }
+    if $(USE_GLOBAL_SAVES) == "auto" { USE_GLOBAL_SAVES = tan ; }
+  } else {
+    if $(USE_WIZARD) == "auto" { USE_WIZARD = tan ; }
+    if $(USE_GLOBAL_SAVES) == "auto" { USE_GLOBAL_SAVES = ; }
+  }
+  #Echo "PREFIX:" $(has-prefix) ;
+  #Echo "USE_WIZARD:" $(USE_WIZARD) ;
+  #Echo "USE_GLOBAL_SAVES:" $(USE_GLOBAL_SAVES) ;
+
   if ! $(USE_SOUND) {
     -configure-add-line- "# sound disabled" ;
     -configure-add-line- "DEFINES += DISABLE_SOUND ;" ;
@@ -48,7 +73,7 @@ rule -configure- {
   }
   #
   if $(USE_GLOBAL_SAVES) {
-    Echo "CFG: using global saves" ;
+    Echo "CFG: using saves in \$HOME" ;
   } else {
     Echo "CFG: using local saves" ;
     -configure-add-line- "DEFINES += LOCAL_SAVES ;" ;

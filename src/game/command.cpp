@@ -93,7 +93,7 @@ void commandsystem::ConfigureKeys () {
 #else
   fname << getenv("HOME");
 #endif
-  fname << "/.keys.rc";
+  fname << "/.ivan.keys.rc";
   FILE *fl = fopen(fname.CStr(), "r");
   if (!fl) return;
   while (fgets(buf, 510, fl)) {
@@ -128,7 +128,7 @@ void commandsystem::SaveKeys (truth forced) {
 #else
   fname << getenv("HOME");
 #endif
-  fname << "/.keys.rc";
+  fname << "/.ivan.keys.rc";
   if (!forced) {
     if (inputfile::fileExists(fname)) return;
   }

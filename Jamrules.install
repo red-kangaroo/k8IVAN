@@ -1,4 +1,9 @@
-IVAN_DATA_DIR ?= share/ivan ;
+if "install" in $(JAM_TARGETS) {
+  if ! $(IVAN_DATA_DIR) {
+    Exit "You have to use `jam config --prefix=/dest/dir' to install I.V.A.N." ;
+  }
+}
+
 
 InstallBin bin : ivan ;
 
