@@ -18,7 +18,7 @@
 #include "festring.h"
 
 
-#define HIGH_SCORE_FILENAME  "ivan-highscore.scores"
+#define HIGH_SCORE_FILENAME  ".ivan.scores"
 
 /* Increment this if changes make highscores incompatible */
 #define HIGH_SCORE_VERSION 121

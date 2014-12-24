@@ -23,7 +23,14 @@ highscore::highscore (cfestring &File) : LastAdd(0xFF), Version(HIGH_SCORE_VERSI
 
 
 festring highscore::genFileName (const festring &fname) const {
-  if (fname[0] != '/') return inputfile::GetMyDir()+'/'+fname;
+  if (fname[0] != '/') {
+#ifdef LOCAL_SAVES
+    return inputfile::GetMyDir()+'/'+fname;
+#else
+    festring nname = getenv("HOME") << '/' << fname;
+    return nname;
+#endif
+  }
   return fname;
 }
 
