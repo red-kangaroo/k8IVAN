@@ -20,7 +20,6 @@ ivan-data-dirs =
   Script/zext
   Script/zext/k8
   Script/zext/k8/chars
-  Script/zext/k8/chars
 ;
 
 for idd in $(ivan-data-dirs) {
