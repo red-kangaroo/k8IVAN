@@ -1,0 +1,69 @@
+/*
+ *
+ *  Iter Vehemens ad Necem (IVAN)
+ *  Copyright (C) Timo Kiviluoto
+ *  Released under the GNU General
+ *  Public License
+ *
+ *  See LICENSING which should be included
+ *  along with this file for more details
+ *
+ */
+
+/*
+ * NOTICE!!!
+ *
+ * This file contains SPOILERS, which might ruin your IVAN experience
+ * totally. Also, editing anything can DESTROY GAME BALANCE or CAUSE
+ * OBSCURE BUGS if you don't know what you're doing. So from here on,
+ * proceed at your own risk!
+ */
+
+/* Numerical material data loaded during game startup */
+
+/* Default values: */
+material
+{
+  /* Obligatory: StrengthValue */
+  /* Obligatory: ConsumeType */
+  /* Obligatory: Density */
+  /* Obligatory: Color */
+  PriceModifier = 0;
+  Emitation = 0;
+  NutritionValue = 0;
+  ConsumeWisdomLimit = NO_LIMIT;
+  /* Obligatory: NameStem */
+  /* NameStem by default: AdjectiveStem */
+  Effect = EFFECT_NOTHING;
+  ConsumeEndMessage = CEM_NOTHING;
+  HitMessage = HM_NOTHING;
+  ExplosivePower = 0;
+  Alpha = 255;
+  Flexibility = 1;
+  EffectStrength = 100;
+  /* DigProductMaterial defaults to Configs */
+  /* Obligatory: AttachedGod */
+  StepInWisdomLimit = NO_LIMIT;
+  Acidicity = 0;
+  NaturalForm = lump;
+  HardenedMaterial = NONE;
+  SoftenedMaterial = NONE;
+  IntelligenceRequirement = 0;
+  CommonFlags = IS_ABSTRACT|CAN_BE_WISHED|CAN_BE_MIRRORED;
+  NameFlags = 0;
+  CategoryFlags = 0;
+  BodyFlags = USE_MATERIAL_ATTRIBUTES;
+  InteractionFlags = CAN_DISSOLVE;
+  Stickiness = 0;
+  DisablesPanicWhenConsumed = false;
+  BlockESP = false;
+}
+
+
+Include "materials/solid.dat";
+Include "materials/organic.dat";
+Include "materials/gas.dat";
+Include "materials/liquid.dat";
+Include "materials/flesh.dat";
+Include "materials/powder.dat";
+Include "materials/ironalloy.dat";

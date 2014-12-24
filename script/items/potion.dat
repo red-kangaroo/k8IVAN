@@ -1,0 +1,25 @@
+potion /* materialcontainer-> */
+{
+  DefaultSize = 30;
+  Possibility = 800;
+  WeaponCategory = BLUNT_WEAPONS;
+  Category = POTION;
+  DefaultMainVolume = 60;
+  DefaultSecondaryVolume = 1000;
+  StrengthModifier = 50;
+  BitmapPos = 0, 160;
+  FormModifier = 25;
+  NameSingular = "bottle";
+  MainMaterialConfig == GLASS;
+  SecondaryMaterialConfig = { 11, WATER, HEALING_LIQUID, OMMEL_URINE, POISON_LIQUID, VALDEMAR, ANTIDOTE_LIQUID, VODKA, TROLL_BLOOD, OMMEL_SWEAT, OMMEL_TEARS, SULPHURIC_ACID; }
+  MaterialConfigChances = { 11, 75, 50, 5, 50, 2, 10, 5, 25, 5, 5, 25; }
+  Alias = { 2, "potion", "drink"; }
+  Roundness = 70;
+  CanBeBroken = true;
+  AttachedGod = NONE;
+  WieldedBitmapPos = 176, 144;
+  IsValuable = false;
+  TeleportPriority = 200;
+  ThrowItemTypes = THROW_POTION;
+  IsThrowingWeapon = true; //FIXME: k8: shaman can't throw potions without this
+}

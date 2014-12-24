@@ -193,7 +193,13 @@ void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
           break;
         case SDLK_SYSREQ: case SDLK_PRINT: {
           /*DOUBLE_BUFFER->Save(festring(getenv("HOME")) + "/Scrshot.bmp");*/
-          festring dir = inputfile::GetMyDir()+"/SShots";
+          //festring dir = inputfile::GetMyDir()+"/SShots";
+          festring dir;
+#ifdef LOCAL_SAVES
+          dir << ivanconfig::GetMyDir() << "/screenshots";
+#else
+          dir << getenv("HOME") << "/.ivan-screenshots";
+#endif
           mkdir(dir.CStr(), 0755);
           for (int f = 0; f < 1000; f++) {
             char buf[16];

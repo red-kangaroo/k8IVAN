@@ -1,0 +1,26 @@
+goldenjaguarshirt /* armor->bodyarmor-> */
+{
+  DefaultSize = 60;
+  BitmapPos = 16, 112;
+  Possibility = 0;
+  CanBeWished = false;
+  IsDestroyable = false;
+  IsMaterialChangeable = true;
+  DefaultMainVolume = 1000;
+  StrengthModifier = 200;
+  NameSingular = "Shirt of the Golden Jaguar";
+  MainMaterialConfig == ANGEL_HAIR;
+  ArticleMode = FORCE_THE;
+  IsPolymorphable = false;
+  CanBeBroken = false;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  InElasticityPenaltyModifier = 30;
+  CanBeEnchanted = true;
+  AttachedGod = LORICATUS;
+  GearStates = HASTE|POLYMORPH_CONTROL|TELEPORT_CONTROL;
+  TorsoArmorBitmapPos = 32, 416;
+  ArmArmorBitmapPos = 80, 416;
+  AthleteArmArmorBitmapPos = 80, 448;
+  LegArmorBitmapPos = 16, 416;
+}

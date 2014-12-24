@@ -1,0 +1,53 @@
+/*
+ *
+ *  Iter Vehemens ad Necem (IVAN)
+ *  Copyright (C) Timo Kiviluoto
+ *  Released under the GNU General
+ *  Public License
+ *
+ *  See LICENSING which should be included
+ *  along with this file for more details
+ *
+ */
+
+/*
+ * NOTICE!!!
+ *
+ * This file contains SPOILERS, which might ruin your IVAN experience
+ * totally. Also, editing anything can DESTROY GAME BALANCE or CAUSE
+ * OBSCURE BUGS if you don't know what you're doing. So from here on,
+ * proceed at your own risk!
+ */
+
+/* Numerical glterrain data loaded during game startup */
+
+/* Default values: */
+glterrain
+{
+  /* Obligatory: BitmapPos */
+  UsesLongArticle = false;
+  Adjective = "";
+  UsesLongAdjectiveArticle = false;
+  /* Obligatory: NameSingular */
+  /* NameSingular + "s" by default: NamePlural */
+  PostFix = "";
+  ArticleMode = 0;
+  /* Obligatory: MainMaterialConfig */
+  /* Obligatory: SecondaryMaterialConfig */
+  /* Obligatory if multiple material configurations defined: MaterialConfigChances */
+  IsAbstract = true; /* This is false by default and does not inherit! */
+  OKVisualEffects = NONE;
+  MaterialColorB = 0;
+  MaterialColorC = 0;
+  MaterialColorD = 0;
+  SitMessage = "You sit for some time. Nothing happens.";
+  ShowMaterial = true;
+  AttachedGod = NONE;
+  HasSecondaryMaterial = false;
+  UseBorderTiles = false;
+  BorderTilePriority = 0;
+}
+
+
+Include "glterras/solidterrain.dat";
+Include "glterras/liquidterrain.dat";

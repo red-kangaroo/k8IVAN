@@ -1,0 +1,53 @@
+unicorn
+{
+  DefaultArmStrength = 15;
+  DefaultAgility = 40;
+  DefaultEndurance = 10;
+  DefaultPerception = 18;
+  DefaultIntelligence = 25;
+  DefaultWisdom = 20;
+  DefaultCharisma = 30;
+  DefaultMana = 25;
+  HostileReplies == "The furious @du neighs.";
+  FriendlyReplies == "The happy @du neighs.";
+  TotalVolume = 100000;
+  TorsoBitmapPos = 544, 0;
+  TotalSize = 200;
+  NameSingular = "unicorn";
+  AttackStyle = USE_LEGS|USE_HEAD;
+  BaseKickStrength = 700;
+  BaseBiteStrength = 350;
+  CanBeGenerated = true;
+  CanKick = true;
+  IsAbstract = true;
+  TorsoMainColor = rgb16(200, 200, 200); /* the horn */
+  KnownCWeaponSkills = { 2, KICK, BITE; }
+  CWeaponSkillHits = { 2, 50, 50; }
+  Inventory = { 2, stone { Chance = 50; }, stone { Chance = 50; } }
+  Frequency = 5000;
+
+  Config EVIL;
+  {
+    SkinColor = rgb16(80, 80, 80);
+    Adjective = "black";
+    FleshMaterial = BLACK_UNICORN_FLESH;
+    AttachedGod = MORTIFER;
+    IsSadist = true;
+  }
+
+  Config GOOD;
+  {
+    SkinColor = rgb16(200, 200, 200);
+    Adjective = "white";
+    FleshMaterial = WHITE_UNICORN_FLESH;
+    AttachedGod = DULCIS;
+  }
+
+  Config NEUTRAL;
+  {
+    SkinColor = rgb16(144, 144, 144);
+    Adjective = "gray";
+    FleshMaterial = GRAY_UNICORN_FLESH;
+    AttachedGod = TERRA;
+  }
+}

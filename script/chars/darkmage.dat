@@ -1,0 +1,182 @@
+darkmage
+{
+  HeadBitmapPos = 112, 304;
+  TorsoBitmapPos = 48, 224;
+  ArmBitmapPos = 80, 64;
+  LegBitmapPos = 16, 160;
+  ClothColor = rgb16(50, 50, 50);
+  CanRead = true;
+  CanBeGenerated = true;
+  ClassStates = INFRA_VISION;
+  HostileReplies == "@Dd yells: \"Prepare to meet your maker!\"";
+  FriendlyReplies == "\"Death awaits our foes.\"";
+  IgnoreDanger = true;
+  AttachedGod = INFUSCOR;
+  IsAbstract = true;
+  KnownCWeaponSkills == BLUNT_WEAPONS;
+  IsExtraFragile = true;
+  IsSadist = true;
+
+  Config APPRENTICE;
+  {
+    DefaultArmStrength = 15;
+    DefaultLegStrength = 15;
+    DefaultDexterity = 15;
+    DefaultAgility = 21;
+    DefaultEndurance = 15;
+    DefaultPerception = 21;
+    DefaultIntelligence = 15;
+    DefaultWisdom = 10;
+    DefaultCharisma = 10;
+    DefaultMana = 20;
+    UsesLongAdjectiveArticle = true;
+    Adjective = "apprentice";
+    NameSingular = "dark mage";
+    TotalVolume = 60000;
+    TotalSize = 180;
+    ClothColor = rgb16(80, 80, 80);
+    BeltColor = rgb16(80, 80, 80);
+    Cloak = LEATHER cloak { Enchantment = 2; }
+    RightWielded = OAK_WOOD OAK_WOOD meleeweapon(QUARTER_STAFF) { Enchantment = 3; }
+    HPRequirementForGeneration = 150;
+    DayRequirementForGeneration = 15;
+    Frequency = 1500;
+    PanicLevel = 75;
+    Inventory == lantern;
+    CWeaponSkillHits == 50;
+    RightSWeaponSkillHits = 20;
+    LeftSWeaponSkillHits = 20;
+    PolymorphIntelligenceRequirement = 5;
+    Inventory = { 2, Random { MaxPrice = 500; Category = WAND|SCROLL; Chance = 10; }, Random { MinPrice = 500; Category = WAND|SCROLL; Chance = 5; } }
+    ScienceTalkPossibility = 25;
+    ScienceTalkIntelligenceModifier = 10;
+    ScienceTalkWisdomModifier = 5;
+    ScienceTalkIntelligenceRequirement = 10;
+    ScienceTalkWisdomRequirement = 5;
+  }
+
+  Config ARCH_MAGE;
+  {
+    DefaultArmStrength = 9;
+    DefaultLegStrength = 9;
+    DefaultDexterity = 30;
+    DefaultAgility = 12;
+    DefaultEndurance = 15;
+    DefaultPerception = 12;
+    DefaultIntelligence = 60;
+    DefaultWisdom = 25;
+    DefaultCharisma = 25;
+    DefaultMana = 50;
+    Adjective = "dark";
+    NameSingular = "archmage";
+    DefaultName = "Ischaldirh";
+    ClassStates = INVISIBLE|INFRA_VISION|ESP|TELEPORT_CONTROL;
+    TotalVolume = 100000;
+    TotalSize = 150;
+    IsUnique = true;
+    PanicLevel = 0;
+    TamingDifficulty = 50;
+    IsNameable = false;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    HairColor = rgb16(200, 200, 200);
+    EyeColor = rgb16(0, 0, 0);
+    ClothColor = rgb16(30, 30, 30);
+    CapColor = rgb16(50, 50, 50);
+    BodyArmor = ARCANITE bodyarmor(CHAIN_MAIL) { Enchantment = 5; }
+    Cloak = PHOENIX_FEATHER cloak { Enchantment = 5; }
+    Belt = ANGEL_HAIR belt { Enchantment = 5; }
+    RightBoot = DRAGON_HIDE boot(BOOT_OF_AGILITY) { Enchantment = 5; }
+    RightWielded = OCTIRON OCTIRON meleeweapon(QUARTER_STAFF) { Enchantment = 6; }
+    Inventory = { 10, wand(WAND_OF_RESURRECTION), wand(WAND_OF_STRIKING), wand(WAND_OF_CLONING), wand(WAND_OF_LIGHTNING), wand(WAND_OF_FIRE_BALLS), scrollofcharging, scrollofwishing, holybook(INFUSCOR), key(OCTAGONAL_LOCK), solstone; }
+    HPRequirementForGeneration = 450;
+    DayRequirementForGeneration = 45;
+    PanicLevel = 0;
+    CanBeConfused = false;
+    CWeaponSkillHits == 500;
+    RightSWeaponSkillHits = 200;
+    LeftSWeaponSkillHits = 200;
+    FireResistance = 40;
+    ElectricityResistance = 40;
+    EnergyResistance = 40;
+    PolymorphIntelligenceRequirement = 50;
+    IsImmuneToItemTeleport = true;
+    IsExtraFragile = false;
+    AllowUnconsciousness = false;
+    UndeadVersions = false;
+  }
+
+  Config BATTLE_MAGE;
+  {
+    DefaultArmStrength = 13;
+    DefaultLegStrength = 13;
+    DefaultDexterity = 20;
+    DefaultAgility = 18;
+    DefaultEndurance = 15;
+    DefaultPerception = 18;
+    DefaultIntelligence = 30;
+    DefaultWisdom = 15;
+    DefaultCharisma = 15;
+    DefaultMana = 30;
+    Adjective = "dark";
+    NameSingular = "battlemage";
+    TotalVolume = 70000;
+    TotalSize = 170;
+    HairColor = rgb16(180, 40, 40);
+    CapColor = rgb16(180, 40, 40);
+    Cloak = NYMPH_HAIR cloak { Enchantment = 3; }
+    RightWielded = TEAK_WOOD TEAK_WOOD meleeweapon(QUARTER_STAFF) { Enchantment = 4; }
+    HPRequirementForGeneration = 250;
+    DayRequirementForGeneration = 25;
+    Frequency = 1000;
+    PanicLevel = 25;
+    CWeaponSkillHits == 100;
+    RightSWeaponSkillHits = 50;
+    LeftSWeaponSkillHits = 50;
+    PolymorphIntelligenceRequirement = 20;
+    Inventory = { 2, Random { MaxPrice = 500; Category = WAND|SCROLL; Chance = 25; }, Random { MinPrice = 500; Category = WAND|SCROLL; Chance = 10; } }
+    ScienceTalkPossibility = 50;
+    ScienceTalkIntelligenceModifier = 25;
+    ScienceTalkWisdomModifier = 10;
+    ScienceTalkIntelligenceRequirement = 20;
+    ScienceTalkWisdomRequirement = 10;
+  }
+
+  Config ELDER;
+  {
+    DefaultArmStrength = 11;
+    DefaultLegStrength = 11;
+    DefaultDexterity = 25;
+    DefaultAgility = 15;
+    DefaultEndurance = 15;
+    DefaultPerception = 15;
+    DefaultIntelligence = 45;
+    DefaultWisdom = 20;
+    DefaultCharisma = 20;
+    DefaultMana = 40;
+    UsesLongAdjectiveArticle = true;
+    Adjective = "elder";
+    NameSingular = "dark mage";
+    ClassStates = INFRA_VISION|ESP;
+    TotalVolume = 80000;
+    TotalSize = 160;
+    HairColor = rgb16(140, 140, 140);
+    CapColor = rgb16(80, 80, 160);
+    Cloak = OMMEL_HAIR cloak { Enchantment = 4; }
+    RightWielded = ARCANITE ARCANITE meleeweapon(QUARTER_STAFF) { Enchantment = 5; }
+    HPRequirementForGeneration = 350;
+    DayRequirementForGeneration = 35;
+    Frequency = 500;
+    PanicLevel = 10;
+    CWeaponSkillHits == 200;
+    RightSWeaponSkillHits = 100;
+    LeftSWeaponSkillHits = 100;
+    PolymorphIntelligenceRequirement = 35;
+    Inventory = { 2, Random { MaxPrice = 500; Category = WAND|SCROLL; Chance = 50; }, Random { MinPrice = 500; Category = WAND|SCROLL; Chance = 50; } }
+    ScienceTalkPossibility = 100;
+    ScienceTalkIntelligenceModifier = 100;
+    ScienceTalkWisdomModifier = 50;
+    ScienceTalkIntelligenceRequirement = 35;
+    ScienceTalkWisdomRequirement = 25;
+  }
+}

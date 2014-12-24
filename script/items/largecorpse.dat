@@ -1,0 +1,6 @@
+largecorpse /* corpse -> */
+{
+  BitmapPos = 48, 0;
+  CanBePickedUp = false;
+  OKVisualEffects = NONE;
+}

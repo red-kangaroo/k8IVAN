@@ -1,0 +1,32 @@
+bat
+{
+  DefaultArmStrength = 2;
+  DefaultAgility = 40;
+  DefaultEndurance = 8;
+  DefaultPerception = 24;
+  DefaultIntelligence = 7;
+  DefaultWisdom = 5;
+  DefaultCharisma = 5;
+  DefaultMana = 0;
+  StandVerb = "flying";
+  CanOpen = false;
+  TotalVolume = 1000;
+  TorsoBitmapPos = 464, 16;
+  HostileReplies == "@Dd squeaks evilly.";
+  FriendlyReplies == "@Dd squeaks happily.";
+  TotalSize = 20;
+  SkinColor = rgb16(64, 64, 64);
+  NameSingular = "bat";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 200;
+  CanBeGenerated = true;
+  ClassStates = INFRA_VISION;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  PanicLevel = 75;
+  FleshMaterial = BAT_FLESH;
+  AttachedGod = INFUSCOR;
+  BiteCapturesBodyPart = false;
+  MoveType = FLY;
+  IsCatacombCreature = true;
+}

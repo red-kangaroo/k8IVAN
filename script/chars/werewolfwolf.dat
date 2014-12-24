@@ -1,0 +1,37 @@
+werewolfwolf
+{
+  DefaultArmStrength = 25;
+  DefaultLegStrength = 25;
+  DefaultDexterity = 35;
+  DefaultAgility = 35;
+  DefaultEndurance = 25;
+  DefaultPerception = 24;
+  DefaultIntelligence = 10;
+  DefaultWisdom = 10;
+  DefaultCharisma = 10;
+  DefaultMana = 0;
+  TotalVolume = 70000;
+  EyeColor = rgb16(200, 200, 0);
+  ClothColor = rgb16(114, 84, 52);
+  SkinColor = rgb16(100, 100, 100);
+  HeadBitmapPos = 112, 144;
+  TorsoBitmapPos = 48, 0;
+  ArmBitmapPos = 64, 240;
+  LegBitmapPos = 0, 192;
+  HostileReplies == "@Dd growls in fury.";
+  FriendlyReplies == "@Dd growls cheerfully.";
+  TotalSize = 200;
+  NameSingular = "werewolf";
+  NamePlural = "werewolves";
+  AttackStyle = USE_HEAD;
+  Sex = UNDEFINED;
+  BaseBiteStrength = 1200;
+  CanUseEquipment = false;
+  CanBeWished = false;
+  ClassStates = INFRA_VISION;
+  PanicLevel = 0;
+  FleshMaterial = WERE_WOLF_FLESH;
+  AttachedGod = INFUSCOR;
+  WillCarryItems = true;
+  UndeadVersions = false;
+}

@@ -1,0 +1,19 @@
+gorovitscopyoflenin /* item-> */
+{
+  DefaultSize = 180; /* all details to height of Lenin appreciated */
+  Category = MISC;
+  DefaultMainVolume = 80000;
+  DefaultSecondaryVolume = 100; /* clothes */
+  MainMaterialConfig == LEAD;
+  SecondaryMaterialConfig == FABRIC;
+  Adjective = "Gorovits family life-size";
+  NameSingular = "copy";
+  NamePlural = "copies";
+  PostFix = "of Lenin's mummy";
+  FormModifier = 15;
+  AttachedGod = SOPHOS;
+  BitmapPos = 80, 48;
+  Possibility = 0;
+  Price = 50;
+  Alias == "Lenin";
+}

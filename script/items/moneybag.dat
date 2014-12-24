@@ -1,0 +1,19 @@
+moneybag
+{
+  DefaultSize = 20;
+  Possibility = 90;
+  Price = 2;
+  Category = VALUABLE; /* ??? */
+  DefaultMainVolume = 1000;
+  StrengthModifier = 25;
+  BitmapPos = 80, 416;
+  FormModifier = 15;
+  NameSingular = "bag";
+  PostFix = "of money";
+  MainMaterialConfig == PARCHMENT;
+  Alias == "moneybag";
+  Roundness = 60;
+  AttachedGod = MELLIS;
+  /*WieldedBitmapPos = 160, 128;*/
+  IsValuable = true;
+}

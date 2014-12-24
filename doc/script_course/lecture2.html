@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>IVAN script lecture 2</title>
+</head>
+<body>
+
+<h2>holybanana's IVAN script course, lecture II</h2>
+<h4>Instantiation of entities</h4>
+
+<p>From <a href="lecture1.html">lecture I</a>, you have a new ground terrain of type solidterrain, config CUSTOM_TERRAIN. We now want to use this in the game.</p>
+<p>The data of IVAN's levels is stored in the file dungeon.dat. Let's choose level 1 of gloomy cave to edit. The name of gloomy cave is ELPURI_CAVE in the script. There is a line</p>
+
+<pre>Dungeon ELPURI_CAVE;</pre>
+
+<p>in dungeon.dat. Below it you will find the following entry:</p>
+
+<pre>
+  Level 0;
+  {
+    FillSquare = solidterrain(GROUND), MORAINE earth;
+
+    RoomDefault
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      WallSquare = solidterrain(GROUND), FIR_WOOD wall(BRICK_OLD);
+      FloorSquare = solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(PARQUET), FIR_WOOD door;
+    }
+  }
+</pre>
+
+<p>This is level 1, because in the script levels are numbered 0,1,2,... Now experiment by changing solidterrain(PARQUET) to solidterrain(CUSTOM_TERRAIN) in both of the lines where it occurs above.</p>
+<p>Now you've made your first (quite artificial) modification to IVAN! How to test it quickly? Enter the game, activate Wizard Mode, press 3 (see whole map cheat), search the gloomy cave in the look mode, press 4 (walk through walls and over water cheat), run to the cave and enter it. Note that the floors of all the rooms have changed to your custom terrain.</p>
+<p>Of course, there are many more values you can change in dungeon.dat. You see many statements of the form X = Y; or X = Y(Z); here. All of these mean that when IVAN needs the thing X, it instantiates an entity of type Y. If Z is not defined, it uses the main config, otherwise config Z is chosen. If the main config is not available, a random config is chosen. For instance in the case of the type kamikazedwarf, there is no "generic kamikaze dwarf", only a dwarf for each god. Another example is solidterrain. Remember that it had a line IsAbstract=true; in it when we presented its definition in the last lecture. This is just the command that makes the main config unavailable.</p>
+<p>Let's present another example of instantiation. In char.dat you note that there is a type orc and it has a config SLAUGHTERER. The script</p>
+
+<pre>
+    Square, Random;
+    {
+      Character = orc(SLAUGHTERER);
+    }
+</pre>
+
+<p>adds an orc slaughterer to the GC1 if you put it inside the definition of Level 0 above.</p>
+<p>Often, you want to give further orders how to instantiate an entity. One way to do this is to change its material. This is easy, just add the material's config's name before the instantiation. For example GOLD solidterrain(CUSTOM_TERRAIN) instantiates a golden custom terrain. For some entities there may be more materials. Then you may specify them all, for instance STEEL RUBY meleeweapon(LONG_SWORD) creates a steel long sword with a ruby handle. If the materials are not specified, the game uses the default materials in the respective database.</p>
+<p>Note that this syntax for changing materials doesn't currently work for characters. How do you make a valpurium golem then? There is a config for a golem of each material. So you don't write VALPURIUM golem but golem(VALPURIUM). The former is not a syntax error, but it doesn't work (it should, in fact, I'll have to correct this some day).</p>
+<p>Another way to customize the instantiation is to add parameters to it. This is done in a block surrounded by the symbols { and } after the instantiation. For instance, for items you can specify a chance to appear. This is a percentage, so chance 50 means the item appears 5 times in 10 games on average. Example of use: STEEL RUBY meleeweapon(LONG_SWORD) { Chance = 50; }</p>
+<p>There are many other parameters for entities, but we will not list them in this lecture.</p>
+<p>Instantiation is used in files other than dungeon.dat, too. For example, for any humanoid character in char.dat equipment is instantiated as above. For instance RightWielded = STEEL RUBY meleeweapon(LONG_SWORD) { Chance = 50; } means that the character has a 50% chance of having a steel/ruby long sword in his or her right hand when he or she is generated. Note that the script has little error checking here, the game may crash if you try to equip a weapon to a monster which does not have hands. So always check whether the instantiation commands you give are sane.</p>
+<p>That's enough for now. As an exercise, try giving the player (char.dat, type playerkind, main config) some starting equipment, for instance by copypasting someone else's equipment. Then add Sherarax to a random place in New Attnam and set her Team to MONSTER_TEAM. Tweak your equipment, but not your attributes, until you can beat her in melee combat and take a screenshot of the situation, with equipment screen open and her death message clearly shown in the message panel.</p>
+
+<hr>
+
+<h4>Appendix: Comparison to source code</h4>
+
+<p>It is interesting to compare the contents of this lecture to how the same things are done in the source code. If you want to create a character, item or terrain of type X and config Y, you use the following command:</p>
+
+<pre>X::Spawn(Y);</pre>
+
+<p>This returns a pointer to an object of the type X. For instance,</p>
+
+<pre>bear* Teddy = bear::Spawn(POLAR_BEAR);</pre>
+
+<p>creates a bear to which Teddy points at. If you want to use the main config, you may leave out the Y and just call Spawn(). Note that this does not choose a random config if the main config is unavailable, like in the script. It may crash in this case, so always check that the IsAbstract is not set to true if you want to use the main config.</p>
+<p>You can use the same syntax for materials, but since their configs are all distinct even if the types differ, you can use a shorter macro to create them:</p>
+
+<pre>
+material* Material = MAKE_MATERIAL(X,Y);
+</pre>
+
+<p>Here X is the config, for instance IRON, and Y is the volume, in cubic centimetres (1/1000th of a litre). You don't have to define the volume if you just change some object's material. Just leave it out then, and the game summons as much material as was present before the change.</p>
+<p>Note that you must put whatever you created somewhere before it appears in the game. This is done differently for materials, terrains, items and characters. For characters, you must also set its team. Search for Spawn and MAKE_MATERIAL in the code to find example how this is done. Here's one though.</p>
+
+<pre>
+  darkmage* Izzy = darkmage::Spawn(ARCH_MAGE);
+  Izzy->SetTeam(game::GetTeam(MONSTER_TEAM));
+  Izzy->PutToOrNear(PLAYER->GetPos());
+</pre>
+
+<p>Copypaste this at the beginning of the function commandsystem::NOP (short for No OPeration) in Main/Source/command.cpp. You must also add the following includes to the file:</p>
+
+<pre>
+#include "human.h" //the class darkmage is declared here
+#include "confdef.h" //the definition of ARCH_MAGE is here
+</pre>
+
+<p>Start a game and summon a few archmages from the wait command '.'. Good luck.</p>
+
+<p>When you've fed up with mutilation, clones and arcanite golems, let's move to a serious exercise. How do you modify commandsystem::NOP so that every time '.' is pressed the holy banana of Oily Orpiv is summoned in you inventory? Present the whole function and the includes.</p>
+
+<hr>
+
+<p>
+<a href="lecture1.html">Previous lecture</a>
+<a href="lecture3.html">Next lecture</a>
+<a href="index.html">Back to main</a>
+</p>
+
+<hr>
+
+<p>Last modified September 1 2006.</p>
+
+</body>
+</html>

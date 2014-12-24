@@ -1,0 +1,47 @@
+olterraincontainer /* olterrain->decoration-> */
+{
+  IsAbstract = true;
+  Walkability = ETHEREAL;
+  DigMessage = "You smash this piece of furniture into pieces.";
+
+  Config BOOK_CASE;
+  {
+    CanBeDestroyed = true;
+    MainMaterialConfig == FIR_WOOD;
+    NameSingular = "bookcase";
+    BitmapPos = 16, 272;
+    SitMessage = "The bookcase is very unconfortable to sit on.";
+    StorageVolume = 100000;
+    // CLIVAN; old -- HPModifier = 20;
+    HPModifier = 5;
+    AttachedGod = SOPHOS;
+    LeftOverItems == NaturalMaterialForm { MainMaterial = 0 { Volume = 250:750; } Times = 1:2; }
+  }
+
+  Config CHEST_OF_DRAWERS;
+  {
+    CanBeDestroyed = true;
+    MainMaterialConfig == FIR_WOOD;
+    NameSingular = "chest of drawers";
+    BitmapPos = 0, 224;
+    SitMessage = "The chest of drawers is very unconfortable to sit on.";
+    StorageVolume = 50000;
+    HPModifier = 40;
+    AttachedGod = SOPHOS;
+    LeftOverItems == NaturalMaterialForm { MainMaterial = 0 { Volume = 500:1000; } Times = 1:2; }
+  }
+
+  Config SHELF;
+  {
+    CanBeDestroyed = true;
+    MainMaterialConfig == FIR_WOOD;
+    NameSingular = "";
+    BitmapPos = 16, 128;
+    SitMessage = "The shelf is very unconfortable to sit on.";
+    StorageVolume = 80000;
+    HPModifier = 20;
+    AttachedGod = ATAVUS;
+    LeftOverItems == NaturalMaterialForm { MainMaterial = 0 { Volume = 250:750; } Times = 1:2; }
+    MaterialColorB = rgb16(200,200,200);
+  }
+}

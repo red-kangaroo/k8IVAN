@@ -1,0 +1,103 @@
+skeleton
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 10;
+  DefaultDexterity = 10;
+  DefaultAgility = 10;
+  DefaultEndurance = 10;
+  DefaultPerception = 9;
+  DefaultIntelligence = 4;
+  DefaultWisdom = 4;
+  DefaultCharisma = 3;
+  DefaultMana = 5;
+  SkinColor = rgb16(160, 160, 160);
+  EyeColor = rgb16(0, 0, 0);
+  ClothColor = rgb16(111, 74, 37);
+  HeadBitmapPos = 96, 96;
+  TorsoBitmapPos = 32, 96;
+  ArmBitmapPos = 64, 96;
+  LegBitmapPos = 0, 80;
+  TotalVolume = 10000;
+  TotalSize = 150;
+  NameSingular = "skeleton";
+  CanBeGenerated = true;
+  Helmet = helmet;
+  RightWielded = meleeweapon(AXE) { Enchantment = -2; }
+  KnownCWeaponSkills == AXES;
+  CWeaponSkillHits == 20;
+  RightSWeaponSkillHits = 10;
+  PanicLevel = 0;
+  HostileReplies == "@Dd grunts: \"Bones. Need more bones.\"";
+  FriendlyReplies == "@Dd sings: \"Leg bone is connected to the hib bone, hib bone is connected to the rib bone...\"";
+  FleshMaterial = BONE;
+  DeathMessage = "@Dd is transformed into a crumpled heap of bones.";
+  SpillsBlood = false;
+  Sweats = false;
+  UsesNutrition = false;
+  AttachedGod = MORTIFER;
+  ClassStates = GAS_IMMUNITY;
+  WieldedPosition = 0, -1;
+  IsExtraFragile = true;
+  CanChoke = false;
+  IsCatacombCreature = true;
+  UndeadVersions = false;
+  CreateUndeadConfigurations = true;
+  UndeadAttributeModifier = 75;
+  UndeadVolumeModifier = 25;
+  UndeadCopyMaterials = false;
+  Frequency = 500;
+
+  Config WARRIOR;
+  {
+    AttributeBonus = 100;
+    RightWielded = meleeweapon(MACE) { Enchantment = -1; }
+    KnownCWeaponSkills == BLUNT_WEAPONS;
+    CWeaponSkillHits == 100;
+    RightSWeaponSkillHits = 50;
+    NameSingular = "skeleton warrior";
+    TotalVolume = 20000;
+    EyeColor = rgb16(255, 0, 0);
+    ClothColor = rgb16(32, 32, 32);
+    CanRead = true;
+    CreateUndeadConfigurations = false;
+  }
+
+  Config WAR_LORD;
+  {
+    AttributeBonus = 200;
+    Helmet = METEORIC_STEEL helmet(FULL_HELMET);
+    Cloak = PHOENIX_FEATHER cloak;
+    BodyArmor = ILLITHIUM bodyarmor(BROKEN|CHAIN_MAIL);
+    RightWielded = RUBY RUBY flamingsword(LONG_SWORD) { Enchantment = 0; }
+    LeftWielded = ARCANITE shield;
+    RightGauntlet = ANGEL_HAIR gauntlet;
+    RightRing = ring(RING_OF_INFRA_VISION);
+    RightBoot = MITHRIL boot;
+    KnownCWeaponSkills = { 2, LARGE_SWORDS, SHIELDS; }
+    CWeaponSkillHits = { 2, 500, 500; }
+    RightSWeaponSkillHits = 200;
+    LeftSWeaponSkillHits = 200;
+    NameSingular = "skeleton warlord";
+    IsUnique = true;
+    CanBeWished = true;
+    DefaultName = "Xinroch";
+    DangerModifier = 1500;
+    IsNameable = false;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    TotalVolume = 40000;
+    EyeColor = rgb16(255, 255, 0);
+    ClothColor = rgb16(100, 0, 0);
+    Inventory = { 2, wand(WAND_OF_RESURRECTION), solstone; }
+    CanBeConfused = false;
+    CanRead = true;
+    FireResistance = 100;
+    ElectricityResistance = 100;
+    EnergyResistance = 100;
+    ClassStates = GAS_IMMUNITY|TELEPORT_CONTROL;
+    IsImmuneToItemTeleport = true;
+    IsExtraFragile = false;
+    TamingDifficulty = NO_TAMING;
+    CreateUndeadConfigurations = false;
+  }
+}

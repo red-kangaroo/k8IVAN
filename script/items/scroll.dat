@@ -1,0 +1,18 @@
+scroll
+{
+  Category = SCROLL;
+  DefaultMainVolume = 250;
+  StrengthModifier = 25;
+  BitmapPos = 16, 176;
+  FormModifier = 20;
+  DefaultSize = 30;
+  NameSingular = "scroll";
+  MainMaterialConfig == PARCHMENT;
+  IsAbstract = true;
+  Roundness = 15;
+  WieldedBitmapPos = 176, 144;
+  AllowEquip = false;
+  TeleportPriority = 300;
+  //LevelTags := { "UT level 0", "UT level 1", "*"; }
+  //LevelTags := { "nowhere"; }
+}

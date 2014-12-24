@@ -1,0 +1,12 @@
+magicalwhistle /* whistle-> */
+{
+  Possibility = 5;
+  MainMaterialConfig == RUBY;
+  NameSingular = "whistle";
+  Adjective = "magical";
+  Price = 1500;
+  Alias == "magic whistle";
+  CanBePiled = false;
+  AttachedGod = DULCIS;
+  TeleportPriority = 10000;
+}

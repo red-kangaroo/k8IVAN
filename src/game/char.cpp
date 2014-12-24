@@ -1094,7 +1094,15 @@ void character::Die (ccharacter *Killer, cfestring &Msg, feuLong DeathFlags) {
     ADD_MESSAGE("You die.");
     game::DrawEverything();
     if (game::TruthQuestion(CONST_S("Do you want to save screenshot? [y/n]"), REQUIRES_ANSWER)) {
-      festring dir = inputfile::GetMyDir()+"/DeathShots";
+      festring dir;
+#ifdef LOCAL_SAVES
+      dir << ivanconfig::GetMyDir() << "/save";
+      mkdir(dir.CStr(), 0755);
+#else
+      dir << getenv("HOME") << "/.ivan-save";
+      mkdir(dir.CStr(), 0755);
+#endif
+      dir << "/deathshots";
       mkdir(dir.CStr(), 0755);
       festring timestr;
       time_t t = time(NULL);

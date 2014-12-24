@@ -1,0 +1,137 @@
+/*
+ * Description of hard-coded teams:
+ * 0 == PLAYER_TEAM == Player and pets
+ * 1 == MONSTER_TEAM == Monsters, default relation to other teams == hostile
+ * 2 == ATTNAM_TEAM == Residents of Attnam
+ * 3 == SUMO_TEAM == Huang Ming Pong during an arena figth
+ * 4 == VALPURUS_ANGEL_TEAM
+ * 5 == GC_SHOPKEEPER_TEAM == shopkeeper in GC
+ * 6 == IVAN_TEAM == Ivan the Communist team
+ * 7 == NEW_ATTNAM_TEAM == natives and ostriches of New Attnam
+ * 8 == COLONIST_TEAM == colonists of New Attnam
+ * 9 == TOURIST_GUIDE_TEAM == dummy team which holds the village elder, who tourists follow
+ * 10 == TOURIST_TEAM == tourists of New Attnam
+ * 11 == BETRAYED_TEAM == pets which the player has angered
+ * 12 == MONDEDR_TEAM
+ * 13 == KHARAZ_ARAD_TEAM
+ * 14 == FORESTMAN_TEAM
+ * 15 == SOLICITUS_TEAM
+ * 16 == MORBE_TEAM
+ */
+
+//don't need this anymore
+//Teams = 17;
+
+Team PLAYER_TEAM;
+{
+  Name = "Player";
+}
+
+Team MONSTER_TEAM;
+{
+  Name = "Monster";
+  Relation PLAYER_TEAM, HOSTILE; // don't really need this, 'cause monsters are forced hostile to everyone
+}
+
+Team ATTNAM_TEAM;
+{
+  Name = "Attnam";
+  Relation PLAYER_TEAM, UNCARING;
+  KillEvilness = 50;
+}
+
+Team SUMO_TEAM;
+{
+  Name = "Sumo";
+  Relation PLAYER_TEAM, HOSTILE;
+}
+
+Team VALPURUS_ANGEL_TEAM; /* Spawned hostile angels */
+{
+  Name = "Valpurus Angel";
+  Relation PLAYER_TEAM, HOSTILE;
+  Relation MONSTER_TEAM, UNCARING;
+}
+
+Team GC_SHOPKEEPER_TEAM; /* Dungeon shopkeepers */
+{
+  Name = "Shopkeeper";
+  Relation MONSTER_TEAM, UNCARING;
+  KillEvilness = 100;
+}
+
+Team IVAN_TEAM;
+{
+  Name = "Ivan";
+  KillEvilness = 100;
+}
+
+Team NEW_ATTNAM_TEAM;
+{
+  Name = "New Attnam";
+  KillEvilness = 50;
+}
+
+Team COLONIST_TEAM;
+{
+  Name = "Colonist";
+  Relation NEW_ATTNAM_TEAM, FRIEND;
+}
+
+Team TOURIST_GUIDE_TEAM;
+{
+  Name = "Tourist Guide";
+  Relation NEW_ATTNAM_TEAM, FRIEND;
+  Relation COLONIST_TEAM, FRIEND;
+  KillEvilness = 50;
+}
+
+Team TOURIST_TEAM;
+{
+  Name = "Tourist";
+  Relation NEW_ATTNAM_TEAM, FRIEND;
+  Relation COLONIST_TEAM, FRIEND;
+  KillEvilness = 10;
+}
+
+Team BETRAYED_TEAM;
+{
+  Name = "Betrayed";
+  Relation PLAYER_TEAM, HOSTILE;
+  KillEvilness = 10;
+}
+
+Team MONDEDR_TEAM;
+{
+  Name = "Mondedr";
+  Relation PLAYER_TEAM, FRIEND;
+  KillEvilness = 50;
+}
+
+Team KHARAZ_ARAD_TEAM;
+{
+  Name = "Kharaz Arad";
+  Relation PLAYER_TEAM, FRIEND;
+  KillEvilness = 50;
+}
+
+Team FORESTMAN_TEAM;
+{
+  Name = "Forestman";
+  Relation MONSTER_TEAM, UNCARING;
+  KillEvilness = 50;
+}
+
+Team SOLICITUS_TEAM;
+{
+  Name = "Solicitus";
+  Relation MONSTER_TEAM, UNCARING;
+  KillEvilness = 50;
+}
+
+Team MORBE_TEAM;
+{
+  Name = "Morbe";
+  Relation MONSTER_TEAM, UNCARING;
+  KillEvilness = 50;
+}

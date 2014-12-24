@@ -1,0 +1,9 @@
+torso /* bodypart-> */
+{
+  StrengthModifier = 250;
+  FormModifier = 10;
+  NameSingular = "torso";
+  IsAbstract = true;
+  Roundness = 60;
+  WieldedBitmapPos = 160, 144;
+}

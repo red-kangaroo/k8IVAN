@@ -1,0 +1,7 @@
+largecreature
+{
+  IsAbstract = true;
+  CanBeWished = false;
+  CanBeGenerated = false;
+  IsEnormous = true;
+}

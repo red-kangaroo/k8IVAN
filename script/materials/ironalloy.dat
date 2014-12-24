@@ -1,0 +1,96 @@
+ironalloy /* metals that rust */
+{
+  ConsumeType = CT_METAL;
+  AttachedGod = LORICATUS;
+  CategoryFlags = Base|IS_METAL|IS_GOLEM_MATERIAL;
+
+  Config ADAMANT;
+  {
+    StrengthValue = 350;
+    ConsumeType = CT_METAL;
+    // CLIVAN; old -- Density = 10000;
+    Density = 5000;
+    Color = rgb16(220, 220, 240);
+    // CLIVAN; old -- PriceModifier = 6000;
+    PriceModifier = 10000;
+    NameStem = "adamant";
+    AdjectiveStem = "adamantine";
+    AttachedGod = LORICATUS;
+    // CLIVAN; old -- RustModifier = 25;
+    RustModifier = 15;
+    IntelligenceRequirement = 40;
+    HardenedMaterial = VALPURIUM;
+    CommonFlags = Base|IS_VALUABLE;
+    NameFlags = Base|USE_AN;
+    CategoryFlags = Base|IS_SPARKLING;
+  }
+
+  Config DAMASCUS_STEEL;
+  {
+    // CLIVAN; old -- StrengthValue = 400;
+    StrengthValue = 175;
+    ConsumeType = CT_METAL;
+    // CLIVAN; old -- Density = 5000;
+    Density = 10000;
+    Color = rgb16(80, 80, 80);
+    // CLIVAN; old -- PriceModifier = 10000;
+    PriceModifier = 500;
+    NameStem = "damascus steel";
+    AttachedGod = LORICATUS;
+    // CLIVAN; old -- RustModifier = 5;
+    // CLIVAN; old -- HardenedMaterial = VALPURIUM;
+    RustModifier = 25;
+    HardenedMaterial = ADAMANT;
+    SoftenedMaterial = METEORIC_STEEL;
+    // CLIVAN; old -- IntelligenceRequirement = 60;
+    IntelligenceRequirement = 20;
+    CommonFlags = Base|IS_VALUABLE;
+  }
+
+  Config IRON;
+  {
+    StrengthValue = 100;
+    Density = 8000;
+    Color = rgb16(96, 96, 96);
+    PriceModifier = 40;
+    NameStem = "iron";
+    RustModifier = 100;
+    HardenedMaterial = STEEL;
+    SoftenedMaterial = BRONZE;
+    IntelligenceRequirement = 5;
+    NameFlags = Base|USE_AN;
+  }
+
+  Config METEORIC_STEEL;
+  {
+    StrengthValue = 150;
+    ConsumeType = CT_METAL;
+    Density = 7000;
+    Color = rgb16(160, 160, 160);
+    PriceModifier = 250;
+    NameStem = "meteoric steel";
+    AttachedGod = LORICATUS;
+    RustModifier = 50;
+    // CLIVAN; old -- HardenedMaterial = ADAMANT;
+    HardenedMaterial = DAMASCUS_STEEL;
+    SoftenedMaterial = STEEL;
+    IntelligenceRequirement = 15;
+    CommonFlags = Base|IS_VALUABLE;
+  }
+
+  Config STEEL;
+  {
+    StrengthValue = 125;
+    ConsumeType = CT_METAL;
+    Density = 7500;
+    Color = rgb16(128, 128, 128);
+    PriceModifier = 40;
+    NameStem = "steel";
+    AttachedGod = LORICATUS;
+    RustModifier = 75;
+    HardenedMaterial = METEORIC_STEEL;
+    SoftenedMaterial = IRON;
+    IntelligenceRequirement = 10;
+    CommonFlags = Base|IS_VALUABLE;
+  }
+}

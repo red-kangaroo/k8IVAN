@@ -1,0 +1,51 @@
+warlock
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 10;
+  DefaultDexterity = 10;
+  DefaultAgility = 15;
+  DefaultEndurance = 12;
+  DefaultPerception = 20;
+  DefaultIntelligence = 15;
+  DefaultWisdom = 10;
+  DefaultCharisma = 5;
+  DefaultMana = 25;
+  SkinColor = rgb16(0, 96, 0);
+  EyeColor = rgb16(180, 100, 0);
+  ClothColor = rgb16(48, 32, 16);
+  HeadBitmapPos = 96, 528;
+  TorsoBitmapPos = 32, 112;
+  ArmBitmapPos = 64, 144;
+  LegBitmapPos = 16, 64;
+  TotalVolume = 25000;
+  TotalSize = 100;
+  NameSingular = "warlock";
+  CanBeGenerated = true;
+  Sex = UNDEFINED;
+  Adjective = "goblin";
+  CanRead = true;
+  ClassStates = INFRA_VISION;
+  IgnoreDanger = true;
+  AttachedGod = INFUSCOR;
+  /*IsAbstract = true;*/
+  KnownCWeaponSkills == POLE_ARMS;
+  Cloak = LEATHER cloak { Enchantment = 2; }
+  Helmet = LEATHER helmet;
+  BodyArmor = HARDENED_LEATHER bodyarmor(PLATE_MAIL) { Enchantment = 1; }
+  RightWielded = BONE BONE meleeweapon(QUARTER_STAFF) { Enchantment = 1; }
+  CWeaponSkillHits == 20;
+  RightSWeaponSkillHits = 10;
+  LeftSWeaponSkillHits = 10;
+  DangerModifier = 150;
+  HPRequirementForGeneration = 50;
+  DayRequirementForGeneration = 3;
+  Frequency = 1500;
+  PolymorphIntelligenceRequirement = -5;
+  PanicLevel = 66;
+  HostileReplies == "@Dd yells goblin spells at you.";
+  FriendlyReplies == "@Dd laughs: \"Humie friend. Many mommo we teleport. Many spider we polymorph.\"";
+  FleshMaterial = GOBLINOID_FLESH;
+  WieldedPosition = 0, -2;
+  Inventory = { 3, wand(WAND_OF_TELEPORTATION), wand(WAND_OF_DOOR_CREATION), wand(WAND_OF_ACID_RAIN); }
+  IsAlcoholic = true;
+}

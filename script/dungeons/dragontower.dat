@@ -1,0 +1,74 @@
+Dungeon DRAGON_TOWER;
+{
+  Levels = 2;
+
+  Level 0;
+  {
+    LevelMessage = "Please end my suffering";
+    Description = "Dragon Tower";
+    ShortDescription = "DT1";
+    FillSquare = solidterrain(GRASS_TERRAIN), 0;
+    Size = 30, 30;
+    GenerateMonsters = false;
+    Rooms = 1;
+    Items = 0;
+    IsOnGround = true;
+    TeamDefault = MONSTER_TEAM;
+    LOSModifier = 48;
+    IgnoreDefaultSpecialSquares = false;
+    AutoReveal = true;
+    CanGenerateBone = false;
+    DifficultyBase = 50;
+    DifficultyDelta = 0;
+    EnchantmentMinusChanceBase = -15;
+    EnchantmentMinusChanceDelta = 0;
+    EnchantmentPlusChanceBase = 0;
+    EnchantmentPlusChanceDelta = 0;
+    BackGroundType = GREEN_FRACTAL;
+
+    RoomDefault
+    {
+      Pos = 2:36,2:36;
+      Size = 4:6,4:6;
+      AltarPossible = false;
+      WallSquare = solidterrain(GRASS_TERRAIN), wall(BRICK_OLD);
+      FloorSquare = MARBLE solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(GRASS_TERRAIN), BALSA_WOOD door;
+      GenerateDoor = false;
+      DivineMaster = 0;
+      GenerateTunnel = false;
+      GenerateLanterns = false;
+      Type = ROOM_NORMAL;
+      GenerateFountains = false;
+      AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
+      Shape = ROUND_CORNERS;
+      IsInside = true;
+      GenerateWindows = false;
+      UseFillSquareWalls = false;
+      Flags = 0;
+      GenerateWards = false;
+    }
+
+    Room
+    {
+      Pos = 7,7;
+      Size = 15,15;
+      AltarPossible = false;
+      GenerateFountains = false;
+      Shape = ROUND_CORNERS;
+
+      Square, Pos 7,7;
+      {
+        OTerrain = stairs(STAIRS_UP);
+        EntryIndex = STAIRS_UP;
+      }
+    }
+
+    Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;
+    {
+      OTerrain = decoration(FIR);
+      Times = 50;
+    }
+  }
+}

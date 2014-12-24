@@ -220,7 +220,7 @@ int Main (int argc, char *argv[]) {
         }
         break;
       case 1: {
-        festring LoadName = iosystem::ContinueMenu(WHITE, LIGHT_GRAY, game::GetSaveDir());
+        festring LoadName = iosystem::ContinueMenu(WHITE, LIGHT_GRAY, game::GetSavePath());
         if (LoadName.GetSize()) {
           LoadName.Resize(LoadName.GetSize()-4);
           if (game::Init(LoadName)) {

@@ -1,0 +1,8 @@
+head /* bodypart-> */
+{
+  StrengthModifier = 200;
+  FormModifier = 10;
+  NameSingular = "head";
+  Roundness = 70;
+  WieldedBitmapPos = 160, 128;
+}

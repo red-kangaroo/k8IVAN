@@ -1,0 +1,59 @@
+hedgehog
+{
+  DefaultArmStrength = 2;
+  DefaultAgility = 15;
+  DefaultEndurance = 10;
+  DefaultPerception = 12;
+  DefaultIntelligence = 5;
+  DefaultWisdom = 5;
+  DefaultCharisma = 6;
+  DefaultMana = 0;
+  TotalVolume = 5000;
+  TorsoBitmapPos = 112, 0;
+  HostileReplies == "@Dd ignores you.";
+  FriendlyReplies == "@Dd ignores you.";
+  TotalSize = 30;
+  SkinColor = rgb16(180, 160, 130);
+  Adjective = "large";
+  NameSingular = "hedgehog";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 300;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  FleshMaterial = HEDGEHOG_FLESH;
+  AttachedGod = SILVA;
+  AutomaticallySeen = true;
+  CanOpen = false;
+  //LevelTags := { "UT level 0", "UT level 1", "*"; }
+
+  Config SONIC;
+  {
+    DefaultArmStrength = 20;
+    DefaultAgility = 65;
+    DefaultEndurance = 30;
+    DefaultPerception = 25;
+    DefaultIntelligence = 10;
+    DefaultWisdom = 10;
+    DefaultCharisma = 50;
+    Adjective = 0;
+    DefaultName = "Sonic";
+    Alias == "Sonic";
+    IsUnique = true;
+    SkinColor = rgb16(50, 50, 180);
+    FriendlyReplies :=
+    {
+      "\"Way past cool!\"",
+      "\"I'm waaaiiitiiiinnng. \"",
+      "\"Up, over, and gone!.\"";
+      "\"Gotta juice and loose.\"";
+      "\"Let's go slo-mo!\"";
+      "\"'scuse me while I chunk my breakfeast...\"";
+      "\"Asta la vista!.\"";
+      "\"Gotta speed jeeves.\"";
+      "\"Let's do it to it.\"";
+      "\"It's juice and jam time.\"";
+      "\"Bummer majores!\"";
+    }
+  }
+}

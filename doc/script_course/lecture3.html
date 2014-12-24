@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>IVAN script lecture 3</title>
+</head>
+<body>
+
+<h2>holybanana's IVAN script course, lecture III</h2>
+<h4>Overview of the structure of IVAN and its script and graphics files</h4>
+
+<p>The <i>world map</i> of IVAN is hard-coded. In the world map there are
+<i>dungeons</i>, currently Attnam, New Attnam, UT and GC. In dungeons there
+is a number of <i>levels</i>. Levels consist of <i>squares</i>. Some, but not all squares
+belong to a <i>room</i>. The <i>entities</i> which
+can occur in a square of a level of IVAN include <i>objects</i> and <i>characters</i>.
+Objects are things that can be made of <i>materials</i>. <i>Terrains</i> and <i>items</i>
+are objects. There is always a <i>ground terrain</i> in a square. There may
+also be an <i>over terrain</i> over it, for instance a wall or a throne.
+Characters are made up from special items called <i>bodyparts</i>.
+Every character belongs to a <i>team</i>.
+The content of dungeons and levels and the properties of the aforementioned
+entities are mostly defined by the script. There are special entities, for
+instance webs, which are hard-coded, and many entities have special
+properties which are too difficult to be defined by the simple language
+of the script, so they are hard-coded, too.</p>
+
+<p>We will now fully list the things that can be defined in the script and the
+files where their data is located.</p>
+
+<p>dungeons: dungeon.dat<br>
+levels: dungeon.dat<br>
+rooms: dungeon.dat<br>
+squares: dungeon.dat<br>
+teams: dungeon.dat<br>
+materials: material.dat<br>
+ground terrains: glterra.dat<br>
+over terrains: olterra.dat<br>
+items: item.dat<br>
+characters: char.dat</p>
+
+<p>The names glterra.dat and olterra.dat come from the class names ground level terrain
+and over level terrain. In the game there are also ground world map terrains
+and over world map terrains, but their properties cannot be defined in the script.</p>
+
+<p>Note that characters are divided further to <i>humanoids</i>
+and <i>nonhumanoids</i>. The former have seven bodyparts, the latter
+only one, the torso. You currently have to look at the source code
+to know which characters are humanoids and which nonhumanoids, if you
+don't remember it from the game. We apologize for the inconvenience
+and will correct this.</p>
+
+<p>There is also define.dat which contains definitions of the form
+#define DEFINITION expression. If DEFINITION is encountered when parsing
+the script, the value of expression is substituted for it. So
+since the file contains a line #define WAR_LADY 3 every string WAR_LADY in the
+script is really just number 3, the config number of mistress warladies.
+The syntax is chosen so that the same definition can be used in
+the source code, too. In the file Main/Include/confdef.h there is
+the same line #define WAR_LADY 3, and this is a valid C++ macro definition.
+So WAR_LADY may be used both in the script and the code and has the
+same meaning.</p>
+
+<p>In <a href="lecture1.html">lecture I</a> we noted that the graphics
+of ground terrains must be chosen from GLTerra.pcx. We now list
+the graphics files associated with each type of entities.</p>
+
+<p>ground terrains: GLTerra.pcx<br>
+over terrains: OLTerra.pcx<br>
+items: Item.pcx<br>
+humanoids: Humanoid.pcx<br>
+nonhumanoids: Char.pcx</p>
+
+<p>That is, the BitmapPos database value of ground terrains, over
+terrains and items means the location of the upper left corner
+of the 16x16 or 32x32 picture of the entity in the respective file above.
+For humanoids and nonhumanoids the same holds for the database
+values TorsoBitmapPos, HeadBitmapPos, etc. More information about
+the graphics files may be found in the
+<a href="http://ivan.cvs.sourceforge.net/*checkout*/ivan/ivan/Doc/Data/Graphics.txt?revision=1.2">graphics documentation</a>.</p>
+
+<p>Exercise: randomly generated orc slaughterers may carry potions
+of troll blood. Find out in which file this detail is defined. Present the line.
+Then find out where it is defined that the orc general and
+the orc officers in the orc room of GC have some more expensive potions
+in their inventory. Present the lines.</p>
+
+<hr>
+
+<p>
+<a href="lecture2.html">Previous lecture</a>
+<a href="lecture4.html">Next lecture</a>
+<a href="index.html">Back to main</a>
+</p>
+
+<hr>
+
+<p>Last modified August 30 2006.</p>
+
+</body>
+</html>

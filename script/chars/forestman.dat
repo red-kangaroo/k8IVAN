@@ -1,0 +1,84 @@
+forestman
+{
+  CanRead = true;
+  IsAbstract = true;
+  AttachedGod = SILVA;
+  SkinColor = rgb16(200, 110, 70);
+  DefaultArmStrength = 12;
+  DefaultLegStrength = 12;
+  DefaultDexterity = 10;
+  DefaultAgility = 10;
+  DefaultEndurance = 12;
+  DefaultPerception = 20;
+  DefaultIntelligence = 12;
+  DefaultWisdom = 12;
+  DefaultCharisma = 10;
+  DefaultMana = 10;
+  TotalVolume = 60000;
+  TotalSize = 160;
+  NameSingular = "forest-man";
+  HeadBitmapPos = 96, 0;
+  TorsoBitmapPos = 32, 80;
+  ArmBitmapPos = 64, 80;
+  LegBitmapPos = 0, 64;
+  TamingDifficulty = NO_TAMING;
+  UndeadVersions = false;
+
+  Config BAND_LEADER;
+  {
+    AttributeBonus = 10;
+    Helmet = SILVER helmet;
+    BodyArmor = NYMPH_HAIR bodyarmor(PLATE_MAIL) { Enchantment = 2; }
+    RightWielded = SILVER meleeweapon(SPEAR) { SecondaryMaterial = OAK_WOOD; Enchantment = 2; }
+    Belt = NYMPH_HAIR belt { Enchantment = 2; }
+    RightBoot = HARDENED_LEATHER boot;
+    RightGauntlet = HARDENED_LEATHER gauntlet;
+    Cloak = FABRIC cloak { Enchantment = 8; }
+    Adjective = "roving";
+    PostFix = "band-leader";
+    KnownCWeaponSkills = { 2, POLE_ARMS, SHIELDS; }
+    CWeaponSkillHits = { 2, 40, 40; }
+    PanicLevel = 20;
+    AutomaticallySeen = true;
+    ClothColor = rgb16(70, 88, 42);
+    HairColor = rgb16(220, 220, 220);
+    DeathMessage = "@Dd dies yelling \"FREEDOM FOR TWERAIF!\"";
+    HostileReplies == "\"Piss off!\"";
+    FriendlyReplies :=
+    {
+      "\"Hullo there traveller. We're UTFA.\"";
+      "@Dd steps forward \"I am the leader of our roving band of Forest Men (UTFA Soldiery).\"";
+      "@Dd embraces you \"Have you come to redeem us?\"";
+      "@Dd explains gravely \"Deep inside the forest is a prison where our kindred are being held. Visit Regii and the officials in the underground and help us free them.\"";
+    }
+  }
+
+  Config ROVER;
+  {
+    AttributeBonus = 0;
+    Helmet = TIN helmet;
+    BodyArmor = HARDENED_LEATHER bodyarmor(PLATE_MAIL);
+    RightWielded = BRONZE meleeweapon(DAGGER) { Enchantment = 2; }
+    LeftWielded = BIRCH_WOOD shield;
+    Belt = HARDENED_LEATHER belt;
+    RightBoot = HARDENED_LEATHER boot;
+    RightGauntlet = HARDENED_LEATHER gauntlet;
+    Cloak = HARDENED_LEATHER cloak { Enchantment = 1; }
+    Adjective = "roving";
+    KnownCWeaponSkills = { 2, SMALL_SWORDS, SHIELDS; }
+    CWeaponSkillHits = { 2, 20, 20; }
+    PanicLevel = 50;
+    AutomaticallySeen = true;
+    ClothColor = rgb16(88, 50, 30);
+    HairColor = rgb16(100, 100, 100);
+    DeathMessage = "@Dd dies yelling \"FREEDOM!\"";
+    HostileReplies == "\"Get lost!\"";
+    FriendlyReplies :=
+    {
+      "\"Hullo there friend!\"";
+      "@Dd salutes you solemnly \"Solidarity Brother!\"";
+      "@Dd grasps your shoulder \"Have you seen Molly? Is he well?\"";
+      "@Dd chortles \"You know you're on the steppe when your dog runs away and you can still see him running for at least three days.\"";
+    }
+  }
+}

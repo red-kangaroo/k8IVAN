@@ -1,0 +1,509 @@
+liquid
+{
+  ConsumeType = CT_LIQUID;
+  Density = 1000;
+  Flexibility = 50;
+  RustModifier = 25;
+  CommonFlags = Base&~CAN_BE_WISHED;
+
+  Config ACIDOUS_BLOOD;
+  {
+    StrengthValue = 150;
+    NutritionValue = 50;
+    Color = rgb16(100, 0, 0);
+    NameStem = "acidous blood";
+    Alpha = 175;
+    Flexibility = 40;
+    AttachedGod = CRUENTUS;
+    Acidicity = 500:
+    RustModifier = 500;
+    ConsumeWisdomLimit = 4;
+    CategoryFlags = IS_BLOOD;
+    InteractionFlags = Base|AFFECT_INSIDE;
+    StepInWisdomLimit = 10;
+    NameFlags = Base|USE_AN;
+  }
+
+  Config ANTIDOTE_LIQUID;
+  {
+    StrengthValue = 1;
+    NutritionValue = 100;
+    Color = rgb16(128, 0, 128);
+    NameStem = "antidote liquid";
+    Effect = EFFECT_ANTIDOTE;
+    ConsumeEndMessage = CEM_ANTIDOTE;
+    HitMessage = HM_ANTIDOTE;
+    Alpha = 170;
+    EffectStrength = 100;
+    PriceModifier = 1000;
+    AttachedGod = SEGES;
+    CommonFlags = Base|IS_VALUABLE;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+  }
+
+  Config BLOOD;
+  {
+    StrengthValue = 1;
+    NutritionValue = 50;
+    Color = rgb16(100, 0, 0);
+    NameStem = "blood";
+    Alpha = 175;
+    Flexibility = 40;
+    AttachedGod = CRUENTUS;
+    RustModifier = 1;
+    CategoryFlags = IS_BLOOD;
+  }
+
+  Config BROWN_SLIME;
+  {
+    StrengthValue = 5;
+    Density = 600;
+    NutritionValue = 10;
+    Color = rgb16(130, 90, 40);
+    NameStem = "brown slime";
+    Alpha = 200;
+    Flexibility = 25;
+    AttachedGod = SCABIES;
+    RustModifier = 50;
+    Acidicity = 25;
+    ConsumeWisdomLimit = 3;
+    BodyFlags = Base&~USE_MATERIAL_ATTRIBUTES;
+    InteractionFlags = Base|AFFECT_INSIDE&~CAN_DISSOLVE;
+    Stickiness = 100;
+    StepInWisdomLimit = 4;
+  }
+
+  Config CURDLED_OMMEL_BLOOD;
+  {
+    StrengthValue = 1;
+    Color = rgb16(180, 60, 60);
+    NutritionValue = 250;
+    PriceModifier = 10000;
+    NameStem = "curdled ommel blood";
+    Effect = EFFECT_OMMEL_SWEAT;
+    ConsumeEndMessage = CEM_OMMEL;
+    HitMessage = HM_OMMEL;
+    AttachedGod = SCABIES;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_MIRRORED;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+  }
+
+  Config DARK_FROG_BLOOD;
+  {
+    StrengthValue = 1;
+    NutritionValue = 40;
+    Color = rgb16(50, 0, 0);
+    NameStem = "dark frog blood";
+    Alpha = 175;
+    Flexibility = 40;
+    AttachedGod = CRUENTUS;
+    RustModifier = 200;
+    Acidicity = 100;
+    ConsumeWisdomLimit = 0;
+    CategoryFlags = IS_BLOOD;
+    InteractionFlags = Base|AFFECT_INSIDE;
+    StepInWisdomLimit = 0;
+  }
+
+  Config DOG_DROOL;
+  {
+    StrengthValue = 2;
+    NutritionValue = 50;
+    Color = rgb16(144, 144, 240);
+    NameStem = "dog drool";
+    Alpha = 175;
+    AttachedGod = SILVA;
+    RustModifier = 5;
+  }
+
+  Config GLOWING_BLOOD;
+  {
+    StrengthValue = 1;
+    NutritionValue = 75;
+    Color = rgb16(100, 0, 0);
+    Emitation = rgb24(140, 100, 100);
+    NameStem = "glowing blood";
+    Alpha = 150;
+    Flexibility = 40;
+    AttachedGod = SCABIES;
+    RustModifier = 1;
+    CategoryFlags = IS_BLOOD;
+  }
+
+  Config HEALING_LIQUID;
+  {
+    StrengthValue = 1;
+    NutritionValue = 250;
+    Color = rgb16(180, 0, 0);
+    PriceModifier = 1500;
+    NameStem = "healing liquid";
+    Effect = EFFECT_HEAL;
+    ConsumeEndMessage = CEM_HEALING_LIQUID;
+    HitMessage = HM_HEALING_LIQUID;
+    Alpha = 150;
+    AttachedGod = SEGES;
+    CommonFlags = Base|IS_VALUABLE;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+  }
+
+  Config LIQUID_HORROR;
+  {
+    StrengthValue = 1;
+    Density = 2500;
+    NutritionValue = 50;
+    Color = rgb16(40, 80, 40);
+    ConsumeWisdomLimit = 2;
+    NameStem = "liquified fear";
+    Effect = EFFECT_PANIC;
+    ConsumeEndMessage = CEM_LIQUID_HORROR;
+    /*HitMessage = NONE;*/
+    AttachedGod = SOLICITU;
+    RustModifier = 0;
+    Acidicity = 0;
+    PriceModifier = 50;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_MIRRORED;
+    StepInWisdomLimit = 20;
+  }
+
+  Config MUSTARD_GAS_LIQUID;
+  {
+    StrengthValue = 1;
+    NutritionValue = 10;
+    Color = rgb16(144, 144, 240);
+    NameStem = "mustard gas in liquid form";
+    Alpha = 150;
+    AttachedGod = CRUENTUS;
+    Effect = EFFECT_MUSTARD_GAS_LIQUID;
+  }
+
+  Config OMMEL_BLOOD;
+  {
+    StrengthValue = 1;
+    NutritionValue = 250;
+    Color = rgb16(180, 20, 20);
+    NameStem = "ommel blood";
+    Alpha = 175;
+    Flexibility = 40;
+    AttachedGod = CRUENTUS;
+    Acidicity = 5000:
+    RustModifier = 5000;
+    ConsumeWisdomLimit = 1;
+    CategoryFlags = IS_BLOOD;
+    InteractionFlags = Base|AFFECT_INSIDE;
+    StepInWisdomLimit = 1;
+    NameFlags = Base|USE_AN;
+    PriceModifier = 5000;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_MIRRORED;
+    ConsumeEndMessage = CEM_OMMEL;
+  }
+
+  Config OMMEL_SNOT;
+  {
+    StrengthValue = 1;
+    Color = rgb16(145, 145, 16);
+    NutritionValue = 750;
+    PriceModifier = 7500;
+    NameStem = "ommel snot";
+    Effect = EFFECT_OMMEL_SNOT;
+    ConsumeEndMessage = CEM_OMMEL;
+    HitMessage = HM_OMMEL;
+    AttachedGod = SEGES;
+    Density = 800;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_MIRRORED;
+    NameFlags = Base|USE_AN;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+    Stickiness = 100;
+  }
+
+  Config OMMEL_SWEAT;
+  {
+    StrengthValue = 1;
+    Color = rgb16(144, 144, 240);
+    NutritionValue = 250;
+    PriceModifier = 2500;
+    NameStem = "ommel sweat";
+    Effect = EFFECT_OMMEL_SWEAT;
+    ConsumeEndMessage = CEM_OMMEL;
+    HitMessage = HM_OMMEL;
+    AttachedGod = SEGES;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_MIRRORED;
+    NameFlags = Base|USE_AN;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+  }
+
+  Config OMMEL_TEARS;
+  {
+    StrengthValue = 1;
+    Color = rgb16(144, 144, 240);
+    NutritionValue = 250;
+    PriceModifier = 2500;
+    NameStem = "ommel tears";
+    Effect = EFFECT_OMMEL_TEARS;
+    ConsumeEndMessage = CEM_OMMEL;
+    HitMessage = HM_OMMEL;
+    AttachedGod = MELLIS;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_MIRRORED;
+    NameFlags = Base|USE_AN;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+  }
+
+  Config OMMEL_URINE;
+  {
+    StrengthValue = 1;
+    Color = rgb16(160, 160, 0);
+    Emitation = rgb24(140, 140, 100);
+    NutritionValue = 500;
+    PriceModifier = 2500;
+    NameStem = "ommel urine";
+    Effect = EFFECT_OMMEL_URINE;
+    ConsumeEndMessage = CEM_OMMEL;
+    HitMessage = HM_OMMEL;
+    Alpha = 150;
+    AttachedGod = NEFAS;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_MIRRORED;
+    NameFlags = Base|USE_AN;
+    BodyFlags = Base|IS_WARM;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+  }
+
+  Config OMMEL_VOMIT;
+  {
+    StrengthValue = 10;
+    ConsumeType = CT_LIQUID;
+    Density = 2000;
+    Flexibility = 10;
+    RustModifier = 100;
+    StrengthValue = 1;
+    Color = rgb16(90, 130, 40);
+    Emitation = rgb24(130, 150, 100);
+    NutritionValue = 5000;
+    PriceModifier = 2500;
+    NameStem = "ommel vomit";
+    Effect = EFFECT_OMMEL_URINE|EFFECT_OMMEL_SNOT;
+    ConsumeEndMessage = CEM_OMMEL;
+    HitMessage = HM_OMMEL;
+    ExplosivePower = 20000;
+    Alpha = 110;
+    Acidicity = 800;
+    AttachedGod = NEFAS;
+    CommonFlags = Base|IS_VALUABLE&~CAN_BE_MIRRORED;
+    InteractionFlags = Base|CAN_EXPLODE|AFFECT_INSIDE;
+  }
+
+  Config PEA_SOUP;
+  {
+    StrengthValue = 5;
+    NutritionValue = 500;
+    Color = rgb16(0, 200, 0);
+    NameStem = "pea soup";
+    Effect = EFFECT_PEA_SOUP;
+    ConsumeEndMessage = CEM_PEA_SOUP;
+    AttachedGod = SEGES;
+    PriceModifier = 100;
+  }
+
+  Config PEPSI;
+  {
+    StrengthValue = 200;
+    Density = 1500;
+    NutritionValue = 500;
+    Color = rgb16(48, 48, 48);
+    ConsumeWisdomLimit = 2;
+    NameStem = "pepsi";
+    Effect = EFFECT_PEPSI;
+    ConsumeEndMessage = CEM_PEPSI;
+    HitMessage = HM_PEPSI;
+    AttachedGod = MELLIS;
+    RustModifier = 200;
+    Acidicity = 10;
+    PriceModifier = 1000;
+    CommonFlags = Base|IS_VALUABLE;
+    StepInWisdomLimit = 20;
+  }
+
+  Config POISON_LIQUID;
+  {
+    StrengthValue = 1;
+    NutritionValue = 100;
+    Color = rgb16(0, 128, 0);
+    ConsumeWisdomLimit = 5;
+    NameStem = "poison";
+    Effect = EFFECT_POISON;
+    Alpha = 150;
+    PriceModifier = 250;
+    AttachedGod = SCABIES;
+  }
+
+  Config SICK_BLOOD;
+  {
+    StrengthValue = 1;
+    NutritionValue = 40;
+    Color = rgb16(50, 0, 0);
+    NameStem = "sick blood";
+    Alpha = 175;
+    Flexibility = 40;
+    AttachedGod = SCABIES;
+    CategoryFlags = IS_BLOOD;
+  }
+
+  Config SPIDER_BLOOD;
+  {
+    StrengthValue = 1;
+    NutritionValue = 40;
+    Color = rgb16(50, 0, 0);
+    NameStem = "spider blood";
+    Alpha = 175;
+    Flexibility = 40;
+    AttachedGod = CRUENTUS;
+    CategoryFlags = IS_BLOOD;
+    Effect = EFFECT_POISON;
+    EffectStrength = 1000;
+  }
+
+  Config SULPHURIC_ACID;
+  {
+    StrengthValue = 1;
+    NutritionValue = 5;
+    Color = rgb16(160, 160, 0);
+    NameStem = "sulphuric acid";
+    Alpha = 150;
+    Flexibility = 45;
+    AttachedGod = SCABIES;
+    RustModifier = 400;
+    Acidicity = 400;
+    ConsumeWisdomLimit = 4;
+    PriceModifier = 100;
+    InteractionFlags = Base|AFFECT_INSIDE;
+    StepInWisdomLimit = 8;
+  }
+
+  Config SWEAT;
+  {
+    StrengthValue = 2;
+    NutritionValue = 50;
+    Color = rgb16(144, 144, 240);
+    NameStem = "sweat";
+    Alpha = 175;
+    AttachedGod = SILVA;
+    RustModifier = 5;
+  }
+
+  Config TROLL_BLOOD;
+  {
+    StrengthValue = 1;
+    NutritionValue = 1000;
+    Color = rgb16(160, 0, 0);
+    NameStem = "troll blood";
+    Alpha = 175;
+    Flexibility = 40;
+    Effect = EFFECT_HEAL;
+    ConsumeEndMessage = CEM_HEALING_LIQUID;
+    HitMessage = HM_HEALING_LIQUID;
+    EffectStrength = 50;
+    PriceModifier = 750;
+    AttachedGod = CRUENTUS;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = IS_BLOOD;
+    BodyFlags = Base|IS_WARM;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+  }
+
+  Config VALDEMAR;
+  {
+    StrengthValue = 1;
+    NutritionValue = 80;
+    Color = rgb16(50, 0, 0);
+    ConsumeWisdomLimit = 10;
+    NameStem = "Valdemar";
+    Effect = EFFECT_CONFUSE;
+    Alpha = 200;
+    ExplosivePower = 4000;
+    PriceModifier = 500;
+    AttachedGod = NEFAS;
+    EffectStrength = 150;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = Base|IS_BEVERAGE;
+    InteractionFlags = CAN_EXPLODE|EFFECT_IS_GOOD;
+  }
+
+  Config VINEGAR;
+  {
+    StrengthValue = 1;
+    NutritionValue = 1000;
+    Color = rgb16(100, 100, 0);
+    NameStem = "vinegar";
+    Alpha = 150;
+    Flexibility = 45;
+    AttachedGod = SCABIES;
+    RustModifier = 50;
+    Acidicity = 50;
+    ConsumeWisdomLimit = 6;
+    PriceModifier = 100;
+    InteractionFlags = Base|AFFECT_INSIDE;
+    StepInWisdomLimit = 10;
+  }
+
+  Config VODKA;
+  {
+    StrengthValue = 1;
+    NutritionValue = 80;
+    Color = rgb16(144, 144, 144);
+    ConsumeWisdomLimit = 10;
+    NameStem = "vodka";
+    Effect = EFFECT_CONFUSE;
+    Alpha = 150;
+    EffectStrength = 300;
+    ExplosivePower = 20000;
+    PriceModifier = 500;
+    AttachedGod = NEFAS;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = Base|IS_BEVERAGE;
+    InteractionFlags = CAN_EXPLODE|EFFECT_IS_GOOD;
+    DisablesPanicWhenConsumed = true;
+  }
+
+  Config VOMIT;
+  {
+    StrengthValue = 1;
+    NutritionValue = 200;
+    Color = rgb16(10, 230, 10);
+    NameStem = "vomit";
+    Alpha = 175;
+    Flexibility = 35;
+    AttachedGod = SCABIES;
+    RustModifier = 200;
+    Acidicity = 10;
+    InteractionFlags = Base|AFFECT_INSIDE;
+    StepInWisdomLimit = 5;
+  }
+
+  Config WATER;
+  {
+    StrengthValue = 1;
+    NutritionValue = 10;
+    Color = rgb16(144, 144, 240);
+    NameStem = "water";
+    Alpha = 150;
+    AttachedGod = TERRA;
+  }
+
+  Config YELLOW_SLIME;
+  {
+    StrengthValue = 5;
+    Density = 400;
+    NutritionValue = 5;
+    Color = rgb16(0, 230, 0);
+    NameStem = "green slime";
+    Alpha = 200;
+    Flexibility = 35;
+    AttachedGod = SCABIES;
+    RustModifier = 200;
+    Acidicity = 100;
+    ConsumeWisdomLimit = 4;
+    BodyFlags = Base&~USE_MATERIAL_ATTRIBUTES;
+    InteractionFlags = Base|AFFECT_INSIDE&~CAN_DISSOLVE;
+    Stickiness = 25;
+    StepInWisdomLimit = 5;
+  }
+}

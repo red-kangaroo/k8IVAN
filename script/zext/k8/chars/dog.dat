@@ -1,0 +1,21 @@
+Extend dog
+{
+  on die {
+    if @team == 0;
+      if @name;
+        AddMessage "Your doggie ", @name, " is dead";
+      else
+        AddMessage "Your doggie is dead";
+      endif
+    endif
+  }
+  on before_kicked_by {
+    if @team == 0;
+      if @name;
+        AddMessage "You want to kick your doggie ", @name;
+      else
+        AddMessage "You want to kick your doggie";
+      endif
+    endif
+  }
+}

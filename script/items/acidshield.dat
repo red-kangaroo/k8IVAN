@@ -1,0 +1,31 @@
+acidshield /* armor ->*/
+{
+  DefaultSize = 60;
+  Possibility = 5;
+  Category = SHIELD;
+  DefaultMainVolume = 350;
+  StrengthModifier = 150;
+  FormModifier = 15;
+  MainMaterialConfig = { 5, IRON, STEEL, METEORIC_STEEL, ADAMANT, ARCANITE; }
+  MaterialConfigChances = { 5, 200, 300, 150, 30, 30; }
+  EnchantmentPlusChance = 0;
+  AcidResistance = 1;
+  NameSingular = "acid shield";
+  BitmapPos = 32, 336;
+  WeaponCategory = SHIELDS;
+  CanBeBroken = true;
+  WieldedBitmapPos = 128, 32;
+  AttachedGod = SCABIES;
+
+  Config BROKEN;
+  {
+    Possibility = 3;
+    DefaultSize = 45;
+    FormModifier = 20;
+    BitmapPos = 48, 224;
+    WieldedBitmapPos = 128, 48;
+    MainMaterialConfig = { 6, IRON, STEEL, METEORIC_STEEL, ADAMANT, ARCANITE, MITHRIL; }
+    MaterialConfigChances = { 6, 150, 250, 200, 60, 40, 20; }
+    EnchantmentPlusChance = 1;
+  }
+}

@@ -1,0 +1,39 @@
+slave
+{
+  DefaultArmStrength = 25;
+  DefaultLegStrength = 25;
+  DefaultDexterity = 15;
+  DefaultAgility = 15;
+  DefaultEndurance = 20;
+  DefaultPerception = 15;
+  DefaultIntelligence = 15;
+  DefaultWisdom = 20;
+  DefaultCharisma = 10;
+  DefaultMana = 5;
+  SkinColor = rgb16(128, 80, 48);
+  HairColor = rgb16(80, 48, 32);
+  ClothColor = rgb16(56, 48, 20);
+  TotalVolume = 60000;
+  TotalSize = 160;
+  NameSingular = "slave";
+  KnownCWeaponSkills = { 2, UNARMED, BLUNT_WEAPONS; }
+  CWeaponSkillHits = { 2, 100, 100; }
+  DefaultMoney = 0;
+  FriendlyReplies = /* used only if the slave has been bought */
+  {
+    5,
+    "\"Whatever the master wants.\"",
+    "\"Work work work all day long. No, that was not a complaint! Don't punish!\"",
+    "\"I love all my masters. At least when the whip is being washed.\"",
+    "\"I would like to be like Ivan. Ivan is a good worker.\"",
+    "\"I am putting myself to the fullest possible use, which is all I think that any conscious entity can ever hope to do.\"";
+  }
+  AttachedGod = MELLIS;
+  Inventory == 0;
+  IsMasochist = true;
+
+  Config DARK_FOREST;
+  {
+    AttributeBonus = -50;
+  }
+}

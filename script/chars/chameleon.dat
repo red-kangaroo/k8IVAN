@@ -1,0 +1,31 @@
+chameleon
+{
+  DefaultArmStrength = 4;
+  DefaultAgility = 20;
+  DefaultEndurance = 12;
+  DefaultPerception = 12;
+  DefaultIntelligence = 5;
+  DefaultWisdom = 5;
+  DefaultCharisma = 8;
+  DefaultMana = 0;
+  CanOpen = false;
+  TotalVolume = 4500;
+  TorsoBitmapPos = 16, 0;
+  HostileReplies == "The skin of @du is blood red for a moment.";
+  FriendlyReplies == "The skin of @du is white for a moment.";
+  TotalSize = 30;
+  /* SkinColor overridden */
+  NameSingular = "chameleon";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 300;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  FleshMaterial = CHAMELEON_FLESH;
+  IgnoreDanger = true;
+  HPRequirementForGeneration = 40;
+  DayRequirementForGeneration = 4;
+  Frequency = 1000;
+  IsExtraCoward = true;
+  AttachedGod = SCABIES;
+}

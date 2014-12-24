@@ -1,0 +1,43 @@
+floatingeye
+{
+  DefaultArmStrength = 1;
+  DefaultAgility = 3;
+  DefaultEndurance = 6;
+  DefaultPerception = 50;
+  DefaultIntelligence = 2;
+  DefaultWisdom = 2;
+  DefaultCharisma = 8;
+  DefaultMana = 0;
+  CanOpen = false;
+  TotalVolume = 30000;
+  HostileReplies == "@du stares at you.";
+  FriendlyReplies == "@du stares at you.";
+  TotalSize = 40;
+  Adjective = "floating";
+  NameSingular = "eye";
+  /* AttackStyle is not used */
+  BaseBiteStrength = 1;
+  CanBeGenerated = true;
+  FleshMaterial = FLOATING_EYE_FLESH;
+  IgnoreDanger = true;
+  HPRequirementForGeneration = 40;
+  DayRequirementForGeneration = 4;
+  Frequency = 1500;
+  TorsoBitmapPos = 32, 0;
+  SkinColor = rgb16(180,180,180);
+  ClothColor = rgb16(0, 0, 160); /* eye color */
+  StandVerb = "levitating";
+  HasALeg = false;
+  CanRead = true;
+  HasHead = false;
+  UsesNutrition = false;
+  AttackWisdomLimit = 8;
+  AttachedGod = LEGIFER;
+  ClassStates = INFRA_VISION|SEARCHING|GAS_IMMUNITY;
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 0;
+  MoveType = FLY;
+  CanHear = false;
+  AllowUnconsciousness = false;
+  CanChoke = false;
+}

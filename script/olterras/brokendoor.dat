@@ -1,0 +1,20 @@
+brokendoor /* olterrain->door-> */
+{
+  DigMessage = "You destroy the broken door.";
+  Adjective = "broken";
+  BitmapPos = 0, 160;
+  CreateLockConfigurations = true;
+
+  Config BARDOOR;
+  {
+    IsAlwaysTransparent = true;
+    BitmapPos = 32,96;
+  }
+
+  Config SECRET_DOOR;
+  {
+  BitmapPos = 16, 160;
+        NameSingular = "door";
+        Adjective = "broken very secret";
+  }
+}

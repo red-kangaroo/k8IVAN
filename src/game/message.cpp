@@ -290,7 +290,7 @@ void soundsystem::initSound () {
     Mix_AllocateChannels(SND_CHANNEL_COUNT);
     setVolume(ivanconfig::GetSoundVolume());
     SoundState = -2;
-    festring cfgfile = game::GetGameDir()+"Sound/config.txt";
+    festring cfgfile = game::GetGameDir()+"sound/config.txt";
     FILE *f = fopen(cfgfile.CStr(), "r");
     if (!f) SoundState = -1;
     else {
@@ -355,7 +355,7 @@ void soundsystem::playSound (const festring &Buffer) {
     SoundFile *sf = findMatchingSound(Buffer);
     if (!sf) return;
     if (!sf->chunk) {
-      festring sndfile = game::GetGameDir()+"Sound/"+sf->filename;
+      festring sndfile = game::GetGameDir()+"sound/"+sf->filename;
       //fprintf(stderr, "loading sound: '%s'\n", sndfile.CStr());
       sf->chunk = Mix_LoadWAV(sndfile.CStr());
     }

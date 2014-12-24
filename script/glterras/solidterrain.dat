@@ -1,0 +1,81 @@
+solidterrain /* glterrain-> */
+{
+  Walkability = WALK|FLY|ETHEREAL;
+
+  IsAbstract = true;
+
+  Config DARK_GRASS_TERRAIN;
+  {
+    OKVisualEffects = MIRROR|FLIP|ROTATE;
+    MainMaterialConfig == DARK_GRASS;
+    NameSingular = "ground";
+    BitmapPos = 16, 16;
+  }
+
+  Config DEAD_GRASS_TERRAIN;
+  {
+    OKVisualEffects = MIRROR|FLIP|ROTATE;
+    MainMaterialConfig == DEAD_GRASS;
+    NameSingular = "ground";
+    BitmapPos = 16, 16;
+  }
+
+  Config FLOOR;
+  {
+    OKVisualEffects = MIRROR|FLIP|ROTATE;
+    MainMaterialConfig == GRAVEL;
+    NameSingular = "floor";
+    BitmapPos = 0, 0;
+  }
+
+  Config GRASS_TERRAIN;
+  {
+    OKVisualEffects = MIRROR|FLIP|ROTATE;
+    MainMaterialConfig == GRASS;
+    NameSingular = "ground";
+    BitmapPos = 16, 16;
+  }
+
+  Config GROUND;
+  {
+    OKVisualEffects = MIRROR|FLIP|ROTATE;
+    MainMaterialConfig == GRAVEL;
+    NameSingular = "floor";
+    BitmapPos = 0, 0;
+  }
+
+  Config LANDING_SITE;
+  {
+    MainMaterialConfig == GRASS;
+    MaterialColorB = rgb16(230, 230, 230);
+    UsesLongAdjectiveArticle = true;
+    Adjective = "ostrich";
+    NameSingular = "landing site";
+    BitmapPos = 32, 16;
+    ShowMaterial = false;
+  }
+
+  Config PARQUET;
+  {
+    MainMaterialConfig == FIR_WOOD;
+    NameSingular = "floor";
+    BitmapPos = 32, 0;
+    BorderTilePriority = 100;
+  }
+
+  Config SAND_TERRAIN;
+  {
+    OKVisualEffects = MIRROR|FLIP|ROTATE;
+    MainMaterialConfig == SAND;
+    NameSingular = "ground";
+    BitmapPos = 32, 32;
+  }
+
+  Config SNOW_TERRAIN;
+  {
+    OKVisualEffects = MIRROR|FLIP|ROTATE;
+    MainMaterialConfig == SNOW;
+    NameSingular = "ground";
+    BitmapPos = 16, 16;
+  }
+}

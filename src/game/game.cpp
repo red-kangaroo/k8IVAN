@@ -132,7 +132,7 @@ time_t game::LastLoad;
 time_t game::GameBegan;
 truth game::PlayerHasReceivedAllGodsKnownBonus;
 
-festring game::AutoSaveFileName = game::GetSaveDir() + "AutoSave";
+festring game::AutoSaveFileName = game::GetSavePath()+"AutoSave";
 cchar *const game::Alignment[] = { "L++", "L+", "L", "L-", "N+", "N=", "N-", "C+", "C", "C-", "C--" };
 god **game::God;
 
@@ -264,13 +264,13 @@ void game::ClearCharacterDrawVector () { CharacterDrawVector.clear(); }
 
 
 void game::InitScript () {
-  inputfile ScriptFile(GetGameDir()+"Script/dungeon.dat", &GlobalValueMap);
+  inputfile ScriptFile(GetGameDir()+"script/dungeon.dat", &GlobalValueMap);
   GameScript = new gamescript;
   GameScript->ReadFrom(ScriptFile);
   { /* additional dungeon files */
     for (int f = 0; f <= 99; f++) {
       char bnum[32];
-      sprintf(bnum, "Script/dungeon_%02d.dat", f);
+      sprintf(bnum, "script/dungeon_%02d.dat", f);
       inputfile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
       if (ifl.IsOpen()) {
         //fprintf(stderr, "loading: %s\n", bnum+7);
@@ -295,8 +295,8 @@ truth game::Init (cfestring &Name) {
     PlayerName = Name;
   }
 
-  mkdir(GetSaveDir().CStr(), S_IRWXU|S_IRWXG);
-  mkdir(GetBoneDir().CStr(), S_IRWXU|S_IRWXG);
+  mkdir(GetSavePath().CStr(), S_IRWXU|S_IRWXG);
+  mkdir(GetBonePath().CStr(), S_IRWXU|S_IRWXG);
 
   ::InitPlaces();
   LOSTick = 2;
@@ -888,7 +888,7 @@ int game::Load (cfestring &SaveName) {
 
 
 festring game::SaveName (cfestring &Base) {
-  festring SaveName = GetSaveDir();
+  festring SaveName = GetSavePath();
   if (!Base.GetSize()) SaveName << PlayerName; else SaveName << Base;
   for (festring::sizetype c = 0; c < SaveName.GetSize(); ++c) if (SaveName[c] == ' ') SaveName[c] = '_';
   return SaveName;
@@ -1393,7 +1393,7 @@ void game::LoadGlobalValueMap (inputfile &fl) {
       word = fl.ReadWord();
       if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
       //fprintf(stderr, "loading: %s\n", word.CStr());
-      inputfile incf(game::GetGameDir()+"Script/"+word, &game::GetGlobalValueMap());
+      inputfile incf(game::GetGameDir()+"script/"+word, &game::GetGlobalValueMap());
       LoadGlobalValueMap(incf);
       continue;
     }
@@ -1452,12 +1452,12 @@ void game::LoadGlobalValueMap (inputfile &fl) {
 
 
 void game::InitGlobalValueMap () {
-  inputfile SaveFile(GetGameDir()+"Script/define.dat", &GlobalValueMap);
+  inputfile SaveFile(GetGameDir()+"script/define.dat", &GlobalValueMap);
   LoadGlobalValueMap(SaveFile);
   { /* additional files */
     for (int f = 0; f <= 99; f++) {
       char bnum[32];
-      sprintf(bnum, "Script/define_%02d.dat", f);
+      sprintf(bnum, "script/define_%02d.dat", f);
       festring fn = game::GetGameDir();
       fn << bnum;
       if (inputfile::fileExists(fn)) return;
@@ -2023,12 +2023,12 @@ festring game::GetHomeDir () {
 }
 
 
-festring game::GetSaveDir () {
+festring game::GetSavePath () {
   festring Dir;
 #ifdef LOCAL_SAVES
-  Dir << ivanconfig::GetMyDir() << "/Save/";
+  Dir << ivanconfig::GetMyDir() << "/save/";
 #else
-  Dir << getenv("HOME") << "/IvanSave/";
+  Dir << getenv("HOME") << "/.ivan-save/";
 #endif
   return Dir;
 }
@@ -2043,13 +2043,13 @@ festring game::GetGameDir () {
 }
 
 
-festring game::GetBoneDir () {
+festring game::GetBonePath () {
   /*k8! return LOCAL_STATE_DIR "/Bones/";*/
   festring Dir;
 #ifdef LOCAL_SAVES
-  Dir << ivanconfig::GetMyDir() << "/Save/Bones/";
+  Dir << ivanconfig::GetMyDir() << "/save/bones/";
 #else
-  Dir << getenv("HOME") << "/IvanSave/Bones/";
+  Dir << getenv("HOME") << "/.ivan-save/bones/";
 #endif
   return Dir;
 }
@@ -2222,11 +2222,11 @@ void game::CreateBone () {
     int BoneIndex;
     festring BoneName;
     for (BoneIndex = 0; BoneIndex < 1000; ++BoneIndex) {
-      BoneName = GetBoneDir()+"bon"+CurrentDungeonIndex+CurrentLevelIndex+BoneIndex;
+      BoneName = GetBonePath()+"bon"+CurrentDungeonIndex+CurrentLevelIndex+BoneIndex;
       if (!inputfile::fileExists(BoneName)) break;
     }
     if (BoneIndex != 1000) {
-      //festring BoneName = GetBoneDir()+"bon"+CurrentDungeonIndex+CurrentLevelIndex+BoneIndex;
+      //festring BoneName = GetBonePath()+"bon"+CurrentDungeonIndex+CurrentLevelIndex+BoneIndex;
       fprintf(stderr, "creating bone file: [%s]\n", BoneName.CStr());
       outputfile BoneFile(BoneName, true);
       BoneFile << int(BONE_FILE_VERSION) << PlayerName << CurrentLevel;
@@ -2240,7 +2240,7 @@ truth game::PrepareRandomBone (int LevelIndex) {
   int BoneIndex;
   festring BoneName;
   for (BoneIndex = 0; BoneIndex < 1000; ++BoneIndex) {
-    BoneName = GetBoneDir()+"bon"+CurrentDungeonIndex+LevelIndex+BoneIndex;
+    BoneName = GetBonePath()+"bon"+CurrentDungeonIndex+LevelIndex+BoneIndex;
     inputfile BoneFile(BoneName, 0, false);
     if (BoneFile.IsOpen() && !(RAND() & 7)) {
       if (ReadType(int, BoneFile) != BONE_FILE_VERSION) {
@@ -3192,7 +3192,7 @@ truth game::GetWord (festring &w) {
     if (w == "Include") {
       fl->ReadWord(w, true);
       if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TokenLine());
-      w = game::GetGameDir()+"Script/"+w;
+      w = game::GetGameDir()+"script/"+w;
       inputfile *fl = new inputfile(w, &game::GetGlobalValueMap(), true);
       fl->setGetVarCB(game::ldrGetVar);
       mFEStack.push(fl);
@@ -3319,7 +3319,7 @@ truth game::RunOnEvent (cfestring &ename) {
     cached = true;
     for (int fno = 99; fno >= -1; fno--) {
       festring cfname;
-      cfname << game::GetGameDir() << "Script/onevent";
+      cfname << game::GetGameDir() << "script/onevent";
       if (fno >= 0) {
         char bnum[8];
         sprintf(bnum, "_%02d", fno);

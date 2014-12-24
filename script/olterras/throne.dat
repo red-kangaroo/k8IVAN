@@ -1,0 +1,9 @@
+throne /* olterrain-> */
+{
+  DigMessage = "The throne resists.";
+  MainMaterialConfig == GOLD;
+  MaterialColorB = rgb16(200, 200, 0);
+  NameSingular = "throne";
+  BitmapPos = 0, 416;
+  AttachedGod = VALPURUS;
+}

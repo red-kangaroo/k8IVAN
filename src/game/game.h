@@ -354,9 +354,9 @@ public:
   static void SetIsInGetCommand(truth What) { InGetCommand = What; }
   static truth IsInGetCommand() { return InGetCommand; }
   static festring GetHomeDir();
-  static festring GetSaveDir();
+  static festring GetSavePath();
   static festring GetGameDir();
-  static festring GetBoneDir();
+  static festring GetBonePath();
   static truth PlayerWasHurtByExplosion() { return PlayerHurtByExplosion; }
   static void SetPlayerWasHurtByExplosion(truth What) { PlayerHurtByExplosion = What; }
   static void SetCurrentArea(area* What) { CurrentArea = What; }

@@ -1,0 +1,31 @@
+daggerofvenom
+{
+  DefaultSize = 40;
+  Possibility = 15;
+  WeaponCategory = SMALL_SWORDS;
+  DefaultMainVolume = 25;
+  DefaultSecondaryVolume = 25;
+  BitmapPos = 48, 256;
+  FormModifier = 75;
+  StrengthModifier = 60;
+  NameSingular = "dagger";
+  PostFix = "of venom";
+  MainMaterialConfig = {7, OMMEL_BONE, OMMEL_TOOTH, ILLITHIUM, BRONZE, STEEL, ARCANITE, MITHRIL; }
+  SecondaryMaterialConfig = {7, OMMEL_BONE, OMMEL_TOOTH, ILLITHIUM, BRONZE, STEEL, ARCANITE, MITHRIL; }
+  // this is from CLIVAN; i (k8) don't like it -- SecondaryMaterialConfig = {7, EMERALD, EMERALD, EMERALD, EMERALD, EMERALD, EMERALD, EMERALD; }
+  MaterialConfigChances = {7, 72, 48, 80, 225, 144, 100, 90; }
+  Roundness = 20;
+  Price = 150;
+  AttachedGod = CLEPTIA;
+  WieldedBitmapPos = 160, 288;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH|PIERCE;
+
+  Config BROKEN;
+  {
+    Possibility = 10;
+    BitmapPos = 48, 288;
+    WieldedBitmapPos = 176, 288;
+    EnchantmentPlusChance = 4;
+  }
+}

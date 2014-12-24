@@ -1,0 +1,48 @@
+ennerbeast
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 10;
+  DefaultDexterity = 10;
+  DefaultAgility = 10;
+  DefaultEndurance = 20;
+  DefaultPerception = 12;
+  DefaultIntelligence = 1;
+  DefaultWisdom = 1;
+  DefaultCharisma = 1;
+  DefaultMana = 0;
+  CanOpen = false;
+  CanApply = false;
+  TotalVolume = 65000;
+  TotalSize = 150;
+  Adjective = "enner";
+  NameSingular = "beast";
+  UsesLongAdjectiveArticle = true;
+  IsPolymorphable = false;
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 5000;
+  CanUseEquipment = false;
+  CanBeWished = false;
+  LegBitmapPos = 16, 48;
+  TorsoBitmapPos = 32, 48;
+  ArmBitmapPos = 64, 48;
+  HeadBitmapPos = 96, 320;
+  HairColor = rgb16(64, 20, 0);
+  ClothColor = rgb16(0, 0, 100);
+  BootColor = rgb16(90, 50, 10);
+  LegMainColor = rgb16(64, 20, 0);
+  PanicLevel = 75;
+  FleshMaterial = ENNER_BEAST_FLESH;
+  DeathMessage = "@Dd dies and the world is finally freed from this terrible monster.";
+  Inventory == horn(FEAR);
+  IsUnique = true; /* currently */
+  HostileReplies == "Aighee!";
+  FriendlyReplies :=
+  {
+    "\"Fishing is fun! Do you fish?\"",
+    "\"And then I got that perch weighting fifty stones...\"",
+    "\"I only want to talk but everyone is rude and dies when I try.\"",
+    "\"Can you help me with this download problem?\"";
+  }
+  AttachedGod = SCABIES;
+  BiteCapturesBodyPart = false;
+}

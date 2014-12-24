@@ -1,0 +1,11 @@
+altar /* olterrain-> */
+{
+  DigMessage = "An invisible wall stops your feeble attempt.";
+  MainMaterialConfig == GRANITE;
+  UsesLongArticle = true;
+  NameSingular = "altar";
+  BitmapPos = 0, 368;
+  /* PostFix depends on Configs */
+  CreateDivineConfigurations = true;
+  IsAbstract = true;
+}

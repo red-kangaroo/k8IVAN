@@ -1,0 +1,13 @@
+bodypart
+{
+  Possibility = 0;
+  Category = FOOD;
+  IsAutoInitializable = false;
+  IsAbstract = true;
+  IsTwoHanded = true;
+  /*Adjective = "severed";*/ /* only used if severed */
+  CanBeWished = false; /* temporary */
+  AttachedGod = NONE;
+  IsValuable = false;
+  IsSadistWeapon = true;
+}

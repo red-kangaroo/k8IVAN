@@ -1,0 +1,289 @@
+/*
+ *
+ *  Iter Vehemens ad Necem (IVAN)
+ *  Copyright (C) Timo Kiviluoto
+ *  Released under the GNU General
+ *  Public License
+ *
+ *  See LICENSING which should be included
+ *  along with this file for more details
+ *
+ */
+
+/*
+ * NOTICE!!!
+ *
+ * This file contains SPOILERS, which might ruin your IVAN experience
+ * totally. Also, editing anything can DESTROY GAME BALANCE or CAUSE
+ * OBSCURE BUGS if you don't know what you're doing. So from here on,
+ * proceed at your own risk!
+ */
+
+/* Numerical item data loaded during game startup */
+
+/* Default values: */
+item
+{
+  Possibility = 0;
+  IsDestroyable = true;
+  CanBeWished = true;
+  IsMaterialChangeable = true;
+  WeaponCategory = UNCATEGORIZED;
+  IsPolymorphSpawnable = true;
+  IsAutoInitializable = true;
+  Category = MISC;
+  FireResistance = 0;
+  PoisonResistance = 0;
+  ElectricityResistance = 0;
+  AcidResistance = 0;
+  StrengthModifier = 0;
+  /* Obligatory: FormModifier */
+  /* Obligatory: DefaultSize */
+  DefaultMainVolume = 0;
+  DefaultSecondaryVolume = 0;
+  /* Obligatory: BitmapPos */
+  Price = 0;
+  BaseEmitation = 0;
+  UsesLongArticle = false;
+  Adjective = "";
+  UsesLongAdjectiveArticle = false;
+  /* Obligatory: NameSingular */
+  /* NameSingular + "s" by default: NamePlural */
+  PostFix = "";
+  ArticleMode = 0;
+  /* Obligatory: MainMaterialConfig */
+  /* Obligatory: SecondaryMaterialConfig */
+  /* Obligatory if multiple material configurations defined: MaterialConfigChances */
+  IsAbstract = true; /* This is false by default and does not inherit! */
+  IsPolymorphable = true;
+  OKVisualEffects = NONE;
+  CanBeGeneratedInContainer = true;
+  /* Obligatory: Roundness */
+  GearStates = 0;
+  IsTwoHanded = false;
+  CreateDivineConfigurations = false;
+  ForcedVisualEffects = 0;
+  CanBeCloned = true;
+  CanBeBroken = false;
+  MinCharges = 0;
+  MaxCharges = 0;
+  CanBePiled = true;
+  StorageVolume = 0;
+  MaxGeneratedContainedItems = 0;
+  AffectsArmStrength = false;
+  AffectsLegStrength = false;
+  AffectsDexterity = false;
+  AffectsAgility = false;
+  AffectsEndurance = false;
+  AffectsPerception = false;
+  AffectsIntelligence = false;
+  AffectsWisdom = false;
+  AffectsWillPower = false;
+  AffectsCharisma = false;
+  AffectsMana = false;
+  BaseEnchantment = 0;
+  PriceIsProportionalToEnchantment = false;
+  CanBeUsedBySmith = false;
+  AffectsCarryingCapacity = false;
+  HandleInPairs = false;
+  CanBeEnchanted = false;
+  /* Obligatory if wand: BeamColor */
+  /* Obligatory if wand: BeamEffect */
+  BeamStyle = PARTICLE_BEAM;
+  WearWisdomLimit = NO_LIMIT;
+  AttachedGod = NONE;
+  /* Obligatory: AttachedGod */
+  WieldedBitmapPos = 176, 0;
+  IsQuestItem = false;
+  IsGoodWithPlants = true;
+  CreateLockConfigurations = false; /* Can't be overridden by Configs */
+  CanBePickedUp = true;
+  /* Obligatory if helmet: CoverPercentile */
+  /* Obligatory for respective armor:
+  TorsoArmorBitmapPos
+  ArmArmorBitmapPos
+  LegArmorBitmapPos
+  HelmetBitmapPos
+  CloakBitmapPos
+  BeltBitmapPos
+  GauntletBitmapPos
+  BootBitmapPos */
+  HasSecondaryMaterial = false;
+  AllowEquip = true;
+  /* Obligatory if scroll: ReadDifficulty */
+  IsValuable = true;
+  EnchantmentMinusChance = 0;
+  EnchantmentPlusChance = 0;
+  TeleportPriority = 100;
+  HasNormalPictureDirection = true;
+  DamageFlags = BLUNT;
+  IsKamikazeWeapon = false;
+  FlexibilityIsEssential = false;
+  IsSadistWeapon = false;
+  IsThrowingWeapon = false;
+  ThrowItemTypes = NONE; /*Possibilities: THROW_BONE|THROW_POTION|THROW_AXE|THROW_GAS_GRENADE|THROW_WAND;*/
+  CanFlame = false;
+  AllowedDungeons == ALL_DUNGEONS; // example: AllowedDungeons := { UNDER_WATER_TUNNEL, MONDEDR; }
+  LevelTags := {} // {"*"}
+}
+
+
+Include "items/materialcontainer.dat";
+Include "items/lantern.dat";
+Include "items/can.dat";
+Include "items/lump.dat";
+Include "items/meleeweapon.dat";
+Include "items/banana.dat";
+Include "items/holybanana.dat";
+Include "items/holymango.dat";
+Include "items/justifier.dat";
+Include "items/neercseulb.dat";
+Include "items/pickaxe.dat";
+Include "items/armor.dat";
+Include "items/bodyarmor.dat";
+Include "items/goldeneagleshirt.dat";
+Include "items/potion.dat";
+Include "items/kleinbottle.dat";
+Include "items/cauldron.dat";
+Include "items/bananapeels.dat";
+Include "items/brokenbottle.dat";
+Include "items/scroll.dat";
+Include "items/scrollofteleportation.dat";
+Include "items/scrolloffireballs.dat";
+Include "items/scrollofcharging.dat";
+Include "items/locationmap.dat";
+Include "items/maptotombofxinroch.dat";
+Include "items/nut.dat";
+Include "items/leftnutofpetrus.dat";
+Include "items/bone.dat";
+Include "items/loaf.dat";
+Include "items/scrollofwishing.dat";
+Include "items/copyofleftnutofpetrus.dat";
+Include "items/wand.dat";
+Include "items/scrollofchangematerial.dat";
+Include "items/avatarofvalpurus.dat";
+Include "items/kiwi.dat";
+Include "items/pineapple.dat";
+Include "items/mango.dat";
+Include "items/palmbranch.dat";
+Include "items/whip.dat";
+Include "items/backpack.dat";
+Include "items/holybook.dat";
+Include "items/fiftymillionroubles.dat";
+Include "items/oillamp.dat";
+Include "items/stone.dat";
+Include "items/solstone.dat";
+Include "items/scrolloftaming.dat";
+Include "items/mine.dat";
+Include "items/key.dat";
+Include "items/shield.dat";
+Include "items/cloak.dat";
+Include "items/boot.dat";
+Include "items/gauntlet.dat";
+Include "items/belt.dat";
+Include "items/ring.dat";
+Include "items/amulet.dat";
+Include "items/bodypart.dat";
+Include "items/head.dat";
+Include "items/torso.dat";
+Include "items/normaltorso.dat";
+Include "items/humanoidtorso.dat";
+Include "items/arm.dat";
+Include "items/rightarm.dat";
+Include "items/leftarm.dat";
+Include "items/groin.dat";
+Include "items/leg.dat";
+Include "items/rightleg.dat";
+Include "items/leftleg.dat";
+Include "items/headofelpuri.dat";
+Include "items/corpse.dat";
+Include "items/eddytorso.dat";
+Include "items/largetorso.dat";
+Include "items/largecorpse.dat";
+Include "items/playerkindhead.dat";
+Include "items/playerkindtorso.dat";
+Include "items/playerkindrightarm.dat";
+Include "items/playerkindleftarm.dat";
+Include "items/playerkindgroin.dat";
+Include "items/playerkindrightleg.dat";
+Include "items/playerkindleftleg.dat";
+Include "items/magicmushroomtorso.dat";
+Include "items/menatrixtorso.dat";
+Include "items/dogtorso.dat";
+Include "items/blinkdogtorso.dat";
+Include "items/mysticfrogtorso.dat";
+Include "items/lobhsetorso.dat";
+Include "items/battorso.dat";
+Include "items/spidertorso.dat";
+Include "items/whistle.dat";
+Include "items/magicalwhistle.dat";
+Include "items/itemcontainer.dat";
+Include "items/beartrap.dat";
+Include "items/helmet.dat";
+Include "items/stethoscope.dat";
+Include "items/flamingsword.dat";
+Include "items/mjolak.dat";
+Include "items/vermis.dat";
+Include "items/turox.dat";
+Include "items/eptyron.dat";
+Include "items/taiaha.dat";
+Include "items/whipofthievery.dat";
+Include "items/gleipnir.dat";
+Include "items/scrollofenchantweapon.dat";
+Include "items/scrollofenchantarmor.dat";
+Include "items/skull.dat";
+Include "items/gorovitsweapon.dat";
+Include "items/scrollofrepair.dat";
+Include "items/encryptedscroll.dat";
+Include "items/mondedrpass.dat";
+Include "items/ringofthieves.dat";
+Include "items/horn.dat";
+Include "items/thunderhammer.dat";
+Include "items/saalthul.dat";
+Include "items/chameleonwhip.dat";
+Include "items/carrot.dat";
+Include "items/wondersmellstaff.dat";
+Include "items/charmlyre.dat";
+Include "items/ennerhead.dat";
+Include "items/decosadshirt.dat";
+Include "items/scrollofdetectmaterial.dat";
+Include "items/stick.dat";
+Include "items/scrollofhardenmaterial.dat";
+Include "items/scrollofgolemcreation.dat";
+Include "items/gasgrenade.dat";
+Include "items/holyhandgrenade.dat";
+Include "items/mangoseedling.dat";
+Include "items/daggerofvenom.dat";
+Include "items/weepblade.dat";
+Include "items/acidshield.dat";
+Include "items/pantheonbook.dat";
+Include "items/celestialmonograph.dat";
+Include "items/constitution.dat";
+Include "items/gorovitscopyoflenin.dat";
+Include "items/chastitybelt.dat";
+Include "items/firstbornchild.dat";
+Include "items/rescuethepeasant.dat";
+Include "items/aegis.dat";
+Include "items/phoenixshield.dat";
+Include "items/defender.dat";
+Include "items/aethier.dat";
+Include "items/cronus.dat";
+Include "items/sunsword.dat";
+Include "items/vormav.dat";
+Include "items/belderiver.dat";
+Include "items/demonhead.dat";
+Include "items/goldenjaguarshirt.dat";
+Include "items/loricatushammer.dat";
+Include "items/muramasa.dat";
+Include "items/masamune.dat";
+Include "items/zulfiqar.dat";
+Include "items/smite.dat";
+Include "items/maingauche.dat";
+Include "items/ullrbone.dat";
+Include "items/vacuumblade.dat";
+Include "items/tipswordofpenetration.dat";
+Include "items/thievesgirdle.dat";
+Include "items/lynslag.dat";
+Include "items/kawai.dat";
+Include "items/superkawai.dat";
+Include "items/moneybag.dat";

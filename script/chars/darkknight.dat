@@ -1,0 +1,130 @@
+darkknight
+{
+  DefaultArmStrength = 30;
+  DefaultLegStrength = 30;
+  DefaultDexterity = 20;
+  DefaultAgility = 20;
+  DefaultEndurance = 22;
+  DefaultPerception = 25;
+  DefaultIntelligence = 20;
+  DefaultWisdom = 10;
+  DefaultCharisma = 10;
+  DefaultMana = 10;
+  HeadBitmapPos = 96, 240;
+  TorsoBitmapPos = 32, 16;
+  ArmBitmapPos = 80, 176;
+  LegBitmapPos = 0, 48;
+  ClothColor = rgb16(0, 0, 100);
+  EyeColor = rgb16(255, 255, 0);
+  TotalVolume = 80000;
+  TotalSize = 200;
+  CanRead = true;
+  NameSingular = "dark knight";
+  CanBeGenerated = true;
+  IsAbstract = true;
+  KnownCWeaponSkills = { 2, LARGE_SWORDS, SHIELDS; }
+  ClassStates = INFRA_VISION;
+  HostileReplies == "@Dd yells: \"For Mortifer I shall slay you!\"";
+  FriendlyReplies == "\"Don't bother me unless you need help to die.\"";
+  AttachedGod = CRUENTUS;
+  IsExtraFragile = true;
+  IsSadist = true;
+
+  Config ELITE;
+  {
+    AttributeBonus = 20;
+    Helmet = STEEL helmet(FULL_HELMET) { Enchantment = 2; }
+    BodyArmor = STEEL bodyarmor(PLATE_MAIL) { Enchantment = 2; }
+    RightWielded = STEEL STEEL meleeweapon(TWO_HANDED_SWORD) { Enchantment = 2; }
+    RightGauntlet = OMMEL_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = STEEL boot { Enchantment = 2; }
+    UsesLongAdjectiveArticle = true;
+    Adjective = "elite";
+    KnownCWeaponSkills == LARGE_SWORDS;
+    CWeaponSkillHits == 1000;
+    RightSWeaponSkillHits = 500;
+    PanicLevel = 5;
+    TotalVolume = 90000;
+    ClothColor = rgb16(20, 20, 120);
+    CapColor = rgb16(48, 48, 48);
+    GauntletColor = rgb16(50, 50, 50);
+  }
+
+  Config GRAND_MASTER;
+  {
+    AttributeBonus = 40;
+    TotalVolume = 100000;
+    Helmet = RUBY helmet(FULL_HELMET) { Enchantment = 3; }
+    BodyArmor = MITHRIL bodyarmor(PLATE_MAIL) { Enchantment = 3; }
+    Cloak = DRAGON_HIDE cloak { Enchantment = 3; }
+    Belt = SAPPHIRE belt { Enchantment = 3; }
+    RightWielded = SAPPHIRE RUBY meleeweapon(TWO_HANDED_SCIMITAR) { Enchantment = 4; }
+    LeftRing = ring(RING_OF_TELEPORT_CONTROL);
+    RightGauntlet = SPIDER_SILK gauntlet { Enchantment = 3; }
+    RightBoot = RUBY boot { Enchantment = 3; }
+    Adjective = "grand master";
+    KnownCWeaponSkills == LARGE_SWORDS;
+    CWeaponSkillHits == 5000;
+    RightSWeaponSkillHits = 2000;
+    PanicLevel = 0;
+    TamingDifficulty = 40;
+    IsUnique = true;
+    CanBeWished = true;
+    DefaultName = "Golgor Dhan";
+    DangerModifier = 1500;
+    IsNameable = false;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    Inventory = { 3, scrollofenchantarmor { Times = 2; }, scrollofenchantweapon { Times = 2; }, solstone; }
+    HeadBitmapPos = 96, 112;
+    ClothColor = rgb16(100, 0, 0);
+    CapColor = rgb16(48, 48, 48);
+    HairColor = rgb16(32, 32, 32);
+    GauntletColor = rgb16(50, 50, 50);
+    CanBeConfused = false;
+    FireResistance = 30;
+    ElectricityResistance = 30;
+    EnergyResistance = 30;
+    IsImmuneToItemTeleport = true;
+    IsExtraFragile = false;
+    AllowUnconsciousness = false;
+    DisplacePriority = 8;
+    UndeadVersions = false;
+    IsImmuneToWhipOfThievery = true;
+  }
+
+  Config ROOKIE;
+  {
+    AttributeBonus = -20;
+    Helmet = BRONZE helmet(FULL_HELMET);
+    BodyArmor = BRONZE bodyarmor(PLATE_MAIL);
+    RightWielded = BRONZE BRONZE meleeweapon(LONG_SWORD);
+    LeftWielded = BRONZE shield;
+    Adjective = "rookie";
+    CWeaponSkillHits = { 2, 200, 200; }
+    RightSWeaponSkillHits = 100;
+    LeftSWeaponSkillHits = 100;
+    PanicLevel = 15;
+    ClothColor = rgb16(70, 70, 70);
+    CapColor = rgb16(48, 48, 48);
+    GauntletColor = rgb16(50, 50, 50);
+  }
+
+  Config VETERAN;
+  {
+    Helmet = IRON helmet(FULL_HELMET) { Enchantment = 1; }
+    BodyArmor = IRON bodyarmor(PLATE_MAIL) { Enchantment = 1; }
+    RightWielded = IRON IRON meleeweapon(LONG_SWORD) { Enchantment = 1; }
+    LeftWielded = IRON shield { Enchantment = 1; }
+    RightGauntlet = NYMPH_HAIR gauntlet { Enchantment = 1; }
+    RightBoot = IRON boot { Enchantment = 1; }
+    Adjective = "veteran";
+    CWeaponSkillHits = { 2, 500, 500; }
+    RightSWeaponSkillHits = 200;
+    LeftSWeaponSkillHits = 200;
+    PanicLevel = 10;
+    ClothColor = rgb16(40, 40, 40);
+    CapColor = rgb16(48, 48, 48);
+    GauntletColor = rgb16(50, 50, 50);
+  }
+}

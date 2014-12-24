@@ -1,0 +1,134 @@
+thunderhammer /* meleeweapon-> */
+{
+  BaseEmitation = rgb24(130, 130, 130);
+  IsAbstract = true;
+
+  Config HAMMER;
+  {
+    DefaultSize = 40;
+    Possibility = 4;
+    WeaponCategory = BLUNT_WEAPONS;
+    DefaultMainVolume = 150;
+    DefaultSecondaryVolume = 300;
+    StrengthModifier = 90;
+    BitmapPos = 48, 160;
+    FormModifier = 50;
+    NameSingular = "thunder hammer";
+    MainMaterialConfig = { 7, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, OCTIRON, OMMEL_TOOTH; }
+    SecondaryMaterialConfig == FIR_WOOD;
+    MaterialConfigChances = { 7, 750, 500, 100, 50, 50, 20, 0; }
+    Roundness = 20;
+    CanBeUsedBySmith = true;
+    AttachedGod = LORICATUS;
+    WieldedBitmapPos = 176, 16;
+    EnchantmentPlusChance = 20;
+  }
+
+  Config BROKEN|HAMMER;
+  {
+    Possibility = 4;
+    BitmapPos = 48, 192;
+    WieldedBitmapPos = 176, 224;
+    MainMaterialConfig = { 4, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    MaterialConfigChances = { 4, 100, 50, 50, 10; }
+    EnchantmentPlusChance = 40;
+  }
+
+  Config SPEAR;
+  {
+    DefaultSize = 190;
+    Possibility = 4;
+    WeaponCategory = POLE_ARMS;
+    StrengthModifier = 70;
+    BitmapPos = 16, 144;
+    FormModifier = 95;
+    DefaultMainVolume = 100;
+    DefaultSecondaryVolume = 2500;
+    NameSingular = "thunder spear";
+    MainMaterialConfig = { 8, COPPER, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_BONE, OMMEL_TOOTH; }
+    SecondaryMaterialConfig == PINE_WOOD;
+    MaterialConfigChances = { 8, 650, 500, 350, 200, 50, 50, 0, 0; }
+    Roundness = 10;
+    IsTwoHanded = true;
+    AttachedGod = CRUENTUS;
+    WieldedBitmapPos = 160, 96;
+    EnchantmentPlusChance = 15;
+    DamageFlags = PIERCE;
+  }
+
+  Config BROKEN|SPEAR;
+  {
+    Possibility = 2;
+    BitmapPos = 32, 224;
+    WieldedBitmapPos = 176, 96;
+    MainMaterialConfig = { 7, STEEL, METEORIC_STEEL, MITHRIL, SAPPHIRE, RUBY, DIAMOND, ADAMANT; }
+    MaterialConfigChances = { 7, 150, 25, 25, 5, 5, 5, 5; }
+    EnchantmentPlusChance = 30;
+  }
+
+  Config SPETUM;
+  {
+    DefaultSize = 180;
+    Possibility = 1;
+    WeaponCategory = POLE_ARMS;
+    StrengthModifier = 70;
+    BitmapPos = 110, 345;
+    FormModifier = 160;
+    DefaultMainVolume = 100;
+    DefaultSecondaryVolume = 1800;
+    NameSingular = "thunder spetum";
+    MainMaterialConfig = { 10, TIN, COPPER, BRONZE, IRON, STEEL, METEORIC_STEEL, DAMASCUS_STEEL, MITHRIL, OMMEL_BONE, OMMEL_TOOTH; }
+    SecondaryMaterialConfig == TEAK_WOOD;
+    MaterialConfigChances = { 10, 50, 100, 250, 500, 1000, 250, 100, 50, 10, 5; }
+    Roundness = 25;
+    IsTwoHanded = true;
+    AttachedGod = CRUENTUS;
+    WieldedBitmapPos = 149, 512;
+    EnchantmentMinusChance = 15;
+    EnchantmentPlusChance = 10;
+    DamageFlags = PIERCE;
+  }
+
+  Config BROKEN|SPETUM;
+  {
+    Possibility = 2;
+    BitmapPos = 84, 349;
+    WieldedBitmapPos = 165, 512;
+    MainMaterialConfig = { 12, BRONZE, IRON, STEEL, METEORIC_STEEL, DAMASCUS_STEEL, MITHRIL, ILLITHIUM, RUBY, SAPPHIRE, EMERALD, DIAMOND, ADAMANT; }
+    MaterialConfigChances = { 12, 50, 100, 250, 500, 1000, 250, 100, 10, 10, 10, 5, 1; }
+    EnchantmentMinusChance = 10;
+    EnchantmentPlusChance = 5;
+  }
+
+  Config WAR_HAMMER;
+  {
+    DefaultSize = 60;
+    Possibility = 2;
+    WeaponCategory = BLUNT_WEAPONS;
+    DefaultMainVolume = 250;
+    DefaultSecondaryVolume = 500;
+    StrengthModifier = 110;
+    BitmapPos = 80, 16;
+    FormModifier = 55;
+    NameSingular = "thunder war hammer";
+    MainMaterialConfig = { 8, COPPER, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, OCTIRON, OMMEL_TOOTH; }
+    SecondaryMaterialConfig == FIR_WOOD;
+    MaterialConfigChances = { 8, 1000, 750, 500, 100, 50, 50, 50, 0; }
+    Roundness = 20;
+    IsTwoHanded = true;
+    CanBeUsedBySmith = true;
+    AttachedGod = LORICATUS;
+    WieldedBitmapPos = 176, 320;
+    EnchantmentPlusChance = 20;
+  }
+
+  Config BROKEN|WAR_HAMMER;
+  {
+    Possibility = 1;
+    BitmapPos = 80, 32;
+    WieldedBitmapPos = 176, 336;
+    MainMaterialConfig = { 4, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    MaterialConfigChances = { 4, 250, 50, 50, 10; }
+    EnchantmentPlusChance = 30;
+  }
+}

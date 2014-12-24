@@ -1,0 +1,52 @@
+uldra
+{
+  DefaultArmStrength = 12;
+  DefaultLegStrength = 10;
+  DefaultDexterity = 16;
+  DefaultAgility = 20;
+  DefaultEndurance = 18;
+  DefaultPerception = 30;
+  DefaultIntelligence = 20;
+  DefaultWisdom = 25;
+  DefaultCharisma = 40;
+  DefaultMana = 0;
+  SkinColor = rgb16(150, 90, 56);
+  EyeColor = rgb16(192, 192, 192);
+  HairColor = rgb16(210, 210, 210);
+  ClothColor = rgb16(124, 124, 124);
+  CapColor = rgb16(124, 124, 124);
+  TorsoSpecialColor = rgb16(255, 236, 0); /*belt*/
+  BootColor = rgb16(64, 0, 0);
+  HeadBitmapPos = 112, 704;
+  TorsoBitmapPos = 48, 704;
+  ArmBitmapPos = 80, 704;
+  LegBitmapPos = 16, 704;
+  TotalVolume = 24000;
+  TotalSize = 100;
+  NameSingular = "uldra";
+  HostileReplies == "@Dd grins maniaically.";
+  FriendlyReplies == "@Dd grins.";
+  CanBeGenerated = true;
+  Sex = MALE;
+  RightWielded = MITHRIL OAK_WOOD meleeweapon(SICKLE) { Enchantment = 2; }
+  KnownCWeaponSkills == SMALL_SWORDS;
+  CWeaponSkillHits == 30;
+  RightSWeaponSkillHits = 20;
+  PanicLevel = 33;
+  FleshMaterial = ULDRA_FLESH;
+  DeathMessage = "@Dd dies with a yelp.";
+  AttachedGod = ATAVUS;
+  WieldedPosition = 2, 1;
+  /*Inventory = { 1, wand(WAND_OF_SLOW);}*/
+  FireResistance = 20;
+  ElectricityResistance = 20;
+  EnergyResistance = 20;
+  UndeadVersions = false;
+  CanBeCloned = false;
+  RightBoot = BLACK_LEATHER boot { Enchantment = 1; }
+  Helmet = BLACK_LEATHER belt { Enchantment = 1; }
+  ClassStates = ESP|GAS_IMMUNITY|TELEPORT_CONTROL;
+  HPRequirementForGeneration = 150;
+  DayRequirementForGeneration = 5;
+  DangerModifier = 250;
+}

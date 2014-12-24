@@ -84,7 +84,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
   std::stack<inputfile *> infStack;
   for (int fno = 99; fno >= -1; fno--) {
     festring cfname;
-    cfname << game::GetGameDir() << "Script/" << baseFileName;
+    cfname << game::GetGameDir() << "script/" << baseFileName;
     if (fno >= 0) {
       char bnum[8];
       sprintf(bnum, "_%02d", fno);
@@ -127,7 +127,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
         Word = inFile->ReadWord();
         if (inFile->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", inFile->GetFileName().CStr(), inFile->TokenLine());
         //fprintf(stderr, "loading: %s\n", Word.CStr());
-        inputfile *incf = new inputfile(game::GetGameDir()+"Script/"+Word, &game::GetGlobalValueMap());
+        inputfile *incf = new inputfile(game::GetGameDir()+"script/"+Word, &game::GetGlobalValueMap());
         infStack.push(inFile);
         inFile = incf;
         inFile->setGetVarCB(game::ldrGetVar);
@@ -196,7 +196,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
           Word = inFile->ReadWord();
           if (inFile->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", inFile->GetFileName().CStr(), inFile->TokenLine());
           //fprintf(stderr, "loading: %s\n", Word.CStr());
-          inputfile *incf = new inputfile(game::GetGameDir()+"Script/"+Word, &game::GetGlobalValueMap());
+          inputfile *incf = new inputfile(game::GetGameDir()+"script/"+Word, &game::GetGlobalValueMap());
           infStack.push(inFile);
           inFile = incf;
           inFile->setGetVarCB(game::ldrGetVar);
@@ -216,7 +216,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
           if (isString) {
             // include file
             //fprintf(stderr, "loading: %s\n", fname.CStr());
-            inputfile *incf = new inputfile(game::GetGameDir()+"Script/"+fname, &game::GetGlobalValueMap());
+            inputfile *incf = new inputfile(game::GetGameDir()+"script/"+fname, &game::GetGlobalValueMap());
             infStack.push(inFile);
             inFile = incf;
           } else {

@@ -1,0 +1,19 @@
+fiftymillionroubles
+{
+  DefaultSize = 20;
+  Possibility = 0;
+  Price = 2;
+  Category = VALUABLE; /* ??? */
+  DefaultMainVolume = 1000;
+  StrengthModifier = 25;
+  BitmapPos = 0, 336;
+  FormModifier = 15;
+  NameSingular = "pile";
+  PostFix = "of 50 million roubles";
+  MainMaterialConfig == PARCHMENT;
+  Alias = { 2, "money", "riches"; }
+  Roundness = 60;
+  AttachedGod = MELLIS;
+  WieldedBitmapPos = 160, 128;
+  IsValuable = false;
+}

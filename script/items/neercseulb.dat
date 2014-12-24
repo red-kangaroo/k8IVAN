@@ -1,0 +1,31 @@
+neercseulb /* meleeweapon-> */
+{
+  StrengthModifier = 200;
+  FormModifier = 200; /* CLIVAN; old: 250 */
+  DefaultSize = 100;
+  Possibility = 0;
+  CanBeWished = false;
+  BitmapPos = 0, 32;
+  WeaponCategory = BLUNT_WEAPONS;
+  IsMaterialChangeable = false;
+  DefaultMainVolume = 500;
+  DefaultSecondaryVolume = 500;
+  Adjective = "ancient";
+  NameSingular = "mace";
+  UsesLongAdjectiveArticle = true;
+  PostFix = "named Neerc Se-ulb";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == MITHRIL;
+  SecondaryMaterialConfig == MITHRIL;
+  IsPolymorphable = false;
+  Alias == "Neerc Se-ulb";
+  Roundness = 35;
+  IsTwoHanded = true;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  CanBeBroken = false;
+  // CLIVAN; old -- BaseEnchantment = 6;
+  AttachedGod = MORTIFER;
+  WieldedBitmapPos = 160, 192;
+  IsQuestItem = true;
+}

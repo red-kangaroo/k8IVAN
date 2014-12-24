@@ -1,0 +1,9 @@
+scrollofteleportation /* scroll-> */
+{
+  Possibility = 100;
+  Price = 50;
+  PostFix = "of teleportation";
+  Alias == "scroll of teleport";
+  AttachedGod = SOPHOS;
+  ReadDifficulty = 50;
+}

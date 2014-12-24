@@ -1,0 +1,25 @@
+avatarofvalpurus
+{
+  DefaultSize = 10;
+  Possibility = 0;
+  CanBeWished = false;
+  IsDestroyable = false;
+  IsMaterialChangeable = false;
+  Price = 1000000;
+  Category = MISC;
+  DefaultMainVolume = 250;
+  StrengthModifier = 500;
+  BitmapPos = 0, 320;
+  FormModifier = 15;
+  UsesLongArticle = true;
+  NameSingular = "Avatar";
+  PostFix = "of Valpurus";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == VALPURIUM;
+  IsPolymorphable = false;
+  Roundness = 80;
+  CanBeCloned = false;
+  AttachedGod = VALPURUS;
+  WieldedBitmapPos = 160, 128;
+  IsQuestItem = true;
+}

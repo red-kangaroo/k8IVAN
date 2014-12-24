@@ -1,0 +1,37 @@
+horn
+{
+  StrengthModifier = 70;
+  FormModifier = 30;
+  Roundness = 40;
+  DefaultSize = 30;
+  Possibility = 10;
+  WeaponCategory = BLUNT_WEAPONS;
+  DefaultMainVolume = 400;
+  BitmapPos = 48, 304;
+  Category = TOOL;
+  NameSingular = "horn";
+  IsAbstract = true;
+  Price = 500;
+  CanBePiled = false;
+  AttachedGod = DULCIS;
+  WieldedBitmapPos = 160, 352;
+  TeleportPriority = 500;
+
+  Config BRAVERY;
+  {
+    MainMaterialConfig == SILVER;
+    PostFix = "of bravery";
+  }
+
+  Config CONFUSION;
+  {
+    MainMaterialConfig == JASPER;
+    PostFix = "of confusion";
+  }
+
+  Config FEAR;
+  {
+    MainMaterialConfig == OBSIDIAN;
+    PostFix = "of fear";
+  }
+}

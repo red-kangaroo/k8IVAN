@@ -1,0 +1,4 @@
+rightleg /* bodypart->leg-> */
+{
+  NameSingular = "right leg";
+}

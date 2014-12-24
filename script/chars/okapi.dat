@@ -1,0 +1,34 @@
+okapi
+{
+  DefaultArmStrength = 25;
+  DefaultAgility = 15;
+  DefaultEndurance = 20;
+  DefaultPerception = 18;
+  DefaultIntelligence = 5;
+  DefaultWisdom = 8;
+  DefaultCharisma = 10;
+  DefaultMana = 0;
+  TotalVolume = 40000;
+  TorsoBitmapPos = 304, 112;
+  HostileReplies == "@Dd whinneys vengefully.";
+  FriendlyReplies == "@Dd whinneys cheerfully.";
+  TotalSize = 150;
+  SkinColor = rgb16(108, 30, 18);
+  TorsoMainColor = rgb16(238, 234, 210);
+  TorsoSpecialColor = rgb16(108, 30, 18);
+  NameSingular = "okapi";
+  NamePlural = "okapies";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 180;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  FleshMaterial = OKAPI_FLESH;
+  DeathMessage = "@Dd whinneys one last time and dies.";
+  AttachedGod = SCABIES;
+  AutomaticallySeen = true;
+  IsSadist = true;
+  IsMasochist = true;
+  CanZap = true;
+  UsesLongArticle = true;
+}

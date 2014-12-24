@@ -1,0 +1,48 @@
+kamikazedwarf
+{
+  DefaultArmStrength = 20;
+  DefaultLegStrength = 20;
+  DefaultDexterity = 20;
+  DefaultAgility = 20;
+  DefaultEndurance = 15;
+  DefaultPerception = 18;
+  DefaultIntelligence = 10;
+  DefaultWisdom = 5;
+  DefaultCharisma = 10;
+  DefaultMana = 10;
+  HeadBitmapPos = 112, 160;
+  TorsoBitmapPos = 48, 16;
+  ArmBitmapPos = 80, 0;
+  LegBitmapPos = 0, 208;
+  HairColor = rgb16(144, 72, 0);
+  BeltColor = rgb16(72, 56, 16);
+  TotalVolume = 60000;
+  TotalSize = 130;
+  CanRead = true;
+  Adjective = "kamikaze";
+  NameSingular = "dwarf";
+  NamePlural = "dwarves";
+  CanBeGenerated = true;
+  CreateDivineConfigurations = true;
+  IsAbstract = true;
+  /* Equipment initialization overridden */
+  PanicLevel = 1;
+  Inventory == backpack;
+  FleshMaterial = DWARF_FLESH;
+  DeathMessage = "@Dd dies smiling.";
+  IgnoreDanger = true;
+  HPRequirementForGeneration = 60;
+  DayRequirementForGeneration = 6;
+  Frequency = 300;
+  HostileReplies == "\"Heaven awaits me in the house of @Gd after I bomb you, heretic!\"";
+  AttachedGod = NONE;
+  UndeadVersions = false;
+  WieldedPosition = -1, -2;
+  FriendlyReplies :=
+  {
+    "\"Would you like me to teach you the best suicidal bombing tactics?\"",
+    "@Dd shouts: \"Death to disbelievers!\"",
+    "@Dd praises @Gd with numerous hymns. @Pp is obviously a very devoted follower.",
+    "\"One day, Holy War will break out and I shall sacrifice my life with joy.\"";
+  }
+}

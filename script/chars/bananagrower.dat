@@ -1,0 +1,49 @@
+bananagrower
+{
+  DefaultArmStrength = 10;
+  DefaultLegStrength = 15;
+  DefaultDexterity = 10;
+  DefaultAgility = 20;
+  DefaultEndurance = 15;
+  DefaultPerception = 15;
+  DefaultIntelligence = 20;
+  DefaultWisdom = 30;
+  DefaultCharisma = 10;
+  DefaultMana = 5;
+  TotalVolume = 80000;
+  TotalSize = 170;
+  NameSingular = "banana grower";
+  RightGauntlet = LEATHER gauntlet;
+  SkinColor = rgb16(128, 80, 48);
+  HairColor = rgb16(80, 48, 32);
+  ClothColor = rgb16(56, 48, 20);
+  HeadBitmapPos = 96, 0;
+  TorsoBitmapPos = 32, 0;
+  ArmBitmapPos = 64, 64;
+  LegBitmapPos = 0, 288;
+  Inventory == banana { Times = 10; }
+  TamingDifficulty = NO_TAMING; /* AI will go insane if he leaves New Attnam */
+  HostileReplies == "\"Banana POWER!\"";
+  AttachedGod = SILVA;
+  CanRead = true;
+  FriendlyReplies :=
+  {
+    /* 6 first are used before the revolution */
+    "@Dd curses: \"I hate bananas. I wish I still was @pd.\"",
+    "\"I was @pd before Attnam invaded our peaceful land.\"",
+    "@Dd glances thoughtfully to the sky: \"Our climate is truly optimal for bananas. It rains all the time here. Damn.\"",
+    "\"1 + 1 = 3. I still don't believe it.\"",
+    "@Dd sighs: \"Piranhas ate my mother-in-law a few days ago. And I thought the nature brings us no good!\"",
+    "@Dd seems irritated. \"Go away! I know you can leave and I can't, and I'd prefer to forget that fact.\"";
+    "@Dd seems very joyful. \"I can finally be @pd again!\"",
+    "\"I knew you would come to save us!\"",
+    "\"Kill Petrus for us, too!\"";
+  }
+  AutomaticallySeen = true;
+  ScienceTalkPossibility = 10;
+  ScienceTalkIntelligenceModifier = 10;
+  ScienceTalkWisdomModifier = 25;
+  ScienceTalkIntelligenceRequirement = 5;
+  ScienceTalkWisdomRequirement = 10;
+  IsMasochist = true;
+}

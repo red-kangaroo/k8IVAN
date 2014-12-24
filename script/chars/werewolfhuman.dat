@@ -1,0 +1,35 @@
+werewolfhuman
+{
+  DefaultArmStrength = 20;
+  DefaultLegStrength = 20;
+  DefaultDexterity = 20;
+  DefaultAgility = 20;
+  DefaultEndurance = 15;
+  DefaultPerception = 18;
+  DefaultIntelligence = 20;
+  DefaultWisdom = 20;
+  DefaultCharisma = 20;
+  DefaultMana = 20;
+  TotalVolume = 70000;
+  EyeColor = rgb16(160, 0, 0);
+  ClothColor = rgb16(114, 84, 52);
+  HeadBitmapPos = 96, 0;
+  TorsoBitmapPos = 48, 0;
+  ArmBitmapPos = 64, 0;
+  LegBitmapPos = 0, 176;
+  HostileReplies == "@Dd screams in fury.";
+  FriendlyReplies == "@Dd screams in a friendly manner.";
+  TotalSize = 170;
+  NameSingular = "werewolf";
+  NamePlural = "werewolves";
+  AttackStyle = USE_ARMS;
+  CanBeGenerated = true;
+  CanRead = true;
+  ClassStates = LYCANTHROPY;
+  KnownCWeaponSkills == UNARMED;
+  CWeaponSkillHits == 200;
+  BaseUnarmedStrength = 300;
+  FleshMaterial = WERE_WOLF_FLESH;
+  AttachedGod = INFUSCOR;
+  UndeadVersions = false;
+}

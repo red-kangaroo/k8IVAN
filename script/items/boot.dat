@@ -1,0 +1,111 @@
+boot /* armor-> */
+{
+  DefaultSize = 30;
+  Possibility = 250;
+  Category = BOOT;
+  DefaultMainVolume = 400;
+  StrengthModifier = 150;
+  BitmapPos = 0, 400;
+  FormModifier = 20;
+  NameSingular = "boot";
+  MainMaterialConfig = { 9, LEATHER, HARDENED_LEATHER, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR, BRONZE, IRON, STEEL, METEORIC_STEEL; }
+  MaterialConfigChances = { 9, 2000, 1000, 500, 250, 100, 1000, 500, 100, 25; }
+  Roundness = 50;
+  CanBePiled = true;
+  InElasticityPenaltyModifier = 10;
+  HandleInPairs = true;
+  WieldedBitmapPos = 160, 128;
+  BootBitmapPos = 16, 432;
+  CanBeBroken = true;
+  EnchantmentPlusChance = 10;
+
+  Config BOOT_OF_AGILITY;
+  {
+    Possibility = 10;
+    PostFix = "of agility";
+    MainMaterialConfig == LEATHER;
+    MaterialConfigChances == 100;
+    AffectsAgility = true;
+    Price = 75;
+    BaseEnchantment = 1;
+    PriceIsProportionalToEnchantment = true;
+    AttachedGod = CLEPTIA;
+    EnchantmentPlusChance = 2;
+  }
+
+  Config BROKEN|BOOT_OF_AGILITY;
+  {
+    DefaultSize = 30;
+    FormModifier = 30;
+    BitmapPos = 80, 368;
+    Possibility = 20;
+    AffectsAgility = false;
+    Price = 25;
+    EnchantmentPlusChance = 4;
+    InElasticityPenaltyModifier = 30;
+    BootBitmapPos = 16, 512;
+  }
+
+  Config BOOT_OF_KICKING;
+  {
+    Possibility = 10;
+    PostFix = "of kicking";
+    MainMaterialConfig == IRON;
+    MaterialConfigChances == 100;
+    Price = 50;
+    FormModifier = 50;
+    EnchantmentPlusChance = 5;
+  }
+
+  Config BROKEN|BOOT_OF_KICKING;
+  {
+    DefaultSize = 30;
+    FormModifier = 30;
+    BitmapPos = 80, 368;
+    Possibility = 20;
+    MainMaterialConfig = { 5, IRON, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    MaterialConfigChances = { 5, 1000, 100, 10, 5, 1; }
+    EnchantmentPlusChance = 10;
+    InElasticityPenaltyModifier = 30;
+    BootBitmapPos = 16, 512;
+  }
+
+  Config BOOT_OF_STRENGTH;
+  {
+    Possibility = 10;
+    PostFix = "of strength";
+    MainMaterialConfig == TROLL_HIDE;
+    MaterialConfigChances == 100;
+    AffectsLegStrength = true;
+    Price = 50;
+    BaseEnchantment = 1;
+    PriceIsProportionalToEnchantment = true;
+    EnchantmentPlusChance = 2;
+  }
+
+  Config BROKEN|BOOT_OF_STRENGTH;
+  {
+    DefaultSize = 30;
+    FormModifier = 30;
+    BitmapPos = 80, 368;
+    Possibility = 20;
+    AffectsLegStrength = false;
+    Price = 10;
+    EnchantmentPlusChance = 4;
+    InElasticityPenaltyModifier = 30;
+    BootBitmapPos = 16, 512;
+  }
+
+  Config BROKEN;
+  {
+    DefaultSize = 30;
+    FormModifier = 30;
+    BitmapPos = 80, 368;
+    Possibility = 25;
+    MainMaterialConfig = { 9, OMMEL_HAIR, IRON, STEEL, METEORIC_STEEL, DRAGON_HIDE, ARCANITE, MITHRIL, OCTIRON, ADAMANT; }
+    MaterialConfigChances = { 9, 100, 500, 100, 25, 10, 10, 25, 5, 1; }
+    EnchantmentPlusChance = 20;
+    InElasticityPenaltyModifier = 30;
+    BootBitmapPos = 16, 512;
+  }
+}

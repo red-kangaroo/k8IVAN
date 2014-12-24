@@ -1,0 +1,69 @@
+kawai /* meleeweapon-> */
+{
+  StrengthModifier = 100; /*200;*/
+  FormModifier = 1500; /*225;*/
+  DefaultSize = 80;
+  Possibility = 2;
+  CanBeWished = false;
+  IsDestroyable = false;
+  CanBeGeneratedInContainer = true;
+  BitmapPos = 109, 210;
+  WeaponCategory = LARGE_SWORDS;
+  IsMaterialChangeable = false;
+  DefaultMainVolume = 100;/*150;*/
+  DefaultSecondaryVolume = 40;/*60;*/
+  Adjective = "ancient";
+  NameSingular = "katana";
+  UsesLongAdjectiveArticle = true;
+  PostFix = "named Kawai";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == RUBY;
+  BaseEmitation = rgb24(150, 120, 90);
+  IsPolymorphable = false;
+  Alias == "Kawai";
+  Roundness = 30;
+  BaseEnchantment = 16;
+  IsTwoHanded = false;
+  CanBeCloned = false;
+  CanBeMirrored = false;
+  CanBeBroken = true;
+  CanBeEnchanted = false;
+  AttachedGod = NONE;
+  WieldedBitmapPos = 176, 112;
+  IsQuestItem = false;
+  EnchantmentMinusChance = 0;
+  EnchantmentPlusChance = 16;
+  FireResistance = 30;
+  PoisonResistance = 30;
+  ElectricityResistance = 30;
+  AcidResistance = 30;
+  DamageFlags = SLASH|PIERCE;
+  GearStates = HASTE;
+
+/*
+  Config SUPER;
+  {
+    GearStates = HASTE|INFRA_VISION|ESP|POLYMORPH_CONTROL|TELEPORT_CONTROL|GAS_IMMUNITY|LEVITATION;
+    CanBeBroken = false;
+    Alias == "SuperKawai";
+    PostFix = "named SuperKawai";
+    FireResistance = 70;
+    PoisonResistance = 70;
+    ElectricityResistance = 70;
+    AcidResistance = 70;
+    BaseEnchantment = 64;
+    Roundness = 10;
+    CanFlame = true;
+    CanBeGenerated = false;
+  }
+*/
+
+/*
+  Config BROKEN;
+  {
+    BitmapPos = 110, 225;
+    WieldedBitmapPos = 176, 80;
+  }
+*/
+}

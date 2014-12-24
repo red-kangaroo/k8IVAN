@@ -1,0 +1,86 @@
+hunter
+{
+  DefaultArmStrength = 25;
+  DefaultLegStrength = 15;
+  DefaultDexterity = 15;
+  DefaultAgility = 20;
+  DefaultEndurance = 15;
+  DefaultPerception = 24;
+  DefaultIntelligence = 10;
+  DefaultWisdom = 10;
+  DefaultCharisma = 15;
+  DefaultMana = 5;
+  ClothColor = rgb16(128, 80, 48);
+  BeltColor = rgb16(144, 96, 60);
+  BootColor = rgb16(90, 50, 10);
+  HeadBitmapPos = 96, 192;
+  TorsoBitmapPos = 32, 192;
+  ArmBitmapPos = 64, 128;
+  LegBitmapPos = 0, 96;
+  TotalVolume = 80000;
+  TotalSize = 180;
+  NameSingular = "hunter";
+  Helmet = HARDENED_LEATHER helmet;
+  Cloak = LEATHER cloak;
+  BodyArmor = TROLL_HIDE bodyarmor(PLATE_MAIL);
+  RightWielded = IRON meleeweapon(SPEAR);
+  RightGauntlet = LEATHER gauntlet;
+  LeftGauntlet = 0;
+  RightBoot = HARDENED_LEATHER boot;
+  KnownCWeaponSkills == POLE_ARMS;
+  CWeaponSkillHits == 200;
+  RightSWeaponSkillHits = 200;
+  PanicLevel = 20;
+  Inventory == beartrap;
+  HostileReplies == "\"Your head will look fine above my fireplace!\"";
+  FriendlyReplies :=
+  {
+    "\"A man is not a man unless he has lost his left arm in a battle against a polar bear.\"",
+    "\"Bears, ogres, slaves, farmers... Ah, there's so much to hunt here!\"",
+    "\"I am the Great White Hunter. Get out of My way!\"",
+    "\"I saw a communist visiting the city a few days past. I'm now organising a party to seek and hunt him down.\"",
+    "\"It is good Petrus had his predecessor assassinated. Can you believe it, the dude tried to take from us our natural right to carry a spear in the street!\"";
+  }
+  AttachedGod = LORICATUS;
+  ScienceTalkAdjectiveAttribute :=
+  {
+    "!hunting", "!laying traps for", "!tracking", "!stuffing", "!techniques of slaying",
+    "!the locations of the vital organs of", "!the joy of defeating", "!capturing", "!ambushing", "!sharpshooting",
+    "!preemptively striking against", "!ridding the world of all", "!skinning", "!lynching", "!eliminating the threat of",
+    "!chasing";
+  }
+  ScienceTalkSubstantiveAttribute :=
+  {
+    "black", "dangerous", "baby", "young", "wild",
+    "fierce", "endangered", "mad", "rare", "giant",
+    "evil", "malicious", "injured", "weak", "tasty",
+    "sick", "fat";
+  }
+  ScienceTalkPrefix == "";
+  ScienceTalkName :=
+  {
+    "slaves", "farmers", "communists", "prisoners", "witches",
+    "goblins", "orcs", "kobolds", "gibberlings", "stray cats",
+    "neighbour's pets", "reindeer", "deer", "elk", "moose",
+    "bears", "polar bears", "mammoths", "ducks", "mules",
+    "cows", "levitating ostriches", "ankhegs", "rabbits", "fish",
+
+    "wolves", "hamsters", "vegetables", "moles", "lemmings",
+    "hedgehogs", "foxes", "vixens", "beavers", "geese",
+    "wives", "women", "lice", "oxen", "wildebeest",
+    "grouse", "roe", "sheep", "rhinoceros", "heathen",
+    "chamois", "mushrooms", "hippopotami", "dwarves", "elves",
+
+    "land octopi", "outlaws", "bunnies", "jackals", "hippies",
+    "bats", "scientists", "dragons", "goats", "falcons",
+    "ravens", "trolls", "werewolves", "zombies", "Siberian tigers",
+    "gnus", "llamas", "nerds", "people you don't like", "squirrels",
+    "flying squirrels", "lynxes", "chickens", "democrats";
+  }
+  ScienceTalkPossibility = 85;
+  ScienceTalkIntelligenceModifier = 2;
+  ScienceTalkWisdomModifier = 1;
+  ScienceTalkIntelligenceRequirement = 6;
+  ScienceTalkWisdomRequirement = 3;
+  IsSadist = true;
+}

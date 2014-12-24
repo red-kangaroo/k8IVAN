@@ -1,0 +1,5 @@
+largetorso /* normaltorso-> */
+{
+  AttachedGod = NONE;
+  CanBePickedUp = false;
+}

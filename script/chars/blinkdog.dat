@@ -1,0 +1,20 @@
+blinkdog
+{
+  DefaultArmStrength = 8;
+  DefaultAgility = 25;
+  DefaultEndurance = 8;
+  DefaultPerception = 21;
+  DefaultIntelligence = 10;
+  DefaultWisdom = 5;
+  DefaultCharisma = 10;
+  DefaultMana = 5;
+  TotalVolume = 30000;
+  TotalSize = 100;
+  SkinColor = rgb16(225, 225, 32);
+  NameSingular = "blink dog";
+  BaseBiteStrength = 450;
+  CWeaponSkillHits == 100;
+  AttachedGod = SOPHOS;
+  DangerModifier = 50;
+  FleshMaterial = BLINK_DOG_FLESH;
+}

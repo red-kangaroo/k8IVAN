@@ -1,0 +1,225 @@
+bodyarmor /* armor-> */
+{
+  Category = BODY_ARMOR;
+  FormModifier = 15;
+  IsAbstract = true;
+  Roundness = 70;
+  IsTwoHanded = true;
+  CanBeBroken = true;
+  AttachedGod = LORICATUS;
+  WieldedBitmapPos = 160, 144;
+  TeleportPriority = 200;
+
+  Config ARMOR_OF_GREAT_HEALTH;
+  {
+    StrengthModifier = 150;
+    DefaultSize = 80;
+    DefaultMainVolume = 5000;
+    BitmapPos = 64, 208;
+    Possibility = 5;
+    UsesLongArticle = true;
+    NameSingular = "armor";
+    PostFix = "of great health";
+    MainMaterialConfig = { 7, LEATHER, HARDENED_LEATHER, NYMPH_HAIR, TROLL_HIDE, OMMEL_HAIR, OMMEL_BONE, OMMEL_TOOTH; }
+    MaterialConfigChances = { 7, 150, 75, 25, 50, 10, 25, 10; }
+    InElasticityPenaltyModifier = 40;
+    AffectsEndurance = true;
+    BaseEnchantment = 1;
+    Price = 500;
+    PriceIsProportionalToEnchantment = true;
+    AttachedGod = SEGES;
+    EnchantmentPlusChance = 2;
+    Alias == "AOgH";
+    TorsoArmorBitmapPos = 32, 464;
+    ArmArmorBitmapPos = 80, 464;
+    AthleteArmArmorBitmapPos = 80, 480;
+    LegArmorBitmapPos = 16, 464;
+  }
+
+  Config BROKEN|ARMOR_OF_GREAT_HEALTH;
+  {
+    Possibility = 10;
+    StrengthModifier = 75;
+    BitmapPos = 64, 224;
+    FormModifier = 20;
+    Price = 50;
+    AffectsEndurance = false;
+    MainMaterialConfig = { 6, LEATHER, HARDENED_LEATHER, NYMPH_HAIR, TROLL_HIDE, OMMEL_HAIR, DRAGON_HIDE; }
+    MaterialConfigChances = { 6, 150, 75, 25, 50, 10, 1; }
+    EnchantmentPlusChance = 4;
+    InElasticityPenaltyModifier = 50;
+    TorsoArmorBitmapPos = 32, 544;
+    ArmArmorBitmapPos = 80, 544;
+    AthleteArmArmorBitmapPos = 80, 560;
+    LegArmorBitmapPos = 16, 544;
+  }
+
+  /* by Atomic */
+  Config ARMOR_OF_THE_OMMEL;
+  {
+    StrengthModifier = 160;
+    DefaultSize = 80;
+    DefaultMainVolume = 5000;
+    BitmapPos = 64, 208;
+    Possibility = 2;
+    NameSingular = "armor";
+    PostFix = "of the Ommel";
+    MainMaterialConfig = { 2, OMMEL_BONE, OMMEL_TOOTH; }
+    MaterialConfigChances = { 2, 100, 1; }
+    InElasticityPenaltyModifier = 20;
+    FireResistance = 15;
+    ElectricityResistance = 15;
+    AcidResistance = 3;
+    PoisonResistance = 3;
+    BaseEnchantment = 0;
+    Price = 500;
+    PriceIsProportionalToEnchantment = true;
+    EnchantmentPlusChance = 1;
+    IsMaterialChangeable = false;
+  }
+
+  /* by Atomic */
+  Config BROKEN|ARMOR_OF_THE_OMMEL;
+  {
+    Possibility = 4;
+    StrengthModifier = 75;
+    BitmapPos = 64, 224;
+    FormModifier = 20;
+    Price = 50;
+    MainMaterialConfig = { 2, OMMEL_BONE, OMMEL_TOOTH; }
+    MaterialConfigChances = { 2, 75, 1; }
+    EnchantmentPlusChance = 2;
+    InElasticityPenaltyModifier = 35;
+    FireResistance = 5;
+    ElectricityResistance = 5;
+    AcidResistance = 1;
+    PoisonResistance = 1;
+  }
+
+  Config CHAIN_MAIL;
+  {
+    Possibility = 50;
+    StrengthModifier = 125;
+    DefaultSize = 75;
+    DefaultMainVolume = 2000;
+    BitmapPos = 16, 96;
+    NameSingular = "chain mail";
+    MainMaterialConfig = { 8, BRONZE, IRON, STEEL, METEORIC_STEEL, ARCANITE, MITHRIL, OMMEL_BONE, OMMEL_TOOTH; }
+    MaterialConfigChances = { 8, 450, 300, 150, 25, 20, 25, 10, 5; }
+    InElasticityPenaltyModifier = 10;
+    TorsoArmorBitmapPos = 32, 432;
+    ArmArmorBitmapPos = 64, 432;
+    AthleteArmArmorBitmapPos = 64, 464;
+    LegArmorBitmapPos = 0, 432;
+    EnchantmentPlusChance = 10;
+  }
+
+  Config BROKEN|CHAIN_MAIL;
+  {
+    Possibility = 5;
+    BitmapPos = 48, 208;
+    FormModifier = 20;
+    StrengthModifier = 75;
+    MainMaterialConfig = { 6, STEEL, METEORIC_STEEL, ARCANITE, MITHRIL, OCTIRON, ADAMANT; }
+    MaterialConfigChances = { 6, 50, 25, 20, 25, 5, 5; }
+    EnchantmentPlusChance = 20;
+    InElasticityPenaltyModifier = 15;
+    TorsoArmorBitmapPos = 32, 512;
+    ArmArmorBitmapPos = 64, 512;
+    AthleteArmArmorBitmapPos = 64, 544;
+    LegArmorBitmapPos = 0, 512;
+  }
+
+  Config DRAGON_CUIRASS;
+  {
+    StrengthModifier = 225;
+    DefaultSize = 100;
+    DefaultMainVolume = 5000;
+    BitmapPos = 86, 306;
+    Possibility = 3; /* CLIVAN; old: 8 */
+    NameSingular = "dragon";
+    PostFix = "cuirass";
+    Alias == "dragon cuirass";
+    CanBeBroken = false;
+    MainMaterialConfig = { 4, DRAGON_HIDE, MITHRIL, OCTIRON, DAMASCUS_STEEL;}
+    // commented; CLIVAN; -- MaterialConfigChances = { 4, 10, 4, 2, 1; }
+    MaterialConfigChances = { 4, 10, 1, 1, 0; }
+    InElasticityPenaltyModifier = 20;
+    EnchantmentPlusChance = 5;
+    TorsoArmorBitmapPos = 5, 576;
+    ArmArmorBitmapPos = 80, 416;
+    AthleteArmArmorBitmapPos = 80, 448;
+    LegArmorBitmapPos = 16, 416;
+  }
+
+  Config FILTHY_TUNIC;
+  {
+    StrengthModifier = 50;
+    DefaultSize = 5;
+    DefaultMainVolume = 500;
+    BitmapPos = 48, 432;
+    Possibility = 50;
+    Alias == "tunic";
+    NameSingular = "filthy tunic";
+    MainMaterialConfig == HESSIAN_CLOTH;
+    InElasticityPenaltyModifier = 45;
+    EnchantmentPlusChance = 5;
+    TorsoArmorBitmapPos = 32, 736;
+    LegArmorBitmapPos = 0, 432;
+    /*ArmArmorBitmapPos = 80, 416;
+    AthleteArmArmorBitmapPos = 80, 448;*/
+    AttachedGod = SCABIES;
+    Price = 0;
+  }
+
+  Config BROKEN|FILTHY_TUNIC;
+  {
+    Possibility = 15;
+    StrengthModifier = 100;
+    BitmapPos = 64, 432;
+    FormModifier = 20;
+    EnchantmentPlusChance = 10;
+    InElasticityPenaltyModifier = 50;
+    TorsoArmorBitmapPos = 32, 752;
+    LegArmorBitmapPos = 0, 432;
+    /*ArmArmorBitmapPos = 80, 496;
+    AthleteArmArmorBitmapPos = 80, 528;
+    LegArmorBitmapPos = 16, 496;*/
+  }
+
+  Config PLATE_MAIL;
+  {
+    StrengthModifier = 200;
+    DefaultSize = 75;
+    DefaultMainVolume = 4000;
+    BitmapPos = 16, 128;
+    Possibility = 250;
+    NameSingular = "plate mail";
+    FlexibleNameSingular = "armor";
+    MainMaterialConfig = { 11, LEATHER, HARDENED_LEATHER, NYMPH_HAIR, TROLL_HIDE, OMMEL_HAIR, BRONZE, IRON, STEEL, METEORIC_STEEL, OMMEL_BONE, OMMEL_TOOTH; }
+    MaterialConfigChances = { 11, 5000, 2500, 250, 1000, 100, 200, 200, 100, 25, 10, 5; }
+    InElasticityPenaltyModifier = 20;
+    EnchantmentPlusChance = 5;
+    TorsoArmorBitmapPos = 32, 416;
+    ArmArmorBitmapPos = 80, 416;
+    AthleteArmArmorBitmapPos = 80, 448;
+    LegArmorBitmapPos = 16, 416;
+  }
+
+  Config BROKEN|PLATE_MAIL;
+  {
+    Possibility = 20;
+    StrengthModifier = 100;
+    BitmapPos = 0, 352;
+    FormModifier = 20;
+    MainMaterialConfig = { 6, NYMPH_HAIR, OMMEL_HAIR, IRON, STEEL, METEORIC_STEEL, DRAGON_HIDE; }
+    // commented; CLIVAN; -- MaterialConfigChances = { 6, 250, 100, 250, 100, 25, 10; }
+    MaterialConfigChances = { 6, 250, 100, 0, 100, 25, 10; }
+    EnchantmentPlusChance = 10;
+    InElasticityPenaltyModifier = 25;
+    TorsoArmorBitmapPos = 32, 496;
+    ArmArmorBitmapPos = 80, 496;
+    AthleteArmArmorBitmapPos = 80, 528;
+    LegArmorBitmapPos = 16, 496;
+  }
+}

@@ -1,0 +1,28 @@
+largecat
+{
+  DefaultArmStrength = 4;
+  DefaultAgility = 35;
+  DefaultEndurance = 10;
+  DefaultPerception = 21;
+  DefaultIntelligence = 10;
+  DefaultWisdom = 10;
+  DefaultCharisma = 20;
+  DefaultMana = 0;
+  TotalVolume = 15000;
+  TorsoBitmapPos = 496, 0;
+  HostileReplies == "@Dd mews.";
+  FriendlyReplies == "@Dd purrs.";
+  TotalSize = 60;
+  SkinColor = rgb16(50, 50, 50);
+  Adjective = "large";
+  NameSingular = "cat";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 600;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 50;
+  ClassStates = INFRA_VISION;
+  FleshMaterial = CAT_FLESH;
+  AttachedGod = SILVA;
+  DangerModifier = 50;
+}

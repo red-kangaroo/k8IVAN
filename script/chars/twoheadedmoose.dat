@@ -1,0 +1,31 @@
+twoheadedmoose
+{
+  DefaultArmStrength = 25;
+  DefaultAgility = 20;
+  DefaultEndurance = 15;
+  DefaultPerception = 18;
+  DefaultIntelligence = 5;
+  DefaultWisdom = 5;
+  DefaultCharisma = 3;
+  DefaultMana = 0;
+  TotalVolume = 200000;
+  TorsoBitmapPos = 176, 16;
+  HostileReplies == "Both heads of the moose snarl angrily at you.";
+  FriendlyReplies == "Both heads of the moose nod at you.";
+  TotalSize = 250;
+  SkinColor = rgb16(90, 85, 80);
+  NameSingular = "moose";
+  NamePlural = "moose";
+  Adjective = "two-headed";
+  AttackStyle = USE_HEAD;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 100;
+  FleshMaterial = MOOSE_FLESH;
+  DeathMessage = "@Dd dies both heads snarling bitterly.";
+  AttachedGod = SCABIES;
+  BaseBiteStrength = 300;
+  CanKick = true;
+  DangerModifier = 50;
+  IsEnormous = true;
+}

@@ -1,0 +1,18 @@
+palmbranch
+{
+  DefaultSize = 80;
+  Possibility = 0;
+  Category = MISC;
+  DefaultMainVolume = 4000;
+  StrengthModifier = 50;
+  BitmapPos = 0, 240;
+  FormModifier = 15;
+  NameSingular = "palm branch";
+  NamePlural = "palm branches";
+  MainMaterialConfig == PALM_LEAF;
+  Roundness = 115; /* CLIVAN; old: 80 */
+  IsTwoHanded = true;
+  AttachedGod = SILVA;
+  WieldedBitmapPos = 160, 208;
+  IsValuable = false;
+}

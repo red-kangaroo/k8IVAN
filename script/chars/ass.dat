@@ -1,0 +1,33 @@
+ass
+{
+  DefaultArmStrength = 20;
+  DefaultAgility = 4;
+  DefaultEndurance = 15;
+  DefaultPerception = 15;
+  DefaultIntelligence = 5;
+  DefaultWisdom = 5;
+  DefaultCharisma = 5;
+  DefaultMana = 0;
+  TotalVolume = 40000;
+  TorsoBitmapPos = 288, 0;
+  HostileReplies == "@Dd brays angrily.";
+  FriendlyReplies == "@Dd brays cheerfully.";
+  TotalSize = 150;
+  SkinColor = rgb16(80, 80, 80);
+  Adjective = "mutant";
+  NameSingular = "ass";
+  NamePlural = "asses";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 150;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  FleshMaterial = MUTANT_ASS_FLESH;
+  DeathMessage = "@Dd neighs one last time and dies.";
+  BaseEmitation = rgb24(140, 100, 100);
+  Alias == "donkey";
+  AttachedGod = SCABIES;
+  AutomaticallySeen = true;
+  WillCarryItems = true;
+  BloodMaterial = GLOWING_BLOOD;
+}

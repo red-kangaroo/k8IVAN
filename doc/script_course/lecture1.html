@@ -1,0 +1,92 @@
+<html>
+<head>
+<title>IVAN script lecture 1</title>
+</head>
+<body>
+
+<h2>holybanana's IVAN script course, lecture I</h2>
+<h4>Database types and configs</h4>
+
+<p>First, get <a href="http://ivan.sourceforge.net">IVAN</a>. In this lecture we don't need the source code yet, so a binary release is enough. You'll also need a simple text editor and an image editor which can show pcx files.</p>
+<p>Install IVAN and look at your IVAN installation folder. You should find a folder named Script. I'm not absolutely sure where this folder is located under different OSs, ask Hex (our porter) or the community for help if you can't find it.</p>
+<p>Open glterra.dat. IVAN's squares have two terrains, ground terrain and over terrain. This is the file where the data of the ground terrains is stored.</p>
+<p>You'll see several structures like this:</p>
+
+<pre>solidterrain /* glterrain-> */
+{
+  Walkability = WALK|FLY|ETHEREAL;
+  IsAbstract = true;
+  ...
+  Config SNOW_TERRAIN;
+  {
+    OKVisualEffects = MIRROR|FLIP|ROTATE;
+    MainMaterialConfig == SNOW;
+    NameSingular = "ground";
+    BitmapPos = 16, 16;
+  }
+  ...
+}</pre>
+
+<p>Here solidterrain is called a <i>type</i>. SNOW_TERRAIN is called a <i>config</i>. Types can have very special unique attributes, for instance a octopus character type may have dozens of bodyparts. Configs only differ from an object of their base type by more subtle details that can be defined in the script.</p>
+<p>For instance, SNOW_TERRAIN here acts just like any other solidterrain except for its outlook.<p>
+<p>The values that are inside the type definition but outside any config determine the <i>main config</i>, config number 0. The values of the main config are <i>inherited</i> to all other configs.</p>
+<p>Types must be added both in the code and in the script. Configs may be added to script only, although if you want to use the config in the code, you need to add a short definition to Main/Include/confdef.h, too.</p>
+<p>Now you may try adding a new config, for instance CUSTOM_TERRAIN. But wait! Other files need to know this config, too. Open define.dat. Search for SNOW_TERRAIN. You'll find the lines:</p>
+
+<pre>#define PARQUET 1
+#define FLOOR 2
+#define GROUND 3
+#define GRASS_TERRAIN 4
+#define LANDING_SITE 5
+#define SNOW_TERRAIN 6
+#define DARK_GRASS_TERRAIN 7
+#define SAND_TERRAIN 8</pre>
+
+<p>These are the configs of solidterrain. You must add CUSTOM_TERRAIN here.</p>
+
+<pre>#define CUSTOM_TERRAIN 9</pre>
+
+<p>Now every script file knows what you mean when you talk about CUSTOM_TERRAIN. Coders should do exactly the same steps in confdef.h, ie. add</p>
+
+<pre>#define CUSTOM_TERRAIN 9</pre>
+
+<p>after the definition of SAND_TERRAIN. This way, the code would also know CUSTOM_TERRAIN.</p>
+<p>Note that the number 9 here is an arbitrary value which the game uses to distinguish this config. It is a good custom to number the configs 1,2,3,... Note that number 0 cannot be used, since it is the number of the main config.</p>
+<p>Now you can add something like this in glterra.dat:
+
+<pre>  Config CUSTOM_TERRAIN;
+  {
+    MainMaterialConfig == ???;
+    NameSingular = ???;
+    BitmapPos = ???, ???;
+  }</pre>
+
+<p>These three <i>database values</i> are obligatory here. How do we know what we can put in place of the ???-strings?</p>
+<p>For materials, this is easy. Open material.dat. Check out all the materials. Let's say you like the config EBONY_WOOD. Then</p>
+
+<pre>MainMaterialConfig == EBONY_WOOD;</pre>
+
+<p>does the trick. You don't have to care about the type of the material, only the config name is needed. Note that this is an exception. Normally both the type and the config are needed to specify a database unambiguously. For instance, to instantiate a kobold lord you use kobold(LORD), not just LORD. This is because a config LORD may be a config of some other character too. For materials, we have guaranteed that different types have different configs, so they can be referred to more simply.</p>
+<p>It will be explained in later lectures why we use a double equality symbol == here instead of =.</p>
+<p>Fill anything you like for NameSingular. The name should be surrounded by quotation marks, for instance "dance floor".</p>
+<p>Now open the Graphics folder, which is in the same place as the Script folder. Open GLTerra.pcx with a picture editor. Choose a 16x16 tile from the pcx and note the position of its upper left corner. Say it is 32,0. Then add</p>
+
+<pre>BitmapPos = 32,0;</pre>
+
+<p>to the config.</p>
+<p>In the next lecture I'll tell you how to <i>instantiate</i> your new terrain. After instantiation you are able to see your terrain in the game.</p>
+<p>Easy exercise: Add a new ground terrain and start the game. If you get an error message, check the contents of this lecture again. Otherwise you pass.</p>
+
+<hr>
+
+<p>
+<a href="lecture2.html">Next lecture</a>
+<a href="index.html">Back to main</a>
+</p>
+
+<hr>
+
+<p>Last modified August 29 2006.</p>
+
+</body>
+</html>

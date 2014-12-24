@@ -1,0 +1,40 @@
+taiaha /* meleeweapon-> */
+{
+  /*Category = WAND;*/
+  CanBePiled = false;
+  DefaultSize = 160;
+  Possibility = 10;
+  WeaponCategory = POLE_ARMS;
+  StrengthModifier = 80;
+  BitmapPos = 48, 448;
+  FormModifier = 85;
+  DefaultMainVolume = 100;
+  DefaultSecondaryVolume = 1500;
+  NameSingular = "taiaha";
+  MainMaterialConfig = { 8, OAK_WOOD, TEAK_WOOD, EBONY_WOOD, RATA_WOOD, BONE, NEPHRITE, OMMEL_BONE, OMMEL_TOOTH; }
+  SecondaryMaterialConfig == KAURI_WOOD;
+  MaterialConfigChances = { 8, 250, 200, 100, 100, 400, 100, 25, 10; }
+  Roundness = 10;
+  IsTwoHanded = true;
+  AttachedGod = INFUSCOR;
+  WieldedBitmapPos = 160, 96;
+  EnchantmentPlusChance = 15;
+  DamageFlags = PIERCE;
+  Price = 500;
+  BeamRange = 5;
+  MinCharges = 2;
+  MaxCharges = 4;
+  IsKamikazeWeapon = true;
+  BreakMsg = "shatters to smithereens in an enormous explosion";
+  TeleportPriority = 1000;
+
+  Config BROKEN;
+  {
+    Possibility = 20;
+    BitmapPos = 64, 448;
+    WieldedBitmapPos = 176, 96;
+    MainMaterialConfig = { 7, BONE, EBONY_WOOD, RATA_WOOD, NEPHRITE, SAPPHIRE, RUBY, DIAMOND; }
+    MaterialConfigChances = {7, 150, 25, 25, 25, 5, 5, 5; }
+    EnchantmentPlusChance = 30;
+  }
+}

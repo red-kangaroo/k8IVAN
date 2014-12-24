@@ -1,0 +1,1321 @@
+/*
+ *
+ *  Iter Vehemens ad Necem (IVAN)
+ *  Copyright (C) Timo Kiviluoto
+ *  Released under the GNU General
+ *  Public License
+ *
+ *  See LICENSING which should be included
+ *  along with this file for more details
+ *
+ */
+
+/*
+ * NOTICE!!!
+ *
+ * This file contains SPOILERS, which might ruin your IVAN experience
+ * totally. Also, editing anything can DESTROY GAME BALANCE or CAUSE
+ * OBSCURE BUGS if you don't know what you're doing. So from here on,
+ * proceed at your own risk!
+ */
+
+/* Numerical defines for other script files */
+
+#enum {
+  NONE,
+  MIRROR,
+  FLIP,
+  ROTATE = 4,
+};
+
+#define RED    63488
+#define GREEN  2016
+#define BLUE   31
+
+#define YELLOW  65504
+#define PINK    61470
+
+#define WHITE       65535
+#define LIGHT_GRAY  46518
+#define DARK_GRAY   21130
+#define BLACK       0
+
+#define TRANSPARENT_COLOR  63519
+
+#bitenum {
+  POLYMORPHED,
+  HASTE,
+  SLOW,
+  POLYMORPH_CONTROL,
+  LIFE_SAVED,
+  LYCANTHROPY,
+  INVISIBLE,
+  INFRA_VISION,
+  ESP,
+  POISONED,
+  TELEPORT,
+  POLYMORPH,
+  TELEPORT_CONTROL,
+  PANIC,
+  CONFUSED,
+  PARASITIZED,
+  SEARCHING,
+  GAS_IMMUNITY,
+  LEVITATION,
+  LEPROSY,
+  HICCUPS,
+  VAMPIRISM,
+  DETECTING,
+};
+
+
+#define THROW_ITEM_TYPES 5
+/*ThrowFlags */
+#bitenum {
+  THROW_BONE,
+  THROW_POTION,
+  THROW_AXE,
+  THROW_GAS_GRENADE,
+  THROW_WAND,
+};
+
+
+#bitenum {
+  HEAD,
+  TORSO,
+  RIGHT_ARM,
+  LEFT_ARM,
+  GROIN,
+  RIGHT_LEG,
+  LEFT_LEG,
+  OTHER,
+};
+
+#define ARMS  (RIGHT_ARM | LEFT_ARM)
+#define LEGS  (RIGHT_LEG | LEFT_LEG)
+#define ALL   255
+
+
+#bitenum {
+  PHYSICAL_DAMAGE,
+  SOUND,
+  ACID,
+  FIRE,
+  ELECTRICITY,
+  ENERGY,
+  POISON,
+  DRAIN,
+  MUSTARD_GAS_DAMAGE,
+};
+
+#define THROW             32768
+
+
+#enum {
+  UNDEFINED,
+  MALE,
+  FEMALE,
+  TRANSSEXUAL
+};
+
+
+#enum {
+  TORSO_INDEX,
+  HEAD_INDEX,
+  RIGHT_ARM_INDEX,
+  LEFT_ARM_INDEX,
+  GROIN_INDEX,
+  RIGHT_LEG_INDEX,
+  LEFT_LEG_INDEX,
+};
+
+
+#enum {
+  ALPP,
+  ALP,
+  AL,
+  ALM,
+  ANP,
+  AN,
+  ANM,
+  ACP,
+  AC,
+  ACM,
+  ACMM,
+};
+
+
+#define UNARTICLED    0
+#define PLURAL        1
+#define ARTICLE_BIT   2
+#define DEFINITE      2
+#define INDEFINE_BIT  4
+#define INDEFINITE    6
+
+#define ANY_CATEGORY 2147483647
+
+#bitenum {
+  HELMET,
+  AMULET,
+  CLOAK,
+  BODY_ARMOR,
+  WEAPON,
+  SHIELD,
+  RING,
+  GAUNTLET,
+  BELT,
+  BOOT,
+  FOOD,
+  POTION,
+  SCROLL,
+  BOOK,
+  WAND,
+  TOOL,
+  VALUABLE,
+  MISC,
+};
+
+
+#enum {
+  = 1, /* first */
+  GOOD, /* it will be 1 */
+  NEUTRAL,
+  EVIL,
+  TOPPLED,
+};
+
+
+#bitenum {
+  CT_FRUIT,
+  CT_MEAT,
+  CT_METAL,
+  CT_MINERAL,
+  CT_LIQUID,
+  CT_BONE,
+  CT_PROCESSED,
+  CT_MISC_ORGANIC,
+  CT_PLASTIC,
+  CT_GAS,
+};
+
+
+#enum {
+  LEFT,
+  DOWN,
+  UP,
+  RIGHT,
+  CENTER,
+};
+
+
+#define HOSTILE   1
+#define UNCARING  2
+#define FRIEND    4
+
+#define MARTIAL_SKILL_CATEGORIES  3
+#define WEAPON_SKILL_CATEGORIES  11
+
+#enum {
+  UNARMED,
+  KICK,
+  BITE,
+  UNCATEGORIZED,
+  SMALL_SWORDS,
+  LARGE_SWORDS,
+  BLUNT_WEAPONS,
+  AXES,
+  POLE_ARMS,
+  WHIPS,
+  SHIELDS,
+};
+
+
+#define LOCKED  1
+
+#enum {
+  EFFECT_NOTHING,
+  EFFECT_POISON,
+  EFFECT_DARKNESS,
+  EFFECT_OMMEL_URINE,
+  EFFECT_PEPSI,
+  EFFECT_KOBOLD_FLESH,
+  EFFECT_HEAL,
+  EFFECT_LYCANTHROPY,
+  EFFECT_SCHOOL_FOOD,
+  EFFECT_ANTIDOTE,
+  EFFECT_CONFUSE,
+  EFFECT_POLYMORPH,
+  EFFECT_ESP,
+  EFFECT_SKUNK_SMELL,
+  EFFECT_MAGIC_MUSHROOM,
+  EFFECT_TRAIN_PERCEPTION,
+  EFFECT_HOLY_BANANA,
+  EFFECT_EVIL_WONDER_STAFF_VAPOUR,
+  EFFECT_GOOD_WONDER_STAFF_VAPOUR,
+  EFFECT_PEA_SOUP,
+  EFFECT_BLACK_UNICORN_FLESH,
+  EFFECT_GRAY_UNICORN_FLESH,
+  EFFECT_WHITE_UNICORN_FLESH,
+  EFFECT_TELEPORT_CONTROL,
+  EFFECT_MUSHROOM,
+  EFFECT_OMMEL_CERUMEN,
+  EFFECT_OMMEL_SWEAT,
+  EFFECT_OMMEL_TEARS,
+  EFFECT_OMMEL_SNOT,
+  EFFECT_OMMEL_BONE,
+  EFFECT_MUSTARD_GAS,
+  EFFECT_MUSTARD_GAS_LIQUID,
+  EFFECT_PANIC,
+  EFFECT_TELEPORT,
+  EFFECT_VAMPIRISM,
+  EFFECT_DETECTING,
+  EFFECT_HOLY_MANGO,
+};
+
+
+/* CEM = Consume End Message */
+#enum {
+  CEM_NOTHING,
+  CEM_SCHOOL_FOOD,
+  CEM_BONE,
+  CEM_FROG_FLESH,
+  CEM_OMMEL,
+  CEM_PEPSI,
+  CEM_KOBOLD_FLESH,
+  CEM_HEALING_LIQUID,
+  CEM_ANTIDOTE,
+  CEM_ESP,
+  CEM_HOLY_BANANA,
+  CEM_PEA_SOUP,
+  CEM_BLACK_UNICORN_FLESH,
+  CEM_GRAY_UNICORN_FLESH,
+  CEM_WHITE_UNICORN_FLESH,
+  CEM_OMMEL_BONE,
+  CEM_LIQUID_HORROR,
+  CEM_HOLY_MANGO,
+};
+
+
+/* HM = Hit Message */
+#enum {
+  HM_NOTHING,
+  HM_SCHOOL_FOOD,
+  HM_FROG_FLESH,
+  HM_OMMEL,
+  HM_PEPSI,
+  HM_KOBOLD_FLESH,
+  HM_HEALING_LIQUID,
+  HM_ANTIDOTE,
+  HM_CONFUSE,
+  HM_HOLY_BANANA,
+  HM_HOLY_MANGO,
+};
+
+
+/*#define SOLID_ID  4096*/
+#enum {
+  SOLID_ID = (1 << 12),
+  VALPURIUM,
+  GRAVEL,
+  MORAINE,
+  OCTIRON,
+  GLASS,
+  PARCHMENT,
+  CLOTH,
+  MITHRIL,
+  MARBLE,
+  GOLD,
+  GRASS,
+  LEATHER,
+  LEAF,
+  FABRIC,
+  PALM_LEAF,
+  SULFUR,
+  UNICORN_HORN,
+  DIAMOND,
+  SILVER,
+  SAPPHIRE,
+  RUBY,
+  BRONZE,
+  COPPER,
+  TIN,
+  SPIDER_SILK,
+  KEVLAR,
+  OMMEL_HAIR,
+  HARDENED_LEATHER,
+  TROLL_HIDE,
+  NYMPH_HAIR,
+  ANGEL_HAIR,
+  PHOENIX_FEATHER,
+  GOLDEN_EAGLE_FEATHER,
+  ICE,
+  DRAGON_HIDE,
+  ARCANITE,
+  ILLITHIUM,
+  BALSA_WOOD,
+  PINE_WOOD,
+  FIR_WOOD,
+  BIRCH_WOOD,
+  OAK_WOOD,
+  TEAK_WOOD,
+  EBONY_WOOD,
+  BLUE_CRYSTAL,
+  PURPLE_CRYSTAL,
+  GREEN_CRYSTAL,
+  SAND_STONE,
+  LIME_STONE,
+  CALCITE,
+  OBSIDIAN,
+  GNEISS,
+  SLATE,
+  GRANITE,
+  BASALT,
+  MILKY_QUARTZ,
+  FLINT,
+  QUARTZITE,
+  AMETHYST,
+  CITRINE,
+  ROSE_QUARTZ,
+  JASPER,
+  ROCK_CRYSTAL,
+  DARK_GRASS,
+  LEAD,
+  BLACK_GRANITE,
+  BLACK_LEATHER,
+
+  FLAWLESS_DIAMOND,
+  EMERALD,
+  SUN_CRYSTAL,
+  BLACK_DIAMOND,
+  PSYPHER,
+  EXTRA_HARD_BASALT,
+  WEAK_GLASS,
+
+  DEAD_GRASS,
+  KAURI_WOOD,
+  RATA_WOOD,
+  NEPHRITE,
+  HESSIAN_CLOTH,
+};
+
+
+/*#define ORGANIC_ID (4096 * 2)*/
+#enum {
+  ORGANIC_ID = (2 << 12),
+  BANANA_FLESH,
+  SCHOOL_FOOD,
+  BANANA_PEEL,
+  KIWI_FLESH,
+  PINEAPPLE_FLESH,
+  PLANT_FIBER,
+  MUTANT_PLANT_FIBER,
+  BONE,
+  BREAD,
+  HOLY_BANANA_FLESH,
+  CARROT_FLESH,
+  OMMEL_CERUMEN,
+  OMMEL_BONE,
+  OMMEL_TOOTH,
+  RYE_BREAD,
+  MANGO_FLESH,
+  HOLY_MANGO_FLESH,
+};
+
+
+/*#define GAS_ID (4096 * 3)*/
+//#define GAS_ID  (3 << 12)
+#enum {
+  GAS_ID = (3 << 12),
+  AIR,
+  MAGICAL_AIR,
+  SMOKE,
+  SKUNK_SMELL,
+  GHOST,
+  MAGIC_VAPOUR,
+  EVIL_WONDER_STAFF_VAPOUR,
+  GOOD_WONDER_STAFF_VAPOUR,
+  FART,
+  MUSTARD_GAS,
+
+  VACUUM_BLADE_AIR,
+};
+
+
+/*#define LIQUID_ID (4096 * 4)*/
+#enum {
+  LIQUID_ID = (4 << 12),
+  OMMEL_URINE,
+  PEPSI,
+  WATER,
+  HEALING_LIQUID,
+  BLOOD,
+  BROWN_SLIME,
+  POISON_LIQUID,
+  VALDEMAR,
+  ANTIDOTE_LIQUID,
+  VODKA,
+  TROLL_BLOOD,
+  DARK_FROG_BLOOD,
+  SPIDER_BLOOD,
+  VOMIT,
+  ACIDOUS_BLOOD,
+  SULPHURIC_ACID,
+  DOG_DROOL,
+  PEA_SOUP,
+  OMMEL_SWEAT,
+  OMMEL_TEARS,
+  OMMEL_SNOT,
+  SWEAT,
+  GLOWING_BLOOD,
+  YELLOW_SLIME,
+  SICK_BLOOD,
+  MUSTARD_GAS_LIQUID,
+  OMMEL_VOMIT,
+  LIQUID_HORROR,
+  VINEGAR,
+  OMMEL_BLOOD,
+  CURDLED_OMMEL_BLOOD,
+};
+
+
+/*#define FLESH_ID (4096 * 5)*/
+#enum {
+  FLESH_ID = (5 << 12),
+  GOBLINOID_FLESH,
+  PORK,
+  BEEF,
+  FROG_FLESH,
+  ELPURI_FLESH,
+  HUMAN_FLESH,
+  DOLPHIN_FLESH,
+  BEAR_FLESH,
+  WOLF_FLESH,
+  DOG_FLESH,
+  ENNER_BEAST_FLESH,
+  SPIDER_FLESH,
+  JACKAL_FLESH,
+  MUTANT_ASS_FLESH,
+  BAT_FLESH,
+  WERE_WOLF_FLESH,
+  KOBOLD_FLESH,
+  GIBBERLING_FLESH,
+  CAT_FLESH,
+  RAT_FLESH,
+  ANGEL_FLESH,
+  DWARF_FLESH,
+  DAEMON_FLESH,
+  MAMMOTH_FLESH,
+  BLACK_UNICORN_FLESH,
+  GRAY_UNICORN_FLESH,
+  WHITE_UNICORN_FLESH,
+  LION_FLESH,
+  BUFFALO_FLESH,
+  SNAKE_FLESH,
+  ORC_FLESH,
+  OSTRICH_FLESH,
+  CHAMELEON_FLESH,
+  FLOATING_EYE_FLESH,
+  MUSHROOM_FLESH,
+  MOOSE_FLESH,
+  MAGPIE_FLESH,
+  SKUNK_FLESH,
+  HEDGEHOG_FLESH,
+  MUTANT_BUNNY_FLESH,
+  HATTIFATTENER_FLESH,
+  BLINK_DOG_FLESH,
+  MAGIC_MUSHROOM_FLESH,
+  SICK_SPIDER_FLESH,
+  MIND_WORM_FLESH,
+  MUTANT_HEDGEHOG_FLESH,
+  EAGLE_FLESH,
+  KABOUTER_FLESH,
+  ULDRA_FLESH,
+  OKAPI_FLESH,
+  VAMPIRE_FLESH,
+  MOUSE_FLESH,
+  FOX_FLESH,
+  THUNDER_BIRD_FLESH,
+};
+
+
+/*#define POWDER_ID (4096 * 6)*/
+#enum {
+  POWDER_ID = (6 << 12),
+  GUN_POWDER,
+  SNOW,
+  SAND,
+};
+
+
+/*#define IRON_ALLOY_ID (4096 * 7)*/
+#enum {
+  IRON_ALLOY_ID = (7 << 12),
+  IRON,
+  STEEL,
+  METEORIC_STEEL,
+  ADAMANT,
+
+  DAMASCUS_STEEL,
+};
+
+
+#enum {
+  UNARMED_ATTACK,
+  WEAPON_ATTACK,
+  KICK_ATTACK,
+  BITE_ATTACK,
+};
+
+
+#define USE_ARMS  1
+#define USE_LEGS  2
+#define USE_HEAD  4
+
+#define ATTRIBUTES      11
+#define BASE_ATTRIBUTES  7
+
+#enum {
+  ENDURANCE,
+  PERCEPTION,
+  INTELLIGENCE,
+  WISDOM,
+  WILL_POWER,
+  CHARISMA,
+  MANA,
+  ARM_STRENGTH,
+  LEG_STRENGTH,
+  DEXTERITY,
+  AGILITY,
+};
+
+
+#enum {
+  HELMET_INDEX,
+  AMULET_INDEX,
+  CLOAK_INDEX,
+  BODY_ARMOR_INDEX,
+  BELT_INDEX,
+  RIGHT_WIELDED_INDEX,
+  LEFT_WIELDED_INDEX,
+  RIGHT_RING_INDEX,
+  LEFT_RING_INDEX,
+  RIGHT_GAUNTLET_INDEX,
+  LEFT_GAUNTLET_INDEX,
+  RIGHT_BOOT_INDEX,
+  LEFT_BOOT_INDEX,
+};
+
+
+#define SUPER    64
+#define BROKEN   128
+#define WINDOW  1024
+
+#enum {
+  LONG_SWORD = 1,
+  TWO_HANDED_SWORD,
+  TWO_HANDED_SCIMITAR,
+  SPEAR,
+  AXE,
+  HALBERD,
+  MACE,
+  WAR_HAMMER,
+  SICKLE,
+  DAGGER,
+  SHORT_SWORD,
+  BASTARD_SWORD,
+  BATTLE_AXE,
+  SCYTHE,
+  QUARTER_STAFF,
+  HAMMER,
+  KNIGHT_SWORD,
+  KATANA,
+  SPETUM,
+  TIP_SWORD,
+  KNUCKLE,
+  RAPIER,
+  GREAT_AXE,
+};
+
+
+#enum {
+  GOROVITS_HAMMER = 1,
+  GOROVITS_SICKLE,
+  GOROVITS_SCIMITAR,
+};
+
+
+#enum {
+  CHAIN_MAIL = 1,
+  PLATE_MAIL,
+  ARMOR_OF_GREAT_HEALTH,
+  DRAGON_CUIRASS,
+  ARMOR_OF_THE_OMMEL,
+  FILTHY_TUNIC,
+};
+
+
+#define CHEAP      1
+#define EXPENSIVE  2
+
+
+#enum {
+  WAND_OF_POLYMORPH = 1,
+  WAND_OF_STRIKING,
+  WAND_OF_FIRE_BALLS,
+  WAND_OF_TELEPORTATION,
+  WAND_OF_HASTE,
+  WAND_OF_SLOW,
+  WAND_OF_RESURRECTION,
+  WAND_OF_DOOR_CREATION,
+  WAND_OF_INVISIBILITY,
+  WAND_OF_CLONING,
+  WAND_OF_LIGHTNING,
+  WAND_OF_ACID_RAIN,
+  WAND_OF_MIRRORING,
+  WAND_OF_NECROMANCY,
+};
+
+
+#define RUNED_WHIP 1
+#define CHAIN_WHIP 2
+
+#define BIG_MINE 1
+
+
+#enum {
+  CLOAK_OF_INVISIBILITY = 1,
+  CLOAK_OF_FIRE_RESISTANCE,
+  CLOAK_OF_ELECTRICITY_RESISTANCE,
+  CLOAK_OF_ACID_RESISTANCE,
+  CLOAK_OF_WERE_WOLF_FUR,
+};
+
+
+#enum {
+  BOOT_OF_STRENGTH = 1,
+  BOOT_OF_AGILITY,
+  BOOT_OF_KICKING,
+};
+
+
+#enum {
+  GAUNTLET_OF_STRENGTH = 1,
+  GAUNTLET_OF_DEXTERITY,
+};
+
+
+#enum {
+  RING_OF_FIRE_RESISTANCE = 1,
+  RING_OF_POLYMORPH_CONTROL,
+  RING_OF_INFRA_VISION,
+  RING_OF_TELEPORTATION,
+  RING_OF_TELEPORT_CONTROL,
+  RING_OF_POLYMORPH,
+  RING_OF_POISON_RESISTANCE,
+  RING_OF_INVISIBILITY,
+  RING_OF_ELECTRICITY_RESISTANCE,
+  RING_OF_SEARCHING,
+  RING_OF_ACID_RESISTANCE,
+  RING_OF_THIEVES,
+};
+
+
+#enum {
+  AMULET_OF_LIFE_SAVING = 1,
+  AMULET_OF_ESP,
+  AMULET_OF_WARDING,
+  AMULET_OF_VANITY,
+};
+
+
+#enum {
+  FULL_HELMET = 1,
+  HELM_OF_PERCEPTION,
+  HELM_OF_UNDERSTANDING,
+  HELM_OF_BRILLIANCE,
+  HELM_OF_ATTRACTIVITY,
+  GOROVITS_FAMILY_GAS_MASK,
+};
+
+
+#enum {
+  BELT_OF_CARRYING = 1,
+  BELT_OF_LEVITATION,
+};
+
+
+#enum {
+  SMALL_CHEST = 1,
+  CHEST,
+  LARGE_CHEST,
+  STRONG_BOX,
+};
+
+
+#enum {
+  BRAVERY = 1,
+  FEAR,
+  CONFUSION,
+};
+
+
+#enum {
+  ROOKIE = 1,
+  VETERAN,
+  EUNUCH,
+  PATROL,
+  SHOP,
+  ELITE,
+  MASTER,
+  GRAND_MASTER,
+  MONDEDR_GUARD,
+  DWARVEN_GUARD,
+  SENTINEL,
+  FOREST_SHOP,
+};
+#define ENQUIOX 128
+
+
+#enum {
+  DARK = 1,
+  GREATER_DARK,
+  GIANT_DARK,
+  LIGHT,
+  GREATER_LIGHT,
+  GIANT_LIGHT,
+};
+
+
+#enum {
+  WARRIOR = 1,
+  WAR_LORD,
+};
+
+
+#enum {
+  BERSERKER = 1,
+  BUTCHER,
+  PRINCE,
+  KING,
+  JAILER,
+  PRISON_WARDEN,
+};
+
+
+#enum {
+  CONICAL = 1,
+  FLAT,
+};
+
+
+#enum {
+  LARGE = 1,
+  GIANT,
+  ARANEA,
+};
+
+
+#enum {
+  BLACK_BEAR = 1,
+  GRIZZLY_BEAR,
+  CAVE_BEAR,
+  POLAR_BEAR,
+  PANDA_BEAR,
+};
+
+
+#enum {
+  ZOMBIE_OF_KHAZ_ZADM = 1,
+};
+
+
+#enum {
+  TORTURING_CHIEF = 1,
+  WHIP_CHAMPION,
+  WAR_LADY,
+  QUEEN,
+};
+
+
+#enum {
+  CHIEFTAIN = 1,
+  LORD,
+  PATRIARCH,
+};
+
+
+#enum {
+  AMBULATORY = 1,
+};
+
+
+#enum {
+  GREATER = 1,
+  GIANTIC,
+  SHAMBLING,
+  LILY,
+};
+
+
+#enum {
+  SLAUGHTERER = 1,
+  SQUAD_LEADER,
+  OFFICER,
+  GENERAL,
+  MARSHAL,
+};
+
+
+#enum {
+  APPRENTICE = 1,
+  BATTLE_MAGE,
+  ELDER,
+  ARCH_MAGE,
+};
+
+
+#enum {
+  ROVER = 1,
+  BAND_LEADER,
+};
+
+
+#enum {
+  FIELD_MOUSE = 1,
+  LABORATORY_MOUSE,
+};
+
+
+#enum {
+  THIN_PIG = 1,
+};
+
+
+#enum {
+  STARVED_OX = 1,
+};
+
+
+#enum {
+  FLOATIE = 1,
+};
+
+
+#enum {
+  SONIC = 1,
+};
+
+
+/* Least significant bit defines sex */
+#enum {
+  BABY_MALE = 2,
+  BABY_FEMALE,
+  ADULT_MALE,
+  ADULT_FEMALE,
+};
+
+
+#enum {
+  APPRENTICE_NECROMANCER = 1,
+  MASTER_NECROMANCER,
+};
+
+
+#enum {
+  HUSBAND = 1,
+  WIFE,
+  CHILD,
+};
+
+
+#enum {
+  LIGHT_ASIAN_SIREN = 1,
+  DARK_ASIAN_SIREN,
+  CAUCASIAN_SIREN,
+  DARK_SIREN,
+  GREEN_SIREN,
+};
+
+
+#enum {
+  HATCHLING = 1,
+  BOIL
+};
+
+
+#enum {
+  PARQUET = 1,
+  FLOOR,
+  GROUND,
+  GRASS_TERRAIN,
+  LANDING_SITE,
+  SNOW_TERRAIN,
+  DARK_GRASS_TERRAIN,
+  SAND_TERRAIN,
+  DEAD_GRASS_TERRAIN,
+};
+
+
+#enum {
+  POOL = 1,
+  UNDERGROUND_LAKE,
+};
+
+
+#enum {
+  BRICK_FINE = 1,
+  BRICK_PROPAGANDA,
+  BRICK_OLD,
+  BRICK_PRIMITIVE,
+  BRICK_PRIMITIVE_PROPAGANDA,
+  STONE_WALL,
+  ICE_WALL,
+  BROKEN_WALL,
+};
+
+
+#enum {
+  PINE = 1,
+  FIR,
+  HOLY_TREE,
+  CARPET,
+  COUCH,
+  DOUBLE_BED,
+  POOL_BORDER,
+  POOL_CORNER,
+  PALM,
+  SNOW_PINE,
+  SNOW_FIR,
+  ANVIL,
+  SHARD,
+  CACTUS,
+  OAK,
+  BIRCH,
+  TEAK,
+  DWARF_BIRCH,
+};
+
+
+#define SNOW_BOULDER  4
+
+#define STAIRS_UP           100
+#define STAIRS_DOWN         200
+#define OREE_LAIR_ENTRY     300
+#define OREE_LAIR_EXIT      400
+#define SUMO_ARENA_ENTRY    700
+#define SUMO_ARENA_EXIT     800
+#define KHARAZ_ARAD_ENTRY   900
+#define KHARAZ_ARAD_EXIT   1000
+#define WAYPOINT_DEEPER    1100
+#define WAYPOINT_SHALLOWER 1200
+#define FOUNTAIN           65535
+
+
+#enum {
+  BOOK_CASE = 1,
+  CHEST_OF_DRAWERS,
+  SHELF,
+};
+
+
+#enum {
+  BROKEN_BARWALL = 1,
+};
+
+
+#enum {
+  BARDOOR = 1,
+  SECRET_DOOR,
+};
+
+
+#define WORLD_MAP  255
+
+#define DEFAULT_TEAM  255
+
+
+/* Hard-coded teams */
+// just add your own to enum
+#enum {
+  PLAYER_TEAM,
+  MONSTER_TEAM,
+  ATTNAM_TEAM,
+  SUMO_TEAM,
+  VALPURUS_ANGEL_TEAM,
+  GC_SHOPKEEPER_TEAM,
+  IVAN_TEAM,
+  NEW_ATTNAM_TEAM,
+  COLONIST_TEAM,
+  TOURIST_GUIDE_TEAM,
+  TOURIST_TEAM,
+  BETRAYED_TEAM,
+  MONDEDR_TEAM,
+  KHARAZ_ARAD_TEAM,
+  FORESTMAN_TEAM,
+  SOLICITUS_TEAM,
+  MORBE_TEAM,
+};
+
+
+#define NOT_WALKABLE 1
+#define HAS_CHARACTER 2
+#define IN_ROOM 4
+#define NOT_IN_ROOM 8
+#define ATTACHABLE (16|NOT_IN_ROOM) /* overrides IN_ROOM */
+#define HAS_NO_OTERRAIN 32
+
+// dungeon indicies; just add your own to enum
+#enum {
+  RANDOM,
+  ELPURI_CAVE,
+  ATTNAM,
+  NEW_ATTNAM,
+  UNDER_WATER_TUNNEL,
+  MONDEDR,
+  MUNTUO,
+  DRAGON_TOWER,
+  DARK_FOREST,
+  XINROCH_TOMB,
+};
+#define KHARAZ_ARAD_SHOP 127
+#define UNDER_WATER_TUNNEL_EXIT 128
+
+/* dungeon tags */
+#define ALL_DUNGEONS  32767
+
+#define VESANA_LEVEL 2
+#define CRYSTAL_LEVEL 3
+#define SPIDER_LEVEL 4
+#define ENNER_BEAST_LEVEL 4
+#define ZOMBIE_LEVEL 5
+/* */
+#define CITY_LEVEL 6
+#define FUSANGA_LEVEL 7
+#define IVAN_LEVEL 9
+#define DARK_LEVEL 10
+#define OREE_LAIR 14
+#define KHARAZ_ARAD 15
+#define PLANT_LEVEL 16
+/* old:
+#define IVAN_LEVEL 7
+#define DARK_LEVEL 8
+#define OREE_LAIR 12
+*/
+
+#define RECTANGLE 1
+#define ROUND_CORNERS 2
+
+#enum {
+  VALPURUS = 1,
+  LEGIFER,
+  ATAVUS,
+  DULCIS,
+  SEGES,
+  SOPHOS,
+  SILVA,
+  LORICATUS,
+  MELLIS,
+  CLEPTIA,
+  NEFAS,
+  SCABIES,
+  INFUSCOR,
+  CRUENTUS,
+  MORTIFER,
+  ATHEIST,
+  SOLICITU,
+};
+#define TERRA SILVA
+
+#define MAX_PRICE 2147483647
+
+
+#enum {
+  ROOM_NORMAL = 1,
+  ROOM_SHOP,
+  ROOM_CATHEDRAL,
+  ROOM_LIBRARY,
+  ROOM_BANANA_DROP_AREA,
+  ROOM_SUMO_ARENA,
+  ROOM_VAULT,
+};
+
+
+#define BEAM_POLYMORPH 0
+#define BEAM_STRIKE 1
+#define BEAM_FIRE_BALL 2
+#define BEAM_TELEPORT 3
+#define BEAM_HASTE 4
+#define BEAM_SLOW 5
+#define BEAM_RESURRECT 6
+#define BEAM_INVISIBILITY 7
+#define BEAM_DUPLICATE 8
+#define BEAM_LIGHTNING 9
+#define BEAM_DOOR_CREATION 10
+#define BEAM_ACID_RAIN 11
+#define BEAM_NECROMANCY 12
+
+#define BEAM_STYLES 3
+
+#define PARTICLE_BEAM 0
+#define LIGHTNING_BEAM 1
+#define SHIELD_BEAM 2
+
+#define RANDOM_COLOR 65536
+
+#define NO_LIMIT 65535
+
+#define NO_BROKEN 1
+#define IGNORE_BROKEN_PRICE 2
+
+#define N_LOCK_ID 1024
+#define S_LOCK_ID 16384
+#define LOCK_DELTA 1024
+
+#define BROKEN_LOCK S_LOCK_ID
+
+/* Normal lock types, which can be randomized */
+
+#define ROUND_LOCK (N_LOCK_ID + LOCK_DELTA * 1)
+#define SQUARE_LOCK (N_LOCK_ID + LOCK_DELTA * 2)
+#define TRIANGULAR_LOCK (N_LOCK_ID + LOCK_DELTA * 3)
+
+/* Special lock types, which must be generated in the script */
+
+#define HEXAGONAL_LOCK (S_LOCK_ID + LOCK_DELTA * 1)
+#define OCTAGONAL_LOCK (S_LOCK_ID + LOCK_DELTA * 2)
+#define HEART_SHAPED_LOCK (S_LOCK_ID + LOCK_DELTA * 3)
+#define PENTAGONAL_LOCK (S_LOCK_ID + LOCK_DELTA * 4)
+
+#define DESERT 1
+#define JUNGLE 2
+#define STEPPE 3
+#define LEAFY_FOREST 4
+#define EVERGREEN_FOREST 5
+#define TUNDRA 6
+#define GLACIER 7
+
+#define NO_MOVE 0
+#define WALK 1
+#define SWIM 2
+#define FLY  4
+#define ETHEREAL 8
+#define ANY_MOVE 15
+
+#define NOT_RUSTED 0
+#define SLIGHTLY_RUSTED 1
+#define RUSTED 2
+#define VERY_RUSTED 3
+
+#define SKIN_COLOR 1
+#define CAP_COLOR 2
+#define HAIR_COLOR 4
+#define EYE_COLOR 8
+#define TORSO_MAIN_COLOR 16
+#define BELT_COLOR 32
+#define BOOT_COLOR 64
+#define TORSO_SPECIAL_COLOR 128
+#define ARM_MAIN_COLOR 256
+#define GAUNTLET_COLOR 512
+#define ARM_SPECIAL_COLOR 1024
+#define LEG_MAIN_COLOR 2048
+#define LEG_SPECIAL_COLOR 4096
+#define CLOTH_COLOR (CAP_COLOR|TORSO_MAIN_COLOR|ARM_MAIN_COLOR|GAUNTLET_COLOR|LEG_MAIN_COLOR)
+
+/* contentscript<character> Flags */
+
+#define IS_LEADER 1
+#define IS_MASTER 2
+
+#define DEPENDS_ON_ATTRIBUTES 65535
+
+#define FOLLOW_PLAYER 1
+#define FLEE_FROM_ENEMIES 2
+#define DONT_CHANGE_EQUIPMENT 4
+#define DONT_CONSUME_ANYTHING_VALUABLE 8
+
+#define NO_PARAMETERS 255
+
+#define GRAY_FRACTAL 0
+#define RED_FRACTAL 1
+#define GREEN_FRACTAL 2
+#define BLUE_FRACTAL 3
+#define YELLOW_FRACTAL 4
+
+#define BLUNT 1
+#define SLASH 2
+#define PIERCE 4
+
+/*************************/
+/* Common DataBase flags */
+/*************************/
+
+/* CommonFlags */
+#define IS_ABSTRACT 1
+#define HAS_SECONDARY_MATERIAL 2
+#define CREATE_DIVINE_CONFIGURATIONS 4
+#define CAN_BE_WISHED 8
+#define CAN_BE_DESTROYED 16
+#define IS_VALUABLE 32
+#define CAN_BE_MIRRORED 64
+
+/* NameFlags */
+#define USE_AN 1
+#define USE_ADJECTIVE_AN 2
+#define NO_ARTICLE 4
+#define FORCE_THE 8
+#define SHOW_MATERIAL 16
+
+/***************************/
+/* Material DataBase flags */
+/***************************/
+
+/* CommonFlags */
+/* NameFlags (only USE_AN) */
+
+/* CategoryFlags */
+#define IS_METAL 1
+#define IS_BLOOD 2
+#define CAN_BE_TAILORED 4
+#define IS_SPARKLING 8
+#define IS_SCARY 16
+#define IS_GOLEM_MATERIAL 32
+#define IS_BEVERAGE 64
+
+/* BodyFlags */
+#define IS_ALIVE 1
+#define IS_WARM 2
+#define CAN_HAVE_PARASITE 4
+#define USE_MATERIAL_ATTRIBUTES 8
+#define CAN_REGENERATE 16
+
+/* InteractionFlags */
+#define CAN_BURN 1
+#define CAN_EXPLODE 2
+#define CAN_DISSOLVE 4
+#define AFFECT_INSIDE 8
+#define EFFECT_IS_GOOD 16
+#define IS_AFFECTED_BY_MUSTARD_GAS 32
+
+/*************************/
+/* End of DataBase flags */
+/*************************/
+
+#define BONUS_LIVES 0
+
+/* room flags */
+
+#define NO_MONSTER_GENERATION  1
+
+#define NO_TAMING  -1
+
+
+/* for scripts */
+#define HAS_HIT 0
+#define HAS_BLOCKED 1
+#define HAS_DODGED 2
+#define HAS_DIED 3
+#define DID_NO_DAMAGE 4
+#define HAS_FAILED 5
+
+
+; /* this line must be here */

@@ -1,0 +1,23 @@
+liquidterrain /* glterrain-> */
+{
+  MainMaterialConfig == WATER;
+  IsAbstract = true;
+  Walkability = SWIM|FLY|ETHEREAL;
+  ShowMaterial = false;
+
+  Config POOL;
+  {
+    NameSingular = "pool";
+    SitMessage = "You sit on the pool. Oddly enough, you sink. You feel stupid.";
+  }
+
+  Config UNDERGROUND_LAKE;
+  {
+    UsesLongAdjectiveArticle = true;
+    Adjective = "underground";
+    NameSingular = "lake";
+    /*SitMessage = "You sit on the pool. Oddly enough, you sink. You feel stupid.";*/
+    UseBorderTiles = true;
+    BorderTilePriority = 10;
+  }
+}

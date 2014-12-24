@@ -1,0 +1,32 @@
+justifier /* meleeweapon-> */
+{
+  DefaultSize = 125;
+  Possibility = 0;
+  WeaponCategory = LARGE_SWORDS;
+  DefaultMainVolume = 200;
+  DefaultSecondaryVolume = 100;
+  BitmapPos = 0, 64;
+  FormModifier = 275;
+  StrengthModifier = 275;
+  CanBeWished = false;
+  IsMaterialChangeable = false;
+  NameSingular = "broadsword";
+  Adjective = "holy";
+  PostFix = "named Valpurus's Justifier";
+  ArticleMode = FORCE_THE;
+  MainMaterialConfig == VALPURIUM;
+  SecondaryMaterialConfig == VALPURIUM;
+  IsPolymorphable = false;
+  Alias == "Justifier";
+  Roundness = 20;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  CanBeBroken = false;
+  BaseEnchantment = 16;
+  CanBeEnchanted = false;
+  GearStates = HASTE|INFRA_VISION|ESP|POLYMORPH_CONTROL|TELEPORT_CONTROL;
+  AttachedGod = VALPURUS;
+  WieldedBitmapPos = 160, 16;
+  IsQuestItem = true;
+  DamageFlags = SLASH|PIERCE;
+}

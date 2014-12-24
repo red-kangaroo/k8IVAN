@@ -1,0 +1,190 @@
+frog
+{
+  HostileReplies == "@Dd croaks angrily.";
+  FriendlyReplies :=
+  {
+    "@Dd frolics in religious ecstasy.",
+    "@Dd croaks with pious joy.",
+    "@Dd jumps up and down in enlightened trance.",
+    "@Dd goes \"Ribbit! Ribbit!\" full of transcendent delight.";
+  }
+  NameSingular = "frog";
+  IsAbstract = true;
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 750;
+  KnownCWeaponSkills == BITE;
+  FleshMaterial = FROG_FLESH;
+  PanicLevel = 50;
+  MoveType = WALK|SWIM;
+  CanRead = true;
+  CanChoke = false;
+  StandVerb = "jumping about";
+
+  Config DARK;
+  {
+    DefaultArmStrength = 5;
+    DefaultAgility = 40;
+    DefaultEndurance = 10;
+    DefaultPerception = 24;
+    DefaultIntelligence = 15;
+    DefaultWisdom = 20;
+    DefaultCharisma = 5;
+    DefaultMana = 20;
+    BloodMaterial = DARK_FROG_BLOOD;
+    TotalVolume = 5000;
+    TorsoBitmapPos = 80, 0;
+    TotalSize = 25;
+    SkinColor = rgb16(60, 60, 60);
+    Adjective = "dark";
+    CanBeGenerated = true;
+    ClassStates = INFRA_VISION;
+    CWeaponSkillHits == 100;
+    AttachedGod = SCABIES;
+    ScienceTalkPossibility = 25;
+    ScienceTalkIntelligenceModifier = 10;
+    ScienceTalkWisdomModifier = 5;
+    ScienceTalkIntelligenceRequirement = 10;
+    ScienceTalkWisdomRequirement = 5;
+    FriendlyReplies == "@Dd croaks happily.";
+    IsCatacombCreature = true;
+  }
+
+  Config GIANT_DARK;
+  {
+    DefaultArmStrength = 45;
+    DefaultAgility = 30;
+    DefaultEndurance = 20;
+    DefaultPerception = 36;
+    DefaultIntelligence = 25;
+    DefaultWisdom = 30;
+    DefaultCharisma = 3;
+    DefaultMana = 30;
+    BaseBiteStrength = 1250;
+    BloodMaterial = DARK_FROG_BLOOD;
+    TotalVolume = 250000;
+    TorsoBitmapPos = 64, 0;
+    TotalSize = 200;
+    SkinColor = rgb16(60, 60, 60);
+    Adjective = "giant dark";
+    CanBeGenerated = true;
+    ClassStates = INFRA_VISION|TELEPORT_CONTROL;
+    CWeaponSkillHits == 500;
+    AttachedGod = SCABIES;
+    IsPolymorphable = false;
+    IsEnormous = true;
+    ScienceTalkPossibility = 75;
+    ScienceTalkIntelligenceModifier = 50;
+    ScienceTalkWisdomModifier = 25;
+    ScienceTalkIntelligenceRequirement = 20;
+    ScienceTalkWisdomRequirement = 15;
+    FriendlyReplies == "@Dd croaks happily.";
+    IsCatacombCreature = true;
+  }
+
+  Config GIANT_LIGHT;
+  {
+    DefaultArmStrength = 45;
+    DefaultAgility = 30;
+    DefaultEndurance = 20;
+    DefaultPerception = 36;
+    DefaultIntelligence = 15;
+    DefaultWisdom = 40;
+    DefaultCharisma = 25;
+    DefaultMana = 30;
+    BaseBiteStrength = 1250;
+    TotalVolume = 250000;
+    TorsoBitmapPos = 64, 0;
+    TotalSize = 200;
+    SkinColor = rgb16(32, 88, 32);
+    Adjective = "giant light";
+    CWeaponSkillHits == 500;
+    AttachedGod = VALPURUS;
+    IsPolymorphable = false;
+    ClassStates = TELEPORT_CONTROL;
+    IsEnormous = true;
+    ScienceTalkPossibility = 75;
+    ScienceTalkIntelligenceModifier = 10;
+    ScienceTalkWisdomModifier = 25;
+    ScienceTalkIntelligenceRequirement = 15;
+    ScienceTalkWisdomRequirement = 25;
+  }
+
+  Config GREATER_DARK;
+  {
+    DefaultArmStrength = 15;
+    DefaultAgility = 35;
+    DefaultEndurance = 15;
+    DefaultPerception = 30;
+    DefaultIntelligence = 20;
+    DefaultWisdom = 25;
+    DefaultCharisma = 4;
+    DefaultMana = 25;
+    BaseBiteStrength = 1000;
+    BloodMaterial = DARK_FROG_BLOOD;
+    TotalVolume = 50000;
+    TorsoBitmapPos = 96, 0;
+    TotalSize = 100;
+    SkinColor = rgb16(60, 60, 60);
+    Adjective = "greater dark";
+    CanBeGenerated = true;
+    ClassStates = INFRA_VISION;
+    CWeaponSkillHits == 200;
+    AttachedGod = SCABIES;
+    ScienceTalkPossibility = 50;
+    ScienceTalkIntelligenceModifier = 25;
+    ScienceTalkWisdomModifier = 10;
+    ScienceTalkIntelligenceRequirement = 15;
+    ScienceTalkWisdomRequirement = 10;
+    FriendlyReplies == "@Dd croaks happily.";
+    IsCatacombCreature = true;
+  }
+
+  Config GREATER_LIGHT;
+  {
+    DefaultArmStrength = 15;
+    DefaultAgility = 30;
+    DefaultEndurance = 15;
+    DefaultPerception = 36;
+    DefaultIntelligence = 10;
+    DefaultWisdom = 35;
+    DefaultCharisma = 20;
+    DefaultMana = 25;
+    BaseBiteStrength = 1000;
+    TotalVolume = 50000;
+    TorsoBitmapPos = 96, 0;
+    TotalSize = 100;
+    SkinColor = rgb16(32, 88, 32);
+    Adjective = "greater light";
+    CWeaponSkillHits == 200;
+    AttachedGod = VALPURUS;
+    ScienceTalkPossibility = 50;
+    ScienceTalkIntelligenceModifier = 5;
+    ScienceTalkWisdomModifier = 10;
+    ScienceTalkIntelligenceRequirement = 10;
+    ScienceTalkWisdomRequirement = 20;
+  }
+
+  Config LIGHT;
+  {
+    DefaultArmStrength = 5;
+    DefaultAgility = 40;
+    DefaultEndurance = 10;
+    DefaultPerception = 24;
+    DefaultIntelligence = 5;
+    DefaultWisdom = 30;
+    DefaultCharisma = 15;
+    DefaultMana = 20;
+    TotalVolume = 5000;
+    TorsoBitmapPos = 80, 0;
+    TotalSize = 25;
+    SkinColor = rgb16(32, 88, 32);
+    Adjective = "light";
+    CWeaponSkillHits == 100;
+    AttachedGod = VALPURUS;
+    ScienceTalkPossibility = 25;
+    ScienceTalkIntelligenceModifier = 2;
+    ScienceTalkWisdomModifier = 5;
+    ScienceTalkIntelligenceRequirement = 5;
+    ScienceTalkWisdomRequirement = 15;
+  }
+}

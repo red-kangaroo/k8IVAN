@@ -1,0 +1,28 @@
+goldeneagleshirt /* armor->bodyarmor-> */
+{
+  DefaultSize = 60;
+  BitmapPos = 16, 112;
+  Possibility = 0;
+  CanBeWished = false;
+  IsDestroyable = false;
+  IsMaterialChangeable = false;
+  DefaultMainVolume = 1000;
+  BaseEmitation = rgb24(112, 112, 166);
+  StrengthModifier = 200;
+  NameSingular = "Shirt of the Golden Eagle";
+  MainMaterialConfig == GOLDEN_EAGLE_FEATHER;
+  ArticleMode = FORCE_THE;
+  IsPolymorphable = false;
+  CanBeBroken = false;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  BaseEnchantment = 10;
+  InElasticityPenaltyModifier = 30;
+  CanBeEnchanted = false;
+  AttachedGod = VALPURUS;
+  IsQuestItem = true;
+  TorsoArmorBitmapPos = 32, 416;
+  ArmArmorBitmapPos = 80, 416;
+  AthleteArmArmorBitmapPos = 80, 448;
+  LegArmorBitmapPos = 16, 416;
+}

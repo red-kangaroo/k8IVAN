@@ -1,0 +1,33 @@
+ostrich
+{
+  DefaultArmStrength = 15;
+  DefaultAgility = 30;
+  DefaultEndurance = 10;
+  DefaultPerception = 15;
+  DefaultIntelligence = 5;
+  DefaultWisdom = 5;
+  DefaultCharisma = 7;
+  DefaultMana = 0;
+  TotalVolume = 120000;
+  TorsoBitmapPos = 64, 16;
+  HostileReplies == "@Dd cackles diabolically.";
+  FriendlyReplies == "@Dd cackles cheerfully. @Pp likes @sp life.";
+  TotalSize = 230;
+  SkinColor = rgb16(160, 140, 140);
+  TorsoMainColor = rgb16(48, 48, 48); /* the body feathers */
+  Adjective = "levitating";
+  NameSingular = "ostrich";
+  NamePlural = "ostriches";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 200;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  PanicLevel = 95;
+  FleshMaterial = OSTRICH_FLESH;
+  DeathMessage = "@Dd is squashed to a bloody mass of feathers.";
+  StandVerb = "floating";
+  TamingDifficulty = NO_TAMING; /* AI will go insane if it leaves New Attnam */
+  AttachedGod = SILVA;
+  ClassStates = LEVITATION;
+  AutomaticallySeen = true;
+}

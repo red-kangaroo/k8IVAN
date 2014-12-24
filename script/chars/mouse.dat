@@ -1,0 +1,61 @@
+mouse
+{
+  DefaultArmStrength = 2;
+  DefaultAgility = 20;
+  DefaultEndurance = 10;
+  DefaultPerception = 10;
+  DefaultIntelligence = 12;
+  DefaultWisdom = 5;
+  DefaultCharisma = 4;
+  DefaultMana = 0;
+  CanOpen = false;
+  TotalVolume = 200;
+  TorsoBitmapPos = 272, 96;
+  HostileReplies == "The @du squeaks haughtily.";
+  FriendlyReplies == "@Dd squeaks contentedly.";
+  TotalSize = 30;
+  NameSingular = "mouse";
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 350;
+  CanBeGenerated = true;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 20;
+  ClassStates = INFRA_VISION;
+  FleshMaterial = MOUSE_FLESH;
+  AttachedGod = SILVA;
+  MoveType = WALK|SWIM;
+  IsCatacombCreature = true;
+  IsAbstract = true;
+
+  Config FIELD_MOUSE;
+  {
+    Adjective = "field";
+    SkinColor = rgb16(180, 100, 40);
+    TotalVolume = 250;
+    TotalSize = 35;
+    AttributeBonus = 0;
+  }
+
+  Config LABORATORY_MOUSE;
+  {
+    Adjective = "laboratory";
+    SkinColor = rgb16(250, 250, 250);
+    TotalVolume = 300;
+    TotalSize = 30;
+    AttributeBonus = 15;
+    DefaultIntelligence = 50;
+    DefaultWisdom = 50;
+    CanBeGenerated = false;
+    FriendlyReplies == "The @du squeaks: \"Do you know, we lab-mice are really a race of hyper-intelligent pan-dimensional beings?\"";
+    ScienceTalkPossibility = 33;
+    ScienceTalkIntelligenceModifier = 10;
+    ScienceTalkWisdomModifier = 5;
+    ScienceTalkIntelligenceRequirement = 45;
+    ScienceTalkWisdomRequirement = 45;
+    ScienceTalkName :=
+    {
+      "Life", "the Universe", "Everything", "5D chat shows", "computer architectonics",
+      "cheese", "experiments", "Ultimate Questions", "pan-dimensionality", "On-Turning";
+    }
+  }
+}

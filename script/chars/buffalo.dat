@@ -1,0 +1,32 @@
+buffalo
+{
+  DefaultArmStrength = 40;
+  DefaultAgility = 25;
+  DefaultEndurance = 20;
+  DefaultPerception = 24;
+  DefaultIntelligence = 5;
+  DefaultWisdom = 5;
+  DefaultCharisma = 5;
+  DefaultMana = 0;
+  TotalVolume = 200000;
+  TorsoBitmapPos = 16,16;
+  HostileReplies == "The angry @du snarls.";
+  FriendlyReplies == "The friendly @du snarls.";
+  TotalSize = 250;
+  SkinColor = rgb16(90, 85, 80);
+  TorsoMainColor = rgb16(120, 120, 120); /* the horns */
+  NameSingular = "buffalo";
+  AttackStyle = USE_LEGS|USE_HEAD;
+  BaseKickStrength = 500;
+  BaseBiteStrength = 250;
+  CanKick = true;
+  CanBeGenerated = true;
+  KnownCWeaponSkills = { 2, KICK, BITE; }
+  CWeaponSkillHits = { 2, 50, 50; }
+  PanicLevel = 10;
+  FleshMaterial = BUFFALO_FLESH;
+  DeathMessage = "@Dd snarls one last time.";
+  AttachedGod = SILVA;
+  Frequency = 2500;
+  IsEnormous = true;
+}

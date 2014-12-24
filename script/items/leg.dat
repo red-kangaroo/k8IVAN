@@ -1,0 +1,9 @@
+leg /* bodypart-> */
+{
+  StrengthModifier = 125;
+  FormModifier = 15;
+  IsAbstract = true;
+  Roundness = 20;
+  WeaponCategory = BLUNT_WEAPONS;
+  WieldedBitmapPos = 160, 352;
+}

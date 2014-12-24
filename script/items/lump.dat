@@ -1,0 +1,18 @@
+lump
+{
+  DefaultSize = 10;
+  Possibility = 400;
+  Category = FOOD;
+  DefaultMainVolume = 500;
+  StrengthModifier = 75;
+  BitmapPos = 16, 48;
+  FormModifier = 10;
+  NameSingular = "lump";
+  MainMaterialConfig = { 2, BANANA_FLESH, SCHOOL_FOOD; }
+  MaterialConfigChances = { 2, 75, 5; }
+  OKVisualEffects = MIRROR|FLIP;
+  Roundness = 75;
+  AttachedGod = NONE;
+  WieldedBitmapPos = 160, 112;
+  IsValuable = false;
+}

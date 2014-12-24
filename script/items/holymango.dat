@@ -1,0 +1,29 @@
+holymango
+{
+  WeaponCategory = BLUNT_WEAPONS;
+  Possibility = 2;
+  Category = FOOD;
+  DefaultMainVolume = 250;
+  StrengthModifier = 150;
+  FormModifier = 250;
+  DefaultSize = 30;
+  Price = 1000;
+  Adjective = "holy";
+  NameSingular = "mango";
+  NamePlural = "mangoes";
+  PostFix = "of Oren Ordent";
+  ArticleMode = FORCE_THE;
+  IsPolymorphable = false;
+  Roundness = 90;
+  BitmapPos = 0, 432;
+  CanBePiled = false;
+  CanBeBroken = false;
+  MainMaterialConfig == HOLY_MANGO_FLESH;
+  BaseEmitation = rgb24(160, 140, 110);
+  WieldedBitmapPos = 176, 144;
+  CanBeCloned = false;
+  CanBeMirrored = false;
+  AllowEquip = true;
+  IsValuable = true;
+  AttachedGod = SILVA;
+}
