@@ -80,11 +80,11 @@ public:
   static item* CreateItem(cfestring&, truth = true);
   static material* CreateMaterial(cfestring&, sLong = 0, truth = true);
   static void CreateEveryNormalEnemy(charactervector&);
-#ifdef WIZARD
+//#ifdef WIZARD
   static void CreateEveryCharacter(charactervector&);
   static void CreateEveryItem(itemvectorvector&);
   static void CreateEveryMaterial(std::vector<material*>&);
-#endif
+//#endif
   static void Initialize();
   static void InitCharacterDataBaseFlags();
   static void SaveCharacterDataBaseFlags(outputfile&);

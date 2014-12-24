@@ -464,7 +464,7 @@ material* protosystem::CreateMaterial(cfestring& What, sLong Volume, truth Outpu
   return 0;
 }
 
-#ifdef WIZARD
+//#ifdef WIZARD
 
 void protosystem::CreateEveryCharacter(charactervector& Character)
 {
@@ -507,7 +507,7 @@ void protosystem::CreateEveryMaterial(std::vector<material*>& Material)
   }
 }
 
-#endif
+//#endif
 
 void protosystem::CreateEveryNormalEnemy(charactervector& EnemyVector)
 {
