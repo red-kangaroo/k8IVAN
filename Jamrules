@@ -41,4 +41,3 @@ softinclude $(TOP)/Jamrules.local ;
 softinclude $(TOP)/Jamrules.local.k8 ;
 softinclude $(TOP)/Jamrules.libs ;
 softinclude $(TOP)/Jamrules.install ;
-softinclude $(TOP)/Jamrules.push ;
