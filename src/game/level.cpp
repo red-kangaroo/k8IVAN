@@ -1524,21 +1524,21 @@ truth level::PreProcessForBone()
           &&  (DungeonIndex != ELPURI_CAVE || (Index != ENNER_BEAST_LEVEL && Index != DARK_LEVEL))));
 }
 
-truth level::PostProcessForBone()
-{
+
+truth level::PostProcessForBone () {
   game::SetTooGreatDangerFound(false);
   double DangerSum = 0;
   int Enemies = 0;
 
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y]->PostProcessForBone(DangerSum, Enemies);
+    }
+  }
 
-  if(game::TooGreatDangerFound() || (Enemies && DangerSum/Enemies > Difficulty*10))
-    return false;
-
-  return true;
+  return !(game::TooGreatDangerFound() || (Enemies && DangerSum/Enemies > Difficulty*10));
 }
+
 
 void level::FinalProcessForBone()
 {
@@ -1550,15 +1550,12 @@ void level::FinalProcessForBone()
     Room[c]->FinalProcessForBone();
 }
 
-void level::GenerateDungeon(int Index)
-{
-  cfestring* Msg = LevelScript->GetLevelMessage();
 
-  if(Msg)
-    LevelMessage = *Msg;
+void level::GenerateDungeon (int Index) {
+  cfestring *Msg = LevelScript->GetLevelMessage();
+  if (Msg) LevelMessage = *Msg;
 
-  if(*LevelScript->GenerateMonsters())
-  {
+  if (*LevelScript->GenerateMonsters()) {
     MonsterGenerationInterval = *LevelScript->GetMonsterGenerationIntervalBase() + *LevelScript->GetMonsterGenerationIntervalDelta()*Index;
     IdealPopulation = *LevelScript->GetMonsterAmountBase() + *LevelScript->GetMonsterAmountDelta()*Index;
   }
@@ -1566,89 +1563,71 @@ void level::GenerateDungeon(int Index)
   Difficulty = 0.001*(*LevelScript->GetDifficultyBase() + *LevelScript->GetDifficultyDelta()*Index);
   EnchantmentMinusChance = *LevelScript->GetEnchantmentMinusChanceBase() + *LevelScript->GetEnchantmentMinusChanceDelta()*Index;
   EnchantmentPlusChance = *LevelScript->GetEnchantmentPlusChanceBase() + *LevelScript->GetEnchantmentPlusChanceDelta()*Index;
-  const contentscript<glterrain>* GTerrain = LevelScript->GetFillSquare()->GetGTerrain();
-  const contentscript<olterrain>* OTerrain = LevelScript->GetFillSquare()->GetOTerrain();
+  const contentscript<glterrain> *GTerrain = LevelScript->GetFillSquare()->GetGTerrain();
+  const contentscript<olterrain> *OTerrain = LevelScript->GetFillSquare()->GetOTerrain();
   sLong Counter = 0;
   int x;
+
   game::BusyAnimation();
 
-  for(x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y, ++Counter)
+  for (x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y, ++Counter) {
       Map[x][y]->SetLTerrain(GTerrain->Instantiate(), OTerrain->Instantiate());
+    }
+  }
 
   uInt c;
   uInt Rooms = LevelScript->GetRooms()->Randomize();
   const std::list<roomscript>& RoomList = LevelScript->GetRoom();
   std::list<roomscript>::const_iterator Iterator = RoomList.begin();
 
-  for(c = 0; c < Rooms; ++c)
-  {
+  for (c = 0; c < Rooms; ++c) {
     game::BusyAnimation();
-
-    if(c < RoomList.size())
-    {
+    if (c < RoomList.size()) {
       int i;
-
-      for(i = 0; i < 1000; ++i)
-  if(MakeRoom(&*Iterator))
-    break;
-
-      if(i == 1000)
-  ABORT("Failed to place special room #%d!", c);
-
+      for (i = 0; i < 1000; ++i) if (MakeRoom(&*Iterator)) break;
+      if (i == 1000) ABORT("Failed to place special room #%d!", c);
       ++Iterator;
-    }
-    else
-    {
-      const roomscript* RoomScript = LevelScript->GetRoomDefault();
-
-      for(int i = 0; i < 50; ++i)
-  if(MakeRoom(RoomScript))
-    break;
+    } else {
+      const roomscript *RoomScript = LevelScript->GetRoomDefault();
+      for (int i = 0; i < 50; ++i) if (MakeRoom(RoomScript)) break;
     }
   }
 
   game::BusyAnimation();
 
-  if(!*LevelScript->IgnoreDefaultSpecialSquares())
-  {
+  if (!*LevelScript->IgnoreDefaultSpecialSquares()) {
     /* Gum solution */
-
-    const levelscript* LevelBase = static_cast<const levelscript*>(LevelScript->GetBase());
-
-    if(LevelBase)
-    {
-      const std::list<squarescript>& Square = LevelBase->GetSquare();
-
-      for(std::list<squarescript>::const_iterator i = Square.begin(); i != Square.end(); ++i)
-      {
-  game::BusyAnimation();
-  ApplyLSquareScript(&*i);
+    const levelscript *LevelBase = static_cast<const levelscript*>(LevelScript->GetBase());
+    if (LevelBase) {
+      const std::list<squarescript> &Square = LevelBase->GetSquare();
+      for (std::list<squarescript>::const_iterator i = Square.begin(); i != Square.end(); ++i) {
+        game::BusyAnimation();
+        ApplyLSquareScript(&*i);
       }
     }
   }
 
-  const std::list<squarescript>& Square = LevelScript->GetSquare();
+  const std::list<squarescript> &Square = LevelScript->GetSquare();
 
-  for(std::list<squarescript>::const_iterator i = Square.begin(); i != Square.end(); ++i)
-  {
+  for (std::list<squarescript>::const_iterator i = Square.begin(); i != Square.end(); ++i) {
     game::BusyAnimation();
     ApplyLSquareScript(&*i);
   }
 
-  for(c = 0; c < AttachQueue.size(); ++c)
-    AttachPos(AttachQueue[c].X, AttachQueue[c].Y);
+  for (c = 0; c < AttachQueue.size(); ++c) AttachPos(AttachQueue[c].X, AttachQueue[c].Y);
 
-  for(x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
+  for (x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y]->CalculateGroundBorderPartners();
       Map[x][y]->CalculateOverBorderPartners();
     }
+  }
 
   AttachQueue.clear();
   CreateItems(LevelScript->GetItems()->Randomize());
 }
+
 
 void level::GenerateJungle () {
   int x, y;
