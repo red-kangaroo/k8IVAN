@@ -195,6 +195,7 @@ truth inputfile::Eof () {
 
 
 void inputfile::Read (char *Offset, sLong Size) {
+  if (!Buffer) ABORT("Trying to read from unopened file '%s'!", FileName.CStr());
 #ifdef USE_ZLIB
   if (gzread(Buffer, Offset, Size) != Size) ABORT("File '%s' read error!", FileName.CStr());
 #else

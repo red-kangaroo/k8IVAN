@@ -94,6 +94,7 @@ void highscore::Draw () const {
 
 void highscore::Save (cfestring &File) const {
   outputfile HighScore(genFileName(File), true);
+  if (!HighScore.IsOpen()) return;
   sLong CheckSum = HIGH_SCORE_VERSION+LastAdd;
   for (uShort c = 0; c < Score.size(); ++c) {
     CheckSum += Score[c]+Entry[c].GetCheckSum()+RandomID[c];
@@ -117,9 +118,15 @@ void highscore::Load (cfestring &File) {
     HighScore.Get();
     if (HighScore.Eof()) return;
   }
-  inputfile HighScore(File, 0, false);
+  sLong cs1;
+  inputfile HighScore(genFileName(File), 0, false);
   HighScore >> Version;
-  HighScore >> Score >> Entry >> Time >> RandomID >> LastAdd;
+  HighScore >> Score >> Entry >> Time >> RandomID >> LastAdd >> cs1;
+  sLong CheckSum = HIGH_SCORE_VERSION+LastAdd;
+  for (uShort c = 0; c < Score.size(); ++c) {
+    CheckSum += Score[c]+Entry[c].GetCheckSum()+RandomID[c];
+  }
+  if (cs1 != CheckSum) Clear();
 }
 
 
