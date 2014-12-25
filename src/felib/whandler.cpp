@@ -196,7 +196,7 @@ void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
           //festring dir = inputfile::GetMyDir()+"/SShots";
           festring dir;
 #ifdef LOCAL_SAVES
-          dir << ivanconfig::GetMyDir() << "/screenshots";
+          dir << inputfile::GetMyDir() << "/screenshots";
 #else
           dir << getenv("HOME") << "/.ivan-screenshots";
 #endif

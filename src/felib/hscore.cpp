@@ -27,7 +27,8 @@ festring highscore::genFileName (const festring &fname) const {
 #ifdef LOCAL_SAVES
     return inputfile::GetMyDir()+'/'+fname;
 #else
-    festring nname = getenv("HOME") << '/' << fname;
+    festring nname;
+    nname << getenv("HOME") << '/' << fname;
     return nname;
 #endif
   }

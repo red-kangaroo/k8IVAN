@@ -8,18 +8,18 @@ if "install" in $(JAM_TARGETS) {
 InstallBin bin : ivan ;
 
 ivan-data-dirs =
-  Graphics
-  Sound
-  Script
-  Script/chars
-  Script/dungeons
-  Script/glterras
-  Script/items
-  Script/materials
-  Script/olterras
-  Script/zext
-  Script/zext/k8
-  Script/zext/k8/chars
+  graphics
+  sound
+  script
+  script/chars
+  script/dungeons
+  script/glterras
+  script/items
+  script/materials
+  script/olterras
+  script/zext
+  script/zext/k8
+  script/zext/k8/chars
 ;
 
 for idd in $(ivan-data-dirs) {
