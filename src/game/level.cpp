@@ -652,7 +652,8 @@ v2 level::GetRandomSquare (ccharacter* Char, int Flags, const rect* Borders) con
     if (((Char ? Char->CanMoveOn(LSquare) : (LSquare->GetWalkability()&WALK)) != !(Flags&NOT_WALKABLE)) ||
         ((Char ? Char->IsFreeForMe(LSquare) : !LSquare->GetCharacter()) != !(Flags&HAS_CHARACTER)) ||
         (Flags&ATTACHABLE && FlagMap[Pos.X][Pos.Y]&FORBIDDEN) ||
-        (Flags&HAS_NO_OTERRAIN && LSquare->GetOTerrain())) {
+        (Flags&HAS_NO_OTERRAIN && LSquare->GetOTerrain()))
+    {
       continue;
     }
     int RoomFlags = Flags&(IN_ROOM|NOT_IN_ROOM);
@@ -762,13 +763,15 @@ truth level::DrawExplosion (const explosion *Explosion) const {
   if (BPos.Y+SizeVect.Y > RES.Y) SizeVect.Y = RES.Y-BPos.Y;
 
   int Flags = RAND()&7;
-  blitdata BlitData = { 0,
-      { PicPos.X, PicPos.Y },
-      { 0, 0 },
-      { SizeVect.X, SizeVect.Y },
-      { 0 },
-      TRANSPARENT_COLOR,
-      0 };
+  blitdata BlitData = {
+    0,
+    { PicPos.X, PicPos.Y },
+    { 0, 0 },
+    { SizeVect.X, SizeVect.Y },
+    { 0 },
+    TRANSPARENT_COLOR,
+    0
+  };
 
   if (!Flags || SizeVect != OldSizeVect) {
     BlitData.Bitmap = DOUBLE_BUFFER;
@@ -806,6 +809,7 @@ struct explosioncontroller {
 
 lsquare ***explosioncontroller::Map;
 explosion *explosioncontroller::CurrentExplosion;
+
 
 int level::TriggerExplosions (int MinIndex) {
   int LastExplosion = ExplosionQueue.size();
@@ -856,164 +860,131 @@ int level::TriggerExplosions (int MinIndex) {
 truth level::CollectCreatures (charactervector &CharacterArray, character* Leader, truth AllowHostiles) {
   int c;
 
-  if(!AllowHostiles)
-    for(c = 0; c < game::GetTeams(); ++c)
-      if(Leader->GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE)
-  for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-    if((*i)->IsEnabled() && Leader->CanBeSeenBy(*i)
-       && Leader->SquareUnderCanBeSeenBy(*i, true) && (*i)->CanFollow())
-    {
-      ADD_MESSAGE("You can't escape when there are hostile creatures nearby.");
-      return false;
+  if (!AllowHostiles) {
+    for (c = 0; c < game::GetTeams(); ++c) {
+      if (Leader->GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
+        for (std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
+          if ((*i)->IsEnabled() && Leader->CanBeSeenBy(*i) && Leader->SquareUnderCanBeSeenBy(*i, true) && (*i)->CanFollow()) {
+            ADD_MESSAGE("You can't escape when there are hostile creatures nearby.");
+            return false;
+          }
+        }
+      }
     }
+  }
 
   truth TakeAll = true;
 
-  for(c = 0; c < game::GetTeams(); ++c)
-    if(game::GetTeam(c)->GetEnabledMembers()
-       && Leader->GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE)
-    {
+  for (c = 0; c < game::GetTeams(); ++c) {
+    if (game::GetTeam(c)->GetEnabledMembers() && Leader->GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
       TakeAll = false;
       break;
     }
+  }
 
-  for(c = 0; c < game::GetTeams(); ++c)
-    if(game::GetTeam(c) == Leader->GetTeam() || Leader->GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE)
-      for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-  if((*i)->IsEnabled() && *i != Leader
-     && (TakeAll
-         || (Leader->CanBeSeenBy(*i)
-       && Leader->SquareUnderCanBeSeenBy(*i, true)))
-     && (*i)->CanFollow()
-     && (*i)->GetCommandFlags()&FOLLOW_LEADER)
-  {
-    if((*i)->GetAction() && (*i)->GetAction()->IsVoluntary())
-      (*i)->GetAction()->Terminate(false);
-
-    if(!(*i)->GetAction())
-    {
-      ADD_MESSAGE("%s follows you.", (*i)->CHAR_NAME(DEFINITE));
-      CharacterArray.push_back(*i);
-      (*i)->Remove();
+  for (c = 0; c < game::GetTeams(); ++c) {
+    if (game::GetTeam(c) == Leader->GetTeam() || Leader->GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
+      for (std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
+        if ((*i)->IsEnabled() && *i != Leader &&
+            (TakeAll || (Leader->CanBeSeenBy(*i) && Leader->SquareUnderCanBeSeenBy(*i, true))) &&
+            (*i)->CanFollow() && (*i)->GetCommandFlags()&FOLLOW_LEADER)
+        {
+          if ((*i)->GetAction() && (*i)->GetAction()->IsVoluntary()) (*i)->GetAction()->Terminate(false);
+          if (!(*i)->GetAction()) {
+            ADD_MESSAGE("%s follows you.", (*i)->CHAR_NAME(DEFINITE));
+            CharacterArray.push_back(*i);
+            (*i)->Remove();
+          }
+        }
+      }
     }
   }
 
   return true;
 }
 
-void level::Draw(truth AnimationDraw) const
-{
+
+void level::Draw (truth AnimationDraw) const {
   cint XMin = Max(game::GetCamera().X, 0);
   cint YMin = Max(game::GetCamera().Y, 0);
   cint XMax = Min(XSize, game::GetCamera().X+game::GetScreenXSize());
   cint YMax = Min(YSize, game::GetCamera().Y+game::GetScreenYSize());
   culong LOSTick = game::GetLOSTick();
-  blitdata BlitData = { DOUBLE_BUFFER,
-      { 0, 0 },
-      { 0, 0 },
-      { TILE_SIZE, TILE_SIZE },
-      { 0 },
-      TRANSPARENT_COLOR,
-      ALLOW_ANIMATE|ALLOW_ALPHA };
+  blitdata BlitData = {
+    DOUBLE_BUFFER,
+    { 0, 0 },
+    { 0, 0 },
+    { TILE_SIZE, TILE_SIZE },
+    { 0 },
+    TRANSPARENT_COLOR,
+    ALLOW_ANIMATE|ALLOW_ALPHA
+  };
 
-  if(!game::GetSeeWholeMapCheatMode())
-  {
-    if(!AnimationDraw)
-    {
-      for(int x = XMin; x < XMax; ++x)
-      {
-  BlitData.Dest = game::CalculateScreenCoordinates(v2(x, YMin));
-  lsquare** SquarePtr = &Map[x][YMin];
-
-  for(int y = YMin; y < YMax; ++y, ++SquarePtr, BlitData.Dest.Y += TILE_SIZE)
-  {
-    const lsquare* Square = *SquarePtr;
-    culong LastSeen = Square->LastSeen;
-
-    if(LastSeen == LOSTick)
-      Square->Draw(BlitData);
-    else if(Square->Flags&STRONG_BIT || LastSeen == LOSTick-2)
-      Square->DrawMemorized(BlitData);
-  }
+  if (!game::GetSeeWholeMapCheatMode()) {
+    if (!AnimationDraw) {
+      for (int x = XMin; x < XMax; ++x) {
+        BlitData.Dest = game::CalculateScreenCoordinates(v2(x, YMin));
+        lsquare **SquarePtr = &Map[x][YMin];
+        for (int y = YMin; y < YMax; ++y, ++SquarePtr, BlitData.Dest.Y += TILE_SIZE) {
+          const lsquare* Square = *SquarePtr;
+          culong LastSeen = Square->LastSeen;
+          if (LastSeen == LOSTick) Square->Draw(BlitData);
+          else if (Square->Flags&STRONG_BIT || LastSeen == LOSTick-2) Square->DrawMemorized(BlitData);
+        }
+      }
+    } else {
+      for (int x = XMin; x < XMax; ++x) {
+        BlitData.Dest = game::CalculateScreenCoordinates(v2(x, YMin));
+        lsquare **SquarePtr = &Map[x][YMin];
+        for (int y = YMin; y < YMax; ++y, ++SquarePtr, BlitData.Dest.Y += TILE_SIZE) {
+          const lsquare *Square = *SquarePtr;
+          if (Square->LastSeen == LOSTick) Square->Draw(BlitData);
+          else if (Square->Flags&STRONG_BIT) Square->DrawMemorized(BlitData);
+          else {
+            ccharacter *C = Square->Character;
+            if (C) {
+              if (C->CanBeSeenByPlayer()) Square->DrawMemorizedCharacter(BlitData); else Square->DrawMemorized(BlitData);
+            }
+          }
+        }
       }
     }
-    else
-    {
-      for(int x = XMin; x < XMax; ++x)
-      {
-  BlitData.Dest = game::CalculateScreenCoordinates(v2(x, YMin));
-  lsquare** SquarePtr = &Map[x][YMin];
-
-  for(int y = YMin; y < YMax; ++y, ++SquarePtr, BlitData.Dest.Y += TILE_SIZE)
-  {
-    const lsquare* Square = *SquarePtr;
-
-    if(Square->LastSeen == LOSTick)
-      Square->Draw(BlitData);
-    else if(Square->Flags&STRONG_BIT)
-      Square->DrawMemorized(BlitData);
-    else
-    {
-      ccharacter* C = Square->Character;
-
-      if(C)
-      {
-        if(C->CanBeSeenByPlayer())
-    Square->DrawMemorizedCharacter(BlitData);
-        else
-    Square->DrawMemorized(BlitData);
-      }
-    }
-  }
-      }
-    }
-  }
-  else
-  {
-    for(int x = XMin; x < XMax; ++x)
-    {
+  } else {
+    for (int x = XMin; x < XMax; ++x) {
       BlitData.Dest = game::CalculateScreenCoordinates(v2(x, YMin));
-      lsquare** SquarePtr = &Map[x][YMin];
-
-      for(int y = YMin; y < YMax; ++y, ++SquarePtr, BlitData.Dest.Y += TILE_SIZE)
-  (*SquarePtr)->Draw(BlitData);
+      lsquare **SquarePtr = &Map[x][YMin];
+      for (int y = YMin; y < YMax; ++y, ++SquarePtr, BlitData.Dest.Y += TILE_SIZE) (*SquarePtr)->Draw(BlitData);
     }
   }
 }
 
-v2 level::GetEntryPos(ccharacter* Char, int I) const
-{
-  if(I == FOUNTAIN)
-  {
+
+v2 level::GetEntryPos (ccharacter *Char, int I) const {
+  if (I == FOUNTAIN) {
     std::vector<v2> Fountains;
-    for(int x = 0; x < XSize; ++x)
-      for(int y = 0; y < YSize; ++y)
-      {
-  if(GetLSquare(x,y)->GetOLTerrain() && GetLSquare(x,y)->GetOLTerrain()->IsFountainWithWater())
-    Fountains.push_back(v2(x,y));
+    for (int x = 0; x < XSize; ++x) {
+      for (int y = 0; y < YSize; ++y) {
+        if (GetLSquare(x,y)->GetOLTerrain() && GetLSquare(x,y)->GetOLTerrain()->IsFountainWithWater()) Fountains.push_back(v2(x,y));
       }
-
-    if(Fountains.empty())
-      return GetRandomSquare();
-
+    }
+    if (Fountains.empty()) return GetRandomSquare();
     return Fountains[RAND_N(Fountains.size())];
   }
   std::map<int, v2>::const_iterator i = EntryMap.find(I);
-  return i == EntryMap.end() ? GetRandomSquare(Char) : i->second;
+  return (i == EntryMap.end() ? GetRandomSquare(Char) : i->second);
 }
 
-void level::GenerateRectangularRoom(std::vector<v2>& OKForDoor, std::vector<v2>& Inside, std::vector<v2>& Border, const roomscript* RoomScript, room* RoomClass, v2 Pos, v2 Size)
-{
-  const contentscript<glterrain>* GTerrain;
-  const contentscript<olterrain>* OTerrain;
 
-  if(*RoomScript->UseFillSquareWalls())
-  {
+void level::GenerateRectangularRoom (std::vector<v2> &OKForDoor, std::vector<v2> &Inside,
+  std::vector<v2> &Border, const roomscript *RoomScript, room *RoomClass, v2 Pos, v2 Size)
+{
+  const contentscript<glterrain> *GTerrain;
+  const contentscript<olterrain> *OTerrain;
+
+  if (*RoomScript->UseFillSquareWalls()) {
     GTerrain = LevelScript->GetFillSquare()->GetGTerrain();
     OTerrain = LevelScript->GetFillSquare()->GetOTerrain();
-  }
-  else
-  {
+  } else {
     GTerrain = RoomScript->GetWallSquare()->GetGTerrain();
     OTerrain = RoomScript->GetWallSquare()->GetOTerrain();
   }
@@ -1024,72 +995,51 @@ void level::GenerateRectangularRoom(std::vector<v2>& OKForDoor, std::vector<v2>&
   truth AllowWindows = *RoomScript->GenerateWindows();
   int x, y;
   int Shape = *RoomScript->GetShape();
-  int Flags = (GTerrain->IsInside() ? *GTerrain->IsInside() : *RoomScript->IsInside()) ? INSIDE : 0;
+  int Flags = ((GTerrain->IsInside() ? *GTerrain->IsInside() : *RoomScript->IsInside()) ? INSIDE : 0);
 
-  if(Shape == ROUND_CORNERS && (Size.X < 5 || Size.Y < 5)) /* No weird shapes this way. */
-    Shape = RECTANGLE;
+  if (Shape == ROUND_CORNERS && (Size.X < 5 || Size.Y < 5)) Shape = RECTANGLE; /* No weird shapes this way. */
 
-  for(x = Pos.X; x < Pos.X+Size.X; ++x, Counter += 2)
-  {
-    if(Shape == ROUND_CORNERS)
-    {
-      if(x == Pos.X)
-      {
-  CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x+1, Pos.Y+1, Room, Flags);
-  CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x+1, Pos.Y+Size.Y-2, Room, Flags);
-  Border.push_back(v2(x+1, Pos.Y+1));
-  Border.push_back(v2(x+1, Pos.Y+Size.Y-2));
-  continue;
-      }
-      else if(x == Pos.X+Size.X-1)
-      {
-  CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x-1, Pos.Y+1, Room, Flags);
-  CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x-1, Pos.Y+Size.Y-2, Room, Flags);
-  Border.push_back(v2(x-1, Pos.Y+1));
-  Border.push_back(v2(x-1, Pos.Y+Size.Y-2));
-  continue;
+  for (x = Pos.X; x < Pos.X+Size.X; ++x, Counter += 2) {
+    if (Shape == ROUND_CORNERS) {
+      if (x == Pos.X) {
+        CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x+1, Pos.Y+1, Room, Flags);
+        CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x+1, Pos.Y+Size.Y-2, Room, Flags);
+        Border.push_back(v2(x+1, Pos.Y+1));
+        Border.push_back(v2(x+1, Pos.Y+Size.Y-2));
+        continue;
+      } else if (x == Pos.X+Size.X-1) {
+        CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x-1, Pos.Y+1, Room, Flags);
+        CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x-1, Pos.Y+Size.Y-2, Room, Flags);
+        Border.push_back(v2(x-1, Pos.Y+1));
+        Border.push_back(v2(x-1, Pos.Y+Size.Y-2));
+        continue;
       }
     }
-
     CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x, Pos.Y, Room, Flags);
     CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x, Pos.Y+Size.Y-1, Room, Flags);
-
-    if((Shape == RECTANGLE && x != Pos.X && x != Pos.X+Size.X-1)
-       || (Shape == ROUND_CORNERS && x > Pos.X+1 && x < Pos.X+Size.X-2))
+    if ((Shape == RECTANGLE && x != Pos.X && x != Pos.X+Size.X-1) ||
+        (Shape == ROUND_CORNERS && x > Pos.X+1 && x < Pos.X+Size.X-2))
     {
       OKForDoor.push_back(v2(x, Pos.Y));
       OKForDoor.push_back(v2(x, Pos.Y+Size.Y-1));
-
-      if((!AllowLanterns || !GenerateLanterns(x, Pos.Y, DOWN)) && AllowWindows)
-  GenerateWindows(x, Pos.Y);
-
-      if((!AllowLanterns || !GenerateLanterns(x, Pos.Y+Size.Y-1, UP)) && AllowWindows)
-  GenerateWindows(x, Pos.Y+Size.Y-1);
+      if ((!AllowLanterns || !GenerateLanterns(x, Pos.Y, DOWN)) && AllowWindows) GenerateWindows(x, Pos.Y);
+      if ((!AllowLanterns || !GenerateLanterns(x, Pos.Y+Size.Y-1, UP)) && AllowWindows) GenerateWindows(x, Pos.Y+Size.Y-1);
     }
-
     Border.push_back(v2(x, Pos.Y));
     Border.push_back(v2(x, Pos.Y+Size.Y-1));
   }
 
   game::BusyAnimation();
 
-  for(y = Pos.Y+1; y < Pos.Y+Size.Y-1; ++y, Counter += 2)
-  {
+  for (y = Pos.Y+1; y < Pos.Y+Size.Y-1; ++y, Counter += 2) {
     CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), Pos.X, y, Room, Flags);
     CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), Pos.X+Size.X-1, y, Room, Flags);
-
-    if(Shape == RECTANGLE || (Shape == ROUND_CORNERS && y != Pos.Y+1 && y != Pos.Y+Size.Y-2))
-    {
+    if (Shape == RECTANGLE || (Shape == ROUND_CORNERS && y != Pos.Y+1 && y != Pos.Y+Size.Y-2)) {
       OKForDoor.push_back(v2(Pos.X, y));
       OKForDoor.push_back(v2(Pos.X+Size.X-1, y));
-
-      if((!AllowLanterns || !GenerateLanterns(Pos.X, y, RIGHT)) && AllowWindows)
-  GenerateWindows(Pos.X, y);
-
-      if((!AllowLanterns || !GenerateLanterns(Pos.X+Size.X-1, y, LEFT)) && AllowWindows)
-  GenerateWindows(Pos.X+Size.X-1, y);
+      if ((!AllowLanterns || !GenerateLanterns(Pos.X, y, RIGHT)) && AllowWindows) GenerateWindows(Pos.X, y);
+      if ((!AllowLanterns || !GenerateLanterns(Pos.X+Size.X-1, y, LEFT)) && AllowWindows) GenerateWindows(Pos.X+Size.X-1, y);
     }
-
     Border.push_back(v2(Pos.X, y));
     Border.push_back(v2(Pos.X+Size.X-1, y));
   }
@@ -1097,431 +1047,342 @@ void level::GenerateRectangularRoom(std::vector<v2>& OKForDoor, std::vector<v2>&
   GTerrain = RoomScript->GetFloorSquare()->GetGTerrain();
   OTerrain = RoomScript->GetFloorSquare()->GetOTerrain();
   Counter = 0;
-  Flags = (GTerrain->IsInside() ? *GTerrain->IsInside() : *RoomScript->IsInside()) ? INSIDE : 0;
+  Flags = ((GTerrain->IsInside() ? *GTerrain->IsInside() : *RoomScript->IsInside()) ? INSIDE : 0);
 
-  for(x = Pos.X+1; x < Pos.X+Size.X-1; ++x)
-    for(y = Pos.Y+1; y < Pos.Y+Size.Y-1; ++y, ++Counter)
-    {
+  for (x = Pos.X+1; x < Pos.X+Size.X-1; ++x) {
+    for (y = Pos.Y+1; y < Pos.Y+Size.Y-1; ++y, ++Counter) {
       /* if not in the corner */
-
-      if(!(Shape == ROUND_CORNERS && (x == Pos.X+1 || x == Pos.X+Size.X-2) && (y == Pos.Y+1 || y == Pos.Y+Size.Y-2)))
-      {
-  CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x, y, Room, Flags);
-  Inside.push_back(v2(x,y));
-      }
-    }
-}
-
-void level::Reveal()
-{
-  feuLong Tick = game::GetLOSTick();
-
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-      Map[x][y]->Reveal(Tick);
-}
-
-void level::ParticleBeam(beamdata& Beam)
-{
-  v2 CurrentPos = Beam.StartPos;
-
-  if(Beam.Direction != YOURSELF)
-  {
-    for(int Length = 0; Length < Beam.Range; ++Length)
-    {
-      CurrentPos += game::GetMoveVector(Beam.Direction);
-
-      if(!IsValidPos(CurrentPos))
-  break;
-
-      lsquare* CurrentSquare = GetLSquare(CurrentPos);
-
-      if(!CurrentSquare->IsFlyable())
-      {
-  (CurrentSquare->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam);
-  break;
-      }
-      else
-      {
-  CurrentSquare->DrawParticles(Beam.BeamColor);
-
-  if((CurrentSquare->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam))
-    break;
+      if (!(Shape == ROUND_CORNERS && (x == Pos.X+1 || x == Pos.X+Size.X-2) && (y == Pos.Y+1 || y == Pos.Y+Size.Y-2))) {
+        CreateRoomSquare(GTerrain->Instantiate(), OTerrain->Instantiate(), x, y, Room, Flags);
+        Inside.push_back(v2(x,y));
       }
     }
   }
-  else
-  {
-    lsquare* Where = GetLSquare(CurrentPos);
+}
+
+
+void level::Reveal () {
+  feuLong Tick = game::GetLOSTick();
+  for (int x = 0; x < XSize; ++x)
+    for (int y = 0; y < YSize; ++y)
+      Map[x][y]->Reveal(Tick);
+}
+
+
+void level::ParticleBeam (beamdata &Beam) {
+  v2 CurrentPos = Beam.StartPos;
+  if (Beam.Direction != YOURSELF) {
+    for (int Length = 0; Length < Beam.Range; ++Length) {
+      CurrentPos += game::GetMoveVector(Beam.Direction);
+      if (!IsValidPos(CurrentPos)) break;
+      lsquare *CurrentSquare = GetLSquare(CurrentPos);
+      if (!CurrentSquare->IsFlyable()) {
+        (CurrentSquare->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam);
+        break;
+      } else {
+        CurrentSquare->DrawParticles(Beam.BeamColor);
+        if ((CurrentSquare->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam)) break;
+      }
+    }
+  } else {
+    lsquare *Where = GetLSquare(CurrentPos);
     Where->DrawParticles(Beam.BeamColor);
     (Where->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam);
   }
 }
 
-/* Note: You will most likely need some help from supernatural entities to comprehend this code. Sorry. */
 
-void level::LightningBeam(beamdata& Beam)
-{
+/* Note: You will most likely need some help from supernatural entities to comprehend this code. Sorry. */
+void level::LightningBeam (beamdata &Beam) {
   v2 CurrentPos = Beam.StartPos;
 
-  if(Beam.Direction == YOURSELF)
-  {
-    lsquare* Where = GetLSquare(CurrentPos);
-
-    for(int c = 0; c < 4; ++c)
-      Where->DrawLightning(v2(8, 8), Beam.BeamColor, YOURSELF);
-
+  if (Beam.Direction == YOURSELF) {
+    lsquare *Where = GetLSquare(CurrentPos);
+    for (int c = 0; c < 4; ++c) Where->DrawLightning(v2(8, 8), Beam.BeamColor, YOURSELF);
     (Where->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam);
     return;
   }
 
   v2 StartPos;
 
-  switch(Beam.Direction)
-  {
-   case 0: StartPos = v2(15, 15); break;
-   case 1: StartPos = v2(RAND()&15, 15); break;
-   case 2: StartPos = v2(0, 15); break;
-   case 3: StartPos = v2(15, RAND()&15); break;
-   case 4: StartPos = v2(0, RAND()&15); break;
-   case 5: StartPos = v2(15, 0); break;
-   case 6: StartPos = v2(RAND()&15, 0); break;
-   case 7: StartPos = v2(0, 0); break;
-   default: StartPos = v2(0, 0); break;
+  switch (Beam.Direction) {
+    case 0: StartPos = v2(15, 15); break;
+    case 1: StartPos = v2(RAND()&15, 15); break;
+    case 2: StartPos = v2(0, 15); break;
+    case 3: StartPos = v2(15, RAND()&15); break;
+    case 4: StartPos = v2(0, RAND()&15); break;
+    case 5: StartPos = v2(15, 0); break;
+    case 6: StartPos = v2(RAND()&15, 0); break;
+    case 7: StartPos = v2(0, 0); break;
+    default: StartPos = v2(0, 0); break;
   }
 
-  for(int Length = 0; Length < Beam.Range; ++Length)
-  {
+  for (int Length = 0; Length < Beam.Range; ++Length) {
     CurrentPos += game::GetMoveVector(Beam.Direction);
-
-    if(!IsValidPos(CurrentPos))
-      break;
-
-    lsquare* CurrentSquare = GetLSquare(CurrentPos);
-
-    if(!CurrentSquare->IsFlyable())
-    {
-      if((CurrentSquare->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam))
-  break;
-
+    if (!IsValidPos(CurrentPos)) break;
+    lsquare *CurrentSquare = GetLSquare(CurrentPos);
+    if (!CurrentSquare->IsFlyable()) {
+      if ((CurrentSquare->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam)) break;
       truth W1, W2;
-
-      switch(Beam.Direction)
-      {
-       case 0:
-  W1 = GetLSquare(CurrentPos+v2(1, 0))->IsFlyable();
-  W2 = GetLSquare(CurrentPos+v2(0, 1))->IsFlyable();
-
-  if(W1 == W2)
-    Beam.Direction = 7;
-  else if(W1)
-  {
-    ++CurrentPos.Y;
-    Beam.Direction = 2;
-  }
-  else
-  {
-    ++CurrentPos.X;
-    Beam.Direction = 5;
-  }
-
-  break;
-       case 1: Beam.Direction = 6; StartPos.Y = 0; break;
-       case 2:
-  W1 = GetLSquare(CurrentPos+v2(-1, 0))->IsFlyable();
-  W2 = GetLSquare(CurrentPos+v2(0, 1))->IsFlyable();
-
-  if(W1 == W2)
-    Beam.Direction = 5;
-  else if(W1)
-  {
-    ++CurrentPos.Y;
-    Beam.Direction = 0;
-  }
-  else
-  {
-    --CurrentPos.X;
-    Beam.Direction = 7;
-  }
-
-  break;
-       case 3: Beam.Direction = 4; StartPos.X = 0; break;
-       case 4: Beam.Direction = 3; StartPos.X = 15; break;
-       case 5:
-  W1 = GetLSquare(CurrentPos+v2(1, 0))->IsFlyable();
-  W2 = GetLSquare(CurrentPos+v2(0, -1))->IsFlyable();
-
-  if(W1 == W2)
-    Beam.Direction = 2;
-  else if(W1)
-  {
-    --CurrentPos.Y;
-    Beam.Direction = 7;
-  }
-  else
-  {
-    ++CurrentPos.X;
-    Beam.Direction = 0;
-  }
-
-  break;
-       case 6: Beam.Direction = 1; StartPos.Y = 15; break;
-       case 7:
-  W1 = GetLSquare(CurrentPos+v2(-1, 0))->IsFlyable();
-  W2 = GetLSquare(CurrentPos+v2(0, -1))->IsFlyable();
-
-  if(W1 == W2)
-    Beam.Direction = 0;
-  else if(W1)
-  {
-    --CurrentPos.Y;
-    Beam.Direction = 5;
-  }
-  else
-  {
-    --CurrentPos.X;
-    Beam.Direction = 2;
-  }
-
-  break;
+      switch (Beam.Direction) {
+        case 0:
+          W1 = GetLSquare(CurrentPos+v2(1, 0))->IsFlyable();
+          W2 = GetLSquare(CurrentPos+v2(0, 1))->IsFlyable();
+          if (W1 == W2) {
+            Beam.Direction = 7;
+          } else if (W1) {
+            ++CurrentPos.Y;
+            Beam.Direction = 2;
+          } else {
+            ++CurrentPos.X;
+            Beam.Direction = 5;
+          }
+          break;
+        case 1: Beam.Direction = 6; StartPos.Y = 0; break;
+        case 2:
+          W1 = GetLSquare(CurrentPos+v2(-1, 0))->IsFlyable();
+          W2 = GetLSquare(CurrentPos+v2(0, 1))->IsFlyable();
+          if (W1 == W2) {
+            Beam.Direction = 5;
+          } else if (W1) {
+            ++CurrentPos.Y;
+            Beam.Direction = 0;
+          } else {
+            --CurrentPos.X;
+            Beam.Direction = 7;
+          }
+          break;
+        case 3: Beam.Direction = 4; StartPos.X = 0; break;
+        case 4: Beam.Direction = 3; StartPos.X = 15; break;
+        case 5:
+          W1 = GetLSquare(CurrentPos+v2(1, 0))->IsFlyable();
+          W2 = GetLSquare(CurrentPos+v2(0, -1))->IsFlyable();
+          if (W1 == W2) {
+            Beam.Direction = 2;
+          } else if (W1) {
+            --CurrentPos.Y;
+            Beam.Direction = 7;
+          } else {
+            ++CurrentPos.X;
+            Beam.Direction = 0;
+          }
+          break;
+        case 6: Beam.Direction = 1; StartPos.Y = 15; break;
+        case 7:
+          W1 = GetLSquare(CurrentPos+v2(-1, 0))->IsFlyable();
+          W2 = GetLSquare(CurrentPos+v2(0, -1))->IsFlyable();
+          if (W1 == W2) {
+            Beam.Direction = 0;
+          } else if (W1) {
+            --CurrentPos.Y;
+            Beam.Direction = 5;
+          } else {
+            --CurrentPos.X;
+            Beam.Direction = 2;
+          }
+          break;
       }
-
-      switch(Beam.Direction)
-      {
-       case 0: StartPos = v2(15, 15); break;
-       case 2: StartPos = v2(0, 15); break;
-       case 5: StartPos = v2(15, 0); break;
-       case 7: StartPos = v2(0, 0); break;
+      switch (Beam.Direction) {
+        case 0: StartPos = v2(15, 15); break;
+        case 2: StartPos = v2(0, 15); break;
+        case 5: StartPos = v2(15, 0); break;
+        case 7: StartPos = v2(0, 0); break;
       }
-    }
-    else
-    {
+    } else {
       StartPos = CurrentSquare->DrawLightning(StartPos, Beam.BeamColor, Beam.Direction);
-
-      if((CurrentSquare->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam))
-  break;
+      if ((CurrentSquare->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam)) break;
     }
   }
 }
 
-void level::ShieldBeam(beamdata& Beam)
-{
-  v2 Pos[3];
 
-  switch(Beam.Direction)
-  {
-   case 0:
-    Pos[0] = v2(-1, 0);
-    Pos[1] = v2(-1, -1);
-    Pos[2] = v2(0, -1);
-    break;
-   case 1:
-    Pos[0] = v2(-1, -1);
-    Pos[1] = v2(0, -1);
-    Pos[2] = v2(1, -1);
-    break;
-   case 2:
-    Pos[0] = v2(0, -1);
-    Pos[1] = v2(1, -1);
-    Pos[2] = v2(1, 0);
-    break;
-   case 3:
-    Pos[0] = v2(-1, 1);
-    Pos[1] = v2(-1, 0);
-    Pos[2] = v2(-1, -1);
-    break;
-   case 4:
-    Pos[0] = v2(1, -1);
-    Pos[1] = v2(1, 0);
-    Pos[2] = v2(1, 1);
-    break;
-   case 5:
-    Pos[0] = v2(0, 1);
-    Pos[1] = v2(-1, 1);
-    Pos[2] = v2(-1, 0);
-    break;
-   case 6:
-    Pos[0] = v2(1, 1);
-    Pos[1] = v2(0, 1);
-    Pos[2] = v2(-1, 1);
-    break;
-   case 7:
-    Pos[0] = v2(1, 0);
-    Pos[1] = v2(1, 1);
-    Pos[2] = v2(0, 1);
-    break;
-   case 8:
-    GetLSquare(Beam.StartPos)->DrawParticles(Beam.BeamColor);
-    (GetLSquare(Beam.StartPos)->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam);
-    return;
+void level::ShieldBeam (beamdata &Beam) {
+  v2 Pos[3];
+  switch (Beam.Direction) {
+    case 0:
+      Pos[0] = v2(-1, 0);
+      Pos[1] = v2(-1, -1);
+      Pos[2] = v2(0, -1);
+      break;
+    case 1:
+      Pos[0] = v2(-1, -1);
+      Pos[1] = v2(0, -1);
+      Pos[2] = v2(1, -1);
+      break;
+    case 2:
+      Pos[0] = v2(0, -1);
+      Pos[1] = v2(1, -1);
+      Pos[2] = v2(1, 0);
+      break;
+    case 3:
+      Pos[0] = v2(-1, 1);
+      Pos[1] = v2(-1, 0);
+      Pos[2] = v2(-1, -1);
+      break;
+    case 4:
+      Pos[0] = v2(1, -1);
+      Pos[1] = v2(1, 0);
+      Pos[2] = v2(1, 1);
+      break;
+    case 5:
+      Pos[0] = v2(0, 1);
+      Pos[1] = v2(-1, 1);
+      Pos[2] = v2(-1, 0);
+      break;
+    case 6:
+      Pos[0] = v2(1, 1);
+      Pos[1] = v2(0, 1);
+      Pos[2] = v2(-1, 1);
+      break;
+    case 7:
+      Pos[0] = v2(1, 0);
+      Pos[1] = v2(1, 1);
+      Pos[2] = v2(0, 1);
+      break;
+    case 8:
+      GetLSquare(Beam.StartPos)->DrawParticles(Beam.BeamColor);
+      (GetLSquare(Beam.StartPos)->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam);
+      return;
     default: return;
   }
-
-  for(int c = 0; c < 3; ++c)
-    if(IsValidPos(Beam.StartPos+Pos[c]))
-    {
+  for (int c = 0; c < 3; ++c) {
+    if (IsValidPos(Beam.StartPos+Pos[c])) {
       GetLSquare(Beam.StartPos+Pos[c])->DrawParticles(Beam.BeamColor);
       (GetLSquare(Beam.StartPos+Pos[c])->*lsquare::GetBeamEffect(Beam.BeamEffect))(Beam);
     }
+  }
 }
 
-outputfile& operator<<(outputfile& SaveFile, const level* Level)
-{
+
+outputfile &operator << (outputfile &SaveFile, const level *Level) {
   Level->Save(SaveFile);
   return SaveFile;
 }
 
-inputfile& operator>>(inputfile& SaveFile, level*& Level)
-{
+
+inputfile &operator >> (inputfile &SaveFile, level *&Level) {
   Level = new level;
   Level->Load(SaveFile);
   return SaveFile;
 }
 
-void (level::*Beam[BEAM_STYLES])(beamdata&) =
-{
+
+void (level::*Beam[BEAM_STYLES]) (beamdata&) = {
   &level::ParticleBeam,
   &level::LightningBeam,
   &level::ShieldBeam
 };
 
-void (level::*level::GetBeam(int I))(beamdata&)
-{
+
+void (level::*level::GetBeam(int I)) (beamdata &) {
   return Beam[I];
 }
 
-v2 level::FreeSquareSeeker(ccharacter* Char, v2 StartPos, v2 Prohibited, int MaxDistance, truth AllowStartPos) const
-{
+
+v2 level::FreeSquareSeeker (ccharacter *Char, v2 StartPos, v2 Prohibited, int MaxDistance, truth AllowStartPos) const {
   int c;
 
-  for(c = 0; c < 8; ++c)
-  {
+  for (c = 0; c < 8; ++c) {
     v2 Pos = StartPos+game::GetMoveVector(c);
-
-    if(IsValidPos(Pos) && Char->CanMoveOn(GetLSquare(Pos)) && Char->IsFreeForMe(GetLSquare(Pos)) && Pos != Prohibited && (AllowStartPos || !Char->PlaceIsIllegal(Pos, Prohibited)))
+    if (IsValidPos(Pos) && Char->CanMoveOn(GetLSquare(Pos)) && Char->IsFreeForMe(GetLSquare(Pos)) && Pos != Prohibited && (AllowStartPos || !Char->PlaceIsIllegal(Pos, Prohibited))) {
       return Pos;
+    }
   }
 
-  if(MaxDistance)
-    for(c = 0; c < 8; ++c)
-    {
+  if (MaxDistance) {
+    for (c = 0; c < 8; ++c) {
       v2 Pos = StartPos+game::GetMoveVector(c);
-
-      if(IsValidPos(Pos))
-      {
-  if(Char->CanMoveOn(GetLSquare(Pos)) && Pos != Prohibited)
-  {
-    Pos = FreeSquareSeeker(Char, Pos, Prohibited, MaxDistance-1, AllowStartPos);
-
-    if(Pos != ERROR_V2)
-      return Pos;
-  }
+      if (IsValidPos(Pos)) {
+        if (Char->CanMoveOn(GetLSquare(Pos)) && Pos != Prohibited) {
+          Pos = FreeSquareSeeker(Char, Pos, Prohibited, MaxDistance-1, AllowStartPos);
+          if (Pos != ERROR_V2) return Pos;
+        }
       }
     }
+  }
 
   return ERROR_V2;
 }
+
 
 /* Returns ERROR_V2 if no free square was found */
-
-v2 level::GetNearestFreeSquare(ccharacter* Char, v2 StartPos, truth AllowStartPos) const
-{
-  if(AllowStartPos && Char->CanMoveOn(GetLSquare(StartPos)) && Char->IsFreeForMe(GetLSquare(StartPos)))
-    return StartPos;
+v2 level::GetNearestFreeSquare (ccharacter *Char, v2 StartPos, truth AllowStartPos) const {
+  if (AllowStartPos && Char->CanMoveOn(GetLSquare(StartPos)) && Char->IsFreeForMe(GetLSquare(StartPos))) return StartPos;
 
   int c;
 
-  for(c = 0; c < 8; ++c)
-  {
+  for (c = 0; c < 8; ++c) {
     v2 Pos = StartPos+game::GetMoveVector(c);
-
-    if(IsValidPos(Pos) && Char->CanMoveOn(GetLSquare(Pos)) && Char->IsFreeForMe(GetLSquare(Pos)) && (AllowStartPos || !Char->PlaceIsIllegal(Pos, StartPos)))
+    if (IsValidPos(Pos) && Char->CanMoveOn(GetLSquare(Pos)) && Char->IsFreeForMe(GetLSquare(Pos)) && (AllowStartPos || !Char->PlaceIsIllegal(Pos, StartPos))) {
       return Pos;
+    }
   }
 
-  for(int Dist = 0; Dist < 5; ++Dist)
-    for(c = 0; c < 8; ++c)
-    {
+  for (int Dist = 0; Dist < 5; ++Dist) {
+    for (c = 0; c < 8; ++c) {
       v2 Pos = StartPos+game::GetMoveVector(c);
-
-      if(IsValidPos(Pos) && Char->CanMoveOn(GetLSquare(Pos)))
-      {
-  Pos = FreeSquareSeeker(Char, Pos, StartPos, Dist, AllowStartPos);
-
-  if(Pos != ERROR_V2)
-    return Pos;
+      if (IsValidPos(Pos) && Char->CanMoveOn(GetLSquare(Pos))) {
+        Pos = FreeSquareSeeker(Char, Pos, StartPos, Dist, AllowStartPos);
+        if (Pos != ERROR_V2) return Pos;
       }
     }
+  }
 
   return ERROR_V2;
 }
 
-v2 level::GetFreeAdjacentSquare(ccharacter* Char, v2 StartPos, truth AllowCharacter) const
-{
+
+v2 level::GetFreeAdjacentSquare (ccharacter *Char, v2 StartPos, truth AllowCharacter) const {
   int PossibleDir[8];
   int Index = 0;
-  lsquare* Origo = GetLSquare(StartPos);
-
-  for(int d = 0; d < 8; ++d)
-  {
-    lsquare* Square = Origo->GetNeighbourLSquare(d);
-
-    if(Square && Char->CanMoveOn(Square) && (AllowCharacter || Char->IsFreeForMe(Square)))
-      PossibleDir[Index++] = d;
+  lsquare *Origo = GetLSquare(StartPos);
+  for (int d = 0; d < 8; ++d) {
+    lsquare *Square = Origo->GetNeighbourLSquare(d);
+    if (Square && Char->CanMoveOn(Square) && (AllowCharacter || Char->IsFreeForMe(Square))) PossibleDir[Index++] = d;
   }
-
-  return Index ? StartPos+game::GetMoveVector(PossibleDir[RAND()%Index]) : ERROR_V2;
+  return (Index ? StartPos+game::GetMoveVector(PossibleDir[RAND()%Index]) : ERROR_V2);
 }
 
-void (level::*level::GetBeamEffectVisualizer(int I))(const fearray<lsquare*>&, col16) const
-{
+
+void (level::*level::GetBeamEffectVisualizer(int I)) (const fearray<lsquare*>&, col16) const {
   static void (level::*Visualizer[BEAM_STYLES])(const fearray<lsquare*>&, col16) const = { &level::ParticleVisualizer, &level::LightningVisualizer, &level::ParticleVisualizer };
   return Visualizer[I];
 }
 
-void level::ParticleVisualizer(const fearray<lsquare*>& Stack, col16 BeamColor) const
-{
+
+void level::ParticleVisualizer (const fearray<lsquare *> &Stack, col16 BeamColor) const {
   clock_t StartTime = clock();
   game::DrawEverythingNoBlit();
-
-  for(fearray<lsquare*>::sizetype c = 0; c < Stack.Size; ++c)
-    Stack[c]->DrawParticles(BeamColor, false);
-
+  for (fearray<lsquare*>::sizetype c = 0; c < Stack.Size; ++c) Stack[c]->DrawParticles(BeamColor, false);
   graphics::BlitDBToScreen();
-  while(clock()-StartTime < 0.05*CLOCKS_PER_SEC);
+  while (clock()-StartTime < 0.05*CLOCKS_PER_SEC) {}
 }
 
-void level::LightningVisualizer(const fearray<lsquare*>& Stack, col16 BeamColor) const
-{
+
+void level::LightningVisualizer (const fearray<lsquare *> &Stack, col16 BeamColor) const {
   clock_t StartTime = clock();
   game::DrawEverythingNoBlit();
-
-  for(fearray<lsquare*>::sizetype c = 0; c < Stack.Size; ++c)
-    Stack[c]->DrawLightning(v2(8, 8), BeamColor, YOURSELF, false);
-
+  for (fearray<lsquare*>::sizetype c = 0; c < Stack.Size; ++c) Stack[c]->DrawLightning(v2(8, 8), BeamColor, YOURSELF, false);
   graphics::BlitDBToScreen();
-  while(clock()-StartTime < 0.05*CLOCKS_PER_SEC);
+  while (clock()-StartTime < 0.05*CLOCKS_PER_SEC) {}
 }
 
-truth level::PreProcessForBone()
-{
-  if(!*LevelScript->CanGenerateBone())
-    return false;
 
+truth level::PreProcessForBone () {
+  if (!*LevelScript->CanGenerateBone()) return false;
   /* Gum solution */
-
   game::SetQuestMonstersFound(0);
-
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y]->PreProcessForBone();
-
+    }
+  }
   int DungeonIndex = GetDungeon()->GetIndex();
-
-  return !(DungeonIndex == ELPURI_CAVE && Index == IVAN_LEVEL && game::GetQuestMonstersFound() < 5)
-       &&  (game::GetQuestMonstersFound()
-            || ((DungeonIndex != UNDER_WATER_TUNNEL || Index != VESANA_LEVEL)
-          &&  (DungeonIndex != ELPURI_CAVE || (Index != ENNER_BEAST_LEVEL && Index != DARK_LEVEL))));
+  return
+    !(DungeonIndex == ELPURI_CAVE && Index == IVAN_LEVEL && game::GetQuestMonstersFound() < 5) &&
+     (game::GetQuestMonstersFound() ||
+      ((DungeonIndex != UNDER_WATER_TUNNEL || Index != VESANA_LEVEL) &&
+       (DungeonIndex != ELPURI_CAVE || (Index != ENNER_BEAST_LEVEL && Index != DARK_LEVEL))));
 }
 
 
@@ -1529,25 +1390,22 @@ truth level::PostProcessForBone () {
   game::SetTooGreatDangerFound(false);
   double DangerSum = 0;
   int Enemies = 0;
-
   for (int x = 0; x < XSize; ++x) {
     for (int y = 0; y < YSize; ++y) {
       Map[x][y]->PostProcessForBone(DangerSum, Enemies);
     }
   }
-
   return !(game::TooGreatDangerFound() || (Enemies && DangerSum/Enemies > Difficulty*10));
 }
 
 
-void level::FinalProcessForBone()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
+void level::FinalProcessForBone () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y]->FinalProcessForBone();
-
-  for(uInt c = 1; c < Room.size(); ++c)
-    Room[c]->FinalProcessForBone();
+    }
+  }
+  for (uInt c = 1; c < Room.size(); ++c) Room[c]->FinalProcessForBone();
 }
 
 
@@ -1668,161 +1526,103 @@ void level::GenerateJungle () {
 }
 
 
-void level::CreateTunnelNetwork(int MinLength, int MaxLength, int MinNodes, int MaxNodes, v2 StartPos)
-{
+void level::CreateTunnelNetwork (int MinLength, int MaxLength, int MinNodes, int MaxNodes, v2 StartPos) {
   v2 Pos = StartPos, Direction;
   int Length;
   game::BusyAnimation();
   FlagMap[Pos.X][Pos.Y] = PREFERRED;
-
-  for(int c1 = 0; c1 < MaxNodes; ++c1)
-  {
+  for (int c1 = 0; c1 < MaxNodes; ++c1) {
     Direction = game::GetBasicMoveVector(RAND()%4);
     Length = MinLength+RAND_N(MaxLength-MinLength+1);
-
-    for(int c2 = 0; c2 < Length; ++c2)
-    {
-      if(IsValidPos(Direction+Pos))
-      {
-  Pos += Direction;
-  FlagMap[Pos.X][Pos.Y] = PREFERRED;
-      }
-      else
-      {
-  if(c1 >= MinNodes)
-    return;
-
-  break;
+    for (int c2 = 0; c2 < Length; ++c2) {
+      if (IsValidPos(Direction+Pos)) {
+        Pos += Direction;
+        FlagMap[Pos.X][Pos.Y] = PREFERRED;
+      } else {
+        if (c1 >= MinNodes) return;
+        break;
       }
     }
   }
 }
 
-void level::GenerateDesert()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
+
+void level::GenerateDesert () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
       Map[x][y]->SetLTerrain(solidterrain::Spawn(SAND_TERRAIN), 0);
     }
-
+  }
   game::BusyAnimation();
   int AmountOfCactuses = RAND_N(10);
   int c;
-
-  for(c = 0; c < AmountOfCactuses; ++c)
-    Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(decoration::Spawn(CACTUS));
-
+  for (c = 0; c < AmountOfCactuses; ++c) Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(decoration::Spawn(CACTUS));
   int AmountOfBoulders = RAND_N(10);
-
-  for(c = 0; c < AmountOfBoulders; ++c)
-    Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(boulder::Spawn(1+RAND_2));
+  for (c = 0; c < AmountOfBoulders; ++c) Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(boulder::Spawn(1+RAND_2));
 }
 
-void level::GenerateSteppe()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
+
+void level::GenerateSteppe () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
       Map[x][y]->SetLTerrain(solidterrain::Spawn(GRASS_TERRAIN), 0);
     }
-
+  }
   game::BusyAnimation();
   int c;
-
   int AmountOfBoulders = RAND_N(20)+5;
-
-  for(c = 0; c < AmountOfBoulders; ++c)
-    Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(boulder::Spawn(1+RAND_2));
+  for (c = 0; c < AmountOfBoulders; ++c) Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(boulder::Spawn(1+RAND_2));
 }
 
-void level::GenerateLeafyForest()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
+
+void level::GenerateLeafyForest () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
-      olterrain* OLTerrain;
-
-      switch(RAND_4)
-      {
-       case 0:
-  if(RAND_8)
-    OLTerrain = decoration::Spawn(OAK);
-  else
-    OLTerrain = decoration::Spawn(TEAK);
-  break;
-       case 1:
-  OLTerrain = decoration::Spawn(BIRCH);
-  break;
-       case 2:
-  OLTerrain = 0;
-  if(!RAND_4)
-    OLTerrain = boulder::Spawn(1+RAND_2);
-
-  if(!RAND_4)
-    OLTerrain = boulder::Spawn(3);
-  break;
-       default:
-  OLTerrain = 0;
+      olterrain *OLTerrain;
+      switch (RAND_4) {
+        case 0: if (RAND_8) OLTerrain = decoration::Spawn(OAK); else OLTerrain = decoration::Spawn(TEAK); break;
+        case 1: OLTerrain = decoration::Spawn(BIRCH); break;
+        case 2: OLTerrain = 0; if (!RAND_4) OLTerrain = boulder::Spawn(1+RAND_2); if (!RAND_4) OLTerrain = boulder::Spawn(3); break;
+        default: OLTerrain = 0;
       }
-
       Map[x][y]->SetLTerrain(solidterrain::Spawn(GRASS_TERRAIN), OLTerrain);
     }
+  }
 }
 
-void level::GenerateEvergreenForest()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
+
+void level::GenerateEvergreenForest () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
-      olterrain* OLTerrain = 0;
-
-      switch(RAND_4)
-      {
-       case 0:
-  if(RAND_2)
-    OLTerrain = decoration::Spawn(PINE);
-  break;
-       case 1:
-  OLTerrain = decoration::Spawn(FIR);
-  break;
-       case 2:
-  if(!RAND_4)
-    OLTerrain = boulder::Spawn(1+RAND_2);
-
-  if(!RAND_4)
-    OLTerrain = boulder::Spawn(3);
-  break;
+      olterrain *OLTerrain = 0;
+      switch (RAND_4) {
+        case 0: if (RAND_2) OLTerrain = decoration::Spawn(PINE); break;
+        case 1: OLTerrain = decoration::Spawn(FIR); break;
+        case 2: if (!RAND_4) OLTerrain = boulder::Spawn(1+RAND_2); if (!RAND_4) OLTerrain = boulder::Spawn(3); break;
       }
-
       Map[x][y]->SetLTerrain(solidterrain::Spawn(GRASS_TERRAIN), OLTerrain);
     }
+  }
 }
 
-void level::GenerateTundra()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
+
+void level::GenerateTundra () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
       Map[x][y]->SetLTerrain(solidterrain::Spawn(SNOW_TERRAIN), 0);
     }
-
+  }
   game::BusyAnimation();
   int c;
   int AmountOfBoulders = RAND_N(20)+8;
-
-  for(c = 0; c < AmountOfBoulders; ++c)
-    Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(boulder::Spawn(SNOW_BOULDER));
-
+  for (c = 0; c < AmountOfBoulders; ++c) Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(boulder::Spawn(SNOW_BOULDER));
   int AmountOfDwarfBirches = RAND_N(10);
-
-  for(c = 0; c < AmountOfDwarfBirches; ++c)
-    Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(decoration::Spawn(DWARF_BIRCH));
+  for (c = 0; c < AmountOfDwarfBirches; ++c) Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(decoration::Spawn(DWARF_BIRCH));
 }
 
 
@@ -1895,70 +1695,49 @@ void level::GenerateGlacier () {
 }
 
 
-bool nodepointerstorer::operator<(const nodepointerstorer& N) const
-{
+bool nodepointerstorer::operator < (const nodepointerstorer &N) const {
   /* In the non-euclidean geometry of IVAN, certain very curved paths are as long as straight ones.
      However, they are so ugly that it is best to prefer routes with as few diagonal moves as
      possible without lengthening the travel. */
-
-  if(Node->TotalDistanceEstimate != N.Node->TotalDistanceEstimate)
-    return Node->TotalDistanceEstimate > N.Node->TotalDistanceEstimate;
-  else
-    return Node->Diagonals > N.Node->Diagonals;
+  if (Node->TotalDistanceEstimate != N.Node->TotalDistanceEstimate) {
+    return (Node->TotalDistanceEstimate > N.Node->TotalDistanceEstimate);
+  }
+  return (Node->Diagonals > N.Node->Diagonals);
 }
 
-void node::CalculateNextNodes()
-{
-  static int TryOrder[8] = { 1, 3, 4, 6, 0, 2, 5, 7 };
 
-  for(int d = 0; d < 8; ++d)
-  {
+void node::CalculateNextNodes () {
+  static const int TryOrder[8] = { 1, 3, 4, 6, 0, 2, 5, 7 };
+  for (int d = 0; d < 8; ++d) {
     v2 NodePos = Pos+game::GetMoveVector(TryOrder[d]);
-
-    if(NodePos.X >= 0 && NodePos.Y >= 0 && NodePos.X < XSize && NodePos.Y < YSize)
-    {
-      node* Node = NodeMap[NodePos.X][NodePos.Y];
-
-      if(!Node->Processed && ((!SpecialMover && RequiredWalkability&WalkabilityMap[NodePos.X][NodePos.Y]) || (SpecialMover && SpecialMover->CanTheoreticallyMoveOn(Node->Square)) || NodePos == To))
-      {
-  Node->Processed = true;
-  Node->Distance = Distance+1;
-  Node->Diagonals = Diagonals;
-
-  if(d >= 4)
-    ++Node->Diagonals;
-
-  Node->Last = this;
-
-  /* We use the heuristic max(abs(distance.x), abs(distance.y)) here,
-     which is exact in the current geometry if the path is open */
-
-  sLong Remaining = To.X-NodePos.X;
-
-  if(Remaining < NodePos.X-To.X)
-    Remaining = NodePos.X-To.X;
-
-  if(Remaining < NodePos.Y-To.Y)
-    Remaining = NodePos.Y-To.Y;
-
-  if(Remaining < To.Y-NodePos.Y)
-    Remaining = To.Y-NodePos.Y;
-
-  Node->Remaining = Remaining;
-  Node->TotalDistanceEstimate = Node->Distance+Node->Remaining;
-  NodeQueue->push(nodepointerstorer(Node));
+    if (NodePos.X >= 0 && NodePos.Y >= 0 && NodePos.X < XSize && NodePos.Y < YSize) {
+      node *Node = NodeMap[NodePos.X][NodePos.Y];
+      if (!Node->Processed && ((!SpecialMover && RequiredWalkability&WalkabilityMap[NodePos.X][NodePos.Y]) || (SpecialMover && SpecialMover->CanTheoreticallyMoveOn(Node->Square)) || NodePos == To)) {
+        Node->Processed = true;
+        Node->Distance = Distance+1;
+        Node->Diagonals = Diagonals;
+        if (d >= 4) ++Node->Diagonals;
+        Node->Last = this;
+        /* We use the heuristic max(abs(distance.x), abs(distance.y)) here,
+           which is exact in the current geometry if the path is open */
+        sLong Remaining = To.X-NodePos.X;
+        if (Remaining < NodePos.X-To.X) Remaining = NodePos.X-To.X;
+        if (Remaining < NodePos.Y-To.Y) Remaining = NodePos.Y-To.Y;
+        if (Remaining < To.Y-NodePos.Y) Remaining = To.Y-NodePos.Y;
+        Node->Remaining = Remaining;
+        Node->TotalDistanceEstimate = Node->Distance+Node->Remaining;
+        NodeQueue->push(nodepointerstorer(Node));
       }
     }
   }
 }
 
+
 /* Finds the shortest (but possibly not the shortest-looking) path between From and To
    if such exists. Returns a pointer to the node associated with the last square or zero if
    a route can't be found. Calling FindRoute again may invalidate the node, so you must
    store the path in another format ASAP. */
-
-node* level::FindRoute(v2 From, v2 To, const std::set<v2>& Illegal, int RequiredWalkability, ccharacter* SpecialMover)
-{
+node *level::FindRoute (v2 From, v2 To, const std::set<v2>& Illegal, int RequiredWalkability, ccharacter* SpecialMover) {
   node::NodeMap = NodeMap;
   node::RequiredWalkability = RequiredWalkability;
   node::SpecialMover = SpecialMover;
@@ -1967,14 +1746,15 @@ node* level::FindRoute(v2 From, v2 To, const std::set<v2>& Illegal, int Required
   node::XSize = XSize;
   node::YSize = YSize;
 
-  if(!Illegal.empty() && Illegal.find(To) != Illegal.end())
-    return 0;
+  if (!Illegal.empty() && Illegal.find(To) != Illegal.end()) return 0;
 
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       NodeMap[x][y]->Processed = false;
+    }
+  }
 
-  node* Node = NodeMap[From.X][From.Y];
+  node *Node = NodeMap[From.X][From.Y];
   Node->Last = 0;
   Node->Processed = true;
   Node->Distance = 0;
@@ -1983,59 +1763,49 @@ node* level::FindRoute(v2 From, v2 To, const std::set<v2>& Illegal, int Required
   NodeQueue.push(nodepointerstorer(Node));
   node::NodeQueue = &NodeQueue;
 
-  while(!NodeQueue.empty())
-  {
+  while (!NodeQueue.empty()) {
     Node = NodeQueue.top().Node;
     NodeQueue.pop();
-
-    if(Node->Pos == To)
-      return Node;
-
-    if(Illegal.empty() || Illegal.find(Node->Pos) == Illegal.end())
-      Node->CalculateNextNodes();
+    if (Node->Pos == To) return Node;
+    if (Illegal.empty() || Illegal.find(Node->Pos) == Illegal.end()) Node->CalculateNextNodes();
   }
 
   return 0;
 }
 
+
 /* All items on ground are moved to the IVector and all characters to CVector */
-
-void level::CollectEverything(itemvector& IVector, charactervector& CVector)
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
-      lsquare* LS = Map[x][y];
+void level::CollectEverything (itemvector &IVector, charactervector &CVector) {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
+      lsquare *LS = Map[x][y];
       LS->GetStack()->MoveItemsTo(IVector, CENTER);
-      character* C = LS->GetCharacter();
-
-      if(C && !C->IsPlayer())
-      {
-  C->Remove();
-  CVector.push_back(C);
+      character *C = LS->GetCharacter();
+      if (C && !C->IsPlayer()) {
+        C->Remove();
+        CVector.push_back(C);
       }
     }
+  }
 }
 
-void level::CreateGlobalRain(liquid* Liquid, v2 Speed)
-{
+
+void level::CreateGlobalRain (liquid *Liquid, v2 Speed) {
   GlobalRainLiquid = Liquid;
   GlobalRainSpeed = Speed;
-
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-      if(!Map[x][y]->IsInside())
-  Map[x][y]->AddRain(Liquid, Speed, MONSTER_TEAM, false);
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
+      if (!Map[x][y]->IsInside()) Map[x][y]->AddRain(Liquid, Speed, MONSTER_TEAM, false);
+    }
+  }
 }
 
 
 void level::CheckSunLight () {
   if (Index == 0 && GetDungeon()->GetIndex() == NEW_ATTNAM) {
     double Cos = cos(FPI*(game::GetTick()%48000)/24000.0);
-    //
     if (Cos > 0.01) {
       int E = int(100+Cos*30);
-      //
       SunLightEmitation = MakeRGB24(E, E, E);
       AmbientLuminance = MakeRGB24(E-6, E-6, E-6);
     } else {
@@ -2044,10 +1814,8 @@ void level::CheckSunLight () {
     }
   } else if (Index == 0 && GetDungeon()->GetIndex() == ATTNAM) {
     double Cos = cos(FPI*(game::GetTick()%48000)/24000.0);
-    //
     if (Cos > 0.41) {
       int E = int(100+(Cos-0.40)*40);
-      //
       SunLightEmitation = MakeRGB24(E, E, E);
       AmbientLuminance = MakeRGB24(E-8, E-8, E-8);
     } else {
@@ -2056,10 +1824,8 @@ void level::CheckSunLight () {
     }
   } else if (Index == 0 && GetDungeon()->GetIndex() == MUNTUO) {
     double Cos = cos(FPI*(game::GetTick()%48000)/24000.0);
-    //
     if (Cos > 0.21) {
       int E = int(100+(Cos-0.20)*30);
-      //
       SunLightEmitation = MakeRGB24(E, E, E);
       AmbientLuminance = MakeRGB24(E-4, E-4, E-4);
     } else {
@@ -2069,103 +1835,86 @@ void level::CheckSunLight () {
   } else {
     return;
   }
-  //
   SunLightDirection = game::GetSunLightDirectionVector();
   ChangeSunLight();
 }
 
 
-void level::ChangeSunLight()
-{
+void level::ChangeSunLight () {
   truth SunSet = game::IsDark(SunLightEmitation);
   feuLong c;
-
-  for(c = 0; c < XSizeTimesYSize; ++c)
-    Map[0][c]->RemoveSunLight();
-
-  if(!SunSet)
-    EmitSunBeams();
-
-  for(c = 0; c < XSizeTimesYSize; ++c)
-  {
-    lsquare* Square = Map[0][c];
-
-    if(Square->Flags&IS_TRANSPARENT)
-      Square->CalculateSunLightLuminance(EMITTER_SQUARE_PART_BITS);
-
-    if(!Square->IsInside())
-      Square->AmbientLuminance = AmbientLuminance;
-
+  for (c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->RemoveSunLight();
+  if (!SunSet) EmitSunBeams();
+  for (c = 0; c < XSizeTimesYSize; ++c) {
+    lsquare *Square = Map[0][c];
+    if (Square->Flags&IS_TRANSPARENT) Square->CalculateSunLightLuminance(EMITTER_SQUARE_PART_BITS);
+    if (!Square->IsInside()) Square->AmbientLuminance = AmbientLuminance;
     Square->SendSunLightSignals();
   }
-
-  for(c = 0; c < XSizeTimesYSize; ++c)
-    Map[0][c]->CheckIfIsSecondarySunLightEmitter();
+  for (c = 0; c < XSizeTimesYSize; ++c) Map[0][c]->CheckIfIsSecondarySunLightEmitter();
 }
 
-void level::InitSquarePartEmitationTicks()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
+
+void level::InitSquarePartEmitationTicks () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y]->SquarePartEmitationTick = 0;
+    }
+  }
 }
 
-truth level::GenerateWindows(int X, int Y) const
-{
-  olterrain* Terrain = Map[X][Y]->GetOLTerrain();
 
-  if(Terrain && Terrain->CreateWindowConfigurations() && !(RAND()%6))
-  {
+truth level::GenerateWindows (int X, int Y) const {
+  olterrain *Terrain = Map[X][Y]->GetOLTerrain();
+  if (Terrain && Terrain->CreateWindowConfigurations() && !(RAND()%6)) {
     Terrain->SetConfig(Terrain->GetConfig()|WINDOW);
     Map[X][Y]->CalculateIsTransparent();
     return true;
   }
-
   return false;
 }
 
-struct sunbeamcontroller : public stackcontroller
-{
-  static truth Handler(int, int);
-  static void ProcessStack();
+
+struct sunbeamcontroller : public stackcontroller {
+  static truth Handler (int, int);
+  static void ProcessStack ();
+
   static feuLong ID;
   static int SunLightBlockHeight;
   static v2 SunLightBlockPos;
   static truth ReSunEmitation;
 };
 
+
 feuLong sunbeamcontroller::ID;
 int sunbeamcontroller::SunLightBlockHeight;
 v2 sunbeamcontroller::SunLightBlockPos;
 truth sunbeamcontroller::ReSunEmitation;
 
-void level::ForceEmitterNoxify(const emittervector& Emitter) const
-{
-  for(emittervector::const_iterator i = Emitter.begin(); i != Emitter.end(); ++i)
-  {
-    feuLong ID = i->ID;
-    lsquare* Square = GetLSquare(ExtractPosFromEmitterID(ID));
 
-    if(ID&SECONDARY_SUN_LIGHT)
+void level::ForceEmitterNoxify (const emittervector& Emitter) const {
+  for (emittervector::const_iterator i = Emitter.begin(); i != Emitter.end(); ++i) {
+    feuLong ID = i->ID;
+    lsquare *Square = GetLSquare(ExtractPosFromEmitterID(ID));
+    if (ID&SECONDARY_SUN_LIGHT) {
       Square->Noxify(Square->SecondarySunLightEmitation, SECONDARY_SUN_LIGHT);
-    else
+    } else {
       Square->Noxify(Square->Emitation);
+    }
   }
 }
 
-void level::ForceEmitterEmitation(const emittervector& Emitter, const sunemittervector& SunEmitter, feuLong IDFlags) const
-{
-  for(emittervector::const_iterator i = Emitter.begin(); i != Emitter.end(); ++i)
-  {
+
+void level::ForceEmitterEmitation (const emittervector &Emitter, const sunemittervector &SunEmitter, feuLong IDFlags) const {
+  for (emittervector::const_iterator i = Emitter.begin(); i != Emitter.end(); ++i) {
     feuLong ID = i->ID;
-    lsquare* Square = GetLSquare(ExtractPosFromEmitterID(ID));
-
-    if(ID&SECONDARY_SUN_LIGHT)
+    lsquare *Square = GetLSquare(ExtractPosFromEmitterID(ID));
+    if (ID&SECONDARY_SUN_LIGHT) {
       Square->Emitate(Square->SecondarySunLightEmitation, SECONDARY_SUN_LIGHT|IDFlags);
-    else
+    } else {
       Square->Emitate(Square->Emitation, IDFlags);
+    }
   }
-
   {
     stackcontroller::Map = Map;
     stackcontroller::Stack = SquareStack;
@@ -2173,71 +1922,52 @@ void level::ForceEmitterEmitation(const emittervector& Emitter, const sunemitter
     stackcontroller::LevelXSize = XSize;
     stackcontroller::LevelYSize = YSize;
     sunbeamcontroller::ReSunEmitation = true;
-
-    for(sunemittervector::const_iterator i = SunEmitter.begin(); i != SunEmitter.end(); ++i)
-    {
+    for (sunemittervector::const_iterator i = SunEmitter.begin(); i != SunEmitter.end(); ++i) {
       feuLong ID = (*i&~(EMITTER_SHADOW_BITS|EMITTER_SQUARE_PART_BITS))|RE_SUN_EMITATED, SourceFlags;
       int X, Y;
-
-      if(ID&ID_X_COORDINATE)
-      {
-  X = (ID&EMITTER_IDENTIFIER_BITS)-(XSize<<3);
-  Y = ID&ID_BEGIN ? -1 : YSize;
-  SourceFlags = ID&ID_BEGIN ? SP_BOTTOM : SP_TOP;
+      if (ID&ID_X_COORDINATE) {
+        X = (ID&EMITTER_IDENTIFIER_BITS)-(XSize<<3);
+        Y = (ID&ID_BEGIN ? -1 : YSize);
+        SourceFlags = (ID&ID_BEGIN ? SP_BOTTOM : SP_TOP);
+      } else {
+        X = (ID&ID_BEGIN ? -1 : XSize);
+        Y = (ID&EMITTER_IDENTIFIER_BITS)-(YSize<<3);
+        SourceFlags = (ID&ID_BEGIN ? SP_RIGHT : SP_LEFT);
       }
-      else
-      {
-  X = ID&ID_BEGIN ? -1 : XSize;
-  Y = (ID&EMITTER_IDENTIFIER_BITS)-(YSize<<3);
-  SourceFlags = ID&ID_BEGIN ? SP_RIGHT : SP_LEFT;
-      }
-
       EmitSunBeam(v2(X, Y), ID, SourceFlags);
     }
-
     sunbeamcontroller::ProcessStack();
   }
 }
 
-struct loscontroller : public tickcontroller, public stackcontroller
-{
-  static truth Handler(int x, int y)
-  {
-    lsquare* Square = Map[x>>1][y>>1];
+
+struct loscontroller : public tickcontroller, public stackcontroller {
+  static truth Handler (int x, int y) {
+    lsquare *Square = Map[x>>1][y>>1];
     culong SquareFlags = Square->Flags;
-
-    if(SquareFlags&PERFECTLY_QUADRI_HANDLED)
-      return true;
-
-    if(!(SquareFlags&IN_SQUARE_STACK))
-    {
+    if (SquareFlags&PERFECTLY_QUADRI_HANDLED) return true;
+    if (!(SquareFlags&IN_SQUARE_STACK)) {
       Square->Flags |= IN_SQUARE_STACK;
       Stack[StackIndex++] = Square;
     }
-
-    if(SquareFlags&IS_TRANSPARENT)
-    {
+    if (SquareFlags&IS_TRANSPARENT) {
       Square->Flags |= PERFECTLY_QUADRI_HANDLED;
       return true;
     }
-
     cint SquarePartIndex = (x&1)+((y&1)<<1);
     Square->SquarePartLastSeen = (Square->SquarePartLastSeen&~SquarePartTickMask[SquarePartIndex])|ShiftedTick[SquarePartIndex];
     return false;
   }
-  static feuLong& GetTickReference(int X, int Y)
-  {
+  static feuLong &GetTickReference (int X, int Y) {
     return Map[X][Y]->SquarePartLastSeen;
   }
-  static void ProcessStack()
-  {
-    for(sLong c = 0; c < StackIndex; ++c)
-      Stack[c]->SignalSeen(Tick);
+  static void ProcessStack () {
+    for (sLong c = 0; c < StackIndex; ++c) Stack[c]->SignalSeen(Tick);
   }
 };
 
-void level::UpdateLOS()
-{
+
+void level::UpdateLOS () {
   game::RemoveLOSUpdateRequest();
   stackcontroller::Map = Map;
   stackcontroller::Stack = SquareStack;
@@ -2245,43 +1975,48 @@ void level::UpdateLOS()
   tickcontroller::Tick = game::IncreaseLOSTick();
   tickcontroller::PrepareShiftedTick();
   int Radius = PLAYER->GetLOSRange();
-
-  for(int c = 0; c < PLAYER->GetSquaresUnder(); ++c)
-    mapmath<loscontroller>::DoQuadriArea(PLAYER->GetPos(c).X, PLAYER->GetPos(c).Y,
-           Radius*Radius, XSize, YSize);
-
+  for (int c = 0; c < PLAYER->GetSquaresUnder(); ++c) {
+    mapmath<loscontroller>::DoQuadriArea(PLAYER->GetPos(c).X, PLAYER->GetPos(c).Y, Radius*Radius, XSize, YSize);
+  }
   loscontroller::ProcessStack();
-
-  if(PLAYER->StateIsActivated(INFRA_VISION))
-    for(int c = 0; c < game::GetTeams(); ++c)
-      for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-  if((*i)->IsEnabled())
-    (*i)->SendNewDrawRequest();
+  if (PLAYER->StateIsActivated(INFRA_VISION)) {
+    for (int c = 0; c < game::GetTeams(); ++c) {
+      for (std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
+        if ((*i)->IsEnabled()) (*i)->SendNewDrawRequest();
+      }
+    }
+  }
 }
 
-void level::EnableGlobalRain()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
+
+void level::EnableGlobalRain () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y]->EnableGlobalRain();
+    }
+  }
 }
 
-void level::DisableGlobalRain()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
+
+void level::DisableGlobalRain () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y]->DisableGlobalRain();
+    }
+  }
 }
 
-void level::InitLastSeen()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
+
+void level::InitLastSeen () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y]->InitLastSeen();
+    }
+  }
 }
 
-void level::EmitSunBeams()
-{
+
+void level::EmitSunBeams () {
   stackcontroller::Map = Map;
   stackcontroller::LevelXSize = XSize;
   stackcontroller::LevelYSize = YSize;
@@ -2289,156 +2024,110 @@ void level::EmitSunBeams()
   v2 Dir = SunLightDirection;
   int x, y, X = 0, Y = 0, SourceFlags;
   feuLong IDFlags;
-
   /* Do not try to understand the logic behind the starting points of
      sunbeams. I determined the formulas by trial and error since all
      understandable loops produced strange shapes for the shadows of
      either small of large objects probably due to rounding errors
      made during line calculations. */
-
-  if(!Dir.X || (Dir.Y && abs(Dir.Y) < abs(Dir.X)))
-  {
-    if(Dir.Y > 0)
-    {
+  if (!Dir.X || (Dir.Y && abs(Dir.Y) < abs(Dir.X))) {
+    if (Dir.Y > 0) {
       Y = -1;
       SourceFlags = SP_BOTTOM;
       IDFlags = ID_X_COORDINATE|ID_BEGIN;
-    }
-    else
-    {
+    } else {
       Y = YSize;
       SourceFlags = SP_TOP;
       IDFlags = ID_X_COORDINATE;
     }
-  }
-  else
-  {
-    if(Dir.X > 0)
-    {
+  } else {
+    if (Dir.X > 0) {
       X = -1;
       SourceFlags = SP_RIGHT;
       IDFlags = ID_BEGIN;
-    }
-    else
-    {
+    } else {
       X = XSize;
       SourceFlags = SP_LEFT;
       IDFlags = 0;
     }
   }
-
-  if(!Dir.X)
-  {
+  if (!Dir.X) {
     int Index = XSize<<3;
-
-    for(x = 0; x < XSize; ++x, ++Index)
-      EmitSunBeam(v2(x, Y), Index|IDFlags, SourceFlags);
-  }
-  else if(!Dir.Y)
-  {
+    for (x = 0; x < XSize; ++x, ++Index) EmitSunBeam(v2(x, Y), Index|IDFlags, SourceFlags);
+  } else if (!Dir.Y) {
     int Index = YSize<<3;
-
-    for(y = 0; y < YSize; ++y, ++Index)
-      EmitSunBeam(v2(X, y), Index|IDFlags, SourceFlags);
-  }
-  else if(abs(Dir.Y) < abs(Dir.X))
-  {
+    for (y = 0; y < YSize; ++y, ++Index) EmitSunBeam(v2(X, y), Index|IDFlags, SourceFlags);
+  } else if (abs(Dir.Y) < abs(Dir.X)) {
     int Index = Dir.X > 0 ? 0 : XSize<<3;
     int StartX = Dir.X > 0 ? -XSize<<3 : 0;
     int EndX = Dir.X > 0 ? XSize : (XSize<<3)+XSize;
-
-    for(x = StartX; x < EndX; ++x, ++Index)
-      EmitSunBeam(v2(x, Y), Index|IDFlags, SourceFlags);
-  }
-  else
-  {
+    for (x = StartX; x < EndX; ++x, ++Index) EmitSunBeam(v2(x, Y), Index|IDFlags, SourceFlags);
+  } else {
     int Index = Dir.Y > 0 ? 0 : YSize<<3;
     int StartY = Dir.Y > 0 ? -YSize<<3 : 0;
     int EndY = Dir.Y > 0 ? YSize : (YSize<<3)+YSize;
-
-    for(y = StartY; y < EndY; ++y, ++Index)
-      EmitSunBeam(v2(X, y), Index|IDFlags, SourceFlags);
+    for (y = StartY; y < EndY; ++y, ++Index) EmitSunBeam(v2(X, y), Index|IDFlags, SourceFlags);
   }
 }
 
-void level::EmitSunBeam(v2 S, feuLong ID, int SourceFlags) const
-{
+
+void level::EmitSunBeam (v2 S, feuLong ID, int SourceFlags) const {
   S <<= 1;
   v2 D = S+SunLightDirection;
   sunbeamcontroller::ID = ID;
-
-  if(SourceFlags&SP_TOP_LEFT)
-  {
+  if (SourceFlags&SP_TOP_LEFT) {
     sunbeamcontroller::SunLightBlockHeight = 0;
-    mapmath<sunbeamcontroller>::DoLine(S.X,     S.Y,     D.X,     D.Y, SKIP_FIRST);
+    mapmath<sunbeamcontroller>::DoLine(S.X, S.Y, D.X, D.Y, SKIP_FIRST);
   }
-
-  if(SourceFlags&SP_TOP_RIGHT)
-  {
+  if (SourceFlags&SP_TOP_RIGHT) {
     sunbeamcontroller::SunLightBlockHeight = 0;
-    mapmath<sunbeamcontroller>::DoLine(S.X+1, S.Y,     D.X+1, D.Y, SKIP_FIRST);
+    mapmath<sunbeamcontroller>::DoLine(S.X+1, S.Y, D.X+1, D.Y, SKIP_FIRST);
   }
-
-  if(SourceFlags&SP_BOTTOM_LEFT)
-  {
+  if (SourceFlags&SP_BOTTOM_LEFT) {
     sunbeamcontroller::SunLightBlockHeight = 0;
-    mapmath<sunbeamcontroller>::DoLine(S.X,     S.Y+1, D.X,     D.Y+1, SKIP_FIRST);
+    mapmath<sunbeamcontroller>::DoLine(S.X, S.Y+1, D.X, D.Y+1, SKIP_FIRST);
   }
-
-  if(SourceFlags&SP_BOTTOM_RIGHT)
-  {
+  if (SourceFlags&SP_BOTTOM_RIGHT) {
     sunbeamcontroller::SunLightBlockHeight = 0;
     mapmath<sunbeamcontroller>::DoLine(S.X+1, S.Y+1, D.X+1, D.Y+1, SKIP_FIRST);
   }
 }
 
-truth sunbeamcontroller::Handler(int x, int y)
-{
+
+truth sunbeamcontroller::Handler (int x, int y) {
   int X = x>>1, Y = y>>1;
 
-  if(X < 0 || Y < 0 || X >= LevelXSize || Y >= LevelYSize)
+  if (X < 0 || Y < 0 || X >= LevelXSize || Y >= LevelYSize) {
     return (X >= -1 && X <= LevelXSize) || (Y >= -1 && Y <= LevelYSize);
+  }
 
-  lsquare* Square = Map[X][Y];
+  lsquare *Square = Map[X][Y];
   int SquarePartIndex = (x&1)+((y&1)<<1);
 
-  if(SunLightBlockHeight && !Square->IsInside()
-     && HypotSquare(x-SunLightBlockPos.X, y-SunLightBlockPos.Y) > SunLightBlockHeight)
+  if (SunLightBlockHeight && !Square->IsInside() && HypotSquare(x-SunLightBlockPos.X, y-SunLightBlockPos.Y) > SunLightBlockHeight) {
     SunLightBlockHeight = 0;
+  }
 
-  if(!SunLightBlockHeight)
-  {
+  if (!SunLightBlockHeight) {
     feuLong Flag = 1<<EMITTER_SQUARE_PART_SHIFT<<SquarePartIndex;
     Square->AddSunLightEmitter(ID|Flag);
-  }
-  else
-  {
+  } else {
     feuLong Flags = ((1<<EMITTER_SQUARE_PART_SHIFT)|(1<<EMITTER_SHADOW_SHIFT))<<SquarePartIndex;
-
     Square->AddSunLightEmitter(ID|Flags);
   }
 
-  if(ReSunEmitation)
-  {
-    if(!(Square->Flags&IN_SQUARE_STACK))
-      Stack[StackIndex++] = Square;
-
+  if (ReSunEmitation) {
+    if (!(Square->Flags&IN_SQUARE_STACK)) Stack[StackIndex++] = Square;
     Square->Flags |= IN_SQUARE_STACK|CHECK_SUN_LIGHT_NEEDED;
-
-    for(int d = 0; d < 8; ++d)
-    {
-      lsquare* Neighbour = Square->GetNeighbourLSquare(d);
-
-      if(Neighbour && !(Neighbour->Flags&IN_SQUARE_STACK))
-      {
-  Neighbour->Flags |= IN_SQUARE_STACK;
-  Stack[StackIndex++] = Neighbour;
+    for (int d = 0; d < 8; ++d) {
+      lsquare *Neighbour = Square->GetNeighbourLSquare(d);
+      if (Neighbour && !(Neighbour->Flags&IN_SQUARE_STACK)) {
+        Neighbour->Flags |= IN_SQUARE_STACK;
+        Stack[StackIndex++] = Neighbour;
       }
     }
   }
 
-  if(!(Square->Flags&IS_TRANSPARENT) || (SunLightBlockHeight && Square->IsInside()))
-  {
+  if (!(Square->Flags&IS_TRANSPARENT) || (SunLightBlockHeight && Square->IsInside())) {
     /* This should depend on the square */
     SunLightBlockHeight = 81;
     SunLightBlockPos = v2(x, y);
@@ -2447,117 +2136,93 @@ truth sunbeamcontroller::Handler(int x, int y)
   return true;
 }
 
-void sunbeamcontroller::ProcessStack()
-{
+
+void sunbeamcontroller::ProcessStack () {
   sLong c;
-
-  for(c = 0; c < StackIndex; ++c)
-  {
-    lsquare* Square = Stack[c];
-
-    if(Square->Flags&CHECK_SUN_LIGHT_NEEDED)
-    {
-      if(Square->Flags&IS_TRANSPARENT)
-  Square->CalculateSunLightLuminance(EMITTER_SQUARE_PART_BITS);
-
+  for (c = 0; c < StackIndex; ++c) {
+    lsquare *Square = Stack[c];
+    if (Square->Flags&CHECK_SUN_LIGHT_NEEDED) {
+      if (Square->Flags&IS_TRANSPARENT) Square->CalculateSunLightLuminance(EMITTER_SQUARE_PART_BITS);
       Square->SendSunLightSignals();
       Square->ZeroReSunEmitatedFlags();
     }
-
     Square->Flags &= ~(IN_SQUARE_STACK|CHECK_SUN_LIGHT_NEEDED);
   }
-
-  for(c = 0; c < StackIndex; ++c)
-    Stack[c]->CheckIfIsSecondarySunLightEmitter();
+  for (c = 0; c < StackIndex; ++c) Stack[c]->CheckIfIsSecondarySunLightEmitter();
 }
 
-int level::DetectMaterial(cmaterial* Material)
-{
+
+int level::DetectMaterial (cmaterial *Material) {
   feuLong Tick = game::IncreaseLOSTick();
   int Squares = 0;
-
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
-      lsquare* Square = Map[x][y];
-
-      if(Square->DetectMaterial(Material))
-      {
-  Square->Reveal(Tick, true);
-  ++Squares;
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
+      lsquare *Square = Map[x][y];
+      if (Square->DetectMaterial(Material)) {
+        Square->Reveal(Tick, true);
+        ++Squares;
       }
     }
-
+  }
   return Squares;
 }
 
-void level::BlurMemory()
-{
+
+void level::BlurMemory () {
   int x, y, SquareStackSize = 0;
-
-  for(x = 0; x < XSize; ++x)
-    for(y = 0; y < YSize; ++y)
-    {
-      lsquare* Square = Map[x][y];
-
-      if(Square->HasNoBorderPartners())
-  SquareStack[SquareStackSize++] = Square;
+  for (x = 0; x < XSize; ++x) {
+    for (y = 0; y < YSize; ++y) {
+      lsquare *Square = Map[x][y];
+      if (Square->HasNoBorderPartners()) SquareStack[SquareStackSize++] = Square;
     }
-
-  for(x = 0; x < XSize; ++x)
-    for(y = 0; y < YSize; ++y)
-    {
-      lsquare* Square = Map[x][y];
+  }
+  for (x = 0; x < XSize; ++x) {
+    for (y = 0; y < YSize; ++y) {
+      lsquare *Square = Map[x][y];
       Square->Flags |= STRONG_NEW_DRAW_REQUEST|MEMORIZED_UPDATE_REQUEST|DESCRIPTION_CHANGE;
-
-      if(Square->HasNoBorderPartners()
-   && RAND()&1
-   && SquareStackSize)
-  Square->SwapMemorized(SquareStack[RAND()%SquareStackSize]);
-      else if(RAND()&1)
-  Square->DestroyMemorized();
+      if (Square->HasNoBorderPartners() && RAND()&1 && SquareStackSize) {
+        Square->SwapMemorized(SquareStack[RAND()%SquareStackSize]);
+      } else if (RAND()&1) {
+        Square->DestroyMemorized();
+      }
     }
+  }
 }
 
-void level::CalculateLuminances()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
-      lsquare* Square = Map[x][y];
+
+void level::CalculateLuminances () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
+      lsquare *Square = Map[x][y];
       Square->CalculateLuminance();
       Square->Flags |= MEMORIZED_UPDATE_REQUEST|DESCRIPTION_CHANGE;
     }
+  }
 }
 
-struct areacontroller : public stackcontroller
-{
-  static truth Handler(int x, int y)
-  {
-    if(x >= 0 && y >= 0 && x < LevelXSize && y < LevelYSize
-       && HypotSquare(x-Center.X, y-Center.Y) <= RadiusSquare)
-    {
-      lsquare* Square = Map[x][y];
 
-      if(!(Square->Flags&IN_SQUARE_STACK))
-      {
-  Stack[StackIndex++] = Square;
-  Square->Flags |= IN_SQUARE_STACK;
-  return Square->IsFlyable();
+struct areacontroller : public stackcontroller {
+  static truth Handler (int x, int y) {
+    if (x >= 0 && y >= 0 && x < LevelXSize && y < LevelYSize && HypotSquare(x-Center.X, y-Center.Y) <= RadiusSquare) {
+      lsquare *Square = Map[x][y];
+      if (!(Square->Flags&IN_SQUARE_STACK)) {
+        Stack[StackIndex++] = Square;
+        Square->Flags |= IN_SQUARE_STACK;
+        return Square->IsFlyable();
       }
     }
-
     return false;
   }
-  static int GetStartX(int) { return Center.X; }
-  static int GetStartY(int) { return Center.Y; }
+  static int GetStartX (int) { return Center.X; }
+  static int GetStartY (int) { return Center.Y; }
   static sLong RadiusSquare;
 };
 
+
 sLong areacontroller::RadiusSquare;
 
-int level::AddRadiusToSquareStack(v2 Center, sLong RadiusSquare) const
-{
+
+int level::AddRadiusToSquareStack (v2 Center, sLong RadiusSquare) const {
   stackcontroller::Map = Map;
   stackcontroller::Stack = SquareStack;
   SquareStack[0] = GetLSquare(Center);
@@ -2570,85 +2235,61 @@ int level::AddRadiusToSquareStack(v2 Center, sLong RadiusSquare) const
   return stackcontroller::StackIndex;
 }
 
+
 /* Any fountain is good that is not dry and is NOT Except */
-
-olterrain* level::GetRandomFountainWithWater(olterrain* Except) const
-{
-  std::vector<olterrain*> Found;
-  olterrain* OLTerrain;
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
+olterrain *level::GetRandomFountainWithWater (olterrain *Except) const {
+  std::vector<olterrain *> Found;
+  olterrain *OLTerrain;
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       OLTerrain = GetLSquare(x,y)->GetOLTerrain();
-      if(OLTerrain && OLTerrain != Except && OLTerrain->IsFountainWithWater())
-  Found.push_back(OLTerrain);
+      if (OLTerrain && OLTerrain != Except && OLTerrain->IsFountainWithWater()) Found.push_back(OLTerrain);
     }
-
-  if(Found.empty())
-    return 0;
-
+  }
+  if (Found.empty()) return 0;
   return Found[RAND_N(Found.size())];
 }
 
-void level::Amnesia(int Percentile)
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
-    {
-      lsquare* Square = Map[x][y];
 
-      if(Square->HasNoBorderPartners() && RAND_N(100) < Percentile)
-      {
-  Square->Flags |= STRONG_NEW_DRAW_REQUEST|MEMORIZED_UPDATE_REQUEST|DESCRIPTION_CHANGE;
-
-  Square->DestroyMemorized();
+void level::Amnesia (int Percentile) {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
+      lsquare *Square = Map[x][y];
+      if (Square->HasNoBorderPartners() && RAND_N(100) < Percentile) {
+        Square->Flags |= STRONG_NEW_DRAW_REQUEST|MEMORIZED_UPDATE_REQUEST|DESCRIPTION_CHANGE;
+        Square->DestroyMemorized();
       }
     }
+  }
 }
 
+
 /* Returns how many of the monsters were seen */
-
-spawnresult level::SpawnMonsters(characterspawner Spawner, team* Team,
-         v2 Pos, int Config, int Amount,
-         truth IgnoreWalkability)
-{
+spawnresult level::SpawnMonsters (characterspawner Spawner, team *Team, v2 Pos, int Config, int Amount, truth IgnoreWalkability) {
   spawnresult SR = { 0, 0 };
-
-  for(int c = 0; c < Amount; ++c)
-  {
-    character* Char = Spawner(Config, 0);
-
-    if(!c)
-      SR.Pioneer = Char;
-
+  for (int c = 0; c < Amount; ++c) {
+    character *Char = Spawner(Config, 0);
+    if (!c) SR.Pioneer = Char;
     Char->SetTeam(Team);
-
-    if(IgnoreWalkability)
-      Char->ForcePutNear(Pos);
-    else
-      Char->PutNear(Pos);
-
-    if(Char->CanBeSeenByPlayer())
-      ++SR.Seen;
+    if (IgnoreWalkability) Char->ForcePutNear(Pos); else Char->PutNear(Pos);
+    if (Char->CanBeSeenByPlayer()) ++SR.Seen;
   }
-
   return SR;
 }
 
-void level::AddSpecialCursors()
-{
-  for(int x = 0; x < XSize; ++x)
-    for(int y = 0; y < YSize; ++y)
+
+void level::AddSpecialCursors () {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y]->AddSpecialCursors();
+    }
+  }
 }
 
-void level::GasExplosion(gas* GasMaterial, lsquare* Square)
-{
-  for(int d = 0; d < 9; ++d)
-  {
-    lsquare* Neighbour = Square->GetNeighbourLSquare(d);
 
-    if(Neighbour && Neighbour->IsFlyable())
-      Neighbour->AddSmoke(static_cast<gas*>(GasMaterial->SpawnMore(1000)));
+void level::GasExplosion (gas *GasMaterial, lsquare *Square) {
+  for (int d = 0; d < 9; ++d) {
+    lsquare *Neighbour = Square->GetNeighbourLSquare(d);
+    if (Neighbour && Neighbour->IsFlyable()) Neighbour->AddSmoke(static_cast<gas*>(GasMaterial->SpawnMore(1000)));
   }
 }
