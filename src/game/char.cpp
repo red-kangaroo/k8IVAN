@@ -4993,7 +4993,7 @@ double character::GetTimeToDie (ccharacter *Enemy, int Damage, double ToHitValue
   for (int c = 0; c < BodyParts; ++c) {
     if (BodyPartIsVital(c) && GetBodyPart(c)) {
       double Hits = GetBodyPart(c)->GetTimeToDie(Damage, ToHitValue, DodgeValue, AttackIsBlockable, UseMaxHP);
-      if (First) { MinHits = Hits; First = false; } else MinHits = 1 / (1 / MinHits + 1 / Hits);
+      if (First) { MinHits = Hits; First = false; } else MinHits = 1/(1/MinHits+1/Hits);
     }
   }
   return MinHits;
@@ -5001,13 +5001,13 @@ double character::GetTimeToDie (ccharacter *Enemy, int Damage, double ToHitValue
 
 
 double character::GetRelativeDanger (ccharacter *Enemy, truth UseMaxHP) const {
-  double Danger = Enemy->GetTimeToKill(this, UseMaxHP) / GetTimeToKill(Enemy, UseMaxHP);
+  double Danger = Enemy->GetTimeToKill(this, UseMaxHP)/GetTimeToKill(Enemy, UseMaxHP);
   int EnemyAP = Enemy->GetMoveAPRequirement(1);
   int ThisAP = GetMoveAPRequirement(1);
   if (EnemyAP > ThisAP) Danger *= 1.25;
   else if (ThisAP > EnemyAP) Danger *= 0.80;
   if (!Enemy->CanBeSeenBy(this, true)) Danger *= Enemy->IsPlayer() ? 0.2 : 0.5;
-  if (!CanBeSeenBy(Enemy, true)) Danger *= IsPlayer() ? 5. : 2.;
+  if (!CanBeSeenBy(Enemy, true)) Danger *= IsPlayer() ? 5.0 : 2.0;
   if (GetAttribute(INTELLIGENCE) < 10 && !IsPlayer()) Danger *= 0.80;
   if (Enemy->GetAttribute(INTELLIGENCE) < 10 && !Enemy->IsPlayer()) Danger *= 1.25;
   return Limit(Danger, 0.001, 1000.0);

@@ -1604,7 +1604,6 @@ void game::InitDangerMap () {
     for (int c2 = 0; c2 < ConfigSize; ++c2) {
       if (!ConfigData[c2]->IsAbstract) {
         int Config = ConfigData[c2]->Config;
-        //
         if (First) {
           NextDangerIDType = c1;
           NextDangerIDConfigIndex = c2;
@@ -1672,7 +1671,6 @@ void game::CalculateNextDanger () {
       Proto = protocontainer<character>::GetProto(NextDangerIDType);
       ConfigData = Proto->GetConfigData();
       int ConfigSize = Proto->GetConfigSize();
-      //
       for (int c = 0; c < ConfigSize; ++c) {
         if (!ConfigData[c]->IsAbstract) {
           NextDangerIDConfigIndex = c;

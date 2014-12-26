@@ -25,7 +25,6 @@ sLong protosystem::TotalItemPossibility;
 
 character *protosystem::BalancedCreateMonster (level *lvl) {
   if (!lvl) lvl = game::GetCurrentLevel();
-  //
   for (int c = 0; ; ++c) {
     double MinDifficulty = game::GetMinDifficulty(), MaxDifficulty = MinDifficulty*25;
     std::vector<configid> Possible;
@@ -35,7 +34,6 @@ character *protosystem::BalancedCreateMonster (level *lvl) {
       int ConfigSize = Proto->GetConfigSize();
       for (int c = 0; c < ConfigSize; ++c) {
         const character::database *DataBase = ConfigData[c];
-        //
         if (!DataBase->IsAbstract && DataBase->CanBeGenerated) {
           // check allowed dungeons
           {
@@ -70,15 +68,13 @@ character *protosystem::BalancedCreateMonster (level *lvl) {
           } else {
             // level have no tag
             const fearray<festring> &tlist = DataBase->LevelTags;
-            //
             if (tlist.Size > 0) {
               truth allowed = false;
-              //
               for (uInt f = 0; f < tlist.Size; ++f) if (tlist[f] == "*") { allowed = true; break; }
               if (!allowed) continue;
             }
           }
-          //
+
           if (DataBase->IsUnique && (DataBase->Flags&HAS_BEEN_GENERATED)) continue;
           truth IsCatacomb = *game::GetCurrentLevel()->GetLevelScript()->IsCatacomb();
           if ((IsCatacomb && !DataBase->IsCatacombCreature) || (!IsCatacomb && DataBase->CanBeGeneratedOnlyInTheCatacombs)) continue;
@@ -113,7 +109,6 @@ character *protosystem::BalancedCreateMonster (level *lvl) {
       configid Chosen = Possible[RAND_GOOD(Possible.size())];
       const character::prototype *Proto = protocontainer<character>::GetProto(Chosen.Type);
       character *Monster = Proto->Spawn(Chosen.Config);
-      //
       if (c >= 100 ||
           ((Monster->GetFrequency() == 10000 || Monster->GetFrequency() > RAND_GOOD(10000)) &&
            (Monster->IsUnique() ||
@@ -124,6 +119,7 @@ character *protosystem::BalancedCreateMonster (level *lvl) {
       delete Monster;
     }
   }
+
   /* This line is never reached, but it prevents warnings given by some (stupid) compilers. */
   return 0;
 }
