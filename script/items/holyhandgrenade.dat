@@ -12,4 +12,5 @@ holyhandgrenade
   MainMaterialConfig == VALPURIUM;
   Adjective = "holy";
   Alias == "gas grenade";
+  CanBePiled = false;
 }

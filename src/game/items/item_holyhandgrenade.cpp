@@ -7,6 +7,7 @@ ITEM(holyhandgrenade, item)
   virtual truth CalculateHasBe() const;
   virtual void Explode();
   virtual void Be();
+  virtual void AddInventoryEntry (const character *, festring &, int, truth) const;
   virtual v2 GetBitmapPos(int) const;
   virtual int GetClassAnimationFrames() const;
   virtual alpha GetOutlineAlpha(int) const;
@@ -65,6 +66,17 @@ void holyhandgrenade::Be () {
     Msg << "\".";
     ADD_MESSAGE("%s", Msg.CStr());
     if (Count == 3) Explode();
+  }
+}
+
+
+void holyhandgrenade::AddInventoryEntry (const character *Viewer, festring& Entry, int, truth ShowSpecialInfo) const {
+// never piled
+  AddName(Entry, DEFINITE);
+  if (ShowSpecialInfo) {
+    Entry << " [" << GetWeight() << "g";
+    if (!!WillExplodeSoon()) Entry << ", " << "(armed)";
+    Entry << ']';
   }
 }
 
