@@ -55,8 +55,16 @@ void dig::Handle () {
     Terminate(false);
     return;
   }
+
   int Damage = Actor->GetAttribute(ARM_STRENGTH) * Digger->GetMainMaterial()->GetStrengthValue() / 500;
   Terrain->EditHP(-Max(Damage, 1));
+
+  /* Save these here because the EditNP call below can cause 'this' to be terminated
+     and deleted, if the player decides to stop digging because of becoming hungry. */
+  truth MoveDigger = this->MoveDigger;
+  feuLong RightBackupID = this->RightBackupID;
+  feuLong LeftBackupID = this->LeftBackupID;
+
   Actor->EditExperience(ARM_STRENGTH, 200, 1 << 5);
   Actor->EditAP(-200000 / APBonus(Actor->GetAttribute(DEXTERITY)));
   Actor->EditNP(-500);
@@ -76,7 +84,9 @@ void dig::Handle () {
       LeftBackup->RemoveFromSlot();
       Actor->SetLeftWielded(LeftBackup);
     }
-    Terminate(true);
+    //Terminate(true);
+    // Not already terminated?
+    if (Actor->GetAction() == this) Terminate(true);
   } else {
     game::DrawEverything();
   }
