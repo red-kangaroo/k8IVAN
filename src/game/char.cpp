@@ -4275,10 +4275,10 @@ character *character::ForceEndPolymorph () {
   character *Char = GetPolymorphBackup();
   Flags |= C_IN_NO_MSG_MODE;
   Char->Flags |= C_IN_NO_MSG_MODE;
+  Char->PutToOrNear(Pos);
   Char->ChangeTeam(GetTeam());
   if (GetTeam()->GetLeader() == this) GetTeam()->SetLeader(Char);
   SetPolymorphBackup(0);
-  Char->PutToOrNear(Pos);
   Char->Enable();
   Char->Flags &= ~C_POLYMORPHED;
   GetStack()->MoveItemsTo(Char->GetStack());
@@ -5734,7 +5734,7 @@ void character::GetHitByExplosion (const explosion *Explosion, int Damage) {
   if (!IsPet() && Explosion->Terrorist && Explosion->Terrorist->IsPet()) Explosion->Terrorist->Hostility(this);
   GetTorso()->SpillBlood((8 - Explosion->Size + RAND() % (8 - Explosion->Size)) >> 1);
   v2 SpillPos = GetPos() + game::GetMoveVector(DamageDirection);
-  if (GetArea()->IsValidPos(SpillPos)) GetTorso()->SpillBlood((8-Explosion->Size+RAND()%(8-Explosion->Size))>>1, SpillPos);
+  if (SquareUnder[0] && GetArea()->IsValidPos(SpillPos)) GetTorso()->SpillBlood((8-Explosion->Size+RAND()%(8-Explosion->Size))>>1, SpillPos);
   if (IsPlayer()) ADD_MESSAGE("You are hit by the explosion!");
   else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s is hit by the explosion.", CHAR_NAME(DEFINITE));
   truth WasUnconscious = GetAction() && GetAction()->IsUnconsciousness();
