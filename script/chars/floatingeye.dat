@@ -16,7 +16,6 @@ floatingeye
   Adjective = "floating";
   NameSingular = "eye";
   /* AttackStyle is not used */
-  BaseBiteStrength = 1;
   CanBeGenerated = true;
   FleshMaterial = FLOATING_EYE_FLESH;
   IgnoreDanger = true;
