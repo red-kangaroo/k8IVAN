@@ -231,15 +231,15 @@ void door::PostConstruct () {
       if ((ConfigData[c]->Config & LOCK_BITS) &&
           (ConfigData[c]->Config & ~LOCK_BITS) == GetConfig() &&
           !(ConfigData[c]->Config & S_LOCK_ID)) ++NormalLockTypes;
-      int ChosenLock = RAND()%NormalLockTypes;
-      for (c = 0; c < ConfigSize; ++c)
-        if ((ConfigData[c]->Config & LOCK_BITS) &&
-            (ConfigData[c]->Config & ~LOCK_BITS) == GetConfig() &&
-            !(ConfigData[c]->Config & S_LOCK_ID) &&
-            !ChosenLock--) {
-          SetConfig(ConfigData[c]->Config, NO_PIC_UPDATE);
-          break;
-        }
+    int ChosenLock = RAND()%NormalLockTypes;
+    for (c = 0; c < ConfigSize; ++c)
+      if ((ConfigData[c]->Config & LOCK_BITS) &&
+          (ConfigData[c]->Config & ~LOCK_BITS) == GetConfig() &&
+          !(ConfigData[c]->Config & S_LOCK_ID) &&
+          !ChosenLock--) {
+        SetConfig(ConfigData[c]->Config, NO_PIC_UPDATE);
+        break;
+      }
   }
   SetBoobyTrap(0);
   SetIsOpened(false);

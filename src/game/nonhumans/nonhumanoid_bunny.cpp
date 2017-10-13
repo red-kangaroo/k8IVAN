@@ -83,17 +83,17 @@ truth bunny::CheckForMatePartner()
 
     for(int c = 0; c < game::GetTeams(); ++c)
       if(GetTeam()->GetRelation(game::GetTeam(c)) != HOSTILE)
-  for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
-    if((*i)->IsEnabled() && (*i)->IsBunny() && (*i)->GetConfig() == ADULT_FEMALE && (*i)->GetNP() > SATIATED_LEVEL)
-    {
-      double Danger = (*i)->GetRelativeDanger(this, true);
+        for(std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i)
+          if((*i)->IsEnabled() && (*i)->IsBunny() && (*i)->GetConfig() == ADULT_FEMALE && (*i)->GetNP() > SATIATED_LEVEL)
+          {
+            double Danger = (*i)->GetRelativeDanger(this, true);
 
-      if(Danger > BestPartnerDanger)
-      {
-        BestPartner = *i;
-        BestPartnerDanger = Danger;
-      }
-    }
+            if(Danger > BestPartnerDanger)
+            {
+              BestPartner = *i;
+              BestPartnerDanger = Danger;
+            }
+          }
 
     if(BestPartner && !GetPos().IsAdjacent(BestPartner->GetPos()))
     {
