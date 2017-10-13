@@ -9,7 +9,7 @@ holybook
   FormModifier = 20;
   Adjective = "holy";
   NameSingular = "book";
-  ArticleMode = FORCE_THE;
+  /*ArticleMode = FORCE_THE;*/
   MainMaterialConfig == PARCHMENT;
   Price = 200;
   Roundness = 70;
