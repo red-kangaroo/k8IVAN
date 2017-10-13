@@ -30,6 +30,9 @@ v2 graphics::Res;
 int graphics::ColorDepth;
 rawbitmap *graphics::DefaultFont = 0;
 
+truth dblRes = false;
+truth origDblRes = false;
+
 
 void graphics::Init () {
   static truth AlreadyInstalled = false;
@@ -51,18 +54,21 @@ void graphics::DeInit () {
 }
 
 
-void graphics::SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScreen) {
+void graphics::SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScreen, truth DoubleRes) {
   if (IconName) {
     SDL_Surface *Icon = SDL_LoadBMP(IconName);
     SDL_SetColorKey(Icon, SDL_SRCCOLORKEY, SDL_MapRGB(Icon->format, 255, 255, 255));
     SDL_WM_SetIcon(Icon, NULL);
   }
+  origDblRes = DoubleRes;
+  dblRes = DoubleRes;
   feuLong Flags = SDL_SWSURFACE;
   if (FullScreen) {
     SDL_ShowCursor(SDL_DISABLE);
     Flags |= SDL_FULLSCREEN;
+    dblRes = false;
   }
-  Screen = SDL_SetVideoMode(NewRes.X, NewRes.Y, 16, Flags);
+  Screen = SDL_SetVideoMode(NewRes.X*(dblRes ? 2 : 1), NewRes.Y*(dblRes ? 2 : 1), 16, Flags);
   if (!Screen) ABORT("Couldn't set video mode.");
   SDL_WM_SetCaption(Title, 0);
   globalwindowhandler::Init();
@@ -87,7 +93,19 @@ void graphics::BlitDBToScreen () {
   packcol16 *DestPtr = static_cast<packcol16 *>(TempSurface->pixels);
   feuLong ScreenYMove = (TempSurface->pitch >> 1);
   feuLong LineSize = Res.X << 1;
-  for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memmove(DestPtr, SrcPtr, LineSize);
+  if (dblRes) {
+    for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) {
+      packcol16 *s = SrcPtr;
+      packcol16 *d = DestPtr;
+      for (int x = 0; x < Res.X; ++x) { *d++ = *s; *d++ = *s++; }
+      s = SrcPtr;
+      DestPtr += ScreenYMove;
+      d = DestPtr;
+      for (int x = 0; x < Res.X; ++x) { *d++ = *s; *d++ = *s++; }
+    }
+  } else {
+    for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memmove(DestPtr, SrcPtr, LineSize);
+  }
   SDL_UnlockSurface(TempSurface);
   SDL_Surface *S = SDL_DisplayFormat(TempSurface);
   SDL_BlitSurface(S, NULL, Screen, NULL);
@@ -99,9 +117,23 @@ void graphics::BlitDBToScreen () {
   packcol16 *DestPtr = static_cast<packcol16 *>(Screen->pixels);
   feuLong ScreenYMove = (Screen->pitch >> 1);
   feuLong LineSize = Res.X << 1;
-  for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memmove(DestPtr, SrcPtr, LineSize);
+  if (dblRes) {
+    for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) {
+      packcol16 *s = SrcPtr;
+      packcol16 *d = DestPtr;
+      for (int x = 0; x < Res.X; ++x) { *d++ = *s; *d++ = *s++; }
+      s = SrcPtr;
+      DestPtr += ScreenYMove;
+      d = DestPtr;
+      for (int x = 0; x < Res.X; ++x) { *d++ = *s; *d++ = *s++; }
+    }
+  } else {
+    for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) {
+      memmove(DestPtr, SrcPtr, LineSize);
+    }
+  }
   if (SDL_MUSTLOCK(Screen)) SDL_UnlockSurface(Screen);
-  SDL_UpdateRect(Screen, 0, 0, Res.X, Res.Y);
+  SDL_UpdateRect(Screen, 0, 0, Res.X*(dblRes ? 2 : 1), Res.Y*(dblRes ? 2 : 1));
 }
 #endif
 
@@ -111,12 +143,14 @@ void graphics::SwitchMode () {
   if (Screen->flags & SDL_FULLSCREEN) {
     SDL_ShowCursor(SDL_ENABLE);
     Flags = SDL_SWSURFACE;
+    dblRes = origDblRes;
   } else {
     SDL_ShowCursor(SDL_DISABLE);
     Flags = SDL_SWSURFACE|SDL_FULLSCREEN;
+    dblRes = false;
   }
   if (SwitchModeHandler) SwitchModeHandler();
-  Screen = SDL_SetVideoMode(Res.X, Res.Y, ColorDepth, Flags);
+  Screen = SDL_SetVideoMode(Res.X*(dblRes ? 2 : 1), Res.Y*(dblRes ? 2 : 1), ColorDepth, Flags);
   if (!Screen) ABORT("Couldn't toggle fullscreen mode.");
   BlitDBToScreen();
 }

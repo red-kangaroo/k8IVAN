@@ -51,7 +51,7 @@ void igraph::Init()
   {
     AlreadyInstalled = true;
     graphics::Init();
-    graphics::SetMode("IVAN " IVAN_VERSION, festring(game::GetGameDir() + "graphics/Icon.bmp").CStr(), v2(800, 600), ivanconfig::GetFullScreenMode());
+    graphics::SetMode("IVAN " IVAN_VERSION, festring(game::GetGameDir() + "graphics/Icon.bmp").CStr(), v2(800, 600), ivanconfig::GetFullScreenMode(), ivanconfig::GetDoubleResMode());
     DOUBLE_BUFFER->ClearToColor(0);
     graphics::BlitDBToScreen();
     graphics::SetSwitchModeHandler(ivanconfig::SwitchModeHandler);

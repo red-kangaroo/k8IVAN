@@ -31,7 +31,7 @@ public:
   static void Init ();
   static void DeInit ();
   static void SwitchMode ();
-  static void SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScreen);
+  static void SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScreen, truth DoubleRes);
   static void BlitDBToScreen ();
   static v2 GetRes () { return Res; }
   static bitmap *GetDoubleBuffer () { return DoubleBuffer; }

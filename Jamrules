@@ -7,7 +7,7 @@ set-profile ;
 set-default-locations ;
 
 OPTIM.all += -Wno-narrowing ;
-OPTIM.all += -Wmisleading-indentation ; # fuck off
+OPTIM.all += -Wno-misleading-indentation ; # fuck off
 
 if $(DEBUG) { DEFINES += DEBUG_BUILD ; }
 
