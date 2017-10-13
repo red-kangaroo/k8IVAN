@@ -1667,21 +1667,15 @@ void item::SendMemorizedUpdateRequest() const
       }
 }
 
-truth item::AddStateDescription(festring& Name, truth Articled) const
-{
-  if(!Spoils())
-    return false;
 
-  if((ItemFlags & (HASTE|SLOW)) && Articled)
-    Name << "a ";
-
-  if(ItemFlags & HASTE)
-    Name << "hasted ";
-
-  if(ItemFlags & SLOW)
-    Name << "slowed ";
-
-  return true;
+truth item::AddStateDescription (festring& Name, truth Articled) const {
+  truth res = false;
+  if (Spoils()) {
+    if ((ItemFlags&(HASTE|SLOW)) && Articled) { res = true; Name << "a "; }
+    if (ItemFlags&HASTE) { res = true; Name << "hasted "; }
+    if (ItemFlags&SLOW) { res = true; Name << "slowed "; }
+  }
+  return res;
 }
 
 
