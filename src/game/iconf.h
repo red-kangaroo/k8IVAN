@@ -33,6 +33,7 @@ public:
   static truth GetBeNice () { return BeNice.Value; }
   static truth GetFullScreenMode () { return FullScreenMode.Value; }
   static truth GetDoubleResMode () { return DoubleResMode.Value; }
+  static truth GetWeirdDoubleResMode () { return WeirdDoubleResMode.Value; }
   static void SwitchModeHandler ();
   static truth GetKickDownDoors () { return KickDownDoors.Value; }
   static truth GetAutoCenterMap () { return AutoCenterMap.Value; }
@@ -95,6 +96,7 @@ private:
   static truthoption BeNice;
   static truthoption FullScreenMode;
   /*k8*/
+  static truthoption WeirdDoubleResMode;
   static truthoption DoubleResMode;
   static truthoption KickDownDoors;
   static truthoption AutoCenterMap;

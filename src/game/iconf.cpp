@@ -36,6 +36,7 @@ truthoption ivanconfig::UseAlternativeKeys("UseAlternativeKeys", "use alternativ
 truthoption ivanconfig::BeNice("BeNice", "be nice to pets", true);
 truthoption ivanconfig::FullScreenMode("FullScreenMode", "run the game in full screen mode", false, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FullScreenModeChanger);
 /*k8*/
+truthoption ivanconfig::WeirdDoubleResMode("WeirdDoubleResMode", "run the game in x1.5-resolution mode", false);
 truthoption ivanconfig::DoubleResMode("DoubleResMode", "run the game in double-resolution mode", false);
 truthoption ivanconfig::KickDownDoors("KickDownDoors", "kick down doors by default", false);
 truthoption ivanconfig::AutoCenterMap("AutoCenterMap", "automatically center map when player moves", true);
@@ -236,6 +237,7 @@ void ivanconfig::Initialize () {
   configsystem::AddOption(&BeNice);
   configsystem::AddOption(&FullScreenMode);
 /*k8*/
+  configsystem::AddOption(&WeirdDoubleResMode);
   configsystem::AddOption(&DoubleResMode);
   configsystem::AddOption(&KickDownDoors);
   configsystem::AddOption(&AutoCenterMap);
