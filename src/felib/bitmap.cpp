@@ -1646,6 +1646,9 @@ void bitmap::AlphaPriorityBlit (cblitdata &BlitData) const {
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap alpha priority blit attempt detected!");
     if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
+  } else {
+    // but who cares?
+    if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
   packcol16 **SrcImage = Image;
   packalpha **SrcAlphaMap = AlphaMap;
