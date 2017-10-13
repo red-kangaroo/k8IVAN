@@ -28,16 +28,13 @@ ITEM(holyhandgrenade, item)
 #else
 
 
-
-truth holyhandgrenade::Apply(character* Applier)
-{
-  if(PinPulledTick)
-  {
+truth holyhandgrenade::Apply (character* Applier) {
+  if (PinPulledTick) {
     ADD_MESSAGE("The pin of %s has already been removed.", CHAR_NAME(DEFINITE));
     return false;
   }
 
-  if(Applier->IsPlayer()) {
+  if (Applier->IsPlayer()) {
     ADD_MESSAGE("You pull the pin off the grenade.");
   }
 
@@ -50,59 +47,45 @@ truth holyhandgrenade::Apply(character* Applier)
 }
 
 
-
-truth holyhandgrenade::CalculateHasBe() const
-{
+truth holyhandgrenade::CalculateHasBe () const {
   return PinPulledTick;
 }
 
 
-
-void holyhandgrenade::Be() {
+void holyhandgrenade::Be () {
   item::Be();
-  if(3 * (game::GetTick() - PinPulledTick) > (feuLong)(Count) * 100)
-  {
+  if (PinPulledTick && 3*(game::GetTick()-PinPulledTick) > (feuLong)(Count)*100) {
     ++Count;
     festring Msg = "A voice loudly declares: \"";
-    switch(Count)
-    {
-     case 1:
-      Msg << "ONE";
-      break;
-     case 2:
-      Msg << "TWO";
-      break;
-     case 3:
-      Msg << "THREE";
-      break;
+    switch (Count) {
+      case 1: Msg << "ONE"; break;
+      case 2: Msg << "TWO"; break;
+      case 3: Msg << "THREE"; break;
     }
     Msg << "\".";
     ADD_MESSAGE("%s", Msg.CStr());
-    if(Count == 3) {
-      Explode();
-    }
+    if (Count == 3) Explode();
   }
 }
 
 
-
-void holyhandgrenade::Explode()
-{
-  if(game::IsInWilderness()) {
+void holyhandgrenade::Explode () {
+  if (game::IsInWilderness()) {
     ADD_MESSAGE("You manage to dispose of %s.", CHAR_NAME(DEFINITE));
     RemoveFromSlot();
     SendToHell();
     return;
   }
+
   character* Damager = game::SearchCharacter(PinPullerID);
   festring DeathMsg = CONST_S("killed by an explosion of ");
   AddName(DeathMsg, INDEFINITE);
 
-  if(Damager)
-    DeathMsg << " caused @bk";
+  if (Damager) DeathMsg << " caused @bk";
 
-  if(GetSquareUnder()->CanBeSeenByPlayer(true))
+  if (GetSquareUnder()->CanBeSeenByPlayer(true)) {
     ADD_MESSAGE("%s explodes!", GetExtendedDescription().CStr());
+  }
 
   lsquare* Square = GetLSquareUnder();
   RemoveFromSlot();
@@ -111,83 +94,62 @@ void holyhandgrenade::Explode()
 }
 
 
-
-v2 holyhandgrenade::GetBitmapPos(int Frame) const
-{
-  return PinPulledTick ? v2(96, 64) : v2(96, 32);
+v2 holyhandgrenade::GetBitmapPos (int Frame) const {
+  return (PinPulledTick ? v2(96, 64) : v2(96, 32));
 }
 
 
-
-int holyhandgrenade::GetClassAnimationFrames() const
-{
+int holyhandgrenade::GetClassAnimationFrames () const {
   return 32;
 }
 
 
-
-alpha holyhandgrenade::GetOutlineAlpha(int Frame) const
-{
-  if(!PinPulledTick)
-    return 0;
+alpha holyhandgrenade::GetOutlineAlpha (int Frame) const {
+  if (!PinPulledTick) return 0;
   Frame &= 31;
-  return 50 + (Frame * (31 - Frame) >> 1);
+  return 50+(Frame*(31-Frame)>>1);
 }
 
 
-
-col16 holyhandgrenade::GetOutlineColor(int) const
-{
+col16 holyhandgrenade::GetOutlineColor (int) const {
   return MakeRGB16(0, 255, 0);
 }
 
 
-
-void holyhandgrenade::Save(outputfile& SaveFile) const
-{
+void holyhandgrenade::Save (outputfile& SaveFile) const {
   item::Save(SaveFile);
   SaveFile << PinPulledTick << Count << PinPullerID;
 }
 
 
-
-void holyhandgrenade::Load(inputfile& SaveFile)
-{
+void holyhandgrenade::Load (inputfile& SaveFile) {
   item::Load(SaveFile);
   SaveFile >> PinPulledTick >> Count >> PinPullerID;
 }
 
 
-
-void holyhandgrenade::PreProcessForBone()
-{
-  if(PinPulledTick)
-  {
+void holyhandgrenade::PreProcessForBone () {
+  if (PinPulledTick) {
     RemoveFromSlot();
     SendToHell();
   }
 }
 
 
-
-void holyhandgrenade::PostConstruct()
-{
+void holyhandgrenade::PostConstruct () {
   PinPulledTick = 0;
   Count = 0;
   PinPullerID = 0;
 }
 
 
-
-col16 holyhandgrenade::GetMaterialColorB(int) const
-{
+col16 holyhandgrenade::GetMaterialColorB (int) const {
   return MakeRGB16(200, 10, 10);
 }
 
 
-
-bool holyhandgrenade::WillExplodeSoon() const
-{
-  return PinPulledTick != 0;
+bool holyhandgrenade::WillExplodeSoon () const {
+  return (PinPulledTick != 0);
 }
+
 #endif
