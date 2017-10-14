@@ -461,6 +461,7 @@ Dungeon ATTNAM;
       Type = ROOM_SHOP;
       GenerateLanterns = false;
       GenerateWindows = false;
+      AllowLockedDoors = false;
 
       Square, Pos 3, 5;
       {

@@ -269,6 +269,7 @@ Dungeon NEW_ATTNAM;
       DivineMaster = MELLIS;
       Type = ROOM_SHOP;
       GenerateWindows = false;
+      AllowLockedDoors = false;
 
       Square, Pos 3, 3;
       {
