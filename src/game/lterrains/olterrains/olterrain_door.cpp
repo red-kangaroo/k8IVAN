@@ -7,6 +7,7 @@ public:
   virtual truth Open (character *);
   virtual truth Close (character *);
   virtual truth CanBeOpened () const;
+  virtual truth CanBeClosed () const;
   virtual void BeKicked (character *, int, int);
   virtual void SetIsOpened (truth What);
   virtual void Save (outputfile &) const;
@@ -49,6 +50,7 @@ protected:
 
 truth door::IsDoor () const { return true; }
 truth door::CanBeOpened () const { return !Opened; }
+truth door::CanBeClosed () const { return Opened; }
 void door::SetIsOpened (truth What) { Opened = What; }
 void door::SetIsLocked (truth What) { Locked = What; }
 truth door::IsLocked () const { return Locked; }

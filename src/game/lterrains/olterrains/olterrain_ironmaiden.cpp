@@ -8,6 +8,7 @@ public:
   virtual void Load (inputfile &);
   virtual truth Open (character *);
   virtual truth CanBeOpened () const;
+  virtual truth CanBeClosed () const;
   virtual truth Close (character *);
 
 protected:
@@ -22,6 +23,7 @@ protected:
 
 
 truth ironmaiden::CanBeOpened () const { return !Opened; }
+truth ironmaiden::CanBeClosed () const { return Opened; }
 
 
 void ironmaiden::Save (outputfile &SaveFile) const {
