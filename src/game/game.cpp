@@ -2642,6 +2642,20 @@ bool game::Wish (character *Wisher, cchar *MsgSingle, cchar *MsgPair, bool canAb
       DefaultWish = oldDef;
       return false;
     }
+         if (Temp == "socm") Temp = "scroll of change material";
+    else if (Temp == "soc") Temp = "scroll of charging";
+    else if (Temp == "sodm") Temp = "scroll of detect material";
+    else if (Temp == "soea") Temp = "scroll of enchant armor";
+    else if (Temp == "soew") Temp = "scroll of enchant weapon";
+    else if (Temp == "sof") Temp = "scroll of fireballs";
+    else if (Temp == "sogc") Temp = "scroll of golem creation";
+    else if (Temp == "sohm") Temp = "scroll of harden material";
+    else if (Temp == "sor") Temp = "scroll of repair";
+    else if (Temp == "sot") Temp = "scroll of taming";
+    else if (Temp == "sotp") Temp = "scroll of teleportation";
+    else if (Temp == "sow") Temp = "scroll of wishing";
+    else if (Temp == "vodka") Temp = "bottle full of vodka";
+    else if (Temp == "troll blood") Temp = "bottle full of troll blood";
     item *TempItem = protosystem::CreateItem(Temp, Wisher->IsPlayer());
     if (TempItem) {
       Wisher->GetStack()->AddItem(TempItem);

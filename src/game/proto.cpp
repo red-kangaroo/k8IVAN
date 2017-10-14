@@ -412,28 +412,20 @@ character* protosystem::CreateMonster(cfestring& What, int SpecialFlags, truth O
     return 0;
 }
 
-item* protosystem::CreateItem(cfestring& What, truth Output)
-{
-  std::pair<const item::prototype*, int> ID = SearchForProto<item>(What, Output);
 
-  if(ID.first)
-  {
+item* protosystem::CreateItem(cfestring& What, truth Output) {
+  std::pair<const item::prototype*, int> ID = SearchForProto<item>(What, Output);
+  if (ID.first) {
     item* Item = ID.first->Spawn(ID.second);
     festring Q = "Do you want to wish for ";
     Item->AddName(Q, INDEFINITE|STRIPPED);
     Q << "? [y/N]";
-
-    if(!game::TruthQuestion(Q))
-    {
-      delete Item;
-      return 0;
-    }
-
+    if (!game::TruthQuestion(Q)) { delete Item; return 0; }
     return Item;
   }
-  else
-    return 0;
+  return 0;
 }
+
 
 material* protosystem::CreateMaterial(cfestring& What, sLong Volume, truth Output)
 {
