@@ -38,6 +38,54 @@ truth weirdDRes = false;
 
 static int fixVal (int v) { return (dblRes ? (weirdDRes ? (int)(v*DIVISOR) : v*2) : v); }
 
+struct KIt {
+  float frc0, frc1, yfrc0, yfrc1;
+  int sofs[4];
+};
+
+
+KIt *kernel = 0;
+unsigned char *bufc32 = 0;
+
+static void freeKernel () {
+  if (kernel) { free(kernel); kernel = 0; }
+}
+
+
+static void buildKernel (int resx, int resy) {
+  KIt* res = (KIt*)malloc(fixVal(resy)*fixVal(resx)*sizeof(KIt));
+  for (int y = 0; y < fixVal(resy); ++y) {
+    for (int x = 0; x < fixVal(resx); ++x) {
+      KIt* i = res+y*fixVal(resx)+x;
+      float fx = x/DIVISOR;
+      float fy = y/DIVISOR;
+      float frc1 = fx-(int)fx;
+      float frc0 = 1.0-frc1;
+      float yfrc1 = fy-(int)fy;
+      float yfrc0 = 1.0-yfrc1;
+      i->frc0 = frc0;
+      i->frc1 = frc1;
+      i->yfrc0 = yfrc0;
+      i->yfrc1 = yfrc1;
+      //r[0] = (r[0]*frc0+r[1]*frc1)*yfrc0+(r[2]*frc0+r[3]*frc1)*yfrc1;
+      for (int dy = 0; dy < 2; ++dy) {
+        for (int dx = 0; dx < 2; ++dx) {
+          int sx = (int)(fx+dx);
+          int sy = (int)(fy+dy);
+          if (sx >= 0 && sy >= 0 && sx < resx && sy < resy) {
+            i->sofs[dy*2+dx] = sy*(resx*4)+sx*4;
+          } else {
+            i->sofs[dy*2+dx] = 0;
+          }
+        }
+      }
+    }
+  }
+  freeKernel();
+  kernel = res;
+}
+
+
 
 void graphics::Init () {
   static truth AlreadyInstalled = false;
@@ -74,20 +122,31 @@ void graphics::SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScre
     Flags |= SDL_FULLSCREEN;
     dblRes = false;
   }
-  Screen = SDL_SetVideoMode(fixVal(NewRes.X), fixVal(NewRes.Y), 16, Flags);
+  Screen = SDL_SetVideoMode(fixVal(NewRes.X), fixVal(NewRes.Y), /*16*/32, Flags);
   if (!Screen) ABORT("Couldn't set video mode.");
+  if (dblRes && weirdDRes) buildKernel(NewRes.X, NewRes.Y); else freeKernel();
+  bufc32 = (unsigned char*)realloc(bufc32, fixVal(NewRes.X)*fixVal(NewRes.Y)*4);
   SDL_WM_SetCaption(Title, 0);
   globalwindowhandler::Init();
   DoubleBuffer = new bitmap(NewRes);
   Res = NewRes;
-  ColorDepth = 16;
+  ColorDepth = 32/*16*/;
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+  ABORT("Not Yet");
+ #if 0
   Uint32 rmask, gmask, bmask;
+  /*
   rmask = 0xF800;
   gmask = 0x7E0;
   bmask = 0x1F;
   TempSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, Res.X, Res.Y, 16, rmask, gmask, bmask, 0);
+  */
+  rmask = 0xFF0000;
+  gmask = 0xFF00;
+  bmask = 0xFF;
+  TempSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, Res.X, Res.Y, /*16*/32, rmask, gmask, bmask, 0);
   if (!TempSurface) ABORT("CreateRGBSurface failed: %s\n", SDL_GetError());
+ #endif
 #endif
 }
 
@@ -113,6 +172,8 @@ static inline packcol16 fromRGB (int r, int g, int b) {
 
 void graphics::BlitDBToScreen () {
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+  ABORT("Not Yet");
+ #if 0
   SDL_LockSurface(TempSurface);
   packcol16 *SrcPtr = DoubleBuffer->GetImage()[0];
   packcol16 *DestPtr = static_cast<packcol16 *>(TempSurface->pixels);
@@ -149,67 +210,67 @@ void graphics::BlitDBToScreen () {
   SDL_BlitSurface(S, NULL, Screen, NULL);
   SDL_FreeSurface(S);
   SDL_UpdateRect(Screen, 0, 0, Res.X, Res.Y);
+ #endif
 #else
   if (SDL_MUSTLOCK(Screen) && SDL_LockSurface(Screen) < 0) ABORT("Can't lock screen");
   packcol16 *SrcPtr = DoubleBuffer->GetImage()[0];
-  packcol16 *DestPtr = static_cast<packcol16 *>(Screen->pixels);
-  feuLong ScreenYMove = (Screen->pitch >> 1);
-  feuLong LineSize = Res.X << 1;
+  //packcol16 *DestPtr = static_cast<packcol16 *>(Screen->pixels);
+  //feuLong ScreenYMove = (Screen->pitch >> 1);
+  //feuLong LineSize = Res.X << 1;
+
+  int newx = fixVal(Res.X);
+  int newy = fixVal(Res.Y);
+
+  // convert source buffer
+  packcol16 *sptr = SrcPtr;
+  unsigned char *dptr = bufc32;
+  for (int y = 0; y < newy; ++y) {
+    for (int x = 0; x < newx; ++x) {
+      packcol16 c = *sptr++;
+      unsigned char b = (c<<3)&0xff;
+      unsigned char g = ((c>>5)<<2)&0xff;
+      unsigned char r = ((c>>11)<<3)&0xff;
+      *dptr++ = b;
+      *dptr++ = g;
+      *dptr++ = r;
+      *dptr++ = 0;
+    }
+  }
+
+  unsigned char *DestPtr = static_cast<unsigned char*>(Screen->pixels);
+  feuLong ScreenYMove = Screen->pitch;
+
   if (dblRes) {
     if (weirdDRes) {
-      for (int y = 0; y < fixVal(Res.Y); ++y) {
-        for (int x = 0; x < fixVal(Res.X); ++x) {
-          // getpixel
-          /*
-          int sx = (Res.X-1)*x/(fixVal(Res.X)-1);
-          int sy = (Res.Y-1)*y/(fixVal(Res.Y)-1);
-          packcol16 *src = SrcPtr+sy*Res.X+sx;
-          packcol16 *dst = DestPtr+y*ScreenYMove+x;
-          *dst = *src;
-          */
-          double fx = x/DIVISOR;
-          double fy = y/DIVISOR;
-          int r[4], g[4], b[4];
-          for (int dy = 0; dy < 2; ++dy) {
-            for (int dx = 0; dx < 2; ++dx) {
-              int sx = (int)(fx+dx);
-              int sy = (int)(fy+dy);
-              if (sx >= 0 && sy >= 0 && sx < Res.X && sy < Res.Y) {
-                toRGB(&r[dy*2+dx], &g[dy*2+dx], &b[dy*2+dx], SrcPtr[sy*Res.X+sx]);
-              } else {
-                r[dy*2+dx] = g[dy*2+dx] = b[dy*2+dx] = 0;
-              }
-            }
+      // copy converted buffer used kernel
+      unsigned char *curs = bufc32;
+      KIt *i = kernel;
+      for (int y = 0; y < newy; ++y) {
+        unsigned char *dp = DestPtr;
+        for (int x = 0; x < newx; ++x) {
+          for (int n = 0; n < 3; ++n) {
+            int c = (int)(curs[i->sofs[0]+n]*i->frc0+curs[i->sofs[1]+n]*i->frc1)*i->yfrc0+(curs[i->sofs[2]+n]*i->frc0+curs[i->sofs[3]+n]*i->frc1)*i->yfrc1;
+            if (c < 0) c = 0; else if (c > 255) c = 255;
+            dp[n] = (unsigned char)c;
           }
-          double frc1 = fx-(int)fx;
-          double frc0 = 1.0-frc1;
-          for (int dy = 0; dy < 2; ++dy) {
-            r[dy*2+0] = (int)(r[dy*2+0]*frc0+r[dy*2+1]*frc1);
-            g[dy*2+0] = (int)(g[dy*2+0]*frc0+g[dy*2+1]*frc1);
-            b[dy*2+0] = (int)(b[dy*2+0]*frc0+b[dy*2+1]*frc1);
-          }
-          frc1 = fy-(int)fy;
-          frc0 = 1.0-frc1;
-          r[0] = (int)(r[0]*frc0+r[2]*frc1);
-          g[0] = (int)(g[0]*frc0+g[2]*frc1);
-          b[0] = (int)(b[0]*frc0+b[2]*frc1);
-          DestPtr[y*ScreenYMove+x] = fromRGB(r[0], g[0], b[0]);
+          dp += 4;
+          ++i;
         }
+        DestPtr += ScreenYMove;
       }
     } else {
-      for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) {
-        packcol16 *s = SrcPtr;
-        packcol16 *d = DestPtr;
+      for (int y = 0; y < Res.Y; ++y, DestPtr += ScreenYMove) {
+        uint32_t *s = (uint32_t*)(bufc32+y*(Res.X*4));
+        uint32_t *d = (uint32_t*)(DestPtr);
         for (int x = 0; x < Res.X; ++x) { *d++ = *s; *d++ = *s++; }
-        s = SrcPtr;
         DestPtr += ScreenYMove;
-        d = DestPtr;
-        for (int x = 0; x < Res.X; ++x) { *d++ = *s; *d++ = *s++; }
+        memcpy(DestPtr, bufc32+y*(Res.X*4), Res.X*4*2);
       }
     }
   } else {
-    for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) {
-      memmove(DestPtr, SrcPtr, LineSize);
+    for (int y = 0; y < Res.Y; ++y, DestPtr += ScreenYMove) {
+      uint32_t *s = (uint32_t*)(bufc32+y*(Res.X*4));
+      memcpy(DestPtr, s, Res.X*4);
     }
   }
   if (SDL_MUSTLOCK(Screen)) SDL_UnlockSurface(Screen);
@@ -232,6 +293,8 @@ void graphics::SwitchMode () {
   if (SwitchModeHandler) SwitchModeHandler();
   Screen = SDL_SetVideoMode(fixVal(Res.X), fixVal(Res.Y), ColorDepth, Flags);
   if (!Screen) ABORT("Couldn't toggle fullscreen mode.");
+  if (dblRes && weirdDRes) buildKernel(Res.X, Res.Y); else freeKernel();
+  bufc32 = (unsigned char*)realloc(bufc32, fixVal(Res.X)*fixVal(Res.Y)*4);
   BlitDBToScreen();
 }
 
