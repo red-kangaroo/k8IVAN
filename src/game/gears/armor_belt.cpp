@@ -13,17 +13,9 @@ ITEM(belt, armor)
 #else
 
 
-
 sLong belt::GetPrice() const { return armor::GetPrice() * 5 + GetEnchantedPrice(Enchantment); }
-
-
-
 truth belt::IsInCorrectSlot(int I) const { return I == BELT_INDEX; }
+int belt::GetFormModifier() const { return item::GetFormModifier() * GetMainMaterial()->GetFlexibility(); }
 
 
-
-int belt::GetFormModifier() const
-{
-  return item::GetFormModifier() * GetMainMaterial()->GetFlexibility();
-}
 #endif

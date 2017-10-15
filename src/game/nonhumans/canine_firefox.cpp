@@ -2,7 +2,7 @@
 CHARACTER(firefox, canine)
 {
 protected:
-  virtual truth SpecialBiteEffect (character *, v2, int, int, truth);
+  virtual truth SpecialBiteEffect (character *, v2, int, int, truth, truth Critical, int DoneDamage);
   virtual int GetSpecialBodyPartFlags (int) const;
 };
 
@@ -13,7 +13,7 @@ protected:
 int firefox::GetSpecialBodyPartFlags (int) const { return ST_FLAMES; }
 
 
-truth firefox::SpecialBiteEffect (character * Enemy, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+truth firefox::SpecialBiteEffect (character * Enemy, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour, truth Critical, int DoneDamage) {
   if (Enemy->IsEnabled() && (RAND()&1)) {
     if (Enemy->CanBeSeenByPlayer() && IsPlayer()) {
       ADD_MESSAGE("Your bite burns %s.", Enemy->CHAR_DESCRIPTION(DEFINITE));

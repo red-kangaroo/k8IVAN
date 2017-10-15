@@ -1,0 +1,10 @@
+bonesghost
+{
+  CreateUndeadConfigurations = false;
+  CanBeGenerated = false;
+  CanBeGeneratedOnlyInTheCatacombs = false;
+  IsCatacombCreature = false;
+  UndeadVersions = false;
+  IsAbstract = false;
+  CanUseEquipment = false;
+}

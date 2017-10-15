@@ -41,6 +41,8 @@ void silva::PrayGoodEffect () {
     int ToGround = 20+RAND()%21;
     int BoulderNumber = 10+RAND()%10;
     //
+    if (!game::GetCurrentLevel()->EarthquakesAffectTunnels()) Tunnels = 0;
+    //
     for (int c = 0; c < Tunnels; ++c) {
       game::GetCurrentLevel()->AttachPos(game::GetCurrentLevel()->GetRandomSquare(0, NOT_WALKABLE|ATTACHABLE));
     }

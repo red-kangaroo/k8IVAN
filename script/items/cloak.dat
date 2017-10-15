@@ -138,4 +138,26 @@ cloak /* armor-> */
     EnchantmentPlusChance = 10;
     CloakBitmapPos = 48, 496;
   }
+
+  Config CLOAK_OF_SHADOWS;
+  {
+    Possibility = 0;
+    GearStates = ETHEREAL_MOVING;
+    Price = 2500;
+    MainMaterialConfig == GHOST;
+    MaterialConfigChances == 100;
+    EnchantmentPlusChance = 0;
+    NameSingular = "shadow veil";
+    AttachedGod = INFUSCOR;
+    CanBeBroken = false;
+    CanBeWished = false;
+    IsDestroyable = false;
+    IsMaterialChangeable = false;
+    IsPolymorphable = false;
+    CanBeCloned = false;
+    IsQuestItem = true;
+    //k8:not-here-yet:CanBeBurned = false;
+    ArticleMode = FORCE_THE;
+    CanBeEnchanted = false;
+  }
 }

@@ -127,4 +127,110 @@ darkknight
     CapColor = rgb16(48, 48, 48);
     GauntletColor = rgb16(50, 50, 50);
   }
+
+  Config TEMPLAR; /* Tougher than veteran */
+  {
+    AttributeBonus = 10;
+    Helmet = STEEL helmet(FULL_HELMET) { Enchantment = 2; }
+    BodyArmor = STEEL bodyarmor(PLATE_MAIL) { Enchantment = 1; }
+    RightWielded = STEEL STEEL meleeweapon(LONG_SWORD) { Enchantment = 1; }
+    RightGauntlet = OMMEL_HAIR gauntlet { Enchantment = 1; }
+    RightBoot = STEEL boot { Enchantment = 1; }
+    PostFix = "templar";
+    KnownCWeaponSkills == LARGE_SWORDS;
+    CWeaponSkillHits == 500;
+    RightSWeaponSkillHits = 300;
+    PanicLevel = 5;
+    TotalVolume = 85000;
+    ClothColor = rgb16(120, 20, 20);
+    CapColor = rgb16(48, 48, 48);
+    GauntletColor = rgb16(50, 50, 50);
+    BootColor = rgb16(128, 128, 128);
+    CanBeGenerated = false;
+    HostileReplies == "@Dd yells: \"Who dares disturb the slumber of the lord Xinroch?\"";
+    AttachedGod = INFUSCOR;
+    UndeadVersions = false;
+  }
+
+  Config GRAVE_KEEPER; /*Tougher than elite*/
+  {
+    AttributeBonus = 25;
+    Helmet = METEORIC_STEEL helmet(FULL_HELMET) { Enchantment = 2; }
+    BodyArmor = METEORIC_STEEL bodyarmor(PLATE_MAIL) { Enchantment = 2; }
+    RightWielded = METEORIC_STEEL METEORIC_STEEL meleeweapon(BASTARD_SWORD) { Enchantment = 2; }
+    RightGauntlet = OMMEL_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = METEORIC_STEEL boot { Enchantment = 2; }
+    Adjective = "Xinroch's";
+    NameSingular = "grave keeper";
+    ArticleMode = NO_ARTICLE;
+    KnownCWeaponSkills == LARGE_SWORDS;
+    CWeaponSkillHits == 1000;
+    RightSWeaponSkillHits = 500;
+    PanicLevel = 5;
+    TotalVolume = 90000;
+    ClothColor = rgb16(80, 20, 20);
+    CapColor = rgb16(48, 48, 48);
+    GauntletColor = rgb16(50, 50, 50);
+    BootColor = rgb16(128, 128, 128);
+    IsUnique = true;
+    CanBeGenerated = false;
+    HostileReplies == "@Dd exclaims: \"None shall pass.\"";
+    AttachedGod = INFUSCOR;
+    UndeadVersions = false;
+  }
+
+  Config MASTER;
+  {
+    AttributeBonus = 50;
+    LegBitmapPos = 0, 96;
+    ClothColor = rgb16(80, 0, 20);
+    EyeColor = rgb16(200, 0, 0);
+    HeadBitmapPos = 96, 112;
+    TorsoBitmapPos = 48, 80;
+    BeltColor = rgb16(180, 0, 0);
+    CapColor = rgb16(160, 160, 160);
+    HairColor = rgb16(180, 0, 32);
+    GauntletColor = rgb16(200, 200, 0);
+    BootColor = rgb16(160, 160, 160);
+    TotalVolume = 120000;
+    Helmet = METEORIC_STEEL helmet(FULL_HELMET) { Enchantment = 4; }
+    Amulet = amulet(AMULET_OF_LIFE_SAVING);
+    BodyArmor = ILLITHIUM bodyarmor(CHAIN_MAIL) { Enchantment = 4; }
+    Cloak = DRAGON_HIDE cloak { Enchantment = 4; }
+    Belt = RUBY belt { Enchantment = 4; }
+    LeftWielded = RUBY RUBY flamingsword(LOST_RUBY_FLAMING_SWORD);
+    LeftRing = ring(RING_OF_TELEPORT_CONTROL);
+    RightGauntlet = ANGEL_HAIR gauntlet { Enchantment = 4; }
+    RightBoot = METEORIC_STEEL boot { Enchantment = 4; }
+    NameSingular = "Old Chaos Flame";
+    KnownCWeaponSkills = { 2, LARGE_SWORDS, KICK; }
+    CWeaponSkillHits = { 2, 5000, 2000; }
+    LeftSWeaponSkillHits = 2000;
+    BaseKickStrength = 2500;
+    PanicLevel = 0;
+    TamingDifficulty = NO_TAMING;
+    IsUnique = true;
+    CanBeWished = true;
+    DefaultName = "Xinroch";
+    DangerModifier = 1800;
+    IsNameable = false;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    HostileReplies == "@Dd yells: \"You have failed me for the last time!\"";
+    DeathMessage = "@Dd dies with a chuckle: \"Don't worry, I'll be right back.\"";
+    CanBeConfused = false;
+    FireResistance = 30;
+    ElectricityResistance = 30;
+    EnergyResistance = 30;
+    IsImmuneToItemTeleport = true;
+    IsExtraFragile = false;
+    AllowUnconsciousness = false;
+    DisplacePriority = 8;
+    UndeadVersions = false;
+    IsImmuneToWhipOfThievery = true;
+    AttachedGod = INFUSCOR;
+    BodyPartsDisappearWhenSevered = true;
+    CanBeGenerated = false;
+    ClassStates = HASTE|GAS_IMMUNITY;
+  }
 }

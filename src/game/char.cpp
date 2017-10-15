@@ -336,12 +336,17 @@ int character::GetRandomApplyBodyPart () const { return TORSO_INDEX; }
 truth character::MustBeRemovedFromBone () const { return IsUnique() && !CanBeGenerated(); }
 truth character::IsPet () const { return GetTeam()->GetID() == PLAYER_TEAM; }
 character* character::GetLeader () const { return GetTeam()->GetLeader(); }
-int character::GetMoveType () const { return (!StateIsActivated(LEVITATION) ? DataBase->MoveType : DataBase->MoveType | FLY); }
 festring character::GetZombieDescription () const { return " of "+GetName(INDEFINITE); }
 truth character::BodyPartCanBeSevered (int I) const { return I; }
 truth character::HasBeenSeen () const { return DataBase->Flags & HAS_BEEN_SEEN; }
 truth character::IsTemporary () const { return GetTorso()->GetLifeExpectancy(); }
 cchar *character::GetNormalDeathMessage () const { return "killed @k"; }
+
+int character::GetMoveType () const {// return (!StateIsActivated(LEVITATION) ? DataBase->MoveType : DataBase->MoveType | FLY); }
+  return
+  ((!StateIsActivated(LEVITATION) ? DataBase->MoveType : DataBase->MoveType|FLY)|
+   (!StateIsActivated(ETHEREAL_MOVING) ? DataBase->MoveType : DataBase->MoveType|ETHEREAL));
+}
 
 
 int characterdatabase::*ExpPtr[ATTRIBUTES] = {
@@ -597,7 +602,7 @@ int character::TakeHit (character *Enemy, item *Weapon, bodypart *EnemyBodyPart,
 
   int WeaponSkillHits = CalculateWeaponSkillHits(Enemy);
   int DoneDamage = ReceiveBodyPartDamage(Enemy, TrueDamage, PHYSICAL_DAMAGE, BodyPart, Dir, false, Critical, true, Type == BITE_ATTACK && Enemy->BiteCapturesBodyPart());
-  truth Succeeded = (GetBodyPart(BodyPart) && HitEffect(Enemy, Weapon, HitPos, Type, BodyPart, Dir, !DoneDamage)) || DoneDamage;
+  truth Succeeded = (GetBodyPart(BodyPart) && HitEffect(Enemy, Weapon, HitPos, Type, BodyPart, Dir, !DoneDamage, Critical, DoneDamage)) || DoneDamage;
   if (Succeeded) Enemy->WeaponSkillHit(Weapon, Type, WeaponSkillHits);
 
   if (Weapon) {
@@ -1354,6 +1359,13 @@ item *character::GeneralFindItem (ItemCheckerCB chk) const {
 }
 
 
+static truth isEncryptedScroll (item *i) { return i->IsEncryptedScroll(); }
+truth character::HasEncryptedScroll () const {
+  if (GeneralFindItem(::isEncryptedScroll)) return true;
+  return combineequipmentpredicates()(this, &item::IsEncryptedScroll, 1);
+}
+
+
 static truth isElpuriHead (item *i) { return i->IsHeadOfElpuri(); }
 truth character::HasHeadOfElpuri () const {
   if (GeneralFindItem(::isElpuriHead)) return true;
@@ -1372,6 +1384,20 @@ static truth isGoldenEagleShirt (item *i) { return i->IsGoldenEagleShirt(); }
 truth character::HasGoldenEagleShirt () const {
   if (GeneralFindItem(::isGoldenEagleShirt)) return true;
   return combineequipmentpredicates()(this, &item::IsGoldenEagleShirt, 1);
+}
+
+
+static truth isShadowVeil (item *i) { return i->IsShadowVeil(); }
+truth character::HasShadowVeil () const {
+  if (GeneralFindItem(::isShadowVeil)) return true;
+  return combineequipmentpredicates()(this, &item::IsShadowVeil, 1);
+}
+
+
+static truth isLostRubyFlamingSword (item *i) { return i->IsLostRubyFlamingSword(); }
+truth character::HasLostRubyFlamingSword () const {
+  if (GeneralFindItem(::isLostRubyFlamingSword)) return true;
+  return combineequipmentpredicates()(this, &item::IsLostRubyFlamingSword, 1);
 }
 
 
@@ -1480,7 +1506,7 @@ int character::GeneralRemoveItem (ItemCheckerCB chk, truth allItems) {
 }
 
 
-static truth isEncryptedScroll (item *i) { return i->IsEncryptedScroll(); }
+//static truth isEncryptedScroll (item *i) { return i->IsEncryptedScroll(); }
 truth character::RemoveEncryptedScroll () { return GeneralRemoveItem(::isEncryptedScroll) != 0; }
 
 
@@ -1490,6 +1516,9 @@ truth character::RemoveMondedrPass () { return GeneralRemoveItem(::isMondedrPass
 
 static truth isRingOfThieves (item *i) { return i->IsRingOfThieves(); }
 truth character::RemoveRingOfThieves () { return GeneralRemoveItem(::isRingOfThieves) != 0; }
+
+
+truth character::RemoveShadowVeil () { return (GeneralRemoveItem(::isShadowVeil) != 0); }
 
 
 truth character::ReadItem (item *ToBeRead) {
@@ -1739,7 +1768,7 @@ void character::HasBeenHitByItem (character *Thrower, item *Thingy, int Damage, 
   int BodyPart = ChooseBodyPartToReceiveHit(ToHitValue, DodgeValue);
   int WeaponSkillHits = Thrower ? CalculateWeaponSkillHits(Thrower) : 0;
   int DoneDamage = ReceiveBodyPartDamage(Thrower, Damage, PHYSICAL_DAMAGE, BodyPart, Direction);
-  truth Succeeded = (GetBodyPart(BodyPart) && HitEffect(Thrower, Thingy, Thingy->GetPos(), THROW_ATTACK, BodyPart, Direction, !DoneDamage)) || DoneDamage;
+  truth Succeeded = (GetBodyPart(BodyPart) && HitEffect(Thrower, Thingy, Thingy->GetPos(), THROW_ATTACK, BodyPart, Direction, !DoneDamage, false, DoneDamage)) || DoneDamage;
   if (Succeeded && Thrower) Thrower->WeaponSkillHit(Thingy, THROW_ATTACK, WeaponSkillHits);
   festring DeathMsg = CONST_S("killed by a flying ")+Thingy->GetName(UNARTICLED);
   if (CheckDeath(DeathMsg, Thrower)) return;
@@ -4556,6 +4585,12 @@ truth character::IsWarm () const {
 }
 
 
+truth character::IsWarmBlooded() const
+{
+  return combinebodypartpredicates()(this, &bodypart::IsWarmBlooded, 1);
+}
+
+
 void character::BeginInvisibility () {
   UpdatePictures();
   SendNewDrawRequest();
@@ -5035,13 +5070,13 @@ truth character::ContentsCanBeSeenBy (ccharacter *Viewer) const {
 
 
 truth character::HitEffect (character *Enemy, item* Weapon, v2 HitPos, int Type, int BodyPartIndex,
-  int Direction, truth BlockedByArmour)
+  int Direction, truth BlockedByArmour, truth Critical, int DoneDamage)
 {
   if (Weapon) return Weapon->HitEffect(this, Enemy, HitPos, BodyPartIndex, Direction, BlockedByArmour);
   switch (Type) {
     case UNARMED_ATTACK: return Enemy->SpecialUnarmedEffect(this, HitPos, BodyPartIndex, Direction, BlockedByArmour);
     case KICK_ATTACK: return Enemy->SpecialKickEffect(this, HitPos, BodyPartIndex, Direction, BlockedByArmour);
-    case BITE_ATTACK: return Enemy->SpecialBiteEffect(this, HitPos, BodyPartIndex, Direction, BlockedByArmour);
+    case BITE_ATTACK: return Enemy->SpecialBiteEffect(this, HitPos, BodyPartIndex, Direction, BlockedByArmour, Critical, DoneDamage);
   }
   return false;
 }

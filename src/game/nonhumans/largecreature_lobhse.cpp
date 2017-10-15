@@ -2,7 +2,7 @@
 CHARACTER(lobhse, largecreature)
 {
  protected:
-  virtual truth SpecialBiteEffect(character*, v2, int, int, truth);
+  virtual truth SpecialBiteEffect(character*, v2, int, int, truth, truth Critical, int DoneDamage);
   virtual void GetAICommand();
   virtual void CreateCorpse(lsquare*);
   virtual truth MustBeRemovedFromBone() const;
@@ -25,7 +25,7 @@ truth lobhse::MustBeRemovedFromBone() const
 
 
 
-truth lobhse::SpecialBiteEffect(character* Char, v2, int, int, truth BlockedByArmour)
+truth lobhse::SpecialBiteEffect(character* Char, v2, int, int, truth BlockedByArmour, truth Critical, int DoneDamage)
 {
   if(!BlockedByArmour)
   {

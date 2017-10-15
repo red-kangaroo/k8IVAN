@@ -1,0 +1,63 @@
+child
+{
+  DefaultArmStrength = 7;
+  DefaultLegStrength = 8;
+  DefaultDexterity = 10;
+  DefaultAgility = 12;
+  DefaultEndurance = 10;
+  DefaultPerception = 14;
+  DefaultIntelligence = 9;
+  DefaultWisdom = 5;
+  DefaultCharisma = 8;
+  DefaultMana = 0;
+  TorsoBitmapPos = 32, 384;
+  ArmBitmapPos = 80, 352;
+  LegBitmapPos = 16, 16;
+  BootColor = rgb16(90, 50, 10);
+  ClothColor = rgb16(200, 200, 200);
+  LegMainColor = rgb16(180, 80, 0);
+  TotalVolume = 40000;
+  TotalSize = 100;
+  Sex = UNDEFINED;
+  AttackStyle = USE_ARMS|USE_LEGS|USE_HEAD;
+  DefaultCommandFlags = FOLLOW_PLAYER|FLEE_FROM_ENEMIES;
+  HostileReplies == "\"Mommy! Daddy! Help!\"";
+  AttachedGod = ATAVUS;
+  IsAbstract = true;
+  IsExtraCoward = true;
+  IsExtraFragile = true;
+  AutomaticallySeen = true;
+  CanRead = false;
+  CanBeGenerated = false;
+
+  Config BOY;
+  {
+    HairColor = rgb16(181, 82, 57);
+    HeadBitmapPos = 112, 335;
+    NameSingular = "boy";
+    Sex = MALE;
+    FriendlyReplies =
+    {
+      3,
+      "\"Do you like snowball fighting?\"",
+      "\"Let's play catch!\"",
+      "\"Eeny, meeny, miny, moe...\"";
+    }
+  }
+
+  Config GIRL;
+  {
+    HairColor = rgb16(80, 48, 32);
+    CapColor = rgb16(80, 48, 32); /* also used for hair */
+    HeadBitmapPos = 96, 335;
+    NameSingular = "girl";
+    Sex = FEMALE;
+    FriendlyReplies =
+    {
+      3,
+      "\"My sister was eaten by a wolf yesterday.\"",
+      "\"I hope I will get a doll of the high priest on Atavus day.\"",
+      "\"Do you want to play make-believe? I will be a princess and you can be my man-servant!\"";
+    }
+  }
+}

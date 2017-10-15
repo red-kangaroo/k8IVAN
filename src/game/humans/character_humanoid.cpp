@@ -156,7 +156,7 @@ public:
   truth HasSadistWeapon () const;
   virtual truth HasSadistAttackMode () const;
   virtual void SurgicallyDetachBodyPart ();
-  virtual truth SpecialBiteEffect (character*, v2, int, int, truth);
+  virtual truth SpecialBiteEffect (character*, v2, int, int, truth, truth Critical, int DoneDamage);
  protected:
   virtual v2 GetBodyPartBitmapPos (int, truth = false) const;
   virtual col16 GetBodyPartColorB (int, truth = false) const;
@@ -1871,16 +1871,37 @@ truth humanoid::HasSadistAttackMode () const {
 }
 
 
-truth humanoid::SpecialBiteEffect (character *Char, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+truth humanoid::SpecialBiteEffect (character *Victim, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour, truth Critical, int DoneDamage) {
   if (StateIsActivated(VAMPIRISM)) {
-    if (!BlockedByArmour && Char->IsWarm() && !(RAND()%2)) {
-      if (Char->IsHumanoid()) Char->BeginTemporaryState(VAMPIRISM, 1000+RAND_N(500)); // Randomly instigate vampirism
-      if (Char->IsPlayer() || IsPlayer() || Char->CanBeSeenByPlayer() || CanBeSeenByPlayer()) {
-        ADD_MESSAGE("%s drains some precious lifeblood from %s!", CHAR_DESCRIPTION(DEFINITE), Char->CHAR_DESCRIPTION(DEFINITE));
+    if (!BlockedByArmour && Victim->IsWarmBlooded() && !(RAND()%2 || Critical) && !Victim->AllowSpoil()) {
+      /*
+      if (Victim->IsHumanoid()) Victim->BeginTemporaryState(VAMPIRISM, 1000+RAND_N(500)); // Randomly instigate vampirism
+      if (Victim->IsPlayer() || IsPlayer() || Victim->CanBeSeenByPlayer() || CanBeSeenByPlayer()) {
+        ADD_MESSAGE("%s drains some precious lifeblood from %s!", CHAR_DESCRIPTION(DEFINITE), Victim->CHAR_DESCRIPTION(DEFINITE));
       }
-      return Char->ReceiveBodyPartDamage(this, 8+(RAND()%9), DRAIN, BodyPartIndex, Direction);
+      return Victim->ReceiveBodyPartDamage(this, 8+(RAND()%9), DRAIN, BodyPartIndex, Direction);
+      */
+      if (IsPlayer())
+        ADD_MESSAGE("You drain some precious lifeblood from %s!", Victim->CHAR_DESCRIPTION(DEFINITE));
+      else if (Victim->IsPlayer() || Victim->CanBeSeenByPlayer() || CanBeSeenByPlayer())
+        ADD_MESSAGE("%s drains some precious lifeblood from %s!", CHAR_DESCRIPTION(DEFINITE), Victim->CHAR_DESCRIPTION(DEFINITE));
+
+      if (Victim->IsHumanoid() && !Victim->StateIsActivated(VAMPIRISM) && !Victim->StateIsActivated(LYCANTHROPY)) {
+        Victim->BeginTemporaryState(VAMPIRISM, 2000 + RAND_N(500));
+      }
+
+      // HP recieved is about half the damage done; against werewolves this is full
+      int DrainDamage = (DoneDamage >> 1) + 1;
+      if (Victim->StateIsActivated(LYCANTHROPY)) DrainDamage = DoneDamage+1;
+
+      // To perpetuate vampirism, simply keep doing drain attacks
+      BeginTemporaryState(VAMPIRISM, 50*DrainDamage);
+      if (IsPlayer()) game::DoEvilDeed(10);
+
+      return Victim->ReceiveBodyPartDamage(this, DrainDamage, DRAIN, BodyPartIndex, Direction);
     }
   }
   return false;
 }
+
 #endif

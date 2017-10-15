@@ -31,6 +31,7 @@ Dungeon MONDEDR;
     MonsterAmountDelta = 5;
     MonsterGenerationIntervalBase = 150;
     MonsterGenerationIntervalDelta = -25;
+    EarthquakesAffectTunnels = false;
 
     RoomDefault
     {

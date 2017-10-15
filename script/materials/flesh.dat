@@ -9,7 +9,7 @@ flesh
   Flexibility = 5;
   SpoilModifier = 10000;
   PriceModifier = 60;
-  BodyFlags = Base|IS_ALIVE|IS_WARM|CAN_HAVE_PARASITE|CAN_REGENERATE&~USE_MATERIAL_ATTRIBUTES;
+  BodyFlags = Base|IS_ALIVE|IS_WARM|IS_WARM_BLOODED|CAN_HAVE_PARASITE|CAN_REGENERATE&~USE_MATERIAL_ATTRIBUTES;
   InteractionFlags = Base|IS_AFFECTED_BY_MUSTARD_GAS;
 
   Config ANGEL_FLESH;
@@ -37,7 +37,7 @@ flesh
     SpoilModifier = 20000;
     PriceModifier = 8000;
     AttachedGod = SEGES;
-    BodyFlags = Base&~CAN_HAVE_PARASITE;
+    BodyFlags = Base&~CAN_HAVE_PARASITE&~IS_WARM_BLOODED;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -51,7 +51,7 @@ flesh
     ConsumeEndMessage = CEM_BLACK_UNICORN_FLESH;
     ConsumeWisdomLimit = 10;
     CommonFlags = Base|IS_VALUABLE;
-    BodyFlags = Base&~IS_WARM;
+    BodyFlags = Base&~IS_WARM&~IS_WARM_BLOODED;
   }
 
   Config BLINK_DOG_FLESH;
@@ -82,6 +82,7 @@ flesh
     PriceModifier = 50;
     ConsumeWisdomLimit = 7;
     AttachedGod = SCABIES;
+    BodyFlags = Base&~IS_WARM_BLOODED;
   }
 
   Config DAEMON_FLESH;
@@ -135,7 +136,7 @@ flesh
     Color = rgb16(60, 60, 60);
     AttachedGod = MORTIFER;
     NameFlags = Base|USE_AN;
-    BodyFlags = Base&~IS_WARM;
+    BodyFlags = Base&~IS_WARM&~IS_WARM_BLOODED;
     InteractionFlags = Base&~CAN_DISSOLVE;
   }
 
@@ -158,6 +159,7 @@ flesh
     PriceModifier = 120;
     CommonFlags = Base|IS_VALUABLE;
     InteractionFlags = Base|EFFECT_IS_GOOD;
+    BodyFlags = Base&~IS_WARM_BLOODED;
   }
 
   Config FOX_FLESH;
@@ -174,6 +176,7 @@ flesh
     HitMessage = HM_FROG_FLESH;
     NameStem = "frog flesh";
     AttachedGod = MORTIFER;
+    BodyFlags = Base&~IS_WARM_BLOODED;
     InteractionFlags = Base&~CAN_DISSOLVE;
   }
 
@@ -181,6 +184,7 @@ flesh
   {
     NameStem = "gibberling flesh";
     AttachedGod = MORTIFER;
+    BodyFlags = Base&~IS_WARM_BLOODED;
   }
 
   Config GOBLINOID_FLESH;
@@ -190,6 +194,7 @@ flesh
     NutritionValue = 15;
     PriceModifier = 40;
     AttachedGod = MORTIFER;
+    BodyFlags = Base&~IS_WARM_BLOODED;
   }
 
   Config GRAY_UNICORN_FLESH;
@@ -207,6 +212,7 @@ flesh
   {
     NameStem = "hattifattener flesh";
     AttachedGod = MORTIFER;
+    BodyFlags = Base&~IS_WARM_BLOODED;
   }
 
   Config HEDGEHOG_FLESH;
@@ -244,6 +250,7 @@ flesh
     HitMessage = HM_KOBOLD_FLESH;
     PriceModifier = 0;
     AttachedGod = MORTIFER;
+    BodyFlags = Base&~IS_WARM_BLOODED;
   }
 
   Config LION_FLESH;
@@ -261,7 +268,7 @@ flesh
     AttachedGod = NEFAS;
     EffectStrength = 20;
     PriceModifier = 150;
-    BodyFlags = Base&~IS_WARM;
+    BodyFlags = Base&~IS_WARM&~IS_WARM_BLOODED;
   }
 
   Config MAGPIE_FLESH;
@@ -280,6 +287,7 @@ flesh
   {
     NameStem = "sick spider flesh";
     AttachedGod = SCABIES;
+    BodyFlags = Base&~IS_WARM_BLOODED;
   }
 
   Config MOOSE_FLESH;
@@ -366,7 +374,7 @@ flesh
     SpoilModifier = 20000;
     PriceModifier = 8000;
     AttachedGod = SEGES;
-    BodyFlags = Base&~CAN_HAVE_PARASITE;
+    BodyFlags = Base&~CAN_HAVE_PARASITE&~IS_WARM_BLOODED;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
   }
 
@@ -380,6 +388,7 @@ flesh
   {
     NameStem = "sick spider flesh";
     AttachedGod = SCABIES;
+    BodyFlags = Base&~IS_WARM_BLOODED;
   }
 
   Config SKUNK_FLESH;
@@ -398,6 +407,7 @@ flesh
     EffectStrength = 15;
     ConsumeWisdomLimit = 3;
     AttachedGod = MORTIFER;
+    BodyFlags = Base&~IS_WARM_BLOODED;
   }
 
   Config SPIDER_FLESH;
@@ -407,6 +417,7 @@ flesh
     Effect = EFFECT_POISON;
     EffectStrength = 100;
     ConsumeWisdomLimit = 3;
+    BodyFlags = Base&~IS_WARM_BLOODED;
   }
 
   Config THUNDER_BIRD_FLESH;
@@ -454,5 +465,15 @@ flesh
   {
     NameStem = "wolf flesh";
     AttachedGod = MORTIFER;
+  }
+
+  Config ELF_FLESH;
+  {
+    NameStem = "elven flesh";
+    AttachedGod = MORTIFER;
+    Effect = EFFECT_CONFUSE; /* elven flesh is sweet and addictive */
+    ConsumeWisdomLimit = 15;
+    EffectStrength = 20;
+    InteractionFlags = Base|CAN_BURN;
   }
 }

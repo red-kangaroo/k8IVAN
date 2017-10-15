@@ -313,6 +313,7 @@ public:
   void ThrowItem (int, item *);
   truth TryMove (v2, truth, truth);
   truth TryToAddToInventory (item *);
+  truth HasEncryptedScroll () const;
   truth HasHeadOfElpuri () const;
   truth HasGoldenEagleShirt () const;
   truth HasPetrussNut () const;
@@ -323,6 +324,9 @@ public:
   truth RemoveEncryptedScroll ();
   truth RemoveMondedrPass ();
   truth RemoveRingOfThieves ();
+  truth RemoveShadowVeil();
+  truth HasShadowVeil() const;
+  truth HasLostRubyFlamingSword() const;
   truth IsPlayer () const { return Flags & C_PLAYER; }
   truth Engrave (cfestring &What);
   void AddScoreEntry (cfestring &, double = 1.0, truth = true) const;
@@ -724,6 +728,7 @@ public:
   void PrintBeginPoisonedMessage () const;
   void PrintEndPoisonedMessage () const;
   truth IsWarm () const;
+  truth IsWarmBlooded() const;
   void CalculateEquipmentState ();
   void Draw (blitdata &) const;
   virtual void DrawBodyParts (blitdata &) const;
@@ -805,8 +810,8 @@ public:
   virtual void CreateBlockPossibilityVector (blockvector &, double) const {}
   virtual truth SpecialUnarmedEffect (character *, v2, int, int, truth) { return false; }
   virtual truth SpecialKickEffect (character *, v2, int, int, truth) { return false; }
-  virtual truth SpecialBiteEffect (character *, v2, int, int, truth) { return false; }
-  truth HitEffect (character *, item *, v2, int, int, int, truth);
+  virtual truth SpecialBiteEffect (character* Victim, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour, truth Critical, int DoneDamage) { return false; }
+  truth HitEffect (character *, item *, v2, int, int, int, truth, truth Critical, int DoneDamage);
   void WeaponSkillHit (item *, int, int);
   character *Duplicate (feuLong = 0);
   room *GetRoom (int I=0) const { return GetLSquareUnder(I)->GetRoom(); }

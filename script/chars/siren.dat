@@ -24,6 +24,7 @@ siren
   CanRead = true;
   NameSingular = "siren";
   AttachedGod = DULCIS;
+  FleshMaterial = ELF_FLESH;
   FriendlyReplies == "\"I'm singing in the rain... Oh wait...\"";
 
   /* if somebody really wants to J_Kahvi has provided
@@ -66,5 +67,71 @@ siren
     HairColor = rgb16(80, 48, 32);
     TorsoMainColor = rgb16(70, 40, 25);
     NameSingular = "test1";
+  }
+
+  Config BLUE_SIREN;
+  {
+    SkinColor = rgb16(153, 204, 255);
+    HairColor = rgb16(51, 51, 255);
+    TorsoMainColor = rgb16(153, 204, 255);
+  }
+
+  Config RED_SIREN;
+  {
+    SkinColor = rgb16(255, 51, 51);
+    HairColor = rgb16(255, 255, 255);
+    TorsoMainColor = rgb16(255, 51, 51);
+  }
+
+  Config PINK_SIREN;
+  {
+    SkinColor = rgb16(240, 200, 201);
+    HairColor = rgb16(255, 51, 153);
+    TorsoMainColor = rgb16(240, 200, 201);
+  }
+
+  Config HISPANIC_SIREN;
+  {
+    SkinColor = rgb16(160, 100, 64);
+    HairColor = rgb16(80, 48, 32);
+    TorsoMainColor = rgb16(160, 100, 64);
+  }
+
+  Config AMBASSADOR_SIREN;
+  {
+    DefaultIntelligence = 30;
+    DefaultWisdom = 35;
+    DefaultCharisma = 75;
+    HeadBitmapPos = 112, 400;
+    SkinColor = rgb16(180, 255, 150);
+    HairColor = rgb16(200, 48, 32);
+    TorsoMainColor = rgb16(180, 255, 150);
+    CanBeGenerated = false;
+    IsNameable = false;
+    IsUnique = true;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    TamingDifficulty = 20;
+    DefaultName = "Elianise";
+    NameSingular = "elven ambassador";
+    PostFix = "of the Dark Forest";
+    Cloak = NYMPH_HAIR cloak { Enchantment = 4; }
+    /* RightWielded = charmlyre; */
+    FriendlyReplies =
+    {
+      7,
+      "\"Greetings! I am Elianise Lurora Faefina Glynjor Ilythyrra Reysatra Liarryn, Her Most Trusted Advisor and Ambassador of the Fair Empress of Elvenkind.\"",
+      "\"I was sent from Lunethia to here on a diplomatic mission from my Empress. I hope my stay will be short.\"",
+      "\"Yes, the rumors are true. Lunethia really is a town built atop a gigantic mango tree.\"",
+      "\"I'm not 'an elf', I come from the royal blood of Vindael, or wood-children, if you will.\"",
+      "\"I've heard a mistress of Nefas has infiltrated even this very Cathedral. Do not trust Dar'Vindael, for their words and deeds are just as treacherous as their goddess!\"",
+      "\"I never understood why are your people calling mine 'dark elves'. We may be living in the Dark Forest, but we give our lives to fight Darkness in all its forms.\"",
+      "\"The violation of our borders must end! We don't care where Attnam gets its wood, but the Dark Forest will not be exploited.\"";
+    }
+    IsExtraCoward = true;
+    UndeadVersions = false;
+    ScienceTalkPossibility = 15;
+    ScienceTalkCharismaModifier = 20;
+    StandVerb = "waiting";
   }
 }

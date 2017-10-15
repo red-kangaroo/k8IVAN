@@ -235,4 +235,283 @@ decoration
     BitmapPos = 32, 336;
     HPModifier = 25;
   }
+
+
+  Config ARM_CHAIR;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You destroy the armchair.";
+    MainMaterialConfig == CLOTH;
+    ShowMaterial = false;
+    MaterialColorB = rgb16(140, 96, 48);
+    SitMessage = "You sit on the comfortable armchair.";
+    RestMessage = "You relax well on the comfortable armchair.";
+    NameSingular = "armchair";
+    UsesLongArticle = true;
+    RestModifier = 3;
+    BitmapPos = 0, 416;
+    HPModifier = 25;
+    LeftOverItems == 0;
+  }
+
+  Config BANANA_TREE;
+  {
+    OKVisualEffects = MIRROR;
+    CanBeDestroyed = true;
+    DigMessage = "You chop the tree down.";
+    MainMaterialConfig == BALSA_WOOD;
+    ShowMaterial = false;
+    MaterialColorB = rgb16(32, 80, 32);
+    NameSingular = "palm";
+    BitmapPos = 16, 368;
+    HPModifier = 25;
+    /* IsAlwaysTransparent = false; */
+    LeftOverItems == banana { Times = 0:1; }
+  }
+
+  Config BENCH;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You destroy the bench.";
+    MainMaterialConfig == FIR_WOOD;
+    SitMessage = "You sit on the bench.";
+    RestMessage = "You relax on the bench.";
+    NameSingular = "bench";
+    RestModifier = 2;
+    BitmapPos = 48, 224;
+    HPModifier = 25;
+  }
+
+  Config CHAIR;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You destroy the chair.";
+    MainMaterialConfig == FIR_WOOD;
+    SitMessage = "You sit on the chair.";
+    RestMessage = "You relax on the chair.";
+    NameSingular = "chair";
+    RestModifier = 2;
+    BitmapPos = 80, 288;
+    HPModifier = 25;
+  }
+
+  Config CHEAP_BED;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You smash the bed into pieces.";
+    MainMaterialConfig == CLOTH;
+    Adjective = "cheap";
+    NameSingular = "bed";
+    BitmapPos = 0, 352;
+    MaterialColorB = rgb16(160, 108, 50);
+    ShowMaterial = false;
+    RestModifier = 2;
+    SitMessage = "You lay down on the bed.";
+    RestMessage = "You rest well on the bed.";
+    HPModifier = 25;
+    LeftOverItems == 0;
+  }
+
+  Config DEAD_TREE;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You mercifully chop the tree down.";
+    MainMaterialConfig == FIR_WOOD;
+    ShowMaterial = false;
+    NameSingular = "dead tree";
+    BitmapPos = 64, 336;
+    HPModifier = 10;
+  }
+
+  Config DESK;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You break the writing desk.";
+    MainMaterialConfig == FIR_WOOD;
+    MaterialColorB = rgb16(210, 210, 210);
+    MaterialColorC = rgb16(100, 50, 30);
+    SitMessage = "You sit on the desk.";
+    RestMessage = "You take a nap on the desk.";
+    NameSingular = "writing desk";
+    BitmapPos = 48, 48;
+    HPModifier = 25;
+  }
+
+  Config EXPENSIVE_BED;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You smash the bed into pieces.";
+    MainMaterialConfig == FABRIC;
+    Adjective = "luxurious";
+    NameSingular = "bed";
+    BitmapPos = 0, 336;
+    MaterialColorB = rgb16(200, 200, 0);
+    ShowMaterial = false;
+    RestModifier = 4;
+    SitMessage = "You lay down on the soft and comfortable bed.";
+    RestMessage = "You rest very well on the comfortable bed.";
+    HPModifier = 25;
+    LeftOverItems == 0;
+  }
+
+  Config FORGE;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You break the forge.";
+    MainMaterialConfig == BASALT;
+    MaterialColorB = rgb16(96, 96, 96);
+    MaterialColorC = rgb16(220, 220, 0);
+    MaterialColorD = rgb16(160, 0, 0);
+    ShowMaterial = false;
+    Walkability = ETHEREAL;
+    NameSingular = "forge";
+    BitmapPos = 16, 16;
+    LeftOverItems == 0;
+  }
+
+  Config FURNACE;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You break the furnace.";
+    MainMaterialConfig == BASALT;
+    MaterialColorB = rgb16(96, 96, 96);
+    MaterialColorC = rgb16(220, 220, 0);
+    MaterialColorD = rgb16(160, 0, 0);
+    ShowMaterial = false;
+    Walkability = ETHEREAL;
+    NameSingular = "furnace";
+    BitmapPos = 32, 16;
+    LeftOverItems == 0;
+  }
+
+  Config OVEN;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You break the oven.";
+    MainMaterialConfig == COPPER;
+    MaterialColorB = rgb16(96, 96, 96);
+    MaterialColorC = rgb16(220, 220, 0);
+    MaterialColorD = rgb16(160, 0, 0);
+    ShowMaterial = false;
+    Walkability = ETHEREAL;
+    NameSingular = "oven";
+    UsesLongArticle = true;
+    BitmapPos = 80, 32;
+    LeftOverItems == 0;
+  }
+
+  Config PEDESTAL;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You shatter the pedestal.";
+    MainMaterialConfig == MARBLE;
+    SitMessage = "The pedestal is hard and cold, and not very comfortable to sit on.";
+    RestMessage = "You feel sore after resting on the cold pedestal.";
+    NameSingular = "pedestal";
+    BitmapPos = 0, 0;
+  }
+
+  Config PLAIN_BED;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You smash the bed into pieces.";
+    MainMaterialConfig == CLOTH;
+    NameSingular = "bed";
+    BitmapPos = 0, 336;
+    MaterialColorB = rgb16(140, 96, 48);
+    ShowMaterial = false;
+    RestModifier = 3;
+    SitMessage = "You lay down on the bed.";
+    RestMessage = "You rest well on the bed.";
+    HPModifier = 25;
+    LeftOverItems == 0;
+  }
+
+  Config SHACKLES;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You break the shackles.";
+    MainMaterialConfig == IRON;
+    NameSingular = "shackles";
+    BitmapPos = 112, 288;
+    HPModifier = 25;
+  }
+
+  Config STRANGE_TREE;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You chop the strange tree down.";
+    MainMaterialConfig == BONE;
+    ShowMaterial = true;
+    Adjective = "strange";
+    NameSingular = "tree";
+    BitmapPos = 80, 352;
+  }
+
+  Config TABLE;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You break the table.";
+    MainMaterialConfig == FIR_WOOD;
+    SitMessage = "You sit on the table.";
+    RestMessage = "You take a nap on the table.";
+    NameSingular = "table";
+    BitmapPos = 48, 240;
+    HPModifier = 25;
+  }
+
+  Config TORTURE_RACK;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You break the torture rack.";
+    MainMaterialConfig == LEATHER;
+    MaterialColorB = rgb16(96, 96, 96);
+    MaterialColorC = rgb16(100, 50, 30);
+    ShowMaterial = false;
+    RestMessage = "As long as you're not strapped here, it's nice to rest on the torture rack.";
+    NameSingular = "torture rack";
+    BitmapPos = 80, 64;
+    HPModifier = 25;
+  }
+
+  Config WELL;
+  {
+    CanBeDestroyed = false;
+    DigMessage = "You stop digging as you nearly fall in the well.";
+    MainMaterialConfig == GRANITE;
+    MaterialColorB = rgb16(140, 96, 48);
+    MaterialColorC = rgb16(100, 50, 30);
+    ShowMaterial = false;
+    SitMessage = "You sit beside the well.";
+    NameSingular = "well";
+    BitmapPos = 64, 240;
+  }
+
+  Config WOODEN_HORSE;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You break the wooden horse.";
+    MainMaterialConfig == FIR_WOOD;
+    MaterialColorB = rgb16(96, 96, 96);
+    MaterialColorC = rgb16(100, 50, 30);
+    ShowMaterial = false;
+    SitMessage = "Ouch! What did you think? It's painful to sit on the wooden horse.";
+    NameSingular = "wooden horse";
+    BitmapPos = 16, 48;
+    HPModifier = 25;
+  }
+
+  Config WORK_BENCH;
+  {
+    CanBeDestroyed = true;
+    DigMessage = "You break the workbench.";
+    MainMaterialConfig == FIR_WOOD;
+    MaterialColorB = rgb16(96, 96, 96);
+    MaterialColorC = rgb16(124, 50, 16);
+    SitMessage = "You sit on the workbench.";
+    RestMessage = "You take a nap on the workbench.";
+    NameSingular = "workbench";
+    BitmapPos = 32, 224;
+    HPModifier = 25;
+  }
 }

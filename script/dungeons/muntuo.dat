@@ -24,6 +24,7 @@ Dungeon MUNTUO;
     EnchantmentPlusChanceBase = 0;
     EnchantmentPlusChanceDelta = 0;
     BackGroundType = GREEN_FRACTAL;
+    EarthquakesAffectTunnels = false;
 
     RoomDefault
     {

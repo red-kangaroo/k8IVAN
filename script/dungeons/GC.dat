@@ -33,6 +33,7 @@ Dungeon ELPURI_CAVE;
     EnchantmentPlusChanceDelta = 5;
     BackGroundType = GRAY_FRACTAL;
     IsCatacomb = false;
+    EarthquakesAffectTunnels = true;
 
     Square, Random NOT_WALKABLE|NOT_IN_ROOM;
     {
@@ -454,6 +455,7 @@ Dungeon ELPURI_CAVE;
     MonsterAmountBase = 20;
     LOSModifier = 24;
     FillSquare = FLINT solidterrain(GROUND), GNEISS earth;
+    EarthquakesAffectTunnels = false;
 
     Room
     {

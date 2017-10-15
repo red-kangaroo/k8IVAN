@@ -66,6 +66,7 @@
   HICCUPS,
   VAMPIRISM,
   DETECTING,
+  ETHEREAL_MOVING,
 };
 
 
@@ -535,6 +536,7 @@
   MOUSE_FLESH,
   FOX_FLESH,
   THUNDER_BIRD_FLESH,
+  ELF_FLESH,
 };
 
 
@@ -544,6 +546,7 @@
   GUN_POWDER,
   SNOW,
   SAND,
+  ASH,
 };
 
 
@@ -634,6 +637,7 @@
   KNUCKLE,
   RAPIER,
   GREAT_AXE,
+  GRAND_STOLLEN_KNIFE,
 };
 
 
@@ -688,7 +692,11 @@
   CLOAK_OF_ELECTRICITY_RESISTANCE,
   CLOAK_OF_ACID_RESISTANCE,
   CLOAK_OF_WERE_WOLF_FUR,
+  CLOAK_OF_SHADOWS,
 };
+
+
+#define LOST_RUBY_FLAMING_SWORD 2
 
 
 #enum {
@@ -760,6 +768,12 @@
 
 
 #enum {
+  IMPRISONED_FARMER = 1,
+  CULTIST,
+};
+
+
+#enum {
   ROOKIE = 1,
   VETERAN,
   EUNUCH,
@@ -772,7 +786,17 @@
   DWARVEN_GUARD,
   SENTINEL,
   FOREST_SHOP,
+  TOMB_ENTRY,
+  TOMB_ENTRY_MASTER,
+  HONOR,
+  EMISSARY,
+  TRAINEE
 };
+// same as PATROL
+#define TEMPLAR 4
+// same as SHOP
+#define GRAVE_KEEPER 5
+
 #define ENQUIOX 128
 
 
@@ -816,16 +840,31 @@
 
 
 #enum {
+  IMPRISONED_HUNTER = 1,
+};
+
+
+#enum {
   BLACK_BEAR = 1,
   GRIZZLY_BEAR,
   CAVE_BEAR,
   POLAR_BEAR,
   PANDA_BEAR,
+  MUTANT_BEAR,
+};
+
+
+#enum {
+  IMPRISONED_FEMALE = 1,
+  /* 2 reserved for ATTNAM */
+  /* 3 reserved for NEW_ATTNAM */
+  JESTER = 4,
 };
 
 
 #enum {
   ZOMBIE_OF_KHAZ_ZADM = 1,
+  IMPRISONED_ZOMBIE,
 };
 
 
@@ -863,6 +902,13 @@
   OFFICER,
   GENERAL,
   MARSHAL,
+  REPRESENTATIVE,
+};
+
+
+#enum {
+  MASTER_TORTURER = 1,
+  HOARD_MASTER,
 };
 
 
@@ -918,6 +964,7 @@
 #enum {
   APPRENTICE_NECROMANCER = 1,
   MASTER_NECROMANCER,
+  IMPRISONED_NECROMANCER = 9,
 };
 
 
@@ -929,17 +976,34 @@
 
 
 #enum {
+  BOY = 1,
+  GIRL,
+};
+
+
+#enum {
   LIGHT_ASIAN_SIREN = 1,
   DARK_ASIAN_SIREN,
   CAUCASIAN_SIREN,
   DARK_SIREN,
   GREEN_SIREN,
+  // more
+  BLUE_SIREN,
+  RED_SIREN,
+  PINK_SIREN,
+  HISPANIC_SIREN,
+  AMBASSADOR_SIREN,
 };
 
 
 #enum {
   HATCHLING = 1,
   BOIL
+};
+
+
+#enum {
+  LAW_STUDENT = 1,
 };
 
 
@@ -993,22 +1057,45 @@
   BIRCH,
   TEAK,
   DWARF_BIRCH,
+
+  ARM_CHAIR,
+  BANANA_TREE,
+  BENCH,
+  CHAIR,
+  CHEAP_BED,
+  DEAD_TREE,
+  DESK,
+  EXPENSIVE_BED,
+  FORGE,
+  FURNACE,
+  OVEN,
+  PEDESTAL,
+  PLAIN_BED,
+  SHACKLES,
+  STRANGE_TREE,
+  TABLE,
+  TORTURE_RACK,
+  WELL,
+  WOODEN_HORSE,
+  WORK_BENCH,
 };
 
 
 #define SNOW_BOULDER  4
 
-#define STAIRS_UP           100
-#define STAIRS_DOWN         200
-#define OREE_LAIR_ENTRY     300
-#define OREE_LAIR_EXIT      400
-#define SUMO_ARENA_ENTRY    700
-#define SUMO_ARENA_EXIT     800
-#define KHARAZ_ARAD_ENTRY   900
-#define KHARAZ_ARAD_EXIT   1000
-#define WAYPOINT_DEEPER    1100
-#define WAYPOINT_SHALLOWER 1200
-#define FOUNTAIN           65535
+#define STAIRS_UP              100
+#define STAIRS_DOWN            200
+#define OREE_LAIR_ENTRY        300
+#define OREE_LAIR_EXIT         400
+#define SUMO_ARENA_ENTRY       700
+#define SUMO_ARENA_EXIT        800
+#define KHARAZ_ARAD_ENTRY      900
+#define KHARAZ_ARAD_EXIT      1000
+#define WAYPOINT_DEEPER       1100
+#define WAYPOINT_SHALLOWER    1200
+#define XINROCH_TOMB_ENTRANCE 1300
+#define XINROCH_TOMB_EXIT     1400
+#define FOUNTAIN             65535
 
 
 #enum {
@@ -1054,6 +1141,10 @@
   FORESTMAN_TEAM,
   SOLICITUS_TEAM,
   MORBE_TEAM,
+  XINROCH_TOMB_ENTRY_TEAM,
+  XINROCH_TOMB_NECRO_TEAM,
+  XINROCH_TOMB_KAMIKAZE_DWARF_TEAM,
+  PRISONER_TEAM,
 };
 
 
@@ -1096,6 +1187,10 @@
 #define OREE_LAIR 14
 #define KHARAZ_ARAD 15
 #define PLANT_LEVEL 16
+/* Tomb Of Xinroch */
+#define DUAL_ENNER_BEAST_LEVEL 5
+#define NECRO_CHAMBER_LEVEL 6
+
 /* old:
 #define IVAN_LEVEL 7
 #define DARK_LEVEL 8
@@ -1104,6 +1199,7 @@
 
 #define RECTANGLE 1
 #define ROUND_CORNERS 2
+#define MAZE_ROOM 3
 
 #enum {
   VALPURUS = 1,
@@ -1287,6 +1383,7 @@
 #define CAN_HAVE_PARASITE 4
 #define USE_MATERIAL_ATTRIBUTES 8
 #define CAN_REGENERATE 16
+#define IS_WARM_BLOODED 32
 
 /* InteractionFlags */
 #define CAN_BURN 1

@@ -335,6 +335,8 @@ public:
   static void UpdateTrapID(entity*, feuLong);
   static int GetStoryState() { return StoryState; }
   static void SetStoryState(int What) { StoryState = What; }
+  static int GetXinrochTombStoryState() { return XinrochTombStoryState; }
+  static void SetXinrochTombStoryState(int What) { XinrochTombStoryState = What; }
   static int GetMondedrPass () { return MondedrPass; }
   static void SetMondedrPass (int What) { MondedrPass = What; }
   static int GetRingOfThieves () { return RingOfThieves; }
@@ -548,6 +550,7 @@ private:
   static int Teams;
   static int Dungeons;
   static int StoryState;
+  static int XinrochTombStoryState;
   static int MondedrPass;
   static int RingOfThieves;
   static int Masamune;

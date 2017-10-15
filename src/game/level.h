@@ -143,6 +143,19 @@ Range(Range),
 SpecialParameters(SpecialParameters)
 { }
 
+struct maze {
+  maze (int x, int y) : MazeXSize(x+2), MazeYSize(y+2) { MazeVector.resize(MazeXSize*MazeYSize); }
+  void CreateMaze ();
+  void InitializeMaze ();
+  std::vector<truth> MazeKernel; // returns only the mazey bit in the middle (the kernel), without the exterior walls. The kernel size is the input size of maze - 2 for each dimension.
+  void CarveMaze (int, int); // Carves the maze
+  void StripMazeHusk (); // Removes the husk (skin and shell), and populates MazeKernel with the kernel.
+  const uint MazeXSize; // XSize of the MazeVector
+  const uint MazeYSize; // YSize of the MazeVector
+ private:
+  std::vector<truth> MazeVector; // Consists of the outer buffer (empty, called the skin) and the shell wall (next layer in, all full). Together they comprise the husk.
+};
+
 class level : public area
 {
  public:
@@ -172,6 +185,7 @@ class level : public area
   void SetLevelMessage(cfestring& What) { LevelMessage = What; }
   void SetLevelScript(const levelscript* What) { LevelScript = What; }
   truth IsOnGround() const;
+  truth EarthquakesAffectTunnels() const;
   const levelscript* GetLevelScript() const { return LevelScript; }
   int GetLOSModifier() const;
   room* GetRoom(int) const;

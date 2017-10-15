@@ -25,6 +25,7 @@ Dungeon DRAGON_TOWER;
     EnchantmentPlusChanceBase = 0;
     EnchantmentPlusChanceDelta = 0;
     BackGroundType = GREEN_FRACTAL;
+    EarthquakesAffectTunnels = false;
 
     RoomDefault
     {

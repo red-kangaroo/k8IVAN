@@ -54,6 +54,7 @@
 #include "items/scroll_scrollofenchantweapon.cpp"
 #include "items/scroll_scrollofenchantarmor.cpp"
 #include "items/item_skull.cpp"
+#include "items/item_skullofxinroch.cpp"
 #include "items/scroll_scrollofrepair.cpp"
 #include "items/scroll_encryptedscroll.cpp"
 #include "items/scroll_mondedrpass.cpp"

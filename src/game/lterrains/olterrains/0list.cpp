@@ -16,3 +16,4 @@
 #include "lterrains/olterrains/olterraincontainer_coffin.cpp"
 #include "lterrains/olterrains/olterrain_barwall.cpp"
 #include "lterrains/olterrains/olterrain_ironmaiden.cpp"
+#include "lterrains/olterrains/olterrain_christmastree.cpp"

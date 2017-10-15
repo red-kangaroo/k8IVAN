@@ -7,7 +7,7 @@ protected:
   virtual cchar *ThirdPersonBiteVerb () const;
   virtual cchar *ThirdPersonCriticalBiteVerb () const;
   virtual int GetSpecialBodyPartFlags (int) const;
-  virtual truth SpecialBiteEffect (character *, v2, int, int, truth);
+  virtual truth SpecialBiteEffect (character *, v2, int, int, truth, truth Critical, int DoneDamage);
 };
 
 
@@ -21,7 +21,7 @@ cchar *thunderbird::ThirdPersonCriticalBiteVerb () const { return "critically pe
 int thunderbird::GetSpecialBodyPartFlags (int) const { return ST_LIGHTNING; }
 
 
-truth thunderbird::SpecialBiteEffect (character *Enemy, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+truth thunderbird::SpecialBiteEffect (character *Enemy, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour, truth Critical, int DoneDamage) {
   if (Enemy->IsEnabled() && (RAND()&1)) {
     if (Enemy->CanBeSeenByPlayer() && IsPlayer()) {
       ADD_MESSAGE("Your beak emits a thunderous peal directed at %s.", Enemy->CHAR_DESCRIPTION(DEFINITE));

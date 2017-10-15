@@ -72,11 +72,11 @@ void morbe::BeTalkedTo () {
       */
       GetArea()->SendNewDrawRequest();
       game::SetOmmelBloodMission(2);
-      ADD_MESSAGE("Morbe hands you a map revealing the location of the tomb. \"There are untold riches in the Tomb of Xinroch, but beware, his many minions protect him and will kill all who attempt to enter that place!\"");
-      //
-      maptotombofxinroch *MapToTombOfXinroch = maptotombofxinroch::Spawn();
-      //
-      MapToTombOfXinroch->MoveTo(PLAYER->GetStack());
+      if (!game::GetXinrochTombStoryState()) {
+        ADD_MESSAGE("Morbe hands you a map revealing the location of the tomb. \"There are untold riches in the Tomb of Xinroch, but beware, his many minions protect him and will kill all who attempt to enter that place!\"");
+        maptotombofxinroch *MapToTombOfXinroch = maptotombofxinroch::Spawn();
+        MapToTombOfXinroch->MoveTo(PLAYER->GetStack());
+      }
       return;
     }
   }

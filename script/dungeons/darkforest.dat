@@ -31,6 +31,7 @@ Dungeon DARK_FOREST;
     BackGroundType = GREEN_FRACTAL;
     AutoReveal = false;
     IsCatacomb = false;
+    EarthquakesAffectTunnels = false;
 
     RoomDefault
     {

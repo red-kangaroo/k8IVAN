@@ -5,4 +5,7 @@ on game_start /* char: player */
     @money = 66666;
     AddMessage "debug mode: money set to ", @money;
   endif
+  //AddItem "maptotombofxinroch";
+  //AddMessage "You got Map to the tomb of Xinroch";
+  //ActivateTombOfXinroch;
 }

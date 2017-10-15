@@ -254,46 +254,35 @@ character *protosystem::CreateMonster (int MinDanger, int MaxDanger, int Special
   std::vector<configid> Possible;
   character* Monster = 0;
 
-  for(int c = 0; !Monster; ++c)
-  {
-    for(int Type = 1; Type < protocontainer<character>::GetSize(); ++Type)
-    {
+  for (int c = 0; !Monster; ++c) {
+    for (int Type = 1; Type < protocontainer<character>::GetSize(); ++Type) {
       const character::prototype* Proto = protocontainer<character>::GetProto(Type);
       const character::database*const* ConfigData = Proto->GetConfigData();
       int ConfigSize = Proto->GetConfigSize();
 
-      for(int c = 0; c < ConfigSize; ++c)
-      {
-  const character::database* DataBase = ConfigData[c];
+      for (int c = 0; c < ConfigSize; ++c) {
+        const character::database* DataBase = ConfigData[c];
 
-  if(!DataBase->IsAbstract
-     && DataBase->CanBeGenerated
-     && DataBase->CanBeWished
-     && !DataBase->IsUnique
-     && (DataBase->Frequency == 10000
-         || DataBase->Frequency > RAND_GOOD(10000)))
-  {
-    configid ConfigID(Type, DataBase->Config);
+        if (!DataBase->IsAbstract && DataBase->CanBeGenerated && DataBase->CanBeWished && !DataBase->IsUnique &&
+            (DataBase->Frequency == 10000 || DataBase->Frequency > RAND_GOOD(10000)))
+        {
+          configid ConfigID(Type, DataBase->Config);
 
-    if((MinDanger > 0 || MaxDanger < 1000000) && c < 25)
-    {
-      const dangerid& DangerID = game::GetDangerMap().find(ConfigID)->second;
-      double RawDanger = SpecialFlags & NO_EQUIPMENT ? DangerID.NakedDanger : DangerID.EquippedDanger;
-      int Danger = int(DataBase->DangerModifier == 100 ? RawDanger * 1000 : RawDanger * 100000 / DataBase->DangerModifier);
+          if ((MinDanger > 0 || MaxDanger < 1000000) && c < 25) {
+            const dangerid& DangerID = game::GetDangerMap().find(ConfigID)->second;
+            double RawDanger = SpecialFlags & NO_EQUIPMENT ? DangerID.NakedDanger : DangerID.EquippedDanger;
+            int Danger = int(DataBase->DangerModifier == 100 ? RawDanger * 1000 : RawDanger * 100000 / DataBase->DangerModifier);
+            if (Danger < MinDanger || Danger > MaxDanger) continue;
+          }
 
-      if(Danger < MinDanger || Danger > MaxDanger)
-        continue;
-    }
-
-    Possible.push_back(ConfigID);
-  }
+          Possible.push_back(ConfigID);
+        }
       }
     }
 
-    if(Possible.empty())
-    {
-      MinDanger = MinDanger > 0 ? Max(MinDanger * 3 >> 2, 1) : 0;
-      MaxDanger = MaxDanger < 1000000 ? Min(MaxDanger * 5 >> 2, 999999) : 1000000;
+    if (Possible.empty()) {
+      MinDanger = (MinDanger > 0 ? Max(MinDanger * 3 >> 2, 1) : 0);
+      MaxDanger = (MaxDanger < 1000000 ? Min(MaxDanger * 5 >> 2, 999999) : 1000000);
       continue;
     }
 
@@ -306,37 +295,26 @@ character *protosystem::CreateMonster (int MinDanger, int MaxDanger, int Special
   return Monster;
 }
 
-template <class type> std::pair<int, int> CountCorrectNameLetters(const typename type::database* DataBase, cfestring& Identifier)
-{
+
+template <class type> std::pair<int, int> CountCorrectNameLetters (const typename type::database *DataBase, cfestring &Identifier) {
   std::pair<int, int> Result(0, 0);
 
-  if(!DataBase->NameSingular.IsEmpty())
-    ++Result.second;
+  if (!DataBase->NameSingular.IsEmpty()) ++Result.second;
+  if (festring::IgnoreCaseFind(Identifier, " " + DataBase->NameSingular + ' ') != festring::NPos) Result.first += DataBase->NameSingular.GetSize();
+  if (!DataBase->Adjective.IsEmpty()) ++Result.second;
+  if (DataBase->Adjective.GetSize() && festring::IgnoreCaseFind(Identifier, " " + DataBase->Adjective + ' ') != festring::NPos) Result.first += DataBase->Adjective.GetSize();
+  if (!DataBase->PostFix.IsEmpty()) ++Result.second;
+  if (DataBase->PostFix.GetSize() && festring::IgnoreCaseFind(Identifier, " " + DataBase->PostFix + ' ') != festring::NPos) Result.first += DataBase->PostFix.GetSize();
 
-  if(festring::IgnoreCaseFind(Identifier, " " + DataBase->NameSingular + ' ') != festring::NPos)
-    Result.first += DataBase->NameSingular.GetSize();
-
-  if(!DataBase->Adjective.IsEmpty())
-    ++Result.second;
-
-  if(DataBase->Adjective.GetSize() && festring::IgnoreCaseFind(Identifier, " " + DataBase->Adjective + ' ') != festring::NPos)
-    Result.first += DataBase->Adjective.GetSize();
-
-  if(!DataBase->PostFix.IsEmpty())
-    ++Result.second;
-
-  if(DataBase->PostFix.GetSize() && festring::IgnoreCaseFind(Identifier, " " + DataBase->PostFix + ' ') != festring::NPos)
-    Result.first += DataBase->PostFix.GetSize();
-
-  for(uInt c = 0; c < DataBase->Alias.Size; ++c)
-    if(festring::IgnoreCaseFind(Identifier, " " + DataBase->Alias[c] + ' ') != festring::NPos)
-      Result.first += DataBase->Alias[c].GetSize();
+  for (uInt c = 0; c < DataBase->Alias.Size; ++c) {
+    if (festring::IgnoreCaseFind(Identifier, " " + DataBase->Alias[c] + ' ') != festring::NPos) Result.first += DataBase->Alias[c].GetSize();
+  }
 
   return Result;
 }
 
 
-template <class type> std::pair<const typename type::prototype *, int> SearchForProto(cfestring &What, truth Output) {
+template <class type> std::pair<const typename type::prototype *, int> SearchForProto (cfestring &What, truth Output) {
   typedef typename type::prototype prototype;
   typedef typename type::database database;
   //
@@ -389,31 +367,24 @@ template <class type> std::pair<const typename type::prototype *, int> SearchFor
 }
 
 
-character* protosystem::CreateMonster(cfestring& What, int SpecialFlags, truth Output)
-{
+character* protosystem::CreateMonster (cfestring &What, int SpecialFlags, truth Output) {
   std::pair<const character::prototype*, int> ID = SearchForProto<character>(What, Output);
-
-  if(ID.first)
-  {
-    character* Char = ID.first->Spawn(ID.second, SpecialFlags);
-
-    if(!Char->HasBeenSeen() && !game::WizardModeIsActive())
-    {
+  if (ID.first) {
+    character *Char = ID.first->Spawn(ID.second, SpecialFlags);
+    if (!Char->HasBeenSeen() && !game::WizardModeIsActive()) {
       ADD_MESSAGE("You have no idea what this creature is like.");
       //delete Char;
       //k8:delete Char;
       Char->SendToHell(); // equipment
       return 0;
     }
-    else
-      return Char;
+    return Char;
   }
-  else
-    return 0;
+  return 0;
 }
 
 
-item* protosystem::CreateItem(cfestring& What, truth Output) {
+item* protosystem::CreateItem (cfestring &What, truth Output) {
   std::pair<const item::prototype*, int> ID = SearchForProto<item>(What, Output);
   if (ID.first) {
     item* Item = ID.first->Spawn(ID.second);
@@ -427,100 +398,93 @@ item* protosystem::CreateItem(cfestring& What, truth Output) {
 }
 
 
-material* protosystem::CreateMaterial(cfestring& What, sLong Volume, truth Output)
-{
-  for(int c1 = 1; c1 < protocontainer<material>::GetSize(); ++c1)
-  {
+material* protosystem::CreateMaterial (cfestring& What, sLong Volume, truth Output) {
+  for (int c1 = 1; c1 < protocontainer<material>::GetSize(); ++c1) {
     const material::prototype* Proto = protocontainer<material>::GetProto(c1);
     const material::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
 
-    for(int c2 = 1; c2 < ConfigSize; ++c2)
+    for (int c2 = 1; c2 < ConfigSize; ++c2) {
       if (ConfigData[c2]->NameStem == What) {
-        if (ConfigData[c2]->CommonFlags & CAN_BE_WISHED || game::WizardModeIsActive())
+        if (ConfigData[c2]->CommonFlags & CAN_BE_WISHED || game::WizardModeIsActive()) {
           return ConfigData[c2]->ProtoType->Spawn(ConfigData[c2]->Config, Volume);
-        else if (Output) {
+        }
+        if (Output) {
           ADD_MESSAGE("You hear a booming voice: \"No, mortal! This will not be done!\"");
           return 0;
         }
       }
+    }
   }
 
-  if(Output)
-    ADD_MESSAGE("There is no such material.");
+  if (Output) ADD_MESSAGE("There is no such material.");
 
   return 0;
 }
 
+
 //#ifdef WIZARD
 
-void protosystem::CreateEveryCharacter(charactervector& Character)
-{
-  for(int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1)
-  {
+void protosystem::CreateEveryCharacter (charactervector &Character) {
+  for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c1);
     const character::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
-
-    for(int c2 = 0; c2 < ConfigSize; ++c2)
-      if(!ConfigData[c2]->IsAbstract)
-  Character.push_back(Proto->Spawn(ConfigData[c2]->Config));
+    for (int c2 = 0; c2 < ConfigSize; ++c2) {
+      if (!ConfigData[c2]->IsAbstract) Character.push_back(Proto->Spawn(ConfigData[c2]->Config));
+    }
   }
 }
 
-void protosystem::CreateEveryItem(itemvectorvector& Item)
-{
-  for(int c = 1; c < protocontainer<item>::GetSize(); ++c)
-  {
+
+void protosystem::CreateEveryItem (itemvectorvector &Item) {
+  for (int c = 1; c < protocontainer<item>::GetSize(); ++c) {
     const item::prototype* Proto = protocontainer<item>::GetProto(c);
     const item::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
-
-    for(int c2 = 0; c2 < ConfigSize; ++c2)
-      if(!ConfigData[c2]->IsAbstract && ConfigData[c2]->IsAutoInitializable)
-  Item.push_back(itemvector(1, Proto->Spawn(ConfigData[c2]->Config)));
+    for (int c2 = 0; c2 < ConfigSize; ++c2) {
+      if (!ConfigData[c2]->IsAbstract && ConfigData[c2]->IsAutoInitializable) {
+        Item.push_back(itemvector(1, Proto->Spawn(ConfigData[c2]->Config)));
+      }
+    }
   }
 }
 
-void protosystem::CreateEveryMaterial(std::vector<material*>& Material)
-{
-  for(int c1 = 1; c1 < protocontainer<material>::GetSize(); ++c1)
-  {
+
+void protosystem::CreateEveryMaterial (std::vector<material*> &Material) {
+  for (int c1 = 1; c1 < protocontainer<material>::GetSize(); ++c1) {
     const material::prototype* Proto = protocontainer<material>::GetProto(c1);
     const material::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
-
-    for(int c2 = 1; c2 < ConfigSize; ++c2)
+    for (int c2 = 1; c2 < ConfigSize; ++c2) {
       Material.push_back(Proto->Spawn(ConfigData[c2]->Config));
+    }
   }
 }
 
 //#endif
 
-void protosystem::CreateEveryNormalEnemy(charactervector& EnemyVector)
-{
-  for(int c = 1; c < protocontainer<character>::GetSize(); ++c)
-  {
+
+void protosystem::CreateEveryNormalEnemy (charactervector& EnemyVector) {
+  for (int c = 1; c < protocontainer<character>::GetSize(); ++c) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c);
     const character::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
-
-    for(int c2 = 0; c2 < ConfigSize; ++c2)
-      if(!ConfigData[c2]->IsAbstract
-   && !ConfigData[c2]->IsUnique
-   && ConfigData[c2]->CanBeGenerated)
-  EnemyVector.push_back(Proto->Spawn(ConfigData[c2]->Config, NO_PIC_UPDATE|NO_EQUIPMENT_PIC_UPDATE));
+    for (int c2 = 0; c2 < ConfigSize; ++c2) {
+      if (!ConfigData[c2]->IsAbstract && !ConfigData[c2]->IsUnique && ConfigData[c2]->CanBeGenerated) {
+        EnemyVector.push_back(Proto->Spawn(ConfigData[c2]->Config, NO_PIC_UPDATE|NO_EQUIPMENT_PIC_UPDATE));
+      }
+    }
   }
 }
 
-void protosystem::Initialize()
-{
+
+void protosystem::Initialize () {
   typedef item::prototype prototype;
   typedef item::database database;
   int c;
 
-  for(c = 1; c < protocontainer<item>::GetSize(); ++c)
-  {
+  for (c = 1; c < protocontainer<item>::GetSize(); ++c) {
     const prototype *Proto = protocontainer<item>::GetProtoData()[c];
     if (!Proto->GetConfigData()) {
       ABORT("Seems that database is missing <%s>!", Proto->GetClassID());
@@ -532,126 +496,105 @@ void protosystem::Initialize()
   ItemConfigData = new database*[ItemConfigDataSize];
   int Index = 0;
 
-  for(c = 1; c < protocontainer<item>::GetSize(); ++c)
-  {
+  for (c = 1; c < protocontainer<item>::GetSize(); ++c) {
     const prototype* Proto = protocontainer<item>::GetProtoData()[c];
     const database*const* ProtoConfigData = Proto->GetConfigData();
     const database* MainDataBase = *ProtoConfigData;
 
-    if(!MainDataBase->IsAbstract)
-      ItemConfigData[Index++] = const_cast<database*>(MainDataBase);
+    if (!MainDataBase->IsAbstract) ItemConfigData[Index++] = const_cast<database*>(MainDataBase);
 
     int ConfigSize = Proto->GetConfigSize();
 
-    for(int c2 = 1; c2 < ConfigSize; ++c2)
-      ItemConfigData[Index++] = const_cast<database*>(ProtoConfigData[c2]);
+    for (int c2 = 1; c2 < ConfigSize; ++c2) ItemConfigData[Index++] = const_cast<database*>(ProtoConfigData[c2]);
   }
 
-  database** DataBaseBuffer = new database*[ItemConfigDataSize];
+  database **DataBaseBuffer = new database*[ItemConfigDataSize];
 
-  for(int CategoryIndex = 0, Category = 1; CategoryIndex < ITEM_CATEGORIES; ++CategoryIndex, Category <<= 1)
-  {
+  for (int CategoryIndex = 0, Category = 1; CategoryIndex < ITEM_CATEGORIES; ++CategoryIndex, Category <<= 1) {
     sLong TotalPossibility = 0;
     int CSize = 0;
 
-    for(int c = 0; c < ItemConfigDataSize; ++c)
-    {
+    for (int c = 0; c < ItemConfigDataSize; ++c) {
       database* DataBase = ItemConfigData[c];
 
-      if(DataBase->Category == Category)
-      {
-  DataBaseBuffer[CSize++] = DataBase;
-  TotalPossibility += DataBase->Possibility;
-  DataBase->PartialCategoryPossibilitySum = TotalPossibility;
+      if (DataBase->Category == Category) {
+        DataBaseBuffer[CSize++] = DataBase;
+        TotalPossibility += DataBase->Possibility;
+        DataBase->PartialCategoryPossibilitySum = TotalPossibility;
       }
     }
 
     ItemCategoryData[CategoryIndex] = new database*[CSize];
     ItemCategorySize[CategoryIndex] = CSize;
     ItemCategoryPossibility[CategoryIndex] = TotalPossibility;
-    memmove(ItemCategoryData[CategoryIndex], DataBaseBuffer, CSize * sizeof(database*));
+    memmove(ItemCategoryData[CategoryIndex], DataBaseBuffer, CSize*sizeof(database*));
   }
 
   delete [] DataBaseBuffer;
 
-  for(c = 0; c < ItemConfigDataSize; ++c)
-  {
+  for (c = 0; c < ItemConfigDataSize; ++c) {
     database* DataBase = ItemConfigData[c];
     TotalItemPossibility += DataBase->Possibility;
     DataBase->PartialPossibilitySum = TotalItemPossibility;
   }
 }
 
-void protosystem::InitCharacterDataBaseFlags()
-{
-  for(int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1)
-  {
+
+void protosystem::InitCharacterDataBaseFlags () {
+  for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c1);
     character::database** ConfigData = Proto->ConfigData;
     int ConfigSize = Proto->GetConfigSize();
-
-    for(int c2 = 0; c2 < ConfigSize; ++c2)
-      if(!ConfigData[c2]->AutomaticallySeen)
-  ConfigData[c2]->Flags = 0;
-      else
-  ConfigData[c2]->Flags = HAS_BEEN_SEEN;
+    for (int c2 = 0; c2 < ConfigSize; ++c2) {
+      if (!ConfigData[c2]->AutomaticallySeen) ConfigData[c2]->Flags = 0; else ConfigData[c2]->Flags = HAS_BEEN_SEEN;
+    }
   }
 }
 
-void protosystem::SaveCharacterDataBaseFlags(outputfile& SaveFile)
-{
-  for(int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1)
-  {
+
+void protosystem::SaveCharacterDataBaseFlags (outputfile &SaveFile) {
+  for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c1);
     const character::database*const* ConfigData = Proto->ConfigData;
     int ConfigSize = Proto->GetConfigSize();
-
-    for(int c2 = 0; c2 < ConfigSize; ++c2)
-      SaveFile << ConfigData[c2]->Flags;
+    for (int c2 = 0; c2 < ConfigSize; ++c2) SaveFile << ConfigData[c2]->Flags;
   }
 }
 
-void protosystem::LoadCharacterDataBaseFlags(inputfile& SaveFile)
-{
-  for(int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1)
-  {
+
+void protosystem::LoadCharacterDataBaseFlags (inputfile &SaveFile) {
+  for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c1);
     character::database** ConfigData = Proto->ConfigData;
     int ConfigSize = Proto->GetConfigSize();
-
-    for(int c2 = 0; c2 < ConfigSize; ++c2)
-      SaveFile >> ConfigData[c2]->Flags;
+    for (int c2 = 0; c2 < ConfigSize; ++c2) SaveFile >> ConfigData[c2]->Flags;
   }
 }
 
-void protosystem::CreateEverySeenCharacter(charactervector& Character)
-{
-  for(int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1)
-  {
+
+void protosystem::CreateEverySeenCharacter (charactervector &Character) {
+  for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c1);
     const character::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
-
-    for(int c2 = 0; c2 < ConfigSize; ++c2)
-      if(!ConfigData[c2]->IsAbstract && ConfigData[c2]->Flags & HAS_BEEN_SEEN)
-      {
-  character* Char = Proto->Spawn(ConfigData[c2]->Config);
-  Char->SetAssignedName("");
-  Character.push_back(Char);
+    for (int c2 = 0; c2 < ConfigSize; ++c2) {
+      if (!ConfigData[c2]->IsAbstract && ConfigData[c2]->Flags & HAS_BEEN_SEEN) {
+        character* Char = Proto->Spawn(ConfigData[c2]->Config);
+        Char->SetAssignedName("");
+        Character.push_back(Char);
       }
+    }
   }
 }
 
-void protosystem::CreateEveryMaterial(std::vector<material*>& Material, const god* God, ccharacter* Char)
-{
-  for(int c1 = 1; c1 < protocontainer<material>::GetSize(); ++c1)
-  {
+
+void protosystem::CreateEveryMaterial (std::vector<material*> &Material, const god *God, ccharacter *Char) {
+  for (int c1 = 1; c1 < protocontainer<material>::GetSize(); ++c1) {
     const material::prototype* Proto = protocontainer<material>::GetProto(c1);
     const material::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
-
-    for(int c2 = 1; c2 < ConfigSize; ++c2)
-      if(God->LikesMaterial(ConfigData[c2], Char))
-  Material.push_back(Proto->Spawn(ConfigData[c2]->Config));
+    for (int c2 = 1; c2 < ConfigSize; ++c2) {
+      if (God->LikesMaterial(ConfigData[c2], Char)) Material.push_back(Proto->Spawn(ConfigData[c2]->Config));
+    }
   }
 }

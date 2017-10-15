@@ -73,4 +73,23 @@ bear
     AttributeBonus = 15;
     IsEnormous = true;
   }
+
+  Config MUTANT_BEAR;
+  {
+    Adjective = "mutant";
+    SkinColor = rgb16(120, 160, 100);
+    TotalVolume = 300000;
+    TotalSize = 350;
+    AttributeBonus = 20;
+    IsEnormous = true;
+    TorsoSpecialColor = rgb16(255, 128, 128); /* EyeColor */
+    BloodMaterial = GLOWING_BLOOD;
+    HostileReplies :=
+    {
+      "\"We are bad news.\"",
+      "\"One bear to rule them all.\"",
+      "\"The time of ape-kind is over. We shall rise, we shall conquer. Soon, bear-kind shall reign over the whole world!\"",
+      "@Dd roars!";
+    }
+  }
 }

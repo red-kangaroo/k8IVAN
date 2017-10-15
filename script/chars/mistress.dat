@@ -38,6 +38,7 @@ mistress
   Inventory = { 2, banana { Chance = 10; }, holybanana { Chance = 1; } }
   HostileReplies == "\"Come closer, little boy, I'll teach you something...\"";
   AttachedGod = NEFAS;
+  FleshMaterial = ELF_FLESH;
   WieldedPosition = 0, -1;
   FriendlyReplies :=
   {

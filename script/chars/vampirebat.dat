@@ -1,0 +1,13 @@
+vampirebat
+{
+  DefaultArmStrength = 4;
+  TorsoSpecialColor = rgb16(220, 0, 0); /* EyeColor */
+  PanicLevel = 100;
+  DefaultEndurance = 10;
+  DefaultIntelligence = 10;
+  TotalVolume = 1200;
+  TotalSize = 30;
+  SkinColor = rgb16(64, 64, 96);
+  NameSingular = "vampire bat";
+  AllowedDungeons = { 2, XINROCH_TOMB, ATTNAM; }
+}

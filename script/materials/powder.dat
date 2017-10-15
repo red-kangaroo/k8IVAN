@@ -41,4 +41,16 @@ powder
     AttachedGod = TERRA;
     RainColor = rgb16(255, 255, 255);
   }
+
+  Config ASH;
+  {
+    StrengthValue = 2;
+    ConsumeType = CT_MINERAL; /* add something appropriate for this */
+    Density = 300; /* very light and fine */
+    Color = rgb16(204, 204, 204);
+    NameStem = "ash";
+    AdjectiveStem = "ashen";
+    Flexibility = 50;
+    AttachedGod = INFUSCOR;
+  }
 }

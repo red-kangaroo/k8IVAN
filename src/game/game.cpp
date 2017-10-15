@@ -45,8 +45,8 @@
 #include "confdef.h"
 #include "wmapset.h"
 
-#define SAVE_FILE_VERSION 130 // Increment this if changes make savefiles incompatible
-#define BONE_FILE_VERSION 115 // Increment this if changes make bonefiles incompatible
+#define SAVE_FILE_VERSION 131 // Increment this if changes make savefiles incompatible
+#define BONE_FILE_VERSION 116 // Increment this if changes make bonefiles incompatible
 
 #define LOADED    0
 #define NEW_GAME  1
@@ -84,6 +84,7 @@ int game::Teams;
 int game::Dungeons;
 int game::StoryState;
 /* */
+int game::XinrochTombStoryState;
 int game::MondedrPass;
 int game::RingOfThieves;
 int game::Masamune;
@@ -388,6 +389,7 @@ truth game::Init (cfestring &Name) {
       InitPlayerAttributeAverage();
       StoryState = 0;
       /* */
+      XinrochTombStoryState = 0;
       MondedrPass = 0;
       RingOfThieves = 0;
       Masamune = 0;
@@ -791,7 +793,7 @@ truth game::Save (cfestring &SaveName) {
   SaveFile << AveragePlayerAgilityExperience;
   SaveFile << Teams << Dungeons << StoryState << PlayerRunning;
   SaveFile << MondedrPass << RingOfThieves << Masamune << Muramasa << LoricatusHammer << Liberator;
-  SaveFile << OmmelBloodMission << RegiiTalkState;
+  SaveFile << OmmelBloodMission << RegiiTalkState << XinrochTombStoryState;
   SaveFile << PlayerMassacreMap << PetMassacreMap << MiscMassacreMap;
   SaveFile << PlayerMassacreAmount << PetMassacreAmount << MiscMassacreAmount;
   SaveArray(SaveFile, EquipmentMemory, MAX_EQUIPMENT_SLOTS);
@@ -842,8 +844,8 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> AveragePlayerAgilityExperience;
   SaveFile >> Teams >> Dungeons >> StoryState >> PlayerRunning;
   SaveFile >> MondedrPass >> RingOfThieves >> Masamune >> Muramasa >> LoricatusHammer >> Liberator;
-  SaveFile >> OmmelBloodMission >> RegiiTalkState;
-  SaveFile >> PlayerMassacreMap >> PetMassacreMap >> MiscMassacreMap;
+  SaveFile >> OmmelBloodMission >> RegiiTalkState >> XinrochTombStoryState;
+;  SaveFile >> PlayerMassacreMap >> PetMassacreMap >> MiscMassacreMap;
   SaveFile >> PlayerMassacreAmount >> PetMassacreAmount >> MiscMassacreAmount;
   LoadArray(SaveFile, EquipmentMemory, MAX_EQUIPMENT_SLOTS);
   for (int c = 0; c < ATTRIBUTES; ++c) SaveFile >> OldAttribute[c] >> NewAttribute[c] >> LastAttributeChangeTick[c];
@@ -3276,6 +3278,53 @@ truth game::DoOnEvent (truth brcEaten, truth AllowScript) {
       //mFEStack.top()->ReadWord(w, true);
       std::vector<FuncArg> args;
       //fprintf(stderr, "funcall: %s\n", w.CStr());
+      /*
+      if (w == "AddItem") {
+        ParseFuncArgs("s", args);
+        item *it = protosystem::CreateItem(args[0].sval, false); // no output
+        if (it) {
+          mChar->GetStack()->AddItem(it);
+          it->SpecialGenerationHandler();
+        } else {
+          ADD_MESSAGE("ERROR: no item with id \"%s\"", args[0].sval.CStr());
+        }
+        continue;
+      }
+      */
+      if (w == "ActivateTombOfXinroch") {
+        //GetArea()->SendNewDrawRequest();
+        //game::ActivateWizardMode();
+        //ADD_MESSAGE("Wizard mode activated.");
+
+        //game::SetXinrochTombStoryState(1);
+        //game::SaveWorldMap();
+
+        maptotombofxinroch *MapToTombOfXinroch = maptotombofxinroch::Spawn();
+        MapToTombOfXinroch->MoveTo(PLAYER->GetStack());
+        //MapToTombOfXinroch->FinishReading(PLAYER);
+
+        /*
+        if (!game::IsInWilderness()) game::LoadWorldMap();
+        v2 XinrochTombPos = game::GetWorldMap()->GetEntryPos(0, XINROCH_TOMB);
+        game::GetWorldMap()->GetWSquare(XinrochTombPos)->ChangeOWTerrain(xinrochtomb::Spawn());
+        game::GetWorldMap()->RevealEnvironment(XinrochTombPos, 1);
+        */
+        //game::SaveWorldMap();
+
+        (belt::Spawn(BELT_OF_LEVITATION))->MoveTo(Player->GetStack());
+
+        /*
+        if (!game::IsInWilderness()) game::LoadWorldMap();
+        v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
+        game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
+        game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
+        if (game::IsInWilderness()) game::GetWorldMap()->SendNewDrawRequest(); else game::SaveWorldMap();
+        */
+
+        //game::Save();
+        //game::Save(game::GetAutoSaveFileName());
+        continue;
+      }
       if (w == "SetMoney") {
         ParseFuncArgs("n", args);
         sLong n = args[0].ival;

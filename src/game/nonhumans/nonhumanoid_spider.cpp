@@ -2,7 +2,7 @@
 CHARACTER(spider, nonhumanoid)
 {
  protected:
-  virtual truth SpecialBiteEffect(character*, v2, int, int, truth);
+  virtual truth SpecialBiteEffect(character*, v2, int, int, truth, truth Critical, int DoneDamage);
   virtual void GetAICommand();
   virtual bodypart* MakeBodyPart(int) const;
 };
@@ -16,7 +16,7 @@ bodypart* spider::MakeBodyPart(int) const { return spidertorso::Spawn(0, NO_MATE
 
 
 
-truth spider::SpecialBiteEffect(character* Char, v2, int, int, truth BlockedByArmour)
+truth spider::SpecialBiteEffect(character* Char, v2, int, int, truth BlockedByArmour, truth Critical, int DoneDamage)
 {
   if(!BlockedByArmour)
   {

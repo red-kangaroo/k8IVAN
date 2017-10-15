@@ -33,6 +33,7 @@
 #include "nonhumans/nonhumanoid_mushroom.cpp"
 #include "nonhumans/mushroom_magicmushroom.cpp"
 #include "nonhumans/nonhumanoid_ghost.cpp"
+#include "nonhumans/nonhumanoid_xinrochghost.cpp"
 #include "nonhumans/nonhumanoid_twoheadedmoose.cpp"
 #include "nonhumans/nonhumanoid_magpie.cpp"
 #include "nonhumans/nonhumanoid_thunderbird.cpp"
@@ -56,3 +57,4 @@
 #include "nonhumans/nonhumanoid_mindworm.cpp"
 #include "nonhumans/nonhumanoid_bluedragon.cpp"
 #include "nonhumans/nonhumanoid_reddragon.cpp"
+#include "nonhumans/nonhumanoid_vampirebat.cpp"

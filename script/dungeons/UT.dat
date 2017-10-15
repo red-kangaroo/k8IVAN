@@ -32,6 +32,7 @@ Dungeon UNDER_WATER_TUNNEL;
     EnchantmentPlusChanceDelta = 1;
     BackGroundType = GRAY_FRACTAL;
     IsCatacomb = false;
+    EarthquakesAffectTunnels = true;
 
     Square, Random;
     {

@@ -359,4 +359,185 @@ guard
       "@Dd sighs. \"Fighting bears bores me. Why can't an amazon army attack us for a change?\"";
     }
   }
+
+  Config HONOR;
+  {
+    Helmet = SILVER helmet(FULL_HELMET);
+    BodyArmor = SILVER bodyarmor(PLATE_MAIL);
+    Cloak = FABRIC cloak;
+    RightWielded = SILVER meleeweapon(HALBERD);
+    LeftWielded = 0;
+    RightGauntlet = SILVER gauntlet;
+    RightBoot = SILVER boot;
+    UsesLongAdjectiveArticle = true;
+    KnownCWeaponSkills == POLE_ARMS;
+    Adjective = "honor";
+    CWeaponSkillHits == 100;
+    RightSWeaponSkillHits = 10;
+    PanicLevel = 25;
+    ClothColor = rgb16(220, 220, 220);
+    FriendlyReplies =
+    {
+      3,
+      "@Dd looks bored.",
+      "\"This is the Tomb of the Unknown Soldier! His name was Lamusius! Oops.\"",
+      "\"Not that I think about it, I was reassigned as an honor guard after that huge screw-up. I wonder if... Nah, it's probably just a coincidence.\"";
+    }
+  }
+
+  Config EMISSARY;
+  {
+    AttributeBonus = 30;
+    DefaultIntelligence = 20;
+    DefaultWisdom = 20;
+    EyeColor = rgb16(0, 153, 255);
+    SkinColor = rgb16(230, 140, 100);
+    ClothColor = rgb16(128, 128, 128);
+    HeadBitmapPos = 96, 368;
+    Helmet = 0;
+    BodyArmor = STEEL bodyarmor(PLATE_MAIL) { Enchantment = 2; }
+    RightWielded = OCTIRON OCTIRON meleeweapon(BASTARD_SWORD) { Enchantment = 2; }
+    LeftWielded = EBONY_WOOD shield { Enchantment = 2; }
+    RightGauntlet = STEEL gauntlet { Enchantment = 2; }
+    RightBoot = STEEL boot { Enchantment = 2; }
+    DefaultName = "Sir Lancelyn";
+    NameSingular = "emissary";
+    PostFix = "of Aslona";
+    CWeaponSkillHits = { 2, 500, 500; }
+    RightSWeaponSkillHits = 200;
+    LeftSWeaponSkillHits = 200;
+    PanicLevel = 50;
+    CanBeGenerated = false;
+    IsNameable = false;
+    IsUnique = true;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    UndeadVersions = false;
+    TamingDifficulty = 25;
+    AttachedGod = CRUENTUS;
+    FriendlyReplies =
+    {
+      11,
+      "\"I shouldn't be saying this so openly, but Aslona is in dire straits and *needs* any help it can get.\"",
+      "\"I've heard other emissaries were sent from Aslona even to goblin lands to negotiate assistance.\"",
+      "\"After the old king was assassinated and the Rebellion started, Aslona lost much of its former power.\"",
+      "\"I will see the Rebellion crushed and every last rebel executed for their crimes!\"",
+      "\"My king is young and inexperienced; his army just barely holds the rebels back. My only hope is I can return to him successful.\"",
+      "\"Bandits are roving free through the forests of Aslona; you can never be sure which town supports the king and which the Rebellion. What happened to my country?\"",
+      "\"My father was a trusted general of the old king, and the first one to meet with the rebel army on a battlefield after the regicide. Alas, he was betrayed by his slave-soldiers and murdered along with all of his loyal knights.\"",
+      "\"I see a representative of the orcish freeholds arrived. Don't trust him! Those orcish vultures would love to feast on the carcass of Aslona, but I won't let that happen.\"",
+      "\"I hope the negotiations over in goblin lands go well. As I heard, my king offers to free all goblin slaves in Aslona in exchange for military assistance against the orcish freeholds.\"",
+      "\"I don't understand why the high priest tolerates that filthy orc here! No orc can be trusted, they are all raiders and murderers with no honor.\"",
+      "\"The orcish freeholds have set their sights on aslonian wealth long ago and were a bother on the borders since then. Right now, I don't know whether we are strong enough to fend them off by ourselves.\"";
+    }
+    HostileReplies =
+    {
+      3,
+      "\"Die, you treacherous bastard!\"",
+      "\"What are you doing? I have a diplomatic immunity!\"",
+      "\"Low-blooded scum! You dare to attack a knight of Aslona?\"";
+    }
+  }
+
+  Config TRAINEE;
+  {
+    AttributeBonus = -20;
+    Helmet = BIRCH_WOOD helmet(FULL_HELMET);
+    BodyArmor = BIRCH_WOOD bodyarmor(PLATE_MAIL);
+    RightWielded = BIRCH_WOOD BIRCH_WOOD meleeweapon(LONG_SWORD);
+    LeftWielded = BIRCH_WOOD shield;
+    Adjective = "trainee";
+    CWeaponSkillHits = { 2, 20, 20; }
+    PanicLevel = 50;
+    ClothColor = rgb16(130, 80, 30);
+    FriendlyReplies =
+    {
+      5,
+      "\"Why do we have to practise with these training swords? I want a real blade!\"",
+      "\"One day, I will be in the personal guard of the high priest himself!\"",
+      "\"Being a guard is a dream job. You get vodka, you get responsibility, you get merits. And sometimes, you get to fight amazons.\"",
+      "\"I hope someone will attack soon, so that I can save many people and prove myself a hero!\"",
+      "\"What is the moral difference between a civilian and a citizen? A citizen accepts personal responsibility for killing the high priest's enemies. A civilian does not. I am proud to call myself a citizen.\"";
+    }
+    HostileReplies == "\"I'm ready! I will fight you! I will kill you!\"";
+    DeathMessage = "@Dd dies screaming: \"Please, no! I don't want to die!\"";
+  }
+
+  Config TOMB_ENTRY;
+  {
+    AttributeBonus = 20;
+    Helmet = IRON helmet(FULL_HELMET) { Enchantment = 2; }
+    BodyArmor = IRON bodyarmor(PLATE_MAIL);
+    RightWielded = IRON IRON meleeweapon(LONG_SWORD) { Enchantment = 2; }
+    LeftWielded = IRON shield;
+    Adjective = "tomb";
+    CWeaponSkillHits = { 2, 100, 100; }
+    RightSWeaponSkillHits = 10;
+    LeftSWeaponSkillHits = 10;
+    PanicLevel = 25;
+    ClothColor = rgb16(64, 0, 128);
+    UndeadVersions = false;
+    FriendlyReplies =
+    {
+      9,
+      "@Dd says helplessly: \"I know, right? Purple. It had to be Infuscor's favourite color.\"",
+      "\"Don't even think of disturbing the Tomb.\"",
+      "\"They say Xinroch's restless soul dwells below. I heard it guards a portal to another dimension. I wouldn't be caught dead going through there.\"",
+      "\"Souls for Infuscor!\"",
+      "\"Our lord Xinroch was the greatest and most powerful grand master dark knight to ever live, and the third to bear that title.\"",
+      "\"Xinroch was highly successful in all his campaigns, and it was during his life that the Unholy Order of the Dark Knights truly flourished.\"",
+      "\"This Tomb was erected on the battlefield where Xinroch was slain, replacing the old temple ravaged and desecrated during the last battle.\"",
+      "\"Today, the dark knights have splintered into two distinct branches, the Unholy Order of Infuscor and the Dark Knights of Cruentus, plus a handful of fringe cults.\"",
+      "@Dd mutters. \"Hundreds of years guarding this Tomb. I wish those necromancers would get on with it!\"";
+    }
+  }
+
+  Config TOMB_ENTRY_MASTER;
+  {
+    AttributeBonus = 50;
+    TotalVolume = 120000;
+    Helmet = GOLD helmet(FULL_HELMET) { Enchantment = 2; }
+    Amulet = amulet(AMULET_OF_LIFE_SAVING);
+    BodyArmor = ARCANITE bodyarmor(PLATE_MAIL) { Enchantment = 2; }
+    Cloak = OMMEL_HAIR cloak(CLOAK_OF_FIRE_RESISTANCE);
+    RightWielded = ILLITHIUM OCTIRON meleeweapon(LONG_SWORD) { Enchantment = 2; }
+    LeftWielded = OCTIRON shield { Enchantment = 2; }
+    RightRing = ring(RING_OF_FIRE_RESISTANCE);
+    LeftRing = ring(RING_OF_POISON_RESISTANCE);
+    RightGauntlet = OMMEL_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = ILLITHIUM boot { Enchantment = 2; }
+    DefaultName = "High Lady Kauhistuttava";
+    Adjective = "master tomb";
+    CWeaponSkillHits = { 2, 2000, 2000; }
+    RightSWeaponSkillHits = 200;
+    LeftSWeaponSkillHits = 200;
+    PanicLevel = 5;
+    TamingDifficulty = NO_TAMING;
+    Sex = FEMALE;
+    IsUnique = true;
+    IsNameable = false;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    ClothColor = rgb16(130, 0, 0);
+    CanBeConfused = false;
+    NaturalSparkleFlags = CLOTH_COLOR;
+    FriendlyReplies =
+    {
+      10,
+      "\"An old temple of the Dark Gods once stood here, during Xinroch's leadership. Here he declared himself the grand master dark knight. Here he brought the forces of Infuscor and Cruentus together for the first time. Here he died.\"",
+      "\"This Tomb was erected on the battlefield where Xinroch was slain, replacing the old temple ravaged and desecrated during the last battle.\"",
+      "\"Xinroch's successor feared his former master so much he eventually resigned his title of the grand master dark knight and entered the Tomb, to remain enternally vigilant as a keeper of Xinroch's grave and prevent Xinroch's resurrection and terrible revenge.\"",
+      "\"We await the return of our lord Xinroch to lead the forces of Darkness into battle against the High Priest of Valpurus!\"",
+      "\"Since Xinroch was the grand master dark knight, all the masters of the Unholy Order of Infuscor have come here to kneel at the altar. The next master of the Unholy Order would be chosen by Infuscor herself.\"",
+      "\"All dark knights are still formally united under the leadership of a grand master dark knight, though how much do masters of each group heed the orders of their grand master depends entirely upon his or her power and authority.\"",
+      "\"The amulet? Heh, good insurance policies are hard to come by.\"",
+      "\"Some believe it is possible to bring our lord Xinroch back. Whether through high necromancy or some dark miracle, he might be able to lead his faithful again!\"",
+      "\"It was a great shame to the dark templars when several decades ago, an unknown necromancer managed to slip past their guards and animate the skeleton of Xinroch in a mockery of his once-living might. Whether the spell was cast with belief that it could truly bring Xinroch back, or with utmost disrespect for the dearly departed, the dark templars swore they will never allow another man or woman to enter their lord's resting place.\"",
+      "\"Be careful when entering the Tomb to pay homage. If you encounter the dark templars, they do not like disturbances!\"";
+    }
+    IsImmuneToItemTeleport = true;
+    AllowUnconsciousness = false;
+    DisplacePriority = 4;
+    UndeadVersions = false;
+  }
 }

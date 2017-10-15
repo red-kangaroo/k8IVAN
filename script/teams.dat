@@ -17,7 +17,12 @@
  * 14 == FORESTMAN_TEAM
  * 15 == SOLICITUS_TEAM
  * 16 == MORBE_TEAM
+ * 17 == XINROCH_TOMB_ENTRY_TEAM == The dudes in the tomb entrance of the Xinroch Tomb story arc
+ * 18 == XINROCH_TOMB_NECRO_TEAM == Necro chamber operators in Xinroch's tomb
+ * 19 == XINROCH_TOMB_KAMIKAZE_DWARF_TEAM == the fanatics in the gas chambers
+ * 20 == PRISONER_TEAM == prisoners in the Cathedral Cellar
  */
+
 
 //don't need this anymore
 //Teams = 17;
@@ -134,4 +139,33 @@ Team MORBE_TEAM;
   Name = "Morbe";
   Relation MONSTER_TEAM, UNCARING;
   KillEvilness = 50;
+}
+
+Team XINROCH_TOMB_ENTRY_TEAM;
+{
+  Name = "Xinroch Entry";
+  Relation PLAYER_TEAM, UNCARING;
+  KillEvilness = 50;
+}
+
+Team XINROCH_TOMB_NECRO_TEAM;
+{
+  Name = "Xinroch Necro";
+  Relation MONSTER_TEAM, UNCARING;
+  KillEvilness = 50;
+}
+
+Team XINROCH_TOMB_KAMIKAZE_DWARF_TEAM;
+{
+  Name = "Xinroch Kamikaze";
+  Relation MONSTER_TEAM, UNCARING;
+  KillEvilness = 100;
+}
+
+Team PRISONER_TEAM;
+{
+  Name = "Prisoners";
+  Relation PLAYER_TEAM, UNCARING;
+  Relation MONSTER_TEAM, UNCARING;
+  KillEvilness = 100;
 }

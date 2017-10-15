@@ -617,6 +617,8 @@ class item : public object
   virtual truth IsFood() const;
   virtual truth IsBanana() const { return false; }
   virtual truth IsEncryptedScroll() const { return false; }
+  virtual truth IsShadowVeil () const { return false; }
+  virtual truth IsLostRubyFlamingSword () const { return false; }
   virtual truth IsMangoSeedling() const { return false; }
   virtual truth IsMondedrPass () const { return false; }
   virtual truth IsRingOfThieves () const { return false; }

@@ -55,4 +55,77 @@ farmer
       "\"That dirty bastard goblin keeps hogging all our crop space for not paying my non-existant rental fee!\"";
     }
   }
+
+  Config IMPRISONED_FARMER;
+  {
+    UsesLongAdjectiveArticle = true;
+    Adjective = "eunuch";
+    CanBeGenerated = false;
+    AttributeBonus = -10;
+    RightWielded = 0;
+    IsMasochist = true;
+    HostileReplies == "\"You don't have the balls to kill me!\"";
+    FriendlyReplies :=
+    {
+      "\"Let's just say that Petrus' wife No. 3 was beautiful and I wasn't careful.\"",
+      "\"Would you have a nut to spare?\"",
+      "\"Eh?\"",
+      "\"Huh?\"",
+      "\"Please, tell me: How does the sunshine feel on your skin? I don't remember.\"";
+    }
+    UndeadVersions = false;
+  }
+
+  Config CULTIST;
+  {
+    CanBeGenerated = false;
+    AttributeBonus = 10;
+    NameSingular = "cultist";
+    TorsoBitmapPos = 48, 352;
+    LegBitmapPos = 16, 160;
+    ClothColor = rgb16(50, 50, 50);
+    BeltColor = rgb16(100, 100, 100);
+    Belt = BLACK_LEATHER belt { Enchantment = 1; }
+    RightWielded = meleeweapon(BASTARD_SWORD);
+    KnownCWeaponSkills == LARGE_SWORDS;
+    IsSadist = true;
+    AttachedGod = CRUENTUS;
+    HostileReplies == "\"You dare desecrate the Tomb?!\"";
+    FriendlyReplies :=
+    {
+      "\"Praised be Cruentus!\"",
+      "\"Praised be Infuscor!\"",
+      "\"Blood for Cruentus! Souls for Infuscor!\"",
+      "\"Long, long time ago, there was a War in Heavens. Valpurus rose to usurp the throne of Mortifer, then King of Gods, and eventually triumphed. After his armies conquered all Heavens, Valpurus murdered Mortifer and banished him into the darkness beyond stars.\"",
+      "\"To prevent the destruction of the very world they were fighting for, Mortifer placed a powerful geas upon all gods that prevents them from ever entering the world. Thus, even the primordial War in Heavens was fought by the many priests and other servants the gods have acquired and empowered.\"",
+      "\"The original Order of the Dark Knights was established by Cruentus nearly three millennia ago, to battle the knights templar of Valpurus during the ancient War in Heavens.\"",
+      "\"Today, the dark knights have splintered into two distinct branches, the Unholy Order of Infuscor and the Dark Knights of Cruentus, plus a handful of fringe cults.\"",
+      "\"All dark knights are still formally united under the leadership of a grand master dark knight, though how much do masters of each group heed the orders of their grand master depends entirely upon his or her power and authority.\"",
+      "\"The name of the first grand master dark knight was lost to history, yet his deeds remain. Legends say he was more a daemon than a man. He even won the favour of Mortifer and was given the newly forged Neerc Se-ulb to wield against the swarming armies of Light.\"",
+      "\"The first grand master dark knight led his armies from victory to victory, but pride was his undoing. Believing that none could defeat him, he challenged Pervetus, the high priest of Valpurus, to a duel. At first, it seemed to quickly be turning into another easy victory... until his mace-arm was severed.\"",
+      "\"When the first grand master dark knight fell and Neerc Se-ulb was lost for a time, Mortifer vowed to never lend his mace again but to a true champion of Chaos. But Cruentus trusted in the power of his dark knights and the next grand master received the terrible halberd named Mjolak to crush all who would oppose the god of blood.\"",
+      "\"The second grand master dark knight was a son of the first one. He swore an oath of revenge, to slay the high priest of Valpurus in honor of his father's death. Yet his name was erased from all records to clean the stain of shame he brought upon his family.\"",
+      "\"The second grand master dark knight ruthlessly crushed all resistance and many an enemy fled even before battle, for his trumpeters used horns of fear to devastating effect. Where the father took nearly a decade to slowly force valpurian troops back, the son brought his army of dark knights before the gates of the Citadel of Valpurus in only a few years.\"",
+      "\"As his men razed and burned the once-mightly Citadel of Valpurus, the second grand master dark knight assailed Pervetus, the high priest of Valpurus. Now being of venerable age, Pervetus quickly fell to the power of Mjolak.\"",
+      "\"In a hubris of an easy victory, the second grand master dark knight turned his back to the dead high priest Pervetus he just slain and did not see a strange glow of a magical amulet that brought Pervetus back with renewed vigor. The high priest lifted Justifier and with a single mightly blow, cut off both of the grand master's hands. And in a single moment of weakness, the grand master shamed his family for the ages to come, for he didn't face death with dignity, but panicked and ran for his life.\"",
+      "\"Our lord Xinroch was the greatest and most powerful grand master dark knight to ever live, and the third to bear that title. His two crossed flaming swords are still found on the banner of the grand master dark knights to this day.\"",
+      "\"Some sources claim Xinroch was no one in his youth, maybe even one of the children kidnapped from forgotten villages to be trained for war. But soon, his talents became apparent. He was clever, quick to learn and utterly ruthless when he could get what he wanted.\"",
+      "\"In his many skirmishes with the forces of Light, Xinroch destroyed two archangels, Incendo and Lucis, and took their flaming swords. He wielded them with unparalleled skill, earning him the sobriquet of 'Xinroch the Flame of Chaos'.\"",
+      "\"While his predecessors were beasts on the battlefield and masters of the military arts of tactics and strategy, Xinroch was well-versed in the use of another weapon they rarely considered - diplomacy. He conquered a land - then used the fear to gain ten times more in a fraction of time.\"",
+      "\"Xinroch was highly successful in all his campaigns, and it was during his life that the Unholy Order of the Dark Knights truly flourished.\"",
+      "\"Even Ischaldirh, the champion of Infuscor since times immemorial, who always thought of warriors as nothing more than brutes and uncivilized savages, eventually befriended Xinroch and accompanied him on many a campaign. Not even demigods could stand in their way.\"",
+      "\"Just as Xinroch outlived high priest Pervetus and took all his lands, years caught up with Xinroch at last after a life full of victory. No matter how strong magic sustains the body, mortals were created to die and all that lives will wither eventually. Only that which already died and was raised to undeath or which ascended beyond this world is truly immortal.\"",
+      "\"During one of the countless battles late in his life, Xinroch lost one of the iconic ruby flaming swords he wielded most of his life. The dwarves of Khaz-zadm forged an arcanite shield for him, but it was clear to everyone his prime years have irreversibly passed.\"",
+      "\"In his declining years, Xinroch heavily funded research into the newly-invented magic school of necromancy. It was thanks to his sponsorship that this discipline could start to spread, but unfortunately the early necromancers were unable to stave off the dwindling of Xinroch's life.\"",
+      "\"Xinroch died in a glorious battle. His army crushed the invasion of frost giants while Xinroch himself, by then of venerable age, dueled and slayed their jarl. Yet his years and exhaustion took their toll and Xinroch could not fend off the treacherous dagger his most trusted lieutenant turned against him. Old grand master slain and the battle won, this second-in-command became the new grand master dark knight.\"",
+      "\"Xinroch's successor feared his former master so much he eventually resigned his title of the grand master dark knight and entered the Tomb, to remain enternally vigilant as a keeper of Xinroch's grave and prevent Xinroch's resurrection and terrible revenge.\"",
+      "\"When Xinroch brought dark knights and dark mages together in a peculiar alliance, even their two ever-rival gods set aside their differences for a time. What none of their worshippers could expect, though, was the child born from the blood of Cruentus and the dark magic of Infuscor, the first vampire.\"",
+      "\"This Tomb was erected on the battlefield where Xinroch was slain, to honor and guard his grave against all who would wish to disturb his last sleep or defile his memory. Let his majestic glory never be forgotten!\"",
+      "\"Some believe it is possible to bring our lord Xinroch back. Whether through high necromancy or some dark miracle, he might be able to lead his faithful again!\"",
+      "\"It was a great shame to the dark templars when several decades ago, an unknown necromancer managed to slip past their guards and animate the skeleton of Xinroch in a mockery of his once-living might. Whether the spell was cast with belief that it could truly bring Xinroch back, or with utmost disrespect for the dearly departed, the dark templars swore they will never allow another man or woman to enter their lord's resting place.\"",
+      "\"All hail our mighty lord Xinroch.\"";
+    }
+    ScienceTalkPossibility = 0;
+    Inventory = { 2, holybook(CRUENTUS) { Chance = 10; }, wand(WAND_OF_NECROMANCY) { Chance = 10; } }
+  }
 }

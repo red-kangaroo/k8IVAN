@@ -156,6 +156,7 @@ const name##prototype name::ProtoType
 #define HICCUPS (1 << 20)
 #define VAMPIRISM (1 << 21)
 #define DETECTING (1 << 22)
+#define ETHEREAL_MOVING (1 << 23)
 
 #define THROW_ITEM_TYPES 5
 /*ThrowFlags */
@@ -521,6 +522,10 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define FORESTMAN_TEAM 14
 #define SOLICITUS_TEAM 15
 #define MORBE_TEAM 16
+#define XINROCH_TOMB_ENTRY_TEAM 17
+#define XINROCH_TOMB_NECRO_TEAM 18
+#define XINROCH_TOMB_KAMIKAZE_DWARF_TEAM 19
+#define PRISONER_TEAM 20
 #define NO_TEAM 0xFFFF
 
 #define LOAD 1
@@ -563,6 +568,9 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define DARK_LEVEL 8
 #define OREE_LAIR 12
 
+#define DUAL_ENNER_BEAST_LEVEL 5
+#define NECRO_CHAMBER_LEVEL 6
+
 /* stack::DrawContents flags */
 
 #define NO_SELECT 1       // only show items
@@ -576,6 +584,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 
 #define RECTANGLE 1
 #define ROUND_CORNERS 2
+#define MAZE_ROOM 3
 
 /* Gods, 0 == none */
 
@@ -1136,6 +1145,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define CAN_HAVE_PARASITE 4
 #define USE_MATERIAL_ATTRIBUTES 8
 #define CAN_REGENERATE 16
+#define IS_WARM_BLOODED 32
 
 /* InteractionFlags */
 #define CAN_BURN 1

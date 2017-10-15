@@ -99,5 +99,16 @@ skeleton
     IsExtraFragile = false;
     TamingDifficulty = NO_TAMING;
     CreateUndeadConfigurations = false;
+    HostileReplies :=
+    {
+      "\"I remember... life. I want to be whole again.\"",
+      "\"I remember my sword. My precious sword. What has become of it?\"",
+      "\"I feel... empty. Hollow.\"",
+      "\"I have lost what made me whole. I am now nothing but a soulless husk.\"",
+      "@Dd rasps: \"How deep have I fallen...\"";
+    }
+    FriendlyReplies == "@Dd laughs: \"Verily, thou art a skilled cheater!\""; /* no taming */
+    DeathMessage = "As @Dd crumples into a heap of bones, you hear an echoing whisper: \"We shall meet again...\"";
+    AllowedDungeons := { ATTNAM, UNDER_WATER_TUNNEL, ELPURI_CAVE; }
   }
 }

@@ -2,7 +2,7 @@
 CHARACTER(snake, nonhumanoid)
 {
  protected:
-  virtual truth SpecialBiteEffect(character*, v2, int, int, truth);
+  virtual truth SpecialBiteEffect(character*, v2, int, int, truth, truth Critical, int DoneDamage);
 };
 
 
@@ -10,7 +10,7 @@ CHARACTER(snake, nonhumanoid)
 
 
 
-truth snake::SpecialBiteEffect(character* Char, v2, int, int, truth BlockedByArmour)
+truth snake::SpecialBiteEffect(character* Char, v2, int, int, truth BlockedByArmour, truth Critical, int DoneDamage)
 {
   if(!BlockedByArmour)
   {
