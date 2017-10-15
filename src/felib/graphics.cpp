@@ -9,6 +9,8 @@
  *  along with this file for more details
  *
  */
+#include <math.h>
+
 #include "SDL.h"
 
 #include "graphics.h"
@@ -223,17 +225,14 @@ void graphics::BlitDBToScreen () {
 
   // convert source buffer
   packcol16 *sptr = SrcPtr;
-  unsigned char *dptr = bufc32;
+  uint32_t *dptr = (uint32_t*)bufc32;
   for (int y = 0; y < newy; ++y) {
     for (int x = 0; x < newx; ++x) {
       packcol16 c = *sptr++;
       unsigned char b = (c<<3)&0xff;
       unsigned char g = ((c>>5)<<2)&0xff;
       unsigned char r = ((c>>11)<<3)&0xff;
-      *dptr++ = b;
-      *dptr++ = g;
-      *dptr++ = r;
-      *dptr++ = 0;
+      *dptr++ = b|(g<<8)|(r<<16);
     }
   }
 
@@ -246,14 +245,16 @@ void graphics::BlitDBToScreen () {
       unsigned char *curs = bufc32;
       KIt *i = kernel;
       for (int y = 0; y < newy; ++y) {
-        unsigned char *dp = DestPtr;
+        uint32_t *dp = (uint32_t*)DestPtr;
         for (int x = 0; x < newx; ++x) {
+          uint32_t dclr = 0;
           for (int n = 0; n < 3; ++n) {
-            int c = (int)(curs[i->sofs[0]+n]*i->frc0+curs[i->sofs[1]+n]*i->frc1)*i->yfrc0+(curs[i->sofs[2]+n]*i->frc0+curs[i->sofs[3]+n]*i->frc1)*i->yfrc1;
-            if (c < 0) c = 0; else if (c > 255) c = 255;
-            dp[n] = (unsigned char)c;
+            int c = lrintf(curs[i->sofs[0]+n]*i->frc0+curs[i->sofs[1]+n]*i->frc1)*i->yfrc0+(curs[i->sofs[2]+n]*i->frc0+curs[i->sofs[3]+n]*i->frc1)*i->yfrc1;
+            //if (c < 0) c = 0; else if (c > 255) c = 255;
+            //dclr |= (c<<(n*8));
+            dclr |= ((c&0xff)|(255-((-(int)(c < 256))>>24)))<<(n*8); //K8 WARNING! ABSOLUTELY NON-PORTABLE AND CAUSES UB!
           }
-          dp += 4;
+          *dp++ = dclr;
           ++i;
         }
         DestPtr += ScreenYMove;
