@@ -13,6 +13,8 @@ thunderhammer /* meleeweapon-> */
     MaterialConfigChances = { 5, 250, 25, 25, 25, 5; }
     BaseEmitation = 0;
     EnchantmentPlusChance = 4;
+    DefaultSecondaryVolume = 300;
+    SecondaryMaterialConfig == FIR_WOOD;
   }
 
   Config HAMMER;
