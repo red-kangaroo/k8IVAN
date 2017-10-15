@@ -101,7 +101,6 @@ void ivanconfig::ResModDisp (const numberoption *O, festring &Entry) {
 
 truth ivanconfig::ResModChangeIntf (numberoption *O) {
   iosystem::ScrollBarQuestion(CONST_S("Set new multiplier value (0-10, '<' and '>' move the slider):"), GetQuestionPos(), O->Value, 1, 0, 10, O->Value, WHITE, LIGHT_GRAY, DARK_GRAY, game::GetMoveCommandKey(KEY_LEFT_INDEX), game::GetMoveCommandKey(KEY_RIGHT_INDEX), !game::IsRunning(), static_cast<scrollbaroption*>(O)->BarHandler);
-  //if (game::IsRunning()) igraph::BlitBackGround(v2(16, 6), v2(game::GetScreenXSize() << 4, 23));
   return false;
 }
 
@@ -109,18 +108,15 @@ void ivanconfig::ResModChanger (numberoption *O, sLong What) {
   if (What < 0) What = 0;
   if (What > 10) What = 10;
   O->Value = What;
-  //CalculateContrastLuminance();
+  graphics::ReinitMode(What);
 }
 
 void ivanconfig::ResModHandler (sLong Value) {
   ResModChanger(&DoubleResModifier, Value);
-  /*
-  ContrastChanger(&Contrast, Value);
   if (game::IsRunning()) {
     game::GetCurrentArea()->SendNewDrawRequest();
     game::DrawEverythingNoBlit();
   }
-  */
 }
 
 

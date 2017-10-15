@@ -302,6 +302,27 @@ void graphics::SwitchMode () {
 }
 
 
+void graphics::ReinitMode (sLong adresmod) {
+  if (adresmod < 0) adresmod = 0; else if (adresmod > 10) adresmod = 10;
+  dblRes = (adresmod > 0);
+  if (adresmod == 10) DIVISOR = 2.0f; else DIVISOR = 1.0f+(adresmod/10.0f);
+  origDblRes = dblRes;
+
+  feuLong Flags;
+  if (Screen->flags&SDL_FULLSCREEN) {
+    dblRes = false;
+    //Flags = SDL_SWSURFACE|SDL_FULLSCREEN;
+    return; // nothing to do here, really
+  }
+  Flags = SDL_SWSURFACE;
+
+  Screen = SDL_SetVideoMode(fixVal(Res.X), fixVal(Res.Y), ColorDepth, Flags);
+  if (dblRes) buildKernel(Res.X, Res.Y); else freeKernel();
+  bufc32 = (unsigned char*)realloc(bufc32, fixVal(Res.X)*fixVal(Res.Y)*4);
+  BlitDBToScreen();
+}
+
+
 void graphics::LoadDefaultFont (cfestring &FileName) {
   DefaultFont = new rawbitmap(FileName);
 }

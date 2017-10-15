@@ -38,6 +38,7 @@ public:
   static void LoadDefaultFont (cfestring &FileName);
   static rawbitmap *GetDefaultFont () { return DefaultFont; }
   static void SetSwitchModeHandler (void (*What)()) { SwitchModeHandler = What; }
+  static void ReinitMode (sLong adresmod);
 
 private:
   static void (*SwitchModeHandler)();
