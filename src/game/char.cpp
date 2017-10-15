@@ -5642,7 +5642,7 @@ void character::PrintBeginParasitizedMessage () const {
 
 
 void character::PrintEndParasitizedMessage () const {
-  if (IsPlayer()) ADD_MESSAGE("A feeling of sLong welcome emptiness overwhelms you.");
+  if (IsPlayer()) ADD_MESSAGE("A feeling of long welcome emptiness overwhelms you.");
 }
 
 
@@ -7585,7 +7585,7 @@ truth character::TryToTalkAboutScience () {
       ADD_MESSAGE("You are drawn into a heated argument regarding %s with %s.", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
       break;
     case 8:
-      ADD_MESSAGE("%s delivers a sLong monologue concerning eg. %s.", CHAR_DESCRIPTION(DEFINITE), Science.CStr());
+      ADD_MESSAGE("%s delivers a long monologue concerning eg. %s.", CHAR_DESCRIPTION(DEFINITE), Science.CStr());
       break;
     case 9:
       ADD_MESSAGE("You dive into a brief but thought-provoking debate over %s with %s", Science.CStr(), CHAR_DESCRIPTION(DEFINITE));
