@@ -6,7 +6,7 @@ mangoseedling
   NameSingular = "seedling of a holy mango tree";
   NamePlural = "seedlings of a holy mango tree";
   FormModifier = 15;
-  AttachedGod = VALPURUS;
+  //AttachedGod = VALPURUS; //???
   Possibility = 0;
   Price = 10000;
   MainMaterialConfig == BALSA_WOOD;

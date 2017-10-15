@@ -3467,7 +3467,6 @@ truth character::CheckKick () const {
 int character::GetResistance (int Type) const {
   switch (Type&0xFFF) {
     case PHYSICAL_DAMAGE:
-    case SOUND:
     case DRAIN:
     case MUSTARD_GAS_DAMAGE:
     case PSI:
@@ -3477,6 +3476,7 @@ int character::GetResistance (int Type) const {
     case POISON: return GetPoisonResistance();
     case ELECTRICITY: return GetElectricityResistance();
     case ACID: return GetAcidResistance();
+    case SOUND: return GetSoundResistance();
   }
   ABORT("Resistance lack detected!");
   return 0;

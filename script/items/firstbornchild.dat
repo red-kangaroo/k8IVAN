@@ -8,6 +8,8 @@ firstbornchild
   DefaultSecondaryVolume = 75; /* cloth */
   SecondaryMaterialConfig == FABRIC;
 
+  WieldedBitmapPos = 176, 384; //???
+
   StrengthModifier = 40;
   BitmapPos = 80, 144;
   MainMaterialConfig == HUMAN_FLESH;

@@ -10,8 +10,8 @@ gasgrenade
   Possibility = 75;
   Price = 50;
   MainMaterialConfig == IRON;
-  SecondaryMaterialConfig = { 4, MUSTARD_GAS, SKUNK_SMELL, FART, MAGIC_VAPOUR; }
-  MaterialConfigChances = { 4, 50, 10, 1, 10; }
+  SecondaryMaterialConfig = { 5, MUSTARD_GAS, SKUNK_SMELL, FART, MAGIC_VAPOUR, EVIL_WONDER_STAFF_VAPOUR; }
+  MaterialConfigChances = { 5, 50, 10, 1, 10, 1; }
   Adjective = "dwarven";
   Alias == "gas grenade";
   IsThrowingWeapon = true;

@@ -6,7 +6,8 @@ chastitybelt
   DefaultMainVolume = 125;
   StrengthModifier = 60;
   BitmapPos = 80, 80;
-  Adjective = "chastity";
+  //Adjective = "chastity";
+  NameSingular = "chastity belt";
   MainMaterialConfig == IRON;
   Roundness = 50;
   WieldedBitmapPos = 160, 128;

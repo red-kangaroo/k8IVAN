@@ -1,6 +1,6 @@
 scrollofenchantweapon /* scroll-> */
 {
-  Possibility = 60; /* CLIVAN; old: 40 */
+  Possibility = 40; /* CLIVAN: 60 */
   Price = 250;
   PostFix = "of enchant weapon";
   AttachedGod = SOPHOS;

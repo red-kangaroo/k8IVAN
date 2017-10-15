@@ -1,14 +1,15 @@
 pantheonbook /* holybook-> */
 {
   DefaultSize = 30;
-  Possibility = 5; /* CLIVAN; old: 1 */
+  Possibility = 1; /* CLIVAN: 5 */
   Category = BOOK;
   DefaultMainVolume = 2500;
   StrengthModifier = 150;
   BitmapPos = 32, 32;
   FormModifier = 20;
   Adjective = "large and mysterious";
-  NameSingular = "saga of the pantheon";
+  NameSingular = "saga";
+  PostFix = "of the pantheon";
   ArticleMode = FORCE_THE;
   MainMaterialConfig == PARCHMENT;
   Price = 500;

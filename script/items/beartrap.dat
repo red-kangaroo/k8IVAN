@@ -1,6 +1,6 @@
 beartrap
 {
-  MainMaterialConfig == IRON;
+  //???MainMaterialConfig == IRON;
   NameSingular = "bear trap";
   Possibility = 100;
   /* Program overrides BitmapPos always */

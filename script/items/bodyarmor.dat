@@ -213,8 +213,8 @@ bodyarmor /* armor-> */
     BitmapPos = 0, 352;
     FormModifier = 20;
     MainMaterialConfig = { 6, NYMPH_HAIR, OMMEL_HAIR, IRON, STEEL, METEORIC_STEEL, DRAGON_HIDE; }
-    // commented; CLIVAN; -- MaterialConfigChances = { 6, 250, 100, 250, 100, 25, 10; }
-    MaterialConfigChances = { 6, 250, 100, 0, 100, 25, 10; }
+    MaterialConfigChances = { 6, 250, 100, 250, 100, 25, 10; } // CLIVAN
+    // MaterialConfigChances = { 6, 250, 100, 0, 100, 25, 10; }
     EnchantmentPlusChance = 10;
     InElasticityPenaltyModifier = 25;
     TorsoArmorBitmapPos = 32, 496;

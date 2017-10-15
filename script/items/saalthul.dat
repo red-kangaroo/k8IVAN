@@ -6,7 +6,7 @@ saalthul
   DefaultMainVolume = 60;
   DefaultSecondaryVolume = 20;
   BitmapPos = 48, 240;
-  FormModifier = 190; /* CLIVAN; old: 200 */
+  FormModifier = 200; /* CLIVAN: 190 */
   StrengthModifier = 135;
   Adjective = "short";
   NameSingular = "sword";
@@ -27,7 +27,7 @@ saalthul
 
   Config BROKEN;
   {
-    Possibility = 0; /* CLIVAN; old: 2 */
+    Possibility = 2; /* CLIVAN: 0 */
     BitmapPos = 48, 272;
     Price = 100;
     GearStates = 0;

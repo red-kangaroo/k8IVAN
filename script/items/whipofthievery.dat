@@ -4,7 +4,7 @@ whipofthievery /* meleeweapon->whip-> */
   Possibility = 10;
   DefaultMainVolume = 1000;
   DefaultSecondaryVolume = 50;
-  StrengthModifier = 20; /* CLIVAN; old: 30 */
+  StrengthModifier = 30; /* CLIVAN: 20 */
   NameSingular = "whip";
   PostFix = "of thievery";
   MainMaterialConfig == NYMPH_HAIR;

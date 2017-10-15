@@ -146,6 +146,7 @@ struct itemdatabase : public databasebase
   int PoisonResistance;
   int ElectricityResistance;
   int AcidResistance;
+  int SoundResistance;
   int StrengthModifier;
   int FormModifier;
   int DefaultSize;
@@ -347,6 +348,7 @@ class item : public object
   DATA_BASE_VALUE(int, PoisonResistance);
   DATA_BASE_VALUE(int, ElectricityResistance);
   DATA_BASE_VALUE(int, AcidResistance);
+  DATA_BASE_VALUE(int, SoundResistance);
   DATA_BASE_VALUE(int, StrengthModifier);
   virtual DATA_BASE_VALUE(int, FormModifier);
   DATA_BASE_VALUE(int, DefaultSize);

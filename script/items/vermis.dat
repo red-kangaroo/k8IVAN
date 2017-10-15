@@ -1,11 +1,11 @@
 vermis /* meleeweapon-> */
 {
   DefaultSize = 220;
-  Possibility = 1; /* CLIVAN; old: 3 */
+  Possibility = 3; /* CLIVAN: 1 */
   WeaponCategory = POLE_ARMS;
   StrengthModifier = 100;
   BitmapPos = 16, 144;
-  FormModifier = 200; /* CLIVAN; old: 300 */
+  FormModifier = 300; /* CLIVAN: 200 */
   DefaultMainVolume = 60;
   DefaultSecondaryVolume = 1000;
   Adjective = "runed";
@@ -28,7 +28,7 @@ vermis /* meleeweapon-> */
 
   Config BROKEN;
   {
-    Possibility = 0; /* CLIVAN; old: 2 */
+    Possibility = 2; /* CLIVAN: 0 */
     BitmapPos = 32, 224;
     Price = 100;
     WieldedBitmapPos = 176, 96;

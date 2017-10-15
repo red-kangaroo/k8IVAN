@@ -1,7 +1,6 @@
 itemcontainer
 {
   CanBeGeneratedInContainer = false;
-  Roundness = 60;
   IsTwoHanded = true;
   FormModifier = 15;
   MainMaterialConfig == FIR_WOOD;

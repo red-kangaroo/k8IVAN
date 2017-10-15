@@ -19,13 +19,13 @@ turox /* meleeweapon-> */
   CanBeCloned = false;
   CanBeMirrored = true;
   Price = 250;
-  AttachedGod = CRUENTUS;
+  AttachedGod = LEGIFER; //community: CRUENTUS;
   WieldedBitmapPos = 160, 192;
   EnchantmentPlusChance = 2;
 
   Config BROKEN;
   {
-    Possibility = 0; /* CLIVAN; old: 3 */
+    Possibility = 3; /* CLIVAN: 0 */
     BitmapPos = 32, 112;
     Price = 50;
     WieldedBitmapPos = 176, 192;
