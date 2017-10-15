@@ -58,4 +58,22 @@ zombie
     CanBeGenerated = false;
     CreateUndeadConfigurations = false;
   }
+
+  Config IMPRISONED_ZOMBIE;
+  {
+    PostFix = "prisoner";
+    Sex = MALE;
+    IsImmuneToLeprosy = true;
+    CanBeGenerated = false;
+    CreateUndeadConfigurations = false;
+    IsMasochist = true;
+    FriendlyReplies :=
+    {
+      "\"Mighty Petrus said: 'Eating brainz is bad.'\"",
+      "\"I got off lightly - only three life sentences!\"",
+      "\"Poems while you wait! Pay one brain, get one poem and one for free!\"",
+      "\"My CV? I was a poet before I became a zombie. Then I worked as a mook, but quickly switched to freelance cannibal. And now I'm a prisoner.\"";
+    }
+    DeathMessage = "@Dd is slain (finally).";
+  }
 }

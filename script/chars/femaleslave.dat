@@ -63,4 +63,85 @@ femaleslave
     }
     AutomaticallySeen = true;
   }
+
+  Config IMPRISONED_FEMALE;
+  {
+    NameSingular = "prisoner";
+    CanBeGenerated = false;
+    AttachedGod = DULCIS;
+    RightWielded = 0;
+    IsMasochist = true;
+    FriendlyReplies :=
+    {
+      "\"It hurt me more than it did her.\"",
+      "\"I just wanted everything to be right.\"",
+      "\"It wasn't supposed to happen that way.\"",
+      "\"I wanted to help Him realize the truth.\"",
+      "\"It was her or me.\"",
+      "\"I thought He would understand.\"",
+      "\"Now we can be together.\"",
+      "\"It was for her own good.\"";
+    }
+    UndeadVersions = false;
+  }
+
+  Config JESTER;
+  {
+    DefaultDexterity = 15;
+    DefaultAgility = 20;
+    DefaultIntelligence = 25;
+    DefaultWisdom = 30;
+    HairColor = rgb16(51, 51, 255);
+    TorsoMainColor = rgb16(255, 0, 0);
+    ArmMainColor = rgb16(0, 204, 0);
+    LegMainColor = rgb16(255, 255, 102);
+    TorsoBitmapPos = 32, 160;
+    ArmBitmapPos = 64, 160;
+    LegBitmapPos = 0, 128;
+    Adjective = "court";
+    NameSingular = "jester";
+    AttachedGod = DULCIS;
+    RightWielded = 0;
+    CanBeGenerated = false;
+    DeathMessage = "@Dd laughs for the last time and dies.";
+    FriendlyReplies :=
+    {
+      "@Dd imitates you.",
+      "\"What kind of bread do dwarves make? Well, short bread, of course.\"",
+      "\"Kobolds are a living proof that the gods have a sense of humor.\"",
+      "\"Did you hear about that wizard who was arrested for drunk-casting? He had his magic license evoked!\"",
+      "\"What has two legs and bleeds? Half a goblin.\"",
+      "\"An orc told me that a thought crossed his mind once. It must have been a long and lonely journey.\"",
+      "\"Why do dragons sleep all day? So they can fight knights.\"",
+      "\"How do you escape from a dwarf? Step on a chair.\"",
+      "\"Why didn't the skeleton cross the road? He didn't have the guts.\"",
+      "\"A skeleton walks into a bar... and orders a beer and a mop.\"",
+      "\"What's the difference between a slave and a bench? A bench can support a family.\"",
+      "\"What do you call a knight who is too afraid to fight? Sir Render.\"",
+      "\"It's not that I don't like kobolds. I just that I can't finish a whole one.\"",
+      "\"Why should you never ask a dwarf to pay for drinks? Because he's always a little short.\"",
+      "\"A sage was once asked by an orc general what did he think about orcish civilization. The sage replied: 'Yes, that would be a great idea.'\"",
+      "\"A woman comes home to find her husband in bed with a female dwarf. She screams at him: 'You said you wouldn't cheat on me anymore!' He replies: 'I know. Can't you see I'm trying to cut it down?'\"",
+      "\"Why do dwarven songs sound better by candlelight? You can shove the wax in your ears.\"",
+      "\"An elf, a man and a dwarf order an ale, but there is a fly in each tankard. When the elf notices it, he pours his ale out in disgust. The man picks the fly out and drinks the ale. The dwarf picks the fly out, holds it legs-up and shouts: 'Spit it back, ye' li'l blight!'\"",
+      "\"A blind elf walks into a bar, sits down and says: 'Do you want to hear a dwarf joke?' A voice beside him growls: 'Before you tell a dwarf joke, know that the bartender is a dwarf, the guard is a dwarf, I am a dwarf and my two companions are dwarves. Do you still want to tell your joke?!' The blind elf thinks for a moment and then replies: 'No, not if I have to explain it five times.'\"",
+      "\"If ugly was a crime the entire orcish race would have rotted in the dungeons long ago. Oh, wait a minute...\"",
+      "\"An orc, a barbarian and a blood-thirsty savage entered a bar... and that was just the first person!\"",
+      "\"What do you call an orc with half a brain? Gifted.\"",
+      "\"Two orc hunters went bear hunting. They came upon a fork in a road where a sign read 'BEAR LEFT'. And so they went home. And do you know what's the funny part? That any orc could read!\"",
+      "\"How do orcs name their children? They throw them down the stairs and wait what noise they make.\"",
+      "\"In a battle of wits, an orc is unarmed, blind and lame.\"",
+      "\"How many kobolds do you need to paint a room? Only one if you throw him really hard.\"",
+      "\"An orc walks into a bar with a parrot on his shoulder. Impressed by such a strange sight the barkeep says: 'An incredible beast, can he talk?' To which the parrot responds: 'Barely.'\"",
+      "\"A dwarf walks out of a bar... Hey, it *could* happen!\"",
+      "\"What did the human say when he walked into a dwarf bar? 'Argh, my head!'\"",
+      "\"What do you call an elf that can count past ten? Barefoot.\"",
+      "\"Why are rogues so sneaky? Because their armor is literally made of hide.\"",
+      "\"Did you hear about that knight who fell from the tallest tower in the castle and lived? They called him Sir Vive.\"",
+      "\"What do you call a group of witches in a hot spring? A self-cleaning coven.\"",
+      "\"An elf, a man and an orc walk into a bar. The dwarf walks under it.\"",
+      "\"Why was the wizard late for work? He was up all night playing with his staff.\"",
+      "\"It is true that orcs sleep with horses. If you've seen their women, you'll know why.\"";
+    }
+  }
 }

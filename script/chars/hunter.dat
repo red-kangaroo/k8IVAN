@@ -83,4 +83,31 @@ hunter
   ScienceTalkIntelligenceRequirement = 6;
   ScienceTalkWisdomRequirement = 3;
   IsSadist = true;
+
+  Config IMPRISONED_HUNTER;
+  {
+    UsesLongAdjectiveArticle = true;
+    Adjective = "imprisoned";
+    CanBeGenerated = false;
+    AttributeBonus = -10;
+    TotalVolume = 72000;
+    Helmet = 0;
+    BodyArmor = 0;
+    RightWielded = 0;
+    KnownCWeaponSkills = { 2, UNARMED, POLE_ARMS; }
+    Inventory == bone;
+    IsMasochist = true;
+    HostileReplies == "\"Prison, torture and starvation didn't kill me, neither will you!\"";
+    FriendlyReplies :=
+    {
+      "\"Where's my arm? Gah, ask the master torturer!\"",
+      "\"I'm innocent! That guy ran onto my spear! Twenty seven times. From behind.\"",
+      "\"I was the Great White Hunter. Oh, how I miss the old days of ceaseless slaughter! Eh-heh heh.\"",
+      "\"It wasn't my fault. That bastard had it coming. He should have remembered the rules: No kill stealing!\"",
+      "\"I miss hunting. Sometimes I tear open my own flesh, just to see the vivid red of blood on my hands again. Eh-heh heh heh.\"";
+    }
+    UndeadVersions = false;
+    ScienceTalkIntelligenceModifier = 10;
+    ScienceTalkWisdomModifier = 5;
+  }
 }

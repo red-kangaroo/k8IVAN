@@ -7,6 +7,19 @@ priest
   MoveType = WALK|SWIM;
   IsAbstract = true;
   Inventory == potion { Times = 2; SecondaryMaterial = ANTIDOTE_LIQUID; }
+  FriendlyReplies :=
+  {
+    "\"May @Gd be with you.\"",
+    "\"Bless thee, child.\"",
+    "@Dd smiles at you in a comforting manner.";
+  }
+  HostileReplies :=
+  {
+    "\"Die, infidel!\"",
+    "\"Divine wrath upon thee!\"",
+    "\"Thou shalt pay for thy sins!\"",
+    "\"I shall punish you in the name of @Gd.\"";
+  }
 
   Config CLEPTIA;
   {
@@ -63,6 +76,7 @@ priest
     SkinColor = rgb16(160, 100, 64);
     HairColor = rgb16(80, 48, 32);
     AttachedGod = SILVA;
+    DefaultName = "Florea";
     NameSingular = "priestess";
     PostFix = "of Silva";
     Sex = FEMALE;
@@ -73,11 +87,16 @@ priest
     RightSWeaponSkillHits = 20;
     FriendlyReplies :=
     {
+      /* 4 first are used before revolution */
       "\"Silva is the goddess of nature, who protects all living things. Her earthly manifestation, located in the elven nation of Lunethia, is a giant holy tree which reaches the clouds.\"",
       "\"In the old temple we had a marvellous altar carved from a branch of Silva Herself, but Decos made firewood out of it.\"",
       "\"You cannot contact any god unless you know the right rituals. Alas, I'm unable to teach you any, since after the invasion the Attnamese forbade us to officially worship any god save Valpurus. I can therefore only help you as a healer.\"",
-      "\"With my holy powers, I'm capable of reattaching severed limbs and removing various diseases and poisons. For a price, of course. Should I not bring enough income to the colony, the occupiers would make me a banana grower, too.\"";
+      "\"With my holy powers, I'm capable of reattaching severed limbs and removing various diseases and poisons. For a price, of course. Should I not bring enough income to the colony, the occupiers would make me a banana grower, too.\"",
+      "\"Truly, you must have been sent by Silva herself! We can finally rebuild the old temple and our lives.\"",
+      "\"I cannot thank you enough for freeing us, but I'm afraid I must continue to charge for my services.\"",
+      "\"Do not forget us, fair hero. It is a matter of time before word reaches the High Priest and I'm afraid of what he may do in his displeasure.\"";
     }
+    DeathMessage = "@Dd dies, whispering: \"I'm sorry! I failed you, Silva.\"";
     AutomaticallySeen = true;
   }
 
@@ -141,9 +160,11 @@ priest
     LegBitmapPos = 0, 32;
     TotalVolume = 100000;
     TotalSize = 180;
+    DefaultName = "Verax";
     AttachedGod = VALPURUS;
     PostFix = "of Valpurus";
     Helmet = MITHRIL helmet { Enchantment = 2; }
+    Amulet = amulet(AMULET_OF_ESP);
     BodyArmor = MITHRIL bodyarmor(CHAIN_MAIL) { Enchantment = 2; }
     Cloak = NYMPH_HAIR cloak { Enchantment = 2; }
     Belt = NYMPH_HAIR belt { Enchantment = 2; }
@@ -153,6 +174,177 @@ priest
     KnownCWeaponSkills == BLUNT_WEAPONS;
     CWeaponSkillHits == 50;
     RightSWeaponSkillHits = 20;
-    FriendlyReplies == "@Dd talks to you: \"Valpurus the Great Frog is the highest of all gods. The Wise know that the world is really a square pancake which He carries on His back. This is why this Cathedral and the whole city of Attnam is dedicated to His worship.\" \"In thy prayers thou must understand He is a busy god who knows His importance. He will not help newbies. Thou shouldst only pray Him when He hath called thee a Champion!\"";
+    FriendlyReplies :=
+    {
+      "@Dd talks to you: \"Valpurus the Great Frog is the highest of all gods. The Wise know that the world is really a square pancake which He carries on His back. This is why this Cathedral and the whole city of Attnam is dedicated to His worship.\"",
+      "\"The souls of the virtuous, the devout and the faithful bath forever in the radiant glory of Valpurus and sing praises on His greatness. The souls of sinners, heretics and unbelievers are swallowed by Mortifer and damned to relive their worst nightmares for all eternity!\"",
+      "\"The Cathedral of Valpurus has no windows, for it is written in the Holy Book of Valpurus: 'Windows is Evil.'\"",
+      "\"I am the Cardinal of Truth, therefore everything I say is truth.\"",
+      "\"Repeat after me: 1 + 1 = 3.\"",
+      "\"Repeat after me: War is Peace.\"",
+      "\"Repeat after me: Freedom is Slavery.\"",
+      "\"Repeat after me: Ignorance is Strength.\"",
+      "\"Hail mighty Petrus!\"",
+      "\"Ad maiorem Valpuri gloriam.\"",
+      "\"Thou shalt not suffer a witch to live! Mystic frogs are OK, though.\"",
+      "\"Thus spake Valpurus: 'I am the King of Gods, Valpurus. Thou shalt praise no other gods before me.\"",
+      "@Dd smirks: \"I would not wish to startle you, but thanks to this amulet, I will always know if you're telling me the truth.\"",
+      "@Dd frowns: \"In thy prayers thou must understand Valpurus is a busy god who knows His importance. He will not help newbies. Thou shouldst only pray to Him when He hath called thee a Champion!\"";
+    }
+    HostileReplies :=
+    {
+      "\"Cleanse! Purge! Kill!\"",
+      "\"Valpurus guides my weapon.\"",
+      "\"Prepare to meet @Gd, fool!\"",
+      "@Dd sighs: \"Infidels to the left, heathens to the right. Tremendous.\"";
+    }
+  }
+
+  Config INFUSCOR;
+  {
+    DefaultArmStrength = 20;
+    DefaultLegStrength = 20;
+    DefaultDexterity = 16;
+    DefaultAgility = 16;
+    DefaultEndurance = 14;
+    DefaultPerception = 24;
+    DefaultIntelligence = 25;
+    DefaultWisdom = 25;
+    DefaultCharisma = 20;
+    DefaultMana = 25;
+    TotalVolume = 60000;
+    TotalSize = 170;
+    HeadBitmapPos = 112, 0;
+    TorsoBitmapPos = 32, 208;
+    ArmBitmapPos = 64, 208;
+    LegBitmapPos = 0, 144;
+    SkinColor = rgb16(64, 0, 128);
+    HairColor = rgb16(64, 0, 64);
+    EyeColor = rgb16(128, 0, 64);
+    AttachedGod = INFUSCOR;
+    DefaultName = "Praecantrix";
+    NameSingular = "priestess";
+    PostFix = "of Infuscor";
+    Sex = FEMALE;
+    Helmet = METEORIC_STEEL helmet { Enchantment = 2; }
+    BodyArmor = METEORIC_STEEL bodyarmor(CHAIN_MAIL) { Enchantment = 2; }
+    Cloak = OMMEL_HAIR cloak { Enchantment = 2; }
+    Belt = OMMEL_HAIR belt { Enchantment = 2; }
+    RightWielded = EBONY_WOOD wondersmellstaff { Enchantment = 3; }
+    RightGauntlet = OMMEL_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = OMMEL_HAIR boot { Enchantment = 2; }
+    Inventory == wand(WAND_OF_NECROMANCY);
+    KnownCWeaponSkills == BLUNT_WEAPONS;
+    CWeaponSkillHits == 50;
+    RightSWeaponSkillHits = 20;
+    FriendlyReplies :=
+    {
+      "\"Our lord Xinroch was the greatest and most powerful grand master dark knight to ever live.\"",
+      "\"Xinroch was highly successful in all his campaigns, and it was during his life that the Unholy Order of the Dark Knights truly flourished.\"",
+      "\"This Tomb was erected on the battlefield where Xinroch was slain, to honor and guard his grave against all who would wish to disturb his last sleep or defile his memory. Let his majestic glory never be forgotten!\"",
+      "\"I know it is possible to bring our lord Xinroch back. Whether it takes magic or miracle, he will lead his faithful again!\"",
+      "\"Praised be Infuscor!\"",
+      "\"Souls for Infuscor!\"",
+      "\"All hail our mighty lord Xinroch.\"";
+      "\"One of these days I'll summon our lord Xinroch back, and Chaos will reign forever!\"",
+      "\"Oh, you like my tattoos? Every priest of Infuscor gets them as a part of their ordination. A holy purple ink is used to tattoo the entirety of the holy book of Infuscor over the initiate's body, so that the wise words may guide them through the rest of their lives.\"",
+      "\"Can't you see I'm busy, infidel?\"";
+    }
+    UndeadVersions = false;
+  }
+
+  Config LEGIFER; /* paladin */
+  {
+    DefaultArmStrength = 23;
+    DefaultLegStrength = 23;
+    DefaultDexterity = 37;
+    DefaultAgility = 37;
+    DefaultEndurance = 30;
+    DefaultPerception = 35;
+    DefaultIntelligence = 25;
+    DefaultWisdom = 37;
+    DefaultCharisma = 55;
+    DefaultMana = 30;
+    HairColor = rgb16(140, 60, 60);
+    EyeColor = rgb16(4, 93, 28);
+    ClothColor = rgb16(224, 224, 224);
+    HeadBitmapPos = 96, 112;
+    TorsoBitmapPos = 32, 128;
+    ArmBitmapPos = 64, 80;
+    LegBitmapPos = 0, 64;
+    TotalVolume = 40000;
+    TotalSize = 165;
+    Helmet = MITHRIL helmet(FULL_HELMET);
+    Amulet = BLUE_CRYSTAL amulet(AMULET_OF_WARDING);
+    BodyArmor = MITHRIL bodyarmor(PLATE_MAIL);
+    Cloak = ANGEL_HAIR cloak(CLOAK_OF_ELECTRICITY_RESISTANCE);
+    Belt = MITHRIL belt;
+    RightWielded = MITHRIL thunderhammer { Enchantment = 2; }
+    LeftWielded = MITHRIL shield { Enchantment = 2; }
+    RightRing = ring(RING_OF_TELEPORT_CONTROL);
+    LeftRing = ring(RING_OF_INFRA_VISION);
+    RightGauntlet = ANGEL_HAIR gauntlet { Enchantment = 2; }
+    RightBoot = MITHRIL boot { Enchantment = 2; }
+    DefaultName = "Lady Decora";
+    Adjective = "shining";
+    NameSingular = "knight";
+    PostFix = "of Legifer";
+    AttachedGod = LEGIFER;
+    Sex = FEMALE;
+    AttackStyle = USE_ARMS|USE_LEGS;
+    KnownCWeaponSkills = { 4, UNARMED, KICK, BLUNT_WEAPONS, SHIELDS; }
+    CWeaponSkillHits = { 4, 200, 200, 500, 500; }
+    RightSWeaponSkillHits = 200;
+    LeftSWeaponSkillHits = 200;
+    PanicLevel = 0; /* paladins are immune to fear */
+    TamingDifficulty = 35;
+    IsUnique = true;
+    IsNameable = false;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    CanBeGenerated = false;
+    UndeadVersions = false;
+    IsImmuneToLeprosy = true; /* paladins are immune to diseases */
+    FriendlyReplies :=
+    {
+      "\"Legifer is the All-Seeing Sun. He sees and remembers every your deed until you die and are judged at the Last Court of Heavens.\"",
+      "\"Judge, but do not condemn. Anybody can be redeemed.\"",
+      "\"I am one of the last Shining Knights. And now I am stuck in this place, because the High Priest won't let me leave, nor will he allow me to do anything.\"",
+      "\"The Order of the Shining Knights was founded by my forebears to fight the Dark Knights of Xinroch.\"",
+      "\"The Shining Knights once were a proud and powerful order, but after the fateful defeat at the Fortress of Prym, only a handful of wandering knights remained.\"",
+      "\"The mantle of a Shining Knight is passed down in a family. I was bequeathed knighthood by my mother, who succeeded her father, and so on since the days of Prym.\"",
+      "\"All Shining Knights bear the symbol of the All-Seeing Sun, for Legifer guides us in our wanderings.\"",
+      "\"Every Shining Knight wields an enchanted mace. A legend goes that during the battle of Prym, Legifer blessed the mace of every His knight and named them all Turox.\"",
+      "\"My mother died a hero, protecting a village from an elven onslaught. Alas, our family heritage, the blessed mace 'Turox', was lost with her death.\"",
+      "\"This hammer was forged for me by a good friend. When he was but a baby, he lost his home. Yet he managed to revive all the craft and artistry of the destroyed dwarven city of Khaz-zadm and I will hold this hammer against all evil to honor the legacy of his people.\"",
+      "\"Legifer helps us find and uproot all evil. May His holy flames scorch all sins away.\"",
+      "\"I will pray for you and good luck in your quest. May His holy flames guide your way.\"",
+      "\"I was sent to Attnam by a vision from Legifer. I didn't understand at first, but now... Now I'm starting to see.\"",
+      "\"There is no being so evil that the light of His holy flames cannot reach them and raise them up.\"",
+      "\"The four Cardinals... Foul thoughts blacken the soul, but sometimes, I can't help myself.\"";
+    }
+    HostileReplies :=
+    {
+      "\"You can still come back. If you are willing, I can help you.\"",
+      "\"Please. I beg of you, lay down your weapons.\"",
+      "\"If you refuse to seek repentance in this life, then I pray you seek it in the next.\"",
+      "\"There is still good in you! I can feel it. It's not too late to turn back.\"",
+      "\"If you strike me down, know that I will blaze a trail to the Heavens for you and pray that you will someday join me there.\"",
+      "\"I'm sorry. I'm sorry for you.\"";
+    }
+    DeathMessage = "@Dd dies with a last few words: \"I forgive you.\"";
+    ScienceTalkPossibility = 10;
+    ScienceTalkIntelligenceModifier = 15;
+    ScienceTalkWisdomModifier = 15;
+    ScienceTalkCharismaModifier = 15;
+    ScienceTalkIntelligenceRequirement = 20;
+    ScienceTalkWisdomRequirement = 20;
+    ScienceTalkCharismaRequirement = 20;
+    ScienceTalkName :=
+    {
+      "knighthood", "law", "chivalry", "honorable death", "divine truths",
+      "history", "moral code", "divine wisdom", "warfare", "secret teachings",
+      "tradition", "knightly orders", "heraldry", "quests", "genealogy";
+    }
   }
 }

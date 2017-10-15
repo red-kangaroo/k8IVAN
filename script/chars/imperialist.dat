@@ -117,4 +117,131 @@ imperialist
   ScienceTalkCharismaRequirement = 15;
   IsSadist = true;
   UndeadVersions = false;
+
+  Config MASTER_TORTURER;
+  {
+    DefaultWisdom = 25;
+    DefaultCharisma = 10;
+    HeadBitmapPos = 96, 64;
+    TorsoBitmapPos = 48, 48;
+    LegBitmapPos = 0, 48;
+    TorsoMainColor = rgb16(30, 30, 30);
+    LegMainColor = rgb16(30,30,30);
+    SkinColor = rgb16(255, 222, 202);
+    CapColor = rgb16(50, 50, 50);
+    Helmet = BLACK_LEATHER helmet { Enchantment = 2; }
+    Amulet = amulet(AMULET_OF_ESP);
+    Cloak = BLACK_LEATHER cloak { Enchantment = 2; }
+    BodyArmor = BLACK_LEATHER bodyarmor(PLATE_MAIL) { Enchantment = 3; }
+    Belt = BLACK_LEATHER belt { Enchantment = 2; }
+    RightRing = ring(RING_OF_FIRE_RESISTANCE);
+    RightWielded = BLACK_LEATHER whip(RUNED_WHIP) { Enchantment = 3; }
+    LeftWielded = BLACK_LEATHER whip(RUNED_WHIP) { Enchantment = 3; }
+    RightGauntlet = BLACK_LEATHER gauntlet { Enchantment = 1; }
+    RightBoot = BLACK_LEATHER boot(BOOT_OF_KICKING) { Enchantment = 3; }
+    NameSingular = "master torturer";
+    DefaultName = "Migel Decos";
+    AttachedGod = CRUENTUS;
+    HostileReplies == "\"All you can do is hurt me. And I *love* hurting!\"";
+    FriendlyReplies :=
+    {
+      "@Dd smiles. It's terrifying.",
+      "@Dd sighs: \"Why don't the prisoners understand it's for their own good?\"",
+      "@Dd looks smug. \"I'm the head of the Citizen Purification Committee.\"",
+      "\"I would love to break your arms, one bone at a time.\"",
+      "\"When I'm sad I stop being sad and go torture someone instead.\"",
+      "\"Bazzaria, ah, home sweet home! You can buy there everything and anything, for the right price.\"",
+      "@Dd smiles: \"How many lights do you see?\"",
+      "\"Bazzaria is a land of possibility and opportunity, where every man can live his dream. Women, children and slaves not so much.\"",
+      "\"New Attnam? Yes, my brother is a viceroy there.\"",
+      "\"When I arrived to Attnam, Petrus immediately recognized my skills and appointed me the Cardinal of Love.\"",
+      "\"I was tasked with re-education of thought-criminals by mighty Petrus himself!\"";
+    }
+    DeathMessage = "@Dd screams, dying: \"I see the door! The extasy of death! I'm coming!\"";
+    ScienceTalkName :=
+    {
+      "impalement", "mock executions", "phobias", "torture", "disembowelment",
+      "whipping", "interrogation", "sleep deprivation", "brazen bulls", "disfigurement",
+      "masochism", "dentistry", "maiming", "beating", "blinding",
+      "boiling alive", "breaking bones", "branding", "forced abortion", "castration",
+      "testicle crushing", "waterboarding", "anatomy", "pain", "agony",
+
+      "strangling", "combing", "cutting", "denailing", "spanking",
+      "drowning", "flagellation", "flaying", "thumbscrews", "foot roasting",
+      "foot whipping", "forced circumcision", "hamstringing", "scaphism", "kneecapping",
+      "iron maidens", "stocks", "wooden horses", "dunking", "tablillas",
+      "kneehauling", "mutilation", "pitchcapping", "rape", "horror",
+
+      "rat torture", "sawing", "scalping", "starving", "strappado",
+      "tickle torture", "tooth extraction", "walling", "breaking wheels", "choke pears",
+      "breast rippers", "heretic forks", "spiked chairs", "pendulums", "pillories",
+      "torture racks", "freezing", "burning", "live burials", "half-hanging",
+      "bamboo torture", "abacination", "hooding", "cangue", "tean zu";
+    }
+    ScienceTalkPossibility = 50;
+    ScienceTalkIntelligenceModifier = 20;
+    ScienceTalkWisdomModifier = 40;
+    ScienceTalkCharismaModifier = 0;
+    ScienceTalkIntelligenceRequirement = 10;
+    ScienceTalkWisdomRequirement = 15;
+    ScienceTalkCharismaRequirement = 0;
+    Inventory == key;
+  }
+
+  Config HOARD_MASTER;
+  {
+    AttributeBonus = -30;
+    DefaultIntelligence = 50;
+    DefaultWisdom = 50;
+    HeadBitmapPos = 96, 80;
+    TorsoBitmapPos = 32, 16;
+    ArmBitmapPos = 64, 16;
+    LegBitmapPos = 0, 32;
+    HairColor = rgb16(160, 160, 160);
+    TorsoMainColor = rgb16(176, 0, 0);
+    LegMainColor = rgb16(176, 0, 0);
+    SkinColor = rgb16(255, 222, 202);
+    CapColor = rgb16(176, 0, 0);
+    ClothColor = rgb16(176, 0, 0);
+    Helmet = FABRIC helmet(HELM_OF_UNDERSTANDING) { Enchantment = 2; }
+    Amulet = amulet(AMULET_OF_ESP);
+    Cloak = FABRIC cloak { Enchantment = 3; }
+    BodyArmor = 0;
+    RightWielded = 0;
+    LeftWielded = 0;
+    LeftRing = 0;
+    RightGauntlet = 0;
+    Belt = FABRIC belt(BELT_OF_CARRYING) { Enchantment = 2; }
+    RightBoot = FABRIC boot { Enchantment = 2; }
+    NameSingular = "hoardmaster";
+    DefaultName = "Thesaurius";
+    KnownCWeaponSkills = { 2, UNARMED, KICK; }
+    CWeaponSkillHits = { 2, 50, 50; }
+    PanicLevel = 95;
+    BaseUnarmedStrength = 200;
+    IsExtraCoward = true;
+    StandVerb = "scowling";
+    HostileReplies == "\"Guards! Guards!\"";
+    FriendlyReplies :=
+    {
+      "\"I was appointed the Cardinal of Plenty because I can juggle the numbers like no one else.\"",
+      "\"It's only thanks to my skills with numbers that the Cathedral's accounting books show a steady economic growth.\"",
+      "\"The citizens have no bread, you say? Let them eat cake!\"",
+      "\"There can be economy only where there is efficiency.\"",
+      "\"The way to turn our economy stronger is not by making rich people poorer, it's by making poor people work harder.\"",
+      "\"It's called political economy because it is has nothing to do with either politics or economy.\"",
+      "\"It is virtually impossible to compete in today's economy without the Cathedral's favor.\"",
+      "\"The Attnamese domination of the local economy is based on its army.\"",
+      "\"A powerful Attnam is coming, and Bazzaria has only two choices: Either they're at the table, or they're on the menu!\"",
+      "\"The trick to strong and stable economy is to work the citizens hard enough they can't afford the luxury of thought.\"";
+    }
+    ScienceTalkPossibility = 20;
+    ScienceTalkIntelligenceModifier = 40;
+    ScienceTalkWisdomModifier = 40;
+    ScienceTalkCharismaModifier = 0;
+    ScienceTalkIntelligenceRequirement = 20;
+    ScienceTalkWisdomRequirement = 20;
+    ScienceTalkCharismaRequirement = 0;
+    Inventory = { 3, GOLD key(HEXAGONAL_LOCK), GOLD scrollofdetectmaterial, GOLD holybook(MELLIS); }
+  }
 }

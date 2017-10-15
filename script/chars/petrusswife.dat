@@ -11,7 +11,6 @@ petrusswife
   DefaultCharisma = 80;
   DefaultMana = 20;
   Sex = FEMALE;
-  ClothColor = rgb16(150, 0, 0);
   BeltColor = rgb16(180, 180, 0);
   TorsoBitmapPos = 32, 160;
   ArmBitmapPos = 64, 160;
@@ -19,8 +18,8 @@ petrusswife
   TotalVolume = 40000;
   TotalSize = 170;
   CanRead = true;
-  NameSingular = "Petrus's wife";
-  NamePlural = "Petrus's wives";
+  NameSingular = "Petrus' wife";
+  NamePlural = "Petrus' wives";
   ArticleMode = NO_ARTICLE;
   IsAbstract = true;
   PanicLevel = 95;
@@ -28,39 +27,155 @@ petrusswife
   IsExtraCoward = true;
   WieldedPosition = 0, -1;
   HostileReplies == "\"Murderer! Just wait until Petrus finds you!\"";
-  FriendlyReplies :=
-  {
-    "\"I'm so sick jealous to those dolphins...\"",
-    "\"I'm Petrus's favorite, not she!\"",
-    "\"Why must Petrus stay in this forest? There isn't even a proper hairdresser here!\"",
-    "\"Being one of six wives is a dream job. Pay is good and you only have to work about one night a week!\"";
-    "\"That head on the wall looks really scary sometimes. Just like we were being watched.\"";
-  }
   AttachedGod = DULCIS;
   WillCarryItems = false;
   IsExtraFragile = true;
-  Belt = chastitybelt(OCTAGONAL_LOCK);
+  Belt = GOLD chastitybelt(OCTAGONAL_LOCK) { Parameters = LOCKED; }
   UndeadVersions = false;
+  ScienceTalkPossibility = 10;
+  ScienceTalkIntelligenceModifier = 2;
+  ScienceTalkWisdomModifier = 2;
+  ScienceTalkCharismaModifier = 5;
+  ScienceTalkIntelligenceRequirement = 10;
+  ScienceTalkWisdomRequirement = 10;
+  ScienceTalkCharismaRequirement = 18;
+  ScienceTalkName :=
+  {
+    "marriage", "luxury", "jewelry", "embroidery", "hobbies",
+    "leisure activities", "festivities", "apparel", "gowns", "boredom";
+  }
 
   Config 1;
   {
     HairColor = rgb16(24, 24, 24);
+    ClothColor = rgb16(4, 93, 28);
     HeadBitmapPos = 112, 0;
     PostFix = "number 1";
+    DefaultIntelligence = 40;
+    DefaultWisdom = 40;
+    HostileReplies == "\"Aut vincere aut mori!\"";
+    FriendlyReplies :=
+    {
+      "\"I'm not Petrus' first wife, only his eldest right now. He outlived nearly a dozen wives by now.\"",
+      "\"Amicus veritas, sed magis amica mihi Petrus.\"",
+      "\"I have written most Attnamese trade agreements, draft bills and international treaties for the past twenty years. But don't tell Petrus, he would be mad.\"",
+      "\"Oh, you come from Tweraif? I've heard so much about local University!\"",
+      "\"You met professor Kaethos?! I have read everything he ever wrote! I would love to meet him some day and discuss his theory of thaumic superunification.\"",
+      "\"I wed Petrus because it made access to education much easier for me. And you know what? I eventually fell in love with him.\"";
+    }
+    DeathMessage = "With calm face, @Dd whispers, dying: \"Dulce et decorum est pro patria mori.\"";
+    ScienceTalkIntelligenceModifier = 25;
+    ScienceTalkWisdomModifier = 25;
+    ScienceTalkIntelligenceRequirement = 20;
+    ScienceTalkWisdomRequirement = 20;
+    ScienceTalkCharismaRequirement = 10;
+    ScienceTalkName :=
+    {
+      "sanitation", "relativity", "physics", "mathematics", "philosophy",
+      "numerology", "slavery", "mechanics", "magicks", "architecture",
+      "archaeology", "logic", "fiction", "questions", "theology",
+      "alchemy", "valpurism", "analysis", "gastronomy", "oceanography",
+      "astronomy", "astrology", "anthropology", "ethics", "linguistics",
+
+      "psychology", "methods", "choreography", "music", "semiotics",
+      "culture", "forestry", "engineering", "journalism", "agriculture",
+      "ergonomics", "sagas", "pedagogy", "apiculture", "aquaculture",
+      "horticulture", "silviculture", "law", "dentistry", "surgery",
+      "rocketry", "fission", "pharmacy", "dogmatics", "cartography",
+
+      "gerontology", "formalism", "feminism", "communism", "flight",
+      "cricket", "rhetorics", "navigation", "sculpture", "literature",
+      "shamanism", "painting", "utilitarism", "grammar", "arithmetic",
+      "algebra", "marxism", "capitalism", "behaviorism", "causality",
+      "folklore", "legends", "animism", "spiritualism", "idolatry",
+
+      "constructions", "currency", "riding", "federalism", "monarchy",
+      "medicine", "tradition", "chivalry", "righteousness", "banking",
+      "gravity", "metallurgy", "magnetism", "nationalism", "industry",
+      "pollution", "espionage", "corporations", "particles", "transportation",
+      "refining", "combustion", "colonization", "steel", "materials",
+
+      "hallucinations", "armours", "trance", "afterlife", "paradigms",
+      "customer support", "virginity", "zoology", "witchcraft", "wine",
+      "claustrophobia", "eddies", "vegetables", "mobility", "eudaimoia",
+      "ablutophobia", "palindromes", "jokes", "materialism", "surfaces",
+      "acarophobia", "energy", "momentum", "mushrooms", "brains",
+
+      "selenophobia", "alloys", "equations", "bombs", "fashion",
+      "taurophobia", "naturism", "nirvana", "drugs", "everything",
+      "ranidaphobia", "horror", "sightseeing", "marriage", "mirages",
+      "phronemophobia", "cancer", "scrofula", "depression", "air power",
+      "phallophobia", "romance", "bondage", "interfaces", "software",
+
+      "pentheraphobia", "nations", "levitation", "tubes", "structures",
+      "peladophobia", "travel", "meditation", "systems", "algorithms",
+      "lachanophobia", "taxonomy", "taxidermy", "viruses", "bacteria",
+      "epistaxiophobia", "camping", "resistance", "chauvinism", "fruits",
+      "ephebiphobia", "simulation", "computers", "conductors", "fibers",
+
+      "coulrophobia", "defence", "broomsticks", "fusion", "power",
+      "arachnophobia", "balls", "diseases", "universes", "weapons",
+      "virtue", "immortality", "elevators", "marketing", "civilizations",
+      "dreams", "anatomy", "reproduction", "calligraphy", "chess",
+      "Go", "cooking", "altruism", "anomalities", "fishing",
+
+      "crime", "nonsense", "monsters", "thought control", "euthanasia",
+      "genocide", "cremation", "waste disposal", "breeding", "eugenics",
+      "minds", "lottery", "sterilization", "utopias", "perpetual motion",
+      "dynamics", "entropy", "skepticism", "hoaxes", "creationism",
+      "cold fusion", "execution",  "warfare", "miracles", "the truth";
+    }
+    AttachedGod = SOPHOS;
+    PanicLevel = 20;
+    IsExtraCoward = false;
   }
 
   Config 2;
   {
     HairColor = rgb16(24, 24, 24);
+    ClothColor = rgb16(65,105,225);
     HeadBitmapPos = 112, 16;
     PostFix = "number 2";
+    FriendlyReplies :=
+    {
+      "\"I'm so sick jealous of those dolphins...\"",
+      "\"I'm Petrus' favorite, not No. 1!\"",
+      "\"No. 3 once was here with her twin sister. I've heard that one of them cheated on Petrus and... I really shouldn't be telling you this.\"",
+      "\"I have no idea what Petrus sees on No. 4! She's so dumb it hurts!\"",
+      "\"I'm not sure I should be talking to you. No. 5 once said too much and... Well, she won't be using her tongue again.\"",
+      "\"Petrus gave me a daughter, now I want to give him a son.\"",
+      "\"If only I could be the one to give Petrus his firstborn son...\"",
+      "\"That head on the wall looks really scary sometimes. Just like we were being watched.\"";
+    }
+    RightWielded = firstbornchild(FEMALE);
   }
 
   Config 3;
   {
     HairColor = rgb16(48, 40, 8);
+    ClothColor = rgb16(119,136,153);
     HeadBitmapPos = 112, 0;
     PostFix = "number 3";
+    FriendlyReplies :=
+    {
+      "\"Petrus also married my twin sister, but I haven't seen her around for some time.\"",
+      "\"I despise Petrus. Surprised to hear me talk like that? He took away the love of my life, what worse can he do to me?\"",
+      "\"I never loved Petrus. He knew it and that must be why he allowed me to fall in love with someone else. To torment me.\"",
+      "\"After my transgression, why has Petrus never punished me? Does he think it's more cruel to leave me to rot in this harem?\"",
+      "\"I once was a princess of a proud nomad tribe of the great eastern steppes. Me and my twin sister were wed to Petrus as a tribute of peace.\"",
+      "\"I miss the smell of horses, the rhythm of their run. I remember me and my sister riding for hours, miles upon miles of pure joy and freedom.\"",
+      "\"How I hate this gilded cage! I was born to feel the wind and rain on my face, not to sit in an armchair all day long, chitter and broider.\"",
+      "\"You want to learn more about the four Cardinals? They are the most trusted knights and advisors of Petrus: a coward, a liar, a thief and a madman.\"";
+    }
+    PanicLevel = 20;
+    IsExtraCoward = false;
+    KnownCWeaponSkills == POLE_ARMS; /* she once was a warrior-princess */
+    CWeaponSkillHits == 500;
+    ScienceTalkName :=
+    {
+      "hunting", "horses", "steppe", "trapping", "sharpshooting",
+      "combat", "traditions", "storytelling", "freedom", "boredom";
+    }
   }
 
   Config 4;
@@ -69,21 +184,91 @@ petrusswife
     DefaultWisdom = 8;
     DefaultCharisma = 85;
     HairColor = rgb16(200, 96, 0);
+    ClothColor = rgb16(150, 0, 0);
     HeadBitmapPos = 112, 32;
     PostFix = "number 4";
+    FriendlyReplies :=
+    {
+      "\"Uncle Petrus is so kind. After my father's house burned down because of the disargeement they had had, Petrus took me here and made me his wife!\"",
+      "\"Uncle Petrus has a *massive* sword! Tee hee.\"",
+      "\"I'm boooored!\"",
+      "\"Have you heard No. 5? No, because she can't speak! Tee hee.\"",
+      "\"Don't mind No. 3! She looks grumpy, but she has so many stories!\"",
+      "\"No. 1 is so clever it's scary. Really!\"",
+      "\"I got a pony for my twentieth birthday! Unfortunately I can't see her, because I can't leave the harem, but uncle Petrus told me she's beautiful!\"",
+      "\"Uncle Petrus says I am special! He says it to all his wives, but I know he means it for me. Tee hee.\"";
+    }
+    ScienceTalkIntelligenceModifier = 0;
+    ScienceTalkWisdomModifier = 0;
+    ScienceTalkCharismaModifier = 50;
+    ScienceTalkIntelligenceRequirement = 0;
+    ScienceTalkWisdomRequirement = 0;
+    ScienceTalkCharismaRequirement = 25;
   }
 
   Config 5;
   {
     HairColor = rgb16(60, 48, 24);
+    ClothColor = rgb16(255,255,255);
     HeadBitmapPos = 112, 48;
     PostFix = "number 5";
+    FriendlyReplies == "@Dd remains silent.";
+    HostileReplies == "@Dd scowls at you silently.";
+    DeathMessage = "@Dd dies silently.";
+    IsAlcoholic = true;
+    ScienceTalkPossibility = 0;
   }
 
   Config 6;
   {
     HairColor = rgb16(200, 0, 0);
+    ClothColor = rgb16(148,0,211);
     HeadBitmapPos = 112, 64;
     PostFix = "number 6";
+    FriendlyReplies :=
+    {
+      "\"The day I became Petrus' wife was the best day of my life. And it haven't gotten worse since!\"",
+      "\"Leave? Why would I want to leave? I have luxury here, servants - everything I can wish for. Outside, there is just poverty and grime.\"",
+      "\"Why must Petrus stay in this forest? There isn't even a proper hairdresser here!\"",
+      "\"No. 5 was babbling all the time, once. I couldn't stand it, but now the silence is even worse.\"",
+      "\"Don't bother talking to No. 3, she's weird.\"",
+      "\"Being one of six wives is a dream job. Pay is good and you only have to work about one night a week!\"";
+    }
+    IsMasochist = true; /* kinky! */
+  }
+
+  Config 7;
+  {
+    HairColor = rgb16(48, 40, 8);
+    ClothColor = rgb16(119,136,153);
+    BeltColor = rgb16(105,105,105);
+    HeadBitmapPos = 112, 0;
+    Adjective = "re-educated";
+    ArticleMode = 0;
+    FriendlyReplies :=
+    {
+      "@Dd says very loudly: \"All hail mighty Petrus.\"",
+      "@Dd says with a nervous glance around: \"Praise Valpurus.\"",
+      "@Dd stifles a smirk: \"I love the Cathedral.\"",
+      "\"I may be only a few minutes older than my twin sister, but I'm still here to protect her, as older siblings should always do.\"",
+      "\"I couldn't stand my dear sister being punished for falling in love. Petrus never could tell us apart, anyway.\"",
+      "\"I hope they didn't catch the farmer. Maybe one day, my sister and him will escape. I wish they were happy together.\"",
+      "\"I once was a princess of a proud nomad tribe of the great eastern steppes. Me and my twin sister were wed to Petrus as a tribute of peace.\"",
+      "\"I miss the smell of horses, the rhythm of their run. I remember me and my sister riding for hours, miles upon miles of pure joy and freedom.\"",
+      "\"How I hate this dank dungeon! I was born to feel the wind and rain on my face, not to sit in a small cell all day long, alone.\"",
+      "\"How is my little sister doing?\"";
+    }
+    HostileReplies == "@Dd snickers: \"Be careful about damaging Petrus' property, he'll be angry.\"";
+    DeathMessage = "@Dd dies with a last whisper: \"Curse you!\"";
+    IsExtraCoward = false;
+    IgnoreDanger = true;
+    Belt = CLOTH belt;
+    KnownCWeaponSkills == POLE_ARMS; /* she once was a warrior-princess */
+    CWeaponSkillHits == 500;
+    ScienceTalkName :=
+    {
+      "hunting", "horses", "steppe", "trapping", "sharpshooting",
+      "combat", "traditions", "storytelling", "freedom", "boredom";
+    }
   }
 }

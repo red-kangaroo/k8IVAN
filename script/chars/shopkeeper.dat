@@ -165,4 +165,29 @@ shopkeeper
     }
     AutomaticallySeen = true;
   }
+
+  Config XINROCH_TOMB;
+  {
+    NameSingular = "quartermaster";
+    AttributeBonus = 25;
+    Helmet = MITHRIL helmet { Enchantment = 1; }
+    Cloak = NYMPH_HAIR cloak { Enchantment = 1; }
+    BodyArmor = IRON bodyarmor(CHAIN_MAIL) { Enchantment = 1; }
+    Belt = NYMPH_HAIR belt { Enchantment = 1; }
+    RightWielded = RUBY pickaxe { Enchantment = -1; }
+    RightGauntlet = NYMPH_HAIR gauntlet { Enchantment = 1; }
+    RightBoot = NYMPH_HAIR boot { Enchantment = 1; }
+    KnownCWeaponSkills == AXES;
+    CWeaponSkillHits == 1000;
+    RightSWeaponSkillHits = 500;
+    DefaultName = "Fryndal";
+    Inventory == lantern;
+    UndeadVersions = false;
+    FriendlyReplies :=
+    {
+      "\"Normally these provisions are for the consumption of the tomb guards. But I'll allow you some comestibles, for a price of course...\"",
+      "\"The bones on the floor? Heh, sometimes we need to throw something to the monsters.\"",
+      "@Dd smiles: \"A drink at the fountain is free my friend. Just watch out for the residents.\"";
+    }
+  }
 }

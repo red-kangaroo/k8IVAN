@@ -3,6 +3,18 @@ thunderhammer /* meleeweapon-> */
   BaseEmitation = rgb24(130, 130, 130);
   IsAbstract = true;
 
+  Config BROKEN;
+  {
+    Possibility = 5;
+    BitmapPos = 48, 192;
+    Price = 100;
+    WieldedBitmapPos = 176, 224;
+    MainMaterialConfig = { 5, STEEL, METEORIC_STEEL, MITHRIL, OCTIRON, ADAMANT; }
+    MaterialConfigChances = { 5, 250, 25, 25, 25, 5; }
+    BaseEmitation = 0;
+    EnchantmentPlusChance = 4;
+  }
+
   Config HAMMER;
   {
     DefaultSize = 40;

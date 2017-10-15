@@ -15,4 +15,14 @@ chameleonwhip /* meleeweapon->whip-> */
   WieldedBitmapPos = 160, 224;
   EnchantmentMinusChance = 50;
   EnchantmentPlusChance = 50;
+
+  Config BROKEN;
+  {
+    Possibility = 1;
+    BitmapPos = 32, 256;
+    WieldedBitmapPos = 176, 208;
+    Price = 250;
+    EnchantmentMinusChance = 25;
+    EnchantmentPlusChance = 100;
+  }
 }

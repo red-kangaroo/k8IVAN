@@ -5,6 +5,17 @@ flamingsword /* meleeweapon-> */
   IsAbstract = true;
   CanFlame = true;
 
+  Config BROKEN;
+  {
+    Possibility = 10;
+    BitmapPos = 32, 208;
+    WieldedBitmapPos = 176, 80;
+    MainMaterialConfig = { 4, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    SecondaryMaterialConfig = { 4, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    MaterialConfigChances = { 4, 250, 25, 25, 5; }
+    EnchantmentPlusChance = 4;
+  }
+
   Config KNIGHT_SWORD;
   {
     DefaultSize = 120;

@@ -177,7 +177,6 @@ helmet
   /* k8: helm of understanding is not in CLIVAN;
    *     seems that is is merged with helm of brilliance
    */
-  /*
   Config HELM_OF_UNDERSTANDING;
   {
     DefaultSize = 40;
@@ -208,5 +207,4 @@ helmet
     HelmetBitmapPos = 96, 512;
     EnchantmentPlusChance = 4;
   }
-  */
 }

@@ -21,6 +21,16 @@ whip /* meleeweapon-> */
   DamageFlags = SLASH;
   IsSadistWeapon = true;
 
+  Config BROKEN;
+  {
+    Possibility = 5;
+    BitmapPos = 32, 256;
+    WieldedBitmapPos = 176, 208;
+    MainMaterialConfig = { 3, HARDENED_LEATHER, NYMPH_HAIR, OMMEL_HAIR; }
+    MaterialConfigChances = { 3, 75, 50, 25,}
+    EnchantmentPlusChance = 60;
+  }
+
   /* k8: not in CLIVAN */
   Config CHAIN_WHIP;
   {
@@ -46,5 +56,15 @@ whip /* meleeweapon-> */
     Adjective = "runed";
     FormModifier = 20;
     EnchantmentPlusChance = 20;
+  }
+
+  Config BROKEN|RUNED_WHIP;
+  {
+    Possibility = 3;
+    BitmapPos = 32, 256;
+    WieldedBitmapPos = 176, 208;
+    MainMaterialConfig = { 3, HARDENED_LEATHER, NYMPH_HAIR, OMMEL_HAIR; }
+    MaterialConfigChances = { 3, 75, 50, 25,}
+    EnchantmentPlusChance = 40;
   }
 }

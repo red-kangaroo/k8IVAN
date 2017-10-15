@@ -34,8 +34,17 @@ orc
   LeftSWeaponSkillHits = 20;
   ClassStates = GAS_IMMUNITY|INFRA_VISION;
   PanicLevel = 50;
-  HostileReplies == "\"Nice scalp! Me want it!\"";
-  FriendlyReplies == "\"Has you seen any elf or dwarf? Me hungry.\"";
+  HostileReplies :=
+  {
+    "\"Nice scalp! Me want it!\"",
+    "@Dd spits on the ground.",
+    "@Dd scratches @sp armpit.";
+  }
+  FriendlyReplies :=
+  {
+    "\"Has you seen any elf or dwarf? Me hungry.\"",
+    "@Dd flips you the bird.";
+  }
   FleshMaterial = ORC_FLESH;
   AttachedGod = CRUENTUS;
   WieldedPosition = -1, -1;
@@ -122,6 +131,46 @@ orc
     TamingDifficulty = 35;
     UndeadVersions = false;
     IsImmuneToWhipOfThievery = true;
+    Sex = MALE;
+    FriendlyReplies :=
+    {
+      "\"I have a diary. It's called the Book of World Records.\"",
+      "\"I once threw a dwarven gas grenade and killed fifty people. Then the grenade exploded.\"",
+      "\"I counted to infinity. Twice.\"",
+      "\"I can kill two stones with one bird. Really!\"",
+      "\"I can hear sign language!\"",
+      "\"I can speak braille!\"",
+      "\"A snake bit me once. After days of excruciating pain, the snake died.\"",
+      "\"I make onions cry.\"",
+      "\"I don't need to cheat Death. I always win fair and square.\"",
+      "\"I once beat a mirror in a staring contest.\"",
+      "\"I will never have a heart attack. My heart is not foolish enough to attack me!\"",
+      "\"There is no evolution, just a list of creatures I allow to live.\"",
+      "\"I once punched a cyclops between the eye!\"",
+      "\"My tears can cure any disease. Too bad I never cry!\"",
+      "\"I don't play 'hide and seek'. I play 'hide and pray I don't find you'.\"",
+      "\"Death once had a near-me experience.\"",
+      "\"I put the 'laughter' into 'manslaughter'.\"",
+      "\"I should have died years ago, but Death can't get up the courage to tell me.\"",
+      "\"I can unscramble an egg.\"",
+      "\"I once found the end of a circle.\"",
+      "\"I never lie. I change the truth.\"",
+      "\"I use hot sauce as eye drops!\"",
+      "\"Do you know how many push-ups I can do? All of them!\"",
+      "\"I can slam a revolving door.\"",
+      "\"I can slow down time just by looking at an hourglass and flexing.\"",
+      "\"My father always wanted to be just like me when he was just a kid.\"",
+      "@Dd guffaws.";
+    }
+    HostileReplies :=
+    {
+      "\"You should have fled while you had the chance.\"",
+      "\"You are about to die, maggot!\"",
+      "\"Give me your best blow!\"",
+      "\"This dungeon ain't big enough for the both of us.\"",
+      "\"I'm gonna break your pretty face!\"",
+      "@Dd spouts torrents of taunts.";
+    }
   }
 
   Config OFFICER;
@@ -177,5 +226,58 @@ orc
     RightSWeaponSkillHits = 100;
     NameSingular = "orc squad leader";
     PanicLevel = 30;
+  }
+
+  Config REPRESENTATIVE;
+  {
+    AttributeBonus = 60;
+    DefaultWisdom = 19;
+    HairColor = rgb16(224, 224, 0);
+    ClothColor = rgb16(224, 224, 0);
+    BeltColor = rgb16(176, 0, 0);
+    LegMainColor = rgb16(224, 224, 0);
+    LegSpecialColor = rgb16(176, 0, 0);
+    HeadBitmapPos = 112, 176;
+    TorsoBitmapPos = 48, 32;
+    ArmBitmapPos = 80, 16;
+    LegBitmapPos = 0, 224;
+    Helmet = helmet(HELM_OF_ATTRACTIVITY) { Enchantment = 7; }
+    Cloak = FABRIC cloak { Enchantment = 2; }
+    BodyArmor = GOLD bodyarmor(CHAIN_MAIL) { Enchantment = 2; }
+    Belt = GOLD belt(BELT_OF_CARRYING) { Enchantment = 2; }
+    RightGauntlet = FABRIC gauntlet { Enchantment = 2; }
+    RightBoot = FABRIC boot { Enchantment = 2; }
+    RightWielded = GOLD EBONY_WOOD meleeweapon(AXE) { Enchantment = 3; }
+    LeftWielded = 0;
+    CWeaponSkillHits == 500;
+    CanBeGenerated = false;
+    IsNameable = false;
+    IsUnique = true;
+    CanBeCloned = false;
+    IsPolymorphable = false;
+    UndeadVersions = false;
+    TamingDifficulty = 30;
+    DefaultName = "Khor";
+    NameSingular = "orcish representative";
+    FriendlyReplies :=
+    {
+      "\"I am here on behalf of the orcish freeholds of Gothrok, Gotturan and Gotrotill.\"",
+      "\"We are a proud new nation which renounced both the barbarism of Ur-Khan's horde and the slavery under human overlords.\"",
+      "\"The orcish freeholds do not recognize the rulership of Khans. We rule ourselves as a true democracy.\"",
+      "\"We cannot tolerate the greenskin threat anymore! No goblin shall think it stands equal to an orc or a man.\"",
+      "\"My lords want the head of Guugzamesh served to them on a silver platter, and Attnam can be very helpful in that.\"",
+      "\"How long can Petrus ignore me?! I'm here to offer him an alliance!\"",
+      "\"Oh, the emisary of Aslona is here, too. I will enjoy seeing him grovel and beg for the help from Attnam.\"",
+      "\"Many of my peers have fallen in wars under the old king of Aslona. I will not mourn the fall of the new king, either.\"";
+    }
+    HostileReplies :=
+    {
+      "\"I know what they say about orcish diplomacy! Well, it's not untrue!\"",
+      "\"You're just prejudiced against my kind, aren't you?\"";
+    }
+    Sex = MALE;
+    AttachedGod = MELLIS;
+    TotalVolume = 120000;
+    Inventory == potion { SecondaryMaterial = VODKA; Times = 1:10; }
   }
 }

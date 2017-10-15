@@ -15,6 +15,7 @@ dolphin
   TorsoBitmapPos = 320, 0;
   HostileReplies == "@Dd peeps diabolically to you.";
   FriendlyReplies == "@Dd peeps passionately to you.";
+  DeathMessage = "@Dd peeps, dying: \"Every petal must fall...\"";
   TotalSize = 300;
   SkinColor = rgb16(144, 144, 144);
   EyeColor = rgb16(100, 100, 255);
@@ -32,4 +33,37 @@ dolphin
   ScienceTalkWisdomModifier = 1000;
   ScienceTalkIntelligenceRequirement = 50;
   ScienceTalkWisdomRequirement = 50;
+
+  Config ADULT_MALE;
+  {
+    Adjective = "male";
+    FriendlyReplies :=
+    {
+      "@Dd peeps: \"A soft rain drips down, The trees whisper in the wind, Sounds eclipsed by screams.\"",
+      "@Dd peeps: \"From the gloomy cave, A great dark frog leaps at us, The sound of slaughter.\"",
+      "@Dd peeps: \"White destroyed by red, On ground drenched in many bloods, This peace is final.\"",
+      "@Dd peeps: \"Silence reigns bloody, Through deep caves gloomy and dim, A faint sobbing comes.\"",
+      "@Dd peeps: \"The adventurer, Lost in the womb of the earth, Braves the evil dark.\"",
+      "@Dd peeps: \"Deep in the cavern, Dark, cold, gloomy, forbidden, Big hungry nightmare.\"",
+      "@Dd peeps: \"Hammers echoing, Shining steel weapons are born, Sorrow they shall sow.\"";
+    }
+    Sex = MALE;
+  }
+
+  Config ADULT_FEMALE;
+  {
+    Adjective = "female";
+    PostFix = "in season";
+    FriendlyReplies :=
+    {
+      "@Dd peeps: \"Rain in the forest.\"",
+      "@Dd peeps: \"Summer before the Fall.\"",
+      "@Dd peeps: \"The tide rises and the tide falls.\"",
+      "@Dd peeps: \"Empty shells rolling in the surf.\"",
+      "@Dd peeps: \"No sparrow lives that cannot fly.\"",
+      "@Dd peeps: \"Mountains defy the consuming sea.\"",
+      "@Dd peeps: \"Blood in the water.\"";
+    }
+    Sex = FEMALE;
+  }
 }

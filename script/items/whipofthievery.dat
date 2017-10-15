@@ -14,4 +14,13 @@ whipofthievery /* meleeweapon->whip-> */
   Price = 500;
   AttachedGod = CLEPTIA;
   EnchantmentPlusChance = 10;
+
+  Config BROKEN;
+  {
+    Possibility = 1;
+    BitmapPos = 32, 256;
+    WieldedBitmapPos = 176, 208;
+    Price = 250;
+    EnchantmentPlusChance = 20;
+  }
 }
