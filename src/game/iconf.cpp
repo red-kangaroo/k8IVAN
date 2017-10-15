@@ -36,8 +36,7 @@ truthoption ivanconfig::UseAlternativeKeys("UseAlternativeKeys", "use alternativ
 truthoption ivanconfig::BeNice("BeNice", "be nice to pets", true);
 truthoption ivanconfig::FullScreenMode("FullScreenMode", "run the game in full screen mode", false, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FullScreenModeChanger);
 /*k8*/
-truthoption ivanconfig::WeirdDoubleResMode("WeirdDoubleResMode", "run the game in x1.5-resolution mode", false);
-truthoption ivanconfig::DoubleResMode("DoubleResMode", "run the game in double-resolution mode", false);
+scrollbaroption ivanconfig::DoubleResModifier("DoubleResModifier", "resolution multiplier (1+n/10)", 10, &ResModDisp, &ResModChangeIntf, &ResModChanger, &ResModHandler);
 truthoption ivanconfig::KickDownDoors("KickDownDoors", "kick down doors by default", false);
 truthoption ivanconfig::AutoCenterMap("AutoCenterMap", "automatically center map when player moves", true);
 truthoption ivanconfig::AutoCenterMapOnLook("AutoCenterMapOnLook", "automatically center map when player looks", true);
@@ -93,6 +92,35 @@ void ivanconfig::AutoSaveIntervalDisplayer (const numberoption *O, festring &Ent
   } else {
     Entry << "disabled";
   }
+}
+
+
+void ivanconfig::ResModDisp (const numberoption *O, festring &Entry) {
+  Entry << O->Value << "/10";
+}
+
+truth ivanconfig::ResModChangeIntf (numberoption *O) {
+  iosystem::ScrollBarQuestion(CONST_S("Set new multiplier value (0-10, '<' and '>' move the slider):"), GetQuestionPos(), O->Value, 1, 0, 10, O->Value, WHITE, LIGHT_GRAY, DARK_GRAY, game::GetMoveCommandKey(KEY_LEFT_INDEX), game::GetMoveCommandKey(KEY_RIGHT_INDEX), !game::IsRunning(), static_cast<scrollbaroption*>(O)->BarHandler);
+  //if (game::IsRunning()) igraph::BlitBackGround(v2(16, 6), v2(game::GetScreenXSize() << 4, 23));
+  return false;
+}
+
+void ivanconfig::ResModChanger (numberoption *O, sLong What) {
+  if (What < 0) What = 0;
+  if (What > 10) What = 10;
+  O->Value = What;
+  //CalculateContrastLuminance();
+}
+
+void ivanconfig::ResModHandler (sLong Value) {
+  ResModChanger(&DoubleResModifier, Value);
+  /*
+  ContrastChanger(&Contrast, Value);
+  if (game::IsRunning()) {
+    game::GetCurrentArea()->SendNewDrawRequest();
+    game::DrawEverythingNoBlit();
+  }
+  */
 }
 
 
@@ -237,8 +265,7 @@ void ivanconfig::Initialize () {
   configsystem::AddOption(&BeNice);
   configsystem::AddOption(&FullScreenMode);
 /*k8*/
-  configsystem::AddOption(&WeirdDoubleResMode);
-  configsystem::AddOption(&DoubleResMode);
+  configsystem::AddOption(&DoubleResModifier);
   configsystem::AddOption(&KickDownDoors);
   configsystem::AddOption(&AutoCenterMap);
   configsystem::AddOption(&AutoCenterMapOnLook);
@@ -254,6 +281,7 @@ void ivanconfig::Initialize () {
   configsystem::AddOption(&UseMaximumCompression);
   configsystem::AddOption(&ShowFullItemDesc);
 /*k8*/
+  DoubleResModifier.Value = 0;
   configsystem::SetConfigFileName(getConfigPath()+"/.ivan.rc");
   configsystem::Load();
   felist::SetFastListMode(!FastListMode.Value);

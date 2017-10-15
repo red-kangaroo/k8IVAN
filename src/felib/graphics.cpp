@@ -34,11 +34,12 @@ rawbitmap *graphics::DefaultFont = 0;
 
 truth dblRes = false;
 truth origDblRes = false;
-truth weirdDRes = false;
 
-#define DIVISOR  (1.7)
+//#define DIVISOR  (1.7)
+float DIVISOR = 1.7;
 
-static int fixVal (int v) { return (dblRes ? (weirdDRes ? (int)(v*DIVISOR) : v*2) : v); }
+
+static int fixVal (int v) { return (dblRes ? (int)(v*DIVISOR) : v); }
 
 struct KIt {
   float frc0, frc1, yfrc0, yfrc1;
@@ -109,15 +110,16 @@ void graphics::DeInit () {
 }
 
 
-void graphics::SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScreen, truth DoubleRes, truth WeirdDRes) {
+void graphics::SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScreen, sLong adresmod) {
   if (IconName) {
     SDL_Surface *Icon = SDL_LoadBMP(IconName);
     SDL_SetColorKey(Icon, SDL_SRCCOLORKEY, SDL_MapRGB(Icon->format, 255, 255, 255));
     SDL_WM_SetIcon(Icon, NULL);
   }
-  origDblRes = DoubleRes;
-  dblRes = DoubleRes;
-  weirdDRes = WeirdDRes;
+  if (adresmod < 0) adresmod = 0; else if (adresmod > 10) adresmod = 10;
+  dblRes = (adresmod > 0);
+  if (adresmod == 10) DIVISOR = 2.0f; else DIVISOR = 1.0f+(adresmod/10.0f);
+  origDblRes = dblRes;
   feuLong Flags = SDL_SWSURFACE;
   if (FullScreen) {
     SDL_ShowCursor(SDL_DISABLE);
@@ -126,7 +128,7 @@ void graphics::SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScre
   }
   Screen = SDL_SetVideoMode(fixVal(NewRes.X), fixVal(NewRes.Y), /*16*/32, Flags);
   if (!Screen) ABORT("Couldn't set video mode.");
-  if (dblRes && weirdDRes) buildKernel(NewRes.X, NewRes.Y); else freeKernel();
+  if (dblRes) buildKernel(NewRes.X, NewRes.Y); else freeKernel();
   bufc32 = (unsigned char*)realloc(bufc32, fixVal(NewRes.X)*fixVal(NewRes.Y)*4);
   SDL_WM_SetCaption(Title, 0);
   globalwindowhandler::Init();
@@ -240,7 +242,7 @@ void graphics::BlitDBToScreen () {
   feuLong ScreenYMove = Screen->pitch;
 
   if (dblRes) {
-    if (weirdDRes) {
+    if (DIVISOR != 2.0f) {
       // copy converted buffer used kernel
       unsigned char *curs = bufc32;
       KIt *i = kernel;
@@ -294,7 +296,7 @@ void graphics::SwitchMode () {
   if (SwitchModeHandler) SwitchModeHandler();
   Screen = SDL_SetVideoMode(fixVal(Res.X), fixVal(Res.Y), ColorDepth, Flags);
   if (!Screen) ABORT("Couldn't toggle fullscreen mode.");
-  if (dblRes && weirdDRes) buildKernel(Res.X, Res.Y); else freeKernel();
+  if (dblRes) buildKernel(Res.X, Res.Y); else freeKernel();
   bufc32 = (unsigned char*)realloc(bufc32, fixVal(Res.X)*fixVal(Res.Y)*4);
   BlitDBToScreen();
 }

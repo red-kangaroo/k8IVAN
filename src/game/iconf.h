@@ -32,8 +32,7 @@ public:
   static truth GetUseAlternativeKeys () { return UseAlternativeKeys.Value; }
   static truth GetBeNice () { return BeNice.Value; }
   static truth GetFullScreenMode () { return FullScreenMode.Value; }
-  static truth GetDoubleResMode () { return DoubleResMode.Value; }
-  static truth GetWeirdDoubleResMode () { return WeirdDoubleResMode.Value; }
+  static sLong GetDoubleResModifier () { return DoubleResModifier.Value; }
   static void SwitchModeHandler ();
   static truth GetKickDownDoors () { return KickDownDoors.Value; }
   static truth GetAutoCenterMap () { return AutoCenterMap.Value; }
@@ -73,6 +72,11 @@ private:
   static void ContrastHandler (sLong);
   static void BackGroundDrawer ();
 
+  static void ResModDisp (const numberoption *O, festring &Entry);
+  static truth ResModChangeIntf (numberoption *O);
+  static void ResModChanger (numberoption *O, sLong What);
+  static void ResModHandler (sLong Value);
+
   static void SoundVolumeDisplayer (const numberoption *, festring &);
   static truth SoundVolumeChangeInterface (numberoption *);
   static void SoundVolumeChanger (numberoption *, sLong);
@@ -96,8 +100,7 @@ private:
   static truthoption BeNice;
   static truthoption FullScreenMode;
   /*k8*/
-  static truthoption WeirdDoubleResMode;
-  static truthoption DoubleResMode;
+  static scrollbaroption DoubleResModifier;
   static truthoption KickDownDoors;
   static truthoption AutoCenterMap;
   static truthoption AutoCenterMapOnLook;
