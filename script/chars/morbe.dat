@@ -29,7 +29,7 @@ morbe /* high priestess of scabies */
   NameSingular = "high priestess";
   PostFix = "of Scabies";
   Sex = FEMALE;
-  Cloak = HESSIAN_CLOTH cloak;
+  //!!Cloak = HESSIAN_CLOTH cloak;
   RightWielded = RUBY daggerofvenom { Enchantment = 4; }
   KnownCWeaponSkills == SMALL_SWORDS;
   CWeaponSkillHits == 500;

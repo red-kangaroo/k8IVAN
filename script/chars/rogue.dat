@@ -11,12 +11,12 @@ rogue
   TorsoBitmapPos = 48, 224;
   ArmBitmapPos = 80, 64;
   LegBitmapPos = 16, 160;
-  ClothColor = rgb16(100, 50, 50);
+  //!ClothColor = rgb16(100, 50, 50);
   // CLIVAN; old -- BodyArmor = LEATHER bodyarmor(PLATE_MAIL);
   // CLIVAN; old -- Cloak = LEATHER cloak;
   Cloak = cloak;
   RightWielded = meleeweapon(DAGGER);
-  KnownCWeaponSkills == SMALL_SWORDS;
+  //!KnownCWeaponSkills == SMALL_SWORDS;
   KnownCWeaponSkills = { 2, SMALL_SWORDS, SHIELDS; }
   CWeaponSkillHits = { 2, 500, 500; }
   RightSWeaponSkillHits = 10;
@@ -31,5 +31,4 @@ rogue
   IgnoreDanger = true;
   AttachedGod = CLEPTIA;
   IsSadist = true;
-  ClassStates = INFRA_VISION;
 }

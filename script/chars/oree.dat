@@ -43,10 +43,15 @@ oree
   CanBeCloned = false;
   Inventory == can { MainMaterial = IRON { Volume = 10; } SecondaryMaterial = PEPSI { Volume = 330; } }
   DefaultName = "Oree";
-  HostileReplies == "@Dd laughs: \"No time for small talk. Time to drink blood!\"";
+  HostileReplies :=
+  {
+    "@Dd prays to @Gd.",
+    "\"You have slain Elpuri. Now nothing will interfere with my plans! Fufufu!\"",
+    "@Dd laughs: \"No time for small talk. Time to drink blood!\"";
+  }
   FriendlyReplies == "@Dd grumbles angrily: \"I really hate it when people cheat IVAN. It spoils them and takes away the thrill and mystery of it.\"";
   FleshMaterial = DAEMON_FLESH;
-  DeathMessage = "@Dd vomits blood for one last time and then dies.";
+  DeathMessage = "@Dd vomits blood for one last time and rasps: \"Victory. A hollow and ridiculous notion.\"";
   AttachedGod = MORTIFER;
   CanBeConfused = false;
   WieldedPosition = 0, -1;

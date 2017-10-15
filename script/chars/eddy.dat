@@ -10,14 +10,13 @@ eddy
   DefaultMana = 10;
   TotalVolume = 150000; /* most of it is in some other dimension */
   TorsoBitmapPos = 64, 32;
-  HostileReplies == "The @du twirls angrily.";
-  FriendlyReplies == "The @du twirls faster for a moment.";
+  HostileReplies == "@Dd twirls angrily.";
+  FriendlyReplies == "@Dd twirls faster for a moment.";
   TotalSize = 100;
   SkinColor = rgb16(200, 200, 112);
   NameSingular = "eddy";
   NamePlural = "eddies";
-  PostFix = "in space-time continuum";
-  CanBeGenerated = true;
+  PostFix = "in the space-time continuum";
   HasEyes = false;
   HasHead = false;
   HasALeg = false;
@@ -44,4 +43,5 @@ eddy
   CanChoke = false;
   IsImmuneToStickiness = true;
   MoveType = ETHEREAL|FLY;
+  UsesLongArticle = true;
 }

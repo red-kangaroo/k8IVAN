@@ -24,7 +24,6 @@ haastseagle
   FleshMaterial = EAGLE_FLESH;
   AttachedGod = SILVA;
   TotalSize = 200;
-  MoveType = FLY;
   TotalVolume = 24000;
   IsPolymorphable = false;
   CanBeCloned = false;

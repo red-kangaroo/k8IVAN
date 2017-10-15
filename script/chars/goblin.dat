@@ -28,7 +28,13 @@ goblin
   RightSWeaponSkillHits = 5;
   PanicLevel = 66;
   HostileReplies == "@Dd yells goblin war cries at you.";
-  FriendlyReplies == "@Dd laughs: \"Humie friend. Many mommo we kill. Many spider we eat.\"";
+  FriendlyReplies :=
+  {
+    "@Dd giggles.",
+    "@Dd curses the surface freaks.",
+    "@Dd mumbles incomprehensibly.",
+    "@Dd laughs: \"Humie friend. Many mommo we kill. Many spider we eat.\"";
+  }
   FleshMaterial = GOBLINOID_FLESH;
   AttachedGod = CRUENTUS;
   WieldedPosition = 0, -2;
@@ -41,6 +47,14 @@ goblin
     RightSWeaponSkillHits = 10;
     NameSingular = "goblin berserker";
     ClothColor = rgb16(0, 96, 0);
+    FriendlyReplies :=
+    {
+      "\"GGRRRAAAAAH!!!\"",
+      "\"RrraaaaAAAAA!!!\"",
+      "\"Fus Ro Dah!\"",
+      "\"Me learning reading. Me goblin-savant.\"",
+      "\"Me fear no-thing that bleeds.\"";
+    }
   }
 
   Config BUTCHER;
@@ -124,6 +138,12 @@ goblin
     HairColor = rgb16(220, 220, 0);
     ClothColor = rgb16(200, 0, 0);
     Inventory = { 2, potion { SecondaryMaterial = ANTIDOTE_LIQUID; Chance = 20; }, Random { Category = RING; Chance = 20; } }
+    FriendlyReplies :=
+    {
+      "\"My father may have 500 sons, but I will be the one to succeed him on the throne!\"",
+      "@Dd describes a recent article in 'Modern Monster' magazine.",
+      "@Dd wants nothing to do with you.";
+    }
   }
 
   Config PRISON_WARDEN;

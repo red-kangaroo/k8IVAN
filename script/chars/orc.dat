@@ -101,7 +101,6 @@ orc
     BodyArmor = DRAGON_HIDE bodyarmor(PLATE_MAIL) { Enchantment = 2; }
     RightWielded = RUBY meleeweapon(HALBERD) { Enchantment = 3; }
     LeftRing = ring(RING_OF_TELEPORT_CONTROL);
-    LeftWielded = 0;
     Belt = RUBY belt { Enchantment = 2; }
     RightGauntlet = DRAGON_HIDE gauntlet(GAUNTLET_OF_STRENGTH) { Enchantment = 2; }
     RightBoot = SPIDER_SILK boot { Enchantment = 2; }

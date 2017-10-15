@@ -60,7 +60,7 @@ bear
     TotalSize = 125;
     AttributeBonus = -35;
     TorsoBitmapPos = 193, 16;
-    DeathMessage = "@Dd groans terribly and falls dead to the ground. You feel real bad for the endangering of these species.";
+    DeathMessage = "@Dd groans terribly and falls dead to the ground. You feel really bad for endangering of these species.";
     Frequency = 5000;
   }
 

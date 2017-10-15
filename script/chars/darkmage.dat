@@ -8,14 +8,42 @@ darkmage
   CanRead = true;
   CanBeGenerated = true;
   ClassStates = INFRA_VISION;
-  HostileReplies == "@Dd yells: \"Prepare to meet your maker!\"";
-  FriendlyReplies == "\"Death awaits our foes.\"";
   IgnoreDanger = true;
   AttachedGod = INFUSCOR;
   IsAbstract = true;
   KnownCWeaponSkills == BLUNT_WEAPONS;
   IsExtraFragile = true;
   IsSadist = true;
+  HostileReplies :=
+  {
+    "\"Abracadabra!\"",
+    "\"Hocus pocus!\"",
+    "\"Alakazam.\"",
+    "\"Sim sala bim!\"",
+    "@Dd screams: \"May the Darkness swallow you!\"",
+    "@Dd yells: \"Prepare to meet your maker!\"";
+  }
+  FriendlyReplies :=
+  {
+    "\"Don't fear the Darkness, my friend.\"",
+    "\"Knowledge itself is never dangerous, it is how that knowledge is used that is dangerous.\"",
+    "\"Everything looks better when it's dead and on fire!\"",
+    "\"My motto? If it's not on fire now, it will be soon.\"",
+    "\"What hurts you, blesses you. Darkness is your candle.\"",
+    "@Dd seems not to notice you.",
+    "@Dd seems to mutter a cantrip.",
+    "@Dd complains about unpleasant dungeon conditions.",
+    "@Dd cackles madly: \"Build a man a fire, and he'll be warm for a day. Set a man on fire, and he'll be warm for the rest of his life.\"",
+    "\"Death awaits our foes.\"";
+  }
+  ScienceTalkName :=
+  {
+    "spellcraft", "druidcraft", "illusioncraft", "witchcraft", "conjuration",
+    "charms", "enchantments", "summoning", "necromancy", "pyromancy",
+    "oneiromancy", "transmutation", "transformation", "transmogrification", "alchemy",
+    "elementalism", "animalism", "divination", "arcana", "thaumaturgy",
+    "abjuration", "invocation", "evocation", "incantations", "hexes";
+  }
 
   Config APPRENTICE;
   {
@@ -42,7 +70,7 @@ darkmage
     DayRequirementForGeneration = 15;
     Frequency = 1500;
     PanicLevel = 75;
-    Inventory == lantern;
+    //!Inventory == lantern;
     CWeaponSkillHits == 50;
     RightSWeaponSkillHits = 20;
     LeftSWeaponSkillHits = 20;
@@ -53,6 +81,7 @@ darkmage
     ScienceTalkWisdomModifier = 5;
     ScienceTalkIntelligenceRequirement = 10;
     ScienceTalkWisdomRequirement = 5;
+    DeathMessage = "@Dd dies screaming: \"No! The Darkness, it's coming for me!\"";
   }
 
   Config ARCH_MAGE;
@@ -91,7 +120,6 @@ darkmage
     Inventory = { 10, wand(WAND_OF_RESURRECTION), wand(WAND_OF_STRIKING), wand(WAND_OF_CLONING), wand(WAND_OF_LIGHTNING), wand(WAND_OF_FIRE_BALLS), scrollofcharging, scrollofwishing, holybook(INFUSCOR), key(OCTAGONAL_LOCK), solstone; }
     HPRequirementForGeneration = 450;
     DayRequirementForGeneration = 45;
-    PanicLevel = 0;
     CanBeConfused = false;
     CWeaponSkillHits == 500;
     RightSWeaponSkillHits = 200;
@@ -104,6 +132,25 @@ darkmage
     IsExtraFragile = false;
     AllowUnconsciousness = false;
     UndeadVersions = false;
+    HostileReplies :=
+    {
+      "\"Minions, slaughter this fool!\"",
+      "\"Verily, thou shalt be one dead cretin.\"",
+      "@Dd is humming an incantation of a devastating death-spell.",
+      "\"A mere mortal dares challenge my might?\"";
+    }
+    FriendlyReplies :=
+    {
+      "@Dd conjures a quick illusion. \"This is picture from my great-grandson's fourth birthday last week. His name is Timmy. And this is the arcanite golem I gave him.\"",
+      "\"Timotheodon, my only great-grandson, once stole my spellbook and tried to blast his classmates with a fireball. Isn't he a lovable rascal?\"",
+      "@Dd sighs: \"My late wife, Helen, baked a wonderful banana stollen. Atavus day is not the same anymore, without her.\"",
+      "\"I miss my wife so much. I even considered looking into necromancy, but... No, she wouldn't like it that way.\"",
+      "@Dd winks at you: \"Ever tried a shot of vodka with just a sprinkle of ommel urine? That gives it just the right bite!\"",
+      "\"Magic always comes at a price.\"",
+      "\"The Art. It is not a painting, yet people will marvel at the sight. It is not a poem, yet it will move those that hear it. To be an Artist is to see the world as your canvas, to see reality as your clay.\"",
+      "\"Some holidays, I wish I could just summon my family rather than try to make them agree on a time and place...\"";
+    }
+    DeathMessage = "@Dd dies with a calm smile: \"Hello Darkness, my old friend...\"";
   }
 
   Config BATTLE_MAGE;
@@ -140,6 +187,7 @@ darkmage
     ScienceTalkWisdomModifier = 10;
     ScienceTalkIntelligenceRequirement = 20;
     ScienceTalkWisdomRequirement = 10;
+    DeathMessage = "@Dd dies laughing: \"You understand nothing! The Darkness will rise and nothing you can do will stop it.\"";
   }
 
   Config ELDER;
@@ -178,5 +226,6 @@ darkmage
     ScienceTalkWisdomModifier = 50;
     ScienceTalkIntelligenceRequirement = 35;
     ScienceTalkWisdomRequirement = 25;
+    DeathMessage = "@Dd dies laughing: \"You understand nothing! The Darkness will rise and nothing you can do will stop it.\"";
   }
 }

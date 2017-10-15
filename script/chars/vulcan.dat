@@ -61,7 +61,7 @@ vulcan
   CanBeConfused = false;
   EnergyResistance = 15;
   IsImmuneToLeprosy = true;
-  Inventory == ring(RING_OF_POLYMORPH_CONTROL);
+  //!?Inventory == ring(RING_OF_POLYMORPH_CONTROL);
   IsImmuneToItemTeleport = true;
   AllowUnconsciousness = false;
   DisplacePriority = 10;

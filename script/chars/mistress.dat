@@ -43,7 +43,13 @@ mistress
   FriendlyReplies :=
   {
     "\"What? You want more whip?\"",
-    "\"Ever participated in the weekly orgy at Nefas's High Temple? I guess not. You wouldn't have survived.\"",
+    "\"I'm not THAT flexible.\"",
+    "\"I sense a snake about!\"",
+    "\"Pain! Make of me your quarry!\"",
+    "\"Sweet, oh sweetest agony!\"",
+    "\"They say our queen Sherarax uses bear traps for nipple clamps.\"",
+    "\"The queen of mistresses is selected by a ritual where she must survive a night with Mistress Nefas herself.\"",
+    "\"Ever participated in the weekly orgy at Nefas' High Temple? I guess not. You wouldn't have survived.\"",
     "\"If you think I'm rough, you should avoid Sherarax, my queen. No man has ever lived through a night with her.\"";
   }
   ScienceTalkAdjectiveAttribute :=
@@ -136,6 +142,18 @@ mistress
     AllowUnconsciousness = false;
     UndeadVersions = false;
     IsImmuneToWhipOfThievery = true;
+    HostileReplies == "\"Bow before your queen!\"";
+    FriendlyReplies :=
+    {
+      "@Dd smiles: \"I am not afraid of pain. Quite the opposite.\"",
+      "\"Rend me! Gore me! Pain forges me!\"",
+      "\"The truth is, I... you... for some reason, I think I lik-eeehh, nevermind! It's nothing!\"",
+      "\"Come closer, little boy, I'll give you something good!\"",
+      "\"Bad kitty! I need to punish you.\"",
+      "\"You can serve me to the end of your days, for you are my dearest slave.\"",
+      "\"And I told her: 'That was awsome, but I said I will need some cunning linguists for the meeting.'\"";
+    }
+    DeathMessage = "@Dd dies with a smile: \"Good night, darling...\"";
   }
 
   Config TORTURING_CHIEF;

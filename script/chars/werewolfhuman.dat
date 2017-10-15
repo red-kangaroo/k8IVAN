@@ -17,8 +17,6 @@ werewolfhuman
   TorsoBitmapPos = 48, 0;
   ArmBitmapPos = 64, 0;
   LegBitmapPos = 0, 176;
-  HostileReplies == "@Dd screams in fury.";
-  FriendlyReplies == "@Dd screams in a friendly manner.";
   TotalSize = 170;
   NameSingular = "werewolf";
   NamePlural = "werewolves";
@@ -32,4 +30,18 @@ werewolfhuman
   FleshMaterial = WERE_WOLF_FLESH;
   AttachedGod = INFUSCOR;
   UndeadVersions = false;
+  HostileReplies :=
+  {
+    "\"I bet your innards taste real sweet!\"",
+    "\"Yummy! I was getting tired of kobolds.\"",
+    "@Dd throws back @sp head and lets out a blood-curdling howl!",
+    "@Dd growls: \"Another adventurer? I just got through picking my teeth from the last.\"";
+  }
+  FriendlyReplies :=
+  {
+    "@Dd screams in a friendly manner.",
+    "\"Does the black moon howl?\"",
+    "\"Flesh. Blood. Raw hearts and shredded bones!\"",
+    "\"Full moon - my greatest love, my greatest fear.\"";
+  }
 }

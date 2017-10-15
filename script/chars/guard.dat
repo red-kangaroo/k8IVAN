@@ -214,7 +214,7 @@ guard
     TorsoBitmapPos = 48, 224;
     ArmBitmapPos = 80, 64;
     LegBitmapPos = 16, 160;
-    ClothColor = rgb16(50, 50, 50);
+    //!ClothColor = rgb16(50, 50, 50);
     BodyArmor = HARDENED_LEATHER bodyarmor(PLATE_MAIL);
     Cloak = HARDENED_LEATHER cloak;
     RightWielded = IRON IRON meleeweapon(DAGGER);

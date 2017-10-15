@@ -10,8 +10,6 @@ wolf
   DefaultMana = 0;
   TotalVolume = 40000;
   TorsoBitmapPos = 224, 0;
-  HostileReplies == "@Dd growls madly.";
-  FriendlyReplies == "@Dd growls happily.";
   TotalSize = 100;
   /* SkinColor overridden */
   NameSingular = "wolf";
@@ -22,4 +20,13 @@ wolf
   ClassStates = INFRA_VISION;
   FleshMaterial = WOLF_FLESH;
   AttachedGod = SILVA;
+  HostileReplies == "@Dd growls madly.";
+  FriendlyReplies :=
+  {
+    "@Dd growls.",
+    "@Dd howls.",
+    "@Dd yips.",
+    "@Dd whines.",
+    "@Dd barks.";
+  }
 }

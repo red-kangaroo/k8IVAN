@@ -10,8 +10,6 @@ invisiblestalker
   DefaultMana = 0;
   TotalVolume = 40000;
   TorsoBitmapPos = 224, 16;
-  FriendlyReplies == "\"Gods are away on business.\"";
-  HostileReplies == "\"Misery is the river of the world.\"";
   TotalSize = 170;
   NameSingular = "stalker";
   NamePlural = "stalkers";
@@ -30,4 +28,16 @@ invisiblestalker
   ClassStates = INVISIBLE;
   BodyPartsDisappearWhenSevered = true;
   IsImmuneToStickiness = true;
+  FriendlyReplies :=
+  {
+    "\"I will watch you when you sleep.\"",
+    "\"Don't mind me. I'm just watching. Your. Every. Step.\"",
+    "\"I'm not an invisible stalker! I'm your imaginary friend!\"",
+    "\"Gah, I always feel like somebody's watching me. Creepy.\"";
+  }
+  HostileReplies :=
+  {
+    "\"Gods are away on business.\"",
+    "\"Misery is the river of the world.\"";
+  }
 }

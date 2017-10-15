@@ -18,8 +18,6 @@ ghost
   KnownCWeaponSkills == BITE;
   CWeaponSkillHits == 100;
   BaseEmitation = rgb24(110, 110, 110);
-  HostileReplies == "\"Boo!\"";
-  FriendlyReplies == "\"A very good Boo to you, my friend.\"";
   PanicLevel = 0;
   HasALeg = false;
   FleshMaterial = GHOST;
@@ -41,4 +39,12 @@ ghost
   CanBeGenerated = true;
   CanBeGeneratedOnlyInTheCatacombs = true;
   IsCatacombCreature = true;
+  HostileReplies :=
+  {
+    "@Dd moans.",
+    "@Dd wails.",
+    "@Dd attempts to spook you.",
+    "\"Boo!\"";
+  }
+  FriendlyReplies == "\"A very good Boo to you, my friend.\"";
 }

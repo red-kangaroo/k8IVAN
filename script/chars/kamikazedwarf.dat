@@ -34,13 +34,23 @@ kamikazedwarf
   HPRequirementForGeneration = 60;
   DayRequirementForGeneration = 6;
   Frequency = 300;
-  HostileReplies == "\"Heaven awaits me in the house of @Gd after I bomb you, heretic!\"";
   AttachedGod = NONE;
   UndeadVersions = false;
   WieldedPosition = -1, -2;
+  HostileReplies :=
+  {
+    "@Dd smiles at you, eyes glowing with religious mania.",
+    "\"Die, infidel!\"",
+    "\"For the glory of @Gd!\"",
+    "\"Heaven awaits me in the house of @Gd after I bomb you, heretic!\"";
+  }
   FriendlyReplies :=
   {
     "\"Would you like me to teach you the best suicidal bombing tactics?\"",
+    "\"I love the smell of gunpowder in the morning.\"",
+    "\"My life for @Gd!\"",
+    "\"Short? Who called me short?!\"",
+    "\"Someone said I have a short fuse. OF COURSE I HAVE A SHORT FUSE! HOW ELSE AM I MEANT TO CLEANSE MY ENEMIES IN HOLY FIRE?!\"",
     "@Dd shouts: \"Death to disbelievers!\"",
     "@Dd praises @Gd with numerous hymns. @Pp is obviously a very devoted follower.",
     "\"One day, Holy War will break out and I shall sacrifice my life with joy.\"";

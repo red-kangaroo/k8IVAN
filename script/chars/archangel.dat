@@ -36,6 +36,18 @@ archangel
   CanChoke = false;
   DisplacePriority = 10;
   AllowPlayerToChangeEquipment = false;
+  HostileReplies :=
+  {
+    "\"Do be afraid!\"",
+    "\"In the most holy name of @Gd, die!\"",
+    "\"I judge thee guilty!\"";
+  }
+  FriendlyReplies :=
+  {
+    "\"I command us all to be friends!\"",
+    "\"I judge thee... barely adequate of my Glory.\"",
+    "\"I'm here only because @Gd wished so.\"";
+  }
 
   Config ATAVUS;
   {

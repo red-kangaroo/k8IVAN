@@ -26,7 +26,6 @@ shaman
   CanBeGenerated = true;
   Sex = UNDEFINED;
   CanRead = true;
-  CanBeGenerated = true;
   HostileReplies == "@Dd growls: \"Me make you feel pain!\"";
   FriendlyReplies == "\"What do you want me to kill?\"";
   IgnoreDanger = true;

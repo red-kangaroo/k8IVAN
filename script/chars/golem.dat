@@ -11,7 +11,7 @@ golem
   DefaultCharisma = 5;
   DefaultMana = 5;
   TotalVolume = 100000;
-  TorsoBitmapPos = 256, 0;
+  //!TorsoBitmapPos = 256, 0;
   TotalSize = 250;
   NameSingular = "golem";
   CanBeGenerated = true;
@@ -29,8 +29,21 @@ golem
   KnownCWeaponSkills == UNARMED;
   CWeaponSkillHits == 50;
   PanicLevel = 0;
-  HostileReplies == "Yes, master. Golem kill human. Golem then return."; /* No quotes! (golem engraves) */
-  FriendlyReplies == "Yes, master?";
+  HostileReplies := /* No quotes! (golem engraves) */
+  {
+    "GOLEM KILL, GOLEM THEN RETURN",
+    "GOLEM KILL ALL HUMANS",
+    "GOLEM NEED MASTER";
+  }
+  FriendlyReplies :=
+  {
+    "GOLEM OBEY MASTER",
+    "GOLEM SERVE MASTER",
+    "GOLEM MAY NOT INJURE MASTER OR ALLOW MASTER TO COME TO HARM",
+    "GOLEM PROTECT MASTER",
+    "GOLEM SMASH FOR MASTER",
+    "YES, MASTER";
+  }
   /* FleshMaterial overridden */
   DeathMessage = "The Holy Words of @dd fly away. The monster's magic fades and it vanishes in seconds.";
   UsesNutrition = false;
@@ -70,6 +83,16 @@ golem
     Frequency = 10000;
     IsImmuneToItemTeleport = true;
     TamingDifficulty = 35;
+    HostileReplies :=
+    {
+      "GOLEM FREE",
+      "NO MORE MASTERS",
+      "NO MORE EXPERIMENTS",
+      "EXPERIMENT IDENTIFICATION: ZQ-29",
+      "EXPERIMENT OBJECTIVES: INFILTRATION, EXTERMINATION",
+      "PRIME DIRECTIVE: KILL",
+      "ALL MASTERS MUST DIE";
+    }
   }
 
   Config VALPURIUM;

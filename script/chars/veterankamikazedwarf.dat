@@ -5,8 +5,8 @@ veterankamikazedwarf
   DefaultWisdom = 2;
   Adjective = "veteran kamikaze";
   Inventory == backpack { SecondaryMaterial = GUN_POWDER { Volume = 30000; } }
-  HPRequirementForGeneration = 200;
-  DayRequirementForGeneration = 20;
+  //!HPRequirementForGeneration = 200;
+  //!DayRequirementForGeneration = 20;
   Frequency = 100; /* CLIVAN; old: 200 */
   IsAbstract = true;
   CreateDivineConfigurations = true;

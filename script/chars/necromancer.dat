@@ -21,6 +21,7 @@ necromancer
   IsExtraFragile = true;
   IsSadist = true;
   IsCatacombCreature = true;
+  ConsumeFlags = CT_MEAT|CT_LIQUID|CT_PROCESSED|CT_BONE; /* Necromancers eat vegetarians, not vegetables! */
 
   Config APPRENTICE_NECROMANCER;
   {
@@ -56,6 +57,18 @@ necromancer
     ScienceTalkWisdomModifier = 2;
     ScienceTalkIntelligenceRequirement = 10;
     ScienceTalkWisdomRequirement = 5;
+    FriendlyReplies :=
+    {
+      "@Dd smiles oddly: \"I see dead people.\"",
+      "\"My powers over death suddenly manifested after I ate a wand of necromancy.\"",
+      "\"What? No! Necromancy and necrophilia are *not* the same!\"",
+      "\"Hey, I have a deal for you! Give me your soul, I will give you immortality. *cough* Raised as a mindless skeleton. *cough*\"",
+      "\"I was working on my evil laugh lately. What do you think: MWHAHAHAHAHA - *cough* *cough* *cough* - Sorry.\"",
+      "\"I hate vampires. They're all broody and sparkly and cool, but all they can talk about is blood. And angst, I guess.\"",
+      "\"Once, I tried to subtly stick a dagger in my master's back. She said she would electrocute me, then raise me as a zombie and electrocute me again if I ever tried it again.\"",
+      "\"My master says that ommel blood is sweeter and stronger than any wine.\"";
+    }
+    DeathMessage = "@Dd dies screaming: \"Nooo! I'm too young and beautiful to die!\"";
   }
 
   Config MASTER_NECROMANCER;
@@ -91,6 +104,20 @@ necromancer
     ScienceTalkWisdomModifier = 25;
     ScienceTalkIntelligenceRequirement = 20;
     ScienceTalkWisdomRequirement = 10;
+    FriendlyReplies :=
+    {
+      "@Dd smiles oddly: \"I see dead people. Lots of them. All the time. It's annoying.\"",
+      "\"I'm trying to raise funds for a personal side-project of mine. Would you happen to have some virgins to spare?\"",
+      "\"I was on a good way to become a lich, but I couldn't decide on the color of my phylactery.\"",
+      "\"Yes, I'm angry! The library refused to extend my loan period on the Necronomicon.\"",
+      "\"You don't know what SCP-008 is? Hehehe, ha ha! MWHAHAHAHAHAHA-ha. Sorry.\"",
+      "\"The dead long for torture - to feel once more!\"",
+      "\"I am the Reaper! Come join my dance.\"",
+      "\"May you find beauty in endings...\"",
+      "\"Nothing is more certain than death and nothing more uncertain than the time of dying.\"",
+      "\"Are you a registered organ donor for the Flesh Golem Research Program? And would you like to be?\"";
+    }
+    DeathMessage = "@Dd dies laughing: \"Death is just a beginning!\"";
   }
 
   Config IMPRISONED_NECROMANCER;
@@ -133,7 +160,6 @@ necromancer
     IsUnique = true;
     CanRead = true;
     IsPolymorphable = false;
-    PanicLevel = 0;
     CanBeCloned = false;
     BodyPartsDisappearWhenSevered = true;
     CanBeConfused = false;

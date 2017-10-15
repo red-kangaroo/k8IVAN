@@ -36,7 +36,7 @@ spider
     TotalSize = 50;
     Frequency = 0;
     HostileReplies == "@Dd stridulates wildly, producing a small creaking noise.";
-    FriendlyReplies == "@Dd stridulates softly, producing a barely audible but quite confortable noise.";
+    FriendlyReplies == "@Dd stridulates softly, producing a barely audible but quite comfortable noise.";
   }
 
   Config GIANT;
@@ -55,7 +55,7 @@ spider
     TotalVolume = 5000;
     TotalSize = 50;
     HostileReplies == "@Dd stridulates wildly, producing a small creaking noise.";
-    FriendlyReplies == "@Dd stridulates softly, producing a barely audible but quite confortable noise.";
+    FriendlyReplies == "@Dd stridulates softly, producing a barely audible but quite comfortable noise.";
   }
 
   Config LARGE;

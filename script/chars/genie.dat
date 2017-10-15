@@ -25,8 +25,6 @@ genie
   RightSWeaponSkillHits = 200;
   PanicLevel = 0;
   BaseEmitation = rgb24(110, 110, 130);
-  HostileReplies == "\"Fall, puny primy!\"";
-  FriendlyReplies == "\"You know, it's not fun to stay in an oil lamp for three centuries...\"";
   Belt = SPIDER_SILK belt;
   FleshMaterial = MAGICAL_AIR;
   DeathMessage = "@Dd vanishes from existence.";
@@ -39,4 +37,16 @@ genie
   CanChoke = false;
   IsImmuneToStickiness = true;
   UndeadVersions = false;
+  HostileReplies :=
+  {
+    "\"Fall, puny mortal!\"",
+    "\"I will teach you not to disturb me!\"",
+    "\"Your last wish?\"";
+  }
+  FriendlyReplies :=
+  {
+    "\"I'm free!\"",
+    "\"Sorry, I'm all out of wishes.\"",
+    "\"You know, it's not fun to stay in an oil lamp for three centuries...\"";
+  }
 }

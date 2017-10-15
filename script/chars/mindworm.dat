@@ -7,6 +7,14 @@ mindworm
   AttachedGod = SCABIES;
   IsAbstract = true;
   TorsoMainColor = rgb16(200, 30, 30);
+  FriendlyReplies :=
+  {
+    "\"It is the mark of an educated mind to be able to entertain a thought without accepting it.\"",
+    "\"You have power over your mind - not outside events. Realize this, and you will find strength.\"",
+    "\"We are shaped by our thoughts; we become what we think. When the mind is pure, joy follows like a shadow that never leaves.\"",
+    "\"Learning never exhausts the mind.\"",
+    "\"The mind is everything. What you think you become.\"";
+  }
 
   Config BOIL;
   {

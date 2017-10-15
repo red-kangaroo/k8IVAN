@@ -23,8 +23,6 @@ billswill
   KnownCWeaponSkills == BITE;
   CWeaponSkillHits == 100;
   BaseEmitation = rgb24(110, 110, 130);
-  HostileReplies == "\"You will install the One OS. Resistance is futile. Prepare to be assimilited.\"";
-  FriendlyReplies == "\"Praise the Corporation!\"";
   Inventory == amulet(AMULET_OF_ESP) { Chance = 10; }
   PanicLevel = 0;
   HasALeg = false;
@@ -43,4 +41,19 @@ billswill
   MoveType = ETHEREAL;
   CanChoke = false;
   IsImmuneToStickiness = true;
+  HostileReplies :=
+  {
+    "\"You will install the One OS. Resistance is futile. Prepare to be assimilited.\"",
+    "\"We shall strike you down! We shall send you to the Recycle Bin!\"";
+  }
+  FriendlyReplies :=
+  {
+    "\"Praise the Corporation!\"",
+    "@Dd hacks out some psi-code and calls it a Service Pack.",
+    "\"Your most unhappy customers are your greatest source of learning.\"",
+    "\"Success is a lousy teacher. It seduces smart people into thinking they can't lose.\"",
+    "\"It's fine to celebrate success but it is more important to heed the lessons of failure.\"",
+    "\"We all need people who will give us feedback. That's how we improve.\"",
+    "\"As we look ahead into the next century, the Leader will be the one who empowers others.\"";
+  }
 }

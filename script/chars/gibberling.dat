@@ -20,7 +20,6 @@ gibberling
   LegBitmapPos = 16, 128;
   TotalVolume = 30000;
   TotalSize = 90;
-  SkinColor = rgb16(100, 100, 200);
   NameSingular = "gibberling";
   CanBeGenerated = true;
   Sex = UNDEFINED;
@@ -32,8 +31,50 @@ gibberling
   BaseUnarmedStrength = 300;
   FleshMaterial = GIBBERLING_FLESH;
   AttachedGod = SILVA;
-  HostileReplies == "@Dd gibbers diabolically.";
-  FriendlyReplies == "@Dd gibbers joyfully.";
   WillCarryItems = false;
   IsExtraFragile = true;
+
+  HostileReplies :=
+  {
+    /* Gibberlings insult you in gibberish! */
+    "\"Poshyel k chyertu!\"", /* russian */
+    "\"Antiquis temporibus, nati tibi in rupibus ventosissimis exponebantur ad necem.\"", /* latin */
+    "\"Vouz avez plein de merde.\"",  /* french */
+    "\"Zhebni, debile.\"",  /* czech */
+    "\"Vaffanculo!\"", /* italian */
+    "\"Hisap telur!\"", /* malay */
+    "\"Elif air ab tizak!\"", /* arabic */
+    "\"Gellbourria salak!\"", /* turkish */
+    "\"Hum kah chan!\"", /* cantonese */
+    "\"Du Hurensohn!\"", /* german */
+    "\"Baka yaro!\"", /* japanese */
+    "\"Preklet kurac!\"", /* slovenian */
+    "\"Cachu bant ti cachu mes!\"", /* welsh */
+    "\"Lofasz a segedben!\"", /* hungarian */
+    "\"Yumago!\"", /* korean */
+    "\"Jebiesz jeze!\"", /* polish*/
+    "@Dd sneers at you. \"Mishugena.\"", /* yiddish */
+    "\"Lech zayen para.\"", /* hebrew */
+    "\"Dra at skogen.\"", /* swedish */
+    "\"Pinche idiota!\"", /* spanish */
+    "\"Tha sou skiso to mouni!\"", /* greek */
+    "\"Kurav tu ando mul!\""; /* romanian */
+  }
+  FriendlyReplies :=
+  {
+    /* Famous literature, distorted into gibberish. */
+    "\"Who would fard that dream? Ay, and there's tural shocks that dreams momething afterprises the sleep; no more!\"", /* Hamlet */
+    "\"Buzzing a buzzing-noise, put lived unders, and he got of all he tree, and buzzing. If there's a buzzing.\"", /* Winnie the Pooh */
+    "\"Shoot at tin the backyard, but sin cribs, do somethingbirds. That tin to enjoy. That's a sing, and I asked Miss Maudie.\"", /* To Kill a Mockingbird */
+    "\"The heart. The most be seen or touched, things in they are felt with the heart.\"", /* The Little Prince */
+    "\"Fear is the its past not fear has gone that brings to see inner me. And then my fear. Fear is there will turn the inner me.\"", /* Dune */
+    "\"You want you remember and you? Yes. You forever, he said. You want to forget.\"", /* The Road */
+    "\"Candles exploding, burn live, the same are mad to talk, mad to like stars.\"", /* On The Road */
+    "\"Did seraphs, exhibit number for a princedom by the was and gentlemen initial girl-child. She tongue tip of my loin!\"", /* Lolita */
+    "\"That sometimes you realize truth arrives on you can't even now, I wonder how much of my life is convinced.\"", /* The Book Thief */
+    "\"Minitrue, which mainment, education and Minipax, the Miniluv and order. The Miniplenty.\"", /* 1984 */
+    "\"But I wasn't me thing deaf; it was people that first started acting like I remembered one that first started acting.\"", /* One Flew Over the Cuckoos Nest */
+    "\"And better to commit a hasty action which nobody feels but yourself, than to all consequences with yourself.\"", /* Jane Eyre */
+    "@Dd gibbers.";
+  }
 }

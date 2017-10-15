@@ -49,7 +49,11 @@ imperialist
   FriendlyReplies :=
   {
     /* the last isn't used if the player is a sumo champion */
-    "\"And they said levitating ostriches had no future! Hah!",
+    "@Dd wonders if he should buy a small country.",
+    "\"And they said levitating ostriches had no future! Hah!\"",
+    "\"Happiness is a great thing, but it won't buy you much.\"",
+    "\"Everything can be bought, if you know the price. Once we appraise everything, we will be able to buy the universe!\"",
+    "\"Everything has a price - your loyalty and life, the air we breathe, sunshine, even my own beliefs.\"",
     "\"Poor people shouldn't complain - after all it's their own fault.\"",
     "\"Why can't those darn tax collectors ever believe an honest but poor enterpreneur who says he can't pay? Hmmm. I wonder if my room has something to do with it?\"",
     "\"I couldn't possibly thank this city enough for making Decos Bananas Co. the world's greatest fruit producer. So I don't do it all.\"",

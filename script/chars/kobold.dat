@@ -93,5 +93,16 @@ kobold
     TamingDifficulty = 15;
     IsSadist = true;
     UndeadVersions = false;
+    FriendlyReplies :=
+    {
+      "\"My family traces its lineage all the way back to Karl, a scholar-knight of Sophos who became the first kobold patriarch.\"",
+      "\"The Path of Enlightenment is the greatest legacy our first patriarch Karl could bequeath to us. It will lead all kobolds out of the darkness of savagery.\"",
+      "\"If a kobold speaks or acts with an evil thought, pain follows him. If a kobold speaks or acts with a pure thought, happiness follows him.\"",
+      "\"Even death is not to be feared by a kobold who has lived wisely.\"",
+      "\"You will not be punished for your anger, you will be punished by your anger.\"",
+      "\"I often struggle to lead my kind on the Path of Enlightenment, but I must persevere. Too long we were beasts, now we shall become people.\"",
+      "\"The mind is everything. What you think you become.\"",
+      "\"Peace comes from within. Do not seek it without.\"";
+    }
   }
 }

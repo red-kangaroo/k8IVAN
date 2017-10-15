@@ -31,4 +31,23 @@ imp
   WillCarryItems = false;
   CanChoke = false;
   UndeadVersions = false;
+  FriendlyReplies :=
+  {
+    "\"And she said: 'Stop pecking at your food!' And I was like: 'But mom! It's raw and I told you I wanted the toddler well done!'\"",
+    "\"I was about to kiss her, but then I got summoned.\"",
+    "\"And the summoner tore his heart out and said: 'I present this humble sacrifice to thee, oh daemon of the Nether Realms!' And I was like: 'Gee, that's so sweet and all, but sorry, I already have a date for Valentine's.' Plus he was like what, seventy, maybe? I'm ten times older than him! How creepy is that, right?\"";
+  }
+  HostileReplies :=
+  {
+    "@Dd cackles evilly.",
+    "@Dd cackles diabolically.",
+    "@Dd laughs devilishly.",
+    "@Dd laughs demonically.",
+    "@Dd giggles infernally.",
+    "@Dd giggles fiendishly.",
+    "@Dd snickers satanically.",
+    "@Dd snickers apocalyptically.",
+    "@Dd grins maniacally.",
+    "@Dd grins sadistically.";
+  }
 }

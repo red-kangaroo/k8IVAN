@@ -23,8 +23,6 @@ vampire
   TorsoBitmapPos = 32, 720;
   ArmBitmapPos = 64, 720;
   LegBitmapPos = 0, 720;
-  HostileReplies == "@Dd roars angrily.";
-  FriendlyReplies == "@Dd capers cheerfully.";
   TotalSize = 160;
   NameSingular = "vampire";
   AttackStyle = USE_HEAD;
@@ -40,4 +38,24 @@ vampire
   WillCarryItems = true;
   UndeadVersions = false;
   CanUseEquipment = false;
+  HostileReplies :=
+  {
+    "\"Don't try to run. I will find you. I will always find you.\"",
+    "\"I will suck you dry!\"",
+    "\"This is my hunting ground that you dare to prowl!\"",
+    "@Dd hisses: \"There is no place to run.\"";
+  }
+  FriendlyReplies :=
+  {
+    "\"What's that smell? The sweet blood! Oh, it sings to me! It's enough to make a man sick.\"",
+    "\"Blessed be blood!\"",
+    "\"Blood makes us human, makes us more than human, makes us human no more.\"",
+    "\"Vampires have a sense of smell ten times more acute than humans. And you blame us for being repulsed by garlic?\"",
+    "\"Of course I die when you stake me in the heart and cut off my head. Everything dies when you stake it in the heart and cut off its head!\"",
+    "\"Shall we prowl the night, master?\"",
+    "\"Good feedings to you!\"",
+    "\"I hate silver! It's so cold and gloomy. I much prefer wearing gold.\"",
+    "\"I loathe the sun. All the sparkling drives me crazy.\"",
+    "\"No, I can't cross running water. But can you?\"";
+  }
 }

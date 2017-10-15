@@ -20,12 +20,19 @@ siren
   TotalVolume = 40000;
   TotalSize = 170;
   BaseUnarmedStrength = 200;
-  HostileReplies == "\"LAallaaalalaaa!\"";
   CanRead = true;
   NameSingular = "siren";
   AttachedGod = DULCIS;
   FleshMaterial = ELF_FLESH;
-  FriendlyReplies == "\"I'm singing in the rain... Oh wait...\"";
+  HostileReplies == "\"LAallaaalalaaa!\"";
+  FriendlyReplies :=
+  {
+    "@Dd curses all orcs.",
+    "@Dd comes on to you.",
+    "@Dd cajoles you.",
+    "\"Hello, sailor!\"";
+    "\"I'm singing in the rain... Oh wait...\"";
+  }
 
   /* if somebody really wants to J_Kahvi has provided
      detailed discussion of nipple and pubic hair

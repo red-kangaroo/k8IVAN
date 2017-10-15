@@ -45,7 +45,14 @@ communist /* Ivan */
   CanBeWished = true;
   DefaultName = "Ivan";
   DeathMessage = "@Dd falls groaning bravely: \"Party revenges @nu\"!";
-  HostileReplies == "\"You capitalist! Lenin want @nu kill capitalists!\"";
+  HostileReplies :=
+  {
+    "\"Nu vse, tebe pizda!\"",
+    "\"Otyebis ot menya!\"",
+    "\"Ootebya nyet yayeesav!\"",
+    "\"Zhopu porvu margala vikoliu!\"",
+    "\"Schas po ebalu poluchish, suka!\"";
+  }
   FriendlyReplies :=
   {
     "\"Da, @nu like killing.\"",
@@ -58,7 +65,11 @@ communist /* Ivan */
     "\"@Nu buy kyber eyes. @Nu see in dark.\"",
     "\"Uncle Lenin live in Russia. Lenin strong guy. @Nu like.\"",
     "\"Vodka strong, meat rotten.\"",
-    "\"Vladimir @nu best buddy. @Nu meet Vladimir first in magic test area near Voktsovadil.\"";
+    "\"Vodka inside, bottle outside.\"",
+    "\"@Nu gone through spacetime portal. @Nu searches for stolen family treasure - exact replica of Lenin's mummy!\"",
+    "\"You can always find party in Lunethia. But in Soviet Russia, Party can always find you!\"",
+    "\"Vladimir @nu best buddy. @Nu meet Vladimir first in magic test area near Voktsovadil.\"",
+    "\"Lenin want @nu kill capitalists!\"";
   }
   AttachedGod = LORICATUS;
   ConstantCommandFlags = FLEE_FROM_ENEMIES;

@@ -35,14 +35,29 @@ ennerbeast
   DeathMessage = "@Dd dies and the world is finally freed from this terrible monster.";
   Inventory == horn(FEAR);
   IsUnique = true; /* currently */
-  HostileReplies == "Aighee!";
+  AttachedGod = SCABIES;
+  BiteCapturesBodyPart = false;
+  HostileReplies :=
+  {
+    "\"I only want to talk but everyone is rude and dies when I try.\"",
+    "\"Sometimes, I feel so lonely...\"",
+    "\"Can you help me find my children?\"",
+    "\"The village of Enner is hidden in a beautiful mountain valley far, far east from here. You should pay a visit some day and hear our singers. Their arias are incredible!\"",
+    "\"After my wife passed away, I couldn't stand remaining in our village. Everything I looked at was a painful remainder of her.\"",
+    "\"My little girl wanted to see the world beyond our village, so off we went. It was the first time my children were genuinely happy since their mother passed away.\"",
+    "\"I thank the gods for my children every day. They were the best thing that ever happened in my life.\"",
+    "@Dd laughs with a devastating sound which shakes the ground.";
+  }
   FriendlyReplies :=
   {
     "\"Fishing is fun! Do you fish?\"",
     "\"And then I got that perch weighting fifty stones...\"",
     "\"I only want to talk but everyone is rude and dies when I try.\"",
-    "\"Can you help me with this download problem?\"";
+    "\"You know what they say... fish and bread keep the poor man fed. Eh?\"",
+    "\"The village of Enner is hidden in a beautiful mountain valley far, far east from here. You should pay a visit some day and hear our singers. Their arias are incredible!\"",
+    "\"After my wife passed away, I couldn't stand remaining in our village. Everything I looked at was a painful remainder of her.\"",
+    "\"My little girl wanted to see the world beyond our village, so off we went. It was the first time my children were genuinely happy since their mother passed away.\"",
+    "\"I thank the gods for my children every day. They were the best thing that ever happened in my life.\"",
+    "\"Can you help me find my children?\"";
   }
-  AttachedGod = SCABIES;
-  BiteCapturesBodyPart = false;
 }

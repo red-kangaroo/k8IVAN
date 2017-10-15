@@ -28,7 +28,14 @@ skeleton
   RightSWeaponSkillHits = 10;
   PanicLevel = 0;
   HostileReplies == "@Dd grunts: \"Bones. Need more bones.\"";
-  FriendlyReplies == "@Dd sings: \"Leg bone is connected to the hib bone, hib bone is connected to the rib bone...\"";
+  FriendlyReplies :=
+  {
+    "@Dd talks about bones.",
+    "@Dd rattles @sp bones omniously.",
+    "\"Hope I'm not giving you a boner! Heh, heh.\"",
+    "\"I lost my old skull in a game of poker, so I killed this adventurer guy and took his. Quite handsome, right?\"",
+    "@Dd sings: \"Leg bone is connected to the hip bone, hip bone is connected to the rib bone...\"";
+  }
   FleshMaterial = BONE;
   DeathMessage = "@Dd is transformed into a crumpled heap of bones.";
   SpillsBlood = false;

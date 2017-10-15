@@ -11,12 +11,12 @@ assassin
   TorsoBitmapPos = 48, 224;
   ArmBitmapPos = 80, 64;
   LegBitmapPos = 16, 160;
-  ClothColor = rgb16(100, 50, 50);
+  //!ClothColor = rgb16(100, 50, 50);
   BodyArmor = HARDENED_LEATHER bodyarmor(PLATE_MAIL);
   Cloak = HARDENED_LEATHER HARDENED_LEATHER cloak;
   RightWielded = meleeweapon(DAGGER);
   LeftWielded = maingauche;
-  KnownCWeaponSkills == SMALL_SWORDS;
+  //!KnownCWeaponSkills == SMALL_SWORDS;
   KnownCWeaponSkills = { 2, SMALL_SWORDS, SHIELDS; }
   CWeaponSkillHits = { 2, 500, 500; }
   RightSWeaponSkillHits = 15;
@@ -26,7 +26,6 @@ assassin
   CanRead = true;
   NameSingular = "assassin";
   CanBeGenerated = true;
-  ClassStates = INFRA_VISION;
   HostileReplies == "\"Trying to reason me with diplomacy won't work on me.\"";
   FriendlyReplies == "\"Eh, gets the job done..\"";
   IgnoreDanger = true;
