@@ -41,6 +41,20 @@ kawai /* meleeweapon-> */
   DamageFlags = SLASH|PIERCE;
   GearStates = HASTE;
 
+  Config BROKEN;
+  {
+    Possibility = 0;
+    BitmapPos = 109, 226;
+    WieldedBitmapPos = 176, 112;
+    StrengthModifier = 50;
+    FormModifier = 500;
+    GearStates = 0;
+    FireResistance = 10;
+    PoisonResistance = 10;
+    ElectricityResistance = 10;
+    AcidResistance = 10;
+  }
+
 /*
   Config SUPER;
   {
@@ -56,14 +70,6 @@ kawai /* meleeweapon-> */
     Roundness = 10;
     CanFlame = true;
     CanBeGenerated = false;
-  }
-*/
-
-/*
-  Config BROKEN;
-  {
-    BitmapPos = 110, 225;
-    WieldedBitmapPos = 176, 80;
   }
 */
 }
