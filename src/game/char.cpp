@@ -5768,6 +5768,7 @@ void character::GetHitByExplosion (const explosion *Explosion, int Damage) {
   int DamageDirection = GetPos() == Explosion->Pos ? RANDOM_DIR : game::CalculateRoughDirection(GetPos() - Explosion->Pos);
   if (!IsPet() && Explosion->Terrorist && Explosion->Terrorist->IsPet()) Explosion->Terrorist->Hostility(this);
   GetTorso()->SpillBlood((8 - Explosion->Size + RAND() % (8 - Explosion->Size)) >> 1);
+  if (DamageDirection == RANDOM_DIR) DamageDirection = RAND()&7;
   v2 SpillPos = GetPos() + game::GetMoveVector(DamageDirection);
   if (SquareUnder[0] && GetArea()->IsValidPos(SpillPos)) GetTorso()->SpillBlood((8-Explosion->Size+RAND()%(8-Explosion->Size))>>1, SpillPos);
   if (IsPlayer()) ADD_MESSAGE("You are hit by the explosion!");
