@@ -80,7 +80,7 @@ felist::felist (cfestring &Topic, col16 TopicColor, uInt Maximum) :
   Selected(0),
   Pos(10, 10),
   Width(780),
-  PageLength(26),
+  PageLength(26+10),
   BackColor(0),
   Flags(SELECTABLE|FADE),
   UpKey(KEY_UP),
@@ -106,12 +106,15 @@ void felist::Pop () {
 uInt felist::Draw () {
   while (Entry.size() && Entry[GetLastEntryIndex()]->String.IsEmpty()) Pop();
   if (Entry.empty()) return LIST_WAS_EMPTY;
+
   FelistCurrentlyDrawn = this;
   if (globalwindowhandler::ControlLoopsInstalled()) globalwindowhandler::InstallControlLoop(FelistDrawController);
+
   bitmap BackGround(RES);
+  bitmap*Buffer;
+
   BackGround.ActivateFastFlag();
-  bitmap *Buffer;
-  if (Flags & FADE) {
+  if (Flags&FADE) {
     Buffer = new bitmap(RES, 0);
     Buffer->ActivateFastFlag();
     BackGround.ClearToColor(0);
@@ -119,17 +122,20 @@ uInt felist::Draw () {
     Buffer = DOUBLE_BUFFER;
     Buffer->FastBlit(&BackGround);
   }
+
   uInt c;
   uInt Return, Selectables = 0;
   truth JustSelectMove = false;
   for (c = 0; c < Entry.size(); ++c) if (Entry[c]->Selectable) ++Selectables;
   if (Selected >= Selectables) Selected = Selectables-1;
-  if (Flags & SELECTABLE) PageBegin = Selected-Selected%PageLength;
-  else if (Flags & INVERSE_MODE) PageBegin = GetLastEntryIndex()-GetLastEntryIndex()%PageLength;
+
+       if (Flags&SELECTABLE) PageBegin = Selected-Selected%PageLength;
+  else if (Flags&INVERSE_MODE) PageBegin = GetLastEntryIndex()-GetLastEntryIndex()%PageLength;
   else PageBegin = 0;
+
   for (;;) {
     truth AtTheEnd = DrawPage(Buffer);
-    if (Flags & FADE) {
+    if (Flags&FADE) {
       if (JustSelectMove) {
         Buffer->FastBlit(DOUBLE_BUFFER);
         graphics::BlitDBToScreen();
@@ -140,14 +146,20 @@ uInt felist::Draw () {
     } else {
       graphics::BlitDBToScreen();
     }
+
     uInt Pressed = GET_KEY(false);
-    if (Flags & SELECTABLE) {
+
+    if (Flags&SELECTABLE) {
       // list movement and selections
-      if (Pressed >= 'a' && Pressed <= 'z') Pressed -= 32;
-      if (Pressed >= 'A' && Pressed <= 'Z') {
-        Pressed -= 65;
-        if (Pressed < PageLength && Pressed+PageBegin < Selectables) {
-          Return = Selected = Pressed+PageBegin;
+      int prs = -1;
+
+           if (Pressed >= 'a' && Pressed <= 'z') prs = Pressed-'a';
+      else if (Pressed >= 'A' && Pressed <= 'Z') prs = Pressed-'A';
+      else if (Pressed >= '0' && Pressed <= '9') prs = Pressed-'0'+26;
+
+      if (prs >= 0) {
+        if ((uInt)prs < PageLength && (uInt)prs+PageBegin < Selectables) {
+          Return = Selected = (uInt)prs+PageBegin;
           if (fastListMode) {
             JustSelectMove = true;
             continue;
@@ -157,6 +169,7 @@ uInt felist::Draw () {
         }
         continue;
       }
+
       if (Pressed == UpKey) {
         if (Selected) {
           --Selected;
@@ -177,12 +190,13 @@ uInt felist::Draw () {
         }
         continue;
       }
+
       if (Pressed == DownKey) {
         if (!AtTheEnd || Selected != Selectables-1) {
           ++Selected;
           if (Selected > PageBegin+PageLength-1) {
-            BackGround.FastBlit(Buffer);
             PageBegin += PageLength;
+            BackGround.FastBlit(Buffer);
           } else {
             JustSelectMove = true;
           }
@@ -192,11 +206,13 @@ uInt felist::Draw () {
         }
         continue;
       }
+
       if (Pressed == KEY_HOME) {
         Selected = PageBegin;
         JustSelectMove = true;
         continue;
       }
+
       if (Pressed == KEY_END) {
         //fprintf(stderr, "sel: %u; pb: %u; pl: %u; ss: %u; ae: %s\n", Selected, PageBegin, PageLength, Selectables, AtTheEnd ? "end" : "not end");
         if (Selectables) {
@@ -206,31 +222,60 @@ uInt felist::Draw () {
         JustSelectMove = true;
         continue;
       }
+
+      if (Pressed == KEY_LEFT) {
+        // previous page
+        if (Selectables && PageBegin > 0) {
+          PageBegin -= PageLength;
+          PageBegin = (PageBegin < PageLength ? 0 : PageBegin-PageLength);
+          Selected = PageBegin;
+          BackGround.FastBlit(Buffer);
+        }
+        continue;
+      }
+
+      if (Pressed == KEY_RIGHT) {
+        // next page
+        if (Selectables) {
+          uInt pgend = PageBegin+PageLength;
+          if (pgend < Selectables) {
+            PageBegin += PageLength;
+            Selected = PageBegin;
+            BackGround.FastBlit(Buffer);
+          }
+        }
+        continue;
+      }
+
       if (Pressed == KEY_ENTER) {
         Return = Selected;
         break;
       }
     }
+
     if (Pressed == KEY_ESC) {
       Return = ESCAPED;
       break;
     }
-    if ((AtTheEnd && !(Flags & INVERSE_MODE)) || (!PageBegin && (Flags & INVERSE_MODE))) {
-      if (Flags & FELIST_NO_BADKEY_EXIT) continue;
+
+    if ((AtTheEnd && !(Flags&INVERSE_MODE)) || (!PageBegin && (Flags&INVERSE_MODE))) {
+      if (Flags&FELIST_NO_BADKEY_EXIT) continue;
       Return = NOTHING_SELECTED;
       break;
     } else {
       BackGround.FastBlit(Buffer);
-      if (Flags & INVERSE_MODE) PageBegin -= PageLength; else PageBegin += PageLength;
-      if (Flags & SELECTABLE) Selected = PageBegin;
+      if (Flags&INVERSE_MODE) PageBegin -= PageLength; else PageBegin += PageLength;
+      if (Flags&SELECTABLE) Selected = PageBegin;
     }
   }
-  if (!(Flags & FADE)) {
-    if (Flags & DRAW_BACKGROUND_AFTERWARDS) BackGround.FastBlit(DOUBLE_BUFFER);
-    if (Flags & BLIT_AFTERWARDS) graphics::BlitDBToScreen();
+
+  if (!(Flags&FADE)) {
+    if (Flags&DRAW_BACKGROUND_AFTERWARDS) BackGround.FastBlit(DOUBLE_BUFFER);
+    if (Flags&BLIT_AFTERWARDS) graphics::BlitDBToScreen();
   } else {
     delete Buffer;
   }
+
   globalwindowhandler::DeInstallControlLoop(FelistDrawController);
   return Return;
 }
@@ -241,25 +286,28 @@ uInt felist::Draw () {
 truth felist::DrawPage (bitmap *Buffer) const {
   uInt LastFillBottom = Pos.Y+23+Description.size()*10;
   festring Str;
-  //
+
   DrawDescription(Buffer);
   uInt c, i; // c == entry index, i == selectable index
   int selIdx = -1;
   for (c = 0, i = 0; i != PageBegin; ++c) if (Entry[c]->Selectable) ++i;
   while (!Entry[c]->Selectable && Entry[c]->String.IsEmpty()) ++c;
   std::vector<festring> Chapter;
+
   //col16 selBack = BackColor^0xFFFF, selText = BackColor;
   //col16 selBack = LIGHT_GRAY, selText = BLACK;
   col16 selBack = BLUE, selText = WHITE;
+
   for (;;) {
     Str.Empty();
     uInt Marginal = Entry[c]->Marginal;
-    if (Flags & SELECTABLE && Entry[c]->Selectable) {
-      Str << char('A'+(i-PageBegin)) << ": ";
+    if ((Flags&SELECTABLE) && Entry[c]->Selectable) {
+      if (i-PageBegin <= 25) Str << char('A'+(i-PageBegin)); else Str << char('0'+(i-PageBegin-26));
+      Str << ": ";
       Marginal += 3;
     }
     Str << Entry[c]->String;
-    bool selected = (Flags & SELECTABLE && Entry[c]->Selectable && Selected == i);
+    bool selected = (Flags&SELECTABLE && Entry[c]->Selectable && Selected == i);
     if (selected) selIdx = (int)c;
     if (Entry[c]->ImageKey != NO_IMAGE) {
       if (Str.GetSize() <= (Width-50)>>3) {
@@ -301,7 +349,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
       }
     }
     if ((i-PageBegin == PageLength-1 && Entry[c]->Selectable) || c == Entry.size()-1) {
-      if ((!(Flags & INVERSE_MODE) && c != Entry.size()-1) || (Flags & INVERSE_MODE && PageBegin)) {
+      if ((!(Flags&INVERSE_MODE) && c != Entry.size()-1) || (Flags&INVERSE_MODE && PageBegin)) {
         Buffer->Fill(Pos.X+3, LastFillBottom, Width-6, 30, BackColor);
         FONT->Printf(Buffer, v2(Pos.X+13, LastFillBottom+10), WHITE, "- Press SPACE to continue, ESC to exit -");
         LastFillBottom += 30;
