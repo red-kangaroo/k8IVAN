@@ -12,7 +12,7 @@ protected:
 
 void priest::BeTalkedTo () {
   if (GetRelation(PLAYER) == HOSTILE) {
-    ADD_MESSAGE("\"Sinner! My hands shall pour Dinive Wrath upon thee!\"");
+    ADD_MESSAGE("\"Sinner! My hands shall pour Divine Wrath upon thee!\"");
     return;
   }
   for (int c = 0; c < PLAYER->GetBodyParts(); ++c) {
