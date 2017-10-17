@@ -3951,46 +3951,35 @@ void character::DrawPanel (truth AnimationDraw) const {
 
   ++PanelPosY;
 
-  if (GetAction())
+  if (GetAction()) {
     FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "%s", festring(GetAction()->GetDescription()).CapitalizeCopy().CStr());
+  }
 
-  for (int c = 0; c < STATES; ++c)
-    if (!(StateData[c].Flags & SECRET) && StateIsActivated(1 << c) && (1 << c != HASTE || !StateIsActivated(SLOW)) && (1 << c != SLOW || !StateIsActivated(HASTE)))
-      FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), (1 << c) & EquipmentState || TemporaryStateCounter[c] == PERMANENT ? BLUE : WHITE, "%s", StateData[c].Description);
+  for (int c = 0; c < STATES; ++c) {
+    if (!(StateData[c].Flags & SECRET) && StateIsActivated(1 << c) && (1 << c != HASTE || !StateIsActivated(SLOW)) && (1 << c != SLOW || !StateIsActivated(HASTE))) {
+      FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), (1 << c) & EquipmentState || TemporaryStateCounter[c] >= PERMANENT ? BLUE : WHITE, "%s", StateData[c].Description);
+    }
+  }
 
   /* Make this more elegant!!! */
-  if (GetHungerState() == STARVING)
-    FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Starving");
-  else if (GetHungerState() == VERY_HUNGRY)
-    FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Very hungry");
-  else if (GetHungerState() == HUNGRY)
-    FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Hungry");
-  else if (GetHungerState() == SATIATED)
-    FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Satiated");
-  else if (GetHungerState() == BLOATED)
-    FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Bloated");
-  else if (GetHungerState() == OVER_FED)
-    FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Overfed!");
+  switch (GetHungerState()) {
+    case STARVING: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Starving"); break;
+    case VERY_HUNGRY: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Very hungry"); break;
+    case HUNGRY: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Hungry"); break;
+    case SATIATED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Satiated"); break;
+    case BLOATED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Bloated"); break;
+    case OVER_FED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Overfed!"); break;
+  }
 
   switch (GetBurdenState()) {
-    case OVER_LOADED:
-      FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Overload!");
-      break;
-    case STRESSED:
-      FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Stressed");
-      break;
-    case BURDENED:
-      FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Burdened");
-      break;
+    case OVER_LOADED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Overload!"); break;
+    case STRESSED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Stressed"); break;
+    case BURDENED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Burdened"); break;
   }
 
   switch (GetTirednessState()) {
-    case FAINTING:
-      FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Fainting");
-      break;
-    case EXHAUSTED:
-      FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Exhausted");
-      break;
+    case FAINTING: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Fainting"); break;
+    case EXHAUSTED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Exhausted"); break;
   }
 
   if (game::PlayerIsRunning()) {
