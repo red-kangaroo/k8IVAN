@@ -120,12 +120,17 @@ item::~item () {
     for (int c = 0; c < /*SquaresUnder*/FluidCount; ++c) {
       for (fluid* F = FP[c]; F;) {
         fluid *ToDel = F;
-        //
         F = F->Next;
         delete ToDel;
       }
     }
     delete [] FP;
+  }
+
+  for (idholder *I = CloneMotherID; I; ) {
+    idholder *ToDel = I;
+    I = I->Next;
+    delete ToDel;
   }
 }
 

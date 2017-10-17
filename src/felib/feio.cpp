@@ -450,6 +450,7 @@ festring iosystem::ContinueMenu (col16 TopicColor, col16 ListColor, cfestring &D
       /* Add to List all save files */
       if (Buffer.Find(".sav") != Buffer.NPos) List.AddEntry(Buffer, ListColor);
     }
+    closedir(dp);
     if (List.IsEmpty()) {
       TextScreen(CONST_S("You don't have any previous saves."), ZERO_V2, TopicColor);
       return "";

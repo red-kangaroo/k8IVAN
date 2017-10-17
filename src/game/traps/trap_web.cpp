@@ -58,6 +58,7 @@ web::web () : TrapData(), Picture(0), Strength(1) {
 
 web::~web () {
   game::RemoveTrapID(TrapData.TrapID);
+  delete Picture;
 }
 
 
