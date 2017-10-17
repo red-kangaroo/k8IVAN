@@ -37,7 +37,7 @@ public:
     const char *s = const_cast<char *>(CStr);
     int N = s ? strlen(s) : 0;
     Reserved = N|FESTRING_PAGE;
-    char *Ptr = 4+new char[Reserved+5];
+    char *Ptr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
     REFS(Ptr) = 0;
     Data = Ptr;
     if (N > 0) {
@@ -47,7 +47,7 @@ public:
   festring (cchar *CStr, sizetype N) : Data(0/*const_cast<char *>(CStr)*/), Size(N), OwnsData(true), Reserved(0) {
     const char *s = const_cast<char *>(CStr);
     Reserved = N|FESTRING_PAGE;
-    char *Ptr = 4+new char[Reserved+5];
+    char *Ptr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
     REFS(Ptr) = 0;
     Data = Ptr;
     if (N > 0) {
@@ -160,14 +160,14 @@ inline festring::festring (cfestring &Str) :
 }
 
 inline festring::festring (sizetype N) : Size(N), OwnsData(true), Reserved(N|FESTRING_PAGE) {
-  char *Ptr = 4+new char[Reserved+5];
+  char *Ptr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
   REFS(Ptr) = 0;
   Data = Ptr;
 }
 
 
 inline festring::festring (sizetype N, char C) : Size(N), OwnsData(true), Reserved(N|FESTRING_PAGE) {
-  char* Ptr = 4+new char[Reserved+5];
+  char* Ptr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
   REFS(Ptr) = 0;
   Data = Ptr;
   memset(Ptr, C, N);
