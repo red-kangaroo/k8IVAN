@@ -48,6 +48,7 @@ rule -configure- {
     -configure-pkg-config- "SDL Mixer" : SDL_mixer : : "DEFINES += DISABLE_SOUND ;" ;
     -configure-pkg-config- "ALSA" : alsa : "DEFINES += ENABLE_ALSA ;" : ;
   }
+  -configure-pkg-config- "OpenGL" : gl :  : "DEFINES += DISABLE_OPENGL ;" ;
   #
   if ! $(USE_ZLIB) {
     -configure-add-line- "# ZLib disabled" ;

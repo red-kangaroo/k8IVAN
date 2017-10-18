@@ -39,6 +39,9 @@ public:
   static rawbitmap *GetDefaultFont () { return DefaultFont; }
   static void SetSwitchModeHandler (void (*What)()) { SwitchModeHandler = What; }
   static void ReinitMode (sLong adresmod);
+#ifndef DISABLE_OPENGL
+  static void createTexture ();
+#endif
 
 private:
   static void (*SwitchModeHandler)();
