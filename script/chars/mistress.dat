@@ -24,9 +24,9 @@ mistress
   NameSingular = "mistress";
   NamePlural = "mistresses";
   CanBeGenerated = true;
-  BodyArmor = LEATHER bodyarmor(PLATE_MAIL);
-  RightGauntlet = LEATHER gauntlet;
-  RightBoot = LEATHER boot;
+  BodyArmor = BLACK_LEATHER bodyarmor(PLATE_MAIL);
+  RightGauntlet = BLACK_LEATHER gauntlet;
+  RightBoot = BLACK_LEATHER boot;
   RightWielded = NYMPH_HAIR whip { Enchantment = 1; }
   LeftWielded = NYMPH_HAIR whip { Enchantment = 1; }
   KnownCWeaponSkills == WHIPS;
