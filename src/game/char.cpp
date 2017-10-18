@@ -2784,6 +2784,7 @@ void character::GoOn (go *Go, truth FirstStep) {
   //
   v2 MoveVector = ApplyStateModification(game::GetMoveVector(Go->GetDirection()));
   lsquare *MoveToSquare[MAX_SQUARES_UNDER];
+  lsquare *MoveToSquare2[MAX_SQUARES_UNDER];
   int Squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
   int moveDir = game::MoveVectorToDirection(MoveVector);
   //
@@ -2920,13 +2921,30 @@ void character::GoOn (go *Go, truth FirstStep) {
         }
       }
     }
-    //
+    // check items
     if (!doStop) {
       for (int c = 0; c < Squares; ++c) {
         if (MoveToSquare[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
           dirlogf(" stepped near something interesting\n");
           doStop = true;
           break;
+        }
+      }
+    }
+    // check items in adjacent squares too, so diagonal move won't miss any
+    if (!doStop) {
+      for (int f = 0; f < 8 && !doStop; ++f) {
+        v2 np = game::GetMoveVector(f);
+        if (np == MoveVector) continue; // this will be checked on the next move
+        int sq2 = CalculateNewSquaresUnder(MoveToSquare2, GetPos()+np);
+        for (int c = 0; c < sq2; ++c) {
+          if (MoveToSquare2[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
+            dirlogf(" stepped near something interesting\n");
+            //doStop = true;
+            //break;
+            Go->Terminate(false);
+            return;
+          }
         }
       }
     }
