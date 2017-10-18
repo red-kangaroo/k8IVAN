@@ -23,9 +23,6 @@
 void (*graphics::SwitchModeHandler) ();
 
 SDL_Surface *graphics::Screen;
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-SDL_Surface *graphics::TempSurface;
-#endif
 
 bitmap *graphics::DoubleBuffer;
 v2 graphics::Res;
@@ -103,9 +100,6 @@ void graphics::Init () {
 void graphics::DeInit () {
   delete DefaultFont;
   DefaultFont = 0;
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  SDL_FreeSurface(TempSurface);
-#endif
   SDL_Quit();
 }
 
@@ -135,23 +129,6 @@ void graphics::SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScre
   DoubleBuffer = new bitmap(NewRes);
   Res = NewRes;
   ColorDepth = 32/*16*/;
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  ABORT("Not Yet");
- #if 0
-  Uint32 rmask, gmask, bmask;
-  /*
-  rmask = 0xF800;
-  gmask = 0x7E0;
-  bmask = 0x1F;
-  TempSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, Res.X, Res.Y, 16, rmask, gmask, bmask, 0);
-  */
-  rmask = 0xFF0000;
-  gmask = 0xFF00;
-  bmask = 0xFF;
-  TempSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, Res.X, Res.Y, /*16*/32, rmask, gmask, bmask, 0);
-  if (!TempSurface) ABORT("CreateRGBSurface failed: %s\n", SDL_GetError());
- #endif
-#endif
 }
 
 
@@ -175,58 +152,14 @@ static inline packcol16 fromRGB (int r, int g, int b) {
 
 
 void graphics::BlitDBToScreen () {
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  ABORT("Not Yet");
- #if 0
-  SDL_LockSurface(TempSurface);
-  packcol16 *SrcPtr = DoubleBuffer->GetImage()[0];
-  packcol16 *DestPtr = static_cast<packcol16 *>(TempSurface->pixels);
-  feuLong ScreenYMove = (TempSurface->pitch >> 1);
-  feuLong LineSize = Res.X << 1;
-  if (dblRes) {
-    if (weirdDRes) {
-      for (int y = 0; y < fixVal(Res.Y); ++y) {
-        for (int x = 0; x < fixVal(Res.X); ++x) {
-          // getpixel
-          int sx = (Res.X-1)*x/(fixVal(Res.X)-1);
-          int sy = (Res.Y-1)*y/(fixVal(Res.Y)-1);
-          packcol16 *src = SrcPtr+sy*Res.X+sx;
-          packcol16 *dst = DestPtr+y*ScreenYMove+x;
-          *dst = *src;
-        }
-      }
-    } else {
-      for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) {
-        packcol16 *s = SrcPtr;
-        packcol16 *d = DestPtr;
-        for (int x = 0; x < Res.X; ++x) { *d++ = *s; *d++ = *s++; }
-        s = SrcPtr;
-        DestPtr += ScreenYMove;
-        d = DestPtr;
-        for (int x = 0; x < Res.X; ++x) { *d++ = *s; *d++ = *s++; }
-      }
-    }
-  } else {
-    for (int y = 0; y < Res.Y; ++y, SrcPtr += Res.X, DestPtr += ScreenYMove) memmove(DestPtr, SrcPtr, LineSize);
-  }
-  SDL_UnlockSurface(TempSurface);
-  SDL_Surface *S = SDL_DisplayFormat(TempSurface);
-  SDL_BlitSurface(S, NULL, Screen, NULL);
-  SDL_FreeSurface(S);
-  SDL_UpdateRect(Screen, 0, 0, Res.X, Res.Y);
- #endif
-#else
   if (SDL_MUSTLOCK(Screen) && SDL_LockSurface(Screen) < 0) ABORT("Can't lock screen");
-  packcol16 *SrcPtr = DoubleBuffer->GetImage()[0];
-  //packcol16 *DestPtr = static_cast<packcol16 *>(Screen->pixels);
-  //feuLong ScreenYMove = (Screen->pitch >> 1);
-  //feuLong LineSize = Res.X << 1;
+  const packcol16 *SrcPtr = DoubleBuffer->GetImage()[0];
 
-  int newx = fixVal(Res.X);
-  int newy = fixVal(Res.Y);
+  const int newx = fixVal(Res.X);
+  const int newy = fixVal(Res.Y);
 
   // convert source buffer
-  packcol16 *sptr = SrcPtr;
+  const packcol16 *sptr = SrcPtr;
   uint32_t *dptr = (uint32_t*)bufc32;
   for (int y = 0; y < newy; ++y) {
     for (int x = 0; x < newx; ++x) {
@@ -279,7 +212,6 @@ void graphics::BlitDBToScreen () {
   if (SDL_MUSTLOCK(Screen)) SDL_UnlockSurface(Screen);
   SDL_UpdateRect(Screen, 0, 0, fixVal(Res.X), fixVal(Res.Y));
 }
-#endif
 
 
 void graphics::SwitchMode () {

@@ -39,7 +39,7 @@ compile() {
   echo "CC      $2"
   obj="_build/${obj}"
   objects="${objects} ${obj}"
-  gcc -pipe -c -O2 -Wall -Isrc/game ${defines} ${cflags} -o ${obj} "$1/$2"
+  gcc -pipe -c -O2 -Wall -Wno-misleading-indentation -Isrc/game ${defines} ${cflags} -o ${obj} "$1/$2"
   if [ "$?" != "0" ]; then
     echo "FATAL: compilation failed!"
     exit 1
@@ -107,6 +107,7 @@ compile src/felib fesave.cpp
 compile src/felib whandler.cpp
 compile src/felib regex.c
 
+compile src/game ivancommon.cpp
 compile src/game actset.cpp
 compile src/game areaset.cpp
 compile src/game charset.cpp

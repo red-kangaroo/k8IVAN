@@ -9,15 +9,18 @@
  *  along with this file for more details
  *
  */
-#include "ivancommon.h"
-
 #include <cstdio>
 #include <cstring>
 
+#include <cstdlib>
+#include <exception> // for std::bad_alloc
+#include <new>
 
-void *operator new (size_t size) throw (std::bad_alloc) {
+/*#include "ivancommon.h"*/
+
+
+void *operator new (std::size_t size) throw (std::bad_alloc) {
   void *p = malloc(size+1);
-  //
   if (!p) throw std::bad_alloc(); // ANSI/ISO compliant behavior
   memset(p, 0, size+1);
   //fprintf(stderr, "GLOBAL NEW!\n");

@@ -43,9 +43,6 @@ public:
 private:
   static void (*SwitchModeHandler)();
   static SDL_Surface *Screen;
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  static SDL_Surface *TempSurface;
-#endif
   static bitmap *DoubleBuffer;
   static v2 Res;
   static int ColorDepth;
