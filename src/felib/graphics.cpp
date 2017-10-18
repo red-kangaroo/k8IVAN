@@ -19,6 +19,19 @@
 #include "error.h"
 #include "rawbit.h"
 
+#if !defined(DISABLE_SOUND) && defined(ENABLE_ALSA)
+# include <alsa/asoundlib.h>
+// shut the fuck up, alsa!
+
+static void alsa_message_fucker (const char *file, int line, const char *function_, int err, const char *fmt, ...) {}
+
+void fuck_alsa_messages () {
+  snd_lib_error_set_handler(&alsa_message_fucker);
+}
+#else
+void fuck_alsa_messages () {}
+#endif
+
 
 void (*graphics::SwitchModeHandler) ();
 
@@ -129,6 +142,7 @@ void graphics::SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScre
   DoubleBuffer = new bitmap(NewRes);
   Res = NewRes;
   ColorDepth = 32/*16*/;
+  fuck_alsa_messages();
 }
 
 
