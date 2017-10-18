@@ -27,7 +27,7 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(character)(0, 0, 0, "character");
 #include <cctype>
 
 #include "team.h"
-#include "error.h"
+#include "feerror.h"
 #include "game.h"
 #include "message.h"
 #include "fesave.h"

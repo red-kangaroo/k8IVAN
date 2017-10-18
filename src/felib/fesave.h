@@ -26,7 +26,7 @@
 #endif
 
 
-#include "error.h"
+#include "feerror.h"
 #include "festring.h"
 #include "fearray.h"
 

@@ -19,7 +19,7 @@
 #include <new>
 #define set_new_handler  std::set_new_handler
 
-#include "error.h"
+#include "feerror.h"
 #include "fesave.h"
 
 

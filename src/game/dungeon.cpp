@@ -12,7 +12,7 @@
 #include "dungeon.h"
 #include "level.h"
 #include "script.h"
-#include "error.h"
+#include "feerror.h"
 #include "game.h"
 #include "fesave.h"
 #include "femath.h"

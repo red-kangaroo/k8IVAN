@@ -93,7 +93,7 @@ mkdir _build 2>/dev/null
 
 compile src/felib bitmap.cpp
 compile src/felib config.cpp
-compile src/felib error.cpp
+compile src/felib feerror.cpp
 compile src/felib feio.cpp
 compile src/felib felist.cpp
 compile src/felib femain.cpp

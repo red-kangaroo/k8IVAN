@@ -20,7 +20,7 @@
 #include "graphics.h"
 #include "bitmap.h"
 #include "whandler.h"
-#include "error.h"
+#include "feerror.h"
 #include "rawbit.h"
 
 #if !defined(DISABLE_SOUND) && defined(ENABLE_ALSA)

@@ -13,7 +13,7 @@
 #include <cstdlib>
 
 #include "SDL.h"
-#include "error.h"
+#include "feerror.h"
 
 
 extern int Main (int, char **);

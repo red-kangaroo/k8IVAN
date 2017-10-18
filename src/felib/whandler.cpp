@@ -17,7 +17,7 @@
 
 #include "whandler.h"
 #include "graphics.h"
-#include "error.h"
+#include "feerror.h"
 #include "bitmap.h"
 #include "festring.h"
 #include "fesave.h"

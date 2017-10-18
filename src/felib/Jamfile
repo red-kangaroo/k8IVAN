@@ -4,7 +4,7 @@ SubDir TOP src felib ;
 felibsources =
   bitmap.cpp
   config.cpp
-  error.cpp
+  feerror.cpp
   feio.cpp
   felist.cpp
   femain.cpp

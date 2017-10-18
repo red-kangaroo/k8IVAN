@@ -15,7 +15,7 @@
 
 #include "festring.h"
 #include "allocate.h"
-#include "error.h"
+#include "feerror.h"
 
 
 char **festring::IntegerMap = 0;

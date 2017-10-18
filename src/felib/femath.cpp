@@ -12,7 +12,7 @@
 #include <cmath>
 
 #include "femath.h"
-#include "error.h"
+#include "feerror.h"
 #include "fesave.h"
 
 
