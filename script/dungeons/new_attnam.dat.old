@@ -58,8 +58,7 @@ Dungeon NEW_ATTNAM;
       Type = ROOM_BANANA_DROP_AREA;
       Pos = 4,4;
       Size = 17,19;
-      //WallSquare = solidterrain(GRASS_TERRAIN), EBONY_WOOD wall(BRICK_FINE);
-      WallSquare = BALSA_WOOD solidterrain(PARQUET), EBONY_WOOD wall(BRICK_FINE); // from comm.
+      WallSquare = solidterrain(GRASS_TERRAIN), EBONY_WOOD wall(BRICK_FINE);
       FloorSquare = BALSA_WOOD solidterrain(PARQUET), 0;
       GenerateDoor = false;
       DivineMaster = SILVA;
@@ -74,25 +73,20 @@ Dungeon NEW_ATTNAM;
         Types
         {
           _ = 0;
-          # = EBONY_WOOD wall(BRICK_FINE);
+          # = 0;
           p = GOLD wall(BRICK_PROPAGANDA);
           $ = GOLD wall(BRICK_FINE);
           ^ = decoration(HOLY_TREE);
           c = decoration(COUCH);
-          b = decoration(DOUBLE_BED);
-          s = decoration(SHACKLES);
-          O = decoration(OVEN);
-          t = BALSA_WOOD decoration(TABLE);
-          C = BALSA_WOOD olterraincontainer(CHEST_OF_DRAWERS) { ItemsInside = { 2, FABRIC cloak, FABRIC whip; } }
           d = EBONY_WOOD door;
           o = EBONY_WOOD wall(BRICK_FINE|WINDOW);
         }
       }
       {
-        .#o##o#####o##o#.
-        ##.....C#t.....##
-        o..bs...#.......o
-        #.....$$p$$O....#
+        .#o##o##o##o##o#.
+        ##.............##
+        o...............o
+        #.....$$p$$.....#
         #...$$$___$$$...#
         #..$$_______$$..#
         o..$____c____$..o
@@ -101,7 +95,7 @@ Dungeon NEW_ATTNAM;
         o..$$_______$$..o
         #...$$_____$$...#
         #....$$___$$....#
-        ###d##$___$##d###
+        o.....$___$.....o
         #.....$___$.....#
         #.....$___$.....#
         #.....$___$.....#
@@ -120,7 +114,7 @@ Dungeon NEW_ATTNAM;
           # = 0;
           I = imperialist { Team = COLONIST_TEAM; Flags = IS_MASTER; }
           g = guard(ROOKIE) { Team = COLONIST_TEAM; }
-          f = femaleslave(NEW_ATTNAM) { Team = NEW_ATTNAM_TEAM; }
+          f = femaleslave(NEW_ATTNAM) { Team = COLONIST_TEAM; }
         }
       }
       {
@@ -171,37 +165,31 @@ Dungeon NEW_ATTNAM;
 
       ItemMap
       {
-        Pos = 0,0;
-        Size = 17,19;
+        Pos = 3,3;
+        Size = 11,13;
         Types
         {
           # == 0;
+          _ == 0;
           2 == lantern { SquarePosition = DOWN; }
           3 == lantern { SquarePosition = RIGHT; }
           4 == lantern { SquarePosition = LEFT; }
-          c == GOLD itemcontainer(CHEST) { Parameters = LOCKED; ItemsInside = { 2, stone { Times = 0:10; }, GOLD banana; } }
         }
       }
       {
-        .###2#######2###.
-        ##......#......##
-        #......c#.......#
-        #.....#2#2##....#
-        #...###...###...#
-        #..##.......##..#
-        #..4.........3..#
-        #..3.........4..#
-        #..4.........3..#
-        #..#3.......4#..#
-        #...##.....##...#
-        #....##...##....#
-        ###.###...###.###
-        #.....#...#.....#
-        #.....#...#.....#
-        #.....2...2.....#
-        #...............#
-        ##.............##
-        .#######.#######.
+        ...#2#2#...
+        .###___###.
+        ##_______##
+        #_________#
+        3_________4
+        #_________#
+        #3_______4#
+        .##_____##.
+        ..##___##..
+        ...#___#...
+        ...#___#...
+        ...#___#...
+        ...2___2...
       }
     }
 
@@ -262,12 +250,11 @@ Dungeon NEW_ATTNAM;
           p = wall(BRICK_PRIMITIVE_PROPAGANDA);
           o = wall(BRICK_PRIMITIVE|WINDOW);
           d = BALSA_WOOD door(BROKEN_LOCK);
-          b = decoration(CHEAP_BED);
         }
       }
       {
         #p##
-        #b.#
+        #..#
         #..#
         #do#
       }
@@ -305,14 +292,13 @@ Dungeon NEW_ATTNAM;
           p = TEAK_WOOD wall(BRICK_PRIMITIVE_PROPAGANDA);
           o = TEAK_WOOD wall(BRICK_PRIMITIVE|WINDOW);
           d = TEAK_WOOD door;
-          c = decoration(CHAIR);
         }
       }
       {
         .##p##.
         ##...##
         #.....#
-        o..c..o
+        o.....o
         #.....#
         ##...##
         .##d##.
@@ -331,6 +317,7 @@ Dungeon NEW_ATTNAM;
           2 == lantern { SquarePosition = DOWN; }
           3 == lantern { SquarePosition = RIGHT; }
           4 == lantern { SquarePosition = LEFT; }
+          5 == lantern;
         }
       }
       {
@@ -338,7 +325,7 @@ Dungeon NEW_ATTNAM;
         ##bbb##
         #bbbbb#
         #bk.pb#
-        3bbbbb4
+        3bb.bb4
         ##bbb##
         .#####.
       }
@@ -349,18 +336,12 @@ Dungeon NEW_ATTNAM;
       Pos = 25,20;
       Size = 4,3;
       GenerateDoor = false;
-      GenerateWindows = false;
       DivineMaster = SILVA;
-      FloorSquare = solidterrain(FLOOR), 0;
+      GenerateWindows = false;
 
       Square, Pos 2, 1;
       {
         Character = exiledpriest(SILVA) { Flags = IS_MASTER; }
-      }
-
-      Square, Pos 1, 2;
-      {
-        GTerrain = solidterrain(FLOOR);
       }
 
       OTerrainMap
@@ -373,12 +354,11 @@ Dungeon NEW_ATTNAM;
           p = wall(BRICK_PRIMITIVE_PROPAGANDA);
           o = wall(BRICK_PRIMITIVE|WINDOW);
           d = BALSA_WOOD door;
-          c = decoration(CHAIR);
         }
       }
       {
         #p##
-        #.co
+        #..o
         #d##
       }
     }
