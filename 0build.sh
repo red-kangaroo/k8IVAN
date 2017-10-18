@@ -83,6 +83,21 @@ if [ "$have_package" = "tan" ]; then
   echo "MSG: compressed saves enabled"
 fi
 
+find_package gl
+if [ "$have_package" = "tan" ]; then
+  echo "MSG: OpenGL renderer enabled"
+else
+  echo "MSG: OpenGL renderer disabled"
+  defines="${defines} -DDISABLE_OPENGL"
+fi
+
+find_package alsa
+if [ "$have_package" = "tan" ]; then
+  echo "MSG: ALSA silencing enabled"
+  defines="${defines} -DENABLE_ALSA"
+fi
+
+
 #find_package libpng 1.5
 #if [ "$have_package" = "tan" ]; then
 #  defines="${defines} -DHAVE_LIBPNG"
