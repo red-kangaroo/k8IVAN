@@ -2828,11 +2828,9 @@ void character::GoOn (go *Go, truth FirstStep) {
       Go->Terminate(false);
       return;
     }
-    //
   }
-  //
+  // if the state modified the direction, move and stop
   if (moveDir != Go->GetDirection()) {
-    // state modified the direction, move and stop
     dirlogf("move affected by state\n");
     if (TryMove(MoveVector, true, game::PlayerIsRunning())) {
       game::DrawEverything();
@@ -2884,12 +2882,11 @@ void character::GoOn (go *Go, truth FirstStep) {
   } else {
     // first step, just do it
   }
+
   // now try to perform the move
-  //
   dirlogf("trying to make the move\n");
   // stop near the dangerous square (fuckin' copypasta)
   Squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
-  //
   for (int c = 0; c < Squares; ++c) {
     if ((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) ||
         MoveToSquare[c]->IsDangerous(this)) {
@@ -2897,13 +2894,12 @@ void character::GoOn (go *Go, truth FirstStep) {
       Go->Terminate(false);
       return;
     }
-    //
   }
-  //
+
   square *BeginSquare = GetSquareUnder();
   uInt OldRoomIndex = GetLSquareUnder()->GetRoomIndex();
   uInt CurrentRoomIndex = MoveToSquare[0]->GetRoomIndex();
-  //
+
   // stop on the square with something interesting
   if (!doStop) {
     // idiotic code!
@@ -2957,11 +2953,11 @@ void character::GoOn (go *Go, truth FirstStep) {
       }
     }
   }
-  //
+
   Go->SetPrevWasTurn(markAsTurn && MoveVector.X && MoveVector.Y); // diagonal move?
-  //
+
   truth moveOk = TryMove(MoveVector, true, game::PlayerIsRunning());
-  //
+
   if (!moveOk || BeginSquare == GetSquareUnder() || (CurrentRoomIndex && (OldRoomIndex != CurrentRoomIndex))) {
     dirlogf(" stopped\n");
     if (moveOk) {
@@ -2971,12 +2967,12 @@ void character::GoOn (go *Go, truth FirstStep) {
     Go->Terminate(false);
     return;
   }
-  //
+
   if (FirstStep) {
     mPrevMoveDir = Go->GetDirection();
     Go->SetIsWalkingInOpen(!IsInCorridor(moveDir));
   }
-  //
+
   game::DrawEverything();
   if (ivanconfig::GetGoingDelay()) DELAY(ivanconfig::GetGoingDelay());
   if (doStop) Go->Terminate(false);
