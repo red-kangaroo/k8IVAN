@@ -2940,6 +2940,7 @@ void character::GoOn (go *Go, truth FirstStep) {
       for (int f = 0; f < 8 && !doStop; ++f) {
         v2 np = game::GetMoveVector(f);
         if (np == MoveVector) continue; // this will be checked on the next move
+        if (!IsPassableSquare(GetPos()+np)) continue;
         int sq2 = CalculateNewSquaresUnder(MoveToSquare2, GetPos()+np);
         for (int c = 0; c < sq2; ++c) {
           if (MoveToSquare2[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
