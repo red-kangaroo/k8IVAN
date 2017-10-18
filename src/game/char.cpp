@@ -2710,9 +2710,9 @@ truth character::IsInTunnelDeadEnd () const {
 // only for ortho-dirs; assume that the char is in corridor
 int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir, truth *markAsTurn) const {
   v2 ps1(pos+(moveVector = game::GetMoveVector(moveDir)));
-  //
+
   if (markAsTurn) *markAsTurn = true;
-  //
+
   if (IsPassableSquare(ps1)) {
     // we can do first step in the given dir
     // check if we will be in corridor after it
@@ -2720,7 +2720,6 @@ int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir, truth *m
     if (IsInCorridor(ps1, moveDir)) {
       // check second step
       v2 ps2(ps1+moveVector);
-      //
       dirlogf("CheckCorridorMove: still in corridor after the first step\n");
       if (IsPassableSquare(ps2)) {
         // can do second step
@@ -2729,7 +2728,6 @@ int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir, truth *m
       } else {
         // can't do second step; but we still in corridor, so we should make a turn
         int newDir = -1; // direction to turn
-        //
         for (int f = 0; f < MDIR_STAND; ++f) {
           if (f != moveDir && orthoDir[f] && f != revDir[moveDir] && IsPassableSquare(ps1+game::GetMoveVector(f))) {
             newDir = f;
@@ -2758,14 +2756,25 @@ int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir, truth *m
            * 'g'o right: should stop at '*', but it just goes right
            */
           if (markAsTurn) *markAsTurn = IsInCorridor(ps1+game::GetMoveVector(newDir), newDir);
-          //
           newDir = moveDir;
         }
         return newDir;
       }
     }
     dirlogf("CheckCorridorMove: can do one or two steps; move forward\n");
-    // can do one or two steps; just move forward
+    // can do one or two steps: check for T-junction
+    // we should stop if we have more than two open dirs, or one of open dirs is not moveDir
+    int dcount = 0;
+    for (int f = 0; f < 8; ++f) {
+      if (f == revDir[moveDir]) continue; // skip "reverse dir" check
+      v2 ps2(pos+game::GetMoveVector(f));
+      if (IsPassableSquare(ps2)) {
+        ++dcount;
+        if (dcount > 2) return -1; // more than two open dirs, stop
+        if (f != moveDir) return -1; // one of open dirs is not moveDir
+      }
+    }
+    // just move forward
     return moveDir;
   }
   dirlogf("CheckCorridorMove: dead end\n");
@@ -2865,7 +2874,6 @@ void character::GoOn (go *Go, truth FirstStep) {
     } else {
       // ortho-walking thru the corridor
       int newDir = CheckCorridorMove(MoveVector, GetPos(), moveDir, &markAsTurn);
-      //
       if (newDir < 0) {
         // ah, something weird; stop right here
         Go->Terminate(false);
