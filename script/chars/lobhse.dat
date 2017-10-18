@@ -10,8 +10,6 @@ lobhse
   DefaultMana = 0;
   BloodMaterial = SICK_BLOOD;
   CanOpen = false;
-  HostileReplies == "@Dd says nothing.";
-  FriendlyReplies == "@Dd says nothing.";
   //!TotalSize = 10;
   SkinColor = rgb16(64, 64, 100);
   BeltColor = rgb16(50, 150, 50); /* the mouth */
@@ -19,7 +17,7 @@ lobhse
   NameSingular = "behemoth spider";
   AttackStyle = USE_HEAD;
   BaseBiteStrength = 400;
-  ClassStates = INFRA_VISION;
+  ClassStates = INFRA_VISION|LEPROSY; // leprosy is from comm. fork
   KnownCWeaponSkills == BITE;
   CWeaponSkillHits == 50;
   FleshMaterial = SICK_SPIDER_FLESH;
@@ -30,7 +28,8 @@ lobhse
   DefaultName = "Lobh-Se";
   TorsoBitmapPos = 192, 64;
   TotalVolume = 500000;
-  TamingDifficulty = NO_TAMING;
+  //TamingDifficulty = NO_TAMING;
+  TamingDifficulty = 50; // comm. fork
   IsNameable = false;
   IsUnique = true;
   TotalSize = 200;
@@ -38,8 +37,27 @@ lobhse
   CanBeGenerated = false;
   PanicLevel = 0;
   CanBeCloned = false;
-  DeathMessage = "@Dd groans horribly and drops @pp head.";
   CanBeConfused = false;
   DestroysWalls = true;
   AllowUnconsciousness = false;
+  IsImmuneToLeprosy = true;
+  EnergyResistance = 5;
+  FireResistance = 15;
+  PoisonResistance = 50;
+  ElectricityResistance = 5;
+  AcidResistance = 50;
+  HostileReplies :=
+  {
+    "@Dd whimpers.",
+    "@Dd cries a little.",
+    "@Dd tears up.";
+  }
+  FriendlyReplies :=
+  {
+    "\"Mommy!\"",
+    "\"Where... my mommy?\"",
+    "\"You... new mommy?\"",
+    "You pet @dd.";
+  }
+  DeathMessage = "@Dd groans horribly and the world is finally freed from this terrible menace.";
 }
