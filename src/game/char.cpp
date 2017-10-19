@@ -2945,8 +2945,14 @@ void character::GoOn (go *Go, truth FirstStep) {
         for (int c = 0; c < sq2; ++c) {
           if (MoveToSquare2[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
             dirlogf(" stepped near something interesting\n");
-            //doStop = true;
-            //break;
+            //HACK: mark all items as stepped on
+            for (int d = 0; d < 8; ++d) {
+              np = game::GetMoveVector(d);
+              if (!IsPassableSquare(GetPos()+np)) continue;
+              sq2 = CalculateNewSquaresUnder(MoveToSquare2, GetPos()+np);
+              for (int n = 0; n < sq2; ++n) MoveToSquare2[n]->GetStack()->SetSteppedOn(true);
+            }
+            // and stop
             Go->Terminate(false);
             return;
           }
