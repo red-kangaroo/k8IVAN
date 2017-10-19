@@ -198,7 +198,7 @@ void level::GenerateTunnel (int FromX, int FromY, int TargetX, int TargetY, trut
 }
 
 
-void level::Generate (int Index) {
+truth level::Generate (int Index) {
   game::BusyAnimation();
   Initialize(LevelScript->GetSize()->X, LevelScript->GetSize()->Y);
   game::SetCurrentArea(this);
@@ -207,7 +207,7 @@ void level::Generate (int Index) {
   Alloc2D(WalkabilityMap, XSize, YSize);
   Map = reinterpret_cast<lsquare***>(area::Map);
   SquareStack = new lsquare * [XSizeTimesYSize];
-  //
+
   if ((Index == 0 && GetDungeon()->GetIndex() == NEW_ATTNAM) ||
       (Index == 0 && GetDungeon()->GetIndex() == ATTNAM) ||
       (Index == 0 && GetDungeon()->GetIndex() == MUNTUO)) {
@@ -230,17 +230,21 @@ void level::Generate (int Index) {
   int Type = LevelScript->GetType() ? *LevelScript->GetType() : 0;
 
   switch (Type) {
-    case 0: GenerateDungeon(Index); break;
-    case DESERT: GenerateDesert(); break;
-    case JUNGLE: GenerateJungle(); break;
-    case STEPPE: GenerateSteppe(); break;
-    case LEAFY_FOREST: GenerateLeafyForest(); break;
-    case EVERGREEN_FOREST: GenerateEvergreenForest(); break;
-    case TUNDRA: GenerateTundra(); break;
-    case GLACIER: GenerateGlacier(); break;
-    default: ABORT("You are a terrorist. Please stop creating wterrains that are stupid.");
+    case 0: return GenerateDungeon(Index); break;
+    case DESERT: return GenerateDesert(); break;
+    case JUNGLE: return GenerateJungle(); break;
+    case STEPPE: return GenerateSteppe(); break;
+    case LEAFY_FOREST: return GenerateLeafyForest(); break;
+    case EVERGREEN_FOREST: return GenerateEvergreenForest(); break;
+    case TUNDRA: return GenerateTundra(); break;
+    case GLACIER: return GenerateGlacier(); break;
+    default: break;
   }
+
+  ABORT("You are a terrorist. Please stop creating wterrains that are stupid.");
+  return false;
 }
+
 
 void level::ApplyLSquareScript (const squarescript *Script) {
   const interval *ScriptTimes = Script->GetTimes();
@@ -1538,7 +1542,7 @@ void level::FinalProcessForBone () {
 }
 
 
-void level::GenerateDungeon (int Index) {
+truth level::GenerateDungeon (int Index) {
   cfestring *Msg = LevelScript->GetLevelMessage();
   if (Msg) LevelMessage = *Msg;
 
@@ -1573,7 +1577,7 @@ void level::GenerateDungeon (int Index) {
     if (c < RoomList.size()) {
       int i;
       for (i = 0; i < 1000; ++i) if (MakeRoom(&*Iterator)) break;
-      if (i == 1000) ABORT("Failed to place special room #%d!", c);
+      if (i == 1000) { /*ABORT("Failed to place special room #%d!", c);*/ return false; }
       ++Iterator;
     } else {
       const roomscript *RoomScript = LevelScript->GetRoomDefault();
@@ -1613,10 +1617,12 @@ void level::GenerateDungeon (int Index) {
 
   AttachQueue.clear();
   CreateItems(LevelScript->GetItems()->Randomize());
+
+  return true;
 }
 
 
-void level::GenerateJungle () {
+truth level::GenerateJungle () {
   int x, y;
 
   for (x = 0; x < XSize; ++x) {
@@ -1652,6 +1658,8 @@ void level::GenerateJungle () {
       }
     }
   }
+
+  return true;
 }
 
 
@@ -1676,7 +1684,7 @@ void level::CreateTunnelNetwork (int MinLength, int MaxLength, int MinNodes, int
 }
 
 
-void level::GenerateDesert () {
+truth level::GenerateDesert () {
   for (int x = 0; x < XSize; ++x) {
     for (int y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
@@ -1689,10 +1697,12 @@ void level::GenerateDesert () {
   for (c = 0; c < AmountOfCactuses; ++c) Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(decoration::Spawn(CACTUS));
   int AmountOfBoulders = RAND_N(10);
   for (c = 0; c < AmountOfBoulders; ++c) Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(boulder::Spawn(1+RAND_2));
+
+  return true;
 }
 
 
-void level::GenerateSteppe () {
+truth level::GenerateSteppe () {
   for (int x = 0; x < XSize; ++x) {
     for (int y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
@@ -1703,10 +1713,12 @@ void level::GenerateSteppe () {
   int c;
   int AmountOfBoulders = RAND_N(20)+5;
   for (c = 0; c < AmountOfBoulders; ++c) Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(boulder::Spawn(1+RAND_2));
+
+  return true;
 }
 
 
-void level::GenerateLeafyForest () {
+truth level::GenerateLeafyForest () {
   for (int x = 0; x < XSize; ++x) {
     for (int y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
@@ -1720,10 +1732,12 @@ void level::GenerateLeafyForest () {
       Map[x][y]->SetLTerrain(solidterrain::Spawn(GRASS_TERRAIN), OLTerrain);
     }
   }
+
+  return true;
 }
 
 
-void level::GenerateEvergreenForest () {
+truth level::GenerateEvergreenForest () {
   for (int x = 0; x < XSize; ++x) {
     for (int y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
@@ -1736,10 +1750,12 @@ void level::GenerateEvergreenForest () {
       Map[x][y]->SetLTerrain(solidterrain::Spawn(GRASS_TERRAIN), OLTerrain);
     }
   }
+
+  return true;
 }
 
 
-void level::GenerateTundra () {
+truth level::GenerateTundra () {
   for (int x = 0; x < XSize; ++x) {
     for (int y = 0; y < YSize; ++y) {
       Map[x][y] = new lsquare(this, v2(x, y));
@@ -1752,10 +1768,12 @@ void level::GenerateTundra () {
   for (c = 0; c < AmountOfBoulders; ++c) Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(boulder::Spawn(SNOW_BOULDER));
   int AmountOfDwarfBirches = RAND_N(10);
   for (c = 0; c < AmountOfDwarfBirches; ++c) Map[RAND_N(XSize)][RAND_N(YSize)]->ChangeOLTerrain(decoration::Spawn(DWARF_BIRCH));
+
+  return true;
 }
 
 
-void level::GenerateGlacier () {
+truth level::GenerateGlacier () {
   int x, y;
 
   for (x = 0; x < XSize; ++x) {
@@ -1821,6 +1839,8 @@ void level::GenerateGlacier () {
 
     break; // Doesn't yet check path in any way
   }
+
+  return true;
 }
 
 

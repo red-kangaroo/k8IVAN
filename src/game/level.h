@@ -162,7 +162,7 @@ class level : public area
   level();
   virtual ~level();
 
-  void Generate(int);
+  truth Generate(int);
   v2 GetRandomSquare(ccharacter* = 0, int = 0, const rect* = 0) const;
   void GenerateMonsters();
   lsquare* GetLSquare(v2 Pos) const { return Map[Pos.X][Pos.Y]; }
@@ -218,14 +218,14 @@ class level : public area
   truth PreProcessForBone();
   truth PostProcessForBone();
   void FinalProcessForBone();
-  void GenerateDungeon(int);
-  void GenerateDesert();
-  void GenerateJungle();
-  void GenerateSteppe();
-  void GenerateLeafyForest();
-  void GenerateEvergreenForest();
-  void GenerateTundra();
-  void GenerateGlacier();
+  truth GenerateDungeon(int);
+  truth GenerateDesert();
+  truth GenerateJungle();
+  truth GenerateSteppe();
+  truth GenerateLeafyForest();
+  truth GenerateEvergreenForest();
+  truth GenerateTundra();
+  truth GenerateGlacier();
   void CreateTunnelNetwork(int, int, int, int, v2);
   void SetWalkability(v2 Pos, int What) { WalkabilityMap[Pos.X][Pos.Y] = What; }
   node* FindRoute(v2, v2, const std::set<v2>&, int, ccharacter* = 0);
