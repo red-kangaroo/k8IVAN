@@ -265,15 +265,15 @@ int stack::SearchItem (item *ToBeSearched) const {
 /* Flags for all DrawContents functions can be found in ivandef.h.
    Those returning int return 0 on success and a felist error
    otherwise (see felibdef.h) */
-item *stack::DrawContents (ccharacter *Viewer, cfestring &Topic, int Flags, sorter SorterFunction) const {
+item *stack::DrawContents (ccharacter *Viewer, cfestring &Topic, int Flags, sorter SorterFunction, item *hiitem) const {
   itemvector ReturnVector;
-  DrawContents(ReturnVector, 0, Viewer, Topic, CONST_S(""), CONST_S(""), CONST_S(""), 0, Flags|NO_MULTI_SELECT, SorterFunction);
+  DrawContents(ReturnVector, 0, Viewer, Topic, CONST_S(""), CONST_S(""), CONST_S(""), 0, Flags|NO_MULTI_SELECT, SorterFunction, hiitem);
   return ReturnVector.empty() ? 0 : ReturnVector[0];
 }
 
 
-int stack::DrawContents (itemvector &ReturnVector, ccharacter *Viewer, cfestring &Topic, int Flags, sorter SorterFunction) const {
-  return DrawContents(ReturnVector, 0, Viewer, Topic, CONST_S(""), CONST_S(""), CONST_S(""), 0, Flags, SorterFunction);
+int stack::DrawContents (itemvector &ReturnVector, ccharacter *Viewer, cfestring &Topic, int Flags, sorter SorterFunction, item *hiitem) const {
+  return DrawContents(ReturnVector, 0, Viewer, Topic, CONST_S(""), CONST_S(""), CONST_S(""), 0, Flags, SorterFunction, hiitem);
 }
 
 
@@ -281,19 +281,19 @@ int stack::DrawContents (itemvector &ReturnVector, ccharacter *Viewer, cfestring
    there are items on the ground and in the character's stack */
 int stack::DrawContents (itemvector &ReturnVector, stack *MergeStack,
   ccharacter *Viewer, cfestring &Topic, cfestring &ThisDesc, cfestring &ThatDesc,
-  cfestring &SpecialDesc, col16 SpecialDescColor, int Flags, sorter SorterFunction) const
+  cfestring &SpecialDesc, col16 SpecialDescColor, int Flags, sorter SorterFunction, item *hiitem) const
 {
   felist Contents(Topic);
   lsquare *Square = GetLSquareUnder();
   stack *AdjacentStack[4] = { 0, 0, 0, 0 };
-  int c;
-  if (!(this->Flags & HIDDEN))
-    for (c = 0; c < 4; ++c)
-      AdjacentStack[c] = Square->GetStackOfAdjacentSquare(c);
+
+  if ((this->Flags&HIDDEN) == 0) for (int c = 0; c < 4; ++c) AdjacentStack[c] = Square->GetStackOfAdjacentSquare(c);
+
   if (!SpecialDesc.IsEmpty()) {
     Contents.AddDescription(CONST_S(""));
     Contents.AddDescription(SpecialDesc.CapitalizeCopy(), SpecialDescColor);
   }
+
   /*
   if (!(Flags & NO_SPECIAL_INFO)) {
     Contents.AddDescription(CONST_S(""));
@@ -305,40 +305,42 @@ int stack::DrawContents (itemvector &ReturnVector, stack *MergeStack,
     Contents.AddDescription(CONST_S("Overall weight: ") + Weight + " grams");
     }
   */
-  if (Flags & NONE_AS_CHOICE) {
+
+  if (Flags&NONE_AS_CHOICE) {
     int ImageKey = game::AddToItemDrawVector(itemvector());
     Contents.AddEntry(CONST_S("none"), LIGHT_GRAY, 0, ImageKey);
   }
-  if (MergeStack) MergeStack->AddContentsToList(Contents, Viewer, ThatDesc, Flags, CENTER, SorterFunction);
-  AddContentsToList(Contents, Viewer, ThisDesc, Flags, CENTER, SorterFunction);
+
+  if (MergeStack) MergeStack->AddContentsToList(Contents, Viewer, ThatDesc, Flags, CENTER, SorterFunction, hiitem);
+  AddContentsToList(Contents, Viewer, ThisDesc, Flags, CENTER, SorterFunction, hiitem);
+
   static cchar *WallDescription[] = { "western", "southern", "nothern", "eastern" };
-  for (c = 0; c < 4; ++c)
-    if (AdjacentStack[c])
-      AdjacentStack[c]->AddContentsToList(Contents, Viewer, CONST_S("Items on the ")+WallDescription[c] + " wall:", Flags, 3-c, SorterFunction);
+  for (int c = 0; c < 4; ++c) {
+    if (AdjacentStack[c]) AdjacentStack[c]->AddContentsToList(Contents, Viewer, CONST_S("Items on the ")+WallDescription[c] + " wall:", Flags, 3-c, SorterFunction, hiitem);
+  }
 
   game::SetStandardListAttributes(Contents);
   Contents.SetPageLength(12);
   Contents.RemoveFlags(BLIT_AFTERWARDS);
   Contents.SetEntryDrawer(game::ItemEntryDrawer);
 
-  if (!(Flags & NO_SELECT)) Contents.AddFlags(SELECTABLE);
+  if ((Flags&NO_SELECT) == 0) Contents.AddFlags(SELECTABLE);
 
-  if (Flags & REMEMBER_SELECTED) Contents.SetSelected(GetSelected());
+  if (Flags&REMEMBER_SELECTED) Contents.SetSelected(GetSelected());
 
   game::DrawEverythingNoBlit(); //doesn't prevent mirage puppies
   int Chosen = Contents.Draw();
   game::ClearItemDrawVector();
 
-  if (Chosen & FELIST_ERROR_BIT) {
+  if (Chosen&FELIST_ERROR_BIT) {
     Selected = 0;
     return Chosen;
-  } else {
-    Selected = Chosen;
   }
+  Selected = Chosen;
 
   int Pos = 0;
 
-  if (Flags & NONE_AS_CHOICE) {
+  if (Flags&NONE_AS_CHOICE) {
     if (!Selected) return 0;
     ++Pos;
   }
@@ -352,11 +354,12 @@ int stack::DrawContents (itemvector &ReturnVector, stack *MergeStack,
 
   if (!ReturnVector.empty()) return 0;
 
-  for (c = 0; c < 4; ++c)
+  for (int c = 0; c < 4; ++c) {
     if (AdjacentStack[c]) {
       AdjacentStack[c]->SearchChosen(ReturnVector, Viewer, Pos, Selected, Flags, 3-c, SorterFunction);
       if (!ReturnVector.empty()) break;
     }
+  }
 
   return 0;
 }
@@ -364,7 +367,7 @@ int stack::DrawContents (itemvector &ReturnVector, stack *MergeStack,
 
 /* Internal function to fill Contents list */
 void stack::AddContentsToList (felist &Contents, ccharacter *Viewer, cfestring &Desc, int Flags,
-  int RequiredSquarePosition, sorter SorterFunction) const
+  int RequiredSquarePosition, sorter SorterFunction, item *hiitem) const
 {
   itemvectorvector PileVector;
   Pile(PileVector, Viewer, RequiredSquarePosition, SorterFunction);
@@ -387,7 +390,7 @@ void stack::AddContentsToList (felist &Contents, ccharacter *Viewer, cfestring &
     Entry.Empty();
     Item->AddInventoryEntry(Viewer, Entry, PileVector[p].size(), !(Flags & NO_SPECIAL_INFO));
     int ImageKey = game::AddToItemDrawVector(PileVector[p]);
-    Contents.AddEntry(Entry, LIGHT_GRAY, 0, ImageKey);
+    Contents.AddEntry(Entry, (Item == hiitem ? PINK : LIGHT_GRAY), 0, ImageKey);
   }
 }
 

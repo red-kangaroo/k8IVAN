@@ -89,10 +89,10 @@ public:
   int GetNativeVisibleItems (ccharacter *) const;
   int GetVisibleSideItems (ccharacter *, int) const;
   void SetMotherSquare (square *What) { MotherSquare = What; }
-  item *DrawContents (ccharacter *, cfestring &, int = 0, sorter = 0) const;
-  int DrawContents (itemvector &, ccharacter *, cfestring &, int = 0, sorter = 0) const;
+  item *DrawContents (ccharacter *, cfestring &, int = 0, sorter = 0, item *hiitem=0) const;
+  int DrawContents (itemvector &, ccharacter *, cfestring &, int = 0, sorter = 0, item *hiitem=0) const;
   int DrawContents (itemvector &, stack *, ccharacter *, cfestring &, cfestring &, cfestring &,
-    cfestring &, col16, int, sorter = 0) const;
+    cfestring &, col16, int, sorter = 0, item *hiitem=0) const;
   v2 GetPos () const;
   void Clean (truth = false);
   void Save (outputfile &) const;
@@ -164,7 +164,7 @@ public:
 
 private:
   void RemoveElement (stackslot *);
-  void AddContentsToList (felist &, ccharacter *, cfestring &, int, int, sorter) const;
+  void AddContentsToList (felist &, ccharacter *, cfestring &, int, int, sorter, item *hiitem=0) const;
   int SearchChosen (itemvector &, ccharacter *, int, int, int, int, sorter = 0) const;
   static truth AllowDamage (int, int);
 

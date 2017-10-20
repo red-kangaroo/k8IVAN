@@ -5139,14 +5139,17 @@ character *character::Duplicate (feuLong Flags) {
 
 
 truth character::TryToEquip (item *Item) {
-  if (!Item->AllowEquip() || !CanUseEquipment() || GetAttribute(WISDOM) >= Item->GetWearWisdomLimit() || Item->GetSquaresUnder() != 1)
+  if (!Item->AllowEquip() || !CanUseEquipment() || GetAttribute(WISDOM) >= Item->GetWearWisdomLimit() || Item->GetSquaresUnder() != 1) {
     return false;
+  }
+
   for (int e = 0; e < GetEquipments(); ++e) {
     if (GetBodyPartOfEquipment(e) && EquipmentIsAllowed(e)) {
       sorter Sorter = EquipmentSorter(e);
       if ((Sorter == 0 || (Item->*Sorter)(this)) &&
           ((e != RIGHT_WIELDED_INDEX && e != LEFT_WIELDED_INDEX) ||
-           Item->IsWeapon(this) || Item->IsShield(this)) && AllowEquipment(Item, e)) {
+           Item->IsWeapon(this) || Item->IsShield(this)) && AllowEquipment(Item, e))
+      {
         item *OldEquipment = GetEquipment(e);
         if (BoundToUse(OldEquipment, e)) continue;
         lsquare *LSquareUnder = GetLSquareUnder();
@@ -5612,27 +5615,30 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
     ADD_MESSAGE("Bodypart missing!");
     return false;
   }
+
   item *OldEquipment = GetEquipment(Chosen);
   if (!IsPlayer() && BoundToUse(OldEquipment, Chosen)) {
     ADD_MESSAGE("%s refuses to unequip %s.", CHAR_DESCRIPTION(DEFINITE), OldEquipment->CHAR_NAME(DEFINITE));
     return false;
   }
   if (OldEquipment) OldEquipment->MoveTo(MainStack);
+
   sorter Sorter = EquipmentSorter(Chosen);
   if (!MainStack->SortedItems(this, Sorter) && (!SecStack || !SecStack->SortedItems(this, Sorter))) {
     ADD_MESSAGE("You haven't got any item that could be used for this purpose.");
     return false;
   }
+
   game::DrawEverythingNoBlit();
   itemvector ItemVector;
   int Return = MainStack->DrawContents(ItemVector, SecStack, this,
-    CONST_S("Choose ") + GetEquipmentName(Chosen) + ':',
-    SecStack ? CONST_S("Items in your inventory") : CONST_S(""),
-    SecStack ? festring(CONST_S("Items in ") + GetPossessivePronoun() + " inventory") : CONST_S(""),
-    SecStack ? festring(GetDescription(DEFINITE) + " is " + GetVerbalBurdenState()) : CONST_S(""),
+    CONST_S("Choose ")+GetEquipmentName(Chosen)+':',
+    (SecStack ? CONST_S("Items in your inventory") : CONST_S("")),
+    (SecStack ? festring(CONST_S("Items in ")+GetPossessivePronoun()+" inventory") : CONST_S("")),
+    (SecStack ? festring(GetDescription(DEFINITE)+" is "+GetVerbalBurdenState()) : CONST_S("")),
     GetVerbalBurdenStateColor(),
     NONE_AS_CHOICE|NO_MULTI_SELECT,
-    Sorter);
+    Sorter, OldEquipment);
   if (Return == ESCAPED) {
     if (OldEquipment) {
       OldEquipment->RemoveFromSlot();
@@ -5640,7 +5646,8 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
     }
     return false;
   }
-  item *Item = ItemVector.empty() ? 0 : ItemVector[0];
+
+  item *Item = (ItemVector.empty() ? 0 : ItemVector[0]);
   if (Item) {
     if (!IsPlayer() && !AllowEquipment(Item, Chosen)) {
       ADD_MESSAGE("%s refuses to equip %s.", CHAR_DESCRIPTION(DEFINITE), Item->CHAR_NAME(DEFINITE));
@@ -5650,7 +5657,8 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
     SetEquipment(Chosen, Item);
     if (CheckIfEquipmentIsNotUsable(Chosen)) Item->MoveTo(MainStack); // small bug?
   }
-  return Item != OldEquipment;
+
+  return (Item != OldEquipment);
 }
 
 
