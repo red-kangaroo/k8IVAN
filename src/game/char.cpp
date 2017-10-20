@@ -8306,7 +8306,6 @@ truth character::IsAllowedInDungeon (int dunIndex) {
 truth character::IsESPBlockedByEquipment () const {
   for (int c = 0; c < GetEquipments(); ++c) {
     item *Item = GetEquipment(c);
-    //
     if (Item && Item->IsHelmet(this) &&
         ((Item->GetMainMaterial() && Item->GetMainMaterial()->BlockESP()) ||
          (Item->GetSecondaryMaterial() && Item->GetSecondaryMaterial()->BlockESP()))) return true;
