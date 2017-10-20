@@ -390,7 +390,7 @@ void stack::AddContentsToList (felist &Contents, ccharacter *Viewer, cfestring &
     Entry.Empty();
     Item->AddInventoryEntry(Viewer, Entry, PileVector[p].size(), !(Flags & NO_SPECIAL_INFO));
     int ImageKey = game::AddToItemDrawVector(PileVector[p]);
-    Contents.AddEntry(Entry, (Item == hiitem ? YELLOW : LIGHT_GRAY), 0, ImageKey);
+    Contents.AddEntry(Entry, (Item == hiitem ? WHITE : LIGHT_GRAY), 0, ImageKey);
   }
 }
 
