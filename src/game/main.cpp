@@ -186,7 +186,8 @@ int Main (int argc, char *argv[]) {
     return 0;
   }
   //
-  femath::SetSeed(time(0));
+  //femath::SetSeed(time(0));
+  femath::RandSeed();
   game::InitGlobalValueMap();
   scriptsystem::Initialize();
   databasesystem::Initialize();

@@ -21,15 +21,68 @@
 
 #define RAND       femath::Rand
 #define RAND_N     femath::RandN
-#define RAND_2     (femath::Rand() & 1)
-#define RAND_4     (femath::Rand() & 3)
-#define RAND_8     (femath::Rand() & 7)
-#define RAND_16    (femath::Rand() & 15)
-#define RAND_32    (femath::Rand() & 31)
-#define RAND_64    (femath::Rand() & 63)
-#define RAND_128   (femath::Rand() & 127)
-#define RAND_256   (femath::Rand() & 255)
+#define RAND_2     (femath::Rand()&1)
+#define RAND_4     (femath::Rand()&3)
+#define RAND_8     (femath::Rand()&7)
+#define RAND_16    (femath::Rand()&15)
+#define RAND_32    (femath::Rand()&31)
+#define RAND_64    (femath::Rand()&63)
+#define RAND_128   (femath::Rand()&127)
+#define RAND_256   (femath::Rand()&255)
 #define RAND_GOOD  femath::RandGood
+
+
+struct PRNGSeed {
+  unsigned char seed[8*2];
+};
+
+
+// *Really* minimal PCG32 code / (c) 2014 M.E. O'Neill / pcg-random.org
+// Licensed under Apache License 2.0 (NO WARRANTY, etc. see website)
+struct PCG32 {
+  uint64_t state;
+  uint64_t inc;
+
+  PCG32 (uint64_t astate, uint64_t ainc=42) {
+    state = astate;
+    inc = ainc;
+  }
+
+  void setSeed (uint64_t astate, uint64_t ainc=42) {
+    state = astate;
+    inc = ainc;
+  }
+
+  void setSeed (const PRNGSeed aseed) {
+    const char *s = (const char *)aseed.seed;
+    char *d = (char *)&state;
+    for (int f = 0; f < 8; ++f) *d++ = *s++;
+    d = (char *)&inc;
+    for (int f = 0; f < 8; ++f) *d++ = *s++;
+  }
+
+  PRNGSeed getSeed () {
+    PRNGSeed res;
+    char *d = (char *)res.seed;
+    const char *s = (const char *)&state;
+    for (int f = 0; f < 8; ++f) *d++ = *s++;
+    s = (const char *)&inc;
+    for (int f = 0; f < 8; ++f) *d++ = *s++;
+    return res;
+  }
+
+  void rndseed ();
+
+  uint32_t rand32 () {
+    uint64_t oldstate = this->state;
+    // advance internal state
+    this->state = oldstate*6364136223846793005ULL+(this->inc|1);
+    // calculate output function (XSH RR), uses old state for max ILP
+    uint32_t xorshifted = ((oldstate>>18u)^oldstate)>>27u;
+    uint32_t rot = oldstate>>59u;
+    return (xorshifted>>rot)|(xorshifted<<((-rot)&31)); //k8: UB, but i don't care
+  }
+};
 
 
 class outputfile;
@@ -40,7 +93,9 @@ template <class type> struct fearray;
 class femath {
 public:
   static sLong Rand ();
+  static void SetSeed (const PRNGSeed aseed);
   static void SetSeed (feuLong);
+  static void RandSeed ();
   static sLong RandN (sLong N) { return sLong(double(N)*Rand()/0x80000000); }
   static sLong RandGood (sLong N) { return sLong(double(N)*Rand()/0x80000000); }
   static int WeightedRand (sLong *Possibility, sLong TotalPossibility);
@@ -54,12 +109,12 @@ public:
   static sLong SumArray (const fearray<sLong> &Vector);
   static int LoopRoll (int ContinueChance, int Max);
   static void GenerateFractalMap (int **Map, int Side, int StartStep, int Randomness);
+  static void SavePRNG (outputfile &SaveFile);
+  static void LoadPRNG (inputfile &SaveFile);
 
 protected:
-  static feuLong mt[];
-  static sLong mti;
-  static feuLong mtb[];
-  static sLong mtib;
+  static PCG32 prng;
+  static PRNGSeed savedSeed;
 };
 
 
@@ -84,6 +139,8 @@ outputfile &operator << (outputfile &SaveFile, const interval &I);
 inputfile &operator >> (inputfile &SaveFile, interval &I);
 outputfile &operator << (outputfile &SaveFile, const region &R);
 inputfile &operator >> (inputfile &SaveFile, region &R);
+outputfile &operator << (outputfile &SaveFile, const PRNGSeed &R);
+inputfile &operator >> (inputfile &SaveFile, PRNGSeed &R);
 
 
 template <class controller> class mapmath {

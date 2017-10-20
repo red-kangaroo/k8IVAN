@@ -45,8 +45,8 @@
 #include "confdef.h"
 #include "wmapset.h"
 
-#define SAVE_FILE_VERSION 131 // Increment this if changes make savefiles incompatible
-#define BONE_FILE_VERSION 116 // Increment this if changes make bonefiles incompatible
+#define SAVE_FILE_VERSION 132 // Increment this if changes make savefiles incompatible
+#define BONE_FILE_VERSION 117 // Increment this if changes make bonefiles incompatible
 
 #define LOADED    0
 #define NEW_GAME  1
@@ -784,9 +784,10 @@ truth game::Save (cfestring &SaveName) {
   SaveFile << Tick << Turn << InWilderness << NextCharacterID << NextItemID << NextTrapID << NecroCounter;
   SaveFile << SumoWrestling << PlayerSumoChampion << GlobalRainTimeModifier;
   SaveFile << PlayerSolicitusChampion;
-  sLong Seed = RAND();
-  femath::SetSeed(Seed);
-  SaveFile << Seed;
+  //sLong Seed = RAND();
+  //femath::SetSeed(Seed);
+  //SaveFile << Seed;
+  femath::SavePRNG(SaveFile);
   SaveFile << AveragePlayerArmStrengthExperience;
   SaveFile << AveragePlayerLegStrengthExperience;
   SaveFile << AveragePlayerDexterityExperience;
@@ -837,7 +838,8 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> Tick >> Turn >> InWilderness >> NextCharacterID >> NextItemID >> NextTrapID >> NecroCounter;
   SaveFile >> SumoWrestling >> PlayerSumoChampion >> GlobalRainTimeModifier;
   SaveFile >> PlayerSolicitusChampion;
-  femath::SetSeed(ReadType(sLong, SaveFile));
+  //femath::SetSeed(ReadType(sLong, SaveFile));
+  femath::LoadPRNG(SaveFile);
   SaveFile >> AveragePlayerArmStrengthExperience;
   SaveFile >> AveragePlayerLegStrengthExperience;
   SaveFile >> AveragePlayerDexterityExperience;
