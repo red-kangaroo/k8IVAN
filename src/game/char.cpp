@@ -5057,10 +5057,9 @@ double character::GetRelativeDanger (ccharacter *Enemy, truth UseMaxHP) const {
   double Danger = Enemy->GetTimeToKill(this, UseMaxHP)/GetTimeToKill(Enemy, UseMaxHP);
   int EnemyAP = Enemy->GetMoveAPRequirement(1);
   int ThisAP = GetMoveAPRequirement(1);
-  if (EnemyAP > ThisAP) Danger *= 1.25;
-  else if (ThisAP > EnemyAP) Danger *= 0.80;
-  if (!Enemy->CanBeSeenBy(this, true)) Danger *= Enemy->IsPlayer() ? 0.2 : 0.5;
-  if (!CanBeSeenBy(Enemy, true)) Danger *= IsPlayer() ? 5.0 : 2.0;
+  if (EnemyAP > ThisAP) Danger *= 1.25; else if (ThisAP > EnemyAP) Danger *= 0.80;
+  if (!Enemy->CanBeSeenBy(this, true)) Danger *= (Enemy->IsPlayer() ? 0.2 : 0.5);
+  if (!CanBeSeenBy(Enemy, true)) Danger *= (IsPlayer() ? 5.0 : 2.0);
   if (GetAttribute(INTELLIGENCE) < 10 && !IsPlayer()) Danger *= 0.80;
   if (Enemy->GetAttribute(INTELLIGENCE) < 10 && !Enemy->IsPlayer()) Danger *= 1.25;
   return Limit(Danger, 0.001, 1000.0);
@@ -5074,7 +5073,7 @@ festring character::GetBodyPartName (int I, truth Articled) const {
 }
 
 
-item *character::SearchForItem(feuLong ID) const {
+item *character::SearchForItem (feuLong ID) const {
   item *Equipment = findequipment<feuLong>()(this, &item::HasID, ID);
   if (Equipment) return Equipment;
   for (stackiterator i = GetStack()->GetBottom(); i.HasItem(); ++i) if (i->GetID() == ID) return *i;
@@ -5083,7 +5082,7 @@ item *character::SearchForItem(feuLong ID) const {
 
 
 truth character::ContentsCanBeSeenBy (ccharacter *Viewer) const {
-  return Viewer == this;
+  return (Viewer == this);
 }
 
 
