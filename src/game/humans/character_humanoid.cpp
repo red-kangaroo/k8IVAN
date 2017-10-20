@@ -537,14 +537,10 @@ sorter humanoid::EquipmentSorter (int I) const {
     case CLOAK_INDEX: return &item::IsCloak;
     case BODY_ARMOR_INDEX: return &item::IsBodyArmor;
     case BELT_INDEX: return &item::IsBelt;
-    case RIGHT_WIELDED_INDEX:
-    case LEFT_WIELDED_INDEX: return 0;
-    case RIGHT_RING_INDEX:
-    case LEFT_RING_INDEX: return &item::IsRing;
-    case RIGHT_GAUNTLET_INDEX:
-    case LEFT_GAUNTLET_INDEX: return &item::IsGauntlet;
-    case RIGHT_BOOT_INDEX:
-    case LEFT_BOOT_INDEX: return &item::IsBoot;
+    case RIGHT_WIELDED_INDEX: case LEFT_WIELDED_INDEX: return 0;
+    case RIGHT_RING_INDEX: case LEFT_RING_INDEX: return &item::IsRing;
+    case RIGHT_GAUNTLET_INDEX: case LEFT_GAUNTLET_INDEX: return &item::IsGauntlet;
+    case RIGHT_BOOT_INDEX: case LEFT_BOOT_INDEX: return &item::IsBoot;
   }
   return 0;
 }
