@@ -628,60 +628,87 @@ public:
   static int mResult;
 };
 
-inline void game::CombineLights(col24& L1, col24 L2)
-{
-  if(L2)
-  {
-    if(L1)
-    {
-      sLong Red1 = L1 & 0xFF0000, Red2 = L2 & 0xFF0000;
-      sLong New = Red1 >= Red2 ? Red1 : Red2;
-      sLong Green1 = L1 & 0xFF00, Green2 = L2 & 0xFF00;
-      New |= Green1 >= Green2 ? Green1 : Green2;
-      sLong Blue1 = L1 & 0xFF, Blue2 = L2 & 0xFF;
-      L1 = Blue1 >= Blue2 ? New | Blue1 : New | Blue2;
-    }
-    else
+
+//K8 WARNING! ABSOLUTELY NON-PORTABLE AND CAUSES UB!
+//#define BCLAMP(c)  (((c)&0xff)|(255-((-(int)((c) < 256))>>24)))
+#define BCLAMP(c)  ((c) > 255 ? 255 : (c) < 0 ? 0 : (c))
+inline void game::CombineLights (col24 &L1, col24 L2) {
+  if (L2) {
+    if (L1) {
+#if! defined(IVAN_NEW_LIGHTS)
+# if !defined(IVAN_NEW_INTENSITY)
+      sLong Red1 = (L1&0xFF0000), Red2 = (L2&0xFF0000);
+      sLong New = (Red1 >= Red2 ? Red1 : Red2);
+      sLong Green1 = (L1&0xFF00), Green2 = (L2&0xFF00);
+      New |= (Green1 >= Green2 ? Green1 : Green2);
+      sLong Blue1 = (L1&0xFF), Blue2 = (L2&0xFF);
+      L1 = New|(Blue1 >= Blue2 ? Blue1 : Blue2);
+# else
+      int l1i = (int)(0.2126*((L1>>16)&0xFF)+0.7152*((L1>>8)&0xFF)+0.0722*(L1&0xFF)+0.5);
+      int l2i = (int)(0.2126*((L2>>16)&0xFF)+0.7152*((L2>>8)&0xFF)+0.0722*(L2&0xFF)+0.5);
+      //if (l2i > l1i) L1 = L2;
+      l1i = BCLAMP(l1i);
+      l2i = BCLAMP(l2i);
+      int r = (int)(((L1>>16)&0xFF)*(l1i/255.0f)+((L2>>16)&0xFF)*(l2i/255.0f));
+      int g = (int)(((L1>>8)&0xFF)*(l1i/255.0f)+((L2>>8)&0xFF)*(l2i/255.0f));
+      int b = (int)((L1&0xFF)*(l1i/255.0f)+(L2&0xFF)*(l2i/255.0f));
+      r = BCLAMP(r);
+      g = BCLAMP(g);
+      b = BCLAMP(b);
+      L1 = (r<<16)|(g<<8)|b;
+# endif
+#else
+# define L_COEFF (0.05f)
+      int r = (int)(((L1>>16)&0xFF)*L_COEFF+((L2>>16)&0xFF)*L_COEFF);
+      int g = (int)(((L1>>8)&0xFF)*L_COEFF+((L2>>8)&0xFF)*L_COEFF);
+      int b = (int)((L1&0xFF)*L_COEFF+(L2&0xFF)*L_COEFF);
+      r = BCLAMP(r);
+      g = BCLAMP(g);
+      b = BCLAMP(b);
+      L1 = (r<<16)|(g<<8)|b;
+# undef L_COEFF
+#endif
+    } else {
       L1 = L2;
+    }
   }
 }
+#undef BCLAMP
 
-inline col24 game::CombineConstLights(col24 L1, col24 L2)
-{
+
+inline col24 game::CombineConstLights (col24 L1, col24 L2) {
   CombineLights(L1, L2);
   return L1;
 }
 
-inline truth game::IsDark(col24 Light)
-{
-  return !Light
-    || ((Light & 0xFF0000) < (LIGHT_BORDER << 16)
-  && (Light & 0x00FF00) < (LIGHT_BORDER << 8)
-  && (Light & 0x0000FF) < LIGHT_BORDER);
+
+inline truth game::IsDark (col24 Light) {
+  return
+    !Light ||
+    ((Light & 0xFF0000) < (LIGHT_BORDER << 16) &&
+     (Light & 0x00FF00) < (LIGHT_BORDER << 8) &&
+     (Light & 0x0000FF) < LIGHT_BORDER);
 }
 
-inline int game::CompareLights(col24 L1, col24 L2)
-{
-  if(L1)
-  {
-    if((L1 & 0xFF0000) > (L2 & 0xFF0000)
-       || (L1 & 0x00FF00) > (L2 & 0x00FF00)
-       || (L1 & 0x0000FF) > (L2 & 0x0000FF))
+inline int game::CompareLights (col24 L1, col24 L2) {
+  if (L1) {
+    if ((L1 & 0xFF0000) > (L2 & 0xFF0000) ||
+        (L1 & 0x00FF00) > (L2 & 0x00FF00) ||
+        (L1 & 0x0000FF) > (L2 & 0x0000FF))
       return 1;
-    else if((L1 & 0xFF0000) == (L2 & 0xFF0000)
-      || (L1 & 0x00FF00) == (L2 & 0x00FF00)
-      || (L1 & 0x0000FF) == (L2 & 0x0000FF))
+    if ((L1 & 0xFF0000) == (L2 & 0xFF0000) ||
+        (L1 & 0x00FF00) == (L2 & 0x00FF00) ||
+        (L1 & 0x0000FF) == (L2 & 0x0000FF))
       return 0;
-    else
-      return -1;
+    return -1;
   }
-  else
-    return -int(!!L2);
+  return -int(!!L2);
 }
 
-inline v2 game::CalculateScreenCoordinates(v2 Pos)
-{
-  return v2((Pos.X - Camera.X + 1) << 4, (Pos.Y - Camera.Y + 2) << 4);
+
+inline v2 game::CalculateScreenCoordinates (v2 Pos) {
+  return v2((Pos.X-Camera.X+1)<<4, (Pos.Y-Camera.Y+2)<<4);
 }
+
 
 #endif
