@@ -100,6 +100,8 @@ inline int GetMinColor24 (col24 Color) { return Min(GetRed24(Color), GetGreen24(
 #define BLACK       0x0000
 #define CYAN        0x07FF
 
+#define SEL_BLUE    0x2AAF
+
 #define NORMAL_LUMINANCE  0x808080
 
 #define KEY_BACK_SPACE  0x08

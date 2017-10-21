@@ -296,7 +296,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
 
   //col16 selBack = BackColor^0xFFFF, selText = BackColor;
   //col16 selBack = LIGHT_GRAY, selText = BLACK;
-  col16 selBack = BLUE, selText = WHITE;
+  col16 selBack = SEL_BLUE, selText = WHITE;
 
   for (;;) {
     Str.Empty();
