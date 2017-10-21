@@ -35,12 +35,12 @@ PRNGSeed femath::savedSeed;
 
 // ////////////////////////////////////////////////////////////////////////// //
 void PCG32::rndseed () {
-  state = time(NULL);
-  inc = 42;
+  seed.state = time(NULL);
+  seed.inc = 1;
   int fd = open("/dev/urandom", O_RDONLY);
   if (fd < 0) return;
-  read(fd, &state, sizeof(state));
-  read(fd, &inc, sizeof(inc));
+  read(fd, &seed.state, sizeof(seed.state));
+  //read(fd, &inc, sizeof(inc));
   close(fd);
 }
 
@@ -58,6 +58,16 @@ void femath::SetSeed (feuLong aseed) {
 
 void femath::RandSeed () {
   prng.rndseed();
+}
+
+
+void femath::SaveSeed () {
+  savedSeed = prng.getSeed();
+}
+
+
+void femath::LoadSeed () {
+  prng.setSeed(savedSeed);
 }
 
 
@@ -142,17 +152,7 @@ truth femath::Clip (int &SourceX, int &SourceY, int &DestX, int &DestY, int &Wid
 }
 
 
-void femath::SaveSeed () {
-  savedSeed = prng.getSeed();
-}
-
-
-void femath::LoadSeed () {
-  prng.setSeed(savedSeed);
-}
-
-
-void ReadData(interval &I, inputfile &SaveFile) {
+void ReadData (interval &I, inputfile &SaveFile) {
   I.Min = SaveFile.ReadNumber(HIGHEST, true);
   festring Word;
   SaveFile.ReadWord(Word);
@@ -193,13 +193,13 @@ inputfile &operator >> (inputfile &SaveFile, region &R) {
 
 
 outputfile &operator << (outputfile &SaveFile, const PRNGSeed &R) {
-  SaveFile.Write((cchar *)R.seed, 8*2);
+  SaveFile.Write((cchar *)R.seed, sizeof(R.seed));
   return SaveFile;
 }
 
 
 inputfile &operator >> (inputfile &SaveFile, PRNGSeed &R) {
-  SaveFile.Read((char *)R.seed, 8*2);
+  SaveFile.Read((char *)R.seed, sizeof(R.seed));
   return SaveFile;
 }
 

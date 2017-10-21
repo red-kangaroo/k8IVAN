@@ -12,6 +12,7 @@
 #ifndef __FELIB_FEMATH_H__
 #define __FELIB_FEMATH_H__
 
+#include <string.h>
 #include <vector>
 #include <cmath>
 
@@ -32,55 +33,42 @@
 #define RAND_GOOD  femath::RandGood
 
 
-struct PRNGSeed {
-  unsigned char seed[8*2];
+struct __attribute__((__packed__)) PRNGSeed {
+  union __attribute__((__packed__)) {
+    uint8_t seed[sizeof(uint64_t)*2];
+    struct __attribute__((__packed__)) {
+      uint64_t state;
+      uint64_t inc;
+    };
+  };
 };
 
 
 // *Really* minimal PCG32 code / (c) 2014 M.E. O'Neill / pcg-random.org
 // Licensed under Apache License 2.0 (NO WARRANTY, etc. see website)
 struct PCG32 {
-  uint64_t state;
-  uint64_t inc;
+private:
+  PRNGSeed seed;
 
-  PCG32 (uint64_t astate, uint64_t ainc=42) {
-    state = astate;
-    inc = ainc;
-  }
+public:
+  PCG32 (uint64_t astate, uint64_t ainc=1) { setSeed(astate, ainc); }
+  PCG32 (const PRNGSeed aseed) { seed = aseed; }
 
-  void setSeed (uint64_t astate, uint64_t ainc=42) {
-    state = astate;
-    inc = ainc;
-  }
+  void setSeed (uint64_t astate, uint64_t ainc=1) { seed.state = astate; seed.inc = ainc; }
+  void setSeed (const PRNGSeed aseed) { seed = aseed; }
 
-  void setSeed (const PRNGSeed aseed) {
-    const char *s = (const char *)aseed.seed;
-    char *d = (char *)&state;
-    for (int f = 0; f < 8; ++f) *d++ = *s++;
-    d = (char *)&inc;
-    for (int f = 0; f < 8; ++f) *d++ = *s++;
-  }
-
-  PRNGSeed getSeed () {
-    PRNGSeed res;
-    char *d = (char *)res.seed;
-    const char *s = (const char *)&state;
-    for (int f = 0; f < 8; ++f) *d++ = *s++;
-    s = (const char *)&inc;
-    for (int f = 0; f < 8; ++f) *d++ = *s++;
-    return res;
-  }
+  PRNGSeed getSeed () const { return seed; }
 
   void rndseed ();
 
   uint32_t rand32 () {
-    uint64_t oldstate = this->state;
+    uint64_t oldstate = this->seed.state;
     // advance internal state
-    this->state = oldstate*6364136223846793005ULL+(this->inc|1);
+    this->seed.state = oldstate*6364136223846793005ULL+(this->seed.inc|1);
     // calculate output function (XSH RR), uses old state for max ILP
     uint32_t xorshifted = ((oldstate>>18u)^oldstate)>>27u;
     uint32_t rot = oldstate>>59u;
-    return (xorshifted>>rot)|(xorshifted<<((-rot)&31)); //k8: UB, but i don't care
+    return (xorshifted>>rot)|(xorshifted<<((-rot)&31)); //k8: UB(?), but i don't care
   }
 };
 
