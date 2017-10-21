@@ -63,7 +63,7 @@ void armor::AddInventoryEntry(ccharacter*, festring& Entry, int Amount, truth Sh
   }
 
   if(ShowSpecialInfo)
-    Entry << " [" << GetWeight() * Amount << "g, AV " << GetStrengthValue() << ']';
+    Entry << " [\1W" << GetWeight() * Amount << "g\2, AV \1Y" << GetStrengthValue() << "\2]";
 }
 
 
@@ -91,20 +91,16 @@ void armor::Load(inputfile& SaveFile)
 
 
 
-void armor::AddPostFix(festring& String, int Case) const
-{
+void armor::AddPostFix (festring& String, int Case) const {
   item::AddPostFix(String, Case);
 
-  if(Fluid)
-  {
+  if (Fluid) {
     String << " covered with ";
     fluid::AddFluidInfo(Fluid[0], String);
   }
 
-  if(Enchantment > 0)
-    String << " +" << Enchantment;
-  else if(Enchantment < 0)
-    String << ' ' << Enchantment;
+       if (Enchantment > 0) String << " \1G+" << Enchantment << "\2";
+  else if (Enchantment < 0) String << " \1R" << Enchantment << "\2";
 }
 
 

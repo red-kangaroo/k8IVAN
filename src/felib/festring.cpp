@@ -451,6 +451,89 @@ void festring::SplitString (festring &Source, festring &Result, sizetype Length)
 }
 
 
+/* The Result string receives up to Length characters from source,
+ * but words are left uncut if possible. */
+void festring::SplitStringColored (festring &Source, festring &Result, sizetype Length) {
+  if (Source.GetSize() <= Length || Length < 1) {
+    Result << Source;
+    Source.Empty();
+    return;
+  }
+
+  char clrchar = 0;
+  sizetype len = 0; // collected
+
+  // add words
+  while (Source.Size > 0) {
+    cchar *s = Source.Data;
+    sizetype left = Source.Size;
+    sizetype wordlen = 0;
+
+    // skip leading spaces
+    while (left > 0) {
+      if (*s == '\1') { ++s; --left; if (left) { clrchar = *s++; --left; } continue; }
+      if (*s == '\2') { clrchar = 0; ++s; --left; continue; }
+      if (*s != ' ') break;
+      ++s;
+      --left;
+      ++wordlen;
+    }
+
+    // find word end
+    while (left > 0 && *s != ' ') {
+      if (*s == '\1') { ++s; --left; if (left) { clrchar = *s++; --left; } continue; }
+      if (*s == '\2') { clrchar = 0; ++s; --left; continue; }
+      ++wordlen;
+      ++s;
+      --left;
+    }
+
+    sizetype cplen = (sizetype)(s-Source.Data);
+
+    if (len == 0 && wordlen > Length) {
+      // oops, first word is too long, do it specially
+      cchar *s = Source.Data;
+      sizetype left = Source.Size;
+      // append chars up to `Length`
+      wordlen = 0;
+      while (left > 0) {
+        if (*s == '\1') { ++s; --left; if (left) { clrchar = *s++; --left; } continue; }
+        if (*s == '\2') { clrchar = 0; ++s; --left; if (wordlen == Length) break; continue; }
+        if (wordlen == Length) break;
+        ++wordlen;
+        ++s;
+        --left;
+      }
+      cplen = (sizetype)(s-Source.Data);
+      Result.Append(Source.Data, cplen);
+      Source.Erase(0, cplen);
+      // insert color code
+      if (clrchar != 0) { char ccbuf[2]; ccbuf[0] = '\1'; ccbuf[1] = clrchar; Source.Insert(0, ccbuf, 2); }
+      return;
+    }
+
+    // fits?
+    if (len == 0 || len+wordlen <= Length) {
+      // yes, append it
+      Result.Append(Source.Data, cplen);
+      len += wordlen;
+      // erase appended part
+      Source.Erase(0, cplen);
+      continue;
+    }
+
+    // can't append; remove leading space (if any)
+    if (Source.Size > 0 && *Source.Data == ' ') Source.Erase(0, 1);
+    // insert color code
+    if (clrchar != 0) { char ccbuf[2]; ccbuf[0] = '\1'; ccbuf[1] = clrchar; Source.Insert(0, ccbuf, 2); }
+    return;
+  }
+
+  // clear `Source`
+  if (Source.Size > 0) Source.Erase(0, Source.Size);
+}
+
+
 /* Divides Source into lines of size up to Length without cutting words
  * and stores them one by one to StringVector. You can also specify a
  * Marginal, in which case a number of spaces is inserted in the
@@ -468,6 +551,23 @@ int festring::SplitString (cfestring &Source, std::vector<festring> &StringVecto
     festring &String = StringVector[Size++];
     String.Assign(Marginal, ' ');
     SplitString(CopyOfSource, String, Length-Marginal);
+  }
+  return Size;
+}
+
+
+int festring::SplitStringColored (cfestring &Source, std::vector<festring> &StringVector, sizetype Length, sizetype Marginal) {
+  if (!Length) ABORT("Illegal Length 0 passed to festring::SplitStringColored()!");
+  if (Marginal >= Length) ABORT("Illegal festring::SplitStringColored() call: Marginal must be less than Length!");
+  festring CopyOfSource(Source);
+  if (StringVector.empty()) StringVector.push_back(festring()); else StringVector[0].Empty();
+  SplitStringColored(CopyOfSource, StringVector[0], Length);
+  sizetype Size = 1;
+  while (!CopyOfSource.IsEmpty()) {
+    if (StringVector.size() <= Size) StringVector.push_back(festring());
+    festring &String = StringVector[Size++];
+    String.Assign(Marginal, ' ');
+    SplitStringColored(CopyOfSource, String, Length-Marginal);
   }
   return Size;
 }

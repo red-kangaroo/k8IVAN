@@ -60,12 +60,12 @@ truth holymango::Zap (character *Zapper, v2, int Direction) {
 void holymango::AddInventoryEntry (ccharacter *Viewer, festring& Entry, int, truth ShowSpecialInfo) const {
   AddName(Entry, INDEFINITE);
   if (ShowSpecialInfo) {
-    Entry << " [" << GetWeight() << "g, DAM " << GetBaseMinDamage() << '-' << GetBaseMaxDamage();
+    Entry << " [\1W" << GetWeight() << "g\2, DAM \1Y" << GetBaseMinDamage() << "\2-\1Y" << GetBaseMaxDamage() << "\2";
     Entry << ", " << GetBaseToHitValueDescription();
     if (!IsBroken()) Entry << ", " << GetStrengthValueDescription();
     int CWeaponSkillLevel = Viewer->GetCWeaponSkillLevel(this);
     int SWeaponSkillLevel = Viewer->GetSWeaponSkillLevel(this);
-    if (CWeaponSkillLevel || SWeaponSkillLevel) Entry << ", skill " << CWeaponSkillLevel << '/' << SWeaponSkillLevel;
+    if (CWeaponSkillLevel || SWeaponSkillLevel) Entry << ", skill \1W" << CWeaponSkillLevel << '/' << SWeaponSkillLevel << "\2";
     Entry << ']';
   }
 }

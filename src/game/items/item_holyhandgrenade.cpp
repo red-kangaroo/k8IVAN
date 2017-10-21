@@ -71,11 +71,11 @@ void holyhandgrenade::Be () {
 
 
 void holyhandgrenade::AddInventoryEntry (const character *Viewer, festring& Entry, int, truth ShowSpecialInfo) const {
-// never piled
+  // never piled
   AddName(Entry, DEFINITE);
   if (ShowSpecialInfo) {
     Entry << " [" << GetWeight() << "g";
-    if (!!WillExplodeSoon()) Entry << ", " << "(armed)";
+    if (!!WillExplodeSoon()) Entry << ", " << "\1R(armed)\2";
     Entry << ']';
   }
 }

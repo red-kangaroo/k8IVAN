@@ -99,12 +99,14 @@ public:
   sizetype FindLast (const festring& S, sizetype Pos=NPos) const { return FindLast(S.Data, Pos, S.Size); }
   void Erase (sizetype Pos, sizetype Length);
   void Insert (sizetype Pos, cchar *CStr) { Insert(Pos, CStr, strlen(CStr)); }
-  void Insert (sizetype, cchar *, sizetype);
+  void Insert (sizetype Pos, cchar *CStr, sizetype N);
   void Insert (sizetype Pos, cfestring& S) { Insert(Pos, S.Data, S.Size); }
   festring &Append (cfestring &Str, sizetype N) { return Append(Str.Data, N); }
   static csizetype NPos;
   static void SplitString (festring &, festring &, sizetype);
+  static void SplitStringColored (festring &, festring &, sizetype);
   static int SplitString (cfestring &, std::vector<festring> &, sizetype, sizetype=0);
+  static int SplitStringColored (cfestring &, std::vector<festring> &, sizetype, sizetype=0);
   static sizetype IgnoreCaseFind (cfestring &, cfestring &, sizetype=0);
   static void SearchAndReplace (festring &, cfestring &, cfestring &, sizetype=0);
   static bool IgnoreCaseCompare (cfestring &, cfestring &);

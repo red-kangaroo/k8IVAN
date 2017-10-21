@@ -12,6 +12,7 @@
 #ifndef __FELIB_COLORBIT_H__
 #define __FELIB_COLORBIT_H__
 
+#include <cstdarg>
 #include <map>
 #include <vector>
 
@@ -38,7 +39,9 @@ public:
   void MaskedBlit (bitmap *Bitmap, packcol16 *Color) const;
 
   void LIKE_PRINTF(5, 6) Printf (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const;
+  void LIKE_PRINTF(5, 6) PrintfColored (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const;
   void LIKE_PRINTF(5, 6) PrintfUnshaded (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const;
+  void LIKE_PRINTF(5, 6) PrintfUnshadedColored (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const;
   cachedfont *Colorize (cpackcol16 *Color, alpha BaseAlpha=255, cpackalpha *Alpha=0) const;
   bitmap *Colorize (v2 Pos, v2 Border, v2 Move, cpackcol16 *Color, alpha BaseAlpha=255,
     cpackalpha *Alpha=0, cuchar *RustData=0, truth AllowReguralColors=true) const;
@@ -60,6 +63,11 @@ public:
   paletteindex GetPixel (v2 Pos) const { return PaletteBuffer[Pos.Y][Pos.X]; }
   void Clear ();
   void NormalBlit (rawbitmap *Bitmap, v2 Src, v2 Dest, v2 Border, int Flags=0) const;
+
+protected:
+  static truth strHasCtlCodes (cchar *str);
+  void printfColoredVA (bitmap *bmp, v2 pos, packcol16 clr, truth shaded, cchar *fmt, va_list vap) const;
+  void printstrColored (bitmap *bmp, v2 pos, packcol16 clr, truth shaded, cchar *str) const;
 
 protected:
   v2 Size;

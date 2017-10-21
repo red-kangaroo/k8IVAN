@@ -129,10 +129,10 @@ truth wand::Zap(character* Zapper, v2, int Direction)
 void wand::AddInventoryEntry (ccharacter*, festring& Entry, int, truth ShowSpecialInfo) const { // never piled
   AddName(Entry, INDEFINITE);
   if (ShowSpecialInfo) {
-    Entry << " [" << GetWeight();
-    if (TimesUsed == 1) Entry << "g, used 1 time]";
-    else if (TimesUsed) Entry << "g, used " << TimesUsed << " times]";
-    else Entry << "g]";
+    Entry << " [\1W" << GetWeight();
+    if (TimesUsed == 1) Entry << "g\2, used \1W1\2 time]";
+    else if (TimesUsed) Entry << "g\2, used \1W" << TimesUsed << "\2 times]";
+    else Entry << "g\2]";
   }
 }
 

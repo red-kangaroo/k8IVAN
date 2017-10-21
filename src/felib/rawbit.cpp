@@ -279,101 +279,128 @@ bitmap *rawbitmap::Colorize (v2 Pos, v2 Border, v2 Move, cpackcol16 *Color, alph
 }
 
 
-void rawbitmap::Printf (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const {
-  char Buffer[2048];
-  char *bufptr = Buffer;
-  int bufsz = (int)sizeof(Buffer)-1;
-  //
+truth rawbitmap::strHasCtlCodes (cchar *str) {
+  while (*str) {
+    if (*str == '\1' || *str == '\2') return true;
+    ++str;
+  }
+  return false;
+}
+
+
+void rawbitmap::printstrColored (bitmap *bmp, v2 pos, packcol16 clr, truth shaded, cchar *str) const {
+  if (!str || *str == 0) return;
+  // has control codes?
+  if (!strHasCtlCodes(str)) {
+    // no, try cached font
+    fontcache::const_iterator Iterator = FontCache.find(clr);
+    if (Iterator != FontCache.end()) {
+      // found cached font
+      const cachedfont *Font = (shaded ? Iterator->second.first : Iterator->second.second);
+      blitdata B = {
+        bmp,
+        { 0, 0 },
+        { pos.X, pos.Y },
+        { 9, 9 },
+        { 0 },
+        TRANSPARENT_COLOR,
+        0
+      };
+      while (*str) {
+        unsigned char ch = (unsigned char)*str++;
+        if (ch < ' ' || ch >= 127) ch = ' '; //FIXME: ignore?
+        B.Src.X = ((ch-0x20)&0xF) << 4;
+        B.Src.Y = (ch-0x20)&0xF0;
+        Font->PrintCharacter(B);
+        B.Dest.X += 8;
+      }
+      return;
+    }
+  }
+  // has control codes, or no cached font
+  packcol16 curcol = clr;
+  packcol16 clrshade = MakeShadeColor(clr);
+  while (*str) {
+    // new color
+    if (*str == '\1') {
+      ++str;
+      if (str[0] == 0) break;
+      switch (*str++) {
+        case 'R': curcol = RED; break;
+        case 'G': curcol = GREEN; break;
+        case 'B': curcol = BLUE; break;
+        case 'Y': curcol = YELLOW; break;
+        case 'W': curcol = (clr != WHITE ? WHITE : CYAN); break;
+      }
+      continue;
+    }
+    // reset color
+    if (*str == '\2') { curcol = clr; ++str; continue; }
+    // other control chars?
+    if ((unsigned char)*str < ' ' || (unsigned char)*str >= 127) { ++str; continue; }
+    // normal char
+    v2 F(((*str-0x20)&0xF)<<4, (*str-0x20)&0xF0);
+    ++str;
+    if (shaded) MaskedBlit(bmp, F, v2(pos.X+1, pos.Y+1), v2(8, 8), &clrshade);
+    MaskedBlit(bmp, F, pos, v2(8, 8), &curcol);
+    pos.X += 8;
+  }
+}
+
+
+void rawbitmap::printfColoredVA (bitmap *bmp, v2 pos, packcol16 clr, truth shaded, cchar *fmt, va_list vap) const {
+  char buffer[2048];
+  char *bufptr = buffer;
+  int bufsz = (int)sizeof(buffer)-1;
+
   for (;;) {
-    va_list AP;
+    va_list ap;
     int n;
     char *np;
-    //
-    va_start(AP, Format);
-    n = vsnprintf(bufptr, bufsz, Format, AP);
-    va_end(AP);
+    va_copy(ap, vap);
+    n = vsnprintf(bufptr, bufsz, fmt, ap);
+    va_end(ap);
     if (n > -1 && n < bufsz) break;
     if (n < -1) n = bufsz+4096;
-    np = (char *)realloc((bufptr == Buffer ? NULL : bufptr), n+1);
+    np = (char *)realloc((bufptr == buffer ? NULL : bufptr), n+1);
     if (np == NULL) return; //FIXME
   }
-  //
-  fontcache::const_iterator Iterator = FontCache.find(Color);
-  if (Iterator == FontCache.end()) {
-    packcol16 ShadeCol = MakeShadeColor(Color);
-    for (int c = 0; bufptr[c]; ++c) {
-      v2 F(((bufptr[c] - 0x20) & 0xF) << 4, (bufptr[c] - 0x20) & 0xF0);
-      MaskedBlit(Bitmap, F, v2(Pos.X + (c << 3) + 1, Pos.Y + 1), v2(8, 8), &ShadeCol);
-      MaskedBlit(Bitmap, F, v2(Pos.X + (c << 3), Pos.Y), v2(8, 8), &Color);
-    }
-  } else {
-    const cachedfont *Font = Iterator->second.first;
-    blitdata B = {
-      Bitmap,
-      { 0, 0 },
-      { Pos.X, Pos.Y },
-      { 9, 9 },
-      { 0 },
-      TRANSPARENT_COLOR,
-      0
-    };
-    for (int c = 0; bufptr[c]; ++c, B.Dest.X += 8) {
-      unsigned char ch = (unsigned char)bufptr[c];
-      if (ch < ' ' || ch >= '\x7f') ch = ' ';
-      B.Src.X = ((ch-0x20) & 0xF) << 4;
-      B.Src.Y = (ch-0x20) & 0xF0;
-      Font->PrintCharacter(B);
-    }
-  }
-  if (bufptr != Buffer) free(bufptr);
+
+  printstrColored(bmp, pos, clr, shaded, bufptr);
+
+  if (bufptr != buffer) free(bufptr);
+}
+
+
+void rawbitmap::Printf (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const {
+  va_list ap;
+  va_start(ap, Format);
+  printfColoredVA(Bitmap, Pos, Color, true, Format, ap);
+  va_end(ap);
+}
+
+
+void rawbitmap::PrintfColored (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const {
+  va_list ap;
+  va_start(ap, Format);
+  printfColoredVA(Bitmap, Pos, Color, true, Format, ap);
+  va_end(ap);
 }
 
 
 void rawbitmap::PrintfUnshaded (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const {
-  char Buffer[2048];
-  char *bufptr = Buffer;
-  int bufsz = (int)sizeof(Buffer);
-  //
-  for (;;) {
-    va_list AP;
-    int n;
-    char *np;
-    //
-    va_start(AP, Format);
-    n = vsnprintf(bufptr, bufsz, Format, AP);
-    va_end(AP);
-    if (n > -1 && n < bufsz) break;
-    if (n < -1) n = bufsz+4096;
-    np = (char *)realloc((bufptr == Buffer ? NULL : bufptr), n+1);
-    if (np == NULL) return; //FIXME
-  }
-  //
-  fontcache::const_iterator Iterator = FontCache.find(Color);
-  if (Iterator == FontCache.end()) {
-    for (int c = 0; bufptr[c]; ++c) {
-      v2 F(((bufptr[c] - 0x20) & 0xF) << 4, (bufptr[c] - 0x20) & 0xF0);
-      MaskedBlit(Bitmap, F, v2(Pos.X + (c << 3), Pos.Y), v2(8, 8), &Color);
-    }
-  } else {
-    const cachedfont *Font = Iterator->second.second;
-    blitdata B = {
-      Bitmap,
-      { 0, 0 },
-      { Pos.X, Pos.Y },
-      { 9, 9 },
-      { 0 },
-      TRANSPARENT_COLOR,
-      0
-    };
-    for (int c = 0; bufptr[c]; ++c, B.Dest.X += 8) {
-      unsigned char ch = (unsigned char)bufptr[c];
-      if (ch < ' ' || ch >= '\x7f') ch = ' ';
-      B.Src.X = ((ch-0x20) & 0xF) << 4;
-      B.Src.Y = (ch-0x20) & 0xF0;
-      Font->PrintCharacter(B);
-    }
-  }
-  if (bufptr != Buffer) free(bufptr);
+  va_list ap;
+  va_start(ap, Format);
+  printfColoredVA(Bitmap, Pos, Color, false, Format, ap);
+  va_end(ap);
+}
+
+
+void rawbitmap::PrintfUnshadedColored (bitmap *Bitmap, v2 Pos, packcol16 Color, cchar *Format, ...) const {
+  va_list ap;
+  va_start(ap, Format);
+  printfColoredVA(Bitmap, Pos, Color, false, Format, ap);
+  va_end(ap);
 }
 
 

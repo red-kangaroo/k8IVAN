@@ -158,14 +158,14 @@ sLong meleeweapon::GetPrice () const {
 void meleeweapon::AddInventoryEntry (ccharacter *Viewer, festring &Entry, int, truth ShowSpecialInfo) const {
   AddName(Entry, INDEFINITE);
   if (ShowSpecialInfo) {
-    Entry << " [" << GetWeight() << "g, DAM " << GetBaseMinDamage() << '-' << GetBaseMaxDamage();
+    Entry << " [\1W" << GetWeight() << "g\2, DAM \1Y" << GetBaseMinDamage() << "\2-\1Y" << GetBaseMaxDamage() << "\2";
     Entry << ", " << GetBaseToHitValueDescription();
     if (!IsBroken() && !IsWhip()) Entry << ", " << GetStrengthValueDescription();
     //
     int CWeaponSkillLevel = Viewer->GetCWeaponSkillLevel(this);
     int SWeaponSkillLevel = Viewer->GetSWeaponSkillLevel(this);
     //
-    if (CWeaponSkillLevel || SWeaponSkillLevel) Entry << ", skill " << CWeaponSkillLevel << '/' << SWeaponSkillLevel;
+    if (CWeaponSkillLevel || SWeaponSkillLevel) Entry << ", skill \1W" << CWeaponSkillLevel << '/' << SWeaponSkillLevel << "\2";
     Entry << ']';
   }
 }
@@ -192,8 +192,8 @@ void meleeweapon::AddPostFix (festring &String, int Case) const {
     String << " covered with ";
     fluid::AddFluidInfo(Fluid[0], String);
   }
-  if (Enchantment > 0) String << " +" << Enchantment;
-  else if (Enchantment < 0) String << ' ' << Enchantment;
+       if (Enchantment > 0) String << " \1G+" << Enchantment << "\2";
+  else if (Enchantment < 0) String << " \1R" << Enchantment << "\2";
 }
 
 

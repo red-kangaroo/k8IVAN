@@ -66,17 +66,17 @@ truth ullrbone::Zap (character *Zapper, v2, int Direction) {
 
 
 void ullrbone::AddInventoryEntry (const character *Viewer, festring& Entry, int, truth ShowSpecialInfo) const {
-// never piled
+  // never piled
   AddName(Entry, INDEFINITE);
   if (ShowSpecialInfo) {
-    Entry << " [" << GetWeight() << "g, DAM " << GetBaseMinDamage() << '-' << GetBaseMaxDamage();
+    Entry << " [\1W" << GetWeight() << "g\2, DAM \1Y" << GetBaseMinDamage() << "\2-\1Y" << GetBaseMaxDamage() << "\2";
     Entry << ", " << GetBaseToHitValueDescription();
     if (!IsBroken()) Entry << ", " << GetStrengthValueDescription();
     int CWeaponSkillLevel = Viewer->GetCWeaponSkillLevel(this);
     int SWeaponSkillLevel = Viewer->GetSWeaponSkillLevel(this);
-    if (CWeaponSkillLevel || SWeaponSkillLevel) Entry << ", skill " << CWeaponSkillLevel << '/' << SWeaponSkillLevel;
-    if (TimesUsed == 1) Entry << ", used 1 time";
-    else if (TimesUsed) Entry << ", used " << TimesUsed << " times";
+    if (CWeaponSkillLevel || SWeaponSkillLevel) Entry << ", skill \1W" << CWeaponSkillLevel << '/' << SWeaponSkillLevel << "\2";
+    if (TimesUsed == 1) Entry << ", used \1W1\2 time";
+    else if (TimesUsed) Entry << ", used \1W" << TimesUsed << "\2 times";
     Entry << ']';
   }
 }

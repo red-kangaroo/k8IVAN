@@ -72,7 +72,7 @@ void holybanana::AddInventoryEntry(ccharacter* Viewer, festring& Entry, int, tru
 
   if(ShowSpecialInfo)
   {
-    Entry << " [" << GetWeight() << "g, DAM " << GetBaseMinDamage() << '-' << GetBaseMaxDamage();
+    Entry << " [\1W" << GetWeight() << "g\2, DAM \1Y" << GetBaseMinDamage() << "\2-\1Y" << GetBaseMaxDamage() << "\2";
     Entry << ", " << GetBaseToHitValueDescription();
 
     if(!IsBroken())
@@ -82,12 +82,12 @@ void holybanana::AddInventoryEntry(ccharacter* Viewer, festring& Entry, int, tru
     int SWeaponSkillLevel = Viewer->GetSWeaponSkillLevel(this);
 
     if(CWeaponSkillLevel || SWeaponSkillLevel)
-      Entry << ", skill " << CWeaponSkillLevel << '/' << SWeaponSkillLevel;
+      Entry << ", skill \1W" << CWeaponSkillLevel << '/' << SWeaponSkillLevel << "\2";
 
     if(TimesUsed == 1)
-      Entry << ", used 1 time";
+      Entry << ", used \1W1\2 time";
     else if(TimesUsed)
-      Entry << ", used " << TimesUsed << " times";
+      Entry << ", used \1W" << TimesUsed << "\2 times";
 
     Entry << ']';
   }
