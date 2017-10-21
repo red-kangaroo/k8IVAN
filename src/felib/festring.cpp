@@ -573,6 +573,34 @@ int festring::SplitStringColored (cfestring &Source, std::vector<festring> &Stri
 }
 
 
+truth festring::hasCtlCodes () const {
+  cchar *str = Data;
+  for (sizetype c = Size; c > 0; --c, ++str) {
+    if (*str == '\1' || *str == '\2') return true;
+  }
+  return false;
+}
+
+
+// without color codes
+festring::sizetype festring::rawLength () const {
+  sizetype len = 0;
+  cchar *str = Data;
+  for (sizetype c = Size; c > 0; --c, ++str) {
+    if (*str == '\1' || *str == '\2') {
+      if (*str == '\1') {
+        if (c == 1) break;
+        ++str;
+        --c;
+      }
+    } else {
+      ++len;
+    }
+  }
+  return len;
+}
+
+
 static inline char Capitalize (char Char) { return Char > 0x60 && Char < 0x7B ? Char ^ 0x20 : Char; }
 
 

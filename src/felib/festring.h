@@ -119,6 +119,10 @@ public:
   void ExtractWord (festring &);
   sLong GetCheckSum () const;
   void EnsureOwnsData ();
+
+  truth hasCtlCodes () const;
+  sizetype rawLength () const; // without color codes
+
 private:
   static void InstallIntegerMap ();
   static void DeInstallIntegerMap ();

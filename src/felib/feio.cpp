@@ -38,11 +38,11 @@ void iosystem::TextScreen (cfestring & Text, v2 Disp, col16 Color, truth GKey, t
   Buffer.ActivateFastFlag();
   festring::sizetype c;
   int LineNumber = 0;
-  for (c = 0; c < Text.GetSize(); ++c) if (Text[c] == '\n') ++LineNumber;
+  for (c = 0; c < Text.rawLength(); ++c) if (Text[c] == '\n') ++LineNumber;
   LineNumber >>= 1;
   char Line[200];
   int Lines = 0, LastBeginningOfLine = 0;
-  for (c = 0; c < Text.GetSize(); ++c) {
+  for (c = 0; c < Text.rawLength(); ++c) {
     if (Text[c] == '\n') {
       Line[c-LastBeginningOfLine] = 0;
       v2 PrintPos((RES.X>>1)-(strlen(Line)<<2)+Disp.X, (RES.Y<<1)/5-(LineNumber-Lines)*15+Disp.Y);
@@ -76,7 +76,14 @@ void iosystem::TextScreen (cfestring & Text, v2 Disp, col16 Color, truth GKey, t
 /* Returns amount of chars cSF in string sSH */
 static int CountChars (char cSF, cfestring &sSH) {
   int iReturnCounter = 0;
-  for (festring::sizetype i = 0; i < sSH.GetSize(); ++i) if (sSH[i] == cSF) ++iReturnCounter;
+  for (festring::sizetype i = 0; i < sSH.GetSize(); ++i) {
+    if (sSH[i] == '\1') {
+      if (cSF == '\1') ++iReturnCounter;
+      ++i;
+      continue;
+    }
+    if (sSH[i] == cSF) ++iReturnCounter;
+  }
   return iReturnCounter;
 }
 
@@ -117,7 +124,7 @@ int iosystem::Menu (cbitmap *BackGround, v2 Pos, cfestring &Topic, cfestring &sM
       VeryUnGuruPrintf = sCopyOfMS;
       VeryUnGuruPrintf.Resize(RPos);
       sCopyOfMS.Erase(0,RPos+1);
-      v2 PrintPos(Pos.X-(VeryUnGuruPrintf.GetSize()<<2),
+      v2 PrintPos(Pos.X-(VeryUnGuruPrintf.rawLength()<<2),
       Pos.Y-30-(CountChars('\r', Topic)+CountChars('\r', sMS))*25+i*25);
       FONT->Printf(&Buffer, PrintPos, RED, "%s", VeryUnGuruPrintf.CStr());
     }
@@ -127,9 +134,9 @@ int iosystem::Menu (cbitmap *BackGround, v2 Pos, cfestring &Topic, cfestring &sM
       VeryUnGuruPrintf = sCopyOfMS;
       VeryUnGuruPrintf.Resize(RPos);
       sCopyOfMS.Erase(0,RPos+1);
-      int XPos = Pos.X-((VeryUnGuruPrintf.GetSize()+3)<<2);
+      int XPos = Pos.X-((VeryUnGuruPrintf.rawLength()+3)<<2);
       int YPos = Pos.Y-CountChars('\r', sMS)*25+i*50;
-      Buffer.Fill(XPos, YPos, ((VeryUnGuruPrintf.GetSize()+3)<<3), 9, 0);
+      Buffer.Fill(XPos, YPos, ((VeryUnGuruPrintf.rawLength()+3)<<3), 9, 0);
       if (i == iSelected) FONT->PrintfUnshaded(&Buffer, v2(XPos + 1, YPos + 1), WHITE, "%d. %s", i+1, VeryUnGuruPrintf.CStr());
       else FONT->Printf(&Buffer, v2(XPos, YPos), Color, "%d. %s", i+1, VeryUnGuruPrintf.CStr());
     }
@@ -148,7 +155,7 @@ int iosystem::Menu (cbitmap *BackGround, v2 Pos, cfestring &Topic, cfestring &sM
       VeryUnGuruPrintf = sCopyOfMS;
       VeryUnGuruPrintf.Resize(RPos);
       sCopyOfMS.Erase(0,RPos+1);
-      v2 PrintPos(RES.X - (VeryUnGuruPrintf.GetSize()<<3)-2, RES.Y-CountChars('\r', SmallText2)*10+i*10);
+      v2 PrintPos(RES.X - (VeryUnGuruPrintf.rawLength()<<3)-2, RES.Y-CountChars('\r', SmallText2)*10+i*10);
       FONT->Printf(&Buffer, PrintPos, Color, "%s", VeryUnGuruPrintf.CStr());
     }
     int k;
@@ -250,19 +257,19 @@ int iosystem::StringQuestion (festring &Input, cfestring &Topic, v2 Pos, col16 C
     if (!LastKey) continue;
     if (LastKey == KEY_ESC && AllowExit) return ABORTED;
     if (LastKey == KEY_BACK_SPACE) {
-      if (!Input.IsEmpty()) Input.Resize(Input.GetSize()-1);
+      if (!Input.IsEmpty()) Input.Resize(Input.rawLength()-1);
       continue;
     }
     if (LastKey == KEY_ENTER) {
-      if (Input.GetSize() >= MinLetters) break;
+      if (Input.rawLength() >= MinLetters) break;
       TooShort = true;
       continue;
     }
-    if (LastKey >= 0x20 && Input.GetSize() < MaxLetters && (LastKey != ' ' || !Input.IsEmpty())) Input << char(LastKey);
+    if (LastKey >= 0x20 && Input.rawLength() < MaxLetters && (LastKey != ' ' || !Input.IsEmpty())) Input << char(LastKey);
   }
   /* Delete all the trailing spaces */
   festring::sizetype LastAlpha = festring::NPos;
-  for (festring::sizetype c = 0; c < Input.GetSize(); ++c) if (Input[c] != ' ') LastAlpha = c;
+  for (festring::sizetype c = 0; c < Input.rawLength(); ++c) if (Input[c] != ' ') LastAlpha = c;
   /* note: festring::NPos + 1 == 0 */
   Input.Resize(LastAlpha+1);
   return NORMAL_EXIT;
@@ -306,7 +313,7 @@ sLong iosystem::NumberQuestion (cfestring &Topic, v2 Pos, col16 Color, truth Fad
            (LastKey != '-' || !Input.IsEmpty()))
       LastKey = GET_KEY(false);
     if (LastKey == KEY_BACK_SPACE) {
-      if (!Input.IsEmpty()) Input.Resize(Input.GetSize()-1);
+      if (!Input.IsEmpty()) Input.Resize(Input.rawLength()-1);
       continue;
     }
     if (LastKey == KEY_ENTER) break;
@@ -314,7 +321,7 @@ sLong iosystem::NumberQuestion (cfestring &Topic, v2 Pos, col16 Color, truth Fad
       if (ReturnZeroOnEsc) return 0;
       break;
     }
-    if (Input.GetSize() < 12) Input << char(LastKey);
+    if (Input.rawLength() < 12) Input << char(LastKey);
   }
   return atoi(Input.CStr());
 }
@@ -342,7 +349,7 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
     bitmap Buffer(RES, 0);
     Buffer.ActivateFastFlag();
     FONT->Printf(&Buffer, Pos, TopicColor, "%s %d", Topic.CStr(), StartValue);
-    FONT->Printf(&Buffer, v2(Pos.X + (Topic.GetSize() << 3) + 8, Pos.Y + 1), TopicColor, "_");
+    FONT->Printf(&Buffer, v2(Pos.X + (Topic.rawLength() << 3) + 8, Pos.Y + 1), TopicColor, "_");
     Buffer.DrawHorizontalLine(Pos.X + 1, Pos.X + 201, Pos.Y + 15, Color2, false);
     Buffer.DrawVerticalLine(Pos.X + 201, Pos.Y + 12, Pos.Y + 18, Color2, false);
     Buffer.DrawHorizontalLine(Pos.X + 1, Pos.X + 1 + (BarValue - Min) * 200 / (Max - Min), Pos.Y + 15, Color1, true);
@@ -365,7 +372,7 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
     0,
     { 0, 0 },
     { Pos.X, Pos.Y },
-    { (int)(((Topic.GetSize() + 14) << 3) + 1), 10 },
+    { (int)(((Topic.rawLength() + 14) << 3) + 1), 10 },
     { 0 },
     0,
     0
@@ -389,11 +396,11 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
     BackUp.NormalBlit(B2);
     if (FirstTime) {
       FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor, "%s %d", Topic.CStr(), StartValue);
-      FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + (Topic.GetSize() << 3) + 8, Pos.Y + 1), TopicColor, "_");
+      FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + (Topic.rawLength() << 3) + 8, Pos.Y + 1), TopicColor, "_");
       FirstTime = false;
     } else {
       FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor, "%s %s", Topic.CStr(), Input.CStr());
-      FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + ((Topic.GetSize() + Input.GetSize()) << 3) + 8, Pos.Y + 1), TopicColor, "_");
+      FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + ((Topic.rawLength() + Input.rawLength()) << 3) + 8, Pos.Y + 1), TopicColor, "_");
     }
     DOUBLE_BUFFER->DrawHorizontalLine(Pos.X + 1, Pos.X + 201, Pos.Y + 15, Color2, false);
     DOUBLE_BUFFER->DrawVerticalLine(Pos.X + 201, Pos.Y + 12, Pos.Y + 18, Color2, false);
@@ -409,7 +416,7 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
       break;
     }
     if (LastKey == KEY_BACK_SPACE) {
-      if (!Input.IsEmpty()) Input.Resize(Input.GetSize()-1);
+      if (!Input.IsEmpty()) Input.Resize(Input.rawLength()-1);
       continue;
     }
     if (LastKey == KEY_ENTER || LastKey == KEY_SPACE) break;
@@ -427,7 +434,7 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
       Input << BarValue;
       continue;
     }
-    if (Input.GetSize() < 12) Input << char(LastKey);
+    if (Input.rawLength() < 12) Input << char(LastKey);
   }
   return BarValue;
 }
