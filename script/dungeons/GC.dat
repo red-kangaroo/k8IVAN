@@ -602,12 +602,14 @@ Dungeon ELPURI_CAVE;
       AttachRequired = true;
     }
 
+    /*k8: not in comm. fork
     Square, Random NOT_WALKABLE|ATTACHABLE;
     {
       OTerrain = stairs(STAIRS_DOWN);
       EntryIndex = STAIRS_DOWN;
       AttachRequired = true;
     }
+    */
 
     Square, Random;
     {
