@@ -226,7 +226,6 @@ uInt felist::Draw () {
       if (Pressed == KEY_LEFT) {
         // previous page
         if (Selectables && PageBegin > 0) {
-          PageBegin -= PageLength;
           PageBegin = (PageBegin < PageLength ? 0 : PageBegin-PageLength);
           Selected = PageBegin;
           BackGround.FastBlit(Buffer);
