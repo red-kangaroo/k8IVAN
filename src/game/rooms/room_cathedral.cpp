@@ -65,7 +65,7 @@ truth cathedral::PickupItem (character *Visitor, item *Item, int) {
     if (Item->IsHeadOfElpuri() || Item->IsGoldenEagleShirt() || Item->IsPetrussNut() ||
         !Item->GetTruePrice() || Item->IsEncryptedScroll()) return true;
     ADD_MESSAGE("Picking up property of the Cathedral is prohibited.");
-    if (game::TruthQuestion(CONST_S("Do you still want to do this? [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Do you still want to do this?"))) {
       Visitor->GetTeam()->Hostility(game::GetTeam(ATTNAM_TEAM));
       return true;
     }
@@ -82,7 +82,7 @@ truth cathedral::DropItem (character *Visitor, item *Item, int) {
       ADD_MESSAGE("Donating this to the Cathedral wouldn't be wise. You may still need it.");
       return false;
     }
-    if (game::TruthQuestion(CONST_S("Do you wish to donate this item to the Cathedral? [y/N]"))) return true;
+    if (game::TruthQuestion(CONST_S("Do you wish to donate this item to the Cathedral?"))) return true;
   }
   return false;
 }
@@ -101,7 +101,7 @@ truth cathedral::ConsumeItem (character *HungryMan, item *, int) {
   if (game::GetStoryState() == 2 || (game::GetTeam(ATTNAM_TEAM)->GetRelation(HungryMan->GetTeam()) == HOSTILE)) return true;
   if (HungryMan->IsPlayer()) {
     ADD_MESSAGE("Eating the property of the Cathedral is forbidden.");
-    if (game::TruthQuestion(CONST_S("Do you still want to do this? [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Do you still want to do this?"))) {
       HungryMan->GetTeam()->Hostility(game::GetTeam(ATTNAM_TEAM));
       return true;
     }
@@ -112,10 +112,10 @@ truth cathedral::ConsumeItem (character *HungryMan, item *, int) {
 
 truth cathedral::Drink (character *Thirsty) const {
   if (game::GetStoryState() == 2 || game::GetTeam(ATTNAM_TEAM)->GetRelation(Thirsty->GetTeam()) == HOSTILE)
-    return game::TruthQuestion(CONST_S("Do you want to drink? [y/N]"));
+    return game::TruthQuestion(CONST_S("Do you want to drink?"));
   if (Thirsty->IsPlayer()) {
     ADD_MESSAGE("Drinking property of the Cathedral is prohibited.");
-    if (game::TruthQuestion(CONST_S("Do you still want to do this? [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Do you still want to do this?"))) {
       Thirsty->GetTeam()->Hostility(game::GetTeam(ATTNAM_TEAM));
       return true;
     }
@@ -138,7 +138,7 @@ truth cathedral::Dip (character *Thirsty) const {
   if (Thirsty->IsPlayer()) {
     /*FIXME: What if it's not water? */
     ADD_MESSAGE("Stealing the precious water of the Cathedral is prohibited.");
-    if (game::TruthQuestion(CONST_S("Are you sure you want to dip? [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Are you sure you want to dip?"))) {
       Thirsty->GetTeam()->Hostility(game::GetTeam(ATTNAM_TEAM));
       return true;
     }

@@ -25,7 +25,7 @@ void solicitus::BeTalkedTo () {
   //
   if (PLAYER->StateIsActivated(PANIC) && !game::PlayerIsSolicitusChampion()) {
     ADD_MESSAGE("Solicitus perks up. \"Well hullo there mortal! Would you care to be my Champion? I'll give you a free copy of my celestial monograph on Atheism!\"");
-    if (game::TruthQuestion(CONST_S("Do you choose to become the Champion of Solicitus? [y/n]"), REQUIRES_ANSWER)) {
+    if (game::TruthQuestion(CONST_S("Do you choose to become the Champion of Solicitus?"), REQUIRES_ANSWER)) {
       game::TextScreen(CONST_S(
         "Solicitus speaks:\n"
         "\"Becoming my champion involves my changing your sweat material into pure liquified fear.\"\n"

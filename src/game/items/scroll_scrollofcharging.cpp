@@ -28,7 +28,7 @@ void scrollofcharging::FinishReading(character* Reader)
       {
   ADD_MESSAGE("Only one %s will be charged.", Item[0]->CHAR_NAME(UNARTICLED));
 
-  if(!game::TruthQuestion(CONST_S("Still continue? [y/N]")))
+  if(!game::TruthQuestion(CONST_S("Still continue?")))
     continue;
       }
 
@@ -38,7 +38,7 @@ void scrollofcharging::FinishReading(character* Reader)
       ADD_MESSAGE("You charge %s and the scroll burns.", Item[0]->CHAR_NAME(DEFINITE|(Item.size() == 1 ? 0 : PLURAL)));
       break;
     }
-    else if(game::TruthQuestion(CONST_S("Really cancel read? [y/N]")))
+    else if(game::TruthQuestion(CONST_S("Really cancel read?")))
       return;
   }
 

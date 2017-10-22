@@ -80,16 +80,16 @@ truth taiaha::Zap (character *Zapper, v2, int Direction) {
 void taiaha::AddInventoryEntry (ccharacter *Viewer, festring& Entry, int, truth ShowSpecialInfo) const {
   AddName(Entry, INDEFINITE);
   if (ShowSpecialInfo) {
-    Entry << " [\1W" << GetWeight() << "g\2, DAM \1Y" << GetBaseMinDamage() << "\2-\1Y" << GetBaseMaxDamage() << "\2";
+    Entry << " [\1C" << GetWeight() << "g\2, DAM \1Y" << GetBaseMinDamage() << "\2-\1Y" << GetBaseMaxDamage() << "\2";
     Entry << ", " << GetBaseToHitValueDescription();
     if (!IsBroken() && !IsWhip()) Entry << ", " << GetStrengthValueDescription();
     //
     int CWeaponSkillLevel = Viewer->GetCWeaponSkillLevel(this);
     int SWeaponSkillLevel = Viewer->GetSWeaponSkillLevel(this);
     //
-    if (CWeaponSkillLevel || SWeaponSkillLevel) Entry << ", skill \1W" << CWeaponSkillLevel << '/' << SWeaponSkillLevel << "\2";
-    if (TimesUsed == 1) Entry << ", zapped \1W1\2 time]";
-    else if (TimesUsed) Entry << ", zapped \1W" << TimesUsed << "\2 times]";
+    if (CWeaponSkillLevel || SWeaponSkillLevel) Entry << ", skill \1C" << CWeaponSkillLevel << '/' << SWeaponSkillLevel << "\2";
+    if (TimesUsed == 1) Entry << ", zapped \1C1\2 time]";
+    else if (TimesUsed) Entry << ", zapped \1C" << TimesUsed << "\2 times]";
     else Entry << "]";
   }
 }

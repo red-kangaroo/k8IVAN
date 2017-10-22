@@ -1,6 +1,6 @@
 COMMAND(WizardMode) {
   if (!game::WizardModeIsActive()) {
-    if (game::TruthQuestion(CONST_S("Do you want to cheat, cheater? This action cannot be undone. [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Do you want to cheat, cheater? This action cannot be undone."))) {
       game::ActivateWizardMode();
       ADD_MESSAGE("Wizard mode activated.");
       if (!game::IsInWilderness()) game::LoadWorldMap();
@@ -14,7 +14,7 @@ COMMAND(WizardMode) {
     return false;
   }
   // wizard mode
-  if (game::GetPlayerName() == "_k8_" && game::TruthQuestion(CONST_S("Do you want to uncheat, cheater? [y/N]"))) {
+  if (game::GetPlayerName() == "_k8_" && game::TruthQuestion(CONST_S("Do you want to uncheat, cheater?"))) {
     game::DeactivateWizardMode();
     ADD_MESSAGE("You are the ordinary mortal again.");
   } else {

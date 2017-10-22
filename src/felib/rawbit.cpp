@@ -330,7 +330,11 @@ void rawbitmap::printstrColored (bitmap *bmp, v2 pos, packcol16 clr, truth shade
         case 'G': curcol = GREEN; break;
         case 'B': curcol = BLUE; break;
         case 'Y': curcol = YELLOW; break;
-        case 'W': curcol = (clr == CYAN ? WHITE : CYAN); break;
+        case 'W': curcol = (clr != WHITE ? WHITE : LIGHT_GRAY); break;
+        case 'C': curcol = CYAN; break;
+        case 'P': curcol = PINK; break;
+        case 'D': curcol = DARK_GRAY; break;
+        case 'S': curcol = SEL_BLUE; break;
       }
       continue;
     }

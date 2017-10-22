@@ -75,7 +75,7 @@ truth library::PickupItem (character *Customer, item *ForSale, int Amount) {
         ADD_MESSAGE("\"Ah! That %s costs %d gold pieces. No haggling, please.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
       else
         ADD_MESSAGE("\"Ah! Those %d %s cost %d gold pieces. No haggling, please.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
-      if (game::TruthQuestion(CONST_S("Do you accept this deal? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Do you accept this deal?"))) {
         Customer->EditMoney(-Price);
         GetMaster()->EditMoney(Price);
         Customer->EditDealExperience(Price);
@@ -90,7 +90,7 @@ truth library::PickupItem (character *Customer, item *ForSale, int Amount) {
       return false;
     }
   }
-  if (game::TruthQuestion(CONST_S("Are you sure you want to commit this thievery? [y/N]"))) {
+  if (game::TruthQuestion(CONST_S("Are you sure you want to commit this thievery?"))) {
     Customer->Hostility(GetMaster());
     return true;
   }
@@ -135,7 +135,7 @@ truth library::DropItem (character *Customer, item *ForSale, int Amount) {
         ADD_MESSAGE("\"What an interesting %s. I'll pay %d gold pieces for it.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
       else
         ADD_MESSAGE("\"What an interesting collection of %d %s. I'll pay %d gold pieces for it.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
-      if (game::TruthQuestion(CONST_S("Do you want to sell ")+(Amount == 1 ? "this item" : "these items")+"? [y/N]")) {
+      if (game::TruthQuestion(CONST_S("Do you want to sell ")+(Amount == 1 ? "this item" : "these items")+"?")) {
         Customer->EditMoney(Price);
         GetMaster()->EditMoney(-Price);
         Customer->EditDealExperience(Price);
@@ -149,7 +149,7 @@ truth library::DropItem (character *Customer, item *ForSale, int Amount) {
     }
   } else {
     ADD_MESSAGE("The librarian doesn't see you, so you cannot trade with him.");
-    return game::TruthQuestion(CONST_S("Still drop ")+(Amount == 1 ? "this item" : "these items")+"? [y/N]");
+    return game::TruthQuestion(CONST_S("Still drop ")+(Amount == 1 ? "this item" : "these items")+"?");
   }
 }
 

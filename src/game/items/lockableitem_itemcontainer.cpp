@@ -80,44 +80,28 @@ void itemcontainer::PostConstruct()
 }
 
 
-
-truth itemcontainer::Open(character* Opener)
-{
-  if(IsLocked())
-  {
+truth itemcontainer::Open (character *Opener) {
+  if (IsLocked()) {
     ADD_MESSAGE("%s seems to be locked.", CHAR_NAME(DEFINITE));
     return false;
   }
-
-  festring Question = CONST_S("Do you want to (t)ake something from or (p)ut something in this container? [t,p]");
-  truth Success;
-
-  switch(game::KeyQuestion(Question, KEY_ESC, 3, 't', 'p', KEY_ESC))
-  {
-   case 't':
-   case 'T':
-    Success = GetContained()->TakeSomethingFrom(Opener, GetName(DEFINITE));
-    break;
-   case 'p':
-   case 'P':
-    Success = GetContained()->PutSomethingIn(Opener, GetName(DEFINITE), GetStorageVolume(), GetID());
-    break;
-   default:
-    return false;
+  festring Question = CONST_S("Do you want to \1Gt\2ake something from or \1Gp\2ut something in this container?");
+  truth Success = false;
+  switch (game::KeyQuestion(Question, /*KEY_ESC*/REQUIRES_ANSWER, 5, 't', 'p', 'T', 'P', KEY_ESC)) {
+    case 't': case 'T': Success = GetContained()->TakeSomethingFrom(Opener, GetName(DEFINITE)); break;
+    case 'p': case 'P': Success = GetContained()->PutSomethingIn(Opener, GetName(DEFINITE), GetStorageVolume(), GetID()); break;
+    default: return false;
   }
-
-  if(Success)
-    Opener->DexterityAction(Opener->OpenMultiplier() * 5);
-
+  if (Success) Opener->DexterityAction(Opener->OpenMultiplier()*5);
   return Success;
 }
-
 
 
 void itemcontainer::Save(outputfile& SaveFile) const
 {
   lockableitem::Save(SaveFile);
-  Contained->Save(SaveFile);}
+  Contained->Save(SaveFile);
+}
 
 
 

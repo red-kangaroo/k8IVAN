@@ -263,7 +263,7 @@ truth humanoid::Hit (character *Enemy, v2 HitPos, int Direction, int Flags) {
   if (CheckIfTooScaredToHit(Enemy)) return false;
   if (IsPlayer()) {
     if (!(Enemy->IsMasochist() && GetRelation(Enemy) == FRIEND) && GetRelation(Enemy) != HOSTILE &&
-        !game::TruthQuestion(CONST_S("This might cause a hostile reaction. Are you sure? [y/N]")))
+        !game::TruthQuestion(CONST_S("This might cause a hostile reaction. Are you sure?")))
       return false;
   } else if (GetAttribute(WISDOM) >= Enemy->GetAttackWisdomLimit()) {
     return false;
@@ -1107,12 +1107,12 @@ truth humanoid::EquipmentEasilyRecognized (int I) const {
 
 void humanoid::SurgicallyDetachBodyPart () {
   int ToBeDetached;
-  switch (game::KeyQuestion(CONST_S("What limb? (l)eft arm, (r)ight arm, (L)eft leg, (R)ight leg, (h)ead?"), KEY_ESC, 5, 'l','r','L','R', 'h')) {
+  switch (game::KeyQuestion(CONST_S("What limb? \1Gl\2eft arm, \1Gr\2ight arm, \1GL\2eft leg, \1GR\2ight leg, \1Hh\2ead?"), /*KEY_ESC*/REQUIRES_ANSWER, 7, 'l','r','L','R','h','H',KEY_ESC)) {
     case 'l': ToBeDetached = LEFT_ARM_INDEX; break;
     case 'r': ToBeDetached = RIGHT_ARM_INDEX; break;
     case 'L': ToBeDetached = LEFT_LEG_INDEX; break;
     case 'R': ToBeDetached = RIGHT_LEG_INDEX; break;
-    case 'h': ToBeDetached = HEAD_INDEX; break; // maybe no head, should be up to the player to decide.
+    case 'h': case 'H': ToBeDetached = HEAD_INDEX; break; // maybe no head, should be up to the player to decide.
     default: return;
   }
   if (GetBodyPart(ToBeDetached)) {
@@ -1473,12 +1473,12 @@ void humanoid::AddDefenceInfo (felist &List) const {
 
 void humanoid::DetachBodyPart () {
   int ToBeDetached;
-  switch (game::KeyQuestion(CONST_S("What limb? (l)eft arm, (r)ight arm, (L)eft leg, (R)ight leg, (h)ead?"), KEY_ESC, 5, 'l','r','L','R', 'h')) {
+  switch (game::KeyQuestion(CONST_S("What limb? \1Gl\2eft arm, \1Gr\2ight arm, \1GL\2eft leg, \1GR\2ight leg, \1Hh\2ead?"), /*KEY_ESC*/REQUIRES_ANSWER, 7, 'l','r','L','R','h','H',KEY_ESC)) {
     case 'l': ToBeDetached = LEFT_ARM_INDEX; break;
     case 'r': ToBeDetached = RIGHT_ARM_INDEX; break;
     case 'L': ToBeDetached = LEFT_LEG_INDEX; break;
     case 'R': ToBeDetached = RIGHT_LEG_INDEX; break;
-    case 'h': ToBeDetached = HEAD_INDEX; break;
+    case 'h': case 'H': ToBeDetached = HEAD_INDEX; break;
     default: return;
   }
   if (GetBodyPart(ToBeDetached)) {

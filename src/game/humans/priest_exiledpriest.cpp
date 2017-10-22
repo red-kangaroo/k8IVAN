@@ -62,7 +62,7 @@ void exiledpriest::healBodyParts () {
             ADD_MESSAGE("\"Sorry, I cannot put back bodyparts made of %s, not even your severed %s.\"", OldBodyPart->GetMainMaterial()->GetName(false, false).CStr(), PLAYER->GetBodyPartName(c).CStr());
           else {
             ADD_MESSAGE("\"I will put your old %s back.\"", PLAYER->GetBodyPartName(c).CStr());
-            if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+            if (game::TruthQuestion(CONST_S("Do you agree?"))) {
               OldBodyPart->SetHP(1);
               OldBodyPart->RemoveFromSlot();
               PLAYER->AttachBodyPart(OldBodyPart);
@@ -76,7 +76,7 @@ void exiledpriest::healBodyParts () {
         ADD_MESSAGE("\"I could summon up a new %s.\"", PLAYER->GetBodyPartName(c).CStr());
       else
         ADD_MESSAGE("\"Since you don't seem to have your original %s with you, I could summon up a new one.\"", PLAYER->GetBodyPartName(c).CStr());
-      if (game::TruthQuestion(CONST_S("Agreed? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Agreed?"))) {
         PLAYER->CreateBodyPart(c);
         PLAYER->GetBodyPart(c)->SetHP(1);
         healBodyParts(); //FIXME
@@ -91,28 +91,28 @@ void exiledpriest::healBodyParts () {
 void exiledpriest::healDeseases () {
   if (PLAYER->TemporaryStateIsActivated(POISONED)) {
     ADD_MESSAGE("\"You seem to be rather ill. I could give you a small dose of antidote.\"");
-    if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Do you agree?"))) {
       ADD_MESSAGE("You feel better.");
       PLAYER->DeActivateTemporaryState(POISONED);
     }
   }
   if (PLAYER->TemporaryStateIsActivated(PARASITIZED)) {
     ADD_MESSAGE("\"You seem to have something inside you. I could give you a small dose of antidote.\"");
-    if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Do you agree?"))) {
       ADD_MESSAGE("You feel better.");
       PLAYER->DeActivateTemporaryState(PARASITIZED);
     }
   }
   if (PLAYER->TemporaryStateIsActivated(LEPROSY)) {
     ADD_MESSAGE("\"You seem to have contracted the vile disease of leprosy. I could give you a small dose of medicince.\"");
-    if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Do you agree?"))) {
       ADD_MESSAGE("You feel better.");
       PLAYER->DeActivateTemporaryState(LEPROSY);
     }
   }
   if (PLAYER->TemporaryStateIsActivated(LYCANTHROPY)) {
     ADD_MESSAGE("\"You seem to be turning into a werewolf quite frequently. Well, everyone has right to little secret habits, but I could pray %s to remove the canine blood from your veins, just so you don't scare our blessed youth.\"", GetMasterGod()->GetName());
-    if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Do you agree?"))) {
       ADD_MESSAGE("You feel better.");
       PLAYER->DeActivateTemporaryState(LYCANTHROPY);
     }

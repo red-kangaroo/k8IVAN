@@ -55,7 +55,7 @@ void room::DestroyTerrain (character *Who) {
 truth room::CheckDestroyTerrain (character *Infidel) {
   if (!MasterIsActive() || Infidel == GetMaster() || GetMaster()->GetRelation(Infidel) == HOSTILE) return true;
   ADD_MESSAGE("%s might not like this.", GetMaster()->CHAR_NAME(DEFINITE));
-  if (game::TruthQuestion(CONST_S("Are you sure you want to do this? [y/N]"))) {
+  if (game::TruthQuestion(CONST_S("Are you sure you want to do this?"))) {
     DestroyTerrain(Infidel);
     return true;
   }
@@ -73,7 +73,7 @@ truth room::MasterIsActive () const {
 truth room::CheckKickSquare (ccharacter *Kicker, const lsquare *LSquare) const {
   if (!AllowKick(Kicker, LSquare)) {
     ADD_MESSAGE("That would be vandalism.");
-    if (!game::TruthQuestion(CONST_S("Do you still want to do this? [y/N]"))) return false;
+    if (!game::TruthQuestion(CONST_S("Do you still want to do this?"))) return false;
   }
   return true;
 }

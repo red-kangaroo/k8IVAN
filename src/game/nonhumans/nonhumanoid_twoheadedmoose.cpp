@@ -17,7 +17,7 @@ truth twoheadedmoose::Hit(character* Enemy, v2 HitPos, int Direction, int Flags)
 
   if(IsPlayer())
   {
-    if(!(Enemy->IsMasochist() && GetRelation(Enemy) == FRIEND) && GetRelation(Enemy) != HOSTILE && !game::TruthQuestion(CONST_S("This might cause a hostile reaction. Are you sure? [y/N]")))
+    if(!(Enemy->IsMasochist() && GetRelation(Enemy) == FRIEND) && GetRelation(Enemy) != HOSTILE && !game::TruthQuestion(CONST_S("This might cause a hostile reaction. Are you sure?")))
       return false;
   }
   else if(GetAttribute(WISDOM) >= Enemy->GetAttackWisdomLimit())

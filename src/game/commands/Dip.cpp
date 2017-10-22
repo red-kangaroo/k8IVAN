@@ -15,7 +15,7 @@ COMMAND(Dip) {
   }
   item *Item = Char->SelectFromPossessions(CONST_S("What do you want to dip?"), &item::IsDippable);
   if (Item) {
-    if (!HasDipDestination || (DipDestinationNear && game::TruthQuestion(CONST_S("Do you wish to dip in a nearby square? [y/N]")))) {
+    if (!HasDipDestination || (DipDestinationNear && game::TruthQuestion(CONST_S("Do you wish to dip in a nearby square?")))) {
       int Dir = game::DirectionQuestion(CONST_S("Where do you want to dip ")+Item->GetName(DEFINITE)+"? [press a direction key or '.']", false, true);
       v2 Pos = Char->GetPos()+game::GetMoveVector(Dir);
       if (Dir == DIR_ERROR || !Char->GetArea()->IsValidPos(Pos) || !Char->GetNearLSquare(Pos)->IsDipDestination()) return false;

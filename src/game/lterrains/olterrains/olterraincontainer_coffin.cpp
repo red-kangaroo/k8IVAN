@@ -78,7 +78,7 @@ void coffin::FinalProcessForBone () {
 
 truth coffin::Open (character *Opener) {
   if (!Opener->IsPlayer()) return false;
-  if (!game::TruthQuestion(CONST_S("Disturbing the dead might not be wise... Continue? [y/N]"))) return false;
+  if (!game::TruthQuestion(CONST_S("Disturbing the dead might not be wise... Continue?"))) return false;
   truth Success = olterraincontainer::Open(Opener);
   if (Success) {
     game::DoEvilDeed(25);

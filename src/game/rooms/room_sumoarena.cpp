@@ -23,7 +23,7 @@ void sumoarena::HostileAction (character *Guilty) const {
 truth sumoarena::CheckDestroyTerrain (character *Infidel) {
   if (Infidel->GetTeam()->GetRelation(game::GetTeam(NEW_ATTNAM_TEAM)) == HOSTILE) return true;
   ADD_MESSAGE("The residents of New Attnam might not like this.");
-  if (game::TruthQuestion(CONST_S("Are you sure you want to do this? [y/N]"))) {
+  if (game::TruthQuestion(CONST_S("Are you sure you want to do this?"))) {
     DestroyTerrain(Infidel);
     return true;
   }

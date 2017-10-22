@@ -958,7 +958,7 @@ truth character::TryMove (v2 MoveVector, truth Important, truth Run) {
 
       if (Pets == 1) {
         if (IsPlayer() && !ivanconfig::GetBeNice() && Pet[0]->IsMasochist() && HasSadistAttackMode() &&
-            game::TruthQuestion("Do you want to punish " + Pet[0]->GetObjectPronoun() + "? [y/N]"))
+            game::TruthQuestion("Do you want to punish " + Pet[0]->GetObjectPronoun() + "?"))
           return Hit(Pet[0], PetPos[0], Direction, SADIST_HIT);
         else
           return (Important && (CanMoveOn(MoveToSquare[0]) ||
@@ -978,7 +978,7 @@ truth character::TryMove (v2 MoveVector, truth Important, truth Run) {
                 if (IsPlayer()) {
                   /*k8*/
                   if (ivanconfig::GetKickDownDoors()) {
-                    if (game::TruthQuestion(CONST_S("Locked! Do you want to kick ")+Terrain->GetName(DEFINITE)+"? [Y/n]", true, game::GetMoveCommandKeyBetweenPoints(PLAYER->GetPos(), MoveToSquare[0]->GetPos()))) {
+                    if (game::TruthQuestion(CONST_S("Locked! Do you want to kick ")+Terrain->GetName(DEFINITE)+"?", true, game::GetMoveCommandKeyBetweenPoints(PLAYER->GetPos(), MoveToSquare[0]->GetPos()))) {
                       Kick(MoveToSquare[c], Direction);
                       return true;
                     } else {
@@ -1003,11 +1003,11 @@ truth character::TryMove (v2 MoveVector, truth Important, truth Run) {
                   }
                 }
               } else { /* if (Terrain->IsLocked()) */
-                /*if(!IsPlayer() || game::TruthQuestion(CONST_S("Do you want to open ") + Terrain->GetName(DEFINITE) + "? [y/N]", false, game::GetMoveCommandKeyBetweenPoints(PLAYER->GetPos(), MoveToSquare[0]->GetPos()))) return MoveToSquare[c]->Open(this);*/
+                /*if(!IsPlayer() || game::TruthQuestion(CONST_S("Do you want to open ")+Terrain->GetName(DEFINITE)+"?", false, game::GetMoveCommandKeyBetweenPoints(PLAYER->GetPos(), MoveToSquare[0]->GetPos()))) return MoveToSquare[c]->Open(this);*/
                 /* Non-players always try to open it */
                 if (!IsPlayer()) return MoveToSquare[c]->Open(this);
-                if (game::TruthQuestion(CONST_S("Do you want to ")+(ivanconfig::GetKickDownDoors()?"kick ":"open ")+
-                    Terrain->GetName(DEFINITE)+"? [y/N]", false, game::GetMoveCommandKeyBetweenPoints(PLAYER->GetPos(),
+                if (game::TruthQuestion(CONST_S("Do you want to ")+(ivanconfig::GetKickDownDoors() ? "kick " : "open ")+
+                    Terrain->GetName(DEFINITE)+"?", false, game::GetMoveCommandKeyBetweenPoints(PLAYER->GetPos(),
                     MoveToSquare[0]->GetPos()))) {
                   if (ivanconfig::GetKickDownDoors()) {
                     Kick(MoveToSquare[c], Direction);
@@ -1032,7 +1032,7 @@ truth character::TryMove (v2 MoveVector, truth Important, truth Run) {
       } /* if */
       return false;
     } else {
-      if (IsPlayer() && !IsStuck() && GetLevel()->IsOnGround() && game::TruthQuestion(CONST_S("Do you want to leave ")+game::GetCurrentDungeon()->GetLevelDescription(game::GetCurrentLevelIndex())+"? [y/N]")) {
+      if (IsPlayer() && !IsStuck() && GetLevel()->IsOnGround() && game::TruthQuestion(CONST_S("Do you want to leave ")+game::GetCurrentDungeon()->GetLevelDescription(game::GetCurrentLevelIndex())+"?")) {
         if (HasPetrussNut() && !HasGoldenEagleShirt()) {
           game::TextScreen(CONST_S("An undead and sinister voice greets you as you leave the city behind:\n\n\"MoRtAl! ThOu HaSt SlAuGtHeReD pEtRuS aNd PlEaSeD mE!\nfRoM tHiS dAy On, ThOu ArT tHe DeArEsT sErVaNt Of AlL eViL!\"\n\nYou are victorious!"));
           game::GetCurrentArea()->SendNewDrawRequest();
@@ -1057,7 +1057,7 @@ truth character::TryMove (v2 MoveVector, truth Important, truth Run) {
           if (!V[c]->CanMoveOn(GetNearWSquare(MoveTo))) {
             if (!Discard) {
               ADD_MESSAGE("One or more of your team members cannot cross this terrain.");
-              if (!game::TruthQuestion("Discard them? [y/N]")) return false;
+              if (!game::TruthQuestion("Discard them?")) return false;
               Discard = true;
             }
             if (Discard) delete V[c];
@@ -1098,7 +1098,7 @@ void character::Die (ccharacter *Killer, cfestring &Msg, feuLong DeathFlags) {
   if (IsPlayer()) {
     ADD_MESSAGE("You die.");
     game::DrawEverything();
-    if (game::TruthQuestion(CONST_S("Do you want to save screenshot? [y/n]"), REQUIRES_ANSWER)) {
+    if (game::TruthQuestion(CONST_S("Do you want to save screenshot?"), REQUIRES_ANSWER)) {
       festring dir;
 #ifdef LOCAL_SAVES
       dir << ivanconfig::GetMyDir() << "/save";
@@ -1151,7 +1151,7 @@ void character::Die (ccharacter *Killer, cfestring &Msg, feuLong DeathFlags) {
     }
     if (game::WizardModeIsActive()) {
       game::DrawEverything();
-      if (!game::TruthQuestion(CONST_S("Do you want to do this, cheater? [y/n]"), REQUIRES_ANSWER)) {
+      if (!game::TruthQuestion(CONST_S("Do you want to do this, cheater?"), REQUIRES_ANSWER)) {
         RestoreBodyParts();
         ResetSpoiling();
         RestoreHP();
@@ -2022,10 +2022,9 @@ void character::DeActivateVoluntaryAction (cfestring &Reason) {
   if (GetAction() && GetAction()->IsVoluntary()) {
     if (IsPlayer()) {
       if (Reason.GetSize()) ADD_MESSAGE("%s", Reason.CStr());
-      if (game::TruthQuestion(CONST_S("Continue ") + GetAction()->GetDescription()+"? [y/N]")) GetAction()->ActivateInDNDMode();
+      if (game::TruthQuestion(CONST_S("Continue ")+GetAction()->GetDescription()+"?")) GetAction()->ActivateInDNDMode();
       else GetAction()->Terminate(false);
-    }
-    else {
+    } else {
       GetAction()->Terminate(false);
     }
   }
@@ -2042,7 +2041,7 @@ void character::ActionAutoTermination () {
         if (ch->IsEnabled() && ch->CanBeSeenBy(this, false, true) && (ch->CanMove() || ch->GetPos().IsAdjacent(Pos)) && ch->CanAttack()) {
           if (IsPlayer()) {
             ADD_MESSAGE("%s seems to be hostile.", ch->CHAR_NAME(DEFINITE));
-            if (game::TruthQuestion(CONST_S("Continue ")+GetAction()->GetDescription()+"? [y/N]")) GetAction()->ActivateInDNDMode();
+            if (game::TruthQuestion(CONST_S("Continue ")+GetAction()->GetDescription()+"?")) GetAction()->ActivateInDNDMode();
             else GetAction()->Terminate(false);
           } else {
             GetAction()->Terminate(false);
@@ -4348,7 +4347,7 @@ character *character::ForceEndPolymorph () {
 
 void character::LycanthropyHandler () {
   if (!(RAND() % 2000)) {
-    if (StateIsActivated(POLYMORPH_CONTROL) && !game::TruthQuestion(CONST_S("Do you wish to change into a werewolf? [y/N]"))) return;
+    if (StateIsActivated(POLYMORPH_CONTROL) && !game::TruthQuestion(CONST_S("Do you wish to change into a werewolf?"))) return;
     Polymorph(werewolfwolf::Spawn(), 1000 + RAND() % 2000);
   }
 }
@@ -5765,7 +5764,7 @@ void character::SetBodyPart (int I, bodypart *What) {
 
 
 truth character::ConsumeItem (item *Item, cfestring &ConsumeVerb) {
-  if (IsPlayer() && HasHadBodyPart(Item) && !game::TruthQuestion(CONST_S("Are you sure? You may be able to put it back... [y/N]")))
+  if (IsPlayer() && HasHadBodyPart(Item) && !game::TruthQuestion(CONST_S("Are you sure? You may be able to put it back...")))
     return false;
   if (Item->IsOnGround() && GetRoom() && !GetRoom()->ConsumeItem(this, Item, 1))
     return false;

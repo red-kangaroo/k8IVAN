@@ -23,7 +23,7 @@ void scrollofchangematerial::FinishReading(character* Reader)
     }
 
     if (Item.empty()) {
-      if(game::TruthQuestion(CONST_S("Really cancel read? [y/N]"))) return;
+      if(game::TruthQuestion(CONST_S("Really cancel read?"))) return;
       continue;
     }
 
@@ -37,7 +37,7 @@ void scrollofchangematerial::FinishReading(character* Reader)
     {
       ADD_MESSAGE("Only one %s will be altered.", Item[0]->CHAR_NAME(UNARTICLED));
 
-      if(!game::TruthQuestion(CONST_S("Still continue? [y/N]")))
+      if(!game::TruthQuestion(CONST_S("Still continue?")))
   continue;
     }
 

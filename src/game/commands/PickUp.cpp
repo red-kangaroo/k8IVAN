@@ -17,7 +17,7 @@ COMMAND(PickUp) {
       if ((!PileVector[0][0]->GetRoom() || PileVector[0][0]->GetRoom()->PickupItem(Char, PileVector[0][0], Amount)) &&
           PileVector[0][0]->CheckPickUpEffect(Char)) {
         if (PileVector[0][0]->IsCorpse() && ivanconfig::GetConfirmCorpses()) {
-          //if (!game::TruthQuestion(CONST_S("Do you really want to pick up the corpse? [y/N]"))) return false;
+          //if (!game::TruthQuestion(CONST_S("Do you really want to pick up the corpse?"))) return false;
           itemvector ToPickup;
           game::DrawEverythingNoBlit();
           Char->GetStackUnder()->DrawContents(ToPickup, Char, CONST_S("Do you really want to pick up the corpse?"), REMEMBER_SELECTED);

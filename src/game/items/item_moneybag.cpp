@@ -32,7 +32,7 @@ truth moneybag::IsAppliable (ccharacter *beggar) const {
 
 truth moneybag::Apply (character *beggar) {
   if (!beggar->IsPlayer()) return false;
-  if (!game::TruthQuestion(CONST_S("Are you sure you want to open ")+GetName(DEFINITE)+"? [y/N]")) return false;
+  if (!game::TruthQuestion(CONST_S("Are you sure you want to open ")+GetName(DEFINITE)+"?")) return false;
   ADD_MESSAGE("You opens %s and found %i gold coins", CHAR_NAME(DEFINITE), moneyAmount);
   beggar->EditMoney(moneyAmount);
   RemoveFromSlot();

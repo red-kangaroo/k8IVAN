@@ -1,6 +1,6 @@
 COMMAND(WizardHeal) {
   /*
-  truth newbp = game::TruthQuestion(CONST_S("Do you want completely new body? [y/N]"));
+  truth newbp = game::TruthQuestion(CONST_S("Do you want completely new body?"));
   if (newbp) {
     dbp(Char, LEFT_ARM_INDEX);
     //dbp(Char, RIGHT_ARM_INDEX);

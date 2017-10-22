@@ -33,7 +33,7 @@ sLong wand::GetPrice() const { return Charges > TimesUsed ? item::GetPrice() : 0
 
 truth wand::Apply(character* Terrorist)
 {
-  if(Terrorist->IsPlayer() && !game::TruthQuestion(CONST_S("Are you sure you want to break ") + GetName(DEFINITE) + "? [y/N]"))
+  if(Terrorist->IsPlayer() && !game::TruthQuestion(CONST_S("Are you sure you want to break ") + GetName(DEFINITE) + "?"))
     return false;
 
   if(Terrorist->IsPlayer())
@@ -129,9 +129,9 @@ truth wand::Zap(character* Zapper, v2, int Direction)
 void wand::AddInventoryEntry (ccharacter*, festring& Entry, int, truth ShowSpecialInfo) const { // never piled
   AddName(Entry, INDEFINITE);
   if (ShowSpecialInfo) {
-    Entry << " [\1W" << GetWeight();
-    if (TimesUsed == 1) Entry << "g\2, used \1W1\2 time]";
-    else if (TimesUsed) Entry << "g\2, used \1W" << TimesUsed << "\2 times]";
+    Entry << " [\1C" << GetWeight();
+    if (TimesUsed == 1) Entry << "g\2, used \1C1\2 time]";
+    else if (TimesUsed) Entry << "g\2, used \1C" << TimesUsed << "\2 times]";
     else Entry << "g\2]";
   }
 }

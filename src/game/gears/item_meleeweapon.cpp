@@ -158,14 +158,14 @@ sLong meleeweapon::GetPrice () const {
 void meleeweapon::AddInventoryEntry (ccharacter *Viewer, festring &Entry, int, truth ShowSpecialInfo) const {
   AddName(Entry, INDEFINITE);
   if (ShowSpecialInfo) {
-    Entry << " [\1W" << GetWeight() << "g\2, DAM \1Y" << GetBaseMinDamage() << "\2-\1Y" << GetBaseMaxDamage() << "\2";
+    Entry << " [\1C" << GetWeight() << "g\2, DAM \1Y" << GetBaseMinDamage() << "\2-\1Y" << GetBaseMaxDamage() << "\2";
     Entry << ", " << GetBaseToHitValueDescription();
     if (!IsBroken() && !IsWhip()) Entry << ", " << GetStrengthValueDescription();
     //
     int CWeaponSkillLevel = Viewer->GetCWeaponSkillLevel(this);
     int SWeaponSkillLevel = Viewer->GetSWeaponSkillLevel(this);
     //
-    if (CWeaponSkillLevel || SWeaponSkillLevel) Entry << ", skill \1W" << CWeaponSkillLevel << '/' << SWeaponSkillLevel << "\2";
+    if (CWeaponSkillLevel || SWeaponSkillLevel) Entry << ", skill \1C" << CWeaponSkillLevel << '/' << SWeaponSkillLevel << "\2";
     Entry << ']';
   }
 }

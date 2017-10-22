@@ -34,7 +34,7 @@ void scrollofenchantarmor::FinishReading(character* Reader)
       {
   ADD_MESSAGE("Only one %s will be enchanted.", Item[0]->CHAR_NAME(UNARTICLED));
 
-  if(!game::TruthQuestion(CONST_S("Still continue? [y/N]")))
+  if(!game::TruthQuestion(CONST_S("Still continue?")))
     continue;
       }
 
@@ -58,7 +58,7 @@ void scrollofenchantarmor::FinishReading(character* Reader)
 
       break;
     }
-    else if(game::TruthQuestion(CONST_S("Really cancel read? [y/N]")))
+    else if(game::TruthQuestion(CONST_S("Really cancel read?")))
       return;
   }
 

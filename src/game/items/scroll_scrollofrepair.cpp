@@ -21,7 +21,7 @@ void scrollofrepair::FinishReading (character *Reader) {
     if (!Item.empty()) {
       if (Item[0]->HandleInPairs() && Item.size() == 1) {
         ADD_MESSAGE("Only one %s will be repaired.", Item[0]->CHAR_NAME(UNARTICLED));
-        if (!game::TruthQuestion(CONST_S("Still continue? [y/N]"))) continue;
+        if (!game::TruthQuestion(CONST_S("Still continue?"))) continue;
       }
       if (Item.size() == 1)
         ADD_MESSAGE("As you read the scroll, %s glows green and %s.", Item[0]->CHAR_NAME(DEFINITE), Item[0]->IsBroken() ? "fixes itself" : "its rust vanishes");
@@ -33,7 +33,7 @@ void scrollofrepair::FinishReading (character *Reader) {
       }
       break;
     } else {
-      if (game::TruthQuestion(CONST_S("Really cancel read? [y/N]"))) return;
+      if (game::TruthQuestion(CONST_S("Really cancel read?"))) return;
     }
   }
   RemoveFromSlot();

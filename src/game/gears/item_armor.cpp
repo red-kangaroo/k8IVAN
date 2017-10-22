@@ -63,7 +63,7 @@ void armor::AddInventoryEntry(ccharacter*, festring& Entry, int Amount, truth Sh
   }
 
   if(ShowSpecialInfo)
-    Entry << " [\1W" << GetWeight() * Amount << "g\2, AV \1Y" << GetStrengthValue() << "\2]";
+    Entry << " [\1C" << GetWeight() * Amount << "g\2, AV \1Y" << GetStrengthValue() << "\2]";
 }
 
 

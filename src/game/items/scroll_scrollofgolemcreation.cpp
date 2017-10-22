@@ -30,7 +30,7 @@ void scrollofgolemcreation::FinishReading (character* Reader) {
       }
 
       if (MainPossible && SecPossible) {
-        if (game::TruthQuestion(CONST_S("Use main material? [Y/n]"), YES)) SecPossible = false; else MainPossible = false;
+        if (game::TruthQuestion(CONST_S("Use main material?"), YES)) SecPossible = false; else MainPossible = false;
       }
 
       int MaterialConfig = MainPossible ? Main->GetConfig() : Sec->GetConfig();
@@ -55,7 +55,7 @@ void scrollofgolemcreation::FinishReading (character* Reader) {
         Golem->GetLSquareUnder()->DrawParticles(RED);
       }
       break;
-    } else if (game::TruthQuestion(CONST_S("Really cancel read? [y/N]"))) {
+    } else if (game::TruthQuestion(CONST_S("Really cancel read?"))) {
       return;
     }
   }

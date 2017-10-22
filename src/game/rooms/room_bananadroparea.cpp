@@ -24,7 +24,7 @@ truth bananadroparea::PickupItem (character *Hungry, item *Item, int) {
     if (!Item->IsBanana() && !Item->IsLanternOnWall()) return true;
     if (game::GetLiberator()) return true;
     ADD_MESSAGE("That would be stealing.");
-    if (game::TruthQuestion(CONST_S("Do you still want to do this? [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Do you still want to do this?"))) {
       Hungry->GetTeam()->Hostility(game::GetTeam(NEW_ATTNAM_TEAM));
       return true;
     }
@@ -35,7 +35,7 @@ truth bananadroparea::PickupItem (character *Hungry, item *Item, int) {
 
 truth bananadroparea::DropItem (character *Dropper, item *Item, int) {
   if (Dropper->IsPlayer() && (Item->IsMangoSeedling()) && game::GetTeam(NEW_ATTNAM_TEAM)->GetRelation(Dropper->GetTeam()) != HOSTILE) {
-    if (game::TruthQuestion(CONST_S("Do you wish to plant the mango seedling at this time? [y/N]")) && game::TweraifIsFree()) {
+    if (game::TruthQuestion(CONST_S("Do you wish to plant the mango seedling at this time?")) && game::TweraifIsFree()) {
       game::TextScreen(CONST_S(
         "You plant the seedling of the Holy Mango Tree in New Attnam.\n"
         "The people of your home village gather around you cheering! Tweraif is\n"
@@ -59,7 +59,7 @@ truth bananadroparea::DropItem (character *Dropper, item *Item, int) {
   //
   return (game::GetTeam(NEW_ATTNAM_TEAM)->GetRelation(Dropper->GetTeam()) == HOSTILE ||
     (Dropper->IsPlayer() && ((!Item->IsBanana() && !Item->IsLanternOnWall()) ||
-      game::TruthQuestion(CONST_S("Do you wish to donate this item to the town? [y/N]")))));
+      game::TruthQuestion(CONST_S("Do you wish to donate this item to the town?")))));
 }
 
 
@@ -83,7 +83,7 @@ truth bananadroparea::ConsumeItem (character *HungryMan, item *Item, int) {
     if (!Item->IsBanana() && !Item->IsLanternOnWall()) return true;
     if (game::GetLiberator()) return true;
     ADD_MESSAGE("Eating this is forbidden.");
-    if (game::TruthQuestion(CONST_S("Do you still want to do this? [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Do you still want to do this?"))) {
       HungryMan->GetTeam()->Hostility(game::GetTeam(NEW_ATTNAM_TEAM));
       return true;
     }

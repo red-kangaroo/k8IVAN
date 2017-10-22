@@ -32,13 +32,13 @@ COMMAND(Pray) {
   if (Select & FELIST_ERROR_BIT) return false;
   if (Char->GetLSquareUnder()->GetDivineMaster()) {
     if (!Select) {
-      if (game::TruthQuestion(CONST_S("Do you really wish to pray to ")+game::GetGod(Char->GetLSquareUnder()->GetDivineMaster())->GetName()+"? [y/N]"))
+      if (game::TruthQuestion(CONST_S("Do you really wish to pray to ")+game::GetGod(Char->GetLSquareUnder()->GetDivineMaster())->GetName()+"?"))
         game::GetGod(Char->GetLSquareUnder()->GetDivineMaster())->Pray();
       else
         return false;
     } else return false;
   } else {
-    if (game::TruthQuestion(CONST_S("Do you really wish to pray to ")+game::GetGod(Known[Select])->GetName()+"? [y/N]")) {
+    if (game::TruthQuestion(CONST_S("Do you really wish to pray to ")+game::GetGod(Known[Select])->GetName()+"?")) {
       if (Char->StateIsActivated(CONFUSED) && !(RAND() & 7)) {
         int Index;
         for (Index = 1+RAND()%GODS; Index == Known[Select]; Index = 1+RAND()%GODS);

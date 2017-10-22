@@ -49,16 +49,11 @@ void olterraincontainer::Load (inputfile &SaveFile) {
 
 truth olterraincontainer::Open (character *Opener) {
   if (!Opener->IsPlayer()) return false;
-  truth Success;
-  switch (game::KeyQuestion(CONST_S("Do you want to [T]ake something from or [P]ut something in this container?"), KEY_ESC, 5, 't', 'p', 'T', 'P', KEY_ESC)) {
-    case 't': case 'T':
-      Success = GetContained()->TakeSomethingFrom(Opener, GetName(DEFINITE));
-      break;
-    case 'p': case 'P':
-      Success = GetContained()->PutSomethingIn(Opener, GetName(DEFINITE), GetStorageVolume(), 0);
-      break;
-    default:
-      return false;
+  truth Success = false;
+  switch (game::KeyQuestion(CONST_S("Do you want to \1Gt\2ake something from or \1Gp\2ut something in this container?"), /*KEY_ESC*/REQUIRES_ANSWER, 5, 't', 'p', 'T', 'P', KEY_ESC)) {
+    case 't': case 'T': Success = GetContained()->TakeSomethingFrom(Opener, GetName(DEFINITE)); break;
+    case 'p': case 'P': Success = GetContained()->PutSomethingIn(Opener, GetName(DEFINITE), GetStorageVolume(), 0); break;
+    default: return false;
   }
   if (Success) Opener->DexterityAction(Opener->OpenMultiplier()*5);
   return Success;

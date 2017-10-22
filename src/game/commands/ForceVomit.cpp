@@ -8,7 +8,7 @@ COMMAND(ForceVomit) {
         if (Other && Other->GetTeam() != Char->GetTeam() &&
             Other->GetRelation(Char) != HOSTILE &&
             Other->CanBeSeenBy(Char) &&
-            !game::TruthQuestion("Do you really want to vomit at "+Other->GetObjectPronoun()+"? [y/N]")) return false;
+            !game::TruthQuestion("Do you really want to vomit at "+Other->GetObjectPronoun()+"?")) return false;
         ADD_MESSAGE("%s", Char->GetForceVomitMessage().CStr());
         Char->Vomit(Char->GetPos() + game::GetMoveVector(Dir), 500 + RAND() % 500, false);
         Char->EditAP(-1000);

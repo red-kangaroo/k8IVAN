@@ -33,7 +33,7 @@ void slave::BeTalkedTo()
     {
       ADD_MESSAGE("%s talks: \"Do you want to buy me? 50 gold pieces. I work very hard.\"", CHAR_DESCRIPTION(DEFINITE));
 
-      if(game::TruthQuestion(CONST_S("Do you want to buy him? [y/N]")))
+      if(game::TruthQuestion(CONST_S("Do you want to buy him?")))
       {
   PLAYER->SetMoney(PLAYER->GetMoney() - 50);
   Master->SetMoney(Master->GetMoney() + 50);

@@ -68,7 +68,7 @@ void necromancer::BeTalkedTo () {
   if (!game::GetXinrochTombStoryState()) {
     if (PLAYER->HasEncryptedScroll()) {
       ADD_MESSAGE("The necromancer looks up. \"Have you got the encrypted scroll?\"");
-      if (game::TruthQuestion(CONST_S("Will you give the encrypted scroll to the necromancer? [y/n]"), REQUIRES_ANSWER)) {
+      if (game::TruthQuestion(CONST_S("Will you give the encrypted scroll to the necromancer?"), REQUIRES_ANSWER)) {
         if (PLAYER->RemoveEncryptedScroll()) {
           game::TextScreen(CONST_S("The necromancer takes the scroll and mutters an incantation in a low voice.\n"
                                    "To your surprise, the words rearrange themselves on the page,\n"

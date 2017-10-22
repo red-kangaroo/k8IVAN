@@ -160,11 +160,11 @@ void petrus::BeTalkedTo () {
 
   if (PLAYER->HasGoldenEagleShirt()) {
     ADD_MESSAGE("Petrus smiles. \"Thou hast defeated Oree! Mayst thou be blessed by Valpurus for the rest of thy life! And thou possess the Shirt of the Golden Eagle, the symbol of Our status! Return it now, please.\"");
-    if (game::TruthQuestion(CONST_S("Will you give the Shirt of the Golden Eagle to Petrus? [y/n]"), REQUIRES_ANSWER)) {
+    if (game::TruthQuestion(CONST_S("Will you give the Shirt of the Golden Eagle to Petrus?"), REQUIRES_ANSWER)) {
       game::TextScreen(CONST_S(
         "The Holy Shirt is returned to its old owner and you kneel down to receive your reward.\n"
         "Petrus taps your shoulder with the Justifier and raises you to nobility."));
-      if (true || game::TruthQuestion(CONST_S("Do you want to become a duke? [y/n]"), REQUIRES_ANSWER)) {
+      if (true || game::TruthQuestion(CONST_S("Do you want to become a duke?"), REQUIRES_ANSWER)) {
         game::TextScreen(CONST_S(
           "Later you receive a small dukedom in the middle of tundra\n"
           "where you rule with justice till the end of your content life.\n\n"
@@ -195,7 +195,7 @@ void petrus::BeTalkedTo () {
     game::TextScreen(CONST_S(
       "You have slain Elpuri, and Petrus grants you the freedom you desire.\n"
       "You spend the next months in Attnam as an honored hero."));
-    if (true || game::TruthQuestion(CONST_S("Do you want to sail beyond the sunset? [y/n]"), REQUIRES_ANSWER)) {
+    if (true || game::TruthQuestion(CONST_S("Do you want to sail beyond the sunset?"), REQUIRES_ANSWER)) {
       game::TextScreen(CONST_S(
         "When the sea finally melts, you board the first ship,\n"
         "leaving your past forever behind.\n\n"

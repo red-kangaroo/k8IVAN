@@ -62,7 +62,7 @@ truth oillamp::Apply(character* Applier)
   {
     ADD_MESSAGE("You see a puff of smoke, and %s appears. \"For centuries I have been imprisoned in this lamp. But at last you have freed me! I am deeply grateful. You deserve a generous reward. I may serve you for 1001 nights or grant you a wish. It's your choice.\"", Genie->CHAR_NAME(INDEFINITE));
 
-    if(game::TruthQuestion(CONST_S("Do you want to wish? [Y/n]"), YES))
+    if(game::TruthQuestion(CONST_S("Do you want to wish?"), YES))
     {
       ADD_MESSAGE("You may wish for an item.");
       game::Wish(Applier,

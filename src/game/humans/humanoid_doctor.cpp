@@ -29,7 +29,7 @@ void doctor::BeTalkedTo () {
               ADD_MESSAGE("\"I no smart enough to put back bodyparts made of %s, especially not your severed %s.\"", OldBodyPart->GetMainMaterial()->GetName(false, false).CStr(), PLAYER->GetBodyPartName(c).CStr());
             } else {
               ADD_MESSAGE("\"I could put your old %s back in exchange for %d gold pieces, yes yes.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
-              if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+              if (game::TruthQuestion(CONST_S("Do you agree?"))) {
                 OldBodyPart->SetHP(1);
                 PLAYER->SetMoney(PLAYER->GetMoney()-Price);
                 SetMoney(GetMoney()+Price);
@@ -58,7 +58,7 @@ void doctor::BeTalkedTo () {
   // hand over 5 gold
   if (PLAYER->GetMoney() >= 5) {
     ADD_MESSAGE("\"I can surgically remove one of your limbs in exchange for 5 gold. Flat rate, genuine bargain!\"");
-    if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+    if (game::TruthQuestion(CONST_S("Do you agree?"))) {
       PLAYER->SetMoney(PLAYER->GetMoney()-5);
       SetMoney(GetMoney()+5);
       PLAYER->SurgicallyDetachBodyPart();
@@ -74,7 +74,7 @@ void doctor::BeTalkedTo () {
     sLong Price = GetAttribute(CHARISMA) < PLAYER->GetAttribute(CHARISMA) ? 5 : (GetAttribute(CHARISMA)-PLAYER->GetAttribute(CHARISMA));
     if (PLAYER->GetMoney() >= Price) {
       ADD_MESSAGE("\"You seem to be rather ill, yes yes. I give you small dose of antidote for %d gold pieces.\"", Price);
-      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Do you agree?"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(POISONED);
         PLAYER->SetMoney(PLAYER->GetMoney()-Price);
@@ -90,7 +90,7 @@ void doctor::BeTalkedTo () {
     sLong Price = GetAttribute(CHARISMA) < PLAYER->GetAttribute(CHARISMA) ? 5 : (GetAttribute(CHARISMA)-PLAYER->GetAttribute(CHARISMA));
     if (PLAYER->GetMoney() >= Price) {
       ADD_MESSAGE("\"You seem to have contracted vile disease of leprosy, yes yes. I can give you small dose of medicince for %d gold pieces.\"", Price);
-      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Do you agree?"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(LEPROSY);
         PLAYER->SetMoney(PLAYER->GetMoney()-Price);
@@ -106,7 +106,7 @@ void doctor::BeTalkedTo () {
     sLong Price = GetAttribute(CHARISMA) < PLAYER->GetAttribute(CHARISMA) ? 5 : (GetAttribute(CHARISMA)-PLAYER->GetAttribute(CHARISMA));
     if (PLAYER->GetMoney() >= Price) {
       ADD_MESSAGE("\"You seem to be turning into a werewolf quite frequently. Party must crush epidemic, special priority! If you wish to pay %dgp, I can remove the canine blood from your veins with acupucnture, yes yes.\"", Price);
-      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Do you agree?"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(LYCANTHROPY);
         PLAYER->SetMoney(PLAYER->GetMoney()-Price);
@@ -122,7 +122,7 @@ void doctor::BeTalkedTo () {
     sLong Price = GetAttribute(CHARISMA) < PLAYER->GetAttribute(CHARISMA) ? 5 : (GetAttribute(CHARISMA)-PLAYER->GetAttribute(CHARISMA));
     if (PLAYER->GetMoney() >= Price) {
       ADD_MESSAGE("\"You seem to have addiction to drinking blood. Party must crush epidemic, special priority! If you wish to pay %dgp, I can remove vampiric urges with acupucnture, yes yes.\"", Price);
-      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Do you agree?"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(VAMPIRISM);
         PLAYER->SetMoney(PLAYER->GetMoney()-Price);

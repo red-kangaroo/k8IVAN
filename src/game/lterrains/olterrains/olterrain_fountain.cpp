@@ -64,7 +64,7 @@ truth fountain::Drink (character *Drinker) {
     if (GetSecondaryMaterial()->GetConfig() == WATER) {
       room *Room = GetRoom();
       if (Room && Room->HasDrinkHandler() && !Room->Drink(Drinker)) return false;
-      if (!game::TruthQuestion(CONST_S("Do you want to drink from the fountain? [y/N]"))) return false;
+      if (!game::TruthQuestion(CONST_S("Do you want to drink from the fountain?"))) return false;
       Drinker->EditAP(-1000);
       switch (RAND()%12) {
         case 0:

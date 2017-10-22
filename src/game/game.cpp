@@ -666,10 +666,12 @@ cchar *game::Insult () {
 
 /* DefaultAnswer = REQUIRES_ANSWER the question requires an answer */
 truth game::TruthQuestion (cfestring &String, int DefaultAnswer, int OtherKeyForTrue) {
-  if (DefaultAnswer == NO) DefaultAnswer = 'n';
-  else if (DefaultAnswer == YES) DefaultAnswer = 'y';
-  else if (DefaultAnswer != REQUIRES_ANSWER) ABORT("Illegal TruthQuestion DefaultAnswer send!");
-  int FromKeyQuestion = KeyQuestion(String, DefaultAnswer, 9, 'y', 'Y', 'n', 'N', 't', 'T', 'o', 'O', OtherKeyForTrue);
+  festring xstr = String;
+       if (DefaultAnswer == NO) { DefaultAnswer = 'n'; xstr << " [\1Cy\2/\1RN\2]"; }
+  else if (DefaultAnswer == YES) { DefaultAnswer = 'y'; xstr << " [\1RY\2/\1Cn\2]"; }
+  else if (DefaultAnswer == REQUIRES_ANSWER) { xstr << " [\1Cy\2/\1Cn\2]"; }
+  else ABORT("Illegal TruthQuestion DefaultAnswer send!");
+  int FromKeyQuestion = KeyQuestion(/*String*/xstr, DefaultAnswer, 9, 'y', 'Y', 'n', 'N', 't', 'T', 'o', 'O', OtherKeyForTrue);
   return
     FromKeyQuestion == 'y' || FromKeyQuestion == 'Y' ||
     FromKeyQuestion == 't' || FromKeyQuestion == 'T' ||
@@ -1487,10 +1489,14 @@ void game::TextScreen (cfestring &Text, v2 Displacement, col16 Color, truth GKey
    Not surprisingly KeyNumber is the number of keys at ...
 */
 int game::KeyQuestion (cfestring &Message, int DefaultAnswer, int KeyNumber, ...) {
-  int *Key = new int[KeyNumber];
+  int keybuf[256];
+  int *Key = keybuf;
   va_list Arguments;
   va_start(Arguments, KeyNumber);
-  for (int c = 0; c < KeyNumber; ++c) Key[c] = va_arg(Arguments, int);
+  for (int c = 0; c < KeyNumber; ++c) {
+    if (c > 255) ABORT("Too many keys in `game::KeyQuestion()`");
+    Key[c] = va_arg(Arguments, int);
+  }
   va_end(Arguments);
   DrawEverythingNoBlit();
   FONT->Printf(DOUBLE_BUFFER, v2(16, 8), WHITE, "%s", Message.CStr());
@@ -1506,7 +1512,6 @@ int game::KeyQuestion (cfestring &Message, int DefaultAnswer, int KeyNumber, ...
     }
     if (!Return && DefaultAnswer != REQUIRES_ANSWER) Return = DefaultAnswer;
   }
-  delete [] Key;
   igraph::BlitBackGround(v2(16, 6), v2(GetScreenXSize()<<4, 23));
   return Return;
 }

@@ -50,7 +50,7 @@ void smith::BeTalkedTo()
 
     ADD_MESSAGE("\"I can fix your %s, but it'll cost you %d gold pieces.\"", Item->CHAR_NAME(UNARTICLED), FixPrice);
 
-    if(game::TruthQuestion(CONST_S("Do you accept this deal? [y/N]")))
+    if(game::TruthQuestion(CONST_S("Do you accept this deal?")))
     {
       Item->RemoveRust();
       Item->Fix();

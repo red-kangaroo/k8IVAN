@@ -812,7 +812,7 @@ truth arm::CheckIfWeaponTooHeavy(cchar* WeaponDescription) const
   if(!IsUsable())
   {
     ADD_MESSAGE("%s %s is not usable.", Master->CHAR_POSSESSIVE_PRONOUN, GetBodyPartName().CStr());
-    return !game::TruthQuestion(CONST_S("Continue anyway? [y/N]"));
+    return !game::TruthQuestion(CONST_S("Continue anyway?"));
   }
 
   int HitStrength = GetAttribute(ARM_STRENGTH);
@@ -825,16 +825,16 @@ truth arm::CheckIfWeaponTooHeavy(cchar* WeaponDescription) const
 
     if(HitStrength - Requirement < 10)
     {
-      if(HitStrength <= Requirement)
-  ADD_MESSAGE("%s cannot use %s. Wielding it with two hands requires %d strength.", Master->CHAR_DESCRIPTION(DEFINITE), WeaponDescription, (Requirement >> 1) + 1);
-      else if(HitStrength - Requirement < 4)
-  ADD_MESSAGE("Using %s even with two hands is extremely difficult for %s.", WeaponDescription, Master->CHAR_DESCRIPTION(DEFINITE));
-      else if(HitStrength - Requirement < 7)
-  ADD_MESSAGE("%s %s much trouble using %s even with two hands.", Master->CHAR_DESCRIPTION(DEFINITE), Master->IsPlayer() ? "have" : "has", WeaponDescription);
+      if (HitStrength <= Requirement)
+        ADD_MESSAGE("%s cannot use %s. Wielding it with two hands requires %d strength.", Master->CHAR_DESCRIPTION(DEFINITE), WeaponDescription, (Requirement >> 1) + 1);
+      else if (HitStrength - Requirement < 4)
+        ADD_MESSAGE("Using %s even with two hands is extremely difficult for %s.", WeaponDescription, Master->CHAR_DESCRIPTION(DEFINITE));
+      else if (HitStrength - Requirement < 7)
+        ADD_MESSAGE("%s %s much trouble using %s even with two hands.", Master->CHAR_DESCRIPTION(DEFINITE), Master->IsPlayer() ? "have" : "has", WeaponDescription);
       else
-  ADD_MESSAGE("It is somewhat difficult for %s to use %s even with two hands.", Master->CHAR_DESCRIPTION(DEFINITE), WeaponDescription);
+        ADD_MESSAGE("It is somewhat difficult for %s to use %s even with two hands.", Master->CHAR_DESCRIPTION(DEFINITE), WeaponDescription);
 
-      return !game::TruthQuestion(CONST_S("Continue anyway? [y/N]"));
+      return !game::TruthQuestion(CONST_S("Continue anyway?"));
     }
   }
   else
@@ -861,7 +861,7 @@ truth arm::CheckIfWeaponTooHeavy(cchar* WeaponDescription) const
       else
   ADD_MESSAGE("%sIt is somewhat difficult for %s to use %s%s.", OtherHandInfo.CStr(), Master->CHAR_DESCRIPTION(DEFINITE), WeaponDescription, HandInfo);
 
-      return !game::TruthQuestion(CONST_S("Continue anyway? [y/N]"));
+      return !game::TruthQuestion(CONST_S("Continue anyway?"));
     }
   }
 

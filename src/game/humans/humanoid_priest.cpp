@@ -28,7 +28,7 @@ void priest::BeTalkedTo () {
               ADD_MESSAGE("\"Sorry, I cannot put back bodyparts made of %s, not even your severed %s.\"", OldBodyPart->GetMainMaterial()->GetName(false, false).CStr(), PLAYER->GetBodyPartName(c).CStr());
             else {
               ADD_MESSAGE("\"I could put your old %s back in exchange for %d gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
-              if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+              if (game::TruthQuestion(CONST_S("Do you agree?"))) {
                 OldBodyPart->SetHP(1);
                 PLAYER->SetMoney(PLAYER->GetMoney()-Price);
                 SetMoney(GetMoney()+Price);
@@ -48,7 +48,7 @@ void priest::BeTalkedTo () {
           ADD_MESSAGE("\"I could still summon up a new one for %d gold.\"", Price);
         else
           ADD_MESSAGE("\"Since you don't seem to have your original %s with you, I could summon up a new one for %d gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
-        if (game::TruthQuestion(CONST_S("Agreed? [y/N]"))) {
+        if (game::TruthQuestion(CONST_S("Agreed?"))) {
           PLAYER->SetMoney(PLAYER->GetMoney()-Price);
           SetMoney(GetMoney()+Price);
           PLAYER->CreateBodyPart(c);
@@ -64,7 +64,7 @@ void priest::BeTalkedTo () {
     sLong Price = GetConfig() == VALPURUS ? 25 : 5;
     if (PLAYER->GetMoney() >= Price) {
       ADD_MESSAGE("\"You seem to be rather ill. I could give you a small dose of antidote for %d gold pieces.\"", Price);
-      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Do you agree?"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(POISONED);
         PLAYER->SetMoney(PLAYER->GetMoney()-Price);
@@ -79,7 +79,7 @@ void priest::BeTalkedTo () {
     sLong Price = GetConfig() == VALPURUS ? 100 : 20;
     if (PLAYER->GetMoney() >= Price) {
       ADD_MESSAGE("\"You seem to have contracted the vile disease of leprosy. I could give you a small dose of medicince for %d gold pieces.\"", Price);
-      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Do you agree?"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(LEPROSY);
         PLAYER->SetMoney(PLAYER->GetMoney()-Price);
@@ -94,7 +94,7 @@ void priest::BeTalkedTo () {
     sLong Price = GetConfig() == VALPURUS ? 100 : 20;
     if (PLAYER->GetMoney() >= Price) {
       ADD_MESSAGE("\"You seem to be turning into a werewolf quite frequently. Well, everyone has right to little secret habits, but if you wish to donate %dgp to %s, maybe I could pray %s to remove the canine blood from your veins, just so you don't scare our blessed youth.\"", Price, GetMasterGod()->GetName(), GetMasterGod()->GetObjectPronoun());
-      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Do you agree?"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(LYCANTHROPY);
         PLAYER->SetMoney(PLAYER->GetMoney()-Price);
@@ -109,7 +109,7 @@ void priest::BeTalkedTo () {
     sLong Price = GetConfig() == VALPURUS ? 100 : 20;
     if (PLAYER->GetMoney() >= Price) {
       ADD_MESSAGE("\"You seem to have an addiction to drinking blood. Well, everyone has right to little secret habits, but if you wish to donate %dgp to %s, maybe I could pray %s to remove your vampiric urges, just so you don't victimize our besotted youth.\"", Price, GetMasterGod()->GetName(), GetMasterGod()->GetObjectPronoun());
-      if (game::TruthQuestion(CONST_S("Do you agree? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Do you agree?"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(VAMPIRISM);
         PLAYER->SetMoney(PLAYER->GetMoney()-Price);

@@ -224,9 +224,7 @@ truth beartrap::Apply(character* User)
     return false;
   }
 
-  if(User->IsPlayer()
-     && !game::TruthQuestion(CONST_S("Are you sure you want to plant ") + GetName(DEFINITE) + "? [y/N]"))
-    return false;
+  if(User->IsPlayer() && !game::TruthQuestion(CONST_S("Are you sure you want to plant ") + GetName(DEFINITE) + "?")) return false;
 
   room* Room = GetRoom();
 

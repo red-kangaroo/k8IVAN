@@ -582,7 +582,7 @@ void item::AddInventoryEntry(ccharacter*, festring& Entry, int Amount, truth Sho
   }
 
   if(ShowSpecialInfo)
-    Entry << " [\1W" << GetWeight() * Amount << "g\2]";
+    Entry << " [\1C" << GetWeight() * Amount << "g\2]";
 }
 
 const itemdatabase* itemprototype::ChooseBaseForConfig(itemdatabase** TempConfig, int Configs, int ConfigNumber)

@@ -85,7 +85,7 @@ truth shop::PickupItem (character *Customer, item *ForSale, int Amount) {
       } else {
         ADD_MESSAGE("\"Ah! Those %d %s cost %d gold pieces. No haggling, please.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
       }
-      if (game::TruthQuestion(CONST_S("Do you accept this deal? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Do you accept this deal?"))) {
         Customer->EditMoney(-Price);
         GetMaster()->EditMoney(+Price);
         Customer->EditDealExperience(Price);
@@ -101,7 +101,7 @@ truth shop::PickupItem (character *Customer, item *ForSale, int Amount) {
       return false;
     }
   }
-  if (game::TruthQuestion(CONST_S("Are you sure you want to commit this thievery? [y/N]"))) {
+  if (game::TruthQuestion(CONST_S("Are you sure you want to commit this thievery?"))) {
     Customer->Hostility(GetMaster());
     return true;
   }
@@ -166,7 +166,7 @@ truth shop::DropItem (character *Customer, item *ForSale, int Amount) {
     }
     //
     if (ForSale->IsMoneyBag()) {
-      if (!game::TruthQuestion(CONST_S("Do you want to give it to the shopkeeper? [y/N]"))) return false;
+      if (!game::TruthQuestion(CONST_S("Do you want to give it to the shopkeeper?"))) return false;
       ADD_MESSAGE("You gives %s to the shopkeeper.", ForSale->GetName(INDEFINITE, Amount).CStr());
       GetMaster()->EditMoney(Price);
       return true;
@@ -176,7 +176,7 @@ truth shop::DropItem (character *Customer, item *ForSale, int Amount) {
       if (GetMaster()->GetMoney() < Price) Price = GetMaster()->GetMoney();
       if (Amount == 1) ADD_MESSAGE("\"What a fine %s. I'll pay %d gold pieces for it.\"", ForSale->CHAR_NAME(UNARTICLED), Price);
       else ADD_MESSAGE("\"What a fine pile of %d %s. I'll pay %d gold pieces for them.\"", Amount, ForSale->CHAR_NAME(PLURAL), Price);
-      if (game::TruthQuestion(CONST_S("Do you accept this deal? [y/N]"))) {
+      if (game::TruthQuestion(CONST_S("Do you accept this deal?"))) {
         Customer->SetMoney(Customer->GetMoney() + Price);
         GetMaster()->SetMoney(GetMaster()->GetMoney() - Price);
         Customer->EditDealExperience(Price);
@@ -188,7 +188,7 @@ truth shop::DropItem (character *Customer, item *ForSale, int Amount) {
     return false;
   }
   ADD_MESSAGE("The shopkeeper doesn't see you, so you cannot trade with him.");
-  return game::TruthQuestion(CONST_S("Still drop ")+(Amount == 1 ? "this item" : "these items")+"? [y/N]");
+  return game::TruthQuestion(CONST_S("Still drop ")+(Amount == 1 ? "this item" : "these items")+"?");
 }
 
 
@@ -207,7 +207,7 @@ truth shop::ConsumeItem (character *Customer, item *, int) {
     ADD_MESSAGE("\"Buy that first, please.\"");
     return false;
   }
-  if (game::TruthQuestion(CONST_S("It's illegal to eat property of others. Are you sure you sure? [y/N]"))) {
+  if (game::TruthQuestion(CONST_S("It's illegal to eat property of others. Are you sure you sure?"))) {
     Customer->Hostility(GetMaster());
     return true;
   }

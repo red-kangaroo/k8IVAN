@@ -12,7 +12,7 @@ COMMAND(Drop) {
     if (ToDrop.empty()) break;
     if (game::IsInWilderness()) {
       for (uInt c = 0; c < ToDrop.size(); ++c) {
-        if (game::TruthQuestion(CONST_S("Are you sure? You will never see ")+ToDrop[c]->CHAR_NAME(DEFINITE)+" again! [y/N]")) {
+        if (game::TruthQuestion(CONST_S("Are you sure? You will never see ")+ToDrop[c]->CHAR_NAME(DEFINITE)+" again!")) {
           ADD_MESSAGE("You drop %s.", ToDrop[c]->CHAR_NAME(DEFINITE));
           ToDrop[c]->RemoveFromSlot();
           ToDrop[c]->SendToHell();

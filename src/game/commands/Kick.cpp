@@ -12,7 +12,7 @@ COMMAND(Kick) {
   if (!Square->CheckKick(Char)) return false;
   character *Enemy = Square->GetCharacter();
   if (Enemy && !(Enemy->IsMasochist() && Char->GetRelation(Enemy) == FRIEND) && Char->GetRelation(Enemy) != HOSTILE) {
-    if (!game::TruthQuestion(CONST_S("This might cause a hostile reaction. Are you sure? [y/N]"))) return false;
+    if (!game::TruthQuestion(CONST_S("This might cause a hostile reaction. Are you sure?"))) return false;
   }
   game::ClearEventData();
   game::mActor = Square->GetCharacter();
