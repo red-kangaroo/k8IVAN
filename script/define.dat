@@ -1292,13 +1292,18 @@
 #define HEART_SHAPED_LOCK (S_LOCK_ID + LOCK_DELTA * 3)
 #define PENTAGONAL_LOCK (S_LOCK_ID + LOCK_DELTA * 4)
 
-#define DESERT 1
-#define JUNGLE 2
-#define STEPPE 3
-#define LEAFY_FOREST 4
-#define EVERGREEN_FOREST 5
-#define TUNDRA 6
-#define GLACIER 7
+#enum {
+  DESERT = 1,
+  JUNGLE,
+  STEPPE,
+  LEAFY_FOREST,
+  EVERGREEN_FOREST,
+  TUNDRA,
+  GLACIER,
+  // not used for explicit terrain generation in engine code, but we need those for "owterra.dat"
+  GW_OCEAN, // ocean
+  GW_SNOW, // snow
+}
 
 #define NO_MOVE 0
 #define WALK 1

@@ -1,0 +1,91 @@
+/* this will be the script to control WorldMap Place spawning */
+/* does absolutely nothing for now */
+
+
+/* a possible config for spawning */
+/*
+WorldMapPlace alienvessel;
+{
+  Dungeon = ALIEN_VESSEL;
+  Area == jungle; // ocean; snow; glacier; evergreenforest; leafyforest; steppe; desert; jungle;
+  Hidden = false;
+  Enabled = true;
+}
+
+need two more consts:
+GW_OCEAN, // ocean
+GW_SNOW, // snow
+*/
+
+
+/******************************************************************************/
+/* or from comm. fork                                                         */
+/******************************************************************************/
+/* Numerical owterrain data loaded during game startup */
+
+/* Default values: */
+
+owterrain
+{
+  /* Obligatory: BitmapPos */
+  NameStem = "";
+  IsAbstract = true; /* This is false by default and does not inherit! */
+  UsesLongArticle = false;
+  AttachedArea = 0;
+  CanBeGenerated = false; // "Enabled"
+  NativeGTerrainType = 0;
+  RevealEnvironmentInitially = false; /* Overridden by the world map generator for core locations (Hidden) */
+  HideLocationInitially = false; /* Overridden by the world map generator for core locations */
+  CanBeOnAnyTerrain = false; /* Overridden by the world map generator for core locations */
+}
+
+attnam
+{
+  BitmapPos = 0, 48;
+  NameStem = "mighty cathedral reaching the clouds";
+  UsesLongArticle = false;
+  AttachedDungeon = ATTNAM;
+  CanBeGenerated = false; /* Overridden by the world map generator */
+  NativeGTerrainType = EVERGREEN_FOREST;
+}
+
+elpuricave
+{
+  BitmapPos = 16, 48;
+  NameStem = "hideous cave entry radiating pure evil";
+  UsesLongArticle = false;
+  AttachedDungeon = ELPURI_CAVE;
+  CanBeGenerated = false; /* Overridden by the world map generator */
+  NativeGTerrainType = TUNDRA;
+}
+
+newattnam
+{
+  BitmapPos = 16, 64;
+  NameStem = "primitive village";
+  UsesLongArticle = false;
+  AttachedDungeon = NEW_ATTNAM;
+  CanBeGenerated = false; /* Overridden by the world map generator */
+  NativeGTerrainType = JUNGLE;
+}
+
+underwatertunnel
+{
+  BitmapPos = 32, 64;
+  NameStem = "entrance to an underwater tunnel";
+  UsesLongArticle = true;
+  AttachedDungeon = UNDER_WATER_TUNNEL;
+  CanBeGenerated = false; /* Overridden by the world map generator */
+  NativeGTerrainType = JUNGLE;
+}
+
+underwatertunnelexit
+{
+  BitmapPos = 32, 64;
+  NameStem = "exit from an underwater tunnel";
+  UsesLongArticle = true;
+  AttachedDungeon = UNDER_WATER_TUNNEL;
+  AttachedArea = 2; /*underwater tunnel level 3*/
+  CanBeGenerated = false; /* Overridden by the world map generator */
+  NativeGTerrainType = JUNGLE;
+}
