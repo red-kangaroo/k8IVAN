@@ -54,7 +54,8 @@ wristblades /* meleeweapon-> */
   WeaponCategory = UNARMED;
   DefaultMainVolume = 35;
   DefaultSecondaryVolume = 25;
-  BitmapPos = 64, 352;
+  //BitmapPos = 64, 352;
+  BitmapPos = 104, 240;
   FormModifier = 200;
   StrengthModifier = 150;
   NameSingular = "Wrist Blades";

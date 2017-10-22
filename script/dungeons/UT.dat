@@ -206,6 +206,7 @@ Dungeon UNDER_WATER_TUNNEL;
           endif
         ];
         //Items == meleeweapon(CLAW);
+        //Items == wristblades;
       }
       //Square, Pos 2,3; { Items = { 3, moneybag, BONE bone, OMMEL_BONE bone; } }
     }

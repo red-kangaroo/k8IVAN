@@ -54,7 +54,8 @@ aliendog
   CWeaponSkillHits == 100;
   NameSingular = "alien dog";
   UsesLongArticle = true;
-  TorsoBitmapPos = 304, 16;
+  //TorsoBitmapPos = 304, 16;
+  TorsoBitmapPos = 600, 0;
   SkinColor = rgb16(72, 86, 90);
   AttachedGod = NONE;
   HostileReplies == "@Dd spit acid saliva.";
@@ -87,7 +88,8 @@ alienqueen
   CWeaponSkillHits == 100;
   NameSingular = "alien Queen";
   ArticleMode = FORCE_THE;
-  TorsoBitmapPos = 288, 64;
+  //TorsoBitmapPos = 288, 64;
+  TorsoBitmapPos = 288, 128;
   SkinColor = rgb16(82, 90, 98);
   AttachedGod = NONE;
   HostileReplies == "@Dd spit acid saliva.";
