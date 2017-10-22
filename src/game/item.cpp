@@ -440,10 +440,12 @@ void item::Initialize (int NewConfig, int SpecialFlags) {
 truth item::ShowMaterial () const {
   if (GetMainMaterialConfig().Size == 1) return GetMainMaterial()->GetConfig() != GetMainMaterialConfig()[0];
   //FIXME: gum solution
-  if (isBone()) {
+  /*
+  if (IsABone()) {
     // never show the material for 'bone bone'
     if (GetMainMaterial()->GetConfig() == BONE) return false;
   }
+  */
   return true;
 }
 

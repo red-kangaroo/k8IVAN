@@ -93,7 +93,7 @@ struct itemdatabase : public databasebase
   truth AllowRandomInstantiation() const;
   void PostProcess() { }
 
-  inline truth isBone () const { return NameSingular == "bone"; } // gum solution
+  //virtual truth IsABone () const { return NameSingular == "bone"; } // gum solution
 
   const prototype* ProtoType;
   /* Maintained by configcontainer */
@@ -627,6 +627,8 @@ class item : public object
   virtual truth IsGorovitsFamilyRelic() const { return false; }
   virtual truth IsBananaPeel() const { return false; }
   virtual truth IsLanternOnWall() const { return false; }
+  virtual truth IsABone () const { return false; }
+  virtual truth IsASkull () const { return false; }
 
   //FIXME:k8: are there such functions already? can we use RTTI?
   virtual truth IsCorpse () const { return false; }

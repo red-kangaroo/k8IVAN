@@ -108,7 +108,9 @@ protected:
   virtual int GetWobbleData () const { return 0; }
   truth RandomizeSparklePos (v2 &, v2, int &, feuLong, int, int) const;
 
-  virtual truth isBone () const { return false; }
+//public:
+  //virtual truth IsABone () const { return false; }
+  //virtual truth IsASkull () const { return false; }
 
 protected:
   festring mDefFile;

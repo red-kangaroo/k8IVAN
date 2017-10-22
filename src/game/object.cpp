@@ -301,7 +301,7 @@ truth object::AddRustLevelDescription (festring &String, truth Articled) const {
 
 truth object::AddMaterialDescription (festring &String, truth Articled) const {
   //FIXME: gum solution
-  if (isBone()) {
+  /*if (IsABone()) {
     //FIXME: 'bone bone' removing
     festring s(MainMaterial->GetName(Articled));
     festring::sizetype pos = s.FindLast("bone");
@@ -312,7 +312,7 @@ truth object::AddMaterialDescription (festring &String, truth Articled) const {
       if (s.GetSize() == 0) return true; // no name left
     }
     String << s;
-  } else {
+  } else*/ {
     MainMaterial->AddName(String, Articled);
   }
   String << ' ';
