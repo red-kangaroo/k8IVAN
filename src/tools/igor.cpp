@@ -39,7 +39,7 @@ int Main (int, char **) {
   OConfigFile.close();
 
   graphics::Init();
-  graphics::SetMode("IGOR 1.203", 0, v2(800, 600), false);
+  graphics::SetMode("IGOR 1.203", 0, v2(800, 600), false, 5);
   graphics::LoadDefaultFont(Directory+"Font.pcx");
   DOUBLE_BUFFER->ClearToColor(0);
 
