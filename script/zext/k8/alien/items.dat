@@ -1,0 +1,38 @@
+Extend meleeweapon
+{
+  Config CLAW;
+  {
+    DefaultSize = 45;
+    Possibility = 150;
+    WeaponCategory = UNARMED;
+    DefaultMainVolume = 35;
+    DefaultSecondaryVolume = 25;
+    //BitmapPos = 64, 352;
+    BitmapPos = 128, 208;
+    FormModifier = 80;
+    StrengthModifier = 75;
+    NameSingular = "claw";
+    MainMaterialConfig = { 5, IRON, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_TOOTH; }
+    SecondaryMaterialConfig = { 5, IRON, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_TOOTH; }
+    MaterialConfigChances = { 5, 1000, 100, 25, 25, 5; }
+    Roundness = 15;
+    AttachedGod = CLEPTIA;
+    //WieldedBitmapPos = 160, 368;
+    WieldedBitmapPos = 160, 384;
+    EnchantmentPlusChance = 20;
+    DamageFlags = SLASH|PIERCE;
+  }
+
+  Config BROKEN|CLAW;
+  {
+    Possibility = 25;
+    //BitmapPos = 80, 352;
+    BitmapPos = 128, 224;
+    //WieldedBitmapPos = 176, 368;
+    WieldedBitmapPos = 176, 384;
+    MainMaterialConfig = { 4, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    SecondaryMaterialConfig = { 4, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    MaterialConfigChances = { 4, 250, 25, 25, 5; }
+    EnchantmentPlusChance = 40;
+  }
+}

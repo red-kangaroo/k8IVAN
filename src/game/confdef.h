@@ -286,7 +286,9 @@ enum {
   TIP_SWORD,
   KNUCKLE,
   RAPIER,
-  GREAT_AXE
+  GREAT_AXE,
+  GRAND_STOLLEN_KNIFE,
+  CLAW,
 };
 
 
