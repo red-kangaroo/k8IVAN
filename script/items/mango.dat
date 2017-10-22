@@ -2,7 +2,8 @@ mango
 {
   WeaponCategory = BLUNT_WEAPONS;
   DefaultSize = 20;
-  Possibility = 0;
+  //Possibility = 0;
+  Possibility = 250;
   Category = FOOD;
   DefaultMainVolume = 250;
   StrengthModifier = 100;
