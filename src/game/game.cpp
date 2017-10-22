@@ -1553,13 +1553,13 @@ v2 game::NameKeyHandler (v2 CursorPos, int Key) {
 
 
 void game::End (festring DeathMessage, truth Permanently, truth AndGoToMenu) {
+  if (!Permanently || WizardModeIsReallyActive()) game::Save();
   pool::AbortBe();
   globalwindowhandler::DeInstallControlLoop(AnimationController);
   SetIsRunning(false);
   if (Permanently || !WizardModeIsReallyActive()) RemoveSaves(Permanently);
   if (Permanently && !WizardModeIsReallyActive()) {
     highscore HScore;
-    //
     if (HScore.LastAddFailed()) {
       iosystem::TextScreen(CONST_S("You didn't manage to get onto the high score list.\n\n\n\n")+GetPlayerName()+", "+DeathMessage+"\nRIP");
     } else {
