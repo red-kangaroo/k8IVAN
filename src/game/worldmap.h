@@ -29,6 +29,15 @@ typedef std::vector<character *> charactervector;
 typedef owterrain *(*PlaceSpawner) ();
 
 
+struct WorldMapPlace {
+  owterrain *terra;
+  int type;
+  int dungeon;
+  PlaceSpawner spawner;
+  truth allowSpawn;
+};
+
+
 class worldmap : public area {
 public:
   worldmap (int, int);
@@ -63,7 +72,7 @@ public:
   wsquare ***GetMap () const { return Map; }
   void UpdateLOS ();
 
-  static void RegisterPlace (owterrain *, cint ttype, cint didx, PlaceSpawner spawner);
+  static void RegisterPlace (owterrain *, cint ttype, cint didx, PlaceSpawner aspawner, truth aAllowSpawn=true);
 
 protected:
   wsquare ***Map;
@@ -79,12 +88,8 @@ protected:
   std::vector<truth> PlaceRevealed;
   std::vector<continent *> PlaceContinent;
   //
-  static std::vector<owterrain *> Places;
-  static std::vector<int> PlaceTypes;
-  static std::vector<int> PlaceDungeons;
-  static std::vector<PlaceSpawner> PlaceSpawners;
+  static std::vector<WorldMapPlace> Places;
 };
-
 
 outputfile &operator << (outputfile &, const worldmap *);
 inputfile &operator >> (inputfile &, worldmap *&);

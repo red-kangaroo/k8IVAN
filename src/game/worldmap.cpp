@@ -25,10 +25,7 @@ static const int DirX[8] = { -1, -1, -1, 0, 0, 1, 1, 1 };
 static const int DirY[8] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
 
-std::vector<owterrain *> worldmap::Places;
-std::vector<int> worldmap::PlaceTypes;
-std::vector<int> worldmap::PlaceDungeons;
-std::vector<PlaceSpawner> worldmap::PlaceSpawners;
+std::vector<WorldMapPlace> worldmap::Places;
 
 worldmap::worldmap () {}
 continent *worldmap::GetContinentUnder (v2 Pos) const { return Continent[ContinentBuffer[Pos.X][Pos.Y]]; }
@@ -130,11 +127,11 @@ void worldmap::Generate () {
     //
     // find places for attnam
     for (unsigned int f = 0; f < Places.size(); ++f) {
-      if (Places[f]->IsAttnam()) {
+      if (Places[f].terra->IsAttnam()) {
         for (uInt c = 1; c < Continent.size(); ++c) {
-          if (Places[f]->IsSuitableContinent(Continent[c])) PerfectForAttnam.push_back(Continent[c]);
+          if (Places[f].terra->IsSuitableContinent(Continent[c])) PerfectForAttnam.push_back(Continent[c]);
         }
-      } else if (Places[f]->WantPetrusContinent()) {
+      } else if (Places[f].terra->WantPetrusContinent()) {
         ++nearPetrusCount;
       }
     }
@@ -146,7 +143,7 @@ void worldmap::Generate () {
       //
       PetrusLikes = PerfectForAttnam[pno];
       for (unsigned int f = 0; f < Places.size(); ++f) {
-        if (!Places[f]->IsAttnam() && Places[f]->WantPetrusContinent() && Places[f]->IsSuitableContinent(PetrusLikes)) {
+        if (!Places[f].terra->IsAttnam() && Places[f].terra->WantPetrusContinent() && Places[f].terra->IsSuitableContinent(PetrusLikes)) {
           ++nphit;
         }
       }
@@ -162,7 +159,7 @@ void worldmap::Generate () {
     //v2 DragonTowerPos, DarkForestPos, XinrochTombPos;
     truth Correct = false;
     for (unsigned int f = 0; f < Places.size(); ++f) {
-      if (Places[f]->IsAttnam() || Places[f]->WantPetrusContinent()) PlacePosition[f] = ERROR_V2;
+      if (Places[f].terra->IsAttnam() || Places[f].terra->WantPetrusContinent()) PlacePosition[f] = ERROR_V2;
     }
     //
     for (int c1 = 0; c1 < 25; ++c1) {
@@ -170,9 +167,9 @@ void worldmap::Generate () {
       //
       //PetrusLikes = PerfectForAttnam[RAND() % PerfectForAttnam.size()];
       for (unsigned int f = 0; f < Places.size(); ++f) {
-        if (Places[f]->IsAttnam() || Places[f]->WantPetrusContinent()) {
+        if (Places[f].terra->IsAttnam() || Places[f].terra->WantPetrusContinent()) {
           truth success = false;
-          PlacePosition[f] = PetrusLikes->GetRandomMember(PlaceTypes[f], &success);
+          PlacePosition[f] = PetrusLikes->GetRandomMember(Places[f].type, &success);
           if (!success) goto allagain; //FIXME: memory leak
         }
       }
@@ -268,19 +265,19 @@ void worldmap::Generate () {
     //
     // tunnel entry, tunnel exit and New Attnam are ok, spawn
     for (unsigned int f = 0; f < Places.size(); ++f) {
-      switch (PlaceDungeons[f]) {
+      switch (Places[f].dungeon) {
         case NEW_ATTNAM:
-          GetWSquare(NewAttnamPos)->ChangeOWTerrain(PlaceSpawners[f]());
+          GetWSquare(NewAttnamPos)->ChangeOWTerrain(Places[f].spawner());
           SetEntryPos(NEW_ATTNAM, NewAttnamPos);
           PlacePosition[f] = NewAttnamPos;
           break;
         case UNDER_WATER_TUNNEL:
-          GetWSquare(TunnelEntry)->ChangeOWTerrain(PlaceSpawners[f]());
+          GetWSquare(TunnelEntry)->ChangeOWTerrain(Places[f].spawner());
           SetEntryPos(UNDER_WATER_TUNNEL, TunnelEntry);
           PlacePosition[f] = TunnelEntry;
           break;
         case UNDER_WATER_TUNNEL_EXIT:
-          GetWSquare(TunnelExit)->ChangeOWTerrain(PlaceSpawners[f]());
+          GetWSquare(TunnelExit)->ChangeOWTerrain(Places[f].spawner());
           SetEntryPos(UNDER_WATER_TUNNEL_EXIT, TunnelExit);
           PlacePosition[f] = TunnelExit;
           break;
@@ -288,10 +285,10 @@ void worldmap::Generate () {
     }
     // spawn others
     for (unsigned int f = 0; f < Places.size(); ++f) {
-      if (!Places[f]->IsAttnam() && !Places[f]->WantPetrusContinent()) continue;
-      if (!Places[f]->IsHidden()) GetWSquare(PlacePosition[f])->ChangeOWTerrain(PlaceSpawners[f]());
-      SetEntryPos(PlaceDungeons[f], PlacePosition[f]);
-      if (Places[f]->IsRevealed()) RevealEnvironment(PlacePosition[f], 1);
+      if (!Places[f].terra->IsAttnam() && !Places[f].terra->WantPetrusContinent()) continue;
+      if (!Places[f].terra->IsHidden()) GetWSquare(PlacePosition[f])->ChangeOWTerrain(Places[f].spawner());
+      SetEntryPos(Places[f].dungeon, PlacePosition[f]);
+      if (Places[f].terra->IsRevealed()) RevealEnvironment(PlacePosition[f], 1);
     }
     //
     PLAYER->PutTo(NewAttnamPos);
@@ -589,10 +586,12 @@ void worldmap::UpdateLOS () {
 }
 
 
-void worldmap::RegisterPlace (owterrain *plc, cint ttype, cint didx, PlaceSpawner spawner) {
-  Places.push_back(plc);
-  PlaceTypes.push_back(ttype);
-  PlaceDungeons.push_back(didx);
-  PlaceSpawners.push_back(spawner);
+void worldmap::RegisterPlace (owterrain *plc, cint ttype, cint didx, PlaceSpawner aspawner, truth aAllowSpawn) {
+  WorldMapPlace wmplace;
+  wmplace.terra = plc;
+  wmplace.type = ttype;
+  wmplace.dungeon = didx;
+  wmplace.spawner = aspawner;
+  wmplace.allowSpawn = aAllowSpawn;
+  Places.push_back(wmplace);
 }
-
