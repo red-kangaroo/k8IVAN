@@ -43,6 +43,15 @@ public:
   static void createTexture ();
 #endif
 
+  static void gotoXY (int cx, int cy, truth doshow=true);
+  static bool isCursorVisible ();
+  static void showCursor ();
+  static void hideCursor ();
+
+  static void pushCursor ();
+  static void pushCursor (int cx, int cy, truth doshow=true);
+  static void popCursor ();
+
 private:
   static void (*SwitchModeHandler)();
   static SDL_Surface *Screen;

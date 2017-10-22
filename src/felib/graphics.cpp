@@ -46,6 +46,19 @@ v2 graphics::Res;
 int graphics::ColorDepth;
 rawbitmap *graphics::DefaultFont = 0;
 
+
+struct CurState {
+  int curx, cury, curvisible;
+  CurState () { curx = cury = -666; curvisible = 0; }
+  CurState (int cx, int cy) { curx = cx; cury = cy; curvisible = 0; }
+};
+
+
+static CurState curstate = CurState(-666, -666);
+static CurState curstatebuf[256];
+static int curstatebufused = 0;
+
+
 static truth dblRes = false;
 static truth origDblRes = false;
 static uint8_t *bufc32 = 0;
@@ -160,6 +173,9 @@ void graphics::DeInit () {
 
 
 void graphics::SetMode (cchar *Title, cchar *IconName, v2 NewRes, truth FullScreen, sLong adresmod) {
+  //curstate = CurState(-666, -666);
+  //curstatebufused = 0;
+
   if (IconName) {
     SDL_Surface *Icon = SDL_LoadBMP(IconName);
     SDL_SetColorKey(Icon, SDL_SRCCOLORKEY, SDL_MapRGB(Icon->format, 255, 255, 255));
@@ -228,6 +244,36 @@ static inline packcol16 fromRGB (int r, int g, int b) {
 #endif
 
 
+void graphics::gotoXY (int cx, int cy, truth doshow) {
+  curstate.curx = cx;
+  curstate.cury = cy;
+  if (doshow) ++curstate.curvisible;
+}
+
+
+bool graphics::isCursorVisible () { return (curstate.curvisible > 0); }
+void graphics::showCursor () { ++curstate.curvisible; }
+void graphics::hideCursor () { --curstate.curvisible; }
+
+
+void graphics::pushCursor () {
+  if (curstatebufused >= 255) ABORT("Too many cursor pushes.");
+  curstatebuf[curstatebufused] = curstate;
+  ++curstatebufused;
+}
+
+void graphics::pushCursor (int cx, int cy, truth doshow) {
+  pushCursor();
+  gotoXY(cx, cy, doshow);
+}
+
+void graphics::popCursor () {
+  if (curstatebufused == 0) ABORT("Cursor stack underflow.");
+  --curstatebufused;
+  curstate = curstatebuf[curstatebufused];
+}
+
+
 void graphics::BlitDBToScreen () {
   const packcol16 *SrcPtr = DoubleBuffer->GetImage()[0];
   const int newx = fixVal(Res.X);
@@ -243,6 +289,16 @@ void graphics::BlitDBToScreen () {
       unsigned char g = ((c>>5)<<2)&0xff;
       unsigned char r = ((c>>11)<<3)&0xff;
       *dptr++ = b|(g<<8)|(r<<16);
+    }
+  }
+
+  if (curstate.curvisible > 0 && curstate.curx >= -7 && curstate.cury >= 0 && curstate.curx+8 <= Res.X && curstate.cury < Res.Y) {
+    truth curhi = (SDL_GetTicks()%1200 < 600);
+    dptr = (uint32_t*)bufc32;
+    dptr += curstate.cury*Res.X;
+    if (curstate.curx >= 0) dptr += curstate.curx;
+    for (int x = curstate.curx; x < curstate.curx+8; ++x) {
+      if (x >= 0 && x < Res.X) *dptr++ = (curhi ? 0xffffff : 0x7f7f7f);
     }
   }
 

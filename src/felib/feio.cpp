@@ -386,6 +386,8 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
     0,
     0
   };
+  graphics::pushCursor();
+  graphics::showCursor();
   for (int LastKey = 0;; LastKey = 0) {
     if (!FirstTime) BarValue = Input.IsEmpty() ? Min : atoi(Input.CStr());
     if (BarValue < Min) BarValue = Min;
@@ -396,11 +398,13 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
     BackUp.NormalBlit(B2);
     if (FirstTime) {
       FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor, "%s %d", Topic.CStr(), StartValue);
-      FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + (Topic.rawLength() << 3) + 8, Pos.Y + 1), TopicColor, "_");
+      //FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + (Topic.rawLength() << 3) + 8, Pos.Y + 1), TopicColor, "_");
+      graphics::gotoXY(Pos.X+(Topic.rawLength()<<3)+8, Pos.Y+8, false); // don't change cursor state
       FirstTime = false;
     } else {
       FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor, "%s %s", Topic.CStr(), Input.CStr());
-      FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + ((Topic.rawLength() + Input.rawLength()) << 3) + 8, Pos.Y + 1), TopicColor, "_");
+      //FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + ((Topic.rawLength() + Input.rawLength()) << 3) + 8, Pos.Y + 1), TopicColor, "_");
+      graphics::gotoXY(Pos.X+((Topic.rawLength()+Input.rawLength())<<3)+8, Pos.Y+8, false); // don't change cursor state
     }
     DOUBLE_BUFFER->DrawHorizontalLine(Pos.X + 1, Pos.X + 201, Pos.Y + 15, Color2, false);
     DOUBLE_BUFFER->DrawVerticalLine(Pos.X + 201, Pos.Y + 12, Pos.Y + 18, Color2, false);
@@ -436,6 +440,7 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
     }
     if (Input.rawLength() < 12) Input << char(LastKey);
   }
+  graphics::popCursor();
   return BarValue;
 }
 

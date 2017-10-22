@@ -112,16 +112,18 @@ int globalwindowhandler::GetKey (truth EmptyBuffer) {
       if (Key > 0xE000) return Key-0xE000;
       if (Key && Key < 0x81) return Key; // if it's an ASCII symbol
     } else {
-      if (SDL_GetAppState() & SDL_APPACTIVE && Controls && ControlLoopsEnabled) {
+      if ((SDL_GetAppState()&SDL_APPACTIVE) != 0 && Controls && ControlLoopsEnabled) {
         KSDLProcessEvents(true);
         UpdateTick();
         if (LastTick != Tick) {
           LastTick = Tick;
-          truth Draw = false;
-          for (int c = 0; c < Controls; ++c) if (ControlLoop[c]()) Draw = true;
+          truth Draw = graphics::isCursorVisible();
+          if (!Draw) { for (int c = 0; c < Controls; ++c) if (ControlLoop[c]()) Draw = true; }
           if (Draw) graphics::BlitDBToScreen();
         }
-      } else KSDLWaitEvent();
+      } else {
+        KSDLWaitEvent();
+      }
     }
   }
   // doesn't return here
@@ -129,8 +131,8 @@ int globalwindowhandler::GetKey (truth EmptyBuffer) {
 
 
 int globalwindowhandler::ReadKey () {
-  if (SDL_GetAppState() & SDL_APPACTIVE) KSDLProcessEvents(); else KSDLWaitEvent();
-  return KeyBuffer.size() ? GetKey(false) : 0;
+  if (SDL_GetAppState()&SDL_APPACTIVE) KSDLProcessEvents(); else KSDLWaitEvent();
+  return (KeyBuffer.size() ? GetKey(false) : 0);
 }
 
 
