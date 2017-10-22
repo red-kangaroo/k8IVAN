@@ -285,6 +285,7 @@ void worldmap::Generate () {
     }
     // spawn others
     for (unsigned int f = 0; f < Places.size(); ++f) {
+      if (!Places[f].allowSpawn) continue;
       if (!Places[f].terra->IsAttnam() && !Places[f].terra->WantPetrusContinent()) continue;
       if (!Places[f].terra->IsHidden()) GetWSquare(PlacePosition[f])->ChangeOWTerrain(Places[f].spawner());
       SetEntryPos(Places[f].dungeon, PlacePosition[f]);
