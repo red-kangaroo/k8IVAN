@@ -794,45 +794,41 @@ template <class type> truth databasecreator<type>::AnalyzeData (inputfile &SaveF
 
 
 template <> void databasecreator<character>::CheckDefaults (cfestring &Word, character::database &DataBase) {
-  if (Word == "ArmBitmapPos") DataBase.RightArmBitmapPos = DataBase.LeftArmBitmapPos = DataBase.ArmBitmapPos;
-  else if (Word == "LegBitmapPos") DataBase.GroinBitmapPos = DataBase.RightLegBitmapPos = DataBase.LeftLegBitmapPos = DataBase.LegBitmapPos;
-  else if (Word == "ClothColor") DataBase.CapColor = DataBase.TorsoMainColor = DataBase.ArmMainColor = DataBase.GauntletColor = DataBase.LegMainColor = DataBase.ClothColor;
-  else if (Word == "NameSingular") DataBase.NamePlural = DataBase.NameSingular+'s';
-  else if (Word == "BaseUnarmedStrength") {
-    DataBase.BaseBiteStrength = DataBase.BaseUnarmedStrength>>1;
-    DataBase.BaseKickStrength = DataBase.BaseUnarmedStrength<<1;
-  } else if (Word == "RightGauntlet") DataBase.LeftGauntlet = DataBase.RightGauntlet;
-  else if (Word == "RightBoot") DataBase.LeftBoot = DataBase.RightBoot;
-  else if (Word == "DefaultName") DataBase.Alias.Add(DataBase.DefaultName);
-  else if (Word == "IsUnique") DataBase.CanBeWished = !DataBase.IsUnique;
+  if (Word == "ArmBitmapPos") { DataBase.RightArmBitmapPos = DataBase.LeftArmBitmapPos = DataBase.ArmBitmapPos; return; }
+  if (Word == "LegBitmapPos") { DataBase.GroinBitmapPos = DataBase.RightLegBitmapPos = DataBase.LeftLegBitmapPos = DataBase.LegBitmapPos; return; }
+  if (Word == "ClothColor") { DataBase.CapColor = DataBase.TorsoMainColor = DataBase.ArmMainColor = DataBase.GauntletColor = DataBase.LegMainColor = DataBase.ClothColor; return; }
+  if (Word == "NameSingular") { DataBase.NamePlural = DataBase.NameSingular+'s'; return; }
+  if (Word == "BaseUnarmedStrength") { DataBase.BaseBiteStrength = DataBase.BaseUnarmedStrength>>1; DataBase.BaseKickStrength = DataBase.BaseUnarmedStrength<<1; return; }
+  if (Word == "RightGauntlet") { DataBase.LeftGauntlet = DataBase.RightGauntlet; return; }
+  if (Word == "RightBoot") { DataBase.LeftBoot = DataBase.RightBoot; return; }
+  if (Word == "DefaultName") { DataBase.Alias.Add(DataBase.DefaultName); return; }
+  if (Word == "IsUnique") { DataBase.CanBeWished = !DataBase.IsUnique; return; }
 }
 
 
 template <> void databasecreator<item>::CheckDefaults (cfestring &Word, item::database &DataBase) {
-  if (Word == "NameSingular") {
-    DataBase.NamePlural = DataBase.NameSingular+'s';
-    DataBase.FlexibleNameSingular = DataBase.NameSingular;
-  } else if (Word == "BitmapPos") DataBase.WallBitmapPos = DataBase.BitmapPos;
-  else if (Word == "MaterialConfigChances") DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances);
-  else if (Word == "CanBeCloned") DataBase.CanBeMirrored = DataBase.CanBeCloned;
+  if (Word == "NameSingular") { DataBase.NamePlural = DataBase.NameSingular+'s'; DataBase.FlexibleNameSingular = DataBase.NameSingular; return; }
+  if (Word == "BitmapPos") { DataBase.WallBitmapPos = DataBase.BitmapPos; return; }
+  if (Word == "MaterialConfigChances") { DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances); return; }
+  if (Word == "CanBeCloned") { DataBase.CanBeMirrored = DataBase.CanBeCloned; return; }
 }
 
 
 template <> void databasecreator<glterrain>::CheckDefaults (cfestring &Word, glterrain::database &DataBase) {
-  if (Word == "NameSingular") DataBase.NamePlural = DataBase.NameSingular+'s';
-  else if (Word == "MaterialConfigChances") DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances);
+  if (Word == "NameSingular") { DataBase.NamePlural = DataBase.NameSingular+'s'; return; }
+  if (Word == "MaterialConfigChances") { DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances); return; }
 }
 
 
 template <> void databasecreator<olterrain>::CheckDefaults (cfestring &Word, olterrain::database &DataBase) {
-  if (Word == "NameSingular") DataBase.NamePlural = DataBase.NameSingular+'s';
-  else if (Word == "MaterialConfigChances") DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances);
+  if (Word == "NameSingular") { DataBase.NamePlural = DataBase.NameSingular+'s'; return; }
+  if (Word == "MaterialConfigChances") { DataBase.MaterialConfigChanceSum = femath::SumArray(DataBase.MaterialConfigChances); return; }
 }
 
 
 template <> void databasecreator<material>::CheckDefaults (cfestring &Word, material::database &DataBase) {
-  if (Word == "NameStem") DataBase.AdjectiveStem = DataBase.NameStem;
-  else if (Word == "Color") DataBase.RainColor = DataBase.Color;
+  if (Word == "NameStem") { DataBase.AdjectiveStem = DataBase.NameStem; return; }
+  if (Word == "Color") { DataBase.RainColor = DataBase.Color; return; }
 }
 
 
@@ -847,9 +843,7 @@ void databasesystem::Initialize () {
 }
 
 
-template <class type> inline void databasecreator<type>::FindDataBase (const database *&DataBase,
-  const prototype *Proto, int Config)
-{
+template <class type> inline void databasecreator<type>::FindDataBase (const database *&DataBase, const prototype *Proto, int Config) {
   database **Table = Proto->ConfigTable[(Config >> 8) ^ (Config & 0xFF)];
   if (Table) {
     if ((*Table)->Config == Config) {

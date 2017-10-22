@@ -143,7 +143,9 @@ inputfile::inputfile (cfestring &FileName, const valuemap *ValueMap, truth Abort
 #endif
   mCharBufPos(0),
   mCurrentLine(1),
-  mTokenLine(1)
+  mTokenLine(1),
+  mNumStr(""),
+  mCollectingNumStr(false)
 {
   if (AbortOnErr && !IsOpen()) ABORT("File %s not found!", FileName.CStr());
 }
@@ -328,7 +330,6 @@ static const char *opers[5][7] = {
 
 festring inputfile::readCondition (festring &token, int prio, truth skipIt) {
   festring res, op1, opc;
-  //
   //fprintf(stderr, "IN:  prio: %d; skip: %s; [%s]\n", prio, skipIt?"t":"o", token.CStr());
   switch (prio) {
     case 0: // term
@@ -387,23 +388,23 @@ festring inputfile::readCondition (festring &token, int prio, truth skipIt) {
     switch (prio) {
       case 2: // comparisons
         if (opc == "==") {
-          if (!skipIt) res = res==op1 ? "tan" : "";
+          if (!skipIt) res = (res == op1 ? "tan" : "");
         } else if (opc == "!=") {
-          if (!skipIt) res = res!=op1 ? "tan" : "";
+          if (!skipIt) res = (res != op1 ? "tan" : "");
         } else if (opc == "<") {
-          if (!skipIt) res = res<op1 ? "tan" : "";
+          if (!skipIt) res = (res < op1 ? "tan" : "");
         } else if (opc == ">") {
-          if (!skipIt) res = res>op1 ? "tan" : "";
+          if (!skipIt) res = (res > op1 ? "tan" : "");
         } else if (opc == "<=") {
-          if (!skipIt) res = res<=op1 ? "tan" : "";
+          if (!skipIt) res = (res <= op1 ? "tan" : "");
         } else if (opc == ">=") {
-          if (!skipIt) res = res>=op1 ? "tan" : "";
+          if (!skipIt) res = (res >= op1 ? "tan" : "");
         }
         break;
       case 3: // &&
         if (opc == "&&") {
           if (!skipIt) {
-            res = res!=""&&op1!="" ? "tan" : "";
+            res = (res != "" && op1 != "" ? "tan" : "");
             if (res == "") skipIt = true;
           }
         }
@@ -411,7 +412,7 @@ festring inputfile::readCondition (festring &token, int prio, truth skipIt) {
       case 4: // ||
         if (opc == "||") {
           if (!skipIt) {
-            res = res!=""||op1!="" ? "tan" : "";
+            res = (res != "" || op1 != "" ? "tan" : "");
             if (res != "") skipIt = true;
           }
         }
@@ -437,7 +438,6 @@ done:
 // 666: in '{}', processing
 void inputfile::ReadWord (festring &str, truth AbortOnEOF, truth skipIt) {
   int prc;
-  //
   for (;;) {
     if (!mIfStack.empty()) prc = mIfStack.top(); else prc = 0;
     readWordIntr(str, AbortOnEOF);
@@ -503,7 +503,6 @@ void inputfile::ReadWord (festring &str, truth AbortOnEOF, truth skipIt) {
 
 festring inputfile::ReadWord (truth AbortOnEOF) {
   festring ToReturn;
-  //
   ReadWord(ToReturn, AbortOnEOF);
   return ToReturn;
 }
@@ -530,19 +529,20 @@ void inputfile::SkipSpaces () {
 
 int inputfile::HandlePunct (festring &String, int Char, int Mode) {
   mTokenLine = mCurrentLine;
+  // comment?
   if (Char == '/') {
-    // comment? (can be nested)
     if (!Eof()) {
       Char = Get();
+      // multiline comment? (possibly nested)
       if (Char == '*') {
         int OldChar = 0, CommentLevel = 1;
-        //
         for (;;) {
           if (Eof()) ABORT("Unterminated comment in file %s, beginning at line %d!", FileName.CStr(), mTokenLine);
           Char = Get();
           if (OldChar != '*' || Char != '/') {
-            if (OldChar != '/' || Char != '*') OldChar = Char;
-            else {
+            if (OldChar != '/' || Char != '*') {
+              OldChar = Char;
+            } else {
               ++CommentLevel;
               OldChar = 0;
             }
@@ -553,8 +553,8 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
         }
         return PUNCT_CONTINUE;
       }
+      // one-line comment?
       if (Char == '/') {
-        // comment (to eol)
         while (!Eof()) {
           int ch = Get();
           if (ch == '\n') break;
@@ -572,9 +572,8 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
     Unget(Char);
     return PUNCT_RETURN;
   }
-  //
+  // string?
   if (Char == '"') {
-    // string
     lastWordWasString = true;
     for (;;) {
       if (Eof()) ABORT("Unterminated string in file %s, beginning at line %d!", FileName.CStr(), mTokenLine);
@@ -586,6 +585,8 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
           case 't': String << '\t'; break;
           case 'n': String << '\n'; break;
           case 'r': String << '\r'; break;
+          case '1': String << '\x01'; break;
+          case '2': String << '\x02'; break;
           case '"': String << '"'; break;
           default:
             ABORT("Invalid escape in string in file %s at line %d!", FileName.CStr(), mTokenLine);
@@ -605,8 +606,11 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
       } else return PUNCT_RETURN;
       */
     }
+    ABORT("The thing that should not be");
   }
+  // delimiter
   String << char(Char);
+  // two-char delimiters?
   if (!Eof()) {
     if (Char == '=' || Char == '<' || Char == '>' || Char == '!') {
       Char = Get();
@@ -625,7 +629,6 @@ int inputfile::HandlePunct (festring &String, int Char, int Mode) {
 
 void inputfile::readWordIntr (festring &String, truth AbortOnEOF) {
   int Mode = 0;
-  //
   String.Empty();
   lastWordWasString = false;
   mTokenLine = mCurrentLine;
@@ -665,12 +668,13 @@ char inputfile::ReadLetter (truth AbortOnEOF) {
   for (int Char = Get(); !Eof(); mTokenLine = mCurrentLine, Char = Get()) {
     if (isalpha(Char) || isdigit(Char)) return Char;
     if (ispunct(Char)) {
+      // comment?
       if (Char == '/') {
         if (!Eof()) {
           Char = Get();
+          // multiline comment? (possibly nested)
           if (Char == '*') {
             int OldChar = 0, CommentLevel = 1;
-            //
             for (;;) {
               if (Eof()) ABORT("Unterminated comment in file %s, beginning at line %d!", FileName.CStr(), mTokenLine);
               Char = Get();
@@ -708,16 +712,17 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
   festring Word, res;
   truth NumberCorrect = false;
   truth firstWord = true;
-  //
-  *isString = false;
-  *num = 0;
+  if (isString) *isString = false;
+  if (num) *num = 0;
   if (wasCloseBrc) *wasCloseBrc = false;
   mTokenLine = mCurrentLine;
   for (;;) {
     ReadWord(Word);
     if (Word == "@") {
       // variable
+      if (mCollectingNumStr) mNumStr << Word;
       ReadWord(Word, true);
+      if (mCollectingNumStr) mNumStr << Word;
       //fprintf(stderr, "var: [%s]\n", Word.CStr());
       Word = getVar(Word);
       //fprintf(stderr, " value: [%s]\n", Word.CStr());
@@ -731,7 +736,7 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
         continue;
       }
       if (firstWord && allowStr) {
-        *isString = true;
+        if (isString) *isString = true;
         return Word;
       } else {
         ABORT("Number expected in file %s, line %d!", FileName.CStr(), mTokenLine);
@@ -739,7 +744,7 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
     }
     if (firstWord) {
       if (allowStr && lastWordWasString) {
-        *isString = true;
+        if (isString) *isString = true;
         ReadWord(res);
         if (res.GetSize() == 1) {
           if (res[0] != ';' && res[0] != ',' && res[0] != ':') {
@@ -755,6 +760,7 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
     }
     char First = Word[0];
     if (isdigit(First)) {
+      if (mCollectingNumStr) mNumStr << Word;
       Value = atoi(Word.CStr());
       NumberCorrect = true;
       continue;
@@ -763,15 +769,16 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       if (First == ';' || First == ',' || First == ':' || (wasCloseBrc && First == '}')) {
         if (First == '}' && wasCloseBrc) *wasCloseBrc = true;
         if (CallLevel != HIGHEST || PreserveTerminator) Unget(First);
-        *num = Value;
+        if (num) *num = Value;
         return res;
       }
       if (First == ')') {
         if ((CallLevel != HIGHEST && CallLevel != 4) || PreserveTerminator) Unget(')');
-        *num = Value;
+        if (num) *num = Value;
         return res;
       }
       if (First == '~') {
+        if (mCollectingNumStr) mNumStr << Word;
         Value = ~ReadNumber(4);
         NumberCorrect = true;
         continue;
@@ -780,46 +787,52 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
 #define CHECK_OP(op, cl) \
   if (First == #op[0]) { \
     if (cl < CallLevel) {\
+      if (mCollectingNumStr) mNumStr << Word; \
       Value op##= ReadNumber(cl);\
       NumberCorrect = true;\
       continue;\
     } else {\
       Unget(#op[0]);\
-      *num = Value;\
+      if (num) *num = Value;\
       return res;\
     } \
   }
       CHECK_OP(&, 1); CHECK_OP(|, 1); CHECK_OP(^, 1);
       CHECK_OP(*, 2); CHECK_OP(/, 2); CHECK_OP(%, 2);
       CHECK_OP(+, 3); CHECK_OP(-, 3);
+#undef CHECK_OP
       if (First == '<') {
         char Next = Get();
-        if (Next == '<')
-        if (1 < CallLevel) {
-          Value <<= ReadNumber(1);
-          NumberCorrect = true;
-          continue;
-        } else {
-          Unget('<');
-          Unget('<');
-          *num = Value;
-          return res;
+        if (Next == '<') {
+          if (1 < CallLevel) {
+            if (mCollectingNumStr) mNumStr << "<<";
+            Value <<= ReadNumber(1);
+            NumberCorrect = true;
+            continue;
+          } else {
+            Unget('<');
+            Unget('<');
+            if (num) *num = Value;
+            return res;
+          }
         } else {
           Unget(Next);
         }
       }
       if (First == '>') {
         char Next = Get();
-        if (Next == '>')
-        if (1 < CallLevel) {
-          Value >>= ReadNumber(1);
-          NumberCorrect = true;
-          continue;
-        } else {
-          Unget('>');
-          Unget('>');
-          *num = Value;
-          return res;
+        if (Next == '>') {
+          if (1 < CallLevel) {
+            if (mCollectingNumStr) mNumStr << ">>";
+            Value >>= ReadNumber(1);
+            NumberCorrect = true;
+            continue;
+          } else {
+            Unget('>');
+            Unget('>');
+            if (num) *num = Value;
+            return res;
+          }
         } else {
           Unget(Next);
         }
@@ -827,10 +840,12 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       if (First == '(') {
         if (NumberCorrect) {
           Unget('(');
-          *num = Value;
+          if (num) *num = Value;
           return res;
         } else {
+          if (mCollectingNumStr) mNumStr << Word;
           Value = ReadNumber(4);
+          if (mCollectingNumStr) mNumStr << ")";
           NumberCorrect = false;
           continue;
         }
@@ -839,18 +854,19 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       if (First == '#') {
         // for #defines
         Unget('#');
-        *num = Value;
+        if (num) *num = Value;
         return res;
       }
     }
     /*
     if (Word == "enum" || Word == "bitenum") {
       if (CallLevel != HIGHEST || PreserveTerminator) Unget(';');
-      *num = Value;
+      if (num) *num = Value;
       return res;
     }
     */
     if (Word == "rgb") {
+      if (mCollectingNumStr) mNumStr << Word;
       int Bits = ReadNumber();
       if (Bits == 16) {
         int Red = ReadNumber();
@@ -869,11 +885,13 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       continue;
     }
     if (Word == "true" || Word == "tan") {
+      if (mCollectingNumStr) mNumStr << Word;
       Value = 1;
       NumberCorrect = true;
       continue;
     }
     if (Word == "false" || Word == "ona") {
+      if (mCollectingNumStr) mNumStr << Word;
       Value = 0;
       NumberCorrect = true;
       continue;
@@ -895,7 +913,6 @@ festring inputfile::ReadCode (truth AbortOnEOF) {
   int sqLevel = 1;
   char inString = 0;
   festring res;
-  //
   mTokenLine = mCurrentLine;
   for (int Char = Get(); !Eof(); Char = Get()) {
     //fprintf(stderr, "char: [%c]; inString: %d; sqLevel: %d\n", (Char < 32 || Char > 126 ? '?' : Char), inString, sqLevel);
@@ -950,7 +967,6 @@ festring inputfile::ReadCode (truth AbortOnEOF) {
 sLong inputfile::ReadNumber (int CallLevel, truth PreserveTerminator, truth *wasCloseBrc) {
   sLong num = 0;
   truth isString = false;
-  //
   ReadNumberIntr(CallLevel, &num, &isString, false, PreserveTerminator, wasCloseBrc);
   return num;
 }
@@ -961,9 +977,37 @@ festring inputfile::ReadStringOrNumber (sLong *num, truth *isString, truth Prese
 }
 
 
+// fuck you, shitplusplus!
+struct FuckedShitForFuckedFinally {
+  truth *var;
+  truth oval;
+  FuckedShitForFuckedFinally (truth *avar, truth nval=true) {
+    var = avar;
+    oval = *var;
+    *var = nval;
+  }
+  ~FuckedShitForFuckedFinally () {
+    *var = oval;
+  }
+};
+
+
+sLong inputfile::ReadNumberKeepStr (int CallLevel, truth PreserveTerminator, truth *wasCloseBrc) {
+  auto fuck = FuckedShitForFuckedFinally(&mCollectingNumStr);
+  mNumStr = "";
+  return ReadNumber(CallLevel, PreserveTerminator, wasCloseBrc);
+}
+
+
+festring inputfile::ReadStringOrNumberKeepStr (sLong *num, truth *isString, truth PreserveTerminator, truth *wasCloseBrc) {
+  auto fuck = FuckedShitForFuckedFinally(&mCollectingNumStr);
+  mNumStr = "";
+  return ReadStringOrNumber(num, isString, PreserveTerminator, wasCloseBrc);
+}
+
+
 v2 inputfile::ReadVector2d () {
   v2 Vector;
-  //
   Vector.X = ReadNumber();
   Vector.Y = ReadNumber();
   return Vector;
@@ -972,7 +1016,6 @@ v2 inputfile::ReadVector2d () {
 
 rect inputfile::ReadRect () {
   rect Rect;
-  //
   Rect.X1 = ReadNumber();
   Rect.Y1 = ReadNumber();
   Rect.X2 = ReadNumber();
@@ -1044,9 +1087,7 @@ void ReadData (fearray<sLong> &Array, inputfile &SaveFile) {
   } else if (Word == ":=") {
     SaveFile.ReadWord(Word);
     if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-    //
     std::vector<sLong> v;
-    //
     for (;;) {
       truth wasCloseBrc = false;
       sLong n = SaveFile.ReadNumber(HIGHEST, false, &wasCloseBrc);

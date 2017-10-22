@@ -86,6 +86,8 @@ public:
   char ReadLetter (truth AbortOnEOF=true);
   sLong ReadNumber (int CallLevel=HIGHEST, truth PreserveTerminator=false, truth *wasCloseBrc=0);
   festring ReadStringOrNumber (sLong *num, truth *isString, truth PreserveTerminator=false, truth *wasCloseBrc=0);
+  sLong ReadNumberKeepStr (int CallLevel=HIGHEST, truth PreserveTerminator=false, truth *wasCloseBrc=0);
+  festring ReadStringOrNumberKeepStr (sLong *num, truth *isString, truth PreserveTerminator=false, truth *wasCloseBrc=0);
   v2 ReadVector2d ();
   rect ReadRect ();
   int Get ();
@@ -117,6 +119,9 @@ public:
   inline int TokenLine () const { return mTokenLine; }
   inline int CurrentLine () const { return mCurrentLine; }
 
+  // when reading a number, and `mCollectingNumStr` flag is set, this will be filled
+  inline cfestring& numStr () const { return mNumStr; }
+
 protected:
   festring ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc);
   int HandlePunct (festring &String, int Char, int Mode);
@@ -146,6 +151,8 @@ protected:
   int mCharBufPos;
   int mCurrentLine;
   int mTokenLine;
+  festring mNumStr; // when reading a number, and `mCollectingNumStr` flag is set, this will be filled
+  truth mCollectingNumStr;
 };
 
 
