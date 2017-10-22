@@ -25,5 +25,5 @@ humanoid
   DisplacePriority = 0;
   UndeadVersions = true;
   KnownCWeaponSkills == UNARMED; // k8: CLIVAN omits this
-  CWeaponSkillHits == 1; /*k8: 19000;*/
+  CWeaponSkillHits == 100; /*k8: 19000; slave has 100 */
 }
