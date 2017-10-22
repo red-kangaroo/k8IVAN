@@ -5,6 +5,7 @@ include $(TOP)/Jamrules.configure ;
 
 set-profile ;
 set-default-locations ;
+C++.standard = "-std=gnu++14" ;
 
 OPTIM.all += -Wno-narrowing ;
 OPTIM.all += -Wno-misleading-indentation ; # fuck off
