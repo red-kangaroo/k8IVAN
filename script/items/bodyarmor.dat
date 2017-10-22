@@ -150,6 +150,8 @@ bodyarmor /* armor-> */
     ArmArmorBitmapPos = 80, 416;
     AthleteArmArmorBitmapPos = 80, 448;
     LegArmorBitmapPos = 16, 416;
+    IsMaterialChangeable = false;
+    IsPolymorphable = false;
   }
 
   Config FILTHY_TUNIC;
