@@ -270,6 +270,25 @@ const statedata StateData[STATES] =
     &character::DetectHandler,
     0,
     0
+  }, {
+    "Ethereal",
+    NO_FLAGS,
+    &character::PrintBeginEtherealityMessage,
+    &character::PrintEndEtherealityMessage,
+    &character::BeginEthereality, &character::EndEthereality,
+    0,
+    0,
+    0
+  }, {
+    "Fearless",
+    RANDOMIZABLE&~SRC_EVIL,
+    &character::PrintBeginFearlessMessage,
+    &character::PrintEndFearlessMessage,
+    0,
+    &character::EndFearless,
+    0,
+    0,
+    0
   }
 };
 
@@ -1793,7 +1812,7 @@ void character::GetPlayerCommand () {
   truth HasActed = false;
   while (!HasActed) {
     game::DrawEverything();
-    if (game::GetDangerFound()) {
+    if (game::GetDangerFound() && !StateIsActivated(FEARLESS)) {
       if (game::GetDangerFound() > 500.) {
         if (game::GetCausePanicFlag()) {
           game::SetCausePanicFlag(false);
@@ -2081,7 +2100,7 @@ truth character::CheckForEnemies (truth CheckDoors, truth CheckGround, truth May
   if (NearestChar) {
     if (GetAttribute(INTELLIGENCE) >= 10 || IsSpy()) game::CallForAttention(GetPos(), 100);
     if (SpecialEnemySightedReaction(NearestChar)) return true;
-    if (IsExtraCoward() && !StateIsActivated(PANIC) && NearestChar->GetRelativeDanger(this) >= 0.5) {
+    if (IsExtraCoward() && !StateIsActivated(PANIC) && NearestChar->GetRelativeDanger(this) >= 0.5 && !StateIsActivated(FEARLESS)) {
       if (CanBeSeenByPlayer()) ADD_MESSAGE("%s sees %s.", CHAR_NAME(DEFINITE), NearestChar->CHAR_DESCRIPTION(DEFINITE));
       BeginTemporaryState(PANIC, 500+RAND()%500);
     }
@@ -3178,14 +3197,12 @@ void character::TeleportRandomly (truth Intentional) {
   //
   if (!PossibleRoom) {
     //if it's outside of a room
-    if (TelePos != ERROR_V2) Move(TelePos, true);
-    else Move(GetLevel()->GetRandomSquare(this), true);
+    if (TelePos != ERROR_V2) Move(TelePos, true); else Move(GetLevel()->GetRandomSquare(this), true);
     if (!IsPlayer() && CanBeSeenByPlayer()) ADD_MESSAGE("%s appears.", CHAR_NAME(INDEFINITE));
     if (GetAction() && GetAction()->IsVoluntary()) GetAction()->Terminate(false);
   } else if (PossibleRoom && PossibleRoom->IsOKToTeleportInto()) {
     // If it's inside of a room, check whether a ward is active that might impede the player
-    if (TelePos != ERROR_V2) Move(TelePos, true);
-    else Move(GetLevel()->GetRandomSquare(this), true);
+    if (TelePos != ERROR_V2) Move(TelePos, true); else Move(GetLevel()->GetRandomSquare(this), true);
     if (!IsPlayer() && CanBeSeenByPlayer()) ADD_MESSAGE("%s appears.", CHAR_NAME(INDEFINITE));
     if (GetAction() && GetAction()->IsVoluntary()) GetAction()->Terminate(false);
   } else {
@@ -3338,7 +3355,7 @@ int character::ReceiveBodyPartDamage (character *Damager, int Damage, int Type, 
       }
       if (IsPlayer()) game::AskForEscPress(CONST_S("Bodypart severed!"));
     }
-    if (CanPanicFromSeveredBodyPart() && RAND()%100 < GetPanicLevel() && !StateIsActivated(PANIC) && !IsDead()) {
+    if (CanPanicFromSeveredBodyPart() && RAND()%100 < GetPanicLevel() && !StateIsActivated(PANIC) && !IsDead() && !StateIsActivated(FEARLESS)) {
       BeginTemporaryState(PANIC, 1000+RAND()%1001);
     }
     SpecialBodyPartSeverReaction();
@@ -5236,8 +5253,9 @@ void character::PrintEndPanicMessage () const {
 
 
 void character::CheckPanic (int Ticks) {
-  if (GetPanicLevel() > 1 && !StateIsActivated(PANIC) && GetHP() * 100 < RAND() % (GetPanicLevel() * GetMaxHP() << 1))
+  if (GetPanicLevel() > 1 && !StateIsActivated(PANIC) && GetHP()*100 < RAND()%(GetPanicLevel()*GetMaxHP()<<1) && !StateIsActivated(FEARLESS)) {
     BeginTemporaryState(PANIC, ((Ticks * 3) >> 2) + RAND() % ((Ticks >> 1) + 1)); // 25% randomness to ticks...
+  }
 }
 
 
@@ -6651,7 +6669,7 @@ void character::CheckIfSeen () {
 
 
 void character::SignalSeen () {
-  if (!(WarnFlags & WARNED) && GetRelation(PLAYER) == HOSTILE) {
+  if (!(WarnFlags & WARNED) && GetRelation(PLAYER) == HOSTILE && !StateIsActivated(FEARLESS)) {
     double Danger = GetRelativeDanger(PLAYER);
     if (Danger > 5.0) {
       game::SetDangerFound(Max(game::GetDangerFound(), Danger));
@@ -7037,7 +7055,7 @@ void character::SignalDisappearance () {
 
 
 truth character::HornOfFearWorks () const {
-  return CanHear() && GetPanicLevel() > RAND() % 33;
+  return CanHear() && GetPanicLevel() > RAND()%33 && !StateIsActivated(FEARLESS);
 }
 
 
@@ -7792,7 +7810,7 @@ truth character::AllowUnconsciousness () const {
 
 
 truth character::CanPanic () const {
-  return !Action || !Action->IsUnconsciousness();
+  return !Action || !Action->IsUnconsciousness() || !StateIsActivated(FEARLESS);
 }
 
 
@@ -7842,6 +7860,13 @@ void character::AddOmmelBoneConsumeEndMessage () const {
 void character::AddLiquidHorrorConsumeEndMessage () const {
   if (IsPlayer()) ADD_MESSAGE("Untold horrors flash before your eyes. The melancholy of the world is on your shoulders!");
   else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s looks as if the melancholy of the world is on %s shoulders!.", CHAR_NAME(DEFINITE), GetPossessivePronoun().CStr());
+}
+
+
+void character::AddAlienFleshConsumeEndMessage() const
+{
+  if (IsPlayer()) ADD_MESSAGE("You feel somehow sick by eating such acidic corpse...");
+  else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s looks like he eat something bad.", CHAR_NAME(DEFINITE));
 }
 
 
@@ -8334,3 +8359,37 @@ truth character::StateIsActivated (sLong What) const {
   }
   return (TemporaryState & What) || (EquipmentState & What);
 }
+
+
+void character::PrintBeginFearlessMessage () const {
+  if (!StateIsActivated(FEARLESS)) {
+         if (IsPlayer()) ADD_MESSAGE("You feel very comfortable.");
+    else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s seems very comfortable.", CHAR_NAME(DEFINITE));
+  }
+}
+
+void character::PrintEndFearlessMessage () const {
+  if (!StateIsActivated (FEARLESS)) {
+         if (IsPlayer()) ADD_MESSAGE("Everything looks more dangerous now.");
+    else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s seems to have lost his confidence.", CHAR_NAME(DEFINITE));
+  }
+}
+
+void character::EndFearless () {
+  CheckPanic(500);
+}
+
+
+void character::PrintBeginEtherealityMessage () const {
+       if (IsPlayer()) ADD_MESSAGE("You feel like many miscible droplets of ether.");
+  else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s melds into the surroundings.", CHAR_NAME(DEFINITE));
+}
+
+void character::PrintEndEtherealityMessage () const {
+       if (IsPlayer()) ADD_MESSAGE("You drop out of the firmament, feeling suddenly quite dense.");
+  else if (CanBeSeenByPlayer()) ADD_MESSAGE("Suddenly %s displaces the air with a puff.", CHAR_NAME(INDEFINITE));
+}
+
+void character::BeginEthereality () {}
+
+void character::EndEthereality () {}

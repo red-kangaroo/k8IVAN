@@ -123,7 +123,7 @@ enum {
   OMMEL_TOOTH,
   RYE_BREAD,
   MANGO_FLESH,
-  HOLY_MANGO_FLESH
+  HOLY_MANGO_FLESH,
 };
 
 
@@ -178,7 +178,10 @@ enum {
   LIQUID_HORROR,
   VINEGAR,
   OMMEL_BLOOD,
-  CURDLED_OMMEL_BLOOD
+  CURDLED_OMMEL_BLOOD,
+  // alien mod
+  ALIEN_BLOOD,
+  ALIEN_DROOL,
 };
 
 
@@ -239,7 +242,9 @@ enum {
   MOUSE_FLESH,
   FOX_FLESH,
   THUNDER_BIRD_FLESH,
-  ELF_FLESH
+  ELF_FLESH,
+  // alien mod
+  ALIEN_FLESH,
 };
 
 //#define POWDER_ID (6 << 12)

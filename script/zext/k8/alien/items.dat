@@ -36,3 +36,47 @@ Extend meleeweapon
     EnchantmentPlusChance = 40;
   }
 }
+
+
+adultalientorso /* normaltorso-> */
+{
+}
+
+aliendogtorso /* normaltorso-> */
+{
+}
+
+
+wristblades /* meleeweapon-> */
+{
+  DefaultSize = 45;
+  Possibility = 0;
+  WeaponCategory = UNARMED;
+  DefaultMainVolume = 35;
+  DefaultSecondaryVolume = 25;
+  BitmapPos = 64, 352;
+  FormModifier = 200;
+  StrengthModifier = 150;
+  NameSingular = "Wrist Blades";
+  Adjective = "berserker";
+  PostFix = "of the Predator";
+  ArticleMode = FORCE_THE;
+  Alias == "Wrist Blades";
+  MainMaterialConfig == ILLITHIUM;
+  SecondaryMaterialConfig == OCTIRON;
+  Roundness = 10;
+  AttachedGod = CLEPTIA;
+  WieldedBitmapPos = 160, 368;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH|PIERCE;
+  GearStates = FEARLESS;
+  CanBeWished = false;
+  IsMaterialChangeable = false;
+  IsPolymorphable = false;
+  CanBeCloned = false;
+  CanBeMirrored = true;
+  CanBeBroken = false;
+  BaseEnchantment = 0;
+  CanBeEnchanted = true;
+  IsQuestItem = true;
+}

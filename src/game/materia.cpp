@@ -223,6 +223,7 @@ truth material::HitEffect(character* Enemy, bodypart* BodyPart)
    case HM_CONFUSE: Enemy->AddConfuseHitMessage(); break;
    case HM_HOLY_BANANA: Enemy->AddHolyBananaConsumeEndMessage(); break;
    case HM_HOLY_MANGO: Enemy->AddHolyMangoConsumeEndMessage(); break;
+   case HM_ALIEN_FLESH: Enemy->AddAlienFleshConsumeEndMessage(); break;
   }
 
   sLong Amount = Max<sLong>(GetVolume() >> 1, 1);
@@ -271,8 +272,9 @@ void material::AddConsumeEndMessage (character *Eater) const {
     case CEM_GRAY_UNICORN_FLESH: Eater->AddGrayUnicornConsumeEndMessage(); break;
     case CEM_WHITE_UNICORN_FLESH: Eater->AddWhiteUnicornConsumeEndMessage(); break;
     case CEM_OMMEL_BONE: Eater->AddOmmelBoneConsumeEndMessage(); break;
-   case CEM_LIQUID_HORROR: Eater->AddLiquidHorrorConsumeEndMessage(); break;
-   case CEM_HOLY_MANGO: Eater->AddHolyMangoConsumeEndMessage(); break;
+    case CEM_LIQUID_HORROR: Eater->AddLiquidHorrorConsumeEndMessage(); break;
+    case CEM_HOLY_MANGO: Eater->AddHolyMangoConsumeEndMessage(); break;
+    case CEM_ALIEN_FLESH: Eater->AddAlienFleshConsumeEndMessage(); break;
   }
 }
 

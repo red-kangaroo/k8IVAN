@@ -40,7 +40,7 @@ public:
   void GenerateInfo ();
   festring GetName () const { return Name; }
   int GetGTerrainAmount (int) const;
-  v2 GetRandomMember (int);
+  v2 GetRandomMember (int, truth* success);
   v2 GetMember (int) const;
 
 private:

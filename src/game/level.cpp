@@ -1515,7 +1515,8 @@ truth level::PreProcessForBone () {
     !(DungeonIndex == ELPURI_CAVE && Index == IVAN_LEVEL && game::GetQuestMonstersFound() < 5) &&
      (game::GetQuestMonstersFound() ||
       ((DungeonIndex != UNDER_WATER_TUNNEL || Index != VESANA_LEVEL) &&
-       (DungeonIndex != ELPURI_CAVE || (Index != ENNER_BEAST_LEVEL && Index != DARK_LEVEL))));
+       (DungeonIndex != ELPURI_CAVE || (Index != ENNER_BEAST_LEVEL && Index != DARK_LEVEL)) &&
+       (DungeonIndex != ALIEN_VESSEL || Index != ALIENQUEEN_LEVEL)));
 }
 
 

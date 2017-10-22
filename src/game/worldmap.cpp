@@ -108,6 +108,7 @@ void worldmap::Generate () {
   //
   //fprintf(stderr, "places: %u\n", Places.size());
   for (;;) {
+   allagain:
     PlacePosition.clear();
     PlaceRevealed.clear();
     PlaceContinent.clear();
@@ -170,7 +171,9 @@ void worldmap::Generate () {
       //PetrusLikes = PerfectForAttnam[RAND() % PerfectForAttnam.size()];
       for (unsigned int f = 0; f < Places.size(); ++f) {
         if (Places[f]->IsAttnam() || Places[f]->WantPetrusContinent()) {
-          PlacePosition[f] = PetrusLikes->GetRandomMember(PlaceTypes[f]);
+          truth success = false;
+          PlacePosition[f] = PetrusLikes->GetRandomMember(PlaceTypes[f], &success);
+          if (!success) goto allagain; //FIXME: memory leak
         }
       }
       //

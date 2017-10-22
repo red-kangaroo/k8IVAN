@@ -196,5 +196,6 @@ int dungeon::GetLevelTeleportDestination (int From) const {
     return To;
   }
   if (Index == UNDER_WATER_TUNNEL) return RAND_N(3);
+  if (Index == ALIEN_VESSEL) return RAND_N(3);
   return From;
 }

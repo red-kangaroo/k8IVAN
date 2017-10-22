@@ -1,0 +1,302 @@
+Dungeon ALIEN_VESSEL;
+{
+  Levels = 7;
+  Description = "alien vessel";
+  ShortDescription = "AV";
+
+  LevelDefault
+  {
+    FillSquare = solidterrain(GROUND), GNEISS earth;
+    TunnelSquare = solidterrain(GROUND), 0;
+    Size = 40, 40;
+    Rooms = 10:30;
+    Items = 25:50;
+    GenerateMonsters = true;
+    IsOnGround = false;
+    TeamDefault = MONSTER_TEAM;
+    LOSModifier = 16;
+    IgnoreDefaultSpecialSquares = false;
+    DifficultyBase = 50;
+    DifficultyDelta = 10;
+    MonsterAmountBase = 10;
+    MonsterAmountDelta = 2;
+    MonsterGenerationIntervalBase = 140;
+    MonsterGenerationIntervalDelta = -10;
+    CanGenerateBone = true;
+    ItemMinPriceBase = 20;
+    ItemMinPriceDelta = 10;
+    EnchantmentMinusChanceBase = 0;
+    EnchantmentMinusChanceDelta = 0;
+    EnchantmentPlusChanceBase = 5;
+    EnchantmentPlusChanceDelta = 5;
+    BackGroundType = GRAY_FRACTAL;
+    IsCatacomb = false;
+    EarthquakesAffectTunnels = true;
+
+    Square, Random NOT_WALKABLE|NOT_IN_ROOM;
+    {
+      Items == stone;
+      Times = 25:50;
+    }
+
+    Square, Random;
+    {
+      Items == beartrap { Team = MONSTER_TEAM; IsActive = true; }
+      Times = 0:3;
+    }
+
+    RoomDefault
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      Size = 4:11,4:11;
+      AltarPossible = true;
+      WallSquare = solidterrain(GROUND), GRANITE wall(BRICK_OLD);
+      FloorSquare = solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(PARQUET), GRANITE door;
+      GenerateDoor = true;
+      DivineMaster = 0;
+      GenerateTunnel = true;
+      GenerateLanterns = true;
+      Type = ROOM_NORMAL;
+      GenerateFountains = true;
+      AllowLockedDoors = true;
+      AllowBoobyTrappedDoors = true;
+      Shape = RECTANGLE;
+      IsInside = true;
+      GenerateWindows = false;
+      UseFillSquareWalls = false;
+      Flags = 0;
+      GenerateWards = false;
+    }
+  }
+
+  Level 0;
+  {
+    FillSquare = solidterrain(GROUND), MORAINE earth;
+
+    RoomDefault
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      WallSquare = solidterrain(GROUND), FIR_WOOD wall(BRICK_OLD);
+      FloorSquare = solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(PARQUET), FIR_WOOD door;
+    }
+
+    Square, Random;
+    {
+      Character = adultalien();
+      Times = 5;
+    }
+
+    Square, Random;
+    {
+      Character = aliendog();
+      Times = 5;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_UP);
+      EntryIndex = STAIRS_UP;
+      AttachRequired = true;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_DOWN);
+      EntryIndex = STAIRS_DOWN;
+      AttachRequired = true;
+    }
+  }
+
+  Level 1;
+  {
+    FillSquare = solidterrain(GROUND), MORAINE earth;
+
+    RoomDefault
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      WallSquare = solidterrain(GROUND), FIR_WOOD wall(BRICK_OLD);
+      FloorSquare = solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(PARQUET), FIR_WOOD door;
+    }
+
+    Square, Random;
+    {
+      Character = jackal();
+      Times = 5;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_UP);
+      EntryIndex = STAIRS_UP;
+      AttachRequired = true;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_DOWN);
+      EntryIndex = STAIRS_DOWN;
+      AttachRequired = true;
+    }
+  }
+
+  Level 2;
+  {
+    FillSquare = solidterrain(GROUND), MORAINE earth;
+
+    RoomDefault
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      WallSquare = solidterrain(GROUND), FIR_WOOD wall(BRICK_OLD);
+      FloorSquare = solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(PARQUET), FIR_WOOD door;
+    }
+
+    Square, Random;
+    {
+      Character = jackal();
+      Times = 5;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_UP);
+      EntryIndex = STAIRS_UP;
+      AttachRequired = true;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_DOWN);
+      EntryIndex = STAIRS_DOWN;
+      AttachRequired = true;
+    }
+  }
+
+  Level 3;
+  {
+    FillSquare = solidterrain(GROUND), MORAINE earth;
+
+    RoomDefault
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      WallSquare = solidterrain(GROUND), FIR_WOOD wall(BRICK_OLD);
+      FloorSquare = solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(PARQUET), FIR_WOOD door;
+    }
+
+    Square, Random;
+    {
+      Character = jackal();
+      Times = 5;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_UP);
+      EntryIndex = STAIRS_UP;
+      AttachRequired = true;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_DOWN);
+      EntryIndex = STAIRS_DOWN;
+      AttachRequired = true;
+    }
+  }
+
+  Level 4;
+  {
+    FillSquare = solidterrain(GROUND), MORAINE earth;
+
+    RoomDefault
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      WallSquare = solidterrain(GROUND), FIR_WOOD wall(BRICK_OLD);
+      FloorSquare = solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(PARQUET), FIR_WOOD door;
+    }
+
+    Square, Random;
+    {
+      Character = jackal();
+      Times = 5;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_UP);
+      EntryIndex = STAIRS_UP;
+      AttachRequired = true;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_DOWN);
+      EntryIndex = STAIRS_DOWN;
+      AttachRequired = true;
+    }
+  }
+
+  Level 5;
+  {
+    FillSquare = solidterrain(GROUND), MORAINE earth;
+
+    RoomDefault
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      WallSquare = solidterrain(GROUND), FIR_WOOD wall(BRICK_OLD);
+      FloorSquare = solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(PARQUET), FIR_WOOD door;
+    }
+
+    Square, Random;
+    {
+      Character = jackal();
+      Times = 5;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_UP);
+      EntryIndex = STAIRS_UP;
+      AttachRequired = true;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_DOWN);
+      EntryIndex = STAIRS_DOWN;
+      AttachRequired = true;
+    }
+  }
+
+  Level ALIENQUEEN_LEVEL;
+  {
+    FillSquare = solidterrain(GROUND), MORAINE earth;
+
+    RoomDefault
+    {
+      Pos = 2:XSize-5,2:YSize-5;
+      WallSquare = solidterrain(GROUND), FIR_WOOD wall(BRICK_OLD);
+      FloorSquare = solidterrain(PARQUET), 0;
+      DoorSquare = solidterrain(PARQUET), FIR_WOOD door;
+    }
+
+    Square, Random;
+    {
+      Character = jackal();
+      Times = 5;
+    }
+
+    Square, Random NOT_WALKABLE|ATTACHABLE;
+    {
+      OTerrain = stairs(STAIRS_DOWN);
+      EntryIndex = STAIRS_DOWN;
+      AttachRequired = true;
+    }
+  }
+}

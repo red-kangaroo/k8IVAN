@@ -1,0 +1,106 @@
+adultalien
+{
+  DefaultArmStrength = 10;
+  DefaultAgility = 15;
+  DefaultEndurance = 10;
+  DefaultPerception = 15;
+  DefaultIntelligence = 10;
+  DefaultWisdom = 10;
+  DefaultCharisma = 10;
+  DefaultMana = 0;
+  TotalSize = 250;
+  TotalVolume = 150000;
+  FleshMaterial = ALIEN_FLESH;
+  BloodMaterial = ALIEN_BLOOD;
+  ClassStates = INFRA_VISION;
+  AcidResistance = 1000;
+  FireResistance = 50;
+  AttackStyle = USE_HEAD|USE_ARMS;
+  BaseUnarmedStrength = 300;
+  BaseBiteStrength = 600;
+  KnownCWeaponSkills = { 2, UNARMED, BITE; }
+  CWeaponSkillHits = { 2, 50, 50; }
+  NameSingular = "adult alien";
+  UsesLongArticle = true;
+  TorsoBitmapPos = 64, 48;
+  SkinColor = rgb16(82, 90, 98);
+  AttachedGod = NONE;
+  HostileReplies == "@Dd spit acid saliva.";
+  FriendlyReplies == "@Dd ignores you.";
+  DeathMessage = "@Dd is killed.";
+  CanBeGenerated = false;
+}
+
+
+aliendog
+{
+  DefaultArmStrength = 8;
+  DefaultAgility = 25;
+  DefaultEndurance = 8;
+  DefaultPerception = 18;
+  DefaultIntelligence = 5;
+  DefaultWisdom = 10;
+  DefaultCharisma = 10;
+  DefaultMana = 0;
+  TotalSize = 120;
+  TotalVolume = 35000;
+  FleshMaterial = ALIEN_FLESH;
+  BloodMaterial = ALIEN_BLOOD;
+  ClassStates = INFRA_VISION;
+  AcidResistance = 500;
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 300;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 100;
+  NameSingular = "alien dog";
+  UsesLongArticle = true;
+  TorsoBitmapPos = 304, 16;
+  SkinColor = rgb16(72, 86, 90);
+  AttachedGod = NONE;
+  HostileReplies == "@Dd spit acid saliva.";
+  FriendlyReplies == "@Dd ignores you.";
+  DeathMessage = "@Dd is killed.";
+  CanBeGenerated = false;
+}
+
+alienqueen
+{
+  DefaultArmStrength = 25;
+  DefaultAgility = 15;
+  DefaultEndurance = 30;
+  DefaultPerception = 18;
+  DefaultIntelligence = 20;
+  DefaultWisdom = 12;
+  DefaultCharisma = 14;
+  DefaultMana = 0;
+  TotalSize = 500;
+  TotalVolume = 1000000;
+  IsEnormous = true;
+  FleshMaterial = ALIEN_FLESH;
+  BloodMaterial = ALIEN_BLOOD;
+  ClassStates = INFRA_VISION;
+  AcidResistance = 1000;
+  FireResistance = 25;
+  AttackStyle = USE_HEAD;
+  BaseBiteStrength = 800;
+  KnownCWeaponSkills == BITE;
+  CWeaponSkillHits == 100;
+  NameSingular = "alien Queen";
+  ArticleMode = FORCE_THE;
+  TorsoBitmapPos = 288, 64;
+  SkinColor = rgb16(82, 90, 98);
+  AttachedGod = NONE;
+  HostileReplies == "@Dd spit acid saliva.";
+  FriendlyReplies == "@Dd ignores you.";
+  DeathMessage = "@Dd is destroyed in an acidic explosion.";
+  CanBeGenerated = false;
+  IsRooted = true;
+  AllowUnconsciousness = false;
+  PanicLevel = 0;
+  //IsCharmable = false;
+  TamingDifficulty = NO_TAMING; /* Alien Queen doesn't understand charming music of earthlings */
+  IsNameable = false;
+  IsUnique = true;
+  CanOpen = false;
+  HasALeg = false;
+}

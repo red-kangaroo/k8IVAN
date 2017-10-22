@@ -74,6 +74,8 @@ void InitPlaces () {
     REGISTER_PLACE(dragontower, SteppeType, DRAGON_TOWER);
     REGISTER_PLACE(darkforest, LForestType, DARK_FOREST);
     REGISTER_PLACE(xinrochtomb, SnowType, XINROCH_TOMB);
+    // alien mod
+    REGISTER_PLACE(alienvessel, JungleType, ALIEN_VESSEL);
   }
 }
 

@@ -58,3 +58,7 @@
 #include "nonhumans/nonhumanoid_bluedragon.cpp"
 #include "nonhumans/nonhumanoid_reddragon.cpp"
 #include "nonhumans/nonhumanoid_vampirebat.cpp"
+// alien mod
+#include "nonhumans/alien_adultalien.cpp"
+#include "nonhumans/alien_aliendog.cpp"
+#include "nonhumans/alien_alienqueen.cpp"

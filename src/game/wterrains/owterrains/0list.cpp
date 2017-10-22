@@ -8,3 +8,4 @@
 #include "wterrains/owterrains/owterrain_darkforest.cpp"
 #include "wterrains/owterrains/owterrain_muntuo.cpp"
 #include "wterrains/owterrains/owterrain_xinrochtomb.cpp"
+#include "wterrains/owterrains/owterrain_alienvessel.cpp"

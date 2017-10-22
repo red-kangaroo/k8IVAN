@@ -44,7 +44,9 @@ void cruentus::PrayGoodEffect () {
   for (int x = Rect.X1; x <= Rect.X2; ++x) {
     for (int y = Rect.Y1; y <= Rect.Y2; ++y) {
       character *Audience = game::GetCurrentLevel()->GetSquare(x, y)->GetCharacter();
-      if (Audience && Audience->CanBeSeenByPlayer() && !Audience->TemporaryStateIsActivated(PANIC) && PLAYER->GetRelation(Audience) == HOSTILE) {
+      if (Audience && Audience->CanBeSeenByPlayer() && !Audience->TemporaryStateIsActivated(PANIC) && !Audience->StateIsActivated(FEARLESS) &&
+          PLAYER->GetRelation(Audience) == HOSTILE)
+      {
         AudiencePresent = true;
         break;
       }

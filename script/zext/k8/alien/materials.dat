@@ -1,0 +1,45 @@
+Extend liquid
+{
+  Config ALIEN_BLOOD;
+  {
+    StrengthValue = 1;
+    NutritionValue = 40;
+    Color = rgb16(32, 0, 0);
+    NameStem = "alien blood";
+    Alpha = 175;
+    Flexibility = 40;
+    AttachedGod = NONE;
+    RustModifier = 400;
+    Acidicity = 400;
+    ConsumeWisdomLimit = 0;
+    CategoryFlags = IS_BLOOD;
+    InteractionFlags = Base|AFFECT_INSIDE;
+    StepInWisdomLimit = 0;
+  }
+
+  Config ALIEN_DROOL;
+  {
+    StrengthValue = 2;
+    NutritionValue = 50;
+    Color = rgb16(72, 72, 150);
+    NameStem = "alien drool";
+    Alpha = 165;
+    AttachedGod = NONE;
+    RustModifier = 2;
+  }
+}
+
+
+Extend flesh
+{
+  Config ALIEN_FLESH;
+  {
+    ConsumeWisdomLimit = 0;
+    ConsumeEndMessage = CEM_ALIEN_FLESH;
+    HitMessage = HM_ALIEN_FLESH;
+    NameStem = "alien flesh";
+    AttachedGod = NONE;
+    BodyFlags = Base&~IS_WARM;
+    InteractionFlags = Base&~CAN_DISSOLVE;
+  }
+}

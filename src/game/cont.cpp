@@ -57,25 +57,27 @@ void continent::GenerateInfo()
   Name << Index;
 }
 
-v2 continent::GetRandomMember(int Type)
+v2 continent::GetRandomMember(int Type, truth* success)
 {
-  if(!GTerrainAmount[Type])
-    ABORT("Shortage of terrain!");
+  if (success) *success = false;
+  if (!GTerrainAmount[Type]) {
+    //ABORT("Shortage of terrain!");
+    return v2(0, 0);
+  }
 
   v2* TypeContainer = new v2[Member.size()];
   sLong Index = 0;
 
-  for(feuLong c = 0; c < Member.size(); ++c)
-    if(TypeBuffer[Member[c].X][Member[c].Y] == Type)
-    {
+  for (feuLong c = 0; c < Member.size(); ++c) {
+    if (TypeBuffer[Member[c].X][Member[c].Y] == Type) {
       TypeContainer[Index++] = Member[c];
-
-      if(Index == GetGTerrainAmount(Type))
-  break;
+      if (Index == GetGTerrainAmount(Type)) break;
     }
+  }
 
   v2 Return = TypeContainer[RAND() % Index];
   delete [] TypeContainer;
+  if (success) *success = true;
   return Return;
 }
 

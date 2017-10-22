@@ -484,6 +484,7 @@ public:
   void AddWhiteUnicornConsumeEndMessage () const;
   void AddOmmelBoneConsumeEndMessage () const;
   void AddLiquidHorrorConsumeEndMessage() const;
+  void AddAlienFleshConsumeEndMessage() const;
   void PrintInfo () const;
   virtual item *SevereBodyPart (int, truth = false, stack * = 0);
   virtual truth TryToRiseFromTheDead ();
@@ -709,6 +710,8 @@ public:
   void EndESP ();
   void HiccupsHandler ();
   void VampirismHandler ();
+  void BeginEthereality();
+  void EndEthereality();
   character *PolymorphRandomly (int, int, int);
   virtual truth EquipmentEasilyRecognized (int) const { return true; }
   void StartReading (item *, sLong);
@@ -721,6 +724,8 @@ public:
   void PrintEndInfraVisionMessage () const;
   void PrintBeginESPMessage () const;
   void PrintEndESPMessage () const;
+  void PrintBeginEtherealityMessage() const;
+  void PrintEndEtherealityMessage() const;
   truth CanBeSeenByPlayer (truth = false, truth = false) const;
   truth CanBeSeenBy (ccharacter *, truth = false, truth = false) const;
   void AttachBodyPart (bodypart *);
@@ -1125,6 +1130,9 @@ public:
   virtual cchar *GetNormalDeathMessage () const;
   virtual bool IsConscious () const;
   void ForcePutNear (v2);
+  void PrintBeginFearlessMessage() const;
+  void PrintEndFearlessMessage() const;
+  void EndFearless();
   virtual void ApplySpecialAttributeBonuses () {}
   void ReceiveMustardGas (int, sLong);
   void ReceiveMustardGasLiquid (int, sLong);

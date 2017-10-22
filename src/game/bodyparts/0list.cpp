@@ -67,3 +67,6 @@ inputfile &operator >> (inputfile &SaveFile, scar &Scar) {
 #include "bodyparts/largetorso_lobhsetorso.cpp"
 #include "bodyparts/normaltorso_battorso.cpp"
 #include "bodyparts/normaltorso_spidertorso.cpp"
+// alien mod
+#include "bodyparts/alien_adultalientorso.cpp"
+#include "bodyparts/alien_aliendogtorso.cpp"

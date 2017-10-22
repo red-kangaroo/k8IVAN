@@ -131,7 +131,7 @@ const name##prototype name::ProtoType
 #define BLOATED 5
 #define OVER_FED 6
 
-#define STATES 23
+#define STATES 25
 
 #define POLYMORPHED (1 << 0)
 #define HASTE (1 << 1)
@@ -157,6 +157,7 @@ const name##prototype name::ProtoType
 #define VAMPIRISM (1 << 21)
 #define DETECTING (1 << 22)
 #define ETHEREAL_MOVING (1 << 23)
+#define FEARLESS (1 << 24)
 
 #define THROW_ITEM_TYPES 5
 /*ThrowFlags */
@@ -423,6 +424,8 @@ cv2 SILHOUETTE_SIZE(48, 64);
 // new
 #define CEM_LIQUID_HORROR 16
 #define CEM_HOLY_MANGO 17
+// alien mod
+#define CEM_ALIEN_FLESH 18
 
 /* HM = Hit Message */
 
@@ -437,6 +440,8 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define HM_CONFUSE 8
 #define HM_HOLY_BANANA 9
 #define HM_HOLY_MANGO 10
+// alien mod
+#define HM_ALIEN_FLESH 11
 
 #define UNARMED_ATTACK 0
 #define WEAPON_ATTACK 1
@@ -556,6 +561,9 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define DRAGON_TOWER 7
 #define DARK_FOREST 8
 #define XINROCH_TOMB 9
+// alien mod
+#define ALIEN_VESSEL 10
+
 #define KHARAZ_ARAD_SHOP 127
 #define UNDER_WATER_TUNNEL_EXIT 128
 
@@ -567,6 +575,9 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define IVAN_LEVEL 7
 #define DARK_LEVEL 8
 #define OREE_LAIR 12
+
+// alien mod
+#define ALIENQUEEN_LEVEL 6
 
 #define DUAL_ENNER_BEAST_LEVEL 5
 #define NECRO_CHAMBER_LEVEL 6
