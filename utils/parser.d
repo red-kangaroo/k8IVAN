@@ -403,25 +403,29 @@ class SimpleConfig {
 
   this () { name = "<default>"; }
 
-  this (SimpleIvanParser par, string aname) {
+  this (SimpleIvanParser par, string aname, bool ignoredups=false) {
     name = aname;
     loc = par.tok.loc;
     for (;;) {
       if (par.eof) par.expectDelim("}");
       if (par.tok.isDelim("{")) par.tokerror("wtf?!");
       if (par.eatDelim("}")) break;
-      parseField(par);
+      parseField(par, ignoredups);
     }
   }
 
-  void parseField (SimpleIvanParser par) {
+  void parseField (SimpleIvanParser par, bool ignoredups=false) {
     auto fld = new SimpleField(par);
     if (fld.name == "CanBeBurned") return;
     if (auto ofp = fld.name in fields) {
       if (*ofp == fld) {
         writeln("WARNING: ", fld.loc, ": duplicate field '"~fld.name~"' (prev vas at "~ofp.loc.toString~")");
       } else {
-        par.errorAt(fld.loc, "duplicate field '"~fld.name~"' (prev vas at "~ofp.loc.toString~")");
+        if (ignoredups) {
+          writeln("WARNING: ", fld.loc, ": duplicate DIFFERENT field '"~fld.name~"' (prev vas at "~ofp.loc.toString~")");
+        } else {
+          par.errorAt(fld.loc, "duplicate field '"~fld.name~"' (prev vas at "~ofp.loc.toString~")");
+        }
       }
     }
     fields[fld.name] = fld;
@@ -496,7 +500,7 @@ class SimpleDef {
   SimpleConfig[string] configs;
 
   //this (string aname) { name = aname; }
-  this (SimpleIvanParser par) {
+  this (SimpleIvanParser par, bool ignoredups=false) {
     loc = par.tok.loc;
     name = par.expectIdNum();
     auto defcfg = new SimpleConfig();
@@ -525,15 +529,19 @@ class SimpleDef {
         }
         par.expectDelim(";");
         par.expectDelim("{");
-        auto cc = new SimpleConfig(par, cfg);
+        auto cc = new SimpleConfig(par, cfg, ignoredups);
         cc.broken = broken;
         if (auto ocp = cc.name in configs) {
-          par.errorAt(cc.loc, "duplicate config '"~cc.name~"' (prev vas at "~ocp.loc.toString~")");
+          if (ignoredups) {
+            writeln("WARNING: ", cc.loc, ": duplicate DIFFERENT config '"~cc.name~"' (prev vas at "~ocp.loc.toString~")");
+          } else {
+            par.errorAt(cc.loc, "duplicate config '"~cc.name~"' (prev vas at "~ocp.loc.toString~")");
+          }
         }
         configs[cc.name] = cc;
         //{ import iv.vfs.io; writeln("ccend: loc=", par.loc, "; ", cc.name); }
       } else {
-        defcfg.parseField(par);
+        defcfg.parseField(par, ignoredups);
       }
     }
   }
@@ -626,13 +634,17 @@ class SimpleDefList {
 
   this () {}
 
-  void parse (VFile fl) { parse(new SimpleIvanParser(fl)); }
+  void parse (VFile fl, bool ignoredups=false) { parse(new SimpleIvanParser(fl), ignoredups); }
 
-  void parse (SimpleIvanParser par) {
+  void parse (SimpleIvanParser par, bool ignoredups=false) {
     while (!par.eof) {
-      auto def = new SimpleDef(par);
+      auto def = new SimpleDef(par, ignoredups);
       if (auto odp = def.name in defs) {
-        par.errorAt(def.loc, "duplicate definition '"~def.name~"' (prev vas at "~odp.loc.toString~")");
+        if (ignoredups) {
+          writeln("WARNING: ", def.loc, ": duplicate DIFFERENT definition '"~def.name~"' (prev vas at "~odp.loc.toString~")");
+        } else {
+          par.errorAt(def.loc, "duplicate definition '"~def.name~"' (prev vas at "~odp.loc.toString~")");
+        }
       }
       defs[def.name] = def;
       if (def.name == "character" || def.name == "item") {

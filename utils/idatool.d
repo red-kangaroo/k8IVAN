@@ -28,6 +28,7 @@ import parser;
 // ////////////////////////////////////////////////////////////////////////// //
 __gshared string commIvanRoot = "/home/ketmar/k8prj/I.V.A.N./_community/_git";
 __gshared string k8IvanRoot = "/home/ketmar/k8prj/I.V.A.N.";
+__gshared bool optIgnoreDups = false;
 
 
 // ////////////////////////////////////////////////////////////////////////// //
@@ -49,7 +50,7 @@ VFile findAndOpenDat(string type) (const(char)[] fname) if (type == "k8" || type
 // ////////////////////////////////////////////////////////////////////////// //
 SimpleDefList loadlist (VFile fl) {
   auto res = new SimpleDefList();
-  res.parse(fl);
+  res.parse(fl, optIgnoreDups);
   return res;
 }
 
@@ -73,7 +74,7 @@ SimpleDefList loadk8listdir (string path) {
 SimpleDefList loadk8list (VFile fl) {
   import std.file;
   auto defs = new SimpleDefList();
-  defs.parse(new IvanParser(fl));
+  defs.parse(new IvanParser(fl), optIgnoreDups);
   if (defs.maindef is null) assert(0, "k8: main def not found");
   return defs;
 }
@@ -135,6 +136,7 @@ void main (string[] args) {
 
   conRegVar!commIvanRoot("comm_root", "community fork root dir");
   conRegVar!k8IvanRoot("k8_root", "k8 fork root dir");
+  conRegVar!optIgnoreDups("p_ignore_dups", "don't fail on duplicates");
 
   conProcessQueue(); // load config
   conProcessArgs!true(args);
