@@ -1132,6 +1132,7 @@ public:
   void ForcePutNear (v2);
   void PrintBeginFearlessMessage() const;
   void PrintEndFearlessMessage() const;
+  void BeginFearless();
   void EndFearless();
   virtual void ApplySpecialAttributeBonuses () {}
   void ReceiveMustardGas (int, sLong);

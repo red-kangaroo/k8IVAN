@@ -89,9 +89,7 @@ truth material::Effect(character* Char, int BodyPart, sLong Amount)
    case EFFECT_PEPSI: Char->ReceivePepsi(Amount); break;
    case EFFECT_KOBOLD_FLESH: Char->ReceiveKoboldFlesh(Amount); break;
    case EFFECT_HEAL: Char->ReceiveHeal(Amount); break;
-   case EFFECT_LYCANTHROPY:
-    Char->BeginTemporaryState(LYCANTHROPY, Amount);
-    break;
+   case EFFECT_LYCANTHROPY: Char->BeginTemporaryState(LYCANTHROPY, Amount); break;
    case EFFECT_SCHOOL_FOOD: Char->ReceiveSchoolFood(Amount); break;
    case EFFECT_ANTIDOTE: Char->ReceiveAntidote(Amount); break;
    case EFFECT_CONFUSE: Char->BeginTemporaryState(CONFUSED, Amount); break;

@@ -106,7 +106,8 @@ const statedata StateData[STATES] =
     RANDOMIZABLE&~(SRC_MUSHROOM|SRC_EVIL),
     &character::PrintBeginInvisibilityMessage,
     &character::PrintEndInvisibilityMessage,
-    &character::BeginInvisibility,  &character::EndInvisibility,
+    &character::BeginInvisibility,
+    &character::EndInvisibility,
     0,
     0,
     0
@@ -284,7 +285,7 @@ const statedata StateData[STATES] =
     RANDOMIZABLE&~SRC_EVIL,
     &character::PrintBeginFearlessMessage,
     &character::PrintEndFearlessMessage,
-    0,
+    &character::BeginFearless,
     &character::EndFearless,
     0,
     0,
@@ -4000,7 +4001,9 @@ void character::DrawPanel (truth AnimationDraw) const {
     FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "%s", festring(GetAction()->GetDescription()).CapitalizeCopy().CStr());
   }
 
+  //printf("========= STATES =========\n");
   for (int c = 0; c < STATES; ++c) {
+    //printf("  %d: %s (%s)\n", c, StateData[c].Description, (StateIsActivated(1<<c) ? "TAN" : "ona"));
     if (!(StateData[c].Flags & SECRET) && StateIsActivated(1 << c) && (1 << c != HASTE || !StateIsActivated(SLOW)) && (1 << c != SLOW || !StateIsActivated(HASTE))) {
       FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), (1 << c) & EquipmentState || TemporaryStateCounter[c] >= PERMANENT ? BLUE : WHITE, "%s", StateData[c].Description);
     }
@@ -8369,10 +8372,14 @@ void character::PrintBeginFearlessMessage () const {
 }
 
 void character::PrintEndFearlessMessage () const {
-  if (!StateIsActivated (FEARLESS)) {
+  if (!StateIsActivated(FEARLESS)) {
          if (IsPlayer()) ADD_MESSAGE("Everything looks more dangerous now.");
     else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s seems to have lost his confidence.", CHAR_NAME(DEFINITE));
   }
+}
+
+void character::BeginFearless () {
+  DeActivateTemporaryState(PANIC);
 }
 
 void character::EndFearless () {
