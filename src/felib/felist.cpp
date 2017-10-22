@@ -310,7 +310,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
     bool selected = (Flags&SELECTABLE && Entry[c]->Selectable && Selected == i);
     if (selected) selIdx = (int)c;
     if (Entry[c]->ImageKey != NO_IMAGE) {
-      if (Str.GetSize() <= (Width-50)>>3) {
+      if (Str.rawLength() <= (Width-50)>>3) {
         Buffer->Fill(Pos.X+3, LastFillBottom, Width-6, 20, !selected ? BackColor : selBack);
         if (EntryDrawer) EntryDrawer(Buffer, v2(Pos.X+13, LastFillBottom), Entry[c]->ImageKey);
         if (selected) {
