@@ -251,6 +251,23 @@ uInt felist::Draw () {
         Return = Selected;
         break;
       }
+    } else {
+      // not selectable: allow navigation with left/right
+      if (Pressed == KEY_LEFT) {
+        if (PageBegin > 0) {
+          PageBegin -= (PageBegin < PageLength ? PageBegin : PageLength);
+          BackGround.FastBlit(Buffer);
+        }
+        continue;
+      }
+
+      if (Pressed == KEY_RIGHT) {
+        if (!AtTheEnd) {
+          PageBegin += PageLength;
+          BackGround.FastBlit(Buffer);
+        }
+        continue;
+      }
     }
 
     if (Pressed == KEY_ESC) {
