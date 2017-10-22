@@ -254,7 +254,7 @@ class level : public area
   void Amnesia(int);
   spawnresult SpawnMonsters(characterspawner, team*, v2, int = 0, int = 1, truth = false);
   void AddSpecialCursors();
-  void GasExplosion(gas*, lsquare*);
+  void GasExplosion(gas* GasMaterial, lsquare* Square, character* Terrorist=0);
  protected:
   truth GenerateLanterns(int, int, int) const;
   truth GenerateWindows(int, int) const;
