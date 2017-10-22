@@ -87,7 +87,6 @@ Dungeon ALIEN_VESSEL;
       Character = adultalien();
       Times = 5;
     }
-
     Square, Random;
     {
       Character = aliendog();
@@ -127,6 +126,12 @@ Dungeon ALIEN_VESSEL;
       Times = 5;
     }
 
+    Square, Random;
+    {
+      Character = aliendog();
+      Times = 5;
+    }
+
     Square, Random NOT_WALKABLE|ATTACHABLE;
     {
       OTerrain = stairs(STAIRS_UP);
@@ -157,6 +162,12 @@ Dungeon ALIEN_VESSEL;
     Square, Random;
     {
       Character = jackal();
+      Times = 5;
+    }
+
+    Square, Random;
+    {
+      Character = aliendog();
       Times = 5;
     }
 
@@ -193,6 +204,18 @@ Dungeon ALIEN_VESSEL;
       Times = 5;
     }
 
+    Square, Random;
+    {
+      Character = aliendog();
+      Times = 5;
+    }
+
+    Square, Random;
+    {
+      Character = adultalien();
+      Times = 5;
+    }
+
     Square, Random NOT_WALKABLE|ATTACHABLE;
     {
       OTerrain = stairs(STAIRS_UP);
@@ -224,6 +247,18 @@ Dungeon ALIEN_VESSEL;
     {
       Character = jackal();
       Times = 5;
+    }
+
+    Square, Random;
+    {
+      Character = aliendog();
+      Times = 7;
+    }
+
+    Square, Random;
+    {
+      Character = adultalien();
+      Times = 6;
     }
 
     Square, Random NOT_WALKABLE|ATTACHABLE;
@@ -259,6 +294,12 @@ Dungeon ALIEN_VESSEL;
       Times = 5;
     }
 
+    Square, Random;
+    {
+      Character = adultalien();
+      Times = 9;
+    }
+
     Square, Random NOT_WALKABLE|ATTACHABLE;
     {
       OTerrain = stairs(STAIRS_UP);
@@ -292,10 +333,21 @@ Dungeon ALIEN_VESSEL;
       Times = 5;
     }
 
+    Square, Random;
+    {
+      Character = aliendog();
+      Times = 5;
+    }
+
+    Square, Random;
+    {
+      Character = alienqueen();
+    }
+
     Square, Random NOT_WALKABLE|ATTACHABLE;
     {
-      OTerrain = stairs(STAIRS_DOWN);
-      EntryIndex = STAIRS_DOWN;
+      OTerrain = stairs(STAIRS_UP);
+      EntryIndex = STAIRS_UP;
       AttachRequired = true;
     }
   }
