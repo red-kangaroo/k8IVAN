@@ -5661,7 +5661,7 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
     (SecStack ? festring(CONST_S("Items in ")+GetPossessivePronoun()+" inventory") : CONST_S("")),
     (SecStack ? festring(GetDescription(DEFINITE)+" is "+GetVerbalBurdenState()) : CONST_S("")),
     GetVerbalBurdenStateColor(),
-    NONE_AS_CHOICE|NO_MULTI_SELECT,
+    NONE_AS_CHOICE|NO_MULTI_SELECT|SELECT_PAIR,
     Sorter, OldEquipment);
   if (Return == ESCAPED) {
     if (OldEquipment) {
@@ -5672,14 +5672,41 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
   }
 
   item *Item = (ItemVector.empty() ? 0 : ItemVector[0]);
+
   if (Item) {
     if (!IsPlayer() && !AllowEquipment(Item, Chosen)) {
       ADD_MESSAGE("%s refuses to equip %s.", CHAR_DESCRIPTION(DEFINITE), Item->CHAR_NAME(DEFINITE));
       return false;
     }
+    int otherChosen = -1;
+    if (ItemVector[0]->HandleInPairs() && ItemVector.size() > 1) {
+      switch (Chosen) {
+        case RIGHT_GAUNTLET_INDEX: otherChosen = LEFT_GAUNTLET_INDEX; break;
+        case LEFT_GAUNTLET_INDEX: otherChosen = RIGHT_GAUNTLET_INDEX; break;
+        case RIGHT_BOOT_INDEX: otherChosen = LEFT_BOOT_INDEX; break;
+        case LEFT_BOOT_INDEX: otherChosen = RIGHT_BOOT_INDEX; break;
+        default: break;
+      }
+      if (otherChosen != -1) {
+        if (!game::TruthQuestion("Wear both items?", NO)) otherChosen = -1;
+      }
+    }
+    // wear/wield first item
     Item->RemoveFromSlot();
     SetEquipment(Chosen, Item);
-    if (CheckIfEquipmentIsNotUsable(Chosen)) Item->MoveTo(MainStack); // small bug?
+    if (CheckIfEquipmentIsNotUsable(Chosen)) { Item->MoveTo(MainStack); Item = 0; } // small bug?
+    // wear/wield possible second item
+    if (Item && otherChosen != -1 && ItemVector[0]->HandleInPairs() && ItemVector.size() > 1) {
+      item *otherOld = GetEquipment(otherChosen);
+      if (otherOld && !IsPlayer() && BoundToUse(otherOld, otherChosen)) {
+        ADD_MESSAGE("%s refuses to unequip %s.", CHAR_DESCRIPTION(DEFINITE), otherOld->CHAR_NAME(DEFINITE));
+      } else if (otherOld) {
+        otherOld->MoveTo(MainStack);
+      }
+      ItemVector[1]->RemoveFromSlot();
+      SetEquipment(otherChosen, ItemVector[1]);
+      if (CheckIfEquipmentIsNotUsable(otherChosen)) { ItemVector[1]->MoveTo(MainStack); } // small bug?
+    }
   }
 
   return (Item != OldEquipment);
