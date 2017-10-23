@@ -105,6 +105,7 @@ public:
   void Insert (sizetype Pos, cchar *CStr, sizetype N);
   void Insert (sizetype Pos, cfestring& S) { Insert(Pos, S.Data, S.Size); }
   festring &Append (cfestring &Str, sizetype N) { return Append(Str.Data, N); }
+  truth endsWithCI (cchar *str) const;
   static csizetype NPos;
   static void SplitString (festring &, festring &, sizetype);
   static void SplitStringColored (festring &, festring &, sizetype);

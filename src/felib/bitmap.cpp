@@ -15,7 +15,7 @@
 
 #if defined(HAVE_IMLIB2)
 # include <Imlib2.h>
-#elif defined(HAVE_LIBPNG)
+#elif defined(USE_LIBPNG_WRITER)
 # include <png.h>
 #endif
 
@@ -92,6 +92,21 @@
 
 
 bitmap::bitmap (cfestring &FileName) : FastFlag(0), AlphaMap(0), PriorityMap(0), RandMap(0) {
+  auto rawpic = rawbitmap(FileName);
+  mSize = rawpic.GetSize();
+  const uChar *Palette = rawpic.getPalette();
+  XSizeTimesYSize = mSize.X*mSize.Y;
+  Alloc2D(Image, mSize.Y, mSize.X);
+  packcol16 *Buffer = Image[0];
+  const uChar *buf = rawpic.getBuffer();
+  for (int y = 0; y < mSize.Y; ++y) {
+    for (int x = 0; x < mSize.X; ++x) {
+      int Char1 = *buf++;
+      int Char3 = Char1 + (Char1 << 1);
+      *Buffer++ = int(Palette[Char3] >> 3) << 11 | int(Palette[Char3 + 1] >> 2) << 5 | int(Palette[Char3 + 2] >> 3);
+    }
+  }
+  /*
   inputfile File(FileName.CStr(), 0, false);
   if (!File.IsOpen()) ABORT("Bitmap %s not found!", FileName.CStr());
   uChar Palette[768];
@@ -102,8 +117,8 @@ bitmap::bitmap (cfestring &FileName) : FastFlag(0), AlphaMap(0), PriorityMap(0),
   mSize.X += (File.Get() << 8) + 1;
   mSize.Y  =  File.Get();
   mSize.Y += (File.Get() << 8) + 1;
-  XSizeTimesYSize = mSize.X * mSize.Y;
   File.SeekPosBegin(128);
+  XSizeTimesYSize = mSize.X*mSize.Y;
   Alloc2D(Image, mSize.Y, mSize.X);
   packcol16 *Buffer = Image[0];
   for (int y = 0; y < mSize.Y; ++y) {
@@ -124,6 +139,7 @@ bitmap::bitmap (cfestring &FileName) : FastFlag(0), AlphaMap(0), PriorityMap(0),
       }
     }
   }
+  */
 }
 
 
@@ -210,7 +226,7 @@ void bitmap::Load (inputfile &SaveFile) {
 }
 
 
-#if defined(HAVE_LIBPNG)
+#if defined(USE_LIBPNG_WRITER)
 static void pngWrite (png_structp png_ptr, png_bytep data, png_size_t length) {
   FILE *fp = (FILE *)png_get_io_ptr(png_ptr);
   fwrite(data, length, 1, fp);
@@ -218,7 +234,7 @@ static void pngWrite (png_structp png_ptr, png_bytep data, png_size_t length) {
 #endif
 
 
-#if defined(HAVE_IMLIB2) || defined(HAVE_LIBPNG)
+#if defined(HAVE_IMLIB2) || defined(USE_LIBPNG_WRITER)
 void bitmap::SavePNG (cfestring &FileName) const {
 #if defined(HAVE_IMLIB2)
   if (mSize.X < 1 || mSize.Y < 1) return;
@@ -241,7 +257,7 @@ void bitmap::SavePNG (cfestring &FileName) const {
   imlib_image_set_format("png");
   imlib_save_image(FileName.CStr());
   imlib_free_image();
-#elif defined(HAVE_LIBPNG)
+#elif defined(USE_LIBPNG_WRITER)
   png_structp png_ptr;
   png_infop info_ptr;
   int ret;

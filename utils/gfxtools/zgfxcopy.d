@@ -71,5 +71,6 @@ void main (string[] args) {
     argnum += 5;
   }
 
-  writePCX(args[1].setExtension(".new.pcx"), destpic);
+  //writePCX(args[1].setExtension(".new.pcx"), destpic);
+  writePng(args[1].setExtension(".new.png"), destpic);
 }

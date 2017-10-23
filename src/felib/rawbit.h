@@ -12,6 +12,8 @@
 #ifndef __FELIB_COLORBIT_H__
 #define __FELIB_COLORBIT_H__
 
+#include <stdio.h>
+
 #include <cstdarg>
 #include <map>
 #include <vector>
@@ -64,10 +66,23 @@ public:
   void Clear ();
   void NormalBlit (rawbitmap *Bitmap, v2 Src, v2 Dest, v2 Border, int Flags=0) const;
 
+  const uChar *getPalette () const { return Palette; }
+  const uChar *getBuffer () const { return PaletteBuffer[0]; }
+
 protected:
   static truth strHasCtlCodes (cchar *str);
   void printfColoredVA (bitmap *bmp, v2 pos, packcol16 clr, truth shaded, cchar *fmt, va_list vap) const;
   void printstrColored (bitmap *bmp, v2 pos, packcol16 clr, truth shaded, cchar *str) const;
+
+protected:
+  void loadFromFile (FILE *fl);
+  void loadPCX (FILE *fl);
+#ifdef HAVE_LIBPNG
+  void loadPNG (FILE *fl);
+#endif
+
+  static festring curfile;
+  static unsigned char getb (FILE* fl);
 
 protected:
   v2 Size;

@@ -602,6 +602,19 @@ festring::sizetype festring::rawLength () const {
 static inline char Capitalize (char Char) { return (char)(Char >= 'a' && Char <= 'z' ? Char-32 : Char); }
 
 
+truth festring::endsWithCI (cchar *str) const {
+  if (!str) return true;
+  auto slen = strlen(str);
+  if (slen < 1) return true;
+  if (Size < slen) return false;
+  cchar *ep = Data+Size-slen;
+  for (; *str; ++str, ++ep) {
+    if (::Capitalize(*str) != ::Capitalize(*ep)) return false;
+  }
+  return true;
+}
+
+
 /* Returns the position of the first occurance of What in Where
  * starting at Begin or after it, ignoring the case of letters.
  * If the search fails, festring::NPos is returned instead. */

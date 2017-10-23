@@ -11,6 +11,10 @@
  */
 #include <cstdarg>
 
+#ifdef HAVE_LIBPNG
+# include <png.h>
+#endif
+
 #include "allocate.h"
 #include "rawbit.h"
 #include "bitmap.h"
@@ -18,62 +22,74 @@
 #include "femath.h"
 
 
-rawbitmap::rawbitmap (cfestring &FileName) {
-  inputfile File(FileName.CStr(), 0, false);
-  if (!File.IsOpen()) ABORT("Bitmap %s not found!", FileName.CStr());
+// ////////////////////////////////////////////////////////////////////////// //
+festring rawbitmap::curfile;
+
+
+// ////////////////////////////////////////////////////////////////////////// //
+unsigned char rawbitmap::getb (FILE* fl) {
+  unsigned char c = 0;
+  if (!fl) ABORT("Cannot read from nothing!");
+  if (fread(&c, 1, 1, fl) != 1) ABORT("Error reading file '%s'!", curfile.CStr());
+  return c;
+}
+
+
+// ////////////////////////////////////////////////////////////////////////// //
+void rawbitmap::loadPCX (FILE *fl) {
+  if (fseek(fl, 0, SEEK_SET) == -1) ABORT("Error reading file '%s'!", curfile.CStr());
   // simple checks
-  // http://www.qzx.com/pc-gpe/pcx.txt
-  if (File.Get() != 10) ABORT("Invalid bitmap format: %s!", FileName.CStr());
-  int ver = File.Get();
+  if (getb(fl) != 10) ABORT("Invalid bitmap format: %s!", curfile.CStr());
+  int ver = getb(fl);
   switch (ver) {
     case 4: case 5: break;
-    default: ABORT("Invalid bitmap version: %s!", FileName.CStr());
+    default: ABORT("Invalid bitmap version: %s!", curfile.CStr());
   }
   truth packed = true;
-  switch (File.Get()) {
+  switch (getb(fl)) {
     case 0: packed = false; break;
     case 1: break;
-    default: ABORT("Invalid bitmap encoding: %s!", FileName.CStr());
+    default: ABORT("Invalid bitmap encoding: %s!", curfile.CStr());
   }
-  if (File.Get() != 8) ABORT("Invalid bitmap BPP: %s!", FileName.CStr());
+  if (getb(fl) != 8) ABORT("Invalid bitmap BPP: %s!", curfile.CStr());
   // dimensions
   // x0
-  int x0 = File.Get();
-  x0 |= File.Get()<<8;
+  int x0 = getb(fl);
+  x0 |= getb(fl)<<8;
   // y0
-  int y0 = File.Get();
-  y0 |= File.Get()<<8;
+  int y0 = getb(fl);
+  y0 |= getb(fl)<<8;
   // x1
-  int x1 = File.Get();
-  x1 |= File.Get()<<8;
+  int x1 = getb(fl);
+  x1 |= getb(fl)<<8;
   // y1
-  int y1 = File.Get();
-  y1 |= File.Get()<<8;
+  int y1 = getb(fl);
+  y1 |= getb(fl)<<8;
   // calculate dimensions
   int wdt = (x1-x0)+1;
   int hgt = (y1-y0)+1;
   // check dimensions
-  if (wdt < 1 || wdt > 32700) ABORT("Invalid bitmap width: %s!", FileName.CStr());
-  if (hgt < 1 || hgt > 32700) ABORT("Invalid bitmap height: %s!", FileName.CStr());
+  if (wdt < 1 || wdt > 32700) ABORT("Invalid bitmap width: %s!", curfile.CStr());
+  if (hgt < 1 || hgt > 32700) ABORT("Invalid bitmap height: %s!", curfile.CStr());
   // skip dpi
-  for (int skipcount = 4; skipcount > 0; --skipcount) File.Get();
+  for (int skipcount = 4; skipcount > 0; --skipcount) getb(fl);
   // skip 16-color palette and reserved
-  for (int skipcount = 16*3+1; skipcount > 0; --skipcount) File.Get();
+  for (int skipcount = 16*3+1; skipcount > 0; --skipcount) getb(fl);
   // check colorplanes
-  if (File.Get() != 1) ABORT("Invalid bitmap colorplanes: %s!", FileName.CStr());
+  if (getb(fl) != 1) ABORT("Invalid bitmap colorplanes: %s!", curfile.CStr());
   // bytes per line
-  int bpl = File.Get();
-  bpl |= File.Get()<<8;
-  if (bpl < wdt) ABORT("Invalid bitmap bytes per line: %s!", FileName.CStr());
+  int bpl = getb(fl);
+  bpl |= getb(fl)<<8;
+  if (bpl < wdt) ABORT("Invalid bitmap bytes per line: %s!", curfile.CStr());
   int hdrread = 4+4*2+2*2+16*3+1+1+2;
   // check palette type
   if (ver == 4) {
-    if (File.Get() != 1) ABORT("Invalid bitmap palette type: %s!", FileName.CStr());
-    if (File.Get() != 0) ABORT("Invalid bitmap palette type: %s!", FileName.CStr());
+    if (getb(fl) != 1) ABORT("Invalid bitmap palette type: %s!", curfile.CStr());
+    if (getb(fl) != 0) ABORT("Invalid bitmap palette type: %s!", curfile.CStr());
     hdrread += 2;
   }
   // skip rest of the header
-  while (hdrread < 128) { File.Get(); ++hdrread; }
+  while (hdrread < 128) { getb(fl); ++hdrread; }
   // load bitmap
   Size.X = wdt;
   Size.Y = hgt;
@@ -82,14 +98,14 @@ rawbitmap::rawbitmap (cfestring &FileName) {
     int cnt = 0, b = 0;
     for (int x = 0; x < bpl; ++x) {
       if (cnt == 0) {
-        b = (unsigned char)File.Get();
+        b = (unsigned char)getb(fl);
         if (packed && b >= 0xc0) {
           cnt = b&0x3f;
           if (cnt == 0) {
             delete [] PaletteBuffer;
-            ABORT("Invalid compressed bitmap: %s!", FileName.CStr());
+            ABORT("Invalid compressed bitmap: %s!", curfile.CStr());
           }
-          b = (unsigned char)File.Get();
+          b = (unsigned char)getb(fl);
         } else {
           cnt = 1;
         }
@@ -103,11 +119,101 @@ rawbitmap::rawbitmap (cfestring &FileName) {
     }
   }
   // load palette
-  File.SeekPosEnd(-769);
+  if (fseek(fl, -769, SEEK_END) == -1) ABORT("Error reading file '%s'!", curfile.CStr());
   // check signature
-  if (File.Get() != 12) ABORT("Invalid bitmap palette: %s!", FileName.CStr());
+  if (getb(fl) != 12) ABORT("Invalid bitmap palette: %s!", curfile.CStr());
   Palette = new uChar[768];
-  File.Read(reinterpret_cast<char *>(Palette), 768);
+  if (fread(reinterpret_cast<char *>(Palette), 1, 768, fl) != 768) ABORT("Cannot read bitmap palette: %s!", curfile.CStr());
+}
+
+
+// ////////////////////////////////////////////////////////////////////////// //
+#ifdef HAVE_LIBPNG
+void rawbitmap::loadPNG (FILE *fl) {
+  if (fseek(fl, 0, SEEK_SET) == -1) ABORT("Error reading file '%s'!", curfile.CStr());
+
+  png_structp PNGStruct = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
+  if (!PNGStruct) ABORT("Couldn't read PNG file %s!", curfile.CStr());
+
+  png_infop PNGInfo = png_create_info_struct(PNGStruct);
+  if (!PNGInfo) ABORT("Couldn't read PNG file %s!", curfile.CStr());
+
+  if (setjmp(png_jmpbuf(PNGStruct)) != 0) ABORT("Couldn't read PNG file %s!", curfile.CStr());
+
+  png_init_io(PNGStruct, fl);
+  png_read_info(PNGStruct, PNGInfo);
+
+  Size.X = png_get_image_width(PNGStruct, PNGInfo);
+  Size.Y = png_get_image_height(PNGStruct, PNGInfo);
+
+  if (Size.X < 1 || Size.X > 32700) ABORT("Invalid bitmap width: %s!", curfile.CStr());
+  if (Size.Y < 1 || Size.Y > 32700) ABORT("Invalid bitmap height: %s!", curfile.CStr());
+
+  if (png_get_bit_depth(PNGStruct, PNGInfo) != 8) ABORT("%s has wrong bit depth %d, should be 8!", curfile.CStr(), int(png_get_bit_depth(PNGStruct, PNGInfo)));
+
+  png_colorp PNGPalette;
+  int PaletteSize;
+
+  if (!png_get_PLTE(PNGStruct, PNGInfo, &PNGPalette, &PaletteSize)) ABORT("%s is not in indexed color mode!", curfile.CStr());
+
+  if (PaletteSize != 256) ABORT("%s has wrong palette size %d, should be 256!", curfile.CStr(), PaletteSize);
+
+  Palette = new uChar[768];
+
+  for (int i = 0; i < PaletteSize; ++i) {
+    Palette[i*3+0] = PNGPalette[i].red;
+    Palette[i*3+1] = PNGPalette[i].green;
+    Palette[i*3+2] = PNGPalette[i].blue;
+  }
+
+  Alloc2D(PaletteBuffer, Size.Y, Size.X);
+  png_read_image(PNGStruct, PaletteBuffer);
+
+  /*
+  paletteindex *Buffer = PaletteBuffer[0];
+  paletteindex *End = &PaletteBuffer[Size.Y - 1][Size.X];
+  for (; Buffer != End; ++Buffer) *Buffer = 255-(*Buffer);
+  */
+
+  png_destroy_read_struct(&PNGStruct, &PNGInfo, nullptr);
+}
+#endif
+
+
+// ////////////////////////////////////////////////////////////////////////// //
+void rawbitmap::loadFromFile (FILE *fl) {
+  if (getb(fl) == 0x0a) { loadPCX(fl); return; }
+#ifdef HAVE_LIBPNG
+  loadPNG(fl);
+#else
+  ABORT("Invalid image file: '%s'!", curfile.CStr());
+#endif
+}
+
+
+// ////////////////////////////////////////////////////////////////////////// //
+rawbitmap::rawbitmap (cfestring &FileName) {
+  curfile = FileName;
+  FILE *fl = fopen(FileName.CStr(), "rb");
+  if (!fl) {
+    // try to find .png
+    //fprintf(stderr, "OLD: <%s>\n", curfile.CStr());
+    if (curfile.GetSize() > 4 && curfile.endsWithCI(".pcx")) {
+      curfile.Erase(curfile.GetSize()-4, 4);
+      curfile += ".png";
+      //fprintf(stderr, "NEW: <%s>\n", curfile.CStr());
+      fl = fopen(curfile.CStr(), "rb");
+    } else if (curfile.GetSize() > 4 && curfile.endsWithCI(".png")) {
+      curfile.Erase(curfile.GetSize()-4, 4);
+      curfile += ".pcx";
+      //fprintf(stderr, "NEW: <%s>\n", curfile.CStr());
+      fl = fopen(curfile.CStr(), "rb");
+    }
+    if (!fl) ABORT("Cannot open file '%s'!", FileName.CStr());
+  }
+  loadFromFile(fl);
+  fclose(fl);
+  curfile.Empty();
 }
 
 
