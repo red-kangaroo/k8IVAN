@@ -29,6 +29,7 @@
 #include "ivancommon.h"
 
 #include "v2.h"
+#include "festring.h"
 
 #define IVAN_VERSION "0.666.2"
 
@@ -45,6 +46,7 @@ struct databasebase
   int Config;
   feuLong CommonFlags;
   feuLong NameFlags;
+  festring CfgStrName;
 };
 
 template <class type, class base, class prototype>

@@ -174,7 +174,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
         if (Proto->ConfigData) ABORT("Can't redefine <%s> in file %s at line %d!", defName.CStr(), inFile->GetFileName().CStr(), inFile->TokenLine());
         if (Proto->Base && !Proto->Base->ConfigData) ABORT("Database has no description of base prototype <%s> in file %s at line %d!", Proto->Base->GetClassID(), inFile->GetFileName().CStr(), inFile->TokenLine());
         DataBase = Proto->Base ? new database(**Proto->Base->ConfigData) : new database;
-        DataBase->InitDefaults(Proto, 0);
+        DataBase->InitDefaults(Proto, 0, "default");
         TempConfig[0] = DataBase;
         Configs = 1;
       }
@@ -279,21 +279,24 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
 }
 
 
-template <class type> int databasecreator<type>::CreateDivineConfigurations (const prototype *Proto,
-  database **TempConfig, int Configs)
-{
+template <class type> int databasecreator<type>::CreateDivineConfigurations (const prototype *Proto, database **TempConfig, int Configs) {
   int OldConfigs = Configs;
   for (int c1 = 1; c1 < protocontainer<god>::GetSize(); ++c1) {
     database *ConfigDataBase = 0;
     int c2;
+    festring dcfgname = "divine";
     for (c2 = 1; c2 < OldConfigs; ++c2) {
       ConfigDataBase = TempConfig[c2];
-      if (ConfigDataBase->Config == c1) break;
+      if (ConfigDataBase->Config == c1) {
+        dcfgname << " ";
+        dcfgname << ConfigDataBase->CfgStrName;
+        break;
+      }
     }
     truth Created = false;
     if (c2 == OldConfigs) {
       ConfigDataBase = new database(**TempConfig);
-      ConfigDataBase->InitDefaults(Proto, c1);
+      ConfigDataBase->InitDefaults(Proto, c1, dcfgname);
       Created = true;
     }
     ConfigDataBase->AttachedGod = c1;

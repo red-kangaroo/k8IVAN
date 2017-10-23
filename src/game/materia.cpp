@@ -372,11 +372,12 @@ void material::FinishConsuming(character* Consumer)
   AddConsumeEndMessage(Consumer);
 }
 
-void materialdatabase::InitDefaults(const materialprototype* NewProtoType, int NewConfig)
+void materialdatabase::InitDefaults (const materialprototype *NewProtoType, int NewConfig, cfestring &acfgstrname)
 {
   ProtoType = NewProtoType;
   DigProductMaterial = Config = NewConfig;
   CommonFlags |= IS_ABSTRACT; // dummy value for configcontainer
+  CfgStrName = acfgstrname;
 }
 
 item* material::CreateNaturalForm(int Config, sLong Volume)

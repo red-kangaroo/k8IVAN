@@ -31,7 +31,7 @@ typedef material* (*materialcloner)(cmaterial*);
 struct materialdatabase : public databasebase
 {
   typedef materialprototype prototype;
-  void InitDefaults(const prototype*, int);
+  void InitDefaults (const materialprototype *NewProtoType, int NewConfig, cfestring &acfgstrname);
   void PostProcess() { }
   const prototype* ProtoType;
   feuLong CategoryFlags;

@@ -66,7 +66,7 @@ typedef std::map<expid, double> expmodifiermap;
 
 struct characterdatabase : public databasebase {
   typedef characterprototype prototype;
-  void InitDefaults (const prototype *, int);
+  void InitDefaults (const characterprototype *NewProtoType, int NewConfig, cfestring &acfgstrname);
   truth AllowRandomInstantiation () const { return CanBeGenerated && !IsUnique; }
   void PostProcess ();
   const prototype *ProtoType;

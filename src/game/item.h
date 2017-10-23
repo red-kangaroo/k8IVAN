@@ -89,7 +89,7 @@ typedef lockable<item, itemlock> lockableitem;
 struct itemdatabase : public databasebase
 {
   typedef itemprototype prototype;
-  void InitDefaults(const prototype*, int);
+  void InitDefaults (const itemprototype *NewProtoType, int NewConfig, cfestring &acfgstrname);
   truth AllowRandomInstantiation() const;
   void PostProcess() { }
 

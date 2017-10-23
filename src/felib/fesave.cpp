@@ -718,6 +718,7 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
   mTokenLine = mCurrentLine;
   for (;;) {
     ReadWord(Word);
+    // specials?
     if (Word == "@") {
       // variable
       if (mCollectingNumStr) mNumStr << Word;
@@ -742,6 +743,7 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
         ABORT("Number expected in file %s, line %d!", FileName.CStr(), mTokenLine);
       }
     }
+    // first word?
     if (firstWord) {
       if (allowStr && lastWordWasString) {
         if (isString) *isString = true;
@@ -758,13 +760,16 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       }
       firstWord = false;
     }
+    // other things
     char First = Word[0];
+    // number?
     if (isdigit(First)) {
       if (mCollectingNumStr) mNumStr << Word;
       Value = atoi(Word.CStr());
       NumberCorrect = true;
       continue;
     }
+    // delimiter/math?
     if (Word.GetSize() == 1) {
       if (First == ';' || First == ',' || First == ':' || (wasCloseBrc && First == '}')) {
         if (First == '}' && wasCloseBrc) *wasCloseBrc = true;
@@ -865,6 +870,7 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       return res;
     }
     */
+    // rgbX?
     if (Word == "rgb") {
       if (mCollectingNumStr) mNumStr << Word;
       int Bits = ReadNumber();
@@ -884,26 +890,31 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       NumberCorrect = true;
       continue;
     }
+    // `true` literal?
     if (Word == "true" || Word == "tan") {
       if (mCollectingNumStr) mNumStr << Word;
       Value = 1;
       NumberCorrect = true;
       continue;
     }
+    // `false` literal?
     if (Word == "false" || Word == "ona") {
       if (mCollectingNumStr) mNumStr << Word;
       Value = 0;
       NumberCorrect = true;
       continue;
     }
+    // known value?
     if (ValueMap) {
       valuemap::const_iterator Iterator = ValueMap->find(Word);
       if (Iterator != ValueMap->end()) {
+        if (mCollectingNumStr) mNumStr << Word;
         Value = Iterator->second;
         NumberCorrect = true;
         continue;
       }
     }
+    // something bad
     ABORT("Odd numeric value \"%s\" encountered in file %s, line %d!", Word.CStr(), FileName.CStr(), mTokenLine);
   }
 }
@@ -1173,7 +1184,6 @@ meminputfile::meminputfile (cfestring &str, const valuemap *ValueMap) :
   Close();
   char fname[1024];
   int fd;
-  //
   strcpy(fname, "/tmp/ivan.XXXXXX");
   fd = mkstemp(fname);
   tfname = fname;

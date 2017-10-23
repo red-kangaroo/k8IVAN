@@ -293,65 +293,61 @@ truth olterrain::CanBeDestroyed() const
 
 //extern itemprototype key_ProtoType;
 
-int olterrainprototype::CreateSpecialConfigurations(olterraindatabase** TempConfig, int Configs, int Level)
-{
-  if(Level)
-    return Configs;
+int olterrainprototype::CreateSpecialConfigurations (olterraindatabase **TempConfig, int Configs, int Level) {
+  if (Level) return Configs;
 
-  if(TempConfig[0]->CreateDivineConfigurations)
+  if (TempConfig[0]->CreateDivineConfigurations) {
     Configs = databasecreator<olterrain>::CreateDivineConfigurations(this, TempConfig, Configs);
+  }
 
   /* Gum solution */
-
-  if(TempConfig[0]->CreateLockConfigurations)
-  {
+  if (TempConfig[0]->CreateLockConfigurations) {
     const item::database*const* KeyConfigData = key::ProtoType.GetConfigData();
     int KeyConfigSize = key::ProtoType.GetConfigSize();
     int OldConfigs = Configs;
-
-    for(int c1 = 0; c1 < OldConfigs; ++c1)
-      if(!TempConfig[c1]->IsAbstract)
-      {
-  int BaseConfig = TempConfig[c1]->Config;
-  int NewConfig = BaseConfig | BROKEN_LOCK;
-  olterraindatabase* ConfigDataBase = new olterraindatabase(*TempConfig[c1]);
-  ConfigDataBase->InitDefaults(this, NewConfig);
-  ConfigDataBase->PostFix << "with a broken lock";
-  TempConfig[Configs++] = ConfigDataBase;
-
-  for(int c2 = 0; c2 < KeyConfigSize; ++c2)
-  {
-    NewConfig = BaseConfig | KeyConfigData[c2]->Config;
-    ConfigDataBase = new olterraindatabase(*TempConfig[c1]);
-    ConfigDataBase->InitDefaults(this, NewConfig);
-    ConfigDataBase->PostFix << "with ";
-
-    if(KeyConfigData[c2]->UsesLongAdjectiveArticle)
-      ConfigDataBase->PostFix << "an ";
-    else
-      ConfigDataBase->PostFix << "a ";
-
-    ConfigDataBase->PostFix << KeyConfigData[c2]->Adjective << " lock";
-    TempConfig[Configs++] = ConfigDataBase;
-  }
+    for (int c1 = 0; c1 < OldConfigs; ++c1) {
+      if (!TempConfig[c1]->IsAbstract) {
+        festring lcfgname;
+        lcfgname << TempConfig[c1]->CfgStrName;
+        lcfgname << "|locked-broken";
+        int BaseConfig = TempConfig[c1]->Config;
+        int NewConfig = BaseConfig|BROKEN_LOCK;
+        olterraindatabase* ConfigDataBase = new olterraindatabase(*TempConfig[c1]);
+        ConfigDataBase->InitDefaults(this, NewConfig, lcfgname);
+        ConfigDataBase->PostFix << "with a broken lock";
+        TempConfig[Configs++] = ConfigDataBase;
+        for (int c2 = 0; c2 < KeyConfigSize; ++c2) {
+          festring xcfgname;
+          xcfgname << TempConfig[c1]->CfgStrName;
+          xcfgname << "|locked";
+          NewConfig = BaseConfig|KeyConfigData[c2]->Config;
+          ConfigDataBase = new olterraindatabase(*TempConfig[c1]);
+          ConfigDataBase->InitDefaults(this, NewConfig, xcfgname);
+          ConfigDataBase->PostFix << "with ";
+          if (KeyConfigData[c2]->UsesLongAdjectiveArticle) ConfigDataBase->PostFix << "an "; else ConfigDataBase->PostFix << "a ";
+          ConfigDataBase->PostFix << KeyConfigData[c2]->Adjective << " lock";
+          TempConfig[Configs++] = ConfigDataBase;
+        }
       }
+    }
   }
 
-  if(TempConfig[0]->CreateWindowConfigurations)
-  {
+  if (TempConfig[0]->CreateWindowConfigurations) {
     int OldConfigs = Configs;
-
-    for(int c1 = 0; c1 < OldConfigs; ++c1)
-      if(!TempConfig[c1]->IsAbstract)
-      {
-  int NewConfig = TempConfig[c1]->Config | WINDOW;
-  olterraindatabase* ConfigDataBase = new olterraindatabase(*TempConfig[c1]);
-  ConfigDataBase->InitDefaults(this, NewConfig);
-  ConfigDataBase->PostFix << "with a window";
-  ConfigDataBase->IsAlwaysTransparent = true;
-  ConfigDataBase->BitmapPos = ConfigDataBase->WindowBitmapPos;
-  TempConfig[Configs++] = ConfigDataBase;
+    for (int c1 = 0; c1 < OldConfigs; ++c1) {
+      if (!TempConfig[c1]->IsAbstract) {
+        festring xcfgname;
+        xcfgname << TempConfig[c1]->CfgStrName;
+        xcfgname << "|window";
+        int NewConfig = TempConfig[c1]->Config|WINDOW;
+        olterraindatabase* ConfigDataBase = new olterraindatabase(*TempConfig[c1]);
+        ConfigDataBase->InitDefaults(this, NewConfig, xcfgname);
+        ConfigDataBase->PostFix << "with a window";
+        ConfigDataBase->IsAlwaysTransparent = true;
+        ConfigDataBase->BitmapPos = ConfigDataBase->WindowBitmapPos;
+        TempConfig[Configs++] = ConfigDataBase;
       }
+    }
   }
 
   return Configs;
@@ -521,18 +517,20 @@ void lterrain::GenerateMaterials()
          0);
 }
 
-void glterraindatabase::InitDefaults(const glterrainprototype* NewProtoType, int NewConfig)
+void glterraindatabase::InitDefaults (const glterrainprototype *NewProtoType, int NewConfig, cfestring &acfgstrname)
 {
   IsAbstract = false;
   ProtoType = NewProtoType;
   Config = NewConfig;
+  CfgStrName = acfgstrname;
 }
 
-void olterraindatabase::InitDefaults(const olterrainprototype* NewProtoType, int NewConfig)
+void olterraindatabase::InitDefaults (const olterrainprototype *NewProtoType, int NewConfig, cfestring &acfgstrname)
 {
   IsAbstract = false;
   ProtoType = NewProtoType;
   Config = NewConfig;
+  CfgStrName = acfgstrname;
 }
 
 truth olterrain::ShowThingsUnder() const

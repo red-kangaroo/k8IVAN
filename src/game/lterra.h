@@ -123,7 +123,7 @@ class lterrain : public object
 struct glterraindatabase : public lterraindatabase
 {
   typedef glterrainprototype prototype;
-  void InitDefaults(const prototype*, int);
+  void InitDefaults (const glterrainprototype *NewProtoType, int NewConfig, cfestring &acfgstrname);
   truth AllowRandomInstantiation() const { return true; }
   const prototype* ProtoType;
 };
@@ -212,7 +212,7 @@ class glterrain : public lterrain, public gterrain
 struct olterraindatabase : public lterraindatabase
 {
   typedef olterrainprototype prototype;
-  void InitDefaults(const prototype*, int);
+  void InitDefaults (const olterrainprototype *NewProtoType, int NewConfig, cfestring &acfgstrname);
   truth AllowRandomInstantiation() const;
   const prototype* ProtoType;
   festring DigMessage;

@@ -636,11 +636,12 @@ truth item::ReceiveDamage(character* Damager, int Damage, int Type, int Dir)
   return false;
 }
 
-void itemdatabase::InitDefaults(const itemprototype* NewProtoType, int NewConfig)
+void itemdatabase::InitDefaults (const itemprototype *NewProtoType, int NewConfig, cfestring &acfgstrname)
 {
   IsAbstract = false;
   ProtoType = NewProtoType;
   Config = NewConfig;
+  CfgStrName = acfgstrname;
 
   if(NewConfig & BROKEN)
   {
@@ -996,50 +997,48 @@ god* item::GetMasterGod() const
   return game::GetGod(GetConfig());
 }
 
-int itemprototype::CreateSpecialConfigurations(itemdatabase** TempConfig, int Configs, int Level)
-{
-  if(Level)
-    return Configs;
 
-  if(TempConfig[0]->CreateDivineConfigurations)
+int itemprototype::CreateSpecialConfigurations (itemdatabase **TempConfig, int Configs, int Level) {
+  if (Level) return Configs;
+
+  if (TempConfig[0]->CreateDivineConfigurations) {
     Configs = databasecreator<item>::CreateDivineConfigurations(this, TempConfig, Configs);
+  }
 
   /* Gum solution */
-
-  if(TempConfig[0]->CreateLockConfigurations)
-  {
+  if (TempConfig[0]->CreateLockConfigurations) {
     const item::database*const* KeyConfigData = key::ProtoType.GetConfigData();
     int KeyConfigSize = key::ProtoType.GetConfigSize();
     int OldConfigs = Configs;
+    for (int c1 = 0; c1 < OldConfigs; ++c1) {
+      if (!TempConfig[c1]->IsAbstract) {
+        int BaseConfig = TempConfig[c1]->Config;
+        int NewConfig = BaseConfig | BROKEN_LOCK;
+        itemdatabase* ConfigDataBase = new itemdatabase(*TempConfig[c1]);
+        festring lcfgname;
+        lcfgname << TempConfig[c1]->CfgStrName;
+        lcfgname << "|locked-broken";
 
-    for(int c1 = 0; c1 < OldConfigs; ++c1)
-      if(!TempConfig[c1]->IsAbstract)
-      {
-  int BaseConfig = TempConfig[c1]->Config;
-  int NewConfig = BaseConfig | BROKEN_LOCK;
-  itemdatabase* ConfigDataBase = new itemdatabase(*TempConfig[c1]);
-  ConfigDataBase->InitDefaults(this, NewConfig);
-  ConfigDataBase->PostFix << "with a broken lock";
-  ConfigDataBase->Possibility = 0;
-  TempConfig[Configs++] = ConfigDataBase;
+        ConfigDataBase->InitDefaults(this, NewConfig, lcfgname);
+        ConfigDataBase->PostFix << "with a broken lock";
+        ConfigDataBase->Possibility = 0;
+        TempConfig[Configs++] = ConfigDataBase;
 
-  for(int c2 = 0; c2 < KeyConfigSize; ++c2)
-  {
-    NewConfig = BaseConfig | KeyConfigData[c2]->Config;
-    ConfigDataBase = new itemdatabase(*TempConfig[c1]);
-    ConfigDataBase->InitDefaults(this, NewConfig);
-    ConfigDataBase->PostFix << "with ";
-
-    if(KeyConfigData[c2]->UsesLongAdjectiveArticle)
-      ConfigDataBase->PostFix << "an ";
-    else
-      ConfigDataBase->PostFix << "a ";
-
-    ConfigDataBase->PostFix << KeyConfigData[c2]->Adjective << " lock";
-    ConfigDataBase->Possibility = 0;
-    TempConfig[Configs++] = ConfigDataBase;
-  }
+        for (int c2 = 0; c2 < KeyConfigSize; ++c2) {
+          festring xcfgname;
+          xcfgname << TempConfig[c1]->CfgStrName;
+          xcfgname << "|locked";
+          NewConfig = BaseConfig|KeyConfigData[c2]->Config;
+          ConfigDataBase = new itemdatabase(*TempConfig[c1]);
+          ConfigDataBase->InitDefaults(this, NewConfig, xcfgname);
+          ConfigDataBase->PostFix << "with ";
+          if (KeyConfigData[c2]->UsesLongAdjectiveArticle) ConfigDataBase->PostFix << "an "; else ConfigDataBase->PostFix << "a ";
+          ConfigDataBase->PostFix << KeyConfigData[c2]->Adjective << " lock";
+          ConfigDataBase->Possibility = 0;
+          TempConfig[Configs++] = ConfigDataBase;
+        }
       }
+    }
   }
 
   return Configs;

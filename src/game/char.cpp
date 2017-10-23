@@ -4992,7 +4992,9 @@ int characterprototype::CreateSpecialConfigurations (characterdatabase **TempCon
         const character::database *CharacterDataBase = *CharacterConfigData;
         if (CharacterDataBase->UndeadVersions) {
           character::database* ConfigDataBase = new character::database(**TempConfig);
-          ConfigDataBase->InitDefaults(this, (c << 8) | CharacterDataBase->Config);
+          festring ucfgname = "undead ";
+          ucfgname << CharacterDataBase->CfgStrName;
+          ConfigDataBase->InitDefaults(this, (c << 8) | CharacterDataBase->Config, ucfgname);
           ConfigDataBase->PostFix << "of ";
           if (CharacterDataBase->Adjective.GetSize()) {
             if (CharacterDataBase->UsesLongAdjectiveArticle) ConfigDataBase->PostFix << "an ";
@@ -5043,7 +5045,10 @@ int characterprototype::CreateSpecialConfigurations (characterdatabase **TempCon
         const material::database* MaterialDataBase = *MaterialConfigData;
         if (MaterialDataBase->CategoryFlags & IS_GOLEM_MATERIAL) {
           character::database* ConfigDataBase = new character::database(**TempConfig);
-          ConfigDataBase->InitDefaults(this, MaterialDataBase->Config);
+          festring gcfgname;
+          gcfgname << MaterialDataBase->CfgStrName;
+          gcfgname << " golem";
+          ConfigDataBase->InitDefaults(this, MaterialDataBase->Config, gcfgname);
           ConfigDataBase->Adjective = MaterialDataBase->NameStem;
           ConfigDataBase->UsesLongAdjectiveArticle = MaterialDataBase->NameFlags & USE_AN;
           ConfigDataBase->AttachedGod = MaterialDataBase->AttachedGod;
@@ -5884,10 +5889,11 @@ void character::ResetStates () {
 }
 
 
-void characterdatabase::InitDefaults (const characterprototype *NewProtoType, int NewConfig) {
+void characterdatabase::InitDefaults (const characterprototype *NewProtoType, int NewConfig, cfestring &acfgstrname) {
   IsAbstract = false;
   ProtoType = NewProtoType;
   Config = NewConfig;
+  CfgStrName = acfgstrname;
   Alias.Clear();
 }
 
