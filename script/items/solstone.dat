@@ -1,7 +1,7 @@
 solstone
 {
   DefaultSize = 30;
-  Possibility = 25;
+  Possibility = 15; /*k8: was 25*/
   Category = VALUABLE;
   DefaultMainVolume = -417;
   StrengthModifier = 100;

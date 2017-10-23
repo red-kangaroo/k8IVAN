@@ -3,7 +3,7 @@ Extend meleeweapon
   Config CLAW;
   {
     DefaultSize = 45;
-    Possibility = 150;
+    Possibility = 62; /* k8: was 150, way too much, i think */
     WeaponCategory = UNARMED;
     DefaultMainVolume = 35;
     DefaultSecondaryVolume = 25;
