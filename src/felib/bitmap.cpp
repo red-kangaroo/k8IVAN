@@ -15,7 +15,7 @@
 
 #if defined(HAVE_IMLIB2)
 # include <Imlib2.h>
-#elif defined(USE_LIBPNG_WRITER)
+#elif defined(HAVE_LIBPNG)
 # include <png.h>
 #endif
 
@@ -226,7 +226,7 @@ void bitmap::Load (inputfile &SaveFile) {
 }
 
 
-#if defined(USE_LIBPNG_WRITER)
+#if defined(HAVE_LIBPNG) && !defined(HAVE_IMLIB2)
 static void pngWrite (png_structp png_ptr, png_bytep data, png_size_t length) {
   FILE *fp = (FILE *)png_get_io_ptr(png_ptr);
   fwrite(data, length, 1, fp);
@@ -234,7 +234,7 @@ static void pngWrite (png_structp png_ptr, png_bytep data, png_size_t length) {
 #endif
 
 
-#if defined(HAVE_IMLIB2) || defined(USE_LIBPNG_WRITER)
+#if defined(HAVE_IMLIB2) || defined(HAVE_LIBPNG)
 void bitmap::SavePNG (cfestring &FileName) const {
 #if defined(HAVE_IMLIB2)
   if (mSize.X < 1 || mSize.Y < 1) return;
@@ -257,16 +257,16 @@ void bitmap::SavePNG (cfestring &FileName) const {
   imlib_image_set_format("png");
   imlib_save_image(FileName.CStr());
   imlib_free_image();
-#elif defined(USE_LIBPNG_WRITER)
+#elif defined(HAVE_LIBPNG)
   png_structp png_ptr;
   png_infop info_ptr;
-  int ret;
-  png_colorp palette;
+  //int ret;
+  //png_colorp palette;
   png_byte **row_pointers = NULL;
   png_ptr = NULL;
   info_ptr = NULL;
-  palette = NULL;
-  ret = -1;
+  //palette = NULL;
+  //ret = -1;
   FILE *fp = fopen(FileName.CStr(), "wb");
   if (fp == 0) return;
   row_pointers = (png_byte **)malloc(mSize.Y*sizeof(png_byte *));

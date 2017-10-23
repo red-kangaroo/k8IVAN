@@ -71,10 +71,24 @@ else
   echo "MSG: sound support enabled"
 fi
 
-find_package imlib2 1.4
+find_package libpng 1.6
 if [ "$have_package" = "tan" ]; then
-  defines="${defines} -DHAVE_IMLIB2"
-  echo "MSG: imlib2 found"
+  defines="${defines} -DHAVE_LIBPNG"
+  echo "MSG: libpng found"
+else
+  find_package libpng16 1.6
+  if [ "$have_package" = "tan" ]; then
+    defines="${defines} -DHAVE_LIBPNG"
+    echo "MSG: libpng found"
+  else
+    #find_package imlib2 1.4
+    #if [ "$have_package" = "tan" ]; then
+    #  defines="${defines} -DHAVE_IMLIB2"
+    #  echo "MSG: imlib2 found"
+    #fi
+    echo "FATAL: libpng v1.6 not found!"
+    exit 1
+  fi
 fi
 
 find_package zlib 1.2

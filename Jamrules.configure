@@ -63,11 +63,6 @@ rule -configure- {
     if ! [ -configure-pkg-config- "ZLib" : zlib : "DEFINES += USE_ZLIB ;" ] { USE_ZLIB = ; }
   }
   #
-  if ! $(USE_IMLIB2) {
-    -configure-add-line- "# imlib2 disabled" ;
-  } else {
-    if ! [ -configure-pkg-config- "imlib2" : imlib2 : "DEFINES += HAVE_IMLIB2 ;" ] { USE_IMLIB2 = ; }
-  }
   # libpng 1.6
   if $(USE_LIBPNG) {
     if ! [ -configure-pkg-config- "libpng" : "libpng >= 1.6" ] {
@@ -78,6 +73,12 @@ rule -configure- {
   }
   if ! $(USE_LIBPNG) {
     -configure-add-line- "# libpng disabled" ;
+    if ! $(USE_IMLIB2) {
+      -configure-add-line- "# imlib2 disabled" ;
+    } else {
+      #if ! [ -configure-pkg-config- "imlib2" : imlib2 : "DEFINES += HAVE_IMLIB2 ;" ] { USE_IMLIB2 = ; }
+    }
+    Exit "FATAL: LibPNG 1.6 not found!" ;
   } else {
     -configure-add-line- "DEFINES += HAVE_LIBPNG ;" ;
   }
