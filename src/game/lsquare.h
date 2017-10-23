@@ -247,7 +247,7 @@ class lsquare : public square
   void SendSunLightSignals();
   const sunemittervector& GetSunEmitter() const { return SunEmitter; }
   void ZeroReSunEmitatedFlags();
-  virtual truth HasBeenSeen() const { return truth(Memorized); }
+  virtual truth HasBeenSeen() const { return (Memorized != 0); }
   truth CalculateIsTransparent();
   void CalculateSunLightLuminance(feuLong);
   void CreateMemorized();
