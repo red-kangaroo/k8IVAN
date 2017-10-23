@@ -1132,19 +1132,19 @@ void level::GenerateRectangularRoom (std::vector<v2> &OKForDoor, std::vector<v2>
     int MazeDoors = RAND() % 4;
     switch (MazeDoors) {
       case 0:
-       OKForDoor.push_back(v2(Pos.X, Pos.Y + 1));
+        OKForDoor.push_back(v2(Pos.X, Pos.Y + 1));
         OKForDoor.push_back(v2(Pos.X + Size.X - 1, Pos.Y + Size.Y - 2));
         break;
       case 1:
-       OKForDoor.push_back(v2(Pos.X + 1, Pos.Y));
+        OKForDoor.push_back(v2(Pos.X + 1, Pos.Y));
         OKForDoor.push_back(v2(Pos.X + Size.X - 2, Pos.Y + Size.Y - 1));
         break;
       case 2:
-       OKForDoor.push_back(v2(Pos.X + 1, Pos.Y + Size.Y - 1));
+        OKForDoor.push_back(v2(Pos.X + 1, Pos.Y + Size.Y - 1));
         OKForDoor.push_back(v2(Pos.X + Size.X - 2, Pos.Y));
         break;
       case 3:
-       OKForDoor.push_back(v2(Pos.X, Pos.Y + Size.Y - 2));
+        OKForDoor.push_back(v2(Pos.X, Pos.Y + Size.Y - 2));
         OKForDoor.push_back(v2(Pos.X + Size.X - 1, Pos.Y + 1));
         break;
      default:
@@ -1196,9 +1196,11 @@ void level::GenerateRectangularRoom (std::vector<v2> &OKForDoor, std::vector<v2>
 
 void level::Reveal () {
   feuLong Tick = game::GetLOSTick();
-  for (int x = 0; x < XSize; ++x)
-    for (int y = 0; y < YSize; ++y)
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       Map[x][y]->Reveal(Tick);
+    }
+  }
 }
 
 
