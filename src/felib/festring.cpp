@@ -42,7 +42,7 @@ festring &festring::operator = (cchar *CStr) {
   Size = NewSize;
   char *Ptr = Data;
   if (Ptr && OwnsData) {
-    if(!REFS(Ptr) && NewSize <= Reserved) {
+    if (!REFS(Ptr) && NewSize <= Reserved) {
       if (NewSize > 0) memmove(Ptr, CStr, NewSize);
       return *this;
     }
@@ -77,13 +77,14 @@ festring &festring::operator = (cfestring &Str) {
 /* Size must be > 0 */
 festring &festring::Capitalize () {
   char *OldPtr = Data;
-  if (*OldPtr > 0x60 && *OldPtr < 0x7B) {
-    if (!OwnsData) CreateOwnData(OldPtr, Size);
-    else if (REFS(OldPtr)) {
+  if (*OldPtr >= 'a' && *OldPtr <= 'z') {
+    if (!OwnsData) {
+      CreateOwnData(OldPtr, Size);
+    } else if (REFS(OldPtr)) {
       --REFS(OldPtr);
       CreateOwnData(OldPtr, Size);
     }
-    *Data ^= 0x20;
+    *Data -= 0x20;
   }
   return *this;
 }
@@ -105,7 +106,7 @@ void festring::SlowAppend (char Char) {
   if (OldPtr) {
     sizetype OldSize = Size++;
     sizetype NewSize = OldSize+1;
-    feuLong *DeletePtr = 0;
+    int *DeletePtr = 0;
     if (OwnsData && !REFS(OldPtr)--) DeletePtr = REFSA(OldPtr);
     Reserved = NewSize|FESTRING_PAGE;
     char *NewPtr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
@@ -129,12 +130,11 @@ void festring::SlowAppend (char Char) {
 
 void festring::SlowAppend (cchar *CStr, sizetype N) {
   char *OldPtr = Data;
-  //
   if (OldPtr) {
     sizetype OldSize = Size;
     sizetype NewSize = OldSize+N;
     Size = NewSize;
-    feuLong *DeletePtr = 0;
+    int *DeletePtr = 0;
     if (OwnsData && !REFS(OldPtr)--) DeletePtr = REFSA(OldPtr);
     Reserved = NewSize|FESTRING_PAGE;
     char *NewPtr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
@@ -176,7 +176,7 @@ void festring::Resize (sizetype N, char C) {
   char *NewPtr;
   Size = N;
   if (OldSize < N) {
-    feuLong *DeletePtr = 0;
+    int *DeletePtr = 0;
     if (OwnsData && OldPtr) {
       if (!REFS(OldPtr)) {
         if (N <= Reserved) {
@@ -306,7 +306,7 @@ void festring::Insert (sizetype Pos, cchar *CStr, sizetype N) {
     if (Pos < OldSize) {
       // this implies Data != 0
       char *OldPtr = Data;
-      feuLong *DeletePtr = 0;
+      int *DeletePtr = 0;
       sizetype NewSize = OldSize+N;
       Size = NewSize;
       if (OwnsData) {
@@ -421,20 +421,17 @@ festring &festring::Append (sLong Integer) {
 }
 
 
-//FIXME: buffer overflows?
-//FIXME: windoze?
 festring &festring::Append (int64_t Integer) {
-  char buf[4096];
-  //
-  snprintf(buf, sizeof(buf)-1, LONG_LONG_PFORMAT, Integer);
-  buf[sizeof(buf)-1] = 0;
-  return Append(buf, strlen(buf));
+  char buf[256];
+  auto len = snprintf(buf, sizeof(buf)-1, LONG_LONG_PFORMAT, Integer);
+  return Append(buf, len);
 }
 
 
 /* The Result string receives up to Length characters from source,
  * but words are left uncut if possible. */
 void festring::SplitString (festring &Source, festring &Result, sizetype Length) {
+  /*
   if (Source.GetSize() <= Length) {
     Result << Source;
     Source.Empty();
@@ -448,6 +445,8 @@ void festring::SplitString (festring &Source, festring &Result, sizetype Length)
     Result.Append(Source, Length);
     Source.Erase(0, Length);
   }
+  */
+  SplitStringColored(Source, Result, Length);
 }
 
 
@@ -540,6 +539,7 @@ void festring::SplitStringColored (festring &Source, festring &Result, sizetype 
  * beginning of each line except the first. It returns the number of
  * created lines. */
 int festring::SplitString (cfestring &Source, std::vector<festring> &StringVector, sizetype Length, sizetype Marginal) {
+  /*
   if (!Length) ABORT("Illegal Length 0 passed to festring::SplitString()!");
   if (Marginal >= Length) ABORT("Illegal festring::SplitString() call: Marginal must be less than Length!");
   festring CopyOfSource(Source);
@@ -553,6 +553,8 @@ int festring::SplitString (cfestring &Source, std::vector<festring> &StringVecto
     SplitString(CopyOfSource, String, Length-Marginal);
   }
   return Size;
+  */
+  return SplitStringColored(Source, StringVector, Length, Marginal);
 }
 
 
@@ -587,21 +589,17 @@ festring::sizetype festring::rawLength () const {
   sizetype len = 0;
   cchar *str = Data;
   for (sizetype c = Size; c > 0; --c, ++str) {
-    if (*str == '\1' || *str == '\2') {
-      if (*str == '\1') {
-        if (c == 1) break;
-        ++str;
-        --c;
-      }
-    } else {
-      ++len;
+    switch (*str) {
+      case '\1': if (c > 1) { ++str; --c; } break;
+      case '\2': break;
+      default: ++len;
     }
   }
   return len;
 }
 
 
-static inline char Capitalize (char Char) { return Char > 0x60 && Char < 0x7B ? Char ^ 0x20 : Char; }
+static inline char Capitalize (char Char) { return (char)(Char >= 'a' && Char <= 'z' ? Char-32 : Char); }
 
 
 /* Returns the position of the first occurance of What in Where
@@ -641,75 +639,6 @@ bool festring::IgnoreCaseCompare (cfestring &First, cfestring & Second) {
     if (Char1 != Char2) return Char1 < Char2;
   }
   return First.GetSize() < Second.GetSize();
-}
-
-
-/* Sorry for ugliness */
-void festring::PreProcessForFebot () {
-  sizetype c, d, Length;
-  for (c = 0, Length = 0; c < Size && (Data[c] == ' ' || Data[c] == '\t'); ++c) ++Length;
-  Erase(0, Length);
-  if (!Size) return;
-  for (c = Size-1, Length = 0; Data[c] == ' ' || Data[c] == '\t'; --c) ++Length;
-  Erase(c+1, Length);
-  for (c = 0; c < Size - 1; ++c) {
-    char Char = Data[c+1];
-    if (Data[c] == '\t') Data[c] = ' ';
-    else if (Data[c] == '\"' || Data[c] == '(' || Data[c] == ')') {
-      Erase(c--, 1);
-      continue;
-    }
-    if (Data[c] == ' ') {
-      if (Char == ' ' || Char == '\t') {
-        for (d = c+2, Length = 1; d < Size && (Data[d] == ' ' || Data[d] == '\t'); ++d) ++Length;
-        Erase(c+1, Length);
-      }
-    } else if ((Char == '.' || Char == '!' || Char == '?') &&
-               Data[c] != '.' && Data[c] != '!' && Data[c] != '?' &&
-               (c == Size-2 || Data[c+2] == ' ' || Data[c+2] == '\t')) Insert(c+++1, " ", 1);
-  }
-  if (Data[c] == '\"' || Data[c] == '(' || Data[c] == ')') Erase(c--, 1);
-  if (!ispunct(Data[c])) *this << ' ' << '.';
-}
-
-
-/* Sorry for ugliness */
-void festring::PostProcessForFebot () {
-  Capitalize();
-  truth CapitalizeNextChar = false;
-  for (sizetype c = 0; c < Size-1; ++c) {
-    char Char1 = Data[c];
-    if (Char1 == ' ') {
-      char Char2 = Data[c+1];
-      if ((Char2 == '.' || Char2 == '!' || Char2 == '?') && (c == Size-2 || Data[c+2] == ' ' || Data[c+2] == '\t')) {
-        Erase(c++, 1);
-        CapitalizeNextChar = true;
-      }
-    } else if ((Char1 == '.' || Char1 == '!' || Char1 == '?') &&
-               (c == Size - 2 || Data[c+2] == ' ' || Data[c+2] == '\t')) CapitalizeNextChar = true;
-    /* Erase() guarantees that OwnsData != false && REFS(Data) == 0 */
-    else if (CapitalizeNextChar) {
-      if (Char1 > 0x60 && Char1 < 0x7B) Data[c] &= ~0x20;
-      CapitalizeNextChar = false;
-    }
-  }
-}
-
-
-/* Erases the first word of the sentence and places it to To.
- * Should currently be used only by strings processed for Febot */
-void festring::ExtractWord (festring &To) {
-  for (sizetype c = 0; c < Size; ++c) {
-    if (Data[c] == ' ') {
-      To.Empty();
-      To.Append(&Data[c+1], Size-c-1);
-      Erase(c, Size-c);
-      SwapData(To);
-      return;
-    }
-  }
-  To = *this;
-  Empty();
 }
 
 

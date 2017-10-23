@@ -159,10 +159,8 @@ inline int GetMinColor24 (col24 Color) { return Min(GetRed24(Color), GetGreen24(
 #define ZERO_POOLS  1
 #define RAND_ALLOC  2
 
-#define REFS(ptr)   (reinterpret_cast<feuLong*>(ptr)[-1])
-#define REFSA(ptr)  &(reinterpret_cast<feuLong*>(ptr)[-1])
-//#define REFS(ptr)   (*(((feuLong *)(ptr))-1))
-//#define REFSA(ptr)  (((feuLong *)(ptr))-1)
+#define REFS(ptr)   (reinterpret_cast<int*>(ptr)[-1])
+#define REFSA(ptr)  &(reinterpret_cast<int*>(ptr)[-1])
 
 #define SKIP_FIRST         1
 #define ALLOW_END_FAILURE  2

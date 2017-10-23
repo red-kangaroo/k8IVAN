@@ -20,12 +20,12 @@
 
 #define LONG_LONG_PFORMAT  "%lld"
 
-#define FESTRING_PAGE 0x7F
-
 class festring {
+private:
+  enum { FESTRING_PAGE = 0x7F };
 public:
-  typedef feuLong sizetype;
-  typedef const feuLong csizetype;
+  typedef unsigned int sizetype;
+  typedef const unsigned int csizetype;
   /* It can be proven that the code works even if OwnsData is left
      uninitialized. However, Valgrind reports this as a possible error
      which is annoying */
@@ -33,9 +33,9 @@ public:
   explicit festring (sizetype);
   festring (sizetype, char);
 #if 1
-  festring (cchar *CStr) : Data(0/*const_cast<char *>(CStr)*/), Size(strlen(CStr)), OwnsData(true), Reserved(0) {
+  festring (cchar *CStr) : Data(0), Size(strlen(CStr)), OwnsData(true), Reserved(0) {
     const char *s = const_cast<char *>(CStr);
-    int N = s ? strlen(s) : 0;
+    int N = (s ? strlen(s) : 0);
     Reserved = N|FESTRING_PAGE;
     char *Ptr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
     REFS(Ptr) = 0;
@@ -44,7 +44,7 @@ public:
       if (s) memmove(Data, s, N); else memset(Data, 0, N);
     }
   }
-  festring (cchar *CStr, sizetype N) : Data(0/*const_cast<char *>(CStr)*/), Size(N), OwnsData(true), Reserved(0) {
+  festring (cchar *CStr, sizetype N) : Data(0), Size(N), OwnsData(true), Reserved(0) {
     const char *s = const_cast<char *>(CStr);
     Reserved = N|FESTRING_PAGE;
     char *Ptr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
@@ -71,6 +71,9 @@ public:
   festring &operator << (uShort Int) { return Append(Int); }
   festring &operator << (int Int) { return Append(Int); }
   festring &operator << (uInt Int) { return Append((int)Int); } //k8:64
+  festring &operator += (char);
+  festring &operator += (cchar *);
+  festring &operator += (cfestring &);
   //festring &operator << (sLong Int) { return Append(Int); } //k8:64
   //festring &operator << (feuLong Int) { return Append(Int); } //k8:64
   festring &operator << (time_t Int) { return Append((int64_t)Int); } //k8:64
@@ -113,10 +116,7 @@ public:
   truth IsEmpty() const { return !Size; }
   /* HORRIBLE ERROR!!!! */
   char &operator [] (sizetype Index) const { return Data[Index]; }
-  void PreProcessForFebot ();
-  void PostProcessForFebot ();
   void SwapData (festring &);
-  void ExtractWord (festring &);
   sLong GetCheckSum () const;
   void EnsureOwnsData ();
 
@@ -284,7 +284,7 @@ inline int festring::CompareIgnoreCase (cfestring &Str) const {
 }
 
 
-inline cchar *festring::CStr() const {
+inline cchar *festring::CStr () const {
   char *Ptr = Data;
   if (Ptr) {
     if (OwnsData) Ptr[Size] = 0;
@@ -350,6 +350,11 @@ inline festring &festring::operator << (cfestring &Str) {
   }
   return *this;
 }
+
+
+inline festring &festring::operator += (char Char) { return *this << Char; }
+inline festring &festring::operator += (cchar *Str) { return *this << Str; }
+inline festring &festring::operator += (cfestring &Str) { return *this << Str; }
 
 
 struct charcomparer {
