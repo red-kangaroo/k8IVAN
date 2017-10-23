@@ -24,34 +24,90 @@ rawbitmap::rawbitmap (cfestring &FileName) {
   // simple checks
   // http://www.qzx.com/pc-gpe/pcx.txt
   if (File.Get() != 10) ABORT("Invalid bitmap format: %s!", FileName.CStr());
-  switch (File.Get()) {
+  int ver = File.Get();
+  switch (ver) {
     case 4: case 5: break;
     default: ABORT("Invalid bitmap version: %s!", FileName.CStr());
   }
-  if (File.Get() != 1) ABORT("Invalid bitmap encoding: %s!", FileName.CStr());
+  truth packed = true;
+  switch (File.Get()) {
+    case 0: packed = false; break;
+    case 1: break;
+    default: ABORT("Invalid bitmap encoding: %s!", FileName.CStr());
+  }
   if (File.Get() != 8) ABORT("Invalid bitmap BPP: %s!", FileName.CStr());
-  // FIXME: bytes-per-scanline is even, fix the loader
-  File.SeekPosEnd(-768);
-  Palette = new uChar[768];
-  File.Read(reinterpret_cast<char *>(Palette), 768);
-  File.SeekPosBegin(8);
-  Size.X  =  File.Get();
-  Size.X += (File.Get()<<8)+1;
-  Size.Y  =  File.Get();
-  Size.Y += (File.Get()<<8)+1;
-  File.SeekPosBegin(128);
+  // dimensions
+  // x0
+  int x0 = File.Get();
+  x0 |= File.Get()<<8;
+  // y0
+  int y0 = File.Get();
+  y0 |= File.Get()<<8;
+  // x1
+  int x1 = File.Get();
+  x1 |= File.Get()<<8;
+  // y1
+  int y1 = File.Get();
+  y1 |= File.Get()<<8;
+  // calculate dimensions
+  int wdt = (x1-x0)+1;
+  int hgt = (y1-y0)+1;
+  // check dimensions
+  if (wdt < 1 || wdt > 32700) ABORT("Invalid bitmap width: %s!", FileName.CStr());
+  if (hgt < 1 || hgt > 32700) ABORT("Invalid bitmap height: %s!", FileName.CStr());
+  // skip dpi
+  for (int skipcount = 4; skipcount > 0; --skipcount) File.Get();
+  // skip 16-color palette and reserved
+  for (int skipcount = 16*3+1; skipcount > 0; --skipcount) File.Get();
+  // check colorplanes
+  if (File.Get() != 1) ABORT("Invalid bitmap colorplanes: %s!", FileName.CStr());
+  // bytes per line
+  int bpl = File.Get();
+  bpl |= File.Get()<<8;
+  if (bpl < wdt) ABORT("Invalid bitmap bytes per line: %s!", FileName.CStr());
+  int hdrread = 4+4*2+2*2+16*3+1+1+2;
+  // check palette type
+  if (ver == 4) {
+    if (File.Get() != 1) ABORT("Invalid bitmap palette type: %s!", FileName.CStr());
+    if (File.Get() != 0) ABORT("Invalid bitmap palette type: %s!", FileName.CStr());
+    hdrread += 2;
+  }
+  // skip rest of the header
+  while (hdrread < 128) { File.Get(); ++hdrread; }
+  // load bitmap
+  Size.X = wdt;
+  Size.Y = hgt;
   Alloc2D(PaletteBuffer, Size.Y, Size.X);
-  paletteindex *Buffer = PaletteBuffer[0];
-  paletteindex *End = &PaletteBuffer[Size.Y-1][Size.X];
-  while (Buffer != End) {
-    int Char1 = File.Get();
-    if (Char1 > 192) {
-      int Char2 = File.Get();
-      for (; Char1 > 192; Char1--) *Buffer++ = Char2;
-    } else {
-      *Buffer++ = Char1;
+  for (int y = 0; y < hgt; ++y) {
+    int cnt = 0, b = 0;
+    for (int x = 0; x < bpl; ++x) {
+      if (cnt == 0) {
+        b = (unsigned char)File.Get();
+        if (packed && b >= 0xc0) {
+          cnt = b&0x3f;
+          if (cnt == 0) {
+            delete [] PaletteBuffer;
+            ABORT("Invalid compressed bitmap: %s!", FileName.CStr());
+          }
+          b = (unsigned char)File.Get();
+        } else {
+          cnt = 1;
+        }
+      }
+      if (x < wdt) {
+        paletteindex *Buffer = PaletteBuffer[0];
+        Buffer += (y*wdt)+x;
+        *Buffer = (paletteindex)b;
+      }
+      --cnt;
     }
   }
+  // load palette
+  File.SeekPosEnd(-769);
+  // check signature
+  if (File.Get() != 12) ABORT("Invalid bitmap palette: %s!", FileName.CStr());
+  Palette = new uChar[768];
+  File.Read(reinterpret_cast<char *>(Palette), 768);
 }
 
 
@@ -71,33 +127,65 @@ rawbitmap::~rawbitmap () {
 }
 
 
-/* a lousy bitmap saver that uses the pcx format but doesn't do any compression */
+/* a lousy bitmap saver that uses the pcx format */
 void rawbitmap::Save (cfestring &FileName) {
   char PCXHeader[128];
-  feuLong hv = 0x0801050ALU;
   memset(PCXHeader, 0, 128);
-  //*((feuLong*)PCXHeader) = 0x0801050A;
-  memmove(PCXHeader, &hv, 4); //FIXME: endianness
+  PCXHeader[0] = 0x0a;
+  PCXHeader[1] = 0x05; // version
+  PCXHeader[2] = 1; // RLE-packed
+  PCXHeader[3] = 8; // bpp
   PCXHeader[65] = 0x01;
-  PCXHeader[66] = Size.X & 0xFF;
-  PCXHeader[67] = (Size.X >> 8) & 0xFF;
-  PCXHeader[0x08] = (Size.X - 1) & 0xFF;
-  PCXHeader[0x09] = ((Size.X - 1) >> 8) & 0xFF;
-  PCXHeader[0x0A] = (Size.Y - 1) & 0xFF;
-  PCXHeader[0x0B] = ((Size.Y - 1) >> 8) & 0xFF;
+  // bytes in line
+  PCXHeader[66] = Size.X&0xFF;
+  PCXHeader[67] = (Size.X>>8)&0xFF;
+  PCXHeader[0x08] = (Size.X-1)&0xFF;
+  PCXHeader[0x09] = ((Size.X-1)>>8)&0xFF;
+  PCXHeader[0x0A] = (Size.Y-1)&0xFF;
+  PCXHeader[0x0B] = ((Size.Y-1)>>8)&0xFF;
+
   FILE *fo = fopen(FileName.CStr(), "wb");
   //SaveFile.Write(PCXHeader, 128);
   fwrite(PCXHeader, 128, 1, fo);
+
   paletteindex* Buffer = PaletteBuffer[0];
   paletteindex* End = &PaletteBuffer[Size.Y-1][Size.X];
+
+  int curx = 0;
+  int count = 0, accb = 0;
+
   while (Buffer != End) {
-    paletteindex Char = *Buffer++;
-    //if (Char >= 192) SaveFile.Put(char(193));
-    //SaveFile.Put(Char);
-    if (Char >= 192) fputc(193, fo);
-    fputc(Char, fo);
+    paletteindex b = *Buffer++;
+    if (count == 0) {
+      count = 1;
+      accb = b;
+    } else if (count == 0x3f || b != accb) {
+      // flush
+      if (count > 1 || accb >= 0xc0) fputc((unsigned char)(count|0xc0), fo);
+      fputc((unsigned char)accb, fo);
+      count = 1;
+      accb = b;
+    } else {
+      ++count;
+    }
+    if (++curx == Size.X) {
+      // flush
+      if (count > 0) {
+        if (count > 1 || accb >= 0xc0) fputc((unsigned char)(count|0xc0), fo);
+        fputc((unsigned char)accb, fo);
+        count = 0;
+      }
+      curx = 0; // next line
+    }
   }
+  // flush
+  if (count > 0) {
+    if (count > 1 || accb >= 0xc0) fputc((unsigned char)(count|0xc0), fo);
+    fputc((unsigned char)accb, fo);
+  }
+
   //SaveFile.Write(reinterpret_cast<char*>(Palette), 768);
+  fputc(12, fo); // palette signature
   fwrite(reinterpret_cast<char*>(Palette), 768, 1, fo);
   fclose(fo);
 }

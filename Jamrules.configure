@@ -67,6 +67,10 @@ rule -configure- {
   } else {
     if ! [ -configure-pkg-config- "imlib2" : imlib2 : "DEFINES += HAVE_IMLIB2 ;" ] { USE_IMLIB2 = ; }
   }
+  # libpng 1.6
+  ## ## if ! [ -configure-pkg-config- "libpng" : "libpng >= 1.6" : : ] {
+  ## ##   -configure-pkg-config- "libpng16" : "libpng16 >= 1.6" : : : "LibPNG v1.6+ is required" ;
+  ## ## }
   #
   ### if $(HAVE_LIBPNG) {
   ###   Echo "MSG: libpng found" ;

@@ -73,7 +73,9 @@ void writePCX (VFile fl, MemoryImage pcx) {
       assert(lineCount > 0 && lineCount <= 0x3f);
       if (lineCount == 0x3f || lineByte != b) {
         // flush RLE accumulator
-        fl.writeNum!ubyte(cast(ubyte)(lineCount|0xc0));
+        if (lineCount > 1 || lineByte >= 0xc0) {
+          fl.writeNum!ubyte(cast(ubyte)(lineCount|0xc0));
+        }
         fl.writeNum!ubyte(lineByte);
         lineCount = 1;
       } else {
@@ -86,7 +88,9 @@ void writePCX (VFile fl, MemoryImage pcx) {
       assert(lineCount >= 0 && lineCount <= 0x3f);
       if (lineCount > 0) {
         // flush RLE accumulator
-        fl.writeNum!ubyte(cast(ubyte)(lineCount|0xc0));
+        if (lineCount > 1 || lineByte >= 0xc0) {
+          fl.writeNum!ubyte(cast(ubyte)(lineCount|0xc0));
+        }
         fl.writeNum!ubyte(lineByte);
         lineCount = 0;
       }
