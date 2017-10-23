@@ -5688,7 +5688,11 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
         default: break;
       }
       if (otherChosen != -1) {
-        if (!game::TruthQuestion("Wear both items?", NO)) otherChosen = -1;
+        if (GetBodyPartOfEquipment(otherChosen)) {
+          if (!game::TruthQuestion("Wear both items?", NO)) otherChosen = -1;
+        } else {
+          otherChosen = -1;
+        }
       }
     }
     // wear/wield first item
@@ -5696,7 +5700,7 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
     SetEquipment(Chosen, Item);
     if (CheckIfEquipmentIsNotUsable(Chosen)) { Item->MoveTo(MainStack); Item = 0; } // small bug?
     // wear/wield possible second item
-    if (Item && otherChosen != -1 && ItemVector[0]->HandleInPairs() && ItemVector.size() > 1) {
+    if (Item && otherChosen != -1 && ItemVector[0]->HandleInPairs() && ItemVector.size() > 1 && GetBodyPartOfEquipment(otherChosen)) {
       item *otherOld = GetEquipment(otherChosen);
       if (otherOld && !IsPlayer() && BoundToUse(otherOld, otherChosen)) {
         ADD_MESSAGE("%s refuses to unequip %s.", CHAR_DESCRIPTION(DEFINITE), otherOld->CHAR_NAME(DEFINITE));
