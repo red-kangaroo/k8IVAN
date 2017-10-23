@@ -89,6 +89,13 @@ rule -configure- {
   ###   DEFINES += HAVE_LIBPNG ;
   ### }
   #
+  if $(OSPLAT) = 'X86_64' {
+    Echo "MSG: 64bit arches aren't supported. forcing 32-bit build." ;
+    -configure-add-line- "# 64shit found" ;
+    -configure-add-line- "CFLAGS.all += -m32 ;" ;
+    -configure-add-line- "LINKFLAGS.all += -m32 ;" ;
+  }
+
   -configure-add-line- "# other options" ;
   if $(USE_WIZARD) {
     Echo "CFG: wizard mode enabled" ;
