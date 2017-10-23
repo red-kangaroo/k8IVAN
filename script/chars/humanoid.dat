@@ -22,8 +22,11 @@ humanoid
   CanApply = true;
   IsImmuneToLeprosy = false;
   WillCarryItems = true;
+  ForceVomitMessage = "You push your fingers down to your throat and vomit.";
   DisplacePriority = 0;
   UndeadVersions = true;
+  /*
   KnownCWeaponSkills == UNARMED; // k8: CLIVAN omits this
   CWeaponSkillHits == 100; /*k8: 19000; slave has 100 */
+  */
 }
