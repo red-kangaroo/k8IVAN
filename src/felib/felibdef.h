@@ -12,6 +12,8 @@
 #ifndef __FELIB_FELIBDEF_H__
 #define __FELIB_FELIBDEF_H__
 
+static_assert(sizeof(void*) == 4, "64 bit is NOT SUPPORTED and WILL NOT WORK!");
+
 /*
  * Global defines for the project FeLib.
  * This file is created to decrease the need of including headers in
