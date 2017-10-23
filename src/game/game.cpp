@@ -1500,8 +1500,7 @@ int game::KeyQuestion (cfestring &Message, int DefaultAnswer, int KeyNumber, ...
   va_end(Arguments);
   DrawEverythingNoBlit();
   FONT->Printf(DOUBLE_BUFFER, v2(16, 8), WHITE, "%s", Message.CStr());
-  graphics::pushCursor(16+Message.rawLength()*8, 8+7);
-  graphics::BlitDBToScreen();
+  auto cursave = graphics::getCursorState(16+Message.rawLength()*8, 8+7, true);
   int Return = 0;
   while (!Return) {
     int k = GET_KEY();
@@ -1513,7 +1512,6 @@ int game::KeyQuestion (cfestring &Message, int DefaultAnswer, int KeyNumber, ...
     }
     if (!Return && DefaultAnswer != REQUIRES_ANSWER) Return = DefaultAnswer;
   }
-  graphics::popCursor();
   igraph::BlitBackGround(v2(16, 6), v2(GetScreenXSize()<<4, 23));
   return Return;
 }

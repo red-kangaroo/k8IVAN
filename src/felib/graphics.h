@@ -23,6 +23,26 @@
 class bitmap;
 class rawbitmap;
 class festring;
+class graphics;
+
+
+struct CursorState {
+private:
+  int x, y;
+  int vis = -666;
+
+private:
+  CursorState (int ax, int ay, int avis) { x = ax; y = ay; vis = avis; }
+  CursorState (int ax, int ay, int avis, int newx, int newy, truth newvis);
+  CursorState (int ax, int ay, int avis, int newx, int newy);
+  CursorState (int ax, int ay, int avis, truth newvis);
+
+public:
+  ~CursorState ();
+  void reset () { vis = -666; }
+
+  friend graphics;
+};
 
 
 class graphics {
@@ -43,14 +63,16 @@ public:
   static void createTexture ();
 #endif
 
-  static void gotoXY (int cx, int cy, truth doshow=true);
+  static void gotoXY (int cx, int cy);
   static bool isCursorVisible ();
   static void showCursor ();
   static void hideCursor ();
 
-  static void pushCursor ();
-  static void pushCursor (int cx, int cy, truth doshow=true);
-  static void popCursor ();
+  // on destroying, `CursorState` will restore the state
+  static CursorState getCursorState ();
+  static CursorState getCursorState (int newx, int newy, truth newvis);
+  static CursorState getCursorState (int newx, int newy);
+  static CursorState getCursorState (truth newvis);
 
 private:
   static void (*SwitchModeHandler)();
@@ -59,6 +81,12 @@ private:
   static v2 Res;
   static int ColorDepth;
   static rawbitmap *DefaultFont;
+
+  static int curx;
+  static int cury;
+  static int curvisible;
+
+  friend CursorState;
 };
 
 

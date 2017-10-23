@@ -33,29 +33,25 @@
 /* Prints screen full of Text in color Color. If GKey is true function
    waits for keypress. BitmapEditor is a pointer to function that is
    called during every fade tick. */
-void iosystem::TextScreen (cfestring & Text, v2 Disp, col16 Color, truth GKey, truth Fade, bitmapeditor BitmapEditor) {
+void iosystem::TextScreen (cfestring &Text, v2 Disp, col16 Color, truth GKey, truth Fade, bitmapeditor BitmapEditor) {
+  auto cursave = graphics::getCursorState(false);
   bitmap Buffer(RES, 0);
   Buffer.ActivateFastFlag();
-  festring::sizetype c;
   int LineNumber = 0;
-  for (c = 0; c < Text.rawLength(); ++c) if (Text[c] == '\n') ++LineNumber;
+  for (festring::sizetype c = 0; c < Text.GetSize(); ++c) if (Text[c] == '\n') ++LineNumber;
   LineNumber >>= 1;
-  char Line[200];
-  int Lines = 0, LastBeginningOfLine = 0;
-  for (c = 0; c < Text.rawLength(); ++c) {
-    if (Text[c] == '\n') {
-      Line[c-LastBeginningOfLine] = 0;
-      v2 PrintPos((RES.X>>1)-(strlen(Line)<<2)+Disp.X, (RES.Y<<1)/5-(LineNumber-Lines)*15+Disp.Y);
-      FONT->Printf(&Buffer, PrintPos, Color, "%s", Line);
-      ++Lines;
-      LastBeginningOfLine = c+1;
-    } else {
-      Line[c-LastBeginningOfLine] = Text[c];
-    }
+  int Lines = 0;
+  festring txt = Text;
+  while (txt.GetSize() > 0) {
+    festring::sizetype c = 0;
+    while (c < txt.GetSize() && txt[c] != '\n') ++c;
+    festring curline = txt;
+    curline.Erase(c, curline.GetSize()-c);
+    v2 PrintPos((RES.X>>1)-(curline.rawLength()<<2)+Disp.X, (RES.Y<<1)/5-(LineNumber-Lines)*15+Disp.Y);
+    FONT->Printf(&Buffer, PrintPos, Color, "%s", curline.CStr());
+    if (c < txt.GetSize()) { ++Lines; ++c; }
+    txt.Erase(0, c);
   }
-  Line[c-LastBeginningOfLine] = 0;
-  v2 PrintPos((RES.X>>1)-(strlen(Line)<<2)+Disp.X, (RES.Y<<1)/5-(LineNumber-Lines)*15+Disp.Y);
-  FONT->Printf(&Buffer, PrintPos, Color, "%s", Line);
   if (Fade) {
     Buffer.FadeToScreen(BitmapEditor);
   } else {
@@ -104,9 +100,10 @@ static int CountChars (char cSF, cfestring &sSH) {
 int iosystem::Menu (cbitmap *BackGround, v2 Pos, cfestring &Topic, cfestring &sMS, col16 Color,
   cfestring &SmallText1, cfestring &SmallText2, truth allowEsc)
 {
-  if (CountChars('\r',sMS) < 1) return (-1);
+  if (CountChars('\r',sMS) < 1) return -1;
   truth bReady = false;
   int iSelected = 0;
+  auto cursave = graphics::getCursorState(false);
   bitmap Backup(DOUBLE_BUFFER);
   Backup.ActivateFastFlag();
   bitmap Buffer(RES);
@@ -182,10 +179,10 @@ int iosystem::Menu (cbitmap *BackGround, v2 Pos, cfestring &Topic, cfestring &sM
     }
     switch (k) {
       case KEY_UP:
-        if(iSelected > 0) --iSelected; else iSelected = (CountChars('\r',sMS)-1);
+        if (iSelected > 0) --iSelected; else iSelected = (CountChars('\r',sMS)-1);
         break;
       case KEY_DOWN:
-        if(iSelected < (CountChars('\r',sMS)-1)) ++iSelected; else iSelected = 0;
+        if (iSelected < (CountChars('\r',sMS)-1)) ++iSelected; else iSelected = 0;
         break;
       case 0x00D:
         bReady = true;
@@ -231,18 +228,20 @@ int iosystem::StringQuestion (festring &Input, cfestring &Topic, v2 Pos, col16 C
     bitmap Buffer(RES, 0);
     Buffer.ActivateFastFlag();
     FONT->Printf(&Buffer, Pos, Color, "%s", Topic.CStr());
-    FONT->Printf(&Buffer, v2(Pos.X, Pos.Y+10), Color, "%s_", Input.CStr());
+    FONT->Printf(&Buffer, v2(Pos.X, Pos.Y+10), Color, "%s", Input.CStr());
     Buffer.FadeToScreen();
   } else {
     DOUBLE_BUFFER->NormalBlit(B);
   }
+  auto cursave = graphics::getCursorState(true);
   truth TooShort = false;
   FONT->Printf(DOUBLE_BUFFER, Pos, Color, "%s", Topic.CStr());
   Swap(B.Src, B.Dest);
   for (int LastKey = 0;; LastKey = 0) {
     B.Bitmap = DOUBLE_BUFFER;
     BackUp.NormalBlit(B);
-    FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y+10), Color, "%s_", Input.CStr());
+    FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y+10), Color, "%s", Input.CStr());
+    graphics::gotoXY(Pos.X+Input.GetSize()*8, Pos.Y+10+7);
     if (TooShort) {
       FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y+30), Color, "Too short!");
       TooShort = false;
@@ -257,19 +256,19 @@ int iosystem::StringQuestion (festring &Input, cfestring &Topic, v2 Pos, col16 C
     if (!LastKey) continue;
     if (LastKey == KEY_ESC && AllowExit) return ABORTED;
     if (LastKey == KEY_BACK_SPACE) {
-      if (!Input.IsEmpty()) Input.Resize(Input.rawLength()-1);
+      if (!Input.IsEmpty()) Input.Resize(Input.GetSize()-1);
       continue;
     }
     if (LastKey == KEY_ENTER) {
-      if (Input.rawLength() >= MinLetters) break;
+      if (Input.GetSize() >= MinLetters) break;
       TooShort = true;
       continue;
     }
-    if (LastKey >= 0x20 && Input.rawLength() < MaxLetters && (LastKey != ' ' || !Input.IsEmpty())) Input << char(LastKey);
+    if (LastKey >= 0x20 && Input.GetSize() < MaxLetters && (LastKey != ' ' || !Input.IsEmpty())) Input << char(LastKey);
   }
   /* Delete all the trailing spaces */
   festring::sizetype LastAlpha = festring::NPos;
-  for (festring::sizetype c = 0; c < Input.rawLength(); ++c) if (Input[c] != ' ') LastAlpha = c;
+  for (festring::sizetype c = 0; c < Input.GetSize(); ++c) if (Input[c] != ' ') LastAlpha = c;
   /* note: festring::NPos + 1 == 0 */
   Input.Resize(LastAlpha+1);
   return NORMAL_EXIT;
@@ -296,24 +295,28 @@ sLong iosystem::NumberQuestion (cfestring &Topic, v2 Pos, col16 Color, truth Fad
     bitmap Buffer(RES, 0);
     Buffer.ActivateFastFlag();
     FONT->Printf(&Buffer, Pos, Color, "%s", Topic.CStr());
-    FONT->Printf(&Buffer, v2(Pos.X, Pos.Y+10), Color, "_");
+    //FONT->Printf(&Buffer, v2(Pos.X, Pos.Y+10), Color, "_");
     Buffer.FadeToScreen();
   } else {
     DOUBLE_BUFFER->NormalBlit(B);
   }
+  auto cursave = graphics::getCursorState(true);
   festring Input;
   FONT->Printf(DOUBLE_BUFFER, Pos, Color, "%s", Topic.CStr());
   Swap(B.Src, B.Dest);
   for (int LastKey = 0;; LastKey = 0) {
     B.Bitmap = DOUBLE_BUFFER;
     BackUp.NormalBlit(B);
-    FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y+10), Color, "%s_", Input.CStr());
+    FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y+10), Color, "%s", Input.CStr());
+    graphics::gotoXY(Pos.X+Input.GetSize()*8, Pos.Y+10+7);
     graphics::BlitDBToScreen();
     while (!isdigit(LastKey) && LastKey != KEY_BACK_SPACE && LastKey != KEY_ENTER && LastKey != KEY_ESC &&
            (LastKey != '-' || !Input.IsEmpty()))
+    {
       LastKey = GET_KEY(false);
+    }
     if (LastKey == KEY_BACK_SPACE) {
-      if (!Input.IsEmpty()) Input.Resize(Input.rawLength()-1);
+      if (!Input.IsEmpty()) Input.Resize(Input.GetSize()-1);
       continue;
     }
     if (LastKey == KEY_ENTER) break;
@@ -321,7 +324,7 @@ sLong iosystem::NumberQuestion (cfestring &Topic, v2 Pos, col16 Color, truth Fad
       if (ReturnZeroOnEsc) return 0;
       break;
     }
-    if (Input.rawLength() < 12) Input << char(LastKey);
+    if (Input.GetSize() < 12) Input << char(LastKey);
   }
   return atoi(Input.CStr());
 }
@@ -349,7 +352,7 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
     bitmap Buffer(RES, 0);
     Buffer.ActivateFastFlag();
     FONT->Printf(&Buffer, Pos, TopicColor, "%s %d", Topic.CStr(), StartValue);
-    FONT->Printf(&Buffer, v2(Pos.X + (Topic.rawLength() << 3) + 8, Pos.Y + 1), TopicColor, "_");
+    //FONT->Printf(&Buffer, v2(Pos.X + (Topic.GetSize()*8)+8, Pos.Y + 1), TopicColor, "_");
     Buffer.DrawHorizontalLine(Pos.X + 1, Pos.X + 201, Pos.Y + 15, Color2, false);
     Buffer.DrawVerticalLine(Pos.X + 201, Pos.Y + 12, Pos.Y + 18, Color2, false);
     Buffer.DrawHorizontalLine(Pos.X + 1, Pos.X + 1 + (BarValue - Min) * 200 / (Max - Min), Pos.Y + 15, Color1, true);
@@ -372,7 +375,7 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
     0,
     { 0, 0 },
     { Pos.X, Pos.Y },
-    { (int)(((Topic.rawLength() + 14) << 3) + 1), 10 },
+    { (int)(((Topic.GetSize() + 14) << 3) + 1), 10 },
     { 0 },
     0,
     0
@@ -386,8 +389,7 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
     0,
     0
   };
-  graphics::pushCursor();
-  graphics::showCursor();
+  auto cursave = graphics::getCursorState(true);
   for (int LastKey = 0;; LastKey = 0) {
     if (!FirstTime) BarValue = Input.IsEmpty() ? Min : atoi(Input.CStr());
     if (BarValue < Min) BarValue = Min;
@@ -398,13 +400,13 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
     BackUp.NormalBlit(B2);
     if (FirstTime) {
       FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor, "%s %d", Topic.CStr(), StartValue);
-      //FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + (Topic.rawLength() << 3) + 8, Pos.Y + 1), TopicColor, "_");
-      graphics::gotoXY(Pos.X+(Topic.rawLength()<<3)+8, Pos.Y+8, false); // don't change cursor state
+      //FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + (Topic.GetSize()*8) + 8, Pos.Y + 1), TopicColor, "_");
+      graphics::gotoXY(Pos.X+(Topic.GetSize()*8)+8, Pos.Y+8); // don't change cursor state
       FirstTime = false;
     } else {
       FONT->Printf(DOUBLE_BUFFER, Pos, TopicColor, "%s %s", Topic.CStr(), Input.CStr());
-      //FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + ((Topic.rawLength() + Input.rawLength()) << 3) + 8, Pos.Y + 1), TopicColor, "_");
-      graphics::gotoXY(Pos.X+((Topic.rawLength()+Input.rawLength())<<3)+8, Pos.Y+8, false); // don't change cursor state
+      //FONT->Printf(DOUBLE_BUFFER, v2(Pos.X + ((Topic.GetSize() + Input.rawLength()) << 3) + 8, Pos.Y + 1), TopicColor, "_");
+      graphics::gotoXY(Pos.X+((Topic.GetSize()+Input.GetSize())*8)+8, Pos.Y+8); // don't change cursor state
     }
     DOUBLE_BUFFER->DrawHorizontalLine(Pos.X + 1, Pos.X + 201, Pos.Y + 15, Color2, false);
     DOUBLE_BUFFER->DrawVerticalLine(Pos.X + 201, Pos.Y + 12, Pos.Y + 18, Color2, false);
@@ -420,7 +422,7 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
       break;
     }
     if (LastKey == KEY_BACK_SPACE) {
-      if (!Input.IsEmpty()) Input.Resize(Input.rawLength()-1);
+      if (!Input.IsEmpty()) Input.Resize(Input.GetSize()-1);
       continue;
     }
     if (LastKey == KEY_ENTER || LastKey == KEY_SPACE) break;
@@ -438,9 +440,8 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
       Input << BarValue;
       continue;
     }
-    if (Input.rawLength() < 12) Input << char(LastKey);
+    if (Input.GetSize() < 12) Input << char(LastKey);
   }
-  graphics::popCursor();
   return BarValue;
 }
 
@@ -450,6 +451,7 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
 festring iosystem::ContinueMenu (col16 TopicColor, col16 ListColor, cfestring &DirectoryName) {
   DIR *dp;
   struct dirent *ep;
+  auto cursave = graphics::getCursorState(false);
   festring Buffer;
   felist List(CONST_S("Choose a file and be sorry:"), TopicColor);
   List.SetSaveSelector(DirectoryName);
