@@ -212,7 +212,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
           sLong ConfigNumber = -1;
           truth isString = false;
           festring fname;
-          fname = inFile->ReadStringOrNumber(&ConfigNumber, &isString);
+          fname = inFile->ReadStringOrNumberKeepStr(&ConfigNumber, &isString);
           if (isString) {
             // include file
             //fprintf(stderr, "loading: %s\n", fname.CStr());
@@ -220,9 +220,9 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
             infStack.push(inFile);
             inFile = incf;
           } else {
-            //fprintf(stderr, "new config %d for %s\n", ConfigNumber, defName.CStr());
+            //fprintf(stderr, "new config %d (%s) for %s\n", ConfigNumber, inFile->numStr().CStr(), defName.CStr());
             database *ConfigDataBase = new database(*Proto->ChooseBaseForConfig(TempConfig, Configs, ConfigNumber));
-            ConfigDataBase->InitDefaults(Proto, ConfigNumber);
+            ConfigDataBase->InitDefaults(Proto, ConfigNumber, inFile->numStr());
             TempConfig[Configs++] = ConfigDataBase;
             if (inFile->ReadWord() != "{") ABORT("'{' missing in %s datafile %s line %d!", protocontainer<type>::GetMainClassID(), inFile->GetFileName().CStr(), inFile->TokenLine());
             for (inFile->ReadWord(Word); Word != "}"; inFile->ReadWord(Word)) {
