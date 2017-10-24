@@ -92,11 +92,11 @@ template <class objecttype, class elementtype, class param> struct findelement {
 };
 
 
-inline void deleteList (auto &head) {
+static inline void deleteList (auto &head) {
   while (head) {
-    auto next = head->Next;
-    delete head;
-    head = next;
+    auto me = head;
+    head = me->Next;
+    delete me;
   }
 }
 
