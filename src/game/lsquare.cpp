@@ -1223,41 +1223,47 @@ void lsquare::SignalSeen(feuLong Tick)
     Character->CheckIfSeen();
 }
 
-void lsquare::DrawMemorized(blitdata& BlitData) const
-{
+
+void lsquare::DrawMemorized (blitdata &BlitData) const {
   LastSeen = 0;
   Flags &= ~STRONG_NEW_DRAW_REQUEST;
   BlitData.Luminance = ivanconfig::GetContrastLuminance();
 
-  if(FowMemorized)
-    FowMemorized->LuminanceBlit(BlitData);
-  else
+  if (FowMemorized) {
+    blitdata nbd = BlitData;
+    if (nbd.Luminance == NORMAL_LUMINANCE) nbd.Luminance = 0x656565;
+    FowMemorized->LuminanceBlit(nbd);
+  } else {
     DOUBLE_BUFFER->Fill(BlitData.Dest, BlitData.Border, 0);
+  }
 
-  ccharacter* C = Character;
+  ccharacter *C = Character;
 
-  if(C && C->CanBeSeenByPlayer())
-  {
+  if (C && C->CanBeSeenByPlayer()) {
     BlitData.CustomData |= C->GetSquareIndex(Pos);
     C->Draw(BlitData);
     BlitData.CustomData &= ~SQUARE_INDEX_MASK;
   }
 }
 
-void lsquare::DrawMemorizedCharacter(blitdata& BlitData) const
-{
+
+void lsquare::DrawMemorizedCharacter (blitdata &BlitData) const {
   BlitData.Luminance = ivanconfig::GetContrastLuminance();
 
-  if(FowMemorized)
-    FowMemorized->LuminanceBlit(BlitData);
-  else
+  if (FowMemorized) {
+    blitdata nbd = BlitData;
+    if (nbd.Luminance == NORMAL_LUMINANCE) nbd.Luminance = 0x656565;
+    FowMemorized->LuminanceBlit(nbd);
+  } else {
     DOUBLE_BUFFER->Fill(BlitData.Dest, BlitData.Border, 0);
+  }
 
   BlitData.CustomData |= Character->GetSquareIndex(Pos);
   Character->Draw(BlitData);
   BlitData.CustomData &= ~SQUARE_INDEX_MASK;
   Flags |= STRONG_NEW_DRAW_REQUEST;
 }
+
 
 truth lsquare::IsDangerous(ccharacter* Who) const
 {
