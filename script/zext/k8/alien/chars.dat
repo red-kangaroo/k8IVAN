@@ -55,8 +55,7 @@ aliendog
   NameSingular = "alien dog";
   UsesLongArticle = true;
   //TorsoBitmapPos = 304, 16;
-  //TODO: move to 592
-  TorsoBitmapPos = 600, 0;
+  TorsoBitmapPos = 592, 0;
   SkinColor = rgb16(72, 86, 90);
   AttachedGod = NONE;
   HostileReplies == "@Dd spit acid saliva.";
