@@ -12,6 +12,8 @@
 
 #define __FILE_OF_STATIC_LTERRAIN_PROTOTYPE_DEFINITIONS__
 
+#include "feloops.h"
+
 #include "proto.h"
 #include "lterra.h"
 #include "database.h"

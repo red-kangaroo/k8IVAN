@@ -468,11 +468,7 @@ character::~character () {
   delete [] SquareUnder;
   delete [] CWeaponSkill;
   delete HomeData;
-  for (trapdata *T = TrapData; T;) {
-    trapdata *ToDel = T;
-    T = T->Next;
-    delete ToDel;
-  }
+  deleteList(TrapData);
   game::RemoveCharacterID(ID);
 }
 
@@ -7315,14 +7311,14 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
         Equipment->AddInventoryEntry(this, Entry, 1, true);
         AddSpecialEquipmentInfo(Entry, c);
         int ImageKey = game::AddToItemDrawVector(itemvector(1, Equipment));
-        List.AddEntry(Entry, (HasSomethingToEquipAt(c, false) ? LIGHT_GRAY : ORANGE), 20, ImageKey, true);
+        List.AddEntry(Entry, (HasSomethingToEquipAt(c, false) ? ORANGE : LIGHT_GRAY), 20, ImageKey, true);
       } else {
         Entry << (GetBodyPartOfEquipment(c) ? "-" : "can't use");
         col16 color;
         switch (HasSomethingToEquipAt(c, false)) {
           case 0: color = RED; break;
-          case 1: color = ORANGE; break;
-          default: color = LIGHT_GRAY; break;
+          case 1: color = LIGHT_GRAY; break;
+          default: color = ORANGE; break;
         }
         List.AddEntry(Entry, color, 20, game::AddToItemDrawVector(itemvector()));
       }
@@ -7758,11 +7754,8 @@ void character::RemoveTraps () {
   for (trapdata *T = TrapData; T;) {
     entity *Trap = game::SearchTrap(T->TrapID);
     if (Trap) Trap->UnStick();
-    trapdata *ToDel = T;
-    T = T->Next;
-    delete ToDel;
   }
-  TrapData = 0;
+  deleteList(TrapData);
   doforbodyparts()(this, &bodypart::SignalPossibleUsabilityChange);
 }
 

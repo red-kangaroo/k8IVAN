@@ -117,21 +117,10 @@ item::~item () {
   game::RemoveItemID(ID);
   fluid **FP = Fluid;
   if (FP) {
-    for (int c = 0; c < /*SquaresUnder*/FluidCount; ++c) {
-      for (fluid* F = FP[c]; F;) {
-        fluid *ToDel = F;
-        F = F->Next;
-        delete ToDel;
-      }
-    }
+    for (int c = 0; c < /*SquaresUnder*/FluidCount; ++c) deleteList(FP[c]);
     delete [] FP;
   }
-
-  for (idholder *I = CloneMotherID; I; ) {
-    idholder *ToDel = I;
-    I = I->Next;
-    delete ToDel;
-  }
+  deleteList(CloneMotherID);
 }
 
 

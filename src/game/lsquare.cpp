@@ -9,7 +9,6 @@
  *  along with this file for more details
  *
  */
-
 /* Compiled through levelset.cpp */
 
 lsquare*** eyecontroller::Map;
@@ -38,8 +37,8 @@ void tickcontroller::PrepareShiftedTick()
 
 truth lsquare::IsDipDestination() const { return GLTerrain->IsDipDestination() || (OLTerrain && OLTerrain->IsDipDestination()); }
 
-lsquare::lsquare(level* LevelUnder, v2 Pos)
-: square(LevelUnder, Pos),
+lsquare::lsquare (level *LevelUnder, v2 Pos) :
+  square(LevelUnder, Pos),
   Fluid(0), Smoke(0), Rain(0), Trap(0),
   GLTerrain(0), OLTerrain(0),
   Memorized(0), FowMemorized(0),
@@ -62,19 +61,14 @@ lsquare::lsquare(level* LevelUnder, v2 Pos)
   Stack = new stack(this, 0);
 }
 
-lsquare::~lsquare()
-{
+
+lsquare::~lsquare () {
   delete GLTerrain;
   delete OLTerrain;
   delete Stack;
   delete [] Engraved;
 
-  for(fluid* F = Fluid; F;)
-  {
-    fluid* ToDel = F;
-    F = F->Next;
-    delete ToDel;
-  }
+  deleteList(Fluid);
 
   delete Memorized;
   delete FowMemorized;
@@ -82,27 +76,11 @@ lsquare::~lsquare()
   delete [] GroundBorderPartnerTerrain;
   delete [] OverBorderPartnerTerrain;
 
-  for(smoke* S = Smoke; S;)
-  {
-    smoke* ToDel = S;
-    S = S->Next;
-    delete ToDel;
-  }
-
-  for(rain* R = Rain; R;)
-  {
-    rain* ToDel = R;
-    R = R->Next;
-    delete ToDel;
-  }
-
-  for(trap* T = Trap; T;)
-  {
-    trap* ToDel = T;
-    T = T->Next;
-    delete ToDel;
-  }
+  deleteList(Smoke);
+  deleteList(Rain);
+  deleteList(Trap);
 }
+
 
 void lsquare::SignalEmitationIncrease(col24 EmitationUpdate)
 {
@@ -112,6 +90,7 @@ void lsquare::SignalEmitationIncrease(col24 EmitationUpdate)
     Emitate();
   }
 }
+
 
 void lsquare::SignalEmitationDecrease(col24 EmitationUpdate)
 {

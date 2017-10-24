@@ -12,6 +12,8 @@
 
 #define __FILE_OF_STATIC_ITEM_PROTOTYPE_DEFINITIONS__
 
+#include "feloops.h"
+
 #include "proto.h"
 #include "item.h"
 #include "database.h"
