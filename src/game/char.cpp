@@ -7312,7 +7312,7 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
         Equipment->AddInventoryEntry(this, Entry, 1, true);
         AddSpecialEquipmentInfo(Entry, c);
         int ImageKey = game::AddToItemDrawVector(itemvector(1, Equipment));
-        List.AddEntry(Entry, (HasSomethingToEquipAt(c, false) ? LIGHT_GRAY : PINK), 20, ImageKey, true);
+        List.AddEntry(Entry, (HasSomethingToEquipAt(c, false) ? LIGHT_GRAY : MakeRGB16(255, 127, 0)), 20, ImageKey, true);
       } else {
         Entry << (GetBodyPartOfEquipment(c) ? "-" : "can't use");
         List.AddEntry(Entry, (HasSomethingToEquipAt(c, false) ? LIGHT_GRAY : RED), 20, game::AddToItemDrawVector(itemvector()));

@@ -42,15 +42,15 @@ culong SquarePartTickMask[4] = { 0xFF, 0xFF00, 0xFF0000, 0xFF000000 };
 #define NO_RETURN            __attribute__((noreturn))
 #define LIKE_PRINTF(p1, p2)  __attribute__((format(printf, p1, p2)))
 
-template <class type> inline type Max (type X, type Y) { return X >= Y ? X : Y; }
-template <class type> inline type Max (type X, type Y, type Z) { return X >= Y ? (X >= Z ? X : Z) : (Y >= Z ? Y : Z); }
-template <class type> inline type Min (type X, type Y) { return X <= Y ? X : Y; }
-template <class type> inline type Min (type X, type Y, type Z) { return X <= Y ? (X <= Z ? X : Z) : (Y <= Z ? Y : Z); }
-template <class type> inline type HypotSquare (type X, type Y) { return X * X + Y * Y; }
-template <class type> inline type Limit (type Value, type Minimum, type Maximum) { return Value >= Minimum ? Value <= Maximum ? Value : Maximum : Minimum; }
+template <class type> constexpr inline type Max (type X, type Y) { return (X >= Y ? X : Y); }
+template <class type> constexpr inline type Max (type X, type Y, type Z) { return (X >= Y ? (X >= Z ? X : Z) : (Y >= Z ? Y : Z)); }
+template <class type> constexpr inline type Min (type X, type Y) { return (X <= Y ? X : Y); }
+template <class type> constexpr inline type Min (type X, type Y, type Z) { return (X <= Y ? (X <= Z ? X : Z) : (Y <= Z ? Y : Z)); }
+template <class type> constexpr inline type HypotSquare (type X, type Y) { return X*X+Y*Y; }
+template <class type> constexpr inline type Limit (type Value, type Minimum, type Maximum) { return (Value >= Minimum ? (Value <= Maximum ? Value : Maximum) : Minimum); }
 
 template <class type> inline void LimitRef (type &Value, type Minimum, type Maximum) {
-  if (Value <= Minimum) Value = Minimum;
+       if (Value <= Minimum) Value = Minimum;
   else if (Value >= Maximum) Value = Maximum;
 }
 
@@ -60,13 +60,14 @@ template <class type> inline void Swap(type &X, type &Y) {
   Y = T;
 }
 
-inline col16 GetRed16 (col16 Color) { return Color >> 8 & 0xF8; }
-inline col16 GetGreen16 (col16 Color) { return Color >> 3 & 0xFC; }
-inline col16 GetBlue16 (col16 Color) { return Color << 3 & 0xF8; }
+constexpr inline col16 GetRed16 (col16 Color) { return (Color>>8)&0xF8; }
+constexpr inline col16 GetGreen16 (col16 Color) { return (Color>>3)&0xFC; }
+constexpr inline col16 GetBlue16 (col16 Color) { return (Color<<3)&0xF8; }
 
-inline col16 MakeRGB16 (int Red, int Green, int Blue) { return (Red << 8 & 0xF800) | (Green << 3 & 0x7E0) | (Blue >> 3 & 0x1F); }
+//constexpr inline unsigned int MakeColor16 (int c) { return (c < 0 ? 0 : (c > 255 ? 63 : 63*c/255)); }
+constexpr inline col16 MakeRGB16 (int Red, int Green, int Blue) { return ((Red<<8)&0xF800)|((Green<<3)&0x7E0)|((Blue>>3)&0x1F); }
 
-inline col16 MakeShadeColor (col16 Color) {
+constexpr inline col16 MakeShadeColor (col16 Color) {
   return
     MakeRGB16(
       GetRed16(Color)/3,
@@ -74,14 +75,14 @@ inline col16 MakeShadeColor (col16 Color) {
       GetBlue16(Color)/3);
 }
 
-inline col24 GetRed24 (col24 Color) { return Color >> 16 & 0xFF; }
-inline col24 GetGreen24 (col24 Color) { return Color >> 8 & 0xFF; }
-inline col24 GetBlue24 (col24 Color) { return Color & 0xFF; }
+constexpr inline col24 GetRed24 (col24 Color) { return Color >> 16 & 0xFF; }
+constexpr inline col24 GetGreen24 (col24 Color) { return Color >> 8 & 0xFF; }
+constexpr inline col24 GetBlue24 (col24 Color) { return Color & 0xFF; }
 
-inline col24 MakeRGB24 (int Red, int Green, int Blue) { return (Red << 16 & 0xFF0000) | (Green << 8 & 0xFF00) | (Blue & 0xFF); }
+constexpr inline col24 MakeRGB24 (int Red, int Green, int Blue) { return (Red << 16 & 0xFF0000) | (Green << 8 & 0xFF00) | (Blue & 0xFF); }
 
-inline int GetMaxColor24 (col24 Color) { return Max(GetRed24(Color), GetGreen24(Color), GetBlue24(Color)); }
-inline int GetMinColor24 (col24 Color) { return Min(GetRed24(Color), GetGreen24(Color), GetBlue24(Color)); }
+constexpr inline int GetMaxColor24 (col24 Color) { return Max(GetRed24(Color), GetGreen24(Color), GetBlue24(Color)); }
+constexpr inline int GetMinColor24 (col24 Color) { return Min(GetRed24(Color), GetGreen24(Color), GetBlue24(Color)); }
 
 
 #define NONE    0
