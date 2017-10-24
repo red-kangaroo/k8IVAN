@@ -80,7 +80,7 @@ void msgsystem::AddMessage (cchar *Format, ...) {
     Times = 1;
     Begin = End = v2(Time.Hour, Time.Min);
     LastMessage = Buffer;
-    LastMessage.EnsureOwnsData();
+    LastMessage.ensureUniqueOwned();
   }
 
   festring Temp;
