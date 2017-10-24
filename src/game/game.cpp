@@ -774,7 +774,7 @@ truth game::Save (cfestring &SaveName) {
     return false;
   }
   DrawEverythingNoBlit();
-#if defined(SGAME_SHOTS_IPU) || !defined(HAVE_IMLIB2)
+#if defined(SGAME_SHOTS_IPU) || (!defined(HAVE_IMLIB2) && !defined(HAVE_LIBPNG))
   DOUBLE_BUFFER->SaveScaledIPU(SaveName+".ipu", 0.8); //640; 320
 #else
   DOUBLE_BUFFER->SaveScaledPNG(SaveName+".png", 0.8); //640; 320

@@ -31,6 +31,57 @@
 #include "rawbit.h"
 
 
+#ifdef USE_ZLIB
+static gzFile xcreate (const char *fname) {
+  return gzopen(fname, "wb1");
+}
+
+static gzFile xopenro (const char *fname) {
+  return gzopen(fname, "rb");
+}
+
+static void xclose (gzFile fl) {
+  if (fl) gzclose(fl);
+}
+
+static bool xread (gzFile fi, void *buf, size_t bytes) {
+  if (!fi) return false;
+  if (bytes == 0) return true;
+  return (gzread(fi, buf, (int)bytes) == (int)bytes);
+}
+
+static bool xwrite (gzFile fo, const void *buf, size_t bytes) {
+  if (!fo || bytes == 0) return false;
+  return (gzwrite(fo, buf, (int)bytes) == (int)bytes);
+}
+
+#else
+
+static FILE *xcreate (const char *fname) {
+  return fopen(fname, "wb");
+}
+
+static FILE *xopenro (const char *fname) {
+  return fopen(fname, "rb");
+}
+
+static void xclose (FILE *fl) {
+  if (fl) fclose(fl);
+}
+
+static bool inline xread (FILE *fi, void *buf, size_t bytes) {
+  if (!fi) return false;
+  if (bytes == 0) return true;
+  return (fread(buf, bytes, 1, fi) == (size_t)bytes);
+}
+
+static bool xwrite (FILE *fo, const void *buf, size_t bytes) {
+  if (!fo || bytes == 0) return false;
+  return (fwrite(fo, buf, 1, bytes) == bytes);
+}
+#endif
+
+
 /*
  * Blitting must be as fast as possible, even if no optimizations are used;
  * therefore we can't use inline functions inside loops, since they may be
@@ -106,40 +157,6 @@ bitmap::bitmap (cfestring &FileName) : FastFlag(0), AlphaMap(0), PriorityMap(0),
       *Buffer++ = int(Palette[Char3] >> 3) << 11 | int(Palette[Char3 + 1] >> 2) << 5 | int(Palette[Char3 + 2] >> 3);
     }
   }
-  /*
-  inputfile File(FileName.CStr(), 0, false);
-  if (!File.IsOpen()) ABORT("Bitmap %s not found!", FileName.CStr());
-  uChar Palette[768];
-  File.SeekPosEnd(-768);
-  File.Read(reinterpret_cast<char*>(Palette), 768);
-  File.SeekPosBegin(8);
-  mSize.X  =  File.Get();
-  mSize.X += (File.Get() << 8) + 1;
-  mSize.Y  =  File.Get();
-  mSize.Y += (File.Get() << 8) + 1;
-  File.SeekPosBegin(128);
-  XSizeTimesYSize = mSize.X*mSize.Y;
-  Alloc2D(Image, mSize.Y, mSize.X);
-  packcol16 *Buffer = Image[0];
-  for (int y = 0; y < mSize.Y; ++y) {
-    for (int x = 0; x < mSize.X; ++x) {
-      int Char1 = File.Get();
-      if (Char1 > 192) {
-        --x;
-        int Char2 = File.Get();
-        int Char3 = Char2 + (Char2 << 1);
-        int Color = int(Palette[Char3] >> 3) << 11 | int(Palette[Char3 + 1] >> 2) << 5 | int(Palette[Char3 + 2] >> 3);
-        for (; Char1 > 192; --Char1) {
-          *Buffer++ = Color;
-          if (++x == mSize.X) { x = 0; ++y; }
-        }
-      } else {
-        int Char3 = Char1 + (Char1 << 1);
-        *Buffer++ = int(Palette[Char3] >> 3) << 11 | int(Palette[Char3 + 1] >> 2) << 5 | int(Palette[Char3 + 2] >> 3);
-      }
-    }
-  }
-  */
 }
 
 
@@ -241,13 +258,13 @@ void bitmap::SavePNG (cfestring &FileName) const {
   Imlib_Image img = imlib_create_image(mSize.X, mSize.Y);
   imlib_context_set_image(img);
   DATA32 *raw = imlib_image_get_data(); //brga
-  unsigned char *pp = (unsigned char *)raw;
+  uChar *pp = (uChar *)raw;
   for (int y = 0; y < mSize.Y; y++) {
     for (int x = 0; x < mSize.X; x++) {
       col16 Pixel = GetPixel(x, y);
-      unsigned char b = (Pixel << 3)&0xff;
-      unsigned char g = ((Pixel >> 5) << 2)&0xff;
-      unsigned char r = ((Pixel >> 11) << 3)&0xff;
+      uChar b = (Pixel << 3)&0xff;
+      uChar g = ((Pixel >> 5) << 2)&0xff;
+      uChar r = ((Pixel >> 11) << 3)&0xff;
       *pp++ = b;
       *pp++ = g;
       *pp++ = r;
@@ -295,18 +312,17 @@ void bitmap::SavePNG (cfestring &FileName) const {
   png_set_filter(png_ptr, 0, PNG_FILTER_NONE);
   png_set_compression_level(png_ptr, Z_BEST_COMPRESSION);
   //png_set_compression_level(png_ptr, Z_NO_COMPRESSION);
-  png_set_IHDR(png_ptr, info_ptr, mSize.X, mSize.Y, 8,
-    PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+  png_set_IHDR(png_ptr, info_ptr, mSize.X, mSize.Y, 8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
   png_write_info(png_ptr, info_ptr);
-  unsigned char *tcImg = (unsigned char *)malloc((mSize.X*3)*mSize.Y), *tc = tcImg;
+  uChar *tcImg = (uChar *)malloc((mSize.X*3)*mSize.Y), *tc = tcImg;
 
   for (int y = 0; y < mSize.Y; y++) {
     row_pointers[y] = (png_bytep)tc;
     for (int x = 0; x < mSize.X; x++) {
       col16 Pixel = GetPixel(x, y);
-      unsigned char b = (Pixel << 3)&0xff;
-      unsigned char g = ((Pixel >> 5) << 2)&0xff;
-      unsigned char r = ((Pixel >> 11) << 3)&0xff;
+      uChar b = (Pixel << 3)&0xff;
+      uChar g = ((Pixel >> 5) << 2)&0xff;
+      uChar r = ((Pixel >> 11) << 3)&0xff;
       *tc++ = r;
       *tc++ = g;
       *tc++ = b;
@@ -359,90 +375,27 @@ void bitmap::SaveBMP (cfestring &FileName) const {
 }
 
 
-#ifdef HAVE_IMLIB2
-void bitmap::SaveScaledPNG (cfestring &fileName, double scale) const {
-  Imlib_Image img = imlib_create_image(mSize.X, mSize.Y);
-  imlib_context_set_image(img);
-  DATA32 *raw = imlib_image_get_data(); //bgra
-  unsigned char *pp = (unsigned char *)raw;
-  for (int y = 0; y < mSize.Y; y++) {
-    for (int x = 0; x < mSize.X; x++) {
-      col16 Pixel = GetPixel(x, y);
-      unsigned char b = (Pixel << 3)&0xff;
-      unsigned char g = ((Pixel >> 5) << 2)&0xff;
-      unsigned char r = ((Pixel >> 11) << 3)&0xff;
-      *pp++ = b;
-      *pp++ = g;
-      *pp++ = r;
-      *pp++ = 255;
-    }
-  }
-  //
-  int newW = (int)(scale*mSize.X);
-  int newH = (int)(scale*mSize.Y);
-  Imlib_Image i2 = imlib_create_cropped_scaled_image(0, 0, mSize.X, mSize.Y, newW, newH);
-  imlib_free_image();
-  imlib_context_set_image(i2);
-  imlib_image_set_format("png");
-  imlib_save_image(fileName.CStr());
-  imlib_free_image();
-}
-
-
-truth bitmap::LoadPNG (cfestring &fileName) {
-  Imlib_Image img = imlib_load_image(fileName.CStr());
-  if (!img) return false;
-  delete [] Image;
-  delete [] AlphaMap;
-  delete [] PriorityMap;
-  delete [] RandMap;
-  PriorityMap = 0;
-  RandMap = 0;
-  AlphaMap = 0;
-  imlib_context_set_image(img);
-  mSize.X = imlib_image_get_width();
-  mSize.Y = imlib_image_get_height();
-  Alloc2D(Image, mSize.Y, mSize.X);
-  //Alloc2D(AlphaMap, mSize.Y, mSize.X);
-  const DATA32 *raw = imlib_image_get_data_for_reading_only(); //bgra
-  const unsigned char *pp = (const unsigned char *)raw;
-  for (int y = 0; y < mSize.Y; y++) {
-    for (int x = 0; x < mSize.X; x++) {
-      unsigned char b = *pp++;
-      unsigned char g = *pp++;
-      unsigned char r = *pp++;
-      //unsigned char a = *pp++;
-      pp++; // alpha
-      PutPixel(x, y, MakeRGB16(r, g, b));
-    }
-  }
-  imlib_free_image();
-  return true;
-}
-#endif
-
-
-void bitmap::SaveScaledIPU (cfestring &fileName, double scale) const {
+uChar *bitmap::createScaled (double scale, v2* size) const {
   int newX = (int)((double)mSize.X*scale);
   int newY = (int)((double)mSize.Y*scale);
-  if (newX < 1 || newY < 1) return;
-  unsigned char *unp = new unsigned char[mSize.X*mSize.Y*3];
+  if (newX < 1 || newY < 1) return 0;
+  uChar *unp = new uChar[mSize.X*mSize.Y*3];
   // unpack image
-  unsigned char *pp = unp;
-  for (int y = 0; y < mSize.Y; y++) {
-    for (int x = 0; x < mSize.X; x++) {
+  uChar *pp = unp;
+  for (int y = 0; y < mSize.Y; ++y) {
+    for (int x = 0; x < mSize.X; ++x) {
       col16 Pixel = GetPixel(x, y);
-      unsigned char b = (Pixel << 3)&0xff;
-      unsigned char g = ((Pixel >> 5) << 2)&0xff;
-      unsigned char r = ((Pixel >> 11) << 3)&0xff;
+      uChar b = (Pixel<<3)&0xff;
+      uChar g = ((Pixel>>5)<<2)&0xff;
+      uChar r = ((Pixel>>11)<<3)&0xff;
       *pp++ = r;
       *pp++ = g;
       *pp++ = b;
     }
   }
   // now scale
-  unsigned char *nbx = new unsigned char[newX*mSize.Y*3];
-  unsigned char *nb = new unsigned char[newX*newY*3];
+  uChar *nbx = new uChar[newX*mSize.Y*3];
+  uChar *nb = new uChar[newX*newY*3];
   double sx = (double)mSize.X/(double)newX;
   double sy = (double)mSize.Y/(double)newY;
 #define GETRGB(x, y, r, g, b) \
@@ -452,7 +405,7 @@ void bitmap::SaveScaledIPU (cfestring &fileName, double scale) const {
   // first X
   {
     double cx;
-    unsigned char *dst = nbx;
+    uChar *dst = nbx;
     for (int y = 0; y < mSize.Y; y++) {
       cx = 0;
       for (int x = 0; x < newX; x++, cx += sx) {
@@ -484,7 +437,7 @@ void bitmap::SaveScaledIPU (cfestring &fileName, double scale) const {
   // now Y
   {
     double cx, cy = 0.0;
-    unsigned char *dst = nb;
+    uChar *dst = nb;
     for (int y = 0; y < newY; y++, cy += sy) {
       cx = 0;
       for (int x = 0; x < newX; x++, cx += sx) {
@@ -511,71 +464,80 @@ void bitmap::SaveScaledIPU (cfestring &fileName, double scale) const {
 #undef GETRGB1
   delete [] nbx;
   delete [] unp;
-  // and save it
-#ifdef USE_ZLIB
-  gzFile fo = gzopen(fileName.CStr(), "wb1");
-  if (fo) {
-    uint16_t ii;
-    //
-    ii = 0x29a; gzwrite(fo, &ii, sizeof(ii));
-    ii = newX; gzwrite(fo, &ii, sizeof(ii));
-    ii = newY; gzwrite(fo, &ii, sizeof(ii));
-    gzwrite(fo, nb, newX*newY*3);
-    gzclose(fo);
+  // done
+  if (size) *size = v2(newX, newY);
+  return nb;
+}
+
+
+#if defined(HAVE_IMLIB2) || defined(HAVE_LIBPNG)
+void bitmap::SaveScaledPNG (cfestring &fileName, double scale) const {
+#if defined(HAVE_IMLIB2)
+  Imlib_Image img = imlib_create_image(mSize.X, mSize.Y);
+  imlib_context_set_image(img);
+  DATA32 *raw = imlib_image_get_data(); //bgra
+  uChar *pp = (uChar *)raw;
+  for (int y = 0; y < mSize.Y; y++) {
+    for (int x = 0; x < mSize.X; x++) {
+      col16 Pixel = GetPixel(x, y);
+      uChar b = (Pixel << 3)&0xff;
+      uChar g = ((Pixel >> 5) << 2)&0xff;
+      uChar r = ((Pixel >> 11) << 3)&0xff;
+      *pp++ = b;
+      *pp++ = g;
+      *pp++ = r;
+      *pp++ = 255;
+    }
   }
-#else
-  FILE *fo = fopen(fileName.CStr(), "wb");
-  if (fo) {
-    uint16_t ii;
-    //
-    ii = 0x29a; fwrite(&ii, sizeof(ii), 1, fo);
-    ii = newX; fwrite(&ii, sizeof(ii), 1, fo);
-    ii = newY; fwrite(&ii, sizeof(ii), 1, fo);
-    fwrite(nb, newX*newY*3, 1, fo);
-    fclose(fo);
+  int newW = (int)(scale*mSize.X);
+  int newH = (int)(scale*mSize.Y);
+  Imlib_Image i2 = imlib_create_cropped_scaled_image(0, 0, mSize.X, mSize.Y, newW, newH);
+  imlib_free_image();
+  imlib_context_set_image(i2);
+  imlib_image_set_format("png");
+  imlib_save_image(fileName.CStr());
+  imlib_free_image();
+#elif defined(HAVE_LIBPNG)
+  v2 size;
+  auto rgb = createScaled(scale, &size);
+  png_structp png_ptr;
+  png_infop info_ptr;
+  png_byte **row_pointers = NULL;
+  png_ptr = NULL;
+  info_ptr = NULL;
+  FILE *fp = fopen(fileName.CStr(), "wb");
+  if (!fp) return;
+  row_pointers = (png_byte **)malloc(size.Y*sizeof(png_byte*));
+  png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+  info_ptr = png_create_info_struct(png_ptr);
+  // setup custom writer function
+  png_set_write_fn(png_ptr, (voidp)fp, pngWrite, NULL);
+  if (setjmp(png_jmpbuf(png_ptr))) {
+    fclose(fp);
+    return;
   }
-#endif
-  delete [] nb;
-}
-
-
-#ifdef USE_ZLIB
-static truth inline xread (void *buf, unsigned int sz, gzFile fi) {
-  if (gzread(fi, buf, sz) != (int)sz) { gzclose(fi); return false; }
-  return true;
-}
+  png_set_filter(png_ptr, 0, PNG_FILTER_NONE);
+  png_set_compression_level(png_ptr, Z_BEST_COMPRESSION);
+  //png_set_compression_level(png_ptr, Z_NO_COMPRESSION);
+  png_set_IHDR(png_ptr, info_ptr, size.X, size.Y, 8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+  png_write_info(png_ptr, info_ptr);
+  for (int y = 0; y < size.Y; ++y) row_pointers[y] = (png_bytep)(rgb+y*(size.X*3));
+  png_write_image(png_ptr, row_pointers);
+  png_write_end(png_ptr, NULL);
+  fclose(fp);
+  // clean up and return
+  png_destroy_write_struct(&png_ptr, &info_ptr);
+  if (row_pointers) free(row_pointers);
 #else
-static truth inline xread (void *buf, unsigned int sz, FILE *fi) {
-  if (fread(buf, sz, 1, fi) != (size_t)sz) { fclose(fi); return false; }
-  return true;
+  BUG!
+#endif
 }
-#endif
 
 
-truth bitmap::LoadIPU (cfestring &fileName) {
-  uint16_t ii = 0;
-  int wdt = 0, hgt = 0;
-#ifdef USE_ZLIB
-# define xclose gzclose
-  gzFile fi = gzopen(fileName.CStr(), "rb");
-#else
-# define xclose fclose
-  FILE *fi = fopen(fileName.CStr(), "rb");
-#endif
-  if (!fi) return false;
-  if (!xread(&ii, sizeof(ii), fi)) return false;
-  if (ii != 0x29a) { xclose(fi); return false; }
-  if (!xread(&ii, sizeof(ii), fi)) return false;
-  if (ii < 1 || ii > 4096) { xclose(fi); return false; }
-  wdt = ii;
-  if (!xread(&ii, sizeof(ii), fi)) return false;
-  if (ii < 1 || ii > 4096) { xclose(fi); return false; }
-  hgt = ii;
-  //fprintf(stderr, "%dx%d\n", wdt, hgt);
-  unsigned char *nb = new unsigned char[wdt*hgt*3];
-  if (!xread(nb, wdt*hgt*3, fi)) { delete [] nb; xclose(fi); return false; }
-  xclose(fi);
-  //
+truth bitmap::LoadPNG (cfestring &fileName) {
+#if defined(HAVE_IMLIB2)
+  Imlib_Image img = imlib_load_image(fileName.CStr());
+  if (!img) return false;
   delete [] Image;
   delete [] AlphaMap;
   delete [] PriorityMap;
@@ -583,16 +545,175 @@ truth bitmap::LoadIPU (cfestring &fileName) {
   PriorityMap = 0;
   RandMap = 0;
   AlphaMap = 0;
+  imlib_context_set_image(img);
+  mSize.X = imlib_image_get_width();
+  mSize.Y = imlib_image_get_height();
+  Alloc2D(Image, mSize.Y, mSize.X);
+  //Alloc2D(AlphaMap, mSize.Y, mSize.X);
+  const DATA32 *raw = imlib_image_get_data_for_reading_only(); //bgra
+  const uChar *pp = (const uChar *)raw;
+  for (int y = 0; y < mSize.Y; y++) {
+    for (int x = 0; x < mSize.X; x++) {
+      uChar b = *pp++;
+      uChar g = *pp++;
+      uChar r = *pp++;
+      //uChar a = *pp++;
+      pp++; // alpha
+      PutPixel(x, y, MakeRGB16(r, g, b));
+    }
+  }
+  imlib_free_image();
+  return true;
+#elif defined(HAVE_LIBPNG)
+  FILE *fl = fopen(fileName.CStr(), "rb");
+  if (!fl) return false;
+
+  uChar *rgb = 0;
+  png_bytep *rowptrs = 0;
+
+  png_structp PNGStruct = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
+  if (!PNGStruct) {
+    fclose(fl);
+    delete [] rowptrs;
+    delete [] rgb;
+    return false;
+  }
+
+  png_infop PNGInfo = png_create_info_struct(PNGStruct);
+  if (!PNGInfo) {
+    fclose(fl);
+    png_destroy_read_struct(&PNGStruct, (png_infopp)nullptr, (png_infopp)nullptr);
+    delete [] rowptrs;
+    delete [] rgb;
+    return false;
+  }
+
+  if (setjmp(png_jmpbuf(PNGStruct)) != 0) {
+    if (fl) fclose(fl);
+    png_destroy_read_struct(&PNGStruct, (png_infopp)nullptr, (png_infopp)nullptr);
+    delete [] rowptrs;
+    delete [] rgb;
+    return false;
+  }
+
+  png_init_io(PNGStruct, fl);
+  png_read_info(PNGStruct, PNGInfo);
+
+  int sizeX = png_get_image_width(PNGStruct, PNGInfo);
+  int sizeY = png_get_image_height(PNGStruct, PNGInfo);
+
+  if (sizeX < 1 || sizeX > 8192 || sizeY < 1 || sizeY > 8192) {
+    if (fl) fclose(fl);
+    png_destroy_read_struct(&PNGStruct, (png_infopp)nullptr, (png_infopp)nullptr);
+    delete [] rowptrs;
+    delete [] rgb;
+    return false;
+  }
+
+  //fprintf(stderr, "size: %dx%d; depth=%d\n", sizeX, sizeY, (int)png_get_bit_depth(PNGStruct, PNGInfo));
+
+  if (png_get_bit_depth(PNGStruct, PNGInfo) != 8 || png_get_color_type(PNGStruct, PNGInfo) != PNG_COLOR_TYPE_RGB) {
+    if (fl) fclose(fl);
+    png_destroy_read_struct(&PNGStruct, (png_infopp)nullptr, (png_infopp)nullptr);
+    delete [] rowptrs;
+    delete [] rgb;
+    return false;
+  }
+
+  rgb = new uChar[sizeY*(sizeX*3)];
+  rowptrs = new png_bytep[sizeY];
+
+  for (int y = 0; y < sizeY; ++y) rowptrs[y] = (png_bytep)(rgb+y*(sizeX*3));
+
+  png_read_image(PNGStruct, rowptrs);
+
+  png_destroy_read_struct(&PNGStruct, &PNGInfo, nullptr);
+
+  delete [] rowptrs;
+
+  fclose(fl);
+
+  delete [] Image;
+  delete [] AlphaMap;
+  delete [] PriorityMap;
+  delete [] RandMap;
+  PriorityMap = 0;
+  RandMap = 0;
+  AlphaMap = 0;
+  mSize.X = sizeX;
+  mSize.Y = sizeY;
+  Alloc2D(Image, mSize.Y, mSize.X);
+  //Alloc2D(AlphaMap, mSize.Y, mSize.X);
+  const uChar *pp = rgb;
+  for (int y = 0; y < sizeY; ++y) {
+    for (int x = 0; x < sizeX; ++x) {
+      uChar r = *pp++;
+      uChar g = *pp++;
+      uChar b = *pp++;
+      PutPixel(x, y, MakeRGB16(r, g, b));
+    }
+  }
+
+  delete [] rgb;
+  return true;
+#endif
+}
+#endif
+
+
+void bitmap::SaveScaledIPU (cfestring &fileName, double scale) const {
+  v2 size;
+  uChar *rgb = createScaled(scale, &size);
+  if (!rgb) return;
+  // and save it
+  auto fo = xcreate(fileName.CStr());
+  if (fo) {
+    uint16_t ii;
+    ii = 0x29a; xwrite(fo, &ii, sizeof(ii));
+    ii = size.X; xwrite(fo, &ii, sizeof(ii));
+    ii = size.Y; xwrite(fo, &ii, sizeof(ii));
+    xwrite(fo, rgb, size.X*size.Y*3);
+    xclose(fo);
+  }
+  delete [] rgb;
+}
+
+
+truth bitmap::LoadIPU (cfestring &fileName) {
+  uint16_t ii = 0;
+  int wdt = 0, hgt = 0;
+  auto fi = xopenro(fileName.CStr());
+  if (!fi) return false;
+  if (!xread(fi, &ii, sizeof(ii))) { xclose(fi); return false; }
+  if (ii != 0x29a) { xclose(fi); return false; }
+  if (!xread(fi, &ii, sizeof(ii))) { xclose(fi); return false; }
+  if (ii < 1 || ii > 4096) { xclose(fi); return false; }
+  wdt = ii;
+  if (!xread(fi, &ii, sizeof(ii))) { xclose(fi); return false; }
+  if (ii < 1 || ii > 4096) { xclose(fi); return false; }
+  hgt = ii;
+  uChar *nb = new uChar[wdt*hgt*3];
+  if (!xread(fi, nb, wdt*hgt*3)) { xclose(fi); delete [] nb; xclose(fi); return false; }
+  xclose(fi);
+
+  delete [] Image;
+  delete [] AlphaMap;
+  delete [] PriorityMap;
+  delete [] RandMap;
+
+  PriorityMap = 0;
+  RandMap = 0;
+  AlphaMap = 0;
   mSize.X = wdt;
   mSize.Y = hgt;
   Alloc2D(Image, mSize.Y, mSize.X);
   //Alloc2D(AlphaMap, mSize.Y, mSize.X);
-  unsigned char *pp = nb;
+  uChar *pp = nb;
   for (int y = 0; y < mSize.Y; y++) {
     for (int x = 0; x < mSize.X; x++) {
-      unsigned char r = *pp++;
-      unsigned char g = *pp++;
-      unsigned char b = *pp++;
+      uChar r = *pp++;
+      uChar g = *pp++;
+      uChar b = *pp++;
       PutPixel(x, y, MakeRGB16(r, g, b));
     }
   }

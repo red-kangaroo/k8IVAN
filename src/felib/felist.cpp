@@ -385,13 +385,13 @@ truth felist::DrawPage (bitmap *Buffer) const {
     festring::sizetype pos = imgName.FindLast(".sav");
     if (pos != festring::NPos) {
       imgName.Erase(pos, 4); // remove '.sav'
-#if defined(SGAME_SHOTS_IPU) || !defined(HAVE_IMLIB2)
+#if defined(SGAME_SHOTS_IPU) || (!defined(HAVE_IMLIB2) && !defined(HAVE_LIBPNG))
       imgName = mSaveDir+imgName+".ipu";
 #else
       imgName = mSaveDir+imgName+".png";
 #endif
       //fprintf(stderr, "sel=%d; img=%s\n", selIdx, imgName.CStr());
-#if defined(SGAME_SHOTS_IPU) || !defined(HAVE_IMLIB2)
+#if defined(SGAME_SHOTS_IPU) || (!defined(HAVE_IMLIB2) && !defined(HAVE_LIBPNG))
       if (bmp.LoadIPU(imgName))
 #else
       if (bmp.LoadPNG(imgName))

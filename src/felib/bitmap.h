@@ -53,7 +53,7 @@ public:
 #endif
   void SaveScaledIPU (cfestring &fileName, double scale) const;
   truth LoadIPU (cfestring &fileName);
-#if defined(HAVE_IMLIB2)
+#if defined(HAVE_IMLIB2) || defined(HAVE_LIBPNG)
   void SaveScaledPNG (cfestring &fileName, double scale) const;
   truth LoadPNG (cfestring &fileName);
 #endif
@@ -139,6 +139,10 @@ public:
   void MoveLineVertically (int, int);
   void MoveLineHorizontally (int, int);
   void InterLace ();
+
+private:
+  //RGB (3 bytes per pixel)
+  uChar *createScaled (double scale, v2* size) const;
 
 protected:
   v2 mSize;

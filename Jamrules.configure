@@ -113,7 +113,7 @@ rule -configure- {
     Echo "CFG: support for compressed saves turned on" ;
   }
   # USE_LIBPNG
-  if $(USE_IMLIB2) && $(USE_PNG_SHOTS) {
+  if $(USE_PNG_SHOTS) {
     Echo "CFG: savegame screenshots will be in PNG format" ;
   } else {
     Echo "CFG: savegame screenshots will be in internal format" ;
