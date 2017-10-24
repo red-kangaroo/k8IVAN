@@ -82,67 +82,46 @@ lsquare::~lsquare () {
 }
 
 
-void lsquare::SignalEmitationIncrease(col24 EmitationUpdate)
-{
-  if(game::CompareLights(EmitationUpdate, Emitation) > 0 && !game::IsGenerating() && !(Flags & FREEZED))
-  {
+void lsquare::SignalEmitationIncrease (col24 EmitationUpdate) {
+  if (game::CompareLights(EmitationUpdate, Emitation) > 0 && !game::IsGenerating() && !(Flags & FREEZED)) {
     CalculateEmitation(); // could this be optimized?
     Emitate();
   }
 }
 
 
-void lsquare::SignalEmitationDecrease(col24 EmitationUpdate)
-{
-  if(game::CompareLights(EmitationUpdate, Emitation) >= 0 && Emitation && !game::IsGenerating() && !(Flags & FREEZED))
-  {
+void lsquare::SignalEmitationDecrease (col24 EmitationUpdate) {
+  if (game::CompareLights(EmitationUpdate, Emitation) >= 0 && Emitation && !game::IsGenerating() && !(Flags & FREEZED)) {
     col24 Backup = Emitation;
     CalculateEmitation();
-
-    if(Backup != Emitation)
-    {
+    if (Backup != Emitation) {
       Noxify(Backup);
       Emitate(Emitation, FORCE_ADD);
     }
   }
 }
 
-void lsquare::CalculateEmitation()
-{
+
+void lsquare::CalculateEmitation () {
   Emitation = Stack->GetEmitation();
-  int c;
 
-  for(c = 0; c < 4; ++c)
-  {
-    stack* Stack = GetStackOfAdjacentSquare(c);
-
-    if(Stack)
-      game::CombineLights(Emitation, Stack->GetSideEmitation(3 - c));
+  for (int c = 0; c < 4; ++c) {
+    stack *Stack = GetStackOfAdjacentSquare(c);
+    if (Stack) game::CombineLights(Emitation, Stack->GetSideEmitation(3 - c));
   }
 
-  if(Character)
-    game::CombineLights(Emitation, Character->GetEmitation());
-
+  if (Character) game::CombineLights(Emitation, Character->GetEmitation());
   game::CombineLights(Emitation, GLTerrain->GetEmitation());
-
-  if(OLTerrain)
-    game::CombineLights(Emitation, OLTerrain->GetEmitation());
-
+  if (OLTerrain) game::CombineLights(Emitation, OLTerrain->GetEmitation());
   game::CombineLights(Emitation, TemporaryEmitation);
-
-  for(const fluid* F = Fluid; F; F = F->Next)
-    game::CombineLights(Emitation, F->GetEmitation());
-
-  for(const rain* R = Rain; R; R = R->Next)
-    game::CombineLights(Emitation, R->GetEmitation());
+  for (const fluid* F = Fluid; F; F = F->Next) game::CombineLights(Emitation, F->GetEmitation());
+  for (const rain* R = Rain; R; R = R->Next) game::CombineLights(Emitation, R->GetEmitation());
 }
 
-void lsquare::UpdateMemorized()
-{
-  if(Flags & MEMORIZED_UPDATE_REQUEST)
-  {
-    if(!IsDark() || CanBeFeltByPlayer())
-    {
+
+void lsquare::UpdateMemorized () {
+  if (Flags&MEMORIZED_UPDATE_REQUEST) {
+    if (!IsDark() || CanBeFeltByPlayer()) {
       blitdata B = { Memorized,
          { 0, 0 },
          { 0, 0 },
@@ -150,22 +129,18 @@ void lsquare::UpdateMemorized()
          { NORMAL_LUMINANCE },
          TRANSPARENT_COLOR,
          ALLOW_ALPHA };
-
       DrawStaticContents(B);
       Memorized->FastBlit(FowMemorized);
       B.Bitmap = FowMemorized;
       B.Flags = 0;
       B.MaskColor = 0;
       igraph::GetFOWGraphic()->NormalMaskedBlit(B);
-    }
-    else
-    {
+    } else {
       Memorized->ClearToColor(0);
       igraph::GetFOWGraphic()->FastBlit(FowMemorized);
     }
 
-    if(!StaticContentCache.Bitmap)
-    {
+    if (!StaticContentCache.Bitmap) {
       StaticContentCache.Bitmap = new bitmap(TILE_V2);
       StaticContentCache.Bitmap->ActivateFastFlag();
     }
@@ -175,8 +150,8 @@ void lsquare::UpdateMemorized()
   }
 }
 
-void lsquare::UpdateStaticContentCache(col24 Luminance) const
-{
+
+void lsquare::UpdateStaticContentCache (col24 Luminance) const {
   blitdata B = { StaticContentCache.Bitmap,
      { 0, 0 },
      { 0, 0 },
@@ -184,65 +159,47 @@ void lsquare::UpdateStaticContentCache(col24 Luminance) const
      { Luminance },
      0,
      0 };
-
   Memorized->LuminanceBlit(B);
   StaticContentCache.Luminance = Luminance;
 }
 
-void lsquare::DrawStaticContents(blitdata& BlitData) const
-{
-  if(BlitData.CustomData & ALLOW_ANIMATE && !StaticAnimatedEntities && Memorized && !game::GetSeeWholeMapCheatMode())
-  {
-    if(StaticContentCache.Luminance != BlitData.Luminance)
-      UpdateStaticContentCache(BlitData.Luminance);
 
+void lsquare::DrawStaticContents (blitdata &BlitData) const {
+  if ((BlitData.CustomData&ALLOW_ANIMATE) && !StaticAnimatedEntities && Memorized && !game::GetSeeWholeMapCheatMode()) {
+    if (StaticContentCache.Luminance != BlitData.Luminance) UpdateStaticContentCache(BlitData.Luminance);
     StaticContentCache.Bitmap->FastBlit(BlitData.Bitmap, BlitData.Dest);
     return;
   }
 
-  if(!OLTerrain || OLTerrain->ShowThingsUnder())
-    GLTerrain->Draw(BlitData);
+  if (!OLTerrain || OLTerrain->ShowThingsUnder()) GLTerrain->Draw(BlitData);
 
-  int c;
-  int GroundPartners = GroundBorderPartnerInfo >> 24 & 15;
+  int GroundPartners = (GroundBorderPartnerInfo>>24)&15;
 
-  for(c = 0; c < GroundPartners; ++c)
-  {
-    BlitData.CustomData |= 8 - (GroundBorderPartnerInfo >> ((c << 1) + c) & 7);
+  for (int c = 0; c < GroundPartners; ++c) {
+    BlitData.CustomData |= 8-((GroundBorderPartnerInfo>>((c<<1)+c))&7);
     GroundBorderPartnerTerrain[c]->Draw(BlitData);
     BlitData.CustomData &= ~SQUARE_INDEX_MASK;
   }
 
   truth StackDrawn = false;
 
-  if(OLTerrain && !IsFlyable())
-  {
-    if(OLTerrain->IsTransparent() && OLTerrain->ShowThingsUnder())
-    {
+  if (OLTerrain && !IsFlyable()) {
+    if (OLTerrain->IsTransparent() && OLTerrain->ShowThingsUnder()) {
       StackDrawn = true;
       DrawStacks(BlitData);
     }
-
     OLTerrain->Draw(BlitData);
   }
 
-  for(const fluid* F = Fluid; F; F = F->Next)
-    F->SimpleDraw(BlitData);
-
-  if(OLTerrain && IsFlyable())
-    OLTerrain->Draw(BlitData);
-
-  if(!StackDrawn && Flags & IS_TRANSPARENT)
-    DrawStacks(BlitData);
-
-  for(const trap* T = Trap; T; T = T->Next)
-    T->Draw(BlitData);
+  for (const fluid* F = Fluid; F; F = F->Next) F->SimpleDraw(BlitData);
+  if (OLTerrain && IsFlyable()) OLTerrain->Draw(BlitData);
+  if (!StackDrawn && Flags & IS_TRANSPARENT) DrawStacks(BlitData);
+  for (const trap* T = Trap; T; T = T->Next) T->Draw(BlitData);
 
   int OverPartners = OverBorderPartnerInfo >> 24 & 15;
 
-  for(c = 0; c < OverPartners; ++c)
-  {
-    BlitData.CustomData |= 8 - (OverBorderPartnerInfo >> ((c << 1) + c) & 7);
+  for (int c = 0; c < OverPartners; ++c) {
+    BlitData.CustomData |= 8-((OverBorderPartnerInfo>>((c<<1)+c))&7);
     OverBorderPartnerTerrain[c]->Draw(BlitData);
     BlitData.CustomData &= ~SQUARE_INDEX_MASK;
   }
@@ -250,7 +207,7 @@ void lsquare::DrawStaticContents(blitdata& BlitData) const
 
 
 void lsquare::Draw (blitdata& BlitData) const {
-  if (Flags & NEW_DRAW_REQUEST || AnimatedEntities) {
+  if ((Flags&NEW_DRAW_REQUEST) || AnimatedEntities) {
     if (!IsDark() || game::GetSeeWholeMapCheatMode()) {
       if (game::GetSeeWholeMapCheatMode() == SHOW_MAP_IN_UNIFORM_LIGHT || (game::GetSeeWholeMapCheatMode() && !(Flags & IS_TRANSPARENT)))
         BlitData.Luminance = ivanconfig::GetContrastLuminance();
@@ -263,28 +220,26 @@ void lsquare::Draw (blitdata& BlitData) const {
         BlitData.CustomData |= Character->GetSquareIndex(Pos);
 
         if (Character->IsFlying()) {
-          for (const smoke* S = Smoke; S; S = S->Next) S->Draw(BlitData);
+          for (const smoke *S = Smoke; S; S = S->Next) S->Draw(BlitData);
           Character->Draw(BlitData);
         } else {
           Character->Draw(BlitData);
-          for (const smoke* S = Smoke; S; S = S->Next) S->Draw(BlitData);
+          for (const smoke *S = Smoke; S; S = S->Next) S->Draw(BlitData);
         }
         BlitData.CustomData &= ~SQUARE_INDEX_MASK;
       } else {
-        for(const smoke* S = Smoke; S; S = S->Next) S->Draw(BlitData);
+        for(const smoke *S = Smoke; S; S = S->Next) S->Draw(BlitData);
       }
 
-      for (const rain* R = Rain; R; R = R->Next) if (R->IsEnabled()) R->Draw(BlitData);
+      for (const rain *R = Rain; R; R = R->Next) if (R->IsEnabled()) R->Draw(BlitData);
     } else if (CanBeFeltByPlayer()) {
       col24 L = Luminance;
       game::CombineLights(L, DIM_LUMINANCE);
       BlitData.Luminance = ivanconfig::ApplyContrastTo(L);
       DrawStaticContents(BlitData);
-
       for (const rain* R = Rain; R; R = R->Next) if (R->IsEnabled()) R->Draw(BlitData);
     } else {
       DOUBLE_BUFFER->Fill(BlitData.Dest, BlitData.Border, 0);
-
       if (Character && Character->CanBeSeenByPlayer()) {
         BlitData.CustomData |= Character->GetSquareIndex(Pos);
         BlitData.Luminance = ivanconfig::GetContrastLuminance();

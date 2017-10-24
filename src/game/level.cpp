@@ -1003,8 +1003,8 @@ void level::Draw (truth AnimationDraw) const {
         for (int y = YMin; y < YMax; ++y, ++SquarePtr, BlitData.Dest.Y += TILE_SIZE) {
           const lsquare* Square = *SquarePtr;
           culong LastSeen = Square->LastSeen;
-          if (LastSeen == LOSTick) Square->Draw(BlitData);
-          else if (Square->Flags&STRONG_BIT || LastSeen == LOSTick-2) Square->DrawMemorized(BlitData);
+               if (LastSeen == LOSTick) Square->Draw(BlitData);
+          else if ((Square->Flags&STRONG_BIT) || LastSeen == LOSTick-2) Square->DrawMemorized(BlitData);
         }
       }
     } else {
@@ -1013,7 +1013,7 @@ void level::Draw (truth AnimationDraw) const {
         lsquare **SquarePtr = &Map[x][YMin];
         for (int y = YMin; y < YMax; ++y, ++SquarePtr, BlitData.Dest.Y += TILE_SIZE) {
           const lsquare *Square = *SquarePtr;
-          if (Square->LastSeen == LOSTick) Square->Draw(BlitData);
+               if (Square->LastSeen == LOSTick) Square->Draw(BlitData);
           else if (Square->Flags&STRONG_BIT) Square->DrawMemorized(BlitData);
           else {
             ccharacter *C = Square->Character;
