@@ -161,6 +161,17 @@ truth stack::SortedItems (ccharacter *Viewer, sorter SorterFunction) const {
 }
 
 
+int stack::SortedItemsCount (ccharacter *Viewer, sorter SorterFunction) const {
+  int res = 0;
+  if (Items) {
+    for (stackiterator i = GetBottom(); i.HasItem(); ++i) {
+      if ((SorterFunction == 0 || ((*i)->*SorterFunction)(Viewer)) && ((Flags & HIDDEN) || i->CanBeSeenBy(Viewer))) ++res;
+    }
+  }
+  return res;
+}
+
+
 void stack::BeKicked (character *Kicker, int KickDamage, int Direction) {
   if (KickDamage) {
     ReceiveDamage(Kicker, KickDamage, PHYSICAL_DAMAGE, Direction);

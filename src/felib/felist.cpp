@@ -327,7 +327,7 @@ truth felist::DrawPage (bitmap *Buffer) const {
     if (selected) selIdx = (int)c;
     col16 ecolor = Entry[c]->Color;
     if (selected) {
-      if (ecolor != RED && ecolor != GREEN && ecolor != PINK && ecolor != MakeRGB16(255, 127, 0)) ecolor = selText;
+      if (ecolor != RED && ecolor != GREEN && ecolor != PINK && ecolor != ORANGE) ecolor = selText;
     }
     if (Entry[c]->ImageKey != NO_IMAGE) {
       if (Str.rawLength() <= (Width-50)>>3) {

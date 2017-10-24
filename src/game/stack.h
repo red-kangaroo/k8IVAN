@@ -100,6 +100,7 @@ public:
   square *GetSquareUnder () const;
   lsquare *GetLSquareUnder () const { return static_cast<lsquare*>(GetSquareUnder()); }
   truth SortedItems (ccharacter *, sorter) const;
+  int SortedItemsCount (ccharacter *, sorter) const;
   void BeKicked (character *, int, int);
   void Polymorph (character *);
   void CheckForStepOnEffect (character *);

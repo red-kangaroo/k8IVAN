@@ -102,6 +102,7 @@ constexpr inline int GetMinColor24 (col24 Color) { return Min(GetRed24(Color), G
 #define DARK_GRAY   0x528A
 #define BLACK       0x0000
 #define CYAN        0x07FF
+#define ORANGE      (MakeRGB16(255, 127, 0))
 
 #define SEL_BLUE    0x2AAF
 

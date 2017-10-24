@@ -7274,16 +7274,19 @@ truth character::ChatIdly () {
 }
 
 
-truth character::HasSomethingToEquipAt (int chosen, truth equippedIsTrue) {
-  if (!GetBodyPartOfEquipment(chosen)) return false;
+int character::HasSomethingToEquipAt (int chosen, truth equippedIsTrue) {
+  if (!GetBodyPartOfEquipment(chosen)) return 0;
 
   item *oldEquipment = GetEquipment(chosen);
-  if (!IsPlayer() && oldEquipment && BoundToUse(oldEquipment, chosen)) return false;
-  if (equippedIsTrue && oldEquipment) return true;
+  if (!IsPlayer() && oldEquipment && BoundToUse(oldEquipment, chosen)) return 0;
 
   stack *mainStack = GetStack();
   sorter Sorter = EquipmentSorter(chosen);
-  return (mainStack->SortedItems(this, Sorter));
+  auto count = mainStack->SortedItemsCount(this, Sorter);
+
+  if (equippedIsTrue && oldEquipment) ++count;
+
+  return count;
 }
 
 
@@ -7312,10 +7315,16 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
         Equipment->AddInventoryEntry(this, Entry, 1, true);
         AddSpecialEquipmentInfo(Entry, c);
         int ImageKey = game::AddToItemDrawVector(itemvector(1, Equipment));
-        List.AddEntry(Entry, (HasSomethingToEquipAt(c, false) ? LIGHT_GRAY : MakeRGB16(255, 127, 0)), 20, ImageKey, true);
+        List.AddEntry(Entry, (HasSomethingToEquipAt(c, false) ? LIGHT_GRAY : ORANGE), 20, ImageKey, true);
       } else {
         Entry << (GetBodyPartOfEquipment(c) ? "-" : "can't use");
-        List.AddEntry(Entry, (HasSomethingToEquipAt(c, false) ? LIGHT_GRAY : RED), 20, game::AddToItemDrawVector(itemvector()));
+        col16 color;
+        switch (HasSomethingToEquipAt(c, false)) {
+          case 0: color = RED; break;
+          case 1: color = ORANGE; break;
+          default: color = LIGHT_GRAY; break;
+        }
+        List.AddEntry(Entry, color, 20, game::AddToItemDrawVector(itemvector()));
       }
     }
     game::DrawEverythingNoBlit();

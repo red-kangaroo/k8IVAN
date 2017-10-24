@@ -878,7 +878,7 @@ public:
   virtual truth CheckIfEquipmentIsNotUsable (int) const { return false; }
   virtual truth MoveTowardsHomePos ();
   virtual void SetWayPoints (const fearray<packv2> &) {}
-  truth HasSomethingToEquipAt (int chosen, truth equippedIsTrue);
+  int HasSomethingToEquipAt (int chosen, truth equippedIsTrue); // counter
   truth TryToChangeEquipment (stack *, stack *, int);
   void PrintBeginParasitizedMessage () const;
   void PrintEndParasitizedMessage () const;
