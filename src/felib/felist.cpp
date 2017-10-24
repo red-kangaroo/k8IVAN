@@ -325,15 +325,18 @@ truth felist::DrawPage (bitmap *Buffer) const {
     Str << Entry[c]->String;
     bool selected = (Flags&SELECTABLE && Entry[c]->Selectable && Selected == i);
     if (selected) selIdx = (int)c;
+    col16 ecolor = Entry[c]->Color;
+    if (selected) {
+      if (ecolor != RED && ecolor != GREEN && ecolor != PINK) ecolor = selText;
+    }
     if (Entry[c]->ImageKey != NO_IMAGE) {
       if (Str.rawLength() <= (Width-50)>>3) {
-        Buffer->Fill(Pos.X+3, LastFillBottom, Width-6, 20, !selected ? BackColor : selBack);
+        Buffer->Fill(Pos.X+3, LastFillBottom, Width-6, 20, (!selected ? BackColor : selBack));
         if (EntryDrawer) EntryDrawer(Buffer, v2(Pos.X+13, LastFillBottom), Entry[c]->ImageKey);
         if (selected) {
-          //FONT->PrintfUnshaded(Buffer, v2(Pos.X+38, LastFillBottom+5), WHITE, "%s", Str.CStr());
-          FONT->PrintfUnshadedColored(Buffer, v2(Pos.X+37, LastFillBottom+4), selText, "%s", Str.CStr());
+          FONT->PrintfUnshadedColored(Buffer, v2(Pos.X+37, LastFillBottom+4), ecolor, "%s", Str.CStr());
         } else {
-          FONT->PrintfColored(Buffer, v2(Pos.X+37, LastFillBottom+4), Entry[c]->Color, "%s", Str.CStr());
+          FONT->PrintfColored(Buffer, v2(Pos.X+37, LastFillBottom+4), ecolor, "%s", Str.CStr());
         }
         LastFillBottom += 20;
       } else {
@@ -342,10 +345,9 @@ truth felist::DrawPage (bitmap *Buffer) const {
         for (uInt l = 0; l < ChapterSize; ++l) {
           Buffer->Fill(Pos.X+3, LastFillBottom, Width-6, 10, !selected ? BackColor : selBack);
           if (selected) {
-            //FONT->PrintfUnshaded(Buffer, v2(Pos.X+38, LastFillBottom+1), WHITE, "%s", Chapter[l].CStr());
-            FONT->PrintfUnshadedColored(Buffer, v2(Pos.X+37, LastFillBottom), selText, "%s", Chapter[l].CStr());
+            FONT->PrintfUnshadedColored(Buffer, v2(Pos.X+37, LastFillBottom), ecolor, "%s", Chapter[l].CStr());
           } else {
-            FONT->PrintfColored(Buffer, v2(Pos.X+37, LastFillBottom), Entry[c]->Color, "%s", Chapter[l].CStr());
+            FONT->PrintfColored(Buffer, v2(Pos.X+37, LastFillBottom), ecolor, "%s", Chapter[l].CStr());
           }
           LastFillBottom += 10;
         }
@@ -356,10 +358,9 @@ truth felist::DrawPage (bitmap *Buffer) const {
       for (uInt l = 0; l < ChapterSize; ++l) {
         Buffer->Fill(Pos.X+3, LastFillBottom, Width-6, 10, !selected ? BackColor : selBack);
         if (selected) {
-          //FONT->PrintfUnshaded(Buffer, v2(Pos.X+14, LastFillBottom+1), WHITE, "%s", Chapter[l].CStr());
-          FONT->PrintfUnshadedColored(Buffer, v2(Pos.X+13, LastFillBottom), selText, "%s", Chapter[l].CStr());
+          FONT->PrintfUnshadedColored(Buffer, v2(Pos.X+13, LastFillBottom), ecolor, "%s", Chapter[l].CStr());
         } else {
-          FONT->PrintfColored(Buffer, v2(Pos.X+13, LastFillBottom), Entry[c]->Color, "%s", Chapter[l].CStr());
+          FONT->PrintfColored(Buffer, v2(Pos.X+13, LastFillBottom), ecolor, "%s", Chapter[l].CStr());
         }
         LastFillBottom += 10;
       }
