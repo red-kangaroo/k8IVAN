@@ -310,12 +310,11 @@ void bitmap::SavePNG (cfestring &FileName) const {
   }
   */
   png_set_filter(png_ptr, 0, PNG_FILTER_NONE);
-  png_set_compression_level(png_ptr, Z_BEST_COMPRESSION);
+  png_set_compression_level(png_ptr, /*Z_BEST_COMPRESSION*/Z_DEFAULT_COMPRESSION);
   //png_set_compression_level(png_ptr, Z_NO_COMPRESSION);
   png_set_IHDR(png_ptr, info_ptr, mSize.X, mSize.Y, 8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
   png_write_info(png_ptr, info_ptr);
   uChar *tcImg = (uChar *)malloc((mSize.X*3)*mSize.Y), *tc = tcImg;
-
   for (int y = 0; y < mSize.Y; y++) {
     row_pointers[y] = (png_bytep)tc;
     for (int x = 0; x < mSize.X; x++) {
@@ -517,7 +516,7 @@ void bitmap::SaveScaledPNG (cfestring &fileName, double scale) const {
     return;
   }
   png_set_filter(png_ptr, 0, PNG_FILTER_NONE);
-  png_set_compression_level(png_ptr, Z_BEST_COMPRESSION);
+  png_set_compression_level(png_ptr, /*Z_BEST_COMPRESSION*/Z_DEFAULT_COMPRESSION);
   //png_set_compression_level(png_ptr, Z_NO_COMPRESSION);
   png_set_IHDR(png_ptr, info_ptr, size.X, size.Y, 8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
   png_write_info(png_ptr, info_ptr);
