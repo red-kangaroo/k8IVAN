@@ -7751,7 +7751,7 @@ truth character::IsStuckToTrap (feuLong ID) const {
 
 
 void character::RemoveTraps () {
-  for (trapdata *T = TrapData; T;) {
+  for (trapdata *T = TrapData; T; T = T->Next) {
     entity *Trap = game::SearchTrap(T->TrapID);
     if (Trap) Trap->UnStick();
   }
