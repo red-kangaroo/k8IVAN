@@ -129,6 +129,43 @@ festring inputfile::GetMyDir (void) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+struct InputFileSaved {
+  friend inputfile;
+
+private:
+  inputfile *ifile;
+  int mCharBuf[4];
+  int mCharBufPos;
+  int mCurrentLine;
+  int mTokenLine;
+  sLong mCurPos;
+
+private:
+  InputFileSaved (inputfile *aifile) {
+    ifile = aifile;
+    if (aifile) {
+      memcpy(mCharBuf, aifile->mCharBuf, sizeof(mCharBuf));
+      mCharBufPos = aifile->mCharBufPos;
+      mCurrentLine = aifile->mCurrentLine;
+      mTokenLine = aifile->mTokenLine;
+      mCurPos = aifile->TellPos();
+    }
+  }
+
+public:
+  ~InputFileSaved () {
+    if (ifile) {
+      memcpy(ifile->mCharBuf, mCharBuf, sizeof(ifile->mCharBuf));
+      ifile->mCharBufPos = mCharBufPos;
+      ifile->mCurrentLine = mCurrentLine;
+      ifile->mTokenLine = mTokenLine;
+      ifile->SeekPosBegin(mCurPos);
+    }
+  }
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
 inputfile::inputfile (cfestring &FileName, const valuemap *ValueMap, truth AbortOnErr) :
 #ifdef USE_ZLIB
   Buffer(gzopen(FileName.CStr(), "rb")),
@@ -173,7 +210,6 @@ int inputfile::Get () {
     return mCharBuf[--mCharBufPos];
   } else if (Buffer) {
     int ch = Xgetc(Buffer);
-    //
     if (ch == '\n') ++mCurrentLine;
     return (ch < 0 ? EOF : ch);
   } else {
@@ -194,6 +230,116 @@ truth inputfile::Eof () {
   if (Buffer) return (mCharBufPos == 0 && Xfeof(Buffer));
   return true;
 }
+
+
+void inputfile::skipBlanks () {
+  for (;;) {
+    int ch = Get();
+    if (ch == EOF) return;
+    // comment?
+    if (ch == '/') {
+      if (Eof()) { Unget(ch); return; }
+      ch = Get();
+      // multiline comment? (possibly nested)
+      if (ch == '*') {
+        int prevch = ' ', level = 1;
+        for (;;) {
+          if (Eof()) return;
+          ch = Get();
+          if (prevch == '*' && ch == '/') {
+            if (--level == 0) break;
+            prevch = ' ';
+          } else if (prevch == '/' && ch == '*') {
+            ++level;
+            prevch = ' ';
+          } else {
+            prevch = ch;
+          }
+        }
+        continue;
+      }
+      // one-line comment?
+      if (ch == '/') {
+        while (!Eof()) { ch = Get(); if (ch == '\n') break; }
+        continue;
+      }
+      Unget('/');
+      return;
+    }
+    // space?
+    if (ch >= 0 && ch <= ' ') continue;
+    // not a space
+    Unget(ch);
+    return;
+  }
+}
+
+
+#define StackDepth  (256)
+int inputfile::countArrayItems (char echar) {
+  auto savedPos = InputFileSaved(this);
+  char stack[StackDepth]; // end chars
+  int sp = 0;
+  stack[0] = echar;
+  skipBlanks();
+  int ch = Get();
+  if (ch == EOF) return -1; // oops
+  if (ch == ',' || ch == ';') return -1;
+  //fprintf(stderr, "COUNT: ch='%c'\n", ch);
+  if (ch == echar) return 0;
+  Unget(ch);
+  int count = 1;
+  while (sp >= 0) {
+    skipBlanks();
+    ch = Get();
+    if (ch == EOF) return -1; // oops
+    // string?
+    if (ch == '"' || ch == '\'') {
+      echar = ch;
+      while (ch != EOF) {
+        ch = Get();
+        if (ch == '\\') {
+          ch = Get();
+          if (ch == EOF) return -1; // oops
+        } else if (ch == echar) {
+          break;
+        }
+      }
+      continue;
+    }
+    if (sp == 0 && (ch == ',' || ch == ';')) {
+      skipBlanks();
+      ch = Get();
+      if (ch == EOF) return -1;
+      if (ch == ',' || ch == ';') return -1;
+      //fprintf(stderr, " oldcount=%d; ch='%c'; sp=%d\n", count, ch, sp);
+      if (sp == 0 && ch == stack[0]) {} else ++count;
+      //fprintf(stderr, "  newcount=%d; ch='%c'; sp=%d\n", count, ch, sp);
+      //if (ch != ')' && ch != ']' && ch != '}') ++count;
+    }
+    // endchar?
+    if (ch == stack[sp]) {
+      //fprintf(stderr, " *close; ch='%c'; sp=%d\n", ch, sp);
+      --sp;
+      continue;
+    }
+    // check for openings
+    switch (ch) {
+      case '(': echar = ')'; break;
+      case '[': echar = ']'; break;
+      case '{': echar = '}'; break;
+      case ')': case ']': case '}': return -1; // oops
+      default: echar = 0; break;
+    }
+    if (echar) {
+      if (sp >= StackDepth-1) return -1; // oops
+      //fprintf(stderr, " *open; ch='%c'; echar='%c'; sp=%d\n", ch, echar, sp);
+      stack[++sp] = echar;
+    }
+  }
+  return count;
+}
+#undef StackDepth
 
 
 void inputfile::Read (char *Offset, sLong Size) {
@@ -224,17 +370,14 @@ void inputfile::SeekPosEnd (sLong Offset) {
     int opos;
     char *buffer, buf[512];
     int bufsize;
-    //
     for (bufsize = 256*1024; bufsize > (int)sizeof(buf); bufsize /= 2) {
       if ((buffer = (char *)malloc(bufsize)) != NULL) break;
     }
     if (buffer == NULL) { buffer = buf; bufsize = sizeof(buf); }
-    //
     //fprintf(stderr, "determining file size...\n");
     mFileSize = opos = gztell(Buffer);
     for (;;) {
       int len = gzread(Buffer, buffer, bufsize);
-      //
       if (len < 0) { mFileSize = -1; break; } // error
       mFileSize += len;
       if (len < bufsize) break; // eof reached
@@ -242,9 +385,7 @@ void inputfile::SeekPosEnd (sLong Offset) {
     if (buffer != buf) free(buffer);
     //fprintf(stderr, "file size: %d\n", ctx->filesize);
   }
-  //
   if (mFileSize < 0) ABORT("File '%s': seek error!", FileName.CStr());
-  //
   if (gzseek(Buffer, mFileSize+Offset, SEEK_SET) < 0) ABORT("File '%s': seek error!", FileName.CStr());
 }
 
@@ -716,8 +857,10 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
   if (num) *num = 0;
   if (wasCloseBrc) *wasCloseBrc = false;
   mTokenLine = mCurrentLine;
+  //fprintf(stderr, ">>> ReadNumberIntr()\n");
   for (;;) {
     ReadWord(Word);
+    //fprintf(stderr, "  ReadNumberIntr: word='%s'\n", Word.CStr());
     // specials?
     if (Word == "@") {
       // variable
@@ -767,10 +910,18 @@ festring inputfile::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       if (mCollectingNumStr) mNumStr << Word;
       Value = atoi(Word.CStr());
       NumberCorrect = true;
+      // HACK: autoinsert terminator
+      skipBlanks();
+      int ch = Get();
+      if (ch != EOF) {
+        Unget(ch);
+        if (ch == '}') Unget(';');
+      }
       continue;
     }
     // delimiter/math?
     if (Word.GetSize() == 1) {
+      //fprintf(stderr, "  ReadNumberIntr: First='%c'\n", First);
       if (First == ';' || First == ',' || First == ':' || (wasCloseBrc && First == '}')) {
         if (First == '}' && wasCloseBrc) *wasCloseBrc = true;
         if (CallLevel != HIGHEST || PreserveTerminator) Unget(First);
@@ -1018,19 +1169,47 @@ festring inputfile::ReadStringOrNumberKeepStr (sLong *num, truth *isString, trut
 
 
 v2 inputfile::ReadVector2d () {
+  skipBlanks();
+  int ch = Get();
+  if (ch == '{') ch = '}'; else { Unget(ch); ch = 0; }
+
   v2 Vector;
   Vector.X = ReadNumber();
   Vector.Y = ReadNumber();
+
+  if (ch) {
+    skipBlanks();
+    if (Get() != ch) ABORT("Vector syntax error: \"%c\" expected in file %s, line %d!", ch, GetFileName().CStr(), TokenLine());
+    skipBlanks();
+    ch = Get();
+         if (ch == '}') Unget(ch);
+    else if (ch != ';' && ch != ',') ABORT("Vector syntax error: terminator expected in file %s, line %d!", GetFileName().CStr(), TokenLine());
+  }
+
   return Vector;
 }
 
 
 rect inputfile::ReadRect () {
+  skipBlanks();
+  int ch = Get();
+  if (ch == '{') ch = '}'; else { Unget(ch); ch = 0; }
+
   rect Rect;
   Rect.X1 = ReadNumber();
   Rect.Y1 = ReadNumber();
   Rect.X2 = ReadNumber();
   Rect.Y2 = ReadNumber();
+
+  if (ch) {
+    skipBlanks();
+    if (Get() != ch) ABORT("Vector syntax error: \"%c\" expected in file %s, line %d!", ch, GetFileName().CStr(), TokenLine());
+    skipBlanks();
+    ch = Get();
+         if (ch == '}') Unget(ch);
+    else if (ch != ';' && ch != ',') ABORT("Vector syntax error: terminator expected in file %s, line %d!", GetFileName().CStr(), TokenLine());
+  }
+
   return Rect;
 }
 

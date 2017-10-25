@@ -45,6 +45,7 @@ inline inputfile &operator >> (inputfile &SaveFile, type &Value) { \
 
 class inputfile;
 class outputfile;
+struct InputFileSaved;
 
 
 typedef std::map<festring, sLong> valuemap;
@@ -72,6 +73,7 @@ private:
 
 
 typedef festring (*InputFileGetVarFn) (inputfile *fl, cfestring &name);
+
 
 class inputfile {
 public:
@@ -116,6 +118,10 @@ public:
 
   void die (cfestring &msg);
 
+  void skipBlanks (); // comments too
+
+  int countArrayItems (char echar);
+
   inline int TokenLine () const { return mTokenLine; }
   inline int CurrentLine () const { return mCurrentLine; }
 
@@ -153,6 +159,8 @@ protected:
   int mTokenLine;
   festring mNumStr; // when reading a number, and `mCollectingNumStr` flag is set, this will be filled
   truth mCollectingNumStr;
+
+  friend InputFileSaved;
 };
 
 
@@ -196,22 +204,40 @@ void ReadData (festring &, inputfile &);
 void ReadData (fearray<sLong> &, inputfile &);
 void ReadData (fearray<festring> &, inputfile &);
 
-//TODO: add ':=' syntax
 template <class type> inline void ReadData (fearray<type> &Array, inputfile &SaveFile) {
   Array.Clear();
   festring Word;
   SaveFile.ReadWord(Word);
-  //if (Word == "=") SaveFile.ReadWord(Word);
+  // one element?
   if (Word == "==") {
     Array.Allocate(1);
     ReadData(Array.Data[0], SaveFile);
     return;
   }
-  if (Word != "=") ABORT("Array syntax error: '=' or '==' expected in file %s, line %u!", SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-  SaveFile.ReadWord(Word);
-  if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %u!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+  // more than one element
   typedef typename fearray<type>::sizetype sizetype;
-  sizetype Size = SaveFile.ReadNumber();
+  sizetype Size;
+  // unknown number of elements?
+  if (Word == ":=") {
+    SaveFile.ReadWord(Word);
+    if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+    //fprintf(stderr, "counting array items; file: '%s'; line: %u\n", SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+    int count = SaveFile.countArrayItems('}');
+    // HACK
+    if (count < 1) ABORT("Array count error found in file %s, line %d!", SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+    Size = count;
+    //fprintf(stderr, "counted %u array items; file: '%s'; line: %u\n", Size, SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+  } else {
+    if (Word != "=") ABORT("Array syntax error: '=', '==' or ':=' expected in file %s, line %u!", SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+    SaveFile.ReadWord(Word);
+    if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %u!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+    Size = SaveFile.ReadNumber();
+    int count = SaveFile.countArrayItems('}');
+    if (count < 1) ABORT("Array count error found in file %s, line %d!", SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+    //HACK: 2 for vectors, 4 for rects
+    //if ((sizetype)count != Size && (sizetype)count/2 != Size && (sizetype)count/4 != Size) ABORT("Array count error (%u != %d) found in file %s, line %d!", Size, count, SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+    if ((sizetype)count != Size) ABORT("Array count error (%u != %d) found in file %s, line %d!", Size, count, SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+  }
   Array.Allocate(Size);
   for (sizetype c = 0; c < Size; ++c) ReadData(Array.Data[c], SaveFile);
   if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %u!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
