@@ -3,9 +3,9 @@ ITEM(superkawai, meleeweapon) {
 public:
   virtual truth HitEffect (character *, character *, v2, int, int, truth) override;
   virtual truth AllowAlphaEverywhere () const override { return true; }
-  virtual truth IsAppliable (ccharacter*) const override;
-  virtual truth Apply (character*) override;
-  virtual truth IsZappable(ccharacter*) const override;
+  virtual truth IsAppliable (ccharacter *Who) const override;
+  virtual truth Apply (character *User) override;
+  virtual truth IsZappable (ccharacter *Who) const override;
   virtual truth Zap (character *Zapper, v2 curpos, int Direction) override;
 protected:
   virtual int GetClassAnimationFrames () const override { return 32; }
@@ -18,8 +18,9 @@ protected:
 
 
 col16 superkawai::GetOutlineColor (int) const { return MakeRGB16(255, 0, 0); }
-truth superkawai::IsAppliable (ccharacter *Who) const { return Who->CanWield(); }
 alpha superkawai::GetOutlineAlpha (int Frame) const { Frame &= 31; return 50+(Frame*(31-Frame)>>1); }
+
+truth superkawai::IsAppliable (ccharacter *Who) const { return Who->CanWield(); }
 truth superkawai::IsZappable (ccharacter *Who) const { return true; }
 
 

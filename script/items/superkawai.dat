@@ -52,4 +52,7 @@ superkawai /* meleeweapon-> */
   //BreakEffectRangeSquare = 0;
   //IsKamikazeWeapon = true;
   BreakMsg = "turns into a fiery ball of rapidly expanding plasma";
+
+  AffectsPerception = true;
+  //BaseEnchantment = 1;
 }

@@ -220,6 +220,7 @@ Dungeon UNDER_WATER_TUNNEL;
           Items := {
             superkawai,
             superkawai,
+            hellsdevice,
             GOLDEN_EAGLE_FEATHER itemcontainer(MAGIC_CHEST) { Parameters = 0; }, // unlocked
             VALPURIUM pickaxe { Enchantment = 10; },
             GOLDEN_EAGLE_FEATHER cloak(CLOAK_OF_FIRE_RESISTANCE),

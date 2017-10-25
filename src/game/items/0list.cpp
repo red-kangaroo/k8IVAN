@@ -76,3 +76,5 @@
 #include "items/item_ullrbone.cpp"
 
 #include "items/item_moneybag.cpp"
+
+#include "items/hellsdevice.cpp"

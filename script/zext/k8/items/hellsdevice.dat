@@ -1,0 +1,47 @@
+hellsdevice
+{
+  //Category = MISC;
+  //IsAutoInitializable = true;
+  Adjective = "unique";
+  AllowEquip = false;
+  AttachedGod = NONE;
+  BitmapPos = 7*16, 0;
+  CanBeBroken = false;
+  CanBeCloned = false;
+  CanBeEnchanted = false;
+  CanBeGeneratedInContainer = false;
+  CanBePickedUp = true;
+  CanBePiled = false;
+  CanBeUsedBySmith = false;
+  CanBeWished = false;
+  CanFlame = false;
+  Category = TOOL;
+  CreateDivineConfigurations = false;
+  CreateLockConfigurations = false;
+  DefaultMainVolume = 1;
+  DefaultSize = 30;
+  FormModifier = 10;
+  HandleInPairs = false;
+  HasNormalPictureDirection = false;
+  HasSecondaryMaterial = false;
+  IsAbstract = false;
+  IsDestroyable = false;
+  IsKamikazeWeapon = false;
+  IsMaterialChangeable = false;
+  IsPolymorphSpawnable = false;
+  IsPolymorphable = false;
+  IsQuestItem = false;
+  IsSadistWeapon = false;
+  IsThrowingWeapon = false;
+  IsValuable = false;
+  MainMaterialConfig == VALPURIUM;
+  NameSingular = "hell's device";
+  Possibility = 0;
+  Price = 100;
+  Roundness = 90;
+  StorageVolume = 1;
+  StrengthModifier = 100;
+  TeleportPriority = 20000;
+  WearWisdomLimit = NO_LIMIT;
+  WieldedBitmapPos = 8*16, 0;
+}
