@@ -779,6 +779,7 @@ void inputfile::readWordIntr (festring &String, truth AbortOnEOF) {
         mTokenLine = mCurrentLine;
         Mode = MODE_WORD;
       } else if (Mode == MODE_NUMBER) {
+        if (Char == '_') continue;
         Unget(Char);
         return;
       }
