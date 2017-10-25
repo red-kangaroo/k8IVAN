@@ -8,7 +8,8 @@ oillamp
   StrengthModifier = 50;
   BitmapPos = 32, 48;
   FormModifier = 20;
-  BaseEmitation = rgb24(110, 110, 90);
+  //BaseEmitation = rgb24(110, 110, 90);
+  BaseEmitation = rgb24(125, 125, 105);
   UsesLongArticle = true;
   NameSingular = "oil lamp";
   MainMaterialConfig == GOLD;
