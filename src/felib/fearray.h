@@ -16,59 +16,64 @@
 
 
 template <class type> struct fearray {
+public:
   typedef uInt sizetype;
+
+public:
   fearray () : Data(0), Size(0) {}
-  fearray (const fearray &);
-  fearray (const type *, sizetype);
+  fearray (const fearray &arr);
+  fearray (const type *arr, sizetype aSize);
   ~fearray ();
-  fearray &operator = (const fearray &);
-  type &operator [] (sizetype I) { return Data[I]; }
-  const type &operator [] (sizetype I) const { return Data[I]; }
-  void Allocate (sizetype);
-  void Add (const type &);
+
+  fearray &operator = (const fearray &arr);
+  type &operator [] (sizetype idx) { return Data[idx]; }
+  const type &operator [] (sizetype idx) const { return Data[idx]; }
+
+  void Allocate (sizetype count);
+  void Add (const type &it);
   void Clear ();
+
   const type &GetRandomElement () const { return Data[RAND_N(Size)]; }
+
+public:
   type *Data;
   sizetype Size;
 };
 
 
-template <class type> inline fearray<type>::fearray (const fearray<type>& A) : Data(A.Data), Size(A.Size) {
+template <class type> inline fearray<type>::fearray (const fearray<type>& arr) : Data(arr.Data), Size(arr.Size) {
   if (Data) ++REFS(Data);
 }
 
 
-template <class type> inline fearray<type>::fearray (const type *Array, sizetype Size) : Size(Size) {
-  char *Ptr = new char[Size*sizeof(type)+sizeof(feuLong)];
-  *reinterpret_cast<feuLong *>(Ptr) = 0;
-  Data = reinterpret_cast<type *>(Ptr+sizeof(feuLong));
-  for (sizetype c = 0; c < Size; ++c) new (&Data[c])type(Array[c]);
+template <class type> inline fearray<type>::fearray (const type *arr, sizetype aSize) : Data(0), Size(aSize) {
+  char *ptr = new char[aSize*sizeof(type)+sizeof(rcint)];
+  *reinterpret_cast<rcint *>(ptr) = 0;
+  Data = reinterpret_cast<type *>(ptr+sizeof(rcint));
+  for (sizetype c = 0; c < aSize; ++c) new (&Data[c])type(arr[c]);
 }
 
 
 template <class type> inline fearray<type>::~fearray<type> () {
-  type *Ptr = Data;
-  if (Ptr && !REFS(Ptr)--) {
-    type *TempPtr = Ptr, *EndPtr = Ptr+Size;
-    for (; TempPtr != EndPtr; ++TempPtr) TempPtr->~type();
-    delete [] REFSA(Ptr);
-  }
+  Clear();
 }
 
 
-template <class type> inline fearray<type> &fearray<type>::operator = (const fearray<type> &A) {
-  if (A.Data) ++REFS(Data = A.Data);
-  Size = A.Size;
+template <class type> inline fearray<type> &fearray<type>::operator = (const fearray<type> &arr) {
+  if (arr.Data != Data) Clear();
+  Data = arr.Data;
+  if (Data) ++REFS(Data);
+  Size = arr.Size;
   return *this;
 }
 
 
 template <class type> inline void fearray<type>::Clear () {
-  type *Ptr = Data;
-  if (Ptr) {
-    if (!REFS(Ptr)--) {
-      for (sizetype c = 0; c < Size; ++c) Ptr[c].~type();
-      delete [] REFSA(Ptr);
+  type *ptr = Data;
+  if (ptr) {
+    if (!REFS(ptr)--) {
+      for (sizetype c = 0; c < Size; ++c) ptr[c].~type();
+      delete [] REFSA(ptr);
     }
     Data = 0;
     Size = 0;
@@ -76,47 +81,47 @@ template <class type> inline void fearray<type>::Clear () {
 }
 
 
-template <class type> inline void fearray<type>::Allocate (sizetype What) {
-  char *Ptr = new char[What*sizeof(type)+sizeof(feuLong)];
-  *reinterpret_cast<feuLong *>(Ptr) = 0;
-  Data = reinterpret_cast<type *>(Ptr+sizeof(feuLong));
-  Size = What;
-  for (sizetype c = 0; c < What; ++c) new (&Data[c])type;
+template <class type> inline void fearray<type>::Allocate (sizetype count) {
+  char *ptr = new char[count*sizeof(type)+sizeof(rcint)];
+  *reinterpret_cast<rcint *>(ptr) = 0;
+  Data = reinterpret_cast<type *>(ptr+sizeof(rcint));
+  Size = count;
+  for (sizetype c = 0; c < count; ++c) new (&Data[c])type;
 }
 
 
 /* Don't use unless necessary */
-template <class type> inline void fearray<type>::Add (const type &Type) {
-  type *Ptr = Data;
-  if (Ptr) {
-    sizetype Size = this->Size++;
-    char* NewPtr = new char[(Size+1)*sizeof(type)+sizeof(feuLong)];
-    *reinterpret_cast<feuLong *>(NewPtr) = 0;
-    type* NewData = reinterpret_cast<type *>(NewPtr+sizeof(feuLong));
-    if (!REFS(Ptr)--) {
-      for (sizetype c = 0; c < Size; ++c) {
-        new (&NewData[c])type(Ptr[c]);
-        Ptr[c].~type();
+template <class type> inline void fearray<type>::Add (const type &it) {
+  type *ptr = Data;
+  if (ptr) {
+    sizetype oldsize = this->Size++;
+    char *newptr = new char[Size*sizeof(type)+sizeof(rcint)];
+    *reinterpret_cast<rcint *>(newptr) = 0;
+    type *newdata = reinterpret_cast<type *>(newptr+sizeof(rcint));
+    if (!REFS(ptr)--) {
+      for (sizetype c = 0; c < oldsize; ++c) {
+        new (&newdata[c])type(ptr[c]);
+        ptr[c].~type();
       }
-      delete [] REFSA(Ptr);
+      delete [] REFSA(ptr);
     } else {
-      for(sizetype c = 0; c < Size; ++c) new (&NewData[c])type(Ptr[c]);
+      for(sizetype c = 0; c < oldsize; ++c) new (&newdata[c])type(ptr[c]);
     }
-    Data = NewData;
-    new(&NewData[Size]) type(Type);
+    Data = newdata;
+    new(&newdata[oldsize]) type(it);
   } else {
-    char *NewPtr = new char[sizeof(type)+sizeof(feuLong)];
-    *reinterpret_cast<feuLong*>(NewPtr) = 0;
-    Data = reinterpret_cast<type*>(NewPtr+sizeof(feuLong));
+    char *newptr = new char[sizeof(type)+sizeof(rcint)];
+    *reinterpret_cast<int*>(newptr) = 0;
+    Data = reinterpret_cast<type*>(newptr+sizeof(rcint));
     Size = 1;
-    new(Data) type(Type);
+    new(Data) type(it);
   }
 }
 
 
-template <class type1, class type2> inline void ArrayToVector (const fearray<type1> &Array, std::vector<type2> &Vect) {
-  Vect.resize(Array.Size, type2());
-  for (typename fearray<type1>::sizetype c = 0; c < Array.Size; ++c) Vect[c] = Array.Data[c];
+template <class type1, class type2> inline void ArrayToVector (const fearray<type1> &arr, std::vector<type2> &vect) {
+  vect.resize(arr.Size, type2());
+  for (typename fearray<type1>::sizetype c = 0; c < arr.Size; ++c) vect[c] = arr.Data[c];
 }
 
 
