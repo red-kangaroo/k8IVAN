@@ -163,8 +163,9 @@ constexpr inline int GetMinColor24 (col24 Color) { return Min(GetRed24(Color), G
 #define ZERO_POOLS  1
 #define RAND_ALLOC  2
 
-#define REFS(ptr)   (reinterpret_cast<int*>(ptr)[-1])
-#define REFSA(ptr)  &(reinterpret_cast<int*>(ptr)[-1])
+using rcint = int;
+#define REFS(ptr)   (reinterpret_cast<rcint*>(ptr)[-1])
+#define REFSA(ptr)  &(reinterpret_cast<rcint*>(ptr)[-1])
 
 #define SKIP_FIRST         1
 #define ALLOW_END_FAILURE  2

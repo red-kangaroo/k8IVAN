@@ -36,7 +36,7 @@ public:
   /*
     if (Size > 0x7ffff000) ABORT("String too big (or invalid)");
     Reserved = Size|FESTRING_PAGE;
-    char *Ptr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
+    char *Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
     REFS(Ptr) = 0;
     Data = Ptr;
     if (Size > 0) memmove(Data, CStr, N);
@@ -48,7 +48,7 @@ public:
       auto slen = (CStr ? strlen(CStr) : 0);
       if (slen > N) slen = N;
       Reserved = N|FESTRING_PAGE;
-      char *Ptr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
+      char *Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
       REFS(Ptr) = 0;
       Data = Ptr;
       memset(Data, 0, N);
@@ -169,7 +169,7 @@ inline festring::festring (cfestring &Str) :
 
 inline festring::festring (sizetype N) : Size(N), Reserved(N|FESTRING_PAGE), OwnsData(true) {
   //if (N > 0x7ffff000) ABORT("String too big (or invalid)");
-  char *Ptr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
+  char *Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
   REFS(Ptr) = 0;
   Data = Ptr;
 }
@@ -177,7 +177,7 @@ inline festring::festring (sizetype N) : Size(N), Reserved(N|FESTRING_PAGE), Own
 
 inline festring::festring (sizetype N, char C) : Size(N), Reserved(N|FESTRING_PAGE), OwnsData(true) {
   //if (N > 0x7ffff000) ABORT("String too big (or invalid)");
-  char* Ptr = sizeof(int*)+new char[Reserved+sizeof(int*)+1];
+  char* Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
   REFS(Ptr) = 0;
   Data = Ptr;
   if (N > 0) memset(Ptr, C, N);
