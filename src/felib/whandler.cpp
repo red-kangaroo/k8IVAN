@@ -27,6 +27,7 @@ truth (*globalwindowhandler::ControlLoop[MAX_CONTROLS])();
 int globalwindowhandler::Controls = 0;
 feuLong globalwindowhandler::Tick;
 truth globalwindowhandler::ControlLoopsEnabled = true;
+Uint32 globalwindowhandler::nextGameTick = 0;
 
 std::vector<int> globalwindowhandler::KeyBuffer;
 truth (*globalwindowhandler::QuitMessageHandler)() = 0;
@@ -54,43 +55,80 @@ void globalwindowhandler::Init () {
 }
 
 
+static bool WaitEventTimeout (int timeout) {
+  if (timeout <= 0) return (SDL_PollEvent(nullptr) != 0);
+  Uint32 endtick = SDL_GetTicks()+(Uint32)timeout;
+  for (;;) {
+    Uint32 curtick = SDL_GetTicks();
+    if (SDL_PollEvent(nullptr)) return true;
+    if (curtick >= endtick) return false;
+    Uint32 left = endtick-curtick;
+    if (left > 20) left = 20;
+    SDL_Delay(left);
+  }
+}
+
+
 void globalwindowhandler::KSDLProcessEvents (truth dodelay) {
   SDL_Event Event;
+
   memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
-  if (SDL_PollEvent(&Event)) {
-    do {
-      ProcessMessage(&Event);
-      memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
-    } while (SDL_PollEvent(&Event));
-  } else if (dodelay) SDL_Delay(20);
+  while (SDL_PollEvent(&Event)) {
+    ProcessMessage(&Event);
+    memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
+  }
+
+  if (dodelay) {
+    Uint32 curtick = SDL_GetTicks();
+    Uint32 timeout = (curtick >= nextGameTick ? 0 : nextGameTick-curtick);
+    if (timeout > 0) {
+      if (WaitEventTimeout(timeout)) {
+        memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
+        while (SDL_PollEvent(&Event)) {
+          ProcessMessage(&Event);
+          memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
+        }
+      }
+    }
+    curtick = SDL_GetTicks();
+    while (nextGameTick <= curtick) nextGameTick += 40;
+  }
 }
 
 
 //FIXME
 void globalwindowhandler::Delay (int ms) {
-  while (ms > 0) {
-    SDL_Event event;
-    memset(&event, 0, sizeof(event)); // some systems needs this fix
-    if (SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_ALLEVENTS)) {
-      switch (event.active.type) {
-        case SDL_VIDEOEXPOSE:
-          SDL_PollEvent(&event); // remove event
-          ProcessMessage(&event);
-          break;
-        case SDL_QUIT:
-        case SDL_KEYDOWN:
-         return;
+  SDL_Event event;
+  if (ms < 0) ms = 0;
+  Uint32 endtick = SDL_GetTicks()+(Uint32)ms;
+  for (;;) {
+    Uint32 curtick = SDL_GetTicks();
+    Uint32 timeout = (curtick >= endtick ? 0 : endtick-curtick);
+    if (WaitEventTimeout(timeout)) {
+      memset(&event, 0, sizeof(event)); /* some systems needs this fix */
+      while (SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_ALLEVENTS)) {
+        switch (event.type) {
+          case SDL_VIDEOEXPOSE:
+            memset(&event, 0, sizeof(event)); /* some systems needs this fix */
+            SDL_PollEvent(&event); // remove event
+            ProcessMessage(&event);
+            break;
+          case SDL_QUIT:
+          case SDL_KEYDOWN:
+            return;
+          default:
+            memset(&event, 0, sizeof(event)); /* some systems needs this fix */
+            SDL_PollEvent(&event);
+            break;
+        }
       }
     }
-    int dd = ms > 100 ? 100 : (ms > 50 ? 50 : ms);
-    SDL_Delay(dd);
-    ms -= dd;
+    if (timeout == 0) break;
   }
-  //if (ms > 0) SDL_Delay(ms);
 }
 
 
-void globalwindowhandler::KSDLWaitEvent (void) {
+void globalwindowhandler::KSDLWaitEvent () {
   SDL_Event Event;
   memset(&Event, 0, sizeof(Event)); /* some systems needs this fix */
   SDL_WaitEvent(&Event);
@@ -105,6 +143,7 @@ int globalwindowhandler::GetKey (truth EmptyBuffer) {
     KSDLProcessEvents();
     KeyBuffer.clear();
   }
+  Uint32 nexttm = SDL_GetTicks()+100;
   for (;;) {
     if (!KeyBuffer.empty()) {
       int Key = KeyBuffer[0];
@@ -112,22 +151,25 @@ int globalwindowhandler::GetKey (truth EmptyBuffer) {
       if (Key > 0xE000) return Key-0xE000;
       if (Key && Key < 0x81) return Key; // if it's an ASCII symbol
     } else {
-      if ((SDL_GetAppState()&SDL_APPACTIVE) != 0 && Controls && ControlLoopsEnabled) {
+      if (SDL_GetAppState()&SDL_APPACTIVE) {
         KSDLProcessEvents(true);
-        UpdateTick();
-        if (LastTick != Tick) {
-          LastTick = Tick;
-          truth Draw = graphics::isCursorVisible();
-          if (!Draw) { for (int c = 0; c < Controls; ++c) if (ControlLoop[c]()) Draw = true; }
-          if (Draw) graphics::BlitDBToScreen();
+        if (Controls && ControlLoopsEnabled) {
+          UpdateTick();
+          if (LastTick != Tick) {
+            LastTick = Tick;
+            truth Draw = graphics::isCursorVisible();
+            if (!Draw) { for (int c = 0; c < Controls; ++c) if (ControlLoop[c]()) Draw = true; }
+            if (Draw) graphics::BlitDBToScreen();
+          }
+        } else if (graphics::isCursorVisible()) {
+          Uint32 curtick = SDL_GetTicks();
+          if (curtick >= nexttm) {
+            graphics::BlitDBToScreen();
+            while (nexttm <= curtick) nexttm += 100;
+          }
         }
       } else {
-        if (SDL_GetAppState()&SDL_APPACTIVE) {
-          KSDLProcessEvents(true);
-          if (graphics::isCursorVisible()) graphics::BlitDBToScreen();
-        } else {
-          KSDLWaitEvent();
-        }
+        KSDLWaitEvent();
       }
     }
   }

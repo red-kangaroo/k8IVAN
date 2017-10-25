@@ -27,7 +27,7 @@
 class globalwindowhandler {
 public:
   static void KSDLProcessEvents (truth dodelay=false);
-  static void KSDLWaitEvent (void);
+  static void KSDLWaitEvent ();
   static int GetKey (truth EmptyBuffer=true);
   static int ReadKey ();
   static void InstallControlLoop (truth (*What)());
@@ -39,7 +39,7 @@ public:
   static truth ShiftIsDown ();
   static void Init ();
   static void SetQuitMessageHandler (truth (*What)()) { QuitMessageHandler = What; }
-  static feuLong UpdateTick() { return Tick = SDL_GetTicks()/40; }
+  static feuLong UpdateTick () { return Tick = SDL_GetTicks()/40; }
 
   static void Delay (int ms);
 
@@ -52,6 +52,8 @@ private:
   static int Controls;
   static feuLong Tick;
   static truth ControlLoopsEnabled;
+
+  static Uint32 nextGameTick;
 };
 
 
