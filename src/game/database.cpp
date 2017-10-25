@@ -804,8 +804,23 @@ template <> void databasecreator<character>::CheckDefaults (cfestring &Word, cha
   if (Word == "BaseUnarmedStrength") { DataBase.BaseBiteStrength = DataBase.BaseUnarmedStrength>>1; DataBase.BaseKickStrength = DataBase.BaseUnarmedStrength<<1; return; }
   if (Word == "RightGauntlet") { DataBase.LeftGauntlet = DataBase.RightGauntlet; return; }
   if (Word == "RightBoot") { DataBase.LeftBoot = DataBase.RightBoot; return; }
-  if (Word == "DefaultName") { DataBase.Alias.Add(DataBase.DefaultName); return; }
   if (Word == "IsUnique") { DataBase.CanBeWished = !DataBase.IsUnique; return; }
+  if (Word == "DefaultName") {
+    // k8: don't add duplicate alias
+    for (uInt c = 0; c < DataBase.Alias.Size; ++c) {
+      if (DataBase.Alias[c] == DataBase.DefaultName) return;
+    }
+    DataBase.Alias.Add(DataBase.DefaultName);
+    /*
+    if (DataBase.Alias.Size != 1) {
+      printf("=== %s ===\n", DataBase.NameSingular.CStr());
+      for (uInt c = 0; c < DataBase.Alias.Size; ++c) {
+        printf("  %u: %s\n", c, DataBase.Alias[c].CStr());
+      }
+    }
+    */
+    return;
+  }
 }
 
 
