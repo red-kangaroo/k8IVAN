@@ -122,7 +122,12 @@ int globalwindowhandler::GetKey (truth EmptyBuffer) {
           if (Draw) graphics::BlitDBToScreen();
         }
       } else {
-        KSDLWaitEvent();
+        if (SDL_GetAppState()&SDL_APPACTIVE) {
+          KSDLProcessEvents(true);
+          if (graphics::isCursorVisible()) graphics::BlitDBToScreen();
+        } else {
+          KSDLWaitEvent();
+        }
       }
     }
   }
