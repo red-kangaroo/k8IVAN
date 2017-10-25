@@ -452,9 +452,7 @@ contentscript<character>::contentscript () : INIT(Team, DEFAULT_TEAM), INIT(Flag
 
 character *contentscript<character>::Instantiate (int SpecialFlags) const {
   character *Instance = contentscripttemplate<character>::BasicInstantiate(SpecialFlags);
-  //
   //fprintf(stderr, "instantiating character '%s'\n", Instance->GetNameSingular().CStr());
-  //
   if (!mCode.IsEmpty()) {
     game::ClearEventData();
     if (!game::RunAllowScriptStr(mCode)) {
@@ -463,7 +461,6 @@ character *contentscript<character>::Instantiate (int SpecialFlags) const {
       return 0;
     }
   }
-  //
   if (GetTeam() != DEFAULT_TEAM) Instance->SetTeam(game::GetTeam(GetTeam()));
   const fearray<contentscript<item> > *Inventory = GetInventory();
   if (Inventory) Instance->AddToInventory(*Inventory, SpecialFlags);
