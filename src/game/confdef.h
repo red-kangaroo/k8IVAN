@@ -294,6 +294,7 @@ enum {
   GREAT_AXE,
   GRAND_STOLLEN_KNIFE,
   CLAW,
+  LOST_RUBY_FLAMING_SWORD,
 };
 
 
@@ -348,7 +349,7 @@ enum {
 };
 
 
-#define LOST_RUBY_FLAMING_SWORD 2
+
 
 
 enum {
@@ -408,7 +409,8 @@ enum {
   SMALL_CHEST = 1,
   CHEST,
   LARGE_CHEST,
-  STRONG_BOX
+  STRONG_BOX,
+  MAGIC_CHEST
 };
 
 
