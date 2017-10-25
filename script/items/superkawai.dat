@@ -38,8 +38,18 @@ superkawai /* meleeweapon-> */
   PoisonResistance = 90;
   ElectricityResistance = 90;
   AcidResistance = 90;
+  SoundResistance = 90;
   BaseEnchantment = 64;
   DamageFlags = SLASH|PIERCE;
   GearStates = HASTE|INFRA_VISION|ESP|POLYMORPH_CONTROL|TELEPORT_CONTROL|GAS_IMMUNITY|LEVITATION;
   CanFlame = true;
+  // fireballs
+  BeamRange = 150;
+  //MinCharges = 1;
+  //MaxCharges = 4;
+  BeamColor = YELLOW;
+  BeamEffect = BEAM_FIRE_BALL;
+  //BreakEffectRangeSquare = 0;
+  //IsKamikazeWeapon = true;
+  BreakMsg = "turns into a fiery ball of rapidly expanding plasma";
 }

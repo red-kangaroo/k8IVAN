@@ -184,6 +184,7 @@ Dungeon UNDER_WATER_TUNNEL;
         Items == lantern;
       }
 
+      /*
       if @player_name == "_k8_";
         Square, Pos 2,2;
         {
@@ -195,7 +196,9 @@ Dungeon UNDER_WATER_TUNNEL;
           OTerrain = STEEL altar(CRUENTUS);
         }
       endif
+      */
 
+      /*
       Square, Pos 2,1;
       {
         Items == holyhandgrenade [
@@ -208,7 +211,32 @@ Dungeon UNDER_WATER_TUNNEL;
         //Items == meleeweapon(CLAW);
         //Items == wristblades;
       }
+      */
       //Square, Pos 2,3; { Items = { 3, moneybag, BONE bone, OMMEL_BONE bone; } }
+
+      if @player_name == "_k8_";
+        Square, Pos 1,2;
+        {
+          Items := {
+            superkawai,
+            superkawai,
+            GOLDEN_EAGLE_FEATHER itemcontainer(MAGIC_CHEST) { Parameters = 0; }, // unlocked
+            VALPURIUM pickaxe { Enchantment = 10; },
+            GOLDEN_EAGLE_FEATHER cloak(CLOAK_OF_FIRE_RESISTANCE),
+            GOLDEN_EAGLE_FEATHER belt(BELT_OF_CARRYING),
+            GOLDEN_EAGLE_FEATHER boot(BOOT_OF_AGILITY),
+            GOLDEN_EAGLE_FEATHER gauntlet(GAUNTLET_OF_DEXTERITY),
+            GOLDEN_EAGLE_FEATHER helmet(HELM_OF_PERCEPTION),
+            GOLDEN_EAGLE_FEATHER bodyarmor(DRAGON_CUIRASS),
+          }
+        }
+        /*
+        Square, Pos 3,2;
+        {
+            Items == VALPURIUM pickaxe { Enchantment = 10; }
+        }
+        */
+      endif
     }
   }
 

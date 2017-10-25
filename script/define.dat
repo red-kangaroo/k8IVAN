@@ -645,6 +645,7 @@
   GREAT_AXE,
   GRAND_STOLLEN_KNIFE,
   CLAW,
+  LOST_RUBY_FLAMING_SWORD,
 };
 
 
@@ -703,7 +704,6 @@
 };
 
 
-#define LOST_RUBY_FLAMING_SWORD 2
 
 
 #enum {
@@ -764,6 +764,7 @@
   CHEST,
   LARGE_CHEST,
   STRONG_BOX,
+  MAGIC_CHEST,
 };
 
 

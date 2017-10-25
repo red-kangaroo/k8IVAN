@@ -107,7 +107,7 @@ Dungeon MONDEDR;
 
     Square, Pos 0, 0;
     {
-      Character = guard(MONDEDR_GUARD) { WayPoint = { 4, 0, 0, XSize - 1, 0, XSize - 1, YSize - 1, 0, YSize - 1; } }
+      Character = guard(MONDEDR_GUARD) { WayPoint = { 4, {0, 0}, {XSize-1, 0}, {XSize-1, YSize-1}, {0, YSize-1} } }
     }
 
     Square, Random NOT_IN_ROOM|HAS_NO_OTERRAIN;

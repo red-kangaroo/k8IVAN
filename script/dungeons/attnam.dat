@@ -132,7 +132,7 @@ Dungeon ATTNAM;
 
     Square, Pos 0, 0;
     {
-      Character = guard(PATROL) { WayPoint = { 4, 0, 0, XSize - 1, 0, XSize - 1, YSize - 1, 0, YSize - 1; } }
+      Character = guard(PATROL) { WayPoint = { 4, {0, 0}, {XSize-1, 0}, {XSize-1, YSize-1}, {0, YSize-1} } }
     }
 
     Square, Pos 4, 59; { Character = guard(VETERAN); }
@@ -215,7 +215,7 @@ Dungeon ATTNAM;
 
       Square, Pos 1, 1;
       {
-        Character = floatingeye { WayPoint = { 4, 11, 11, 49, 11, 49, 50, 11, 50; } }
+        Character = floatingeye { WayPoint = { 4, {11, 11}, {49, 11}, {49, 50}, {11, 50} } }
       }
 
       Square, Pos 19, 41;
@@ -477,7 +477,7 @@ Dungeon ATTNAM;
           G = golem(GOLD);
           o = orc(REPRESENTATIVE);
           a = siren(AMBASSADOR_SIREN);
-          A = guard(EMISSARY) { WayPoint = { 2, 26, 35, 34, 35; } }
+          A = guard(EMISSARY) { WayPoint = { 2, {26, 35}, {34, 35} } }
         }
       }
       {
@@ -1138,7 +1138,7 @@ Dungeon ATTNAM;
           # = 0;
           G = guard(VETERAN);
           H = guard(HONOR);
-          t = guard(TRAINEE) { WayPoint = { 4, 33, 42, 34, 43, 38, 43, 38, 41; } }
+          t = guard(TRAINEE) { WayPoint = { 4, {33, 42}, {34, 43}, {38, 43}, {38, 41} } }
           N = necromancer(IMPRISONED_NECROMANCER) { Team = 15; }
           P = punisher;
           L = punisher(LAW_STUDENT);

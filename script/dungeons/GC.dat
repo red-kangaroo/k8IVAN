@@ -233,7 +233,7 @@ Dungeon ELPURI_CAVE;
       {
         Character = magpie;
         OTerrain = decoration(PINE);
-        Items == stone { Times = 0:1;}
+        Items == stone { Times = 0:1; }
         Times = 5:10;
       }
     }

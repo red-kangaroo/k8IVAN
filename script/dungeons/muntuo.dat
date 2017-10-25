@@ -171,7 +171,7 @@ Dungeon MUNTUO;
           3 == lantern { SquarePosition = RIGHT; }
           4 == lantern { SquarePosition = LEFT; }
           5 == lantern { SquarePosition = UP; }
-          /*E == EMERALD OCTIRON eptyron { Enchantment = 5; LifeExpectancy = 2000:5000;} */
+          /*E == EMERALD OCTIRON eptyron { Enchantment = 5; LifeExpectancy = 2000:5000; } */
           /*f == GLASS LIQUID_HORROR potion;*/
           /*v == GLASS VINEGAR potion;*/
           /*C == COPPER OMMEL_BLOOD cauldron;*/

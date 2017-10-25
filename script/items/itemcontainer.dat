@@ -72,4 +72,18 @@ itemcontainer
     DamageDivider = 5;
     StrengthModifier = 150;
   }
+
+  Config MAGIC_CHEST;
+  {
+    NameSingular = "magic chest";
+    StorageVolume = 100_000;
+    DefaultMainVolume = 3_000;
+    DefaultSize = 10;
+    Price = 15000;
+    Possibility = 0;
+    MaxGeneratedContainedItems = 0;
+    BitmapPos = 64, 48;
+    DamageDivider = 666;
+    StrengthModifier = 150;
+  }
 }

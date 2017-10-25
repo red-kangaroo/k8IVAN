@@ -174,7 +174,7 @@ Dungeon DARK_FOREST;
         Size = 3,3;
         Types
         {
-          C == OAK_WOOD itemcontainer(LARGE_CHEST) { ItemsInside = { 3, Random { MaxPrice = 150; Category = WEAPON|SHIELD; ConfigFlags = NO_BROKEN; Times = 3;}, Random { MaxPrice = 150; Category = HELMET|BELT; ConfigFlags = NO_BROKEN; Enchantment = 1; Times = 3;}, Random { MaxPrice = 63; Category = CLOAK|BODY_ARMOR; ConfigFlags = NO_BROKEN; Times = 2;} } }
+          C == OAK_WOOD itemcontainer(LARGE_CHEST) { ItemsInside = { 3, Random { MaxPrice = 150; Category = WEAPON|SHIELD; ConfigFlags = NO_BROKEN; Times = 3; }, Random { MaxPrice = 150; Category = HELMET|BELT; ConfigFlags = NO_BROKEN; Enchantment = 1; Times = 3; }, Random { MaxPrice = 63; Category = CLOAK|BODY_ARMOR; ConfigFlags = NO_BROKEN; Times = 2; } } }
         }
       }
       {
