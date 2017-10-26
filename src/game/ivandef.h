@@ -593,6 +593,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define NONE_AS_CHOICE 16     // "none" is a choice, for instance when wielding
 #define SELECT_PAIR 32        // if NO_MULTI_SELECT is on, selects a pair if appropriate
 #define SKIP_FIRST_IF_NO_OLD 64  // skip first list item if `hiitem` in `stack::DrawContents()` is non-empty
+#define SELECT_MOST_RECENT  128  // select most recent picked item in `stack::DrawContents()` (with timeout)
 
 #define RECTANGLE  (game::GetGlobalConst("RECTANGLE"))
 #define ROUND_CORNERS  (game::GetGlobalConst("ROUND_CORNERS"))

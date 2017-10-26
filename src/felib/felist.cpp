@@ -36,18 +36,20 @@ truth FelistDrawController () {
 
 struct felistentry {
   felistentry () : ImageKey(NO_IMAGE) {}
-  felistentry (cfestring &String, col16 Color, uInt Marginal, uInt ImageKey, truth Selectable) :
+  felistentry (cfestring &String, col16 Color, uInt Marginal, uInt ImageKey, truth Selectable, feuLong udata) :
     String(String),
     Color(Color),
     Marginal(Marginal),
     ImageKey(ImageKey),
-    Selectable(Selectable) {}
+    Selectable(Selectable),
+    UData(udata) {}
 
   festring String;
   col16 Color;
   uInt Marginal;
   uInt ImageKey;
   truth Selectable;
+  feuLong UData;
 };
 
 
@@ -94,6 +96,21 @@ felist::felist (cfestring &Topic, col16 TopicColor, uInt Maximum) :
 felist::~felist () {
   Empty();
   for (uInt c = 0; c < Description.size(); ++c) delete Description[c];
+}
+
+
+truth felist::IsEntrySelectable (uInt idx) const {
+  return (idx < Entry.size() ? Entry[idx]->Selectable : false);
+}
+
+
+feuLong felist::GetEntryUData (uInt idx) const {
+  return (idx < Entry.size() ? Entry[idx]->UData : 0);
+}
+
+
+void felist::SetEntryUData (uInt idx, feuLong udata) {
+  if (idx < Entry.size()) Entry[idx]->UData = udata;
 }
 
 
@@ -473,8 +490,8 @@ void felist::Empty () {
 }
 
 
-void felist::AddEntry (cfestring &Str, col16 Color, uInt Marginal, uInt Key, truth Selectable) {
-  Entry.push_back(new felistentry(Str, Color, Marginal, Key, Selectable));
+void felist::AddEntry (cfestring &Str, col16 Color, uInt Marginal, uInt Key, truth Selectable, feuLong udata) {
+  Entry.push_back(new felistentry(Str, Color, Marginal, Key, Selectable, udata));
   if (Maximum && Entry.size() > feuLong(Maximum)) {
     delete Entry[0];
     Entry.erase(Entry.begin());

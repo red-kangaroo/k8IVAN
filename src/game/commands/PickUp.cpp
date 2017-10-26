@@ -15,7 +15,8 @@ COMMAND(PickUp) {
       if (Amount > 1) Amount = game::ScrollBarQuestion(CONST_S("How many ")+PileVector[0][0]->GetName(PLURAL)+'?', Amount, 1, 0, Amount, 0, WHITE, LIGHT_GRAY, DARK_GRAY);
       if (!Amount) return false;
       if ((!PileVector[0][0]->GetRoom() || PileVector[0][0]->GetRoom()->PickupItem(Char, PileVector[0][0], Amount)) &&
-          PileVector[0][0]->CheckPickUpEffect(Char)) {
+          PileVector[0][0]->CheckPickUpEffect(Char))
+      {
         if (PileVector[0][0]->IsCorpse() && ivanconfig::GetConfirmCorpses()) {
           //if (!game::TruthQuestion(CONST_S("Do you really want to pick up the corpse?"))) return false;
           itemvector ToPickup;
@@ -23,7 +24,7 @@ COMMAND(PickUp) {
           Char->GetStackUnder()->DrawContents(ToPickup, Char, CONST_S("Do you really want to pick up the corpse?"), REMEMBER_SELECTED);
           if (ToPickup.empty()) return false;
         }
-        for (int c = 0; c < Amount; ++c) PileVector[0][c]->MoveTo(Char->GetStack());
+        for (int c = 0; c < Amount; ++c) PileVector[0][c]->MoveTo(Char->GetStack(), true);
         ADD_MESSAGE("%s picked up.", PileVector[0][0]->GetName(INDEFINITE, Amount).CStr());
         Char->DexterityAction(2);
         return true;
@@ -44,11 +45,13 @@ COMMAND(PickUp) {
     if (ToPickup[0]->CanBePickedUp()) {
       if ((!ToPickup[0]->GetRoom() || ToPickup[0]->GetRoom()->PickupItem(Char, ToPickup[0], ToPickup.size())) &&
           ToPickup[0]->CheckPickUpEffect(Char)) {
-        for (uInt c = 0; c < ToPickup.size(); ++c) ToPickup[c]->MoveTo(Char->GetStack());
+        for (uInt c = 0; c < ToPickup.size(); ++c) ToPickup[c]->MoveTo(Char->GetStack(), true);
         ADD_MESSAGE("%s picked up.", ToPickup[0]->GetName(INDEFINITE, ToPickup.size()).CStr());
         Success = true;
       }
-    } else ADD_MESSAGE("%s too large to pick up!", ToPickup.size() == 1 ? "It is" : "They are");
+    } else {
+      ADD_MESSAGE("%s too large to pick up!", ToPickup.size() == 1 ? "It is" : "They are");
+    }
   }
   if (Success) {
     Char->DexterityAction(2);

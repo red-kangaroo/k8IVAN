@@ -883,6 +883,7 @@ public:
   virtual truth MoveTowardsHomePos ();
   virtual void SetWayPoints (const fearray<packv2> &) {}
   int HasSomethingToEquipAt (int chosen, truth equippedIsTrue); // counter
+  feuLong HasSomethingToEquipAtRecentTime (int chosen, truth equippedIsTrue); // returns 0, 1 or pickup time
   truth TryToChangeEquipment (stack *, stack *, int);
   void PrintBeginParasitizedMessage () const;
   void PrintEndParasitizedMessage () const;

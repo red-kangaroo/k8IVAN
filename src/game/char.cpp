@@ -5694,7 +5694,7 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
     (SecStack ? festring(CONST_S("Items in ")+GetPossessivePronoun()+" inventory") : CONST_S("")),
     (SecStack ? festring(GetDescription(DEFINITE)+" is "+GetVerbalBurdenState()) : CONST_S("")),
     GetVerbalBurdenStateColor(),
-    NONE_AS_CHOICE|NO_MULTI_SELECT|SELECT_PAIR|SKIP_FIRST_IF_NO_OLD,
+    NONE_AS_CHOICE|NO_MULTI_SELECT|SELECT_PAIR|SKIP_FIRST_IF_NO_OLD|SELECT_MOST_RECENT,
     Sorter, OldEquipment);
   if (Return == ESCAPED) {
     if (OldEquipment) {
@@ -7323,6 +7323,23 @@ int character::HasSomethingToEquipAt (int chosen, truth equippedIsTrue) {
 }
 
 
+// returns 0, 1 or pickup time
+feuLong character::HasSomethingToEquipAtRecentTime (int chosen, truth equippedIsTrue) {
+  if (!GetBodyPartOfEquipment(chosen)) return 0;
+
+  item *oldEquipment = GetEquipment(chosen);
+  if (!IsPlayer() && oldEquipment && BoundToUse(oldEquipment, chosen)) return 0;
+
+  stack *mainStack = GetStack();
+  sorter Sorter = EquipmentSorter(chosen);
+  feuLong highestTime = mainStack->SortedItemsRecentTime(this, Sorter);
+
+  if (equippedIsTrue && oldEquipment && oldEquipment->pickupTime > highestTime) highestTime = oldEquipment->pickupTime;
+
+  return highestTime;
+}
+
+
 truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
   if (!CanUseEquipment()) {
     ADD_MESSAGE("%s cannot use equipment.", CHAR_DESCRIPTION(DEFINITE));
@@ -7339,40 +7356,63 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
       List.AddDescription(CONST_S(""));
       List.AddDescription(festring(GetDescription(DEFINITE) + " is " + GetVerbalBurdenState()).CapitalizeCopy(), GetVerbalBurdenStateColor());
     }
-    int selected = -1, curit = 0;
-    truth selectedIsEmpty = false;
-    for (int c = 0; c < GetEquipments(); ++c, ++curit) {
-      int bpidx = (GetBodyPartOfEquipment(c) ? GetBodyPartOfEquipment(c)->GetBodyPartIndex() : -1);
+    int firstEmpty = -1, firstNonEmpty = -1, selected = -1;
+    feuLong selPickTime = 1;
+    feuLong armPickTime = 0;
+    int armFirst = -1;
+    //truth selectedIsEmpty = false;
+    for (int c = 0; c < GetEquipments(); ++c) {
+      truth isArm = (c == 5 || c == 6);
+      //int bpidx = (GetBodyPartOfEquipment(c) ? GetBodyPartOfEquipment(c)->GetBodyPartIndex() : -1);
+      truth equippable = !!GetBodyPartOfEquipment(c);
       Entry = GetEquipmentName(c);
       Entry << ':';
       Entry.Resize(20);
       item *Equipment = GetEquipment(c);
+      feuLong pickTm = (equippable ? HasSomethingToEquipAtRecentTime(c, false) : 0);
+      int availEquipCount = (equippable ? HasSomethingToEquipAt(c, false) : 0);
+      if (pickTm > 1 && game::GetTick()-pickTm > 15+4) pickTm = 0;
+      //fprintf(stderr, "c=%d; equippable=%d; availcount=%d; pickTm=%u; tick=%u\n", c, (int)equippable, availEquipCount, pickTm, game::GetTick());
       if (Equipment) {
         Equipment->AddInventoryEntry(this, Entry, 1, true);
         AddSpecialEquipmentInfo(Entry, c);
         int ImageKey = game::AddToItemDrawVector(itemvector(1, Equipment));
-        if (selected < 0 && bpidx >= 0 && bpidx != RIGHT_ARM_INDEX && bpidx != LEFT_ARM_INDEX) selected = curit;
-        List.AddEntry(Entry, (HasSomethingToEquipAt(c, false) ? ORANGE : LIGHT_GRAY), 20, ImageKey, true);
+        if (firstNonEmpty < 0 && equippable && !isArm && availEquipCount > 0) firstNonEmpty = c;
+        if (equippable) {
+          if (availEquipCount > 0 && isArm && armPickTime < pickTm) { armFirst = c; armPickTime = pickTm; }
+          if (selPickTime < pickTm && equippable && !isArm) { selected = c; selPickTime = pickTm; }
+        }
+        List.AddEntry(Entry, (availEquipCount ? ORANGE : LIGHT_GRAY), 20, ImageKey, true);
       } else {
         truth canUse = !!GetBodyPartOfEquipment(c);
         Entry << (canUse ? "-" : "can't use");
         col16 color = RED;
-        if (canUse) {
-          switch (HasSomethingToEquipAt(c, false)) {
+        if (canUse && availEquipCount > 0) {
+          if (firstEmpty < 0 && equippable && !isArm && availEquipCount > 0) firstEmpty = c;
+          if (equippable && isArm && armFirst < 0) armFirst = c;
+          switch (availEquipCount) {
             case 0: color = RED; break;
             case 1: color = LIGHT_GRAY; break;
             default: color = ORANGE; break;
           }
         }
-        if (color != RED && bpidx >= 0 && bpidx != RIGHT_ARM_INDEX && bpidx != LEFT_ARM_INDEX) {
-          if (selected < 0 || !selectedIsEmpty) { selected = curit; selectedIsEmpty = true; }
+        if (color != RED && equippable) {
+          if (pickTm > selPickTime && !isArm) { selected = c; selPickTime = pickTm; }
         }
         List.AddEntry(Entry, color, 20, game::AddToItemDrawVector(itemvector()));
       }
     }
     game::DrawEverythingNoBlit();
     game::SetStandardListAttributes(List);
+
+    //fprintf(stderr, "  selected=%d; firstEmpty=%d; firstNonEmpty=%d; armFirst=%d; armPickTime=%u\n", selected, firstEmpty, firstNonEmpty, armFirst, armPickTime);
+    if (firstEmpty >= 0) selected = firstEmpty;
+    if (selected < 0) {
+           if (armPickTime > 0) selected = armFirst;
+      else if (firstNonEmpty >= 0) selected = firstNonEmpty;
+    }
     if (selected >= 0) List.SetSelected(selected);
+
     List.SetFlags(SELECTABLE|DRAW_BACKGROUND_AFTERWARDS);
     List.SetEntryDrawer(game::ItemEntryDrawer);
     Chosen = List.Draw();

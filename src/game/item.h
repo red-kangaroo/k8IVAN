@@ -293,7 +293,7 @@ class item : public object
   void SetMainSlot(slot* What) { Slot[0] = What; }
   void PlaceToSlot(slot* Slot) { Slot->PutInItem(this); }
   virtual void RemoveFromSlot();
-  void MoveTo(stack*);
+  void MoveTo(stack *Stack, truth setPickupTime=false);
   truth IsMainSlot(const slot* What) const { return Slot[0] == What; }
   static cchar* GetItemCategoryName(sLong);
   truth IsEatable(ccharacter*) const;
@@ -666,6 +666,9 @@ protected:
   int LifeExpectancy;
   feuLong ItemFlags;
   truth mIsStepedOn;
+
+public: // why not?
+  feuLong pickupTime;
 };
 
 #ifdef __FILE_OF_STATIC_ITEM_PROTOTYPE_DEFINITIONS__

@@ -52,7 +52,8 @@ item::item () :
   Fluid(0),
   LifeExpectancy(0),
   ItemFlags(0),
-  mIsStepedOn(false)
+  mIsStepedOn(false),
+  pickupTime(0)
 {
 }
 
@@ -264,6 +265,7 @@ void item::Save (outputfile &SaveFile) const {
   SaveFile << (uShort)GetConfig();
   SaveFile << (uShort)Flags;
   SaveFile << Size << ID << LifeExpectancy << ItemFlags;
+  SaveFile << pickupTime;
   SaveLinkedList(SaveFile, CloneMotherID);
   if (Fluid) {
     SaveFile.Put(true);
@@ -283,6 +285,7 @@ void item::Load (inputfile &SaveFile) {
   databasecreator<item>::InstallDataBase(this, ReadType(uShort, SaveFile));
   Flags |= ReadType(uShort, SaveFile) & ~ENTITY_FLAGS;
   SaveFile >> Size >> ID >> LifeExpectancy >> ItemFlags;
+  SaveFile >> pickupTime;
   LoadLinkedList(SaveFile, CloneMotherID);
   if (LifeExpectancy) Enable();
   game::AddItemID(this, ID);
@@ -337,9 +340,13 @@ void item::RemoveFromSlot () {
 }
 
 
-void item::MoveTo (stack *Stack) {
+void item::MoveTo (stack *Stack, truth setPickupTime) {
   RemoveFromSlot();
   Stack->AddItem(this);
+  if (setPickupTime) {
+    pickupTime = game::GetTick();
+    //fprintf(stderr, "item '%s'; pickuptime set to %u\n", GetNameSingular().CStr(), pickupTime);
+  }
 }
 
 

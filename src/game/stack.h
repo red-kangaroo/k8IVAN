@@ -101,6 +101,7 @@ public:
   lsquare *GetLSquareUnder () const { return static_cast<lsquare*>(GetSquareUnder()); }
   truth SortedItems (ccharacter *, sorter) const;
   int SortedItemsCount (ccharacter *, sorter) const;
+  feuLong SortedItemsRecentTime (ccharacter *, sorter) const; // 0, 1 or most recent pickup time
   void BeKicked (character *, int, int);
   void Polymorph (character *);
   void CheckForStepOnEffect (character *);

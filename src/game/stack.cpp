@@ -172,6 +172,22 @@ int stack::SortedItemsCount (ccharacter *Viewer, sorter SorterFunction) const {
 }
 
 
+// 0, 1 or most recent pickup time
+feuLong stack::SortedItemsRecentTime (ccharacter *Viewer, sorter SorterFunction) const {
+  feuLong highestTime = 0;
+  if (Items) {
+    for (stackiterator i = GetBottom(); i.HasItem(); ++i) {
+      if ((SorterFunction == 0 || ((*i)->*SorterFunction)(Viewer)) && ((Flags & HIDDEN) || i->CanBeSeenBy(Viewer))) {
+        feuLong pt = (*i)->pickupTime;
+        if (pt == 0) pt = 1;
+        if (pt > highestTime) highestTime = pt;
+      }
+    }
+  }
+  return highestTime;
+}
+
+
 void stack::BeKicked (character *Kicker, int KickDamage, int Direction) {
   if (KickDamage) {
     ReceiveDamage(Kicker, KickDamage, PHYSICAL_DAMAGE, Direction);
@@ -338,17 +354,34 @@ int stack::DrawContents (itemvector &ReturnVector, stack *MergeStack,
   if ((Flags&NO_SELECT) == 0) Contents.AddFlags(SELECTABLE);
 
   // `Contents.Draw()` will fix invalid selections
+  int selected = 0;
   if (Flags&REMEMBER_SELECTED) {
     if ((Flags&NONE_AS_CHOICE) && (Flags&SKIP_FIRST_IF_NO_OLD) && !hiitem && GetSelected() == 0) {
-      Contents.SetSelected(1);
-    } else {
-      Contents.SetSelected(GetSelected());
+      selected = 1;
     }
   } else {
     if ((Flags&NONE_AS_CHOICE) && (Flags&SKIP_FIRST_IF_NO_OLD) && !hiitem) {
-      Contents.SetSelected(1);
+      selected = 1;
     }
   }
+
+  if ((Flags&NO_SELECT) == 0 && (Flags&SELECT_MOST_RECENT)) {
+    int cursel = -1;
+    feuLong maxpt = 0;
+    for (uInt c = 0; c < Contents.GetLength(); ++c) {
+      if (!Contents.IsEntrySelectable(c)) continue;
+      ++cursel;
+      if (cursel < selected) continue;
+      feuLong pt = Contents.GetEntryUData(c);
+      if (pt <= 1 || game::GetTick()-pt > 15+4) continue;
+      if (pt < maxpt) continue;
+      maxpt = pt;
+      selected = cursel;
+    }
+  }
+
+  if (selected <= 0) selected = GetSelected();
+  Contents.SetSelected(selected);
 
   game::DrawEverythingNoBlit(); //doesn't prevent mirage puppies
   int Chosen = Contents.Draw();
@@ -406,13 +439,12 @@ void stack::AddContentsToList (felist &Contents, ccharacter *Viewer, cfestring &
     item *Item = PileVector[p].back();
     if (Item->GetCategory() != LastCategory) {
       LastCategory = Item->GetCategory();
-      Contents.AddEntry(item::GetItemCategoryName(LastCategory),
-      LIGHT_GRAY, 0, NO_IMAGE, false);
+      Contents.AddEntry(item::GetItemCategoryName(LastCategory), LIGHT_GRAY, 0, NO_IMAGE, false);
     }
     Entry.Empty();
     Item->AddInventoryEntry(Viewer, Entry, PileVector[p].size(), !(Flags & NO_SPECIAL_INFO));
     int ImageKey = game::AddToItemDrawVector(PileVector[p]);
-    Contents.AddEntry(Entry, (Item == hiitem ? WHITE : LIGHT_GRAY), 0, ImageKey);
+    Contents.AddEntry(Entry, (Item == hiitem ? WHITE : LIGHT_GRAY), 0, ImageKey, true, Item->pickupTime);
   }
 }
 
@@ -787,7 +819,7 @@ truth stack::PutSomethingIn (character *Opener, cfestring &ContainerName, sLong 
   for (;;) {
     itemvector ToPut;
     game::DrawEverythingNoBlit();
-    Opener->GetStack()->DrawContents(ToPut, Opener, CONST_S("What do you want to put in ")+ContainerName+'?', REMEMBER_SELECTED);
+    Opener->GetStack()->DrawContents(ToPut, Opener, CONST_S("What do you want to put in ")+ContainerName+'?', REMEMBER_SELECTED|SELECT_MOST_RECENT);
     if (ToPut.empty()) break;
     if (ToPut[0]->GetID() == ContainerID) {
       ADD_MESSAGE("You can't put %s inside itself!", ContainerName.CStr());
