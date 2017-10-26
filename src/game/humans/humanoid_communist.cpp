@@ -5,7 +5,7 @@ CHARACTER(communist, humanoid)
   virtual truth MoveRandomly();
   virtual void BeTalkedTo();
   virtual truth BoundToUse(citem*, int) const;
-  virtual truth MustBeRemovedFromBone() const;
+  //virtual truth MustBeRemovedFromBone() const;
  protected:
   virtual truth ShowClassDescription() const;
 };
@@ -63,10 +63,12 @@ truth communist::BoundToUse (citem* Item, int I) const {
 }
 
 
+/*
 truth communist::MustBeRemovedFromBone () const {
   //return (!IsEnabled() || GetTeam()->GetID() != IVAN_TEAM || GetDungeon()->GetIndex() != ELPURI_CAVE || GetLevel()->GetIndex() != IVAN_LEVEL);
   return (!IsEnabled() || GetTeam()->GetID() != IVAN_TEAM || IsHomeLevel(GetLevel()));
 }
+*/
 
 
 #endif

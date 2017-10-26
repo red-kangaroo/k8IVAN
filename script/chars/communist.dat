@@ -45,6 +45,7 @@ communist /* Ivan */
   CanBeWished = true;
   DefaultName = "Ivan";
   DeathMessage = "@Dd falls groaning bravely: \"Party revenges @nu\"!";
+  NaturalTeam = IVAN_TEAM;
   HostileReplies :=
   {
     "\"Nu vse, tebe pizda!\"",

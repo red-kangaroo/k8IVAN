@@ -254,6 +254,7 @@ struct characterdatabase : public databasebase {
   fearray<int> AllowedDungeons;
   fearray<festring> LevelTags;
   fearray<festring> HomeLevel;
+  int NaturalTeam;
 };
 
 
@@ -653,6 +654,7 @@ public:
   DATA_BASE_VALUE(const fearray<int>&, AllowedDungeons);
   DATA_BASE_VALUE(const fearray<festring>&, LevelTags);
   DATA_BASE_VALUE(const fearray<festring>&, HomeLevel);
+  DATA_BASE_VALUE(int, NaturalTeam);
   int GetType () const { return GetProtoType()->GetIndex(); }
   void TeleportRandomly (truth = false);
   truth TeleportNear (character *);

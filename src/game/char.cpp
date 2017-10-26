@@ -386,7 +386,7 @@ truth character::MustBeRemovedFromBone () const {
   // has "*"?
   for (uInt f = 0; f < hlist.Size; ++f) { if (hlist[f] == "*") return true; }
   // taken from unique characters code
-  if (!IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM) return true;
+  if (!IsEnabled() || GetTeam()->GetID() != DataBase->NaturalTeam) return true;
   return IsHomeLevel(GetLevel());
 }
 

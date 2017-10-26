@@ -290,6 +290,7 @@ character
   WhatCategoryToThrow = NONE;
   WhatWeaponConfigToThrow = NONE;
   WhatThrowItemTypesToThrow = NONE;
+  NaturalTeam = MONSTER_TEAM; // used for checking for bone prevention
   AllowedDungeons == ALL_DUNGEONS; // example: AllowedDungeons := { UNDER_WATER_TUNNEL, MONDEDR; }
   LevelTags := {} // same as {"*"}
   HomeLevel := {} // no default home level

@@ -33,5 +33,6 @@ vladimir
   CanBeCloned = false;
   ConstantCommandFlags = FLEE_FROM_ENEMIES;
   BloodMaterial = GLOWING_BLOOD;
+  NaturalTeam = IVAN_TEAM;
   HomeLevel == "GCIvanLevel(!)";
 }

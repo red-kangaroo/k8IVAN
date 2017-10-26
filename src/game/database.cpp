@@ -553,6 +553,7 @@ template<> void databasecreator<character>::CreateDataBaseMemberMap () {
   ADD_MEMBER(AllowedDungeons);
   ADD_MEMBER(LevelTags);
   ADD_MEMBER(HomeLevel);
+  ADD_MEMBER(NaturalTeam);
 }
 
 
