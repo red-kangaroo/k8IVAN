@@ -2832,14 +2832,9 @@ truth character::IsDangerousSquare (v2 pos) const {
   auto Squares = CalculateNewSquaresUnder(MoveToSquare, pos);
   for (decltype(Squares) c = 0; c < Squares; ++c) {
     lsquare *Square = MoveToSquare[c];
-    if (IsPlayer()) {
-      if (!Square->HasBeenSeen()) continue;
-      if (!Square->GetCharacter()) continue;
-      if (!Square->GetCharacter()->CanBeSeenByPlayer()) continue;
-    }
-    if ((Square->GetCharacter() && GetTeam() != Square->GetCharacter()->GetTeam()) || Square->IsDangerous(this)) {
-      return true;
-    }
+    // check if someone is standing at the square
+    if (Square->GetCharacter() && GetTeam() != Square->GetCharacter()->GetTeam() && Square->GetCharacter()->CanBeSeenBy(this)) return true;
+    if (Square->IsDangerous(this) && Square->CanBeSeenBy(this)) return true;
   }
   return false;
 }
@@ -2881,12 +2876,12 @@ void character::GoOn (go *Go, truth FirstStep) {
       Go->Terminate(false);
       return;
     }
-  }
-  // stop near the dangerous square
-  if (IsDangerousSquare(GetPos()+MoveVector)) {
-    dirlogf("sense the danger\n");
-    Go->Terminate(false);
-    return;
+    // stop near the dangerous square
+    if (IsDangerousSquare(GetPos()+MoveVector)) {
+      dirlogf("sense the danger\n");
+      Go->Terminate(false);
+      return;
+    }
   }
   // if the state modified the direction, move and stop
   if (moveDir != Go->GetDirection()) {
@@ -2938,20 +2933,20 @@ void character::GoOn (go *Go, truth FirstStep) {
       }
       Go->SetDirection(newDir); // perform possible turn
     }
+    // stop near the dangerous square
+    for (int mdv = 0; mdv < MDIR_STAND; ++mdv) {
+      if (IsDangerousSquare(GetPos()+MoveVector+game::GetMoveVector(mdv))) {
+        dirlogf(" danger!\n");
+        Go->Terminate(false);
+        return;
+      }
+    }
   } else {
     // first step, just do it
   }
 
   // now try to perform the move
   dirlogf("trying to make the move\n");
-  // stop near the dangerous square
-  for (int mdv = 0; mdv < MDIR_STAND; ++mdv) {
-    if (IsDangerousSquare(GetPos()+MoveVector+game::GetMoveVector(mdv))) {
-      dirlogf(" danger!\n");
-      Go->Terminate(false);
-      return;
-    }
-  }
 
   square *BeginSquare = GetSquareUnder();
   uInt OldRoomIndex = GetLSquareUnder()->GetRoomIndex();
@@ -3001,7 +2996,7 @@ void character::GoOn (go *Go, truth FirstStep) {
         int sq2 = CalculateNewSquaresUnder(MoveToSquare2, GetPos()+np);
         for (int c = 0; c < sq2; ++c) {
           lsquare *Square = MoveToSquare2[c];
-          if (IsPlayer() && !Square->HasBeenSeen()) continue;
+          if (!Square->CanBeSeenBy(this)) continue;
           if (Square->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
             dirlogf(" stepped near something interesting\n");
             //HACK: mark all items as stepped on
