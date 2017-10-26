@@ -2014,19 +2014,19 @@ feuLong game::CreateNewTrapID (entity *NewTrap) {
 
 character *game::SearchCharacter (feuLong ID) {
   characteridmap::iterator Iterator = CharacterIDMap.find(ID);
-  return Iterator != CharacterIDMap.end() ? Iterator->second : 0;
+  return (Iterator != CharacterIDMap.end() ? Iterator->second : 0);
 }
 
 
 item *game::SearchItem (feuLong ID) {
   itemidmap::iterator Iterator = ItemIDMap.find(ID);
-  return Iterator != ItemIDMap.end() ? Iterator->second : 0;
+  return (Iterator != ItemIDMap.end() ? Iterator->second : 0);
 }
 
 
 entity *game::SearchTrap (feuLong ID) {
   trapidmap::iterator Iterator = TrapIDMap.find(ID);
-  return Iterator != TrapIDMap.end() ? Iterator->second : 0;
+  return (Iterator != TrapIDMap.end() ? Iterator->second : 0);
 }
 
 
