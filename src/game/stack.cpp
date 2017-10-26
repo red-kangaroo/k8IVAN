@@ -337,7 +337,18 @@ int stack::DrawContents (itemvector &ReturnVector, stack *MergeStack,
 
   if ((Flags&NO_SELECT) == 0) Contents.AddFlags(SELECTABLE);
 
-  if (Flags&REMEMBER_SELECTED) Contents.SetSelected(GetSelected());
+  // `Contents.Draw()` will fix invalid selections
+  if (Flags&REMEMBER_SELECTED) {
+    if ((Flags&NONE_AS_CHOICE) && (Flags&SKIP_FIRST_IF_NO_OLD) && !hiitem && GetSelected() == 0) {
+      Contents.SetSelected(1);
+    } else {
+      Contents.SetSelected(GetSelected());
+    }
+  } else {
+    if ((Flags&NONE_AS_CHOICE) && (Flags&SKIP_FIRST_IF_NO_OLD) && !hiitem) {
+      Contents.SetSelected(1);
+    }
+  }
 
   game::DrawEverythingNoBlit(); //doesn't prevent mirage puppies
   int Chosen = Contents.Draw();

@@ -5701,7 +5701,7 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
     (SecStack ? festring(CONST_S("Items in ")+GetPossessivePronoun()+" inventory") : CONST_S("")),
     (SecStack ? festring(GetDescription(DEFINITE)+" is "+GetVerbalBurdenState()) : CONST_S("")),
     GetVerbalBurdenStateColor(),
-    NONE_AS_CHOICE|NO_MULTI_SELECT|SELECT_PAIR,
+    NONE_AS_CHOICE|NO_MULTI_SELECT|SELECT_PAIR|SKIP_FIRST_IF_NO_OLD,
     Sorter, OldEquipment);
   if (Return == ESCAPED) {
     if (OldEquipment) {
