@@ -287,9 +287,19 @@ public:
   static truth AnimationController();
   static gamescript* GetGameScript() { return GameScript; }
   static void InitScript();
+
   static valuemap& GetGlobalValueMap() { return GlobalValueMap; }
+  static truth HasGlobalValue (cfestring &name);
+  static sLong FindGlobalValue (cfestring &name, sLong defval=-1, truth* found=0);
+  static sLong FindGlobalValue (cfestring &name, truth* found=0);
+
+  // this will fail if there is no such constant
+  //TODO: cache values
+  static sLong GetGlobalConst (cfestring &name);
+
   static void InitGlobalValueMap();
   static void LoadGlobalValueMap (TextInput &SaveFile);
+
   static void TextScreen(cfestring&, v2 = ZERO_V2, col16 = 0xFFFF, truth = true, truth = true, bitmapeditor = 0);
   static void SetCursorPos(v2 What) { CursorPos = What; }
   static truth DoZoom() { return Zoom; }

@@ -801,11 +801,10 @@ truth game::Save (cfestring &SaveName) {
   SaveFile << PlayerMassacreMap << PetMassacreMap << MiscMassacreMap;
   SaveFile << PlayerMassacreAmount << PetMassacreAmount << MiscMassacreAmount;
   SaveArray(SaveFile, EquipmentMemory, MAX_EQUIPMENT_SLOTS);
-  int c;
-  for (c = 0; c < ATTRIBUTES; ++c) SaveFile << OldAttribute[c] << NewAttribute[c] << LastAttributeChangeTick[c];
-  for (c = 1; c < Dungeons; ++c) SaveFile << Dungeon[c];
-  for (c = 1; c <= GODS; ++c) SaveFile << God[c];
-  for (c = 0; c < Teams; ++c) SaveFile << Team[c];
+  for (int c = 0; c < ATTRIBUTES; ++c) SaveFile << OldAttribute[c] << NewAttribute[c] << LastAttributeChangeTick[c];
+  for (int c = 1; c < Dungeons; ++c) SaveFile << Dungeon[c];
+  for (int c = 1; c <= GODS; ++c) SaveFile << God[c];
+  for (int c = 0; c < Teams; ++c) SaveFile << Team[c];
   if (InWilderness) {
     SaveWorldMap(SaveName, false);
   } else {
@@ -1455,6 +1454,38 @@ void game::LoadGlobalValueMap (TextInput &fl) {
     }
     ABORT("Illegal datafile define in file %s on line %d!", fl.GetFileName().CStr(), fl.TokenLine());
   }
+}
+
+
+truth game::HasGlobalValue (cfestring &name) {
+  auto it = GlobalValueMap.find(name);
+  return (it != GlobalValueMap.end());
+}
+
+
+sLong game::FindGlobalValue (cfestring &name, sLong defval, truth* found) {
+  auto it = GlobalValueMap.find(name);
+  if (it != GlobalValueMap.end()) {
+    if (found) *found = true;
+    return it->second;
+  } else {
+    if (found) *found = false;
+    return defval;
+  }
+}
+
+
+sLong game::FindGlobalValue (cfestring &name, truth* found) {
+  return FindGlobalValue(name, -1, found);
+}
+
+
+// this will fail if there is no such constant
+//TODO: cache values
+sLong game::GetGlobalConst (cfestring &name) {
+  auto it = GlobalValueMap.find(name);
+  if (it == GlobalValueMap.end()) ABORT("Global constant '%s' not found!", name.CStr());
+  return it->second;
 }
 
 

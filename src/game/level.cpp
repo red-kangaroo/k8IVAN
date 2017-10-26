@@ -933,10 +933,8 @@ int level::TriggerExplosions (int MinIndex) {
 
 
 truth level::CollectCreatures (charactervector &CharacterArray, character* Leader, truth AllowHostiles) {
-  int c;
-
   if (!AllowHostiles) {
-    for (c = 0; c < game::GetTeams(); ++c) {
+    for (int c = 0; c < game::GetTeams(); ++c) {
       if (Leader->GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
         for (std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
           if ((*i)->IsEnabled() && Leader->CanBeSeenBy(*i) && Leader->SquareUnderCanBeSeenBy(*i, true) && (*i)->CanFollow()) {
@@ -950,14 +948,14 @@ truth level::CollectCreatures (charactervector &CharacterArray, character* Leade
 
   truth TakeAll = true;
 
-  for (c = 0; c < game::GetTeams(); ++c) {
+  for (int c = 0; c < game::GetTeams(); ++c) {
     if (game::GetTeam(c)->GetEnabledMembers() && Leader->GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
       TakeAll = false;
       break;
     }
   }
 
-  for (c = 0; c < game::GetTeams(); ++c) {
+  for (int c = 0; c < game::GetTeams(); ++c) {
     if (game::GetTeam(c) == Leader->GetTeam() || Leader->GetTeam()->GetRelation(game::GetTeam(c)) == HOSTILE) {
       for (std::list<character*>::const_iterator i = game::GetTeam(c)->GetMember().begin(); i != game::GetTeam(c)->GetMember().end(); ++i) {
         if ((*i)->IsEnabled() && *i != Leader &&

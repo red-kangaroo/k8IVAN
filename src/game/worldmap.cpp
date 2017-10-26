@@ -265,22 +265,23 @@ void worldmap::Generate () {
     //
     // tunnel entry, tunnel exit and New Attnam are ok, spawn
     for (unsigned int f = 0; f < Places.size(); ++f) {
-      switch (Places[f].dungeon) {
-        case NEW_ATTNAM:
-          GetWSquare(NewAttnamPos)->ChangeOWTerrain(Places[f].spawner());
-          SetEntryPos(NEW_ATTNAM, NewAttnamPos);
-          PlacePosition[f] = NewAttnamPos;
-          break;
-        case UNDER_WATER_TUNNEL:
-          GetWSquare(TunnelEntry)->ChangeOWTerrain(Places[f].spawner());
-          SetEntryPos(UNDER_WATER_TUNNEL, TunnelEntry);
-          PlacePosition[f] = TunnelEntry;
-          break;
-        case UNDER_WATER_TUNNEL_EXIT:
-          GetWSquare(TunnelExit)->ChangeOWTerrain(Places[f].spawner());
-          SetEntryPos(UNDER_WATER_TUNNEL_EXIT, TunnelExit);
-          PlacePosition[f] = TunnelExit;
-          break;
+      if (Places[f].dungeon == NEW_ATTNAM) {
+        GetWSquare(NewAttnamPos)->ChangeOWTerrain(Places[f].spawner());
+        SetEntryPos(NEW_ATTNAM, NewAttnamPos);
+        PlacePosition[f] = NewAttnamPos;
+        continue;
+      }
+      if (Places[f].dungeon == UNDER_WATER_TUNNEL) {
+        GetWSquare(TunnelEntry)->ChangeOWTerrain(Places[f].spawner());
+        SetEntryPos(UNDER_WATER_TUNNEL, TunnelEntry);
+        PlacePosition[f] = TunnelEntry;
+        continue;
+      }
+      if (Places[f].dungeon == UNDER_WATER_TUNNEL_EXIT) {
+        GetWSquare(TunnelExit)->ChangeOWTerrain(Places[f].spawner());
+        SetEntryPos(UNDER_WATER_TUNNEL_EXIT, TunnelExit);
+        PlacePosition[f] = TunnelExit;
+        continue;
       }
     }
     // spawn others

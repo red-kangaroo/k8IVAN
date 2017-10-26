@@ -37,8 +37,8 @@ public:
   void SetRelation (team *, int);
   int GetRelation (const team *) const;
   void Hostility (team *);
-  feuLong GetID () const { return ID; }
-  void SetID (feuLong What) { ID = What; }
+  /*feuLong*/int GetID () const { return ID; }
+  void SetID (/*feuLong*/int What) { ID = What; }
   void Save (outputfile &) const;
   void Load (inputfile &);
   void SetLeader (character *What) { Leader = What; }
@@ -59,7 +59,7 @@ private:
   character *Leader;
   std::map<feuLong, int> Relation;
   std::list<character *> Member;
-  feuLong ID;
+  /*feuLong*/int ID;
   int KillEvilness;
   festring Name;
 };

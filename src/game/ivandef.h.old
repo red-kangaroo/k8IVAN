@@ -511,29 +511,28 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define DEFAULT_TEAM 0xFF
 
 /* Hard-coded teams */
-#define PLAYER_TEAM  (game::GetGlobalConst("PLAYER_TEAM"))
-#define MONSTER_TEAM  (game::GetGlobalConst("MONSTER_TEAM"))
-#define ATTNAM_TEAM  (game::GetGlobalConst("ATTNAM_TEAM"))
-#define SUMO_TEAM  (game::GetGlobalConst("SUMO_TEAM"))
-#define VALPURUS_ANGEL_TEAM  (game::GetGlobalConst("VALPURUS_ANGEL_TEAM"))
-#define GC_SHOPKEEPER_TEAM  (game::GetGlobalConst("GC_SHOPKEEPER_TEAM"))
-#define IVAN_TEAM  (game::GetGlobalConst("IVAN_TEAM"))
-#define NEW_ATTNAM_TEAM  (game::GetGlobalConst("NEW_ATTNAM_TEAM"))
-#define COLONIST_TEAM  (game::GetGlobalConst("COLONIST_TEAM"))
-#define TOURIST_GUIDE_TEAM  (game::GetGlobalConst("TOURIST_GUIDE_TEAM"))
-#define TOURIST_TEAM  (game::GetGlobalConst("TOURIST_TEAM"))
-#define BETRAYED_TEAM  (game::GetGlobalConst("BETRAYED_TEAM"))
-#define MONDEDR_TEAM  (game::GetGlobalConst("MONDEDR_TEAM"))
-#define KHARAZ_ARAD_TEAM  (game::GetGlobalConst("KHARAZ_ARAD_TEAM"))
-#define FORESTMAN_TEAM  (game::GetGlobalConst("FORESTMAN_TEAM"))
-#define SOLICITUS_TEAM  (game::GetGlobalConst("SOLICITUS_TEAM"))
-#define MORBE_TEAM  (game::GetGlobalConst("MORBE_TEAM"))
-#define XINROCH_TOMB_ENTRY_TEAM  (game::GetGlobalConst("XINROCH_TOMB_ENTRY_TEAM"))
-#define XINROCH_TOMB_NECRO_TEAM  (game::GetGlobalConst("XINROCH_TOMB_NECRO_TEAM"))
-#define XINROCH_TOMB_KAMIKAZE_DWARF_TEAM  (game::GetGlobalConst("XINROCH_TOMB_KAMIKAZE_DWARF_TEAM"))
-#define PRISONER_TEAM  (game::GetGlobalConst("PRISONER_TEAM"))
-//#define NO_TEAM 0xFFFF
-#define NO_TEAM  (game::GetGlobalConst("NO_TEAM"))
+#define PLAYER_TEAM 0
+#define MONSTER_TEAM 1
+#define ATTNAM_TEAM 2
+#define SUMO_TEAM 3
+#define VALPURUS_ANGEL_TEAM 4
+#define GC_SHOPKEEPER_TEAM 5
+#define IVAN_TEAM 6
+#define NEW_ATTNAM_TEAM 7
+#define COLONIST_TEAM 8
+#define TOURIST_GUIDE_TEAM 9
+#define TOURIST_TEAM 10
+#define BETRAYED_TEAM 11
+#define MONDEDR_TEAM 12
+#define KHARAZ_ARAD_TEAM 13
+#define FORESTMAN_TEAM 14
+#define SOLICITUS_TEAM 15
+#define MORBE_TEAM 16
+#define XINROCH_TOMB_ENTRY_TEAM 17
+#define XINROCH_TOMB_NECRO_TEAM 18
+#define XINROCH_TOMB_KAMIKAZE_DWARF_TEAM 19
+#define PRISONER_TEAM 20
+#define NO_TEAM 0xFFFF
 
 #define LOAD 1
 #define NO_PIC_UPDATE 2
@@ -553,36 +552,36 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define DEFAULT_ATTACHED_ENTRY 0xFE
 #define NO_ENTRY 0
 
-#define RANDOM  (game::GetGlobalConst("RANDOM"))
-#define ELPURI_CAVE  (game::GetGlobalConst("ELPURI_CAVE"))
-#define ATTNAM  (game::GetGlobalConst("ATTNAM"))
-#define NEW_ATTNAM  (game::GetGlobalConst("NEW_ATTNAM"))
-#define UNDER_WATER_TUNNEL  (game::GetGlobalConst("UNDER_WATER_TUNNEL"))
-#define MONDEDR  (game::GetGlobalConst("MONDEDR"))
-#define MUNTUO  (game::GetGlobalConst("MUNTUO"))
-#define DRAGON_TOWER  (game::GetGlobalConst("DRAGON_TOWER"))
-#define DARK_FOREST  (game::GetGlobalConst("DARK_FOREST"))
-#define XINROCH_TOMB  (game::GetGlobalConst("XINROCH_TOMB"))
+#define RANDOM 0
+#define ELPURI_CAVE 1
+#define ATTNAM 2
+#define NEW_ATTNAM 3
+#define UNDER_WATER_TUNNEL 4
+#define MONDEDR 5
+#define MUNTUO 6
+#define DRAGON_TOWER 7
+#define DARK_FOREST 8
+#define XINROCH_TOMB 9
 // alien mod
-#define ALIEN_VESSEL  (game::GetGlobalConst("ALIEN_VESSEL"))
+#define ALIEN_VESSEL 10
 
-#define KHARAZ_ARAD_SHOP  (game::GetGlobalConst("KHARAZ_ARAD_SHOP"))
-#define UNDER_WATER_TUNNEL_EXIT  (game::GetGlobalConst("UNDER_WATER_TUNNEL_EXIT"))
+#define KHARAZ_ARAD_SHOP 127
+#define UNDER_WATER_TUNNEL_EXIT 128
 
-//#define VESANA_LEVEL  (game::GetGlobalConst("VESANA_LEVEL"))
-//#define CRYSTAL_LEVEL  (game::GetGlobalConst("CRYSTAL_LEVEL"))
-//#define SPIDER_LEVEL  (game::GetGlobalConst("SPIDER_LEVEL"))
-//#define ENNER_BEAST_LEVEL  (game::GetGlobalConst("ENNER_BEAST_LEVEL"))
-#define ZOMBIE_LEVEL  (game::GetGlobalConst("ZOMBIE_LEVEL"))
-//#define IVAN_LEVEL  (game::GetGlobalConst("IVAN_LEVEL"))
-#define DARK_LEVEL  (game::GetGlobalConst("DARK_LEVEL"))
-#define OREE_LAIR  (game::GetGlobalConst("OREE_LAIR"))
+//#define VESANA_LEVEL 2
+//#define CRYSTAL_LEVEL 3
+//#define SPIDER_LEVEL 4
+//#define ENNER_BEAST_LEVEL 4
+#define ZOMBIE_LEVEL 5
+//#define IVAN_LEVEL 7
+#define DARK_LEVEL 8
+#define OREE_LAIR 12
 
 // alien mod
-//#define ALIENQUEEN_LEVEL  (game::GetGlobalConst("ALIENQUEEN_LEVEL"))
+//#define ALIENQUEEN_LEVEL 6
 
-//#define DUAL_ENNER_BEAST_LEVEL  (game::GetGlobalConst("DUAL_ENNER_BEAST_LEVEL"))
-//#define NECRO_CHAMBER_LEVEL  (game::GetGlobalConst("NECRO_CHAMBER_LEVEL"))
+//#define DUAL_ENNER_BEAST_LEVEL 5
+//#define NECRO_CHAMBER_LEVEL 6
 
 /* stack::DrawContents flags */
 
@@ -595,33 +594,32 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define SELECT_PAIR 32        // if NO_MULTI_SELECT is on, selects a pair if
             // appropriate
 
-#define RECTANGLE  (game::GetGlobalConst("RECTANGLE"))
-#define ROUND_CORNERS  (game::GetGlobalConst("ROUND_CORNERS"))
-#define MAZE_ROOM  (game::GetGlobalConst("MAZE_ROOM"))
+#define RECTANGLE 1
+#define ROUND_CORNERS 2
+#define MAZE_ROOM 3
 
 /* Gods, 0 == none */
 
-//#define GODS 15
-#define GODS   (game::GetGlobalConst("LAST_REAL_GOD"))
+#define GODS 15
 
-#define VALPURUS  (game::GetGlobalConst("VALPURUS"))
-#define LEGIFER  (game::GetGlobalConst("LEGIFER"))
-#define ATAVUS  (game::GetGlobalConst("ATAVUS"))
-#define DULCIS  (game::GetGlobalConst("DULCIS"))
-#define SEGES  (game::GetGlobalConst("SEGES"))
-#define SOPHOS  (game::GetGlobalConst("SOPHOS"))
-#define TERRA  (game::GetGlobalConst("TERRA"))
-#define SILVA  (game::GetGlobalConst("SILVA"))
-#define LORICATUS  (game::GetGlobalConst("LORICATUS"))
-#define MELLIS  (game::GetGlobalConst("MELLIS"))
-#define CLEPTIA  (game::GetGlobalConst("CLEPTIA"))
-#define NEFAS  (game::GetGlobalConst("NEFAS"))
-#define SCABIES  (game::GetGlobalConst("SCABIES"))
-#define INFUSCOR  (game::GetGlobalConst("INFUSCOR"))
-#define CRUENTUS  (game::GetGlobalConst("CRUENTUS"))
-#define MORTIFER  (game::GetGlobalConst("MORTIFER"))
-#define ATHEIST  (game::GetGlobalConst("ATHEIST"))
-#define SOLICITU  (game::GetGlobalConst("SOLICITU"))
+#define VALPURUS 1
+#define LEGIFER 2
+#define ATAVUS 3
+#define DULCIS 4
+#define SEGES 5
+#define SOPHOS 6
+#define TERRA 7
+#define SILVA 7
+#define LORICATUS 8
+#define MELLIS 9
+#define CLEPTIA 10
+#define NEFAS 11
+#define SCABIES 12
+#define INFUSCOR 13
+#define CRUENTUS 14
+#define MORTIFER 15
+#define ATHEIST 16
+#define SOLICITU 17
 
 #define MAX_PRICE  (2147483647)
 
@@ -633,27 +631,25 @@ cv2 SILHOUETTE_SIZE(48, 64);
 
 #define BEAM_EFFECTS 13
 
-#define BEAM_POLYMORPH  (game::GetGlobalConst("BEAM_POLYMORPH"))
-#define BEAM_STRIKE  (game::GetGlobalConst("BEAM_STRIKE"))
-#define BEAM_FIRE_BALL  (game::GetGlobalConst("BEAM_FIRE_BALL"))
-#define BEAM_TELEPORT  (game::GetGlobalConst("BEAM_TELEPORT"))
-#define BEAM_HASTE  (game::GetGlobalConst("BEAM_HASTE"))
-#define BEAM_SLOW  (game::GetGlobalConst("BEAM_SLOW"))
-#define BEAM_RESURRECT  (game::GetGlobalConst("BEAM_RESURRECT"))
-#define BEAM_INVISIBILITY  (game::GetGlobalConst("BEAM_INVISIBILITY"))
-#define BEAM_DUPLICATE  (game::GetGlobalConst("BEAM_DUPLICATE"))
-#define BEAM_LIGHTNING  (game::GetGlobalConst("BEAM_LIGHTNING"))
-#define BEAM_DOOR_CREATION  (game::GetGlobalConst("BEAM_DOOR_CREATION"))
-#define BEAM_ACID_RAIN  (game::GetGlobalConst("BEAM_ACID_RAIN"))
-#define BEAM_NECROMANCY  (game::GetGlobalConst("BEAM_NECROMANCY"))
+#define BEAM_POLYMORPH 0
+#define BEAM_STRIKE 1
+#define BEAM_FIRE_BALL 2
+#define BEAM_TELEPORT 3
+#define BEAM_HASTE 4
+#define BEAM_SLOW 5
+#define BEAM_RESURRECT 6
+#define BEAM_INVISIBILITY 7
+#define BEAM_DUPLICATE 8
+#define BEAM_LIGHTNING 9
+#define BEAM_DOOR_CREATION 10
+#define BEAM_ACID_RAIN 11
+#define BEAM_NECROMANCY 12
 
-// WARNING! sync with "define.dat"
 #define BEAM_STYLES 3
 
 #define PARTICLE_BEAM 0
 #define LIGHTNING_BEAM 1
 #define SHIELD_BEAM 2
-
 
 #define RANDOM_COLOR 0x10000
 
