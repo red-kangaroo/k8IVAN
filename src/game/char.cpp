@@ -329,8 +329,6 @@ characterprototype::characterprototype (const characterprototype *Base, characte
 }
 
 
-std::list<character *>::iterator character::GetTeamIterator () { return TeamIterator; }
-void character::SetTeamIterator (std::list<character *>::iterator What) { TeamIterator = What; }
 void character::CreateInitialEquipment (int SpecialFlags) { AddToInventory(DataBase->Inventory, SpecialFlags); }
 void character::EditAP (sLong What) { AP = Limit<sLong>(AP+What, -12000, 1200); }
 int character::GetRandomStepperBodyPart () const { return TORSO_INDEX; }
@@ -475,7 +473,7 @@ character::character (ccharacter &Char) :
   Flags |= C_INITIALIZING|C_IN_NO_MSG_MODE;
   Stack = new stack(0, this, HIDDEN);
   for (c = 0; c < STATES; ++c) TemporaryStateCounter[c] = Char.TemporaryStateCounter[c];
-  if (Team) TeamIterator = Team->Add(this);
+  if (Team) Team->Add(this);
   for (c = 0; c < BASE_ATTRIBUTES; ++c) BaseExperience[c] = Char.BaseExperience[c];
   BodyPartSlot = new bodypartslot[BodyParts];
   OriginalBodyPartID = new std::list<feuLong>[BodyParts];
@@ -512,7 +510,7 @@ character::character () :
 
 character::~character () {
   if (Action) delete Action;
-  if (Team) Team->Remove(GetTeamIterator());
+  if (Team) Team->Remove(this);
   delete Stack;
   for (int c = 0; c < BodyParts; ++c) delete GetBodyPart(c);
   delete [] BodyPartSlot;
@@ -3041,17 +3039,16 @@ void character::GoOn (go *Go, truth FirstStep) {
 
 
 void character::SetTeam (team *What) {
-  /*k8 if(Team) int esko = esko = 2; */
   Team = What;
-  SetTeamIterator(What->Add(this));
+  What->Add(this);
 }
 
 
 void character::ChangeTeam (team *What) {
-  if (Team) Team->Remove(GetTeamIterator());
+  if (Team) Team->Remove(this);
   Team = What;
   SendNewDrawRequest();
-  if (Team) SetTeamIterator(Team->Add(this));
+  if (Team) Team->Add(this);
 }
 
 
@@ -3146,6 +3143,10 @@ void character::TestWalkability () {
 
 
 int character::GetSize () const {
+  if (GetTorso()->GetSize() < 1) {
+    fprintf(stderr, "WARNING: character::GetSize() is %d for %s!\n", GetTorso()->GetSize(), GetNameSingular().CStr());
+    return 1;
+  }
   return GetTorso()->GetSize();
 }
 

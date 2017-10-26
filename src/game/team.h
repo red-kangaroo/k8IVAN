@@ -43,8 +43,10 @@ public:
   void Load (inputfile &);
   void SetLeader (character *What) { Leader = What; }
   character *GetLeader () const { return Leader; }
-  std::list<character *>::iterator Add (character *);
-  void Remove (std::list<character *>::iterator);
+  //std::list<character *>::iterator Add (character *);
+  void Add (character *Who);
+  void Remove (character *Who);
+  //void Remove (std::list<character *>::iterator);
   const std::list<character *> &GetMember () const { return Member; }
   int GetKillEvilness () const { return KillEvilness; }
   void SetKillEvilness (int What) { KillEvilness = What; }

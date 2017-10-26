@@ -397,8 +397,6 @@ public:
   void Hostility (character *);
   stack *GetGiftStack () const;
   truth MoveRandomlyInRoom ();
-  std::list<character *>::iterator GetTeamIterator ();
-  void SetTeamIterator (std::list<character *>::iterator);
   void ReceiveKoboldFlesh (sLong);
   truth ChangeRandomAttribute (int);
   int RandomizeReply (sLong &, int);
@@ -1245,7 +1243,6 @@ public:
   v2 GoingTo;
   sLong Money;
   int CurrentSweatMaterial;
-  std::list<character *>::iterator TeamIterator;
   bodypartslot *BodyPartSlot;
   festring AssignedName;
   action *Action;

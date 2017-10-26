@@ -33,8 +33,17 @@ void team::Load (inputfile &SaveFile) {
 }
 
 
+/*
 std::list<character *>::iterator team::Add (character *Char) {
   return Member.insert(Member.end(), Char);
+}
+*/
+void team::Add (character *Who) {
+  if (!Who) return;
+  for (auto &it : Member) {
+    if (it == Who) return;
+  }
+  Member.insert(Member.end(), Who);
 }
 
 
@@ -119,9 +128,19 @@ void team::MoveMembersTo (charactervector &CVector) {
 }
 
 
+/*
 void team::Remove (std::list<character *>::iterator Iterator) {
   if (*Iterator == Leader) Leader = 0;
   Member.erase(Iterator);
+}
+*/
+
+void team::Remove (character *Who) {
+  if (!Who) return;
+  if (Who == Leader) Leader = 0;
+  for (auto it = Member.begin(); it != Member.end(); ++it) {
+    if (*it == Who) { Member.erase(it); return; }
+  }
 }
 
 
