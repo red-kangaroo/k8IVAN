@@ -756,7 +756,7 @@ void bodypart::UpdatePictures()
 
 
 void bodypart::ReceiveAcid (material *Material, cfestring &LocationName, sLong Modifier) {
-  if (Master && MainMaterial->GetInteractionFlags() & CAN_DISSOLVE) {
+  if (Master && (MainMaterial->GetInteractionFlags()&CAN_DISSOLVE)) {
     sLong Tries = Modifier/1000;
     Modifier -= Tries*1000; //opt%?
     int Damage = 0;
@@ -767,12 +767,12 @@ void bodypart::ReceiveAcid (material *Material, cfestring &LocationName, sLong M
       character *Master = this->Master;
       if (Master->GetLastAcidMsgMin() != Minute && (Master->CanBeSeenByPlayer() || Master->IsPlayer())) {
         Master->SetLastAcidMsgMin(Minute);
-        cchar *MName = Material->GetName(false, false).CStr();
+        cfestring MName = Material->GetName(false, false);
         if (Master->IsPlayer()) {
-          cchar *TName = LocationName.IsEmpty() ? GetBodyPartName().CStr() : LocationName.CStr();
-          ADD_MESSAGE("Acidous %s dissolves your %s.", MName, TName);
+          cfestring TName = (LocationName.IsEmpty() ? GetBodyPartName() : LocationName);
+          ADD_MESSAGE("Acidous %s dissolves your %s.", MName.CStr(), TName.CStr());
         } else {
-          ADD_MESSAGE("Acidous %s dissolves %s.", MName, Master->CHAR_NAME(DEFINITE));
+          ADD_MESSAGE("Acidous %s dissolves %s.", MName.CStr(), Master->CHAR_NAME(DEFINITE));
         }
       }
       Master->ReceiveBodyPartDamage(0, Damage, ACID, GetBodyPartIndex(), YOURSELF, false, false, false);
