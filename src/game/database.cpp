@@ -552,6 +552,7 @@ template<> void databasecreator<character>::CreateDataBaseMemberMap () {
   ADD_MEMBER(WhatThrowItemTypesToThrow);
   ADD_MEMBER(AllowedDungeons);
   ADD_MEMBER(LevelTags);
+  ADD_MEMBER(HomeLevel);
 }
 
 
@@ -665,8 +666,8 @@ template<> void databasecreator<item>::CreateDataBaseMemberMap () {
   ADD_MEMBER(IsThrowingWeapon);
   ADD_MEMBER(ThrowItemTypes);
   ADD_MEMBER(CanFlame);
-  ADD_MEMBER(LevelTags);
   ADD_MEMBER(AllowedDungeons);
+  ADD_MEMBER(LevelTags);
 }
 
 

@@ -50,4 +50,5 @@ solicitus
   DestroysWalls = true;
   Sex = MALE;
   IsEnormous = false;
+  HomeLevel == "SolicitusLevel(!)";
 }

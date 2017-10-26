@@ -255,6 +255,18 @@ class level : public area
   spawnresult SpawnMonsters(characterspawner, team*, v2, int = 0, int = 1, truth = false);
   void AddSpecialCursors();
   void GasExplosion(gas* GasMaterial, lsquare* Square, character* Terrorist=0);
+
+  // check for special levels
+  truth IsGCIvanLevel () const;
+  /*
+  truth IsUTVesanaLevel () const;
+  truth IsGCEnnerLevel () const;
+  truth IsGCElpuriLevel () const; // also nicknamed "dark level"
+  truth IsGCOreeLevel () const;
+  truth IsSolicitusLevel () const;
+  truth IsAlienQueenLevel () const;
+  */
+
  protected:
   truth GenerateLanterns(int, int, int) const;
   truth GenerateWindows(int, int) const;

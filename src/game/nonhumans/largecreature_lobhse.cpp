@@ -5,7 +5,7 @@ CHARACTER(lobhse, largecreature)
   virtual truth SpecialBiteEffect(character*, v2, int, int, truth, truth Critical, int DoneDamage);
   virtual void GetAICommand();
   virtual void CreateCorpse(lsquare*);
-  virtual truth MustBeRemovedFromBone() const;
+  //virtual truth MustBeRemovedFromBone() const;
   virtual bodypart* MakeBodyPart(int) const;
 };
 
@@ -18,10 +18,12 @@ bodypart* lobhse::MakeBodyPart(int) const { return lobhsetorso::Spawn(0, NO_MATE
 
 
 
+/*
 truth lobhse::MustBeRemovedFromBone() const
 {
   return !IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != UNDER_WATER_TUNNEL || GetLevel()->GetIndex() != SPIDER_LEVEL;
 }
+*/
 
 
 

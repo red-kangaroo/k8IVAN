@@ -25,6 +25,7 @@ Dungeon MUNTUO;
     EnchantmentPlusChanceDelta = 0;
     BackGroundType = GREEN_FRACTAL;
     EarthquakesAffectTunnels = false;
+    Tag = "SolicitusLevel(!)"; // MUST be exactly this!
 
     RoomDefault
     {

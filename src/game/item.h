@@ -208,8 +208,8 @@ struct itemdatabase : public databasebase
   truth IsThrowingWeapon;
   sLong ThrowItemTypes;
   truth CanFlame;
-  fearray<festring> LevelTags;
   fearray<int> AllowedDungeons;
+  fearray<festring> LevelTags;
 };
 
 class itemprototype
@@ -437,8 +437,8 @@ class item : public object
   DATA_BASE_TRUTH(IsThrowingWeapon);
   DATA_BASE_VALUE(sLong, ThrowItemTypes);
   DATA_BASE_TRUTH(CanFlame);
-  DATA_BASE_VALUE(const fearray<festring> &, LevelTags);
   DATA_BASE_VALUE(const fearray<int> &, AllowedDungeons);
+  DATA_BASE_VALUE(const fearray<festring> &, LevelTags);
   truth CanBeSoldInLibrary(character* Librarian) const { return CanBeRead(Librarian); }
   virtual truth TryKey(item*, character*) { return false; }
   sLong GetBlockModifier() const;

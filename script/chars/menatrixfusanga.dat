@@ -42,4 +42,5 @@ menatrixfusanga
   CWeaponSkillHits == 30;
   HostileReplies == "@Dd expresses @sp utter contempt for your pitiful and loathsome existence by wobbling erratically.";
   FriendlyReplies == "@Dd wobbles disappointedly due to the fact that you are cheating.";
+  HomeLevel == "GCFusangaLevel(!)";
 }

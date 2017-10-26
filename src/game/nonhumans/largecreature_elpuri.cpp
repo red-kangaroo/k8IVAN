@@ -8,7 +8,7 @@ CHARACTER(elpuri, largecreature)
   virtual truth Hit(character*, v2, int, int = 0);
   virtual int ReceiveBodyPartDamage(character*, int, int, int, int = 8, truth = false, truth = false, truth = true, truth = false);
   virtual truth SpecialEnemySightedReaction(character*);
-  virtual truth MustBeRemovedFromBone() const;
+  //virtual truth MustBeRemovedFromBone() const;
   virtual truth TryToRiseFromTheDead();
  protected:
   virtual void GetAICommand();
@@ -138,9 +138,12 @@ truth elpuri::TryToRiseFromTheDead()
 }
 
 
-
+/*
 truth elpuri::MustBeRemovedFromBone() const
 {
-  return !IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != ELPURI_CAVE || GetLevel()->GetIndex() != DARK_LEVEL;
+  //return !IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != ELPURI_CAVE || GetLevel()->GetIndex() != DARK_LEVEL;
+  return (!IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetLevel()->IsGCElpuriLevel());
 }
+*/
+
 #endif

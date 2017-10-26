@@ -41,4 +41,5 @@ genetrixvesana
   IsRooted = true;
   AllowUnconsciousness = false;
   Sex = FEMALE;
+  HomeLevel == "UTVesanaLevel(!)";
 }

@@ -60,4 +60,5 @@ ennerbeast
     "\"I thank the gods for my children every day. They were the best thing that ever happened in my life.\"",
     "\"Can you help me find my children?\"";
   }
+  HomeLevel == "GCEnnerBeastLevel(!)";
 }

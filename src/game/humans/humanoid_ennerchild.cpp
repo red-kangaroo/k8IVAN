@@ -3,7 +3,7 @@ CHARACTER(ennerchild, humanoid)
 {
  public:
   virtual truth Hit(character*, v2, int, int = 0);
-  virtual truth MustBeRemovedFromBone() const;
+  //virtual truth MustBeRemovedFromBone() const;
   virtual truth ReceiveDamage(character*, int, int, int = ALL, int = 8, truth = false, truth = false, truth = false, truth = true);
  protected:
   virtual bodypart* MakeBodyPart(int) const;
@@ -79,6 +79,7 @@ void ennerchild::GetAICommand () {
 }
 
 
+/*
 truth ennerchild::MustBeRemovedFromBone () const {
   return
     !IsEnabled() ||
@@ -86,6 +87,7 @@ truth ennerchild::MustBeRemovedFromBone () const {
     GetDungeon()->GetIndex() != XINROCH_TOMB ||
     GetLevel()->GetIndex() != DUAL_ENNER_BEAST_LEVEL;
 }
+*/
 
 
 bodypart *ennerchild::MakeBodyPart (int I) const {

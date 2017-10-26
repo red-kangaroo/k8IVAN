@@ -52,11 +52,9 @@ character *protosystem::BalancedCreateMonster (level *lvl) {
           // check allowed tags
           if (lvl && lvl->GetLevelScript() && lvl->GetLevelScript()->GetTag() && !lvl->GetLevelScript()->GetTag()->IsEmpty()) {
             const fearray<festring> &tlist = DataBase->LevelTags;
-            //
             if (tlist.Size > 0) {
               truth allowed = false;
               cfestring *tag = lvl->GetLevelScript()->GetTag();
-              //
               //fprintf(stderr, "looking for level tag [%s]\n", tag->CStr());
               for (uInt f = 0; f < tlist.Size; ++f) {
                 //fprintf(stderr, " tag #%u: [%s]\n", f, tlist[f].CStr());
@@ -208,11 +206,9 @@ item *protosystem::BalancedCreateItem (level *lvl, sLong MinPrice, sLong MaxPric
         // check allowed tags
         if (lvl && lvl->GetLevelScript() && lvl->GetLevelScript()->GetTag() && !lvl->GetLevelScript()->GetTag()->IsEmpty()) {
           const fearray<festring> &tlist = ChosenDataBase->LevelTags;
-          //
           if (tlist.Size > 0) {
             truth allowed = false;
             cfestring *tag = lvl->GetLevelScript()->GetTag();
-            //
             //fprintf(stderr, "looking for level tag [%s]\n", tag->CStr());
             for (uInt f = 0; f < tlist.Size; ++f) {
               //fprintf(stderr, " tag #%u: [%s]\n", f, tlist[f].CStr());
@@ -224,10 +220,8 @@ item *protosystem::BalancedCreateItem (level *lvl, sLong MinPrice, sLong MaxPric
         } else {
           // level have no tag
           const fearray<festring> &tlist = ChosenDataBase->LevelTags;
-          //
           if (tlist.Size > 0) {
             truth allowed = false;
-            //
             for (uInt f = 0; f < tlist.Size; ++f) if (tlist[f] == "*") { allowed = true; break; }
             if (!allowed) continue;
           }

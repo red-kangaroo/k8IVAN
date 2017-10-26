@@ -33,4 +33,5 @@ vladimir
   CanBeCloned = false;
   ConstantCommandFlags = FLEE_FROM_ENEMIES;
   BloodMaterial = GLOWING_BLOOD;
+  HomeLevel == "GCIvanLevel(!)";
 }

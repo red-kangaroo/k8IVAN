@@ -49,6 +49,7 @@ ennerchild
       "\"My big sister is around here somewhere. I'm hiding from her, so don't tell her I'm here!\"",
       "\"Can you help me find my Papa?\"";
     }
+    HomeLevel == "DualEnnerBeastLevel(!)";
   }
 
   Config GIRL;
@@ -66,5 +67,6 @@ ennerchild
       "\"My little brat brother is hiding here somewhere. You haven't seen him have you?\"",
       "\"Can you help me find my Papa?\"";
     }
+    HomeLevel == "DualEnnerBeastLevel(!)";
   }
 }

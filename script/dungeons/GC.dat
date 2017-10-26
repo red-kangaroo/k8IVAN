@@ -398,6 +398,7 @@ Dungeon ELPURI_CAVE;
     Items = 35:70;
     EnterImage = "Enner.pcx";
     EnterTextDisplacement = -150, 0;
+    Tag = "GCEnnerBeastLevel(!)"; // MUST be exactly this!
 
     Room
     {
@@ -1166,6 +1167,7 @@ Dungeon ELPURI_CAVE;
     Size = 60, 60;
     Rooms = 100;
     IgnoreDefaultSpecialSquares = true;
+    Tag = "GCFusangaLevel(!)"; // MUST contain "(!)"
 
     Square, Pos 1, 1;
     {
@@ -1326,6 +1328,7 @@ Dungeon ELPURI_CAVE;
     FillSquare = solidterrain(GROUND), QUARTZITE earth;
     EnterImage = "IVlad.pcx";
     EnterTextDisplacement = 260, 0;
+    Tag = "GCIvanLevel(!)"; // MUST be exactly this!
 
     RoomDefault
     {
@@ -1417,6 +1420,7 @@ Dungeon ELPURI_CAVE;
     TunnelSquare = STEEL solidterrain(FLOOR), 0;
     Items = 0;
     IgnoreDefaultSpecialSquares = true;
+    Tag = "GCElpuriLevel(!)"; // MUST be exactly this!
 
     Square, Random;
     {
@@ -1843,6 +1847,7 @@ Dungeon ELPURI_CAVE;
     CanGenerateBone = false;
     DifficultyBase = 90;
     BackGroundType = RED_FRACTAL;
+    Tag = "GCOreeLair(!)"; // MUST be exactly this!
 
     RoomDefault
     {
@@ -1991,6 +1996,7 @@ Dungeon ELPURI_CAVE;
     IgnoreDefaultSpecialSquares = true;
     CanGenerateBone = false;
     DifficultyBase = 90;
+    Tag = "Kharaz-Arad";
 
     RoomDefault
     {

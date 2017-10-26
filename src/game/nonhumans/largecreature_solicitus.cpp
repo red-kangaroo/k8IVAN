@@ -9,7 +9,7 @@ public:
 protected:
   virtual void GetAICommand();
   virtual void CreateCorpse(lsquare*);
-  virtual truth MustBeRemovedFromBone() const;
+  //virtual truth MustBeRemovedFromBone() const;
 };
 
 
@@ -69,9 +69,12 @@ void solicitus::CreateCorpse (lsquare *Square) {
 
 
 
+/*
 truth solicitus::MustBeRemovedFromBone () const {
-  return !IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != UNDER_WATER_TUNNEL || GetLevel()->GetIndex() != VESANA_LEVEL;
+  //return !IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != UNDER_WATER_TUNNEL || GetLevel()->GetIndex() != VESANA_LEVEL;
+  return (!IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetLevel()->IsSolicitusLevel());
 }
+*/
 
 
 

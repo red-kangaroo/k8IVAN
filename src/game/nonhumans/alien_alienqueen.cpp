@@ -4,7 +4,7 @@ CHARACTER(alienqueen, largecreature)
  protected:
   virtual void GetAICommand();
   //virtual void CreateCorpse(lsquare*);
-  virtual truth MustBeRemovedFromBone() const;
+  //virtual truth MustBeRemovedFromBone() const;
 };
 
 
@@ -41,9 +41,11 @@ void alienqueen::GetAICommand () {
 }
 
 
+/*
 truth alienqueen::MustBeRemovedFromBone () const {
   return (!IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != ALIEN_VESSEL || GetLevel()->GetIndex() != ALIENQUEEN_LEVEL);
 }
+*/
 
 
 #endif

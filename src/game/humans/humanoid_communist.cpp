@@ -17,7 +17,6 @@ CHARACTER(communist, humanoid)
 truth communist::ShowClassDescription () const { return (GetAssignedName() != "Ivan"); }
 
 
-
 void communist::BeTalkedTo () {
   if (GetRelation(PLAYER) != HOSTILE && GetTeam() != PLAYER->GetTeam() && PLAYER->GetRelativeDanger(this, true) > 0.1) {
     ADD_MESSAGE("%s seems to be very friendly. \"%s make good communist. %s go with %s!\"", CHAR_DESCRIPTION(DEFINITE), PLAYER->GetAssignedName().CStr(), CHAR_NAME(UNARTICLED), PLAYER->GetAssignedName().CStr());
@@ -65,7 +64,9 @@ truth communist::BoundToUse (citem* Item, int I) const {
 
 
 truth communist::MustBeRemovedFromBone () const {
-  return (!IsEnabled() || GetTeam()->GetID() != IVAN_TEAM || GetDungeon()->GetIndex() != ELPURI_CAVE|| GetLevel()->GetIndex() != IVAN_LEVEL);
+  //return (!IsEnabled() || GetTeam()->GetID() != IVAN_TEAM || GetDungeon()->GetIndex() != ELPURI_CAVE || GetLevel()->GetIndex() != IVAN_LEVEL);
+  return (!IsEnabled() || GetTeam()->GetID() != IVAN_TEAM || IsHomeLevel(GetLevel()));
 }
+
 
 #endif

@@ -9,5 +9,5 @@ vampirebat
   TotalSize = 30;
   SkinColor = rgb16(64, 64, 96);
   NameSingular = "vampire bat";
-  AllowedDungeons = { 2, XINROCH_TOMB, ATTNAM; }
+  AllowedDungeons := { XINROCH_TOMB, ATTNAM; }
 }

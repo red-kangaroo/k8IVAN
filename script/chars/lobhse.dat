@@ -60,4 +60,5 @@ lobhse
     "You pet @dd.";
   }
   DeathMessage = "@Dd groans horribly and the world is finally freed from this terrible menace.";
+  HomeLevel == "UTSpiderLevel(!)";
 }

@@ -154,7 +154,7 @@ public:
 protected:
   truth ReadMember (TextInput&, cfestring &);
   virtual scriptmemberbase *GetDataFromMap (const datamap&, cchar *);
-  virtual scriptmemberbase *GetData (cchar *String) { return GetDataFromMap (GetDataMap (), String); }
+  virtual scriptmemberbase *GetData (cchar *String) { return GetDataFromMap(GetDataMap(), String); }
   virtual const datamap& GetDataMap () const = 0;
   virtual void SaveDataMap (const datamap &, outputfile &) const;
   virtual void LoadDataMap (const datamap &, inputfile &);

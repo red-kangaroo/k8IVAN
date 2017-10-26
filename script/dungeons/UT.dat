@@ -325,6 +325,7 @@ Dungeon UNDER_WATER_TUNNEL;
     MonsterAmountBase = 10;
     LevelMessage = "This level seems to be somehow alive. You feel you want to leave it as soon as possible.";
     FillSquare = solidterrain(GROUND), LIME_STONE earth;
+    Tag = "UTVesanaLevel(!)"; // MUST be exactly this!
 
     Square, BoundedRandom 1, 1, 18, 18, NOT_WALKABLE|ATTACHABLE;
     {
@@ -572,6 +573,7 @@ Dungeon UNDER_WATER_TUNNEL;
     EnchantmentPlusChanceBase = 40;
     EnchantmentPlusChanceDelta = 0;
     LOSModifier = 10;
+    Tag = "UTSpiderLevel(!)"; // MUST be exactly this!
 
     Room
     {

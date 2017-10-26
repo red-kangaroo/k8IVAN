@@ -50,3 +50,8 @@ LevelTags := { "UT level 0", "UT level 1"; }
 to allow spawning only on levels with specified tags. "*" means 'any tag or no tag at all'.
 
 items can have AllowedDungeons and LevelTags too
+
+
+each monster can have `HomeLevel` array with level tags. this is used to remove unique monsters
+from bone file. empty home level means "none", and "*" means "any".
+

@@ -318,6 +318,7 @@ Dungeon ALIEN_VESSEL;
   Level ALIENQUEEN_LEVEL;
   {
     FillSquare = solidterrain(GROUND), MORAINE earth;
+    Tag = "AlienQueenLevel(!)"; // MUST be exactly this!
 
     RoomDefault
     {

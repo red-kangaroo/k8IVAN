@@ -62,8 +62,9 @@ void oree::GetAICommand()
 
 void oree::CallForMonsters()
 {
-  if(GetDungeon()->GetIndex() != ELPURI_CAVE || GetLevel()->GetIndex() != OREE_LAIR)
-    return;
+  //if (GetDungeon()->GetIndex() != ELPURI_CAVE || GetLevel()->GetIndex() != OREE_LAIR) return;
+  //if (!GetLevel()->IsGCOreeLevel()) return;
+  if (!IsHomeLevel(GetLevel())) return;
 
   character* ToBeCalled = 0;
 

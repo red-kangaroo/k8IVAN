@@ -2226,11 +2226,11 @@ void game::SeeWholeMap () {
 
 
 void game::CreateBone () {
-  if (!WizardModeIsActive() && !IsInWilderness() && RAND() & 3 && GetCurrentLevel()->PreProcessForBone()) {
+  if (!WizardModeIsActive() && !IsInWilderness() && (RAND()&3) && GetCurrentLevel()->PreProcessForBone()) {
     int BoneIndex;
     festring BoneName;
     for (BoneIndex = 0; BoneIndex < 1000; ++BoneIndex) {
-      BoneName = GetBonePath()+"bon"+CurrentDungeonIndex+CurrentLevelIndex+BoneIndex;
+      BoneName = GetBonePath()+"bon_"+CurrentDungeonIndex+"_"+CurrentLevelIndex+"_"+BoneIndex;
       if (!inputfile::fileExists(BoneName)) break;
     }
     if (BoneIndex != 1000) {
@@ -2248,7 +2248,7 @@ truth game::PrepareRandomBone (int LevelIndex) {
   int BoneIndex;
   festring BoneName;
   for (BoneIndex = 0; BoneIndex < 1000; ++BoneIndex) {
-    BoneName = GetBonePath()+"bon"+CurrentDungeonIndex+LevelIndex+BoneIndex;
+    BoneName = GetBonePath()+"bon_"+CurrentDungeonIndex+"_"+LevelIndex+"_"+BoneIndex;
     inputfile BoneFile(BoneName, false);
     if (BoneFile.IsOpen() && !(RAND() & 7)) {
       if (ReadType(int, BoneFile) != BONE_FILE_VERSION) {

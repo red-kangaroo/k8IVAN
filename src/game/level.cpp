@@ -1512,14 +1512,37 @@ truth level::PreProcessForBone () {
       Map[x][y]->PreProcessForBone();
     }
   }
-  int DungeonIndex = GetDungeon()->GetIndex();
+  //int DungeonIndex = GetDungeon()->GetIndex();
+  /*k8: this logic allows to generate bones on special levels; i don't quite understand it, but... */
+  /* ok, let's use level tags for special levels, instead of hardcoding the numbers */
+  /*
   return
     !(DungeonIndex == ELPURI_CAVE && Index == IVAN_LEVEL && game::GetQuestMonstersFound() < 5) &&
      (game::GetQuestMonstersFound() ||
       ((DungeonIndex != UNDER_WATER_TUNNEL || Index != VESANA_LEVEL) &&
        (DungeonIndex != ELPURI_CAVE || (Index != ENNER_BEAST_LEVEL && Index != DARK_LEVEL)) &&
        (DungeonIndex != ALIEN_VESSEL || Index != ALIENQUEEN_LEVEL)));
+  */
+  // Ivan the Communist level?
+  if (IsGCIvanLevel()) return (game::GetQuestMonstersFound() >= 5); // why 5?
+  // other special level conditions are in effect only if no quest mosters are found yet
+  if (game::GetQuestMonstersFound()) return true; // see above
+  // other special levels
+  cfestring *tag = GetLevelScript()->GetTag();
+  if (!tag) return true;
+  return (tag->Find("(!)") == festring::NPos);
 }
+
+// check for special levels
+truth level::IsGCIvanLevel () const { return (GetLevelScript()->GetTag() ? *(GetLevelScript()->GetTag()) == "GCIvanLevel(!)" : false); }
+/*
+truth level::IsUTVesanaLevel () const { return (GetTag() ? *GetTag() == "UTVesanaLevel(!)" : false); }
+truth level::IsGCEnnerLevel () const { return (GetTag() ? *GetTag() == "GCEnnerBeastLevel(!)" : false); }
+truth level::IsGCElpuriLevel () const { return (GetTag() ? *GetTag() == "GCElpuriLevel(!)" : false); }
+truth level::IsGCOreeLevel () const { return (GetTag() ? *GetTag() == "GCOreeLair(!)" : false); }
+truth level::IsSolicitusLevel () const { return (GetTag() ? *GetTag() == "SolicitusLevel(!)" : false); }
+truth level::IsAlienQueenLevel () const { return (GetTag() ? *GetTag() == "AlienQueenLevel(!)" : false); }
+*/
 
 
 truth level::PostProcessForBone () {

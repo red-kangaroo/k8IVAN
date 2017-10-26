@@ -1160,6 +1160,7 @@ Dungeon XINROCH_TOMB;
     FillSquare = BONE solidterrain(GROUND), OBSIDIAN earth;
     TunnelSquare = BONE solidterrain(GROUND), 0;
     LevelMessage = "You hear some high, wailing screams in the distance. Enner children must dwell in the level!";
+    Tag = "DualEnnerBeastLevel(!)"; // MUST contain "(!)" part!
 
     RoomDefault
     {

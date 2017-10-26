@@ -13,7 +13,7 @@ public:
 protected:
   virtual void GetAICommand ();
   virtual void CreateCorpse (lsquare *);
-  virtual truth MustBeRemovedFromBone () const;
+  //virtual truth MustBeRemovedFromBone () const;
   sLong TurnsExisted;
   int Species;
 };
@@ -135,11 +135,12 @@ void menatrixfusanga::Load (inputfile &SaveFile) {
 }
 
 
-
+/*
 truth menatrixfusanga::MustBeRemovedFromBone () const {
-  return !IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != UNDER_WATER_TUNNEL || GetLevel()->GetIndex() != VESANA_LEVEL;
+  //return !IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != UNDER_WATER_TUNNEL || GetLevel()->GetIndex() != VESANA_LEVEL;
+  return (!IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetLevel()->IsUTVesanaLevel());
 }
-
+*/
 
 
 void menatrixfusanga::FinalProcessForBone () {

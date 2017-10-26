@@ -353,7 +353,6 @@ col16 character::GetBodyPartColorB (int, truth) const { return GetTorsoMainColor
 col16 character::GetBodyPartColorC (int, truth) const { return GetBeltColor(); } // sorry...
 col16 character::GetBodyPartColorD (int, truth) const { return GetTorsoSpecialColor(); }
 int character::GetRandomApplyBodyPart () const { return TORSO_INDEX; }
-truth character::MustBeRemovedFromBone () const { return IsUnique() && !CanBeGenerated(); }
 truth character::IsPet () const { return GetTeam()->GetID() == PLAYER_TEAM; }
 character* character::GetLeader () const { return GetTeam()->GetLeader(); }
 festring character::GetZombieDescription () const { return " of "+GetName(INDEFINITE); }
@@ -361,6 +360,36 @@ truth character::BodyPartCanBeSevered (int I) const { return I; }
 truth character::HasBeenSeen () const { return DataBase->Flags & HAS_BEEN_SEEN; }
 truth character::IsTemporary () const { return GetTorso()->GetLifeExpectancy(); }
 cchar *character::GetNormalDeathMessage () const { return "killed @k"; }
+
+
+truth character::IsHomeLevel (level *lvl) const {
+  if (!lvl) return false;
+  // check level homes
+  const fearray<festring> &hlist = DataBase->HomeLevel;
+  if (hlist.Size == 0) return false;
+  // has "*"?
+  for (uInt f = 0; f < hlist.Size; ++f) { if (hlist[f] == "*") return true; }
+  // taken from unique characters code
+  cfestring *tag = lvl->GetLevelScript()->GetTag();
+  if (!tag) return false; // not a possible home level
+  // check for home level
+  for (uInt f = 0; f < hlist.Size; ++f) { if (hlist[f] == *tag) return true; }
+  return false;
+}
+
+
+truth character::MustBeRemovedFromBone () const {
+  if (IsUnique() && !CanBeGenerated()) return true;
+  // check level homes
+  const fearray<festring> &hlist = DataBase->HomeLevel;
+  if (hlist.Size == 0) return false;
+  // has "*"?
+  for (uInt f = 0; f < hlist.Size; ++f) { if (hlist[f] == "*") return true; }
+  // taken from unique characters code
+  if (!IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM) return true;
+  return IsHomeLevel(GetLevel());
+}
+
 
 int character::GetMoveType () const {// return (!StateIsActivated(LEVITATION) ? DataBase->MoveType : DataBase->MoveType | FLY); }
   return

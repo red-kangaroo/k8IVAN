@@ -88,4 +88,5 @@ communist /* Ivan */
   ScienceTalkIntelligenceRequirement = 3;
   ScienceTalkWisdomRequirement = 3;
   IsAlcoholic = true;
+  HomeLevel == "GCIvanLevel(!)";
 }

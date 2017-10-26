@@ -3,7 +3,7 @@ CHARACTER(ennerbeast, humanoid)
 {
  public:
   virtual truth Hit(character*, v2, int, int = 0);
-  virtual truth MustBeRemovedFromBone() const;
+  //virtual truth MustBeRemovedFromBone() const;
  protected:
   virtual bodypart* MakeBodyPart(int) const;
   virtual void GetAICommand();
@@ -87,12 +87,12 @@ void ennerbeast::GetAICommand()
 }
 
 
-
+/*
 truth ennerbeast::MustBeRemovedFromBone() const
 {
   return !IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != ELPURI_CAVE || GetLevel()->GetIndex() != ENNER_BEAST_LEVEL;
 }
-
+*/
 
 
 bodypart* ennerbeast::MakeBodyPart(int I) const

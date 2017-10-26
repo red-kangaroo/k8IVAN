@@ -291,7 +291,8 @@ character
   WhatWeaponConfigToThrow = NONE;
   WhatThrowItemTypesToThrow = NONE;
   AllowedDungeons == ALL_DUNGEONS; // example: AllowedDungeons := { UNDER_WATER_TUNNEL, MONDEDR; }
-  LevelTags := {} // {"*"}
+  LevelTags := {} // same as {"*"}
+  HomeLevel := {} // no default home level
 }
 
 

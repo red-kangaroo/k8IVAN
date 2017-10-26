@@ -45,4 +45,5 @@ elpuri
   MoveType = WALK|SWIM;
   DestroysWalls = true;
   AllowUnconsciousness = false;
+  HomeLevel == "GCElpuriLevel(!)";
 }

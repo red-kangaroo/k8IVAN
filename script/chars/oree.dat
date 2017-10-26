@@ -65,4 +65,5 @@ oree
   VomittingIsUnhealthy = false;
   IsSadist = true;
   UndeadVersions = false;
+  HomeLevel == "GCOreeLair(!)";
 }

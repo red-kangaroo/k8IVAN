@@ -253,6 +253,7 @@ struct characterdatabase : public databasebase {
   int WhatWeaponConfigToThrow;
   fearray<int> AllowedDungeons;
   fearray<festring> LevelTags;
+  fearray<festring> HomeLevel;
 };
 
 
@@ -651,6 +652,7 @@ public:
   DATA_BASE_VALUE(int, WhatWeaponConfigToThrow);
   DATA_BASE_VALUE(const fearray<int>&, AllowedDungeons);
   DATA_BASE_VALUE(const fearray<festring>&, LevelTags);
+  DATA_BASE_VALUE(const fearray<festring>&, HomeLevel);
   int GetType () const { return GetProtoType()->GetIndex(); }
   void TeleportRandomly (truth = false);
   truth TeleportNear (character *);
@@ -926,6 +928,7 @@ public:
   void AddHolyBananaConsumeEndMessage () const;
   void ReceiveHolyMango (sLong);
   void AddHolyMangoConsumeEndMessage () const;
+  truth IsHomeLevel (level *lvl) const;
   virtual truth PreProcessForBone ();
   truth PostProcessForBone (double &, int &);
   truth PostProcessForBone ();

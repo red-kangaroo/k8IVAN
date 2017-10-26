@@ -105,4 +105,5 @@ alienqueen
   IsUnique = true;
   CanOpen = false;
   HasALeg = false;
+  HomeLevel == "AlienQueenLevel(!)";
 }

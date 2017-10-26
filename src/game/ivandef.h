@@ -569,20 +569,20 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define KHARAZ_ARAD_SHOP 127
 #define UNDER_WATER_TUNNEL_EXIT 128
 
-#define VESANA_LEVEL 2
-#define CRYSTAL_LEVEL 3
-#define SPIDER_LEVEL 4
-#define ENNER_BEAST_LEVEL 4
+//#define VESANA_LEVEL 2
+//#define CRYSTAL_LEVEL 3
+//#define SPIDER_LEVEL 4
+//#define ENNER_BEAST_LEVEL 4
 #define ZOMBIE_LEVEL 5
-#define IVAN_LEVEL 7
+//#define IVAN_LEVEL 7
 #define DARK_LEVEL 8
 #define OREE_LAIR 12
 
 // alien mod
-#define ALIENQUEEN_LEVEL 6
+//#define ALIENQUEEN_LEVEL 6
 
-#define DUAL_ENNER_BEAST_LEVEL 5
-#define NECRO_CHAMBER_LEVEL 6
+//#define DUAL_ENNER_BEAST_LEVEL 5
+//#define NECRO_CHAMBER_LEVEL 6
 
 /* stack::DrawContents flags */
 
