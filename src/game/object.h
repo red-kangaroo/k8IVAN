@@ -111,6 +111,7 @@ protected:
 //public:
   //virtual truth IsABone () const { return false; }
   //virtual truth IsASkull () const { return false; }
+  virtual truth IsBoneNameSingular () const { return false; }
 
 protected:
   festring mDefFile;

@@ -93,8 +93,6 @@ struct itemdatabase : public databasebase
   truth AllowRandomInstantiation() const;
   void PostProcess() { }
 
-  //virtual truth IsABone () const { return NameSingular == "bone"; } // gum solution
-
   const prototype* ProtoType;
   /* Maintained by configcontainer */
   sLong PartialPossibilitySum;
@@ -639,6 +637,8 @@ class item : public object
   virtual truth IsMango () const { return false; }
 
   virtual truth AllowDetailedDescription () const { return false; }
+
+  virtual truth IsBoneNameSingular () const override { return (GetNameSingular() == "bone"); }
 
 protected:
   virtual cchar* GetBreakVerb() const;
