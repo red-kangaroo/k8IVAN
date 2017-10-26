@@ -16,6 +16,30 @@
 #include <unistd.h>
 
 
+/*
+ * 0: up-left
+ * 1: up
+ * 2: up-right
+ * 3: left
+ * 4: right
+ * 5: down-left
+ * 6: down
+ * 7: down-right
+ * 8: stand still
+ */
+enum {
+  MDIR_UP_LEFT,
+  MDIR_UP,
+  MDIR_UP_RIGHT,
+  MDIR_LEFT,
+  MDIR_RIGHT,
+  MDIR_DOWN_LEFT,
+  MDIR_DOWN,
+  MDIR_DOWN_RIGHT,
+  MDIR_STAND
+};
+
+
 /* These statedata structs contain functions and values used for handling
  * states. Remember to update them. All normal states must have
  * PrintBeginMessage and PrintEndMessage functions and a Description string.
@@ -792,7 +816,7 @@ void character::Move (v2 MoveTo, truth TeleportMove, truth Run) {
        // idiotic code!
        area *ca = GetSquareUnder()->GetArea();
        //
-       for (int f = 0; f < 8; ++f) {
+       for (int f = 0; f < MDIR_STAND; ++f) {
          v2 np = GetPos()+game::GetMoveVector(f);
          //
          if (np.X >= 0 && np.Y >= 0 && np.X < ca->GetXSize() && np.Y < ca->GetYSize()) {
@@ -2225,7 +2249,7 @@ truth character::CheckThrowItemOpportunity () {
   level *Level = GetLevel();
   //
   for (int r = 1; r <= RangeMax; ++r) {
-    for (int dir = 0; dir < 8; ++dir) {
+    for (int dir = 0; dir < MDIR_STAND; ++dir) {
       //
       switch (dir) {
         case 0: TestPos = v2(Pos.X-r, Pos.Y-r); break;
@@ -2254,7 +2278,7 @@ truth character::CheckThrowItemOpportunity () {
   }
   //
   if (HostileFound) {
-    for (int dir = 0; dir < 8; ++dir) {
+    for (int dir = 0; dir < MDIR_STAND; ++dir) {
       if (CandidateDirections[dir] == SUCCESS && !TargetFound) {
         ThrowDirection = dir;
         TargetFound = 1;
@@ -2310,7 +2334,7 @@ truth character::CheckAIZapOpportunity () {
   level *Level = GetLevel();
   //
   for (int r = 2; r <= SensibleRange; ++r) {
-    for (int dir = 0; dir < 8; ++dir) {
+    for (int dir = 0; dir < MDIR_STAND; ++dir) {
       switch (dir) {
         case 0: TestPos = v2(Pos.X-r, Pos.Y-r); break;
         case 1: TestPos = v2(Pos.X, Pos.Y-r); break;
@@ -2338,7 +2362,7 @@ truth character::CheckAIZapOpportunity () {
   }
 
   if (HostileFound) {
-    for (int dir = 0; dir < 8; ++dir) {
+    for (int dir = 0; dir < MDIR_STAND; ++dir) {
       if (CandidateDirections[dir] == SUCCESS && !TargetFound) {
         ZapDirection = dir;
         TargetFound = 1;
@@ -2613,32 +2637,8 @@ truth character::MoveRandomlyInRoom () {
 #define dirlogf(...)  ((void)0)
 
 
-/*
- * 0: up-left
- * 1: up
- * 2: up-right
- * 3: left
- * 4: right
- * 5: down-left
- * 6: down
- * 7: down-right
- * 8: stand still
- */
-enum {
-  MDIR_UP_LEFT,
-  MDIR_UP,
-  MDIR_UP_RIGHT,
-  MDIR_LEFT,
-  MDIR_RIGHT,
-  MDIR_DOWN_LEFT,
-  MDIR_DOWN,
-  MDIR_DOWN_RIGHT,
-  MDIR_STAND
-};
-
-
-static const int revDir[8] = { MDIR_DOWN_RIGHT, MDIR_DOWN, MDIR_DOWN_LEFT, MDIR_RIGHT, MDIR_LEFT, MDIR_UP_RIGHT, MDIR_UP, MDIR_UP_LEFT };
-static const bool orthoDir[8] = { false, true, false, true, true, false, true, false };
+static const int revDir[MDIR_STAND] = { MDIR_DOWN_RIGHT, MDIR_DOWN, MDIR_DOWN_LEFT, MDIR_RIGHT, MDIR_LEFT, MDIR_UP_RIGHT, MDIR_UP, MDIR_UP_LEFT };
+static const bool orthoDir[MDIR_STAND] = { false, true, false, true, true, false, true, false };
 
 
 // only for ortho moveDir
@@ -2670,7 +2670,7 @@ truth character::IsPassableSquare (int x, int y) const {
 void character::CountPossibleMoveDirs (cv2 pos, int *odirs, int *ndirs, int exclideDir) const {
   if (odirs) *odirs = 0;
   if (ndirs) *ndirs = 0;
-  for (int f = 0; f < 8; ++f) {
+  for (int f = 0; f < MDIR_STAND; ++f) {
     if (!IsDirExcluded(exclideDir, f)) {
       if (IsPassableSquare(pos+game::GetMoveVector(f))) {
         if (orthoDir[f]) {
@@ -2809,7 +2809,7 @@ int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir, truth *m
     // can do one or two steps: check for T-junction
     // we should stop if we have more than two open dirs, or one of open dirs is not moveDir
     int dcount = 0;
-    for (int f = 0; f < 8; ++f) {
+    for (int f = 0; f < MDIR_STAND; ++f) {
       if (f == revDir[moveDir]) continue; // skip "reverse dir" check
       v2 ps2(pos+game::GetMoveVector(f));
       if (IsPassableSquare(ps2)) {
@@ -2945,7 +2945,7 @@ void character::GoOn (go *Go, truth FirstStep) {
   // now try to perform the move
   dirlogf("trying to make the move\n");
   // stop near the dangerous square
-  for (int mdv = 0; mdv < 8; ++mdv) {
+  for (int mdv = 0; mdv < MDIR_STAND; ++mdv) {
     if (IsDangerousSquare(GetPos()+MoveVector+game::GetMoveVector(mdv))) {
       dirlogf(" danger!\n");
       Go->Terminate(false);
@@ -2962,14 +2962,12 @@ void character::GoOn (go *Go, truth FirstStep) {
     // idiotic code!
     area *ca = GetSquareUnder()->GetArea();
     v2 npos = GetPos()+MoveVector;
-    //
     for (int f = 0; f < MDIR_STAND; ++f) {
       v2 np = npos+game::GetMoveVector(f);
-      //
       if (np.X >= 0 && np.Y >= 0 && np.X < ca->GetXSize() && np.Y < ca->GetYSize()) {
         lsquare *sq = static_cast<lsquare *>(ca->GetSquare(np.X, np.Y));
+        if (IsPlayer() && !sq->HasBeenSeen()) continue;
         olterrain *terra = sq->GetOLTerrain();
-        //
         if (terra) {
           dirlogf("** OK terra at %d; door: %s; seen: %s\n", f, (terra->IsDoor() ? "yes" : "no"), (sq->IsGoSeen() ? "yes" : "no"));
           if (terra->IsDoor()) {
@@ -2985,7 +2983,9 @@ void character::GoOn (go *Go, truth FirstStep) {
     // check items
     if (!doStop) {
       for (int c = 0; c < Squares; ++c) {
-        if (MoveToSquare[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
+        lsquare *Square = MoveToSquare[c];
+        if (IsPlayer() && !Square->HasBeenSeen()) continue;
+        if (Square->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
           dirlogf(" stepped near something interesting\n");
           doStop = true;
           break;
@@ -2994,16 +2994,18 @@ void character::GoOn (go *Go, truth FirstStep) {
     }
     // check items in adjacent squares too, so diagonal move won't miss any
     if (!doStop) {
-      for (int f = 0; f < 8 && !doStop; ++f) {
+      for (int f = 0; f < MDIR_STAND && !doStop; ++f) {
         v2 np = game::GetMoveVector(f);
         if (np == MoveVector) continue; // this will be checked on the next move
         if (!IsPassableSquare(GetPos()+np)) continue;
         int sq2 = CalculateNewSquaresUnder(MoveToSquare2, GetPos()+np);
         for (int c = 0; c < sq2; ++c) {
-          if (MoveToSquare2[c]->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
+          lsquare *Square = MoveToSquare2[c];
+          if (IsPlayer() && !Square->HasBeenSeen()) continue;
+          if (Square->GetStack()->HasSomethingFunny(this, ivanconfig::GetStopOnCorpses(), ivanconfig::GetStopOnSeenItems())) {
             dirlogf(" stepped near something interesting\n");
             //HACK: mark all items as stepped on
-            for (int d = 0; d < 8; ++d) {
+            for (int d = 0; d < MDIR_STAND; ++d) {
               np = game::GetMoveVector(d);
               if (!IsPassableSquare(GetPos()+np)) continue;
               sq2 = CalculateNewSquaresUnder(MoveToSquare2, GetPos()+np);
@@ -8366,7 +8368,7 @@ truth character::CanTameWithScroll (const character *Tamer) const {
 truth character::CheckSadism () {
   if (!IsSadist() || !HasSadistAttackMode() || !IsSmall()) return false; // gum
   if (!RAND_N(10)) {
-    for (int d = 0; d < 8; ++d) {
+    for (int d = 0; d < MDIR_STAND; ++d) {
       square *Square = GetNeighbourSquare(d);
       if (Square) {
         character *Char = Square->GetCharacter();
