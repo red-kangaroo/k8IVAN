@@ -455,6 +455,7 @@ public:
   int CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir, truth *markAsTurn) const; // -1: not in corridor; return new moveDir and moveVector
   cv2 GetDiagonalForDirs (int moveDir, int newDir) const;
   truth IsInTunnelDeadEnd () const;
+  truth IsDangerousSquare (v2 pos) const;
   void GoOn (go *, truth = false);
   virtual truth CheckKick () const;
   virtual int OpenMultiplier () const { return 2; }

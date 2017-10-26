@@ -2827,6 +2827,24 @@ int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir, truth *m
 }
 
 
+truth character::IsDangerousSquare (v2 pos) const {
+  lsquare *MoveToSquare[MAX_SQUARES_UNDER];
+  auto Squares = CalculateNewSquaresUnder(MoveToSquare, pos);
+  for (decltype(Squares) c = 0; c < Squares; ++c) {
+    lsquare *Square = MoveToSquare[c];
+    if (IsPlayer()) {
+      if (!Square->HasBeenSeen()) continue;
+      if (!Square->GetCharacter()) continue;
+      if (!Square->GetCharacter()->CanBeSeenByPlayer()) continue;
+    }
+    if ((Square->GetCharacter() && GetTeam() != Square->GetCharacter()->GetTeam()) || Square->IsDangerous(this)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
 void character::GoOn (go *Go, truth FirstStep) {
   dirlogf("=== character::GoOn; dir=%d; pos=(%d,%d) ===\n", Go->GetDirection(), GetPos().X, GetPos().Y);
   if (FirstStep) {
@@ -2865,13 +2883,10 @@ void character::GoOn (go *Go, truth FirstStep) {
     }
   }
   // stop near the dangerous square
-  for (int c = 0; c < Squares; ++c) {
-    if ((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) ||
-        MoveToSquare[c]->IsDangerous(this)) {
-      dirlogf("sense the danger\n");
-      Go->Terminate(false);
-      return;
-    }
+  if (IsDangerousSquare(GetPos()+MoveVector)) {
+    dirlogf("sense the danger\n");
+    Go->Terminate(false);
+    return;
   }
   // if the state modified the direction, move and stop
   if (moveDir != Go->GetDirection()) {
@@ -2929,11 +2944,9 @@ void character::GoOn (go *Go, truth FirstStep) {
 
   // now try to perform the move
   dirlogf("trying to make the move\n");
-  // stop near the dangerous square (fuckin' copypasta)
-  Squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
-  for (int c = 0; c < Squares; ++c) {
-    if ((MoveToSquare[c]->GetCharacter() && GetTeam() != MoveToSquare[c]->GetCharacter()->GetTeam()) ||
-        MoveToSquare[c]->IsDangerous(this)) {
+  // stop near the dangerous square
+  for (int mdv = 0; mdv < 8; ++mdv) {
+    if (IsDangerousSquare(GetPos()+MoveVector+game::GetMoveVector(mdv))) {
       dirlogf(" danger!\n");
       Go->Terminate(false);
       return;
