@@ -43,6 +43,7 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(item)(0, 0, 0, "item");
 #include "team.h"
 #include "smoke.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "whandler.h"
 #include "bitmap.h"
 #include "fluid.h"

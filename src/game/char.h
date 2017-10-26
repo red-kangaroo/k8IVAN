@@ -15,6 +15,7 @@
 #include "script.h"
 #include "wskill.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "festring.h"
 
 

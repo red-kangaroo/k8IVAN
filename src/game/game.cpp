@@ -35,6 +35,7 @@
 #include "graphics.h"
 #include "bitmap.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "miscitem.h"
 #include "room.h"
 #include "materias.h"
@@ -53,7 +54,7 @@
 #define BACK      2
 
 
-std::stack<inputfile *> game::mFEStack;
+std::stack<TextInput *> game::mFEStack;
 character *game::mChar = 0;
 ccharacter *game::mActor = 0;
 ccharacter *game::mSecondActor = 0;
@@ -265,14 +266,14 @@ void game::ClearCharacterDrawVector () { CharacterDrawVector.clear(); }
 
 
 void game::InitScript () {
-  inputfile ScriptFile(GetGameDir()+"script/dungeon.dat", &GlobalValueMap);
+  TextInputFile ScriptFile(GetGameDir()+"script/dungeon.dat", &GlobalValueMap);
   GameScript = new gamescript;
   GameScript->ReadFrom(ScriptFile);
   { /* additional dungeon files */
     for (int f = 0; f <= 99; f++) {
       char bnum[32];
       sprintf(bnum, "script/dungeon_%02d.dat", f);
-      inputfile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
+      TextInputFile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
       if (ifl.IsOpen()) {
         //fprintf(stderr, "loading: %s\n", bnum+7);
         GameScript->ReadFrom(ifl);
@@ -824,7 +825,7 @@ truth game::Save (cfestring &SaveName) {
 
 
 int game::Load (cfestring &SaveName) {
-  inputfile SaveFile(SaveName+".sav", 0, false);
+  inputfile SaveFile(SaveName+".sav", false);
   if (!SaveFile.IsOpen()) return NEW_GAME;
   int Version;
   SaveFile >> Version;
@@ -1391,7 +1392,7 @@ truth game::AnimationController () {
 }
 
 
-void game::LoadGlobalValueMap (inputfile &fl) {
+void game::LoadGlobalValueMap (TextInput &fl) {
   festring word;
   fl.setGetVarCB(game::ldrGetVar);
   for (fl.ReadWord(word, false); !fl.Eof(); fl.ReadWord(word, false)) {
@@ -1399,7 +1400,7 @@ void game::LoadGlobalValueMap (inputfile &fl) {
       word = fl.ReadWord();
       if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
       //fprintf(stderr, "loading: %s\n", word.CStr());
-      inputfile incf(game::GetGameDir()+"script/"+word, &game::GetGlobalValueMap());
+      TextInputFile incf(game::GetGameDir()+"script/"+word, &game::GetGlobalValueMap());
       LoadGlobalValueMap(incf);
       continue;
     }
@@ -1440,9 +1441,9 @@ void game::LoadGlobalValueMap (inputfile &fl) {
           idx++;
         }
       }
-      fl.SkipSpaces();
-      int ch = fl.Get();
-      if (ch != EOF && ch != ';') fl.Unget(ch);
+      fl.skipBlanks();
+      int ch = fl.GetChar();
+      if (ch != EOF && ch != ';') fl.UngetChar(ch);
       //if (fl.ReadWord() != ";") ABORT("';' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
       continue;
     }
@@ -1458,7 +1459,7 @@ void game::LoadGlobalValueMap (inputfile &fl) {
 
 
 void game::InitGlobalValueMap () {
-  inputfile SaveFile(GetGameDir()+"script/define.dat", &GlobalValueMap);
+  TextInputFile SaveFile(GetGameDir()+"script/define.dat", &GlobalValueMap);
   LoadGlobalValueMap(SaveFile);
   { /* additional files */
     for (int f = 0; f <= 99; f++) {
@@ -1467,7 +1468,7 @@ void game::InitGlobalValueMap () {
       festring fn = game::GetGameDir();
       fn << bnum;
       if (inputfile::fileExists(fn)) return;
-      inputfile ifl(fn, &game::GetGlobalValueMap(), false);
+      TextInputFile ifl(fn, &game::GetGlobalValueMap(), false);
       if (ifl.IsOpen()) {
         LoadGlobalValueMap(ifl);
         ifl.Close();
@@ -2248,7 +2249,7 @@ truth game::PrepareRandomBone (int LevelIndex) {
   festring BoneName;
   for (BoneIndex = 0; BoneIndex < 1000; ++BoneIndex) {
     BoneName = GetBonePath()+"bon"+CurrentDungeonIndex+LevelIndex+BoneIndex;
-    inputfile BoneFile(BoneName, 0, false);
+    inputfile BoneFile(BoneName, false);
     if (BoneFile.IsOpen() && !(RAND() & 7)) {
       if (ReadType(int, BoneFile) != BONE_FILE_VERSION) {
         BoneFile.Close();
@@ -3155,7 +3156,7 @@ void game::ClearEventData () {
 // 'n': number
 // 's': string
 // '*': collect all args
-int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args, inputfile *fl, truth noterm) {
+int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args, TextInput *fl, truth noterm) {
   festring s;
   sLong n;
   truth isStr;
@@ -3202,7 +3203,7 @@ int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args, inputfile
 
 truth game::GetWord (festring &w) {
   for (;;) {
-    inputfile *fl = mFEStack.top();
+    TextInput *fl = mFEStack.top();
     fl->ReadWord(w, false);
     if (w == "" && fl->Eof()) {
       delete fl;
@@ -3214,7 +3215,7 @@ truth game::GetWord (festring &w) {
       fl->ReadWord(w, true);
       if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TokenLine());
       w = game::GetGameDir()+"script/"+w;
-      inputfile *fl = new inputfile(w, &game::GetGlobalValueMap(), true);
+      TextInput *fl = new TextInputFile(w, &game::GetGlobalValueMap(), true);
       fl->setGetVarCB(game::ldrGetVar);
       mFEStack.push(fl);
       continue;
@@ -3395,7 +3396,7 @@ truth game::RunOnEvent (cfestring &ename) {
       }
       cfname << ".dat";
       if (!inputfile::fileExists(cfname)) continue;
-      inputfile *ifl = new inputfile(cfname, &game::GetGlobalValueMap(), false);
+      TextInput *ifl = new TextInputFile(cfname, &game::GetGlobalValueMap(), false);
       if (!ifl->IsOpen()) {
         delete ifl;
         continue;
@@ -3407,7 +3408,7 @@ truth game::RunOnEvent (cfestring &ename) {
   } else {
     for (unsigned int f = 0; f < scriptFiles.size(); ++f) {
       festring cfname = scriptFiles[f];
-      inputfile *ifl = new inputfile(cfname, &game::GetGlobalValueMap(), false);
+      TextInput *ifl = new TextInputFile(cfname, &game::GetGlobalValueMap(), false);
       if (!ifl->IsOpen()) {
         delete ifl;
         continue;
@@ -3438,7 +3439,7 @@ truth game::RunOnEventStr (cfestring &ename, cfestring &str) {
   truth res = false;
   if (str.GetSize() < 1) return false;
   //fprintf(stderr, "=============\n%s=============\n", str.CStr());
-  inputfile *ifl = new meminputfile(str, &game::GetGlobalValueMap());
+  TextInput *ifl = new MemTextFile("<memory>", str, &game::GetGlobalValueMap());
   ifl->setGetVarCB(game::ldrGetVar);
   mFEStack.push(ifl);
   festring w;
@@ -3487,7 +3488,7 @@ truth game::RunOnItemEvent (item *what, cfestring &ename) {
 }
 
 
-festring game::ldrGetVar (inputfile *fl, cfestring &name) {
+festring game::ldrGetVar (TextInput *fl, cfestring &name) {
   //fprintf(stderr, "GETVAR: [%s]\n", name.CStr());
   if (name == "player_name") {
     return game::GetPlayerName();
@@ -3573,7 +3574,7 @@ truth game::RunAllowScriptStr (cfestring &str) {
   truth res = true;
   if (str.GetSize() < 1) return true;
   //fprintf(stderr, "====\n%s\n====\n", str.CStr());
-  inputfile *ifl = new meminputfile(str, &game::GetGlobalValueMap());
+  TextInput *ifl = new MemTextFile("<memory>", str, &game::GetGlobalValueMap());
   ifl->setGetVarCB(game::ldrGetVar);
   mFEStack.push(ifl);
   res = DoOnEvent(true, true);

@@ -28,6 +28,7 @@ SYSTEM_SPECIALIZATIONS(room)
 #include "stack.h"
 #include "team.h"
 #include "fesave.h"
+#include "feparse.h"
 
 #include "room.cpp"
 #include "rooms.cpp"

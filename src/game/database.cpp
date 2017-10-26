@@ -11,6 +11,7 @@
  */
 /* Compiled through dataset.cpp */
 #include <stack>
+#include "feparse.h"
 
 
 int CreateConfigTable (databasebase ***ConfigTable, databasebase ***TempTable,
@@ -42,15 +43,15 @@ int CreateConfigTable (databasebase ***ConfigTable, databasebase ***TempTable,
 }
 
 
-static void collectHandler (festring &dest, std::stack<inputfile *> &infStack, inputfile **iff) {
-  inputfile *inFile = *iff;
+static void collectHandler (festring &dest, std::stack<TextInput *> &infStack, TextInput **iff) {
+  TextInput *inFile = *iff;
   festring Word = inFile->ReadWord(true);
   dest << "on " << Word << "\n{\n";
   if (inFile->ReadWord() != "{") ABORT("'{' missing in datafile %s line %d!", inFile->GetFileName().CStr(), inFile->TokenLine());
   int cnt = 1;
   truth inStr = false;
   for (;;) {
-    int ch = inFile->Get();
+    int ch = inFile->GetChar();
     if (ch == EOF) {
       if (infStack.empty()) ABORT("'}' missing in datafile %s line %d!", inFile->GetFileName().CStr(), inFile->TokenLine());
       delete inFile;
@@ -62,7 +63,7 @@ static void collectHandler (festring &dest, std::stack<inputfile *> &infStack, i
     if (inStr) {
       if (ch == '"') inStr = false;
       else if (ch == '\\') {
-        ch = inFile->Get();
+        ch = inFile->GetChar();
         if (ch == EOF) ABORT("Unexpected end of file %s!", inFile->GetFileName().CStr());
         dest << (char)ch;
       }
@@ -81,7 +82,7 @@ static void collectHandler (festring &dest, std::stack<inputfile *> &infStack, i
 
 
 template <class type> void databasecreator<type>::ReadFrom (const festring &baseFileName) {
-  std::stack<inputfile *> infStack;
+  std::stack<TextInput *> infStack;
   for (int fno = 99; fno >= -1; fno--) {
     festring cfname;
     cfname << game::GetGameDir() << "script/" << baseFileName;
@@ -92,7 +93,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
     }
     cfname << ".dat";
     if (!inputfile::fileExists(cfname)) continue;
-    inputfile *ifl = new inputfile(cfname, &game::GetGlobalValueMap(), false);
+    TextInput *ifl = new TextInputFile(cfname, &game::GetGlobalValueMap(), false);
     if (!ifl->IsOpen()) {
       delete ifl;
       continue;
@@ -118,7 +119,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
   memset(TempTableInfo, 0, CONFIG_TABLE_SIZE*sizeof(sLong));
   CreateDataBaseMemberMap();
   while (!infStack.empty()) {
-    inputfile *inFile = infStack.top();
+    TextInput *inFile = infStack.top();
     infStack.pop();
     inFile->setGetVarCB(game::ldrGetVar);
     //fprintf(stderr, "MAIN: %s\n", inFile->GetFileName().CStr());
@@ -127,7 +128,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
         Word = inFile->ReadWord();
         if (inFile->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", inFile->GetFileName().CStr(), inFile->TokenLine());
         //fprintf(stderr, "loading: %s\n", Word.CStr());
-        inputfile *incf = new inputfile(game::GetGameDir()+"script/"+Word, &game::GetGlobalValueMap());
+        TextInput *incf = new TextInputFile(game::GetGameDir()+"script/"+Word, &game::GetGlobalValueMap());
         infStack.push(inFile);
         inFile = incf;
         inFile->setGetVarCB(game::ldrGetVar);
@@ -196,7 +197,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
           Word = inFile->ReadWord();
           if (inFile->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", inFile->GetFileName().CStr(), inFile->TokenLine());
           //fprintf(stderr, "loading: %s\n", Word.CStr());
-          inputfile *incf = new inputfile(game::GetGameDir()+"script/"+Word, &game::GetGlobalValueMap());
+          TextInput *incf = new TextInputFile(game::GetGameDir()+"script/"+Word, &game::GetGlobalValueMap());
           infStack.push(inFile);
           inFile = incf;
           inFile->setGetVarCB(game::ldrGetVar);
@@ -216,7 +217,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
           if (isString) {
             // include file
             //fprintf(stderr, "loading: %s\n", fname.CStr());
-            inputfile *incf = new inputfile(game::GetGameDir()+"script/"+fname, &game::GetGlobalValueMap());
+            TextInput *incf = new TextInputFile(game::GetGameDir()+"script/"+fname, &game::GetGlobalValueMap());
             infStack.push(inFile);
             inFile = incf;
           } else {
@@ -314,7 +315,7 @@ template int databasecreator<olterrain>::CreateDivineConfigurations (const proto
 
 template <class database, class member> struct databasemember : public databasememberbase<database> {
   databasemember (member Member) : Member(Member) {}
-  virtual void ReadData (database &DataBase, inputfile &SaveFile) { ::ReadData(DataBase.*Member, SaveFile); }
+  virtual void ReadData (database &DataBase, TextInput &SaveFile) { ::ReadData(DataBase.*Member, SaveFile); }
   member Member;
 };
 
@@ -784,7 +785,7 @@ template<> void databasecreator<material>::SetBaseValue(cfestring &Word, databas
 }
 
 
-template <class type> truth databasecreator<type>::AnalyzeData (inputfile &SaveFile, cfestring &Word, database &DataBase) {
+template <class type> truth databasecreator<type>::AnalyzeData (TextInput &SaveFile, cfestring &Word, database &DataBase) {
   typename databasemembermap::iterator i = GetDataBaseMemberMap().find(Word);
   if (i != GetDataBaseMemberMap().end()) {
     SetBaseValue(Word, i->second, DataBase);

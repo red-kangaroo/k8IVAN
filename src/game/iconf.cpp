@@ -12,6 +12,7 @@
 #include "iconf.h"
 #include "game.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "feio.h"
 #include "area.h"
 #include "graphics.h"

@@ -11,6 +11,7 @@
  */
 #include "script.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "game.h"
 #include "materia.h"
 #include "char.h"
@@ -34,7 +35,7 @@ script::datamap gamescript::DataMap;
 template <class type, class contenttype> script::datamap contentmap<type, contenttype>::DataMap;
 
 
-template <class type> void scriptmember<type>::ReadFrom (inputfile &SaveFile) {
+template <class type> void scriptmember<type>::ReadFrom (TextInput &SaveFile) {
   SrcFile = SaveFile.GetFileName();
   SrcLine = SaveFile.CurrentLine();
   if (!Member) Member = new type;
@@ -75,7 +76,7 @@ template <class type> void scriptmember<type>::Load (inputfile &SaveFile) {
 
 
 #define INST_SCRIPT_MEMBER(type)\
-template void scriptmember< type >::ReadFrom(inputfile &);\
+template void scriptmember< type >::ReadFrom(TextInput &);\
 template void scriptmember< type >::Replace(scriptmemberbase &);\
 template void scriptmember< type >::Save(outputfile &) const;\
 template void scriptmember< type >::Load(inputfile &)
@@ -106,7 +107,7 @@ INST_SCRIPT_MEMBER(olterraincontentmap);
 INST_SCRIPT_MEMBER(fearray<packv2>);
 
 
-template <class type> void fastscriptmember<type>::ReadFrom (inputfile &SaveFile) {
+template <class type> void fastscriptmember<type>::ReadFrom (TextInput &SaveFile) {
   SrcFile = SaveFile.GetFileName();
   SrcLine = SaveFile.CurrentLine();
   ReadData(*&Member, SaveFile); // gcc 3.4.1 sucks
@@ -135,7 +136,7 @@ template <class type> void fastscriptmember<type>::Load (inputfile &SaveFile) {
 
 
 #define INST_FAST_SCRIPT_MEMBER(type)\
-template void fastscriptmember< type >::ReadFrom(inputfile&);\
+template void fastscriptmember< type >::ReadFrom(TextInput&);\
 template void fastscriptmember< type >::Replace(scriptmemberbase&);\
 template void fastscriptmember< type >::Save(outputfile&) const;\
 template void fastscriptmember< type >::Load(inputfile&)
@@ -160,7 +161,7 @@ void script::Load (inputfile &SaveFile) {
 }
 
 
-truth script::ReadMember (inputfile &SaveFile, cfestring &Word) {
+truth script::ReadMember (TextInput &SaveFile, cfestring &Word) {
   scriptmemberbase *Data = GetData(Word.CStr());
   //
   if (Data) {
@@ -204,7 +205,7 @@ void posscript::InitDataMap () {
 }
 
 
-void posscript::ReadFrom (inputfile &SaveFile) {
+void posscript::ReadFrom (TextInput &SaveFile) {
   static festring Word;
   //
   SrcFile = SaveFile.GetFileName();
@@ -241,7 +242,7 @@ void materialscript::InitDataMap () {
 }
 
 
-void materialscript::ReadFrom (inputfile &SaveFile) {
+void materialscript::ReadFrom (TextInput &SaveFile) {
   static festring Word;
   //
   SrcFile = SaveFile.GetFileName();
@@ -296,7 +297,7 @@ basecontentscript::basecontentscript () : script(), ContentType(0), Random(false
 }
 
 
-void basecontentscript::ReadFrom (inputfile &SaveFile) {
+void basecontentscript::ReadFrom (TextInput &SaveFile) {
   static festring Word;
   //
   SrcFile = SaveFile.GetFileName();
@@ -601,7 +602,7 @@ void squarescript::InitDataMap () {
 }
 
 
-void squarescript::ReadFrom (inputfile &SaveFile) {
+void squarescript::ReadFrom (TextInput &SaveFile) {
   static festring Word;
   //
   SrcFile = SaveFile.GetFileName();
@@ -635,7 +636,7 @@ template <class type, class contenttype> void contentmap<type, contenttype>::Ini
 }
 
 
-template <class type, class contenttype> void contentmap<type, contenttype>::ReadFrom (inputfile &SaveFile) {
+template <class type, class contenttype> void contentmap<type, contenttype>::ReadFrom (TextInput &SaveFile) {
   typedef std::map<int, contenttype> maptype;
   typedef typename maptype::iterator mapiterator;
   festring Word1, Word2;
@@ -742,7 +743,7 @@ void roomscript::InitDataMap () {
 }
 
 
-void roomscript::ReadFrom (inputfile &SaveFile) {
+void roomscript::ReadFrom (TextInput &SaveFile) {
   festring Word;
   //
   SrcFile = SaveFile.GetFileName();
@@ -814,7 +815,7 @@ void levelscript::InitDataMap () {
 }
 
 
-void levelscript::ReadFrom (inputfile &SaveFile) {
+void levelscript::ReadFrom (TextInput &SaveFile) {
   festring Word;
   //
   SrcFile = SaveFile.GetFileName();
@@ -917,7 +918,7 @@ void dungeonscript::InitDataMap () {
 }
 
 
-void dungeonscript::ReadFrom (inputfile &SaveFile) {
+void dungeonscript::ReadFrom (TextInput &SaveFile) {
   festring Word;
   //
   SrcFile = SaveFile.GetFileName();
@@ -989,7 +990,7 @@ void teamscript::InitDataMap () {
 }
 
 
-void teamscript::ReadFrom (inputfile &SaveFile) {
+void teamscript::ReadFrom (TextInput &SaveFile) {
   festring Word;
   //
   SrcFile = SaveFile.GetFileName();
@@ -1031,7 +1032,7 @@ void gamescript::InitDataMap () {
 }
 
 
-void gamescript::ReadFrom (inputfile &SaveFile) {
+void gamescript::ReadFrom (TextInput &SaveFile) {
   festring Word;
   //
   SrcFile = SaveFile.GetFileName();
@@ -1074,7 +1075,7 @@ void gamescript::ReadFrom (inputfile &SaveFile) {
       Word = SaveFile.ReadWord();
       if (SaveFile.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
       //fprintf(stderr, "loading: %s\n", Word.CStr());
-      inputfile incf(game::GetGameDir()+"script/"+Word, &game::GetGlobalValueMap());
+      TextInputFile incf(game::GetGameDir()+"script/"+Word, &game::GetGlobalValueMap());
       ReadFrom(incf);
       continue;
     }

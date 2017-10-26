@@ -12,6 +12,7 @@
 #include "wskill.h"
 #include "message.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "item.h"
 
 int CWeaponSkillLevelMap[] = {

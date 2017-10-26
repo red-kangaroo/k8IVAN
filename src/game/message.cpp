@@ -23,6 +23,7 @@
 #include "game.h"
 #include "graphics.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "bitmap.h"
 #include "igraph.h"
 #include "iconf.h"

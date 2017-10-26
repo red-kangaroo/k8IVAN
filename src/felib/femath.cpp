@@ -20,6 +20,7 @@
 #include "femath.h"
 #include "feerror.h"
 #include "fesave.h"
+#include "feparse.h"
 
 
 cint basequadricontroller::OrigoDeltaX[4] = { 0, 1, 0, 1 };
@@ -152,7 +153,7 @@ truth femath::Clip (int &SourceX, int &SourceY, int &DestX, int &DestY, int &Wid
 }
 
 
-void ReadData (interval &I, inputfile &SaveFile) {
+void ReadData (interval &I, TextInput &SaveFile) {
   I.Min = SaveFile.ReadNumber(HIGHEST, true);
   festring Word;
   SaveFile.ReadWord(Word);
@@ -162,7 +163,7 @@ void ReadData (interval &I, inputfile &SaveFile) {
 }
 
 
-void ReadData (region &R, inputfile &SaveFile) {
+void ReadData (region &R, TextInput &SaveFile) {
   ReadData(R.X, SaveFile);
   ReadData(R.Y, SaveFile);
 }

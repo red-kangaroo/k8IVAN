@@ -23,6 +23,7 @@
 #include "proto.h"
 #include "action.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "materias.h"
 
 #include "slot.cpp"

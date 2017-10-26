@@ -113,13 +113,13 @@ void highscore::Save (cfestring &File) const {
 /* This function needs much more error handling */
 void highscore::Load (cfestring &File) {
   {
-    inputfile HighScore(genFileName(File), 0, false);
+    inputfile HighScore(genFileName(File), false);
     if (!HighScore.IsOpen()) return;
     HighScore.Get();
     if (HighScore.Eof()) return;
   }
   sLong cs1;
-  inputfile HighScore(genFileName(File), 0, false);
+  inputfile HighScore(genFileName(File), false);
   HighScore >> Version;
   HighScore >> Score >> Entry >> Time >> RandomID >> LastAdd >> cs1;
   sLong CheckSum = HIGH_SCORE_VERSION+LastAdd;

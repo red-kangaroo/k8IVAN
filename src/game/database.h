@@ -20,12 +20,13 @@
 
 
 class inputfile;
+class TextInput;
 class festring;
 
 
 template <class database> struct databasememberbase {
   virtual ~databasememberbase () {}
-  virtual void ReadData(database &, inputfile &) = 0;
+  virtual void ReadData(database &, TextInput &) = 0;
 };
 
 
@@ -44,7 +45,7 @@ public:
   static int CreateDivineConfigurations (const prototype *, database **, int);
 
 private:
-  static truth AnalyzeData (inputfile &, cfestring &, database &);
+  static truth AnalyzeData (TextInput &, cfestring &, database &);
   static void CheckDefaults (cfestring &, database &);
   static void CreateLTerrainDataBaseMemberMap ();
   static void SetBaseValue (cfestring &, databasememberbase<database> *, database &);

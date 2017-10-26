@@ -17,7 +17,7 @@
 #include "festring.h"
 
 
-class inputfile;
+class TextInput;
 class felist;
 struct configoption;
 struct stringoption;
@@ -54,7 +54,7 @@ struct configoption {
   configoption (cchar *, cchar *);
   virtual ~configoption () {}
   virtual void SaveValue (std::ofstream &) const = 0;
-  virtual void LoadValue (inputfile &) = 0;
+  virtual void LoadValue (TextInput &) = 0;
   virtual truth ActivateChangeInterface () = 0;
   virtual void DisplayeValue (festring &) const = 0;
   cchar *Name;
@@ -71,7 +71,7 @@ struct stringoption : public configoption {
          void (*)(stringoption*, cfestring&)
          = &configsystem::NormalStringChanger);
   virtual void SaveValue(std::ofstream&) const;
-  virtual void LoadValue(inputfile&);
+  virtual void LoadValue(TextInput&);
   virtual void DisplayeValue(festring& Entry) const
   { ValueDisplayer(this, Entry); }
   virtual truth ActivateChangeInterface() { return ChangeInterface(this); }
@@ -92,7 +92,7 @@ struct numberoption : public configoption
          void (*)(numberoption*, sLong)
          = &configsystem::NormalNumberChanger);
   virtual void SaveValue(std::ofstream&) const;
-  virtual void LoadValue(inputfile&);
+  virtual void LoadValue(TextInput&);
   virtual void DisplayeValue(festring& Entry) const
   { ValueDisplayer(this, Entry); }
   virtual truth ActivateChangeInterface() { return ChangeInterface(this); }
@@ -124,7 +124,7 @@ struct truthoption : public configoption
         void (*)(truthoption*, truth)
         = &configsystem::NormalTruthChanger);
   virtual void SaveValue(std::ofstream&) const;
-  virtual void LoadValue(inputfile&);
+  virtual void LoadValue(TextInput&);
   virtual void DisplayeValue(festring& Entry) const
   { ValueDisplayer(this, Entry); }
   virtual truth ActivateChangeInterface() { return ChangeInterface(this); }

@@ -14,6 +14,7 @@
 
 #include "item.h"
 #include "fesave.h"
+#include "feparse.h"
 
 
 #define HEADER_PHASE

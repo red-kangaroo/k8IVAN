@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include "fesave.h"
+#include "feparse.h"
 #include "command.h"
 #include "char.h"
 #include "message.h"

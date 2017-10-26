@@ -15,6 +15,7 @@ felibsources =
   hscore.cpp
   rawbit.cpp
   fesave.cpp
+  feparse.cpp
   whandler.cpp
   regex.c
 ;

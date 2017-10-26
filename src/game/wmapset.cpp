@@ -44,6 +44,7 @@ cint JungleType = jungle::ProtoType.GetIndex();
 #include "igraph.h"
 #include "bitmap.h"
 #include "fesave.h"
+#include "feparse.h"
 
 #include "cont.cpp"
 #include "worldmap.cpp"

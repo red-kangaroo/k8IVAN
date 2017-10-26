@@ -75,6 +75,7 @@ public:
 
 class outputfile;
 class inputfile;
+class TextInput;
 template <class type> struct fearray;
 
 
@@ -120,8 +121,8 @@ struct region {
 };
 
 
-void ReadData (interval &I, inputfile &SaveFile);
-void ReadData (region &R, inputfile &SaveFile);
+void ReadData (interval &I, TextInput &SaveFile);
+void ReadData (region &R, TextInput &SaveFile);
 
 outputfile &operator << (outputfile &SaveFile, const interval &I);
 inputfile &operator >> (inputfile &SaveFile, interval &I);

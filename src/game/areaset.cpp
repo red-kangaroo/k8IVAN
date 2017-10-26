@@ -17,6 +17,7 @@
 #include "terra.h"
 #include "proto.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "team.h"
 
 #include "area.cpp"

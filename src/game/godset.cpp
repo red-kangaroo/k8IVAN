@@ -34,6 +34,7 @@ SYSTEM_SPECIALIZATIONS(god)
 #include "confdef.h"
 #include "materias.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "team.h"
 
 #include "god.cpp"

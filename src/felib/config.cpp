@@ -11,6 +11,7 @@
  */
 #include "config.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "felist.h"
 #include "feio.h"
 
@@ -96,7 +97,7 @@ truth configsystem::Save () {
 
 
 truth configsystem::Load () {
-  inputfile SaveFile(ConfigFileName, 0, false);
+  TextInputFile SaveFile(ConfigFileName, 0, false);
   if (!SaveFile.IsOpen()) return false;
   festring Word;
   for (SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false)) {
@@ -175,7 +176,7 @@ void stringoption::SaveValue (std::ofstream &SaveFile) const {
 }
 
 
-void stringoption::LoadValue (inputfile &SaveFile) {
+void stringoption::LoadValue (TextInput &SaveFile) {
   SaveFile.ReadWord();
   SaveFile.ReadWord(Value);
 }
@@ -183,6 +184,6 @@ void stringoption::LoadValue (inputfile &SaveFile) {
 
 /* ??? */
 void numberoption::SaveValue (std::ofstream &SaveFile) const { SaveFile << Value; }
-void numberoption::LoadValue (inputfile &SaveFile) { Value = SaveFile.ReadNumber(); }
+void numberoption::LoadValue (TextInput &SaveFile) { Value = SaveFile.ReadNumber(); }
 void truthoption::SaveValue (std::ofstream &SaveFile) const { SaveFile << Value; }
-void truthoption::LoadValue (inputfile &SaveFile) { Value = SaveFile.ReadNumber(); }
+void truthoption::LoadValue (TextInput &SaveFile) { Value = SaveFile.ReadNumber(); }

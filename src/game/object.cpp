@@ -18,6 +18,7 @@
 #include "game.h"
 #include "bitmap.h"
 #include "fesave.h"
+#include "feparse.h"
 
 
 v2 RightArmSparkleValidityArray[128];

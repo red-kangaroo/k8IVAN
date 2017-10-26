@@ -16,6 +16,7 @@
 #include "message.h"
 #include "database.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "god.h"
 
 #include "proto.cpp"

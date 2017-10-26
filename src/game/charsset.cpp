@@ -28,6 +28,7 @@
 #include "bitmap.h"
 #include "lterras.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "traps.h"
 #include "iloops.h"
 #include "balance.h"

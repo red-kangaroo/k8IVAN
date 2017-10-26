@@ -18,6 +18,7 @@
 #include "rawbit.h"
 #include "game.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "object.h"
 #include "allocate.h"
 #include "whandler.h"

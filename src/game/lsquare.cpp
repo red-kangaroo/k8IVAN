@@ -925,9 +925,8 @@ void lsquare::ApplyScript (const squarescript *SquareScript, room *Room) {
 }
 
 
-truth lsquare::CanBeSeenByPlayer(truth IgnoreDarkness) const
-{
-  return (IgnoreDarkness || !IsDark()) && LastSeen == game::GetLOSTick();
+truth lsquare::CanBeSeenByPlayer (truth IgnoreDarkness) const {
+  return ((IgnoreDarkness || !IsDark()) && LastSeen == game::GetLOSTick());
 }
 
 
@@ -936,13 +935,12 @@ truth lsquare::CanBeSeenFrom (v2 FromPos, sLong MaxDistance, truth IgnoreDarknes
     if (Character && Character->IsPlayer() && GetNearLSquare(FromPos)->CanBeSeenByPlayer(true)) {
       return true;
     }
-
     eyecontroller::Map = GetLevel()->GetMap();
     return mapmath<eyecontroller>::DoLine(FromPos.X, FromPos.Y, GetPos().X, GetPos().Y, SKIP_FIRST);
   }
-
   return false;
 }
+
 
 void lsquare::StepOn (character* Stepper, lsquare** ComingFrom) {
   if (RoomIndex) {
@@ -1001,25 +999,23 @@ void lsquare::StepOn (character* Stepper, lsquare** ComingFrom) {
   }
 }
 
-void lsquare::ReceiveVomit(character* Who, liquid* Liquid)
-{
-  if(!GetOLTerrain() || !GetOLTerrain()->ReceiveVomit(Who, Liquid))
-  {
-    SpillFluid(Who, Liquid);
 
-    if(RoomIndex)
-      GetRoom()->ReceiveVomit(Who);
+void lsquare::ReceiveVomit (character *Who, liquid *Liquid) {
+  if (!GetOLTerrain() || !GetOLTerrain()->ReceiveVomit(Who, Liquid)) {
+    SpillFluid(Who, Liquid);
+    if (RoomIndex) GetRoom()->ReceiveVomit(Who);
   }
 }
 
-void lsquare::SetTemporaryEmitation(col24 What)
-{
+
+void lsquare::SetTemporaryEmitation (col24 What) {
   col24 Old = TemporaryEmitation;
   TemporaryEmitation = 0;
   SignalEmitationDecrease(Old);
   TemporaryEmitation = What;
   SignalEmitationIncrease(What);
 }
+
 
 void lsquare::ChangeOLTerrainAndUpdateLights(olterrain* NewTerrain)
 {

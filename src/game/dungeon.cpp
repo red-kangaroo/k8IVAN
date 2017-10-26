@@ -15,6 +15,7 @@
 #include "feerror.h"
 #include "game.h"
 #include "fesave.h"
+#include "feparse.h"
 #include "femath.h"
 #include "bitmap.h"
 #include "iconf.h"

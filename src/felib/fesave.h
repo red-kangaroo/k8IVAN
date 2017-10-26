@@ -31,6 +31,7 @@
 #include "fearray.h"
 
 
+// ////////////////////////////////////////////////////////////////////////// //
 #define RAW_SAVE_LOAD(type) \
 inline outputfile &operator << (outputfile &SaveFile, type Value) { \
   SaveFile.Write(reinterpret_cast<char *>(&Value), sizeof(Value)); \
@@ -43,14 +44,15 @@ inline inputfile &operator >> (inputfile &SaveFile, type &Value) { \
 }
 
 
+// ////////////////////////////////////////////////////////////////////////// //
 class inputfile;
 class outputfile;
-struct InputFileSaved;
 
 
 typedef std::map<festring, sLong> valuemap;
 
 
+// ////////////////////////////////////////////////////////////////////////// //
 class outputfile {
 public:
   outputfile (cfestring &FileName, truth maxcomp, truth AbortOnErr=true);
@@ -72,28 +74,16 @@ private:
 };
 
 
-typedef festring (*InputFileGetVarFn) (inputfile *fl, cfestring &name);
-
-
+// ////////////////////////////////////////////////////////////////////////// //
 class inputfile {
 public:
-  inputfile (cfestring &FileName, const valuemap *ValueMap=0, truth AbortOnErr=true);
+  inputfile ();
+  inputfile (cfestring &aFileName, truth AbortOnErr=true);
   virtual ~inputfile ();
 
-  void SkipSpaces ();
+  bool Open (cfestring &aFileName, truth AbortOnErr=true);
 
-  festring ReadCode (truth AbortOnEOF=true);
-  festring ReadWord (truth AbortOnEOF=true);
-  void ReadWord (festring &str, truth AbortOnEOF=true, truth skipIt=false);
-  char ReadLetter (truth AbortOnEOF=true);
-  sLong ReadNumber (int CallLevel=HIGHEST, truth PreserveTerminator=false, truth *wasCloseBrc=0);
-  festring ReadStringOrNumber (sLong *num, truth *isString, truth PreserveTerminator=false, truth *wasCloseBrc=0);
-  sLong ReadNumberKeepStr (int CallLevel=HIGHEST, truth PreserveTerminator=false, truth *wasCloseBrc=0);
-  festring ReadStringOrNumberKeepStr (sLong *num, truth *isString, truth PreserveTerminator=false, truth *wasCloseBrc=0);
-  v2 ReadVector2d ();
-  rect ReadRect ();
-  int Get ();
-  void Unget (int ch);
+  int Get (); // returns EOF on eof
   void Read (char *Offset, sLong Size);
   truth IsOpen () { return (Buffer != 0); }
   truth Eof ();
@@ -102,80 +92,26 @@ public:
   void SeekPosCurrent (sLong Offset);
   void SeekPosEnd (sLong Offset);
   sLong TellPos ();
-  //feuLong TellLine () { return TellLineOfPos(TellPos()); }
-  //feuLong TellLineOfPos (sLong);
   cfestring &GetFileName () const { return FileName; }
   void Close ();
 
   static truth fileExists (const festring &fname);
   static festring GetMyDir (void);
 
-  festring getVar (cfestring &name);
-  void setVar (cfestring &name, cfestring &value);
-  truth delVar (cfestring &name);
-
-  void setGetVarCB (InputFileGetVarFn cb) { mGetVar = cb; }
-
-  void die (cfestring &msg);
-
-  void skipBlanks (); // comments too
-
-  int countArrayItems (char echar);
-
-  inline int TokenLine () const { return mTokenLine; }
-  inline int CurrentLine () const { return mCurrentLine; }
-
-  // when reading a number, and `mCollectingNumStr` flag is set, this will be filled
-  inline cfestring& numStr () const { return mNumStr; }
-
 protected:
-  festring ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc);
-  int HandlePunct (festring &String, int Char, int Mode);
-
-  festring findVar (cfestring &name, truth *found) const;
-  void readWordIntr (festring &String, truth AbortOnEOF);
-
-  festring readCondition (festring &token, int prio, truth skipIt);
-
-protected:
-  typedef std::map<festring, festring> VarMap;
 #ifdef USE_ZLIB
   gzFile Buffer;
 #else
   FILE *Buffer;
 #endif
   festring FileName;
-  const valuemap *ValueMap;
-  truth lastWordWasString;
-  VarMap mVars;
-  InputFileGetVarFn mGetVar;
-  std::stack<int> mIfStack;
 #ifdef USE_ZLIB
   int mFileSize;
 #endif
-  int mCharBuf[4];
-  int mCharBufPos;
-  int mCurrentLine;
-  int mTokenLine;
-  festring mNumStr; // when reading a number, and `mCollectingNumStr` flag is set, this will be filled
-  truth mCollectingNumStr;
-
-  friend InputFileSaved;
 };
 
 
-class meminputfile : public inputfile {
-public:
-  meminputfile (cfestring &str, const valuemap *ValueMap=0);
-  virtual ~meminputfile ();
-
-protected:
-  void *buf;
-  int bufSize;
-  festring tfname;
-};
-
-
+// ////////////////////////////////////////////////////////////////////////// //
 /* Reads a binary form variable of type type and returns it.
  * An inputfile template member function would be far more elegant,
  * but VC doesn't seem to understand it. */
@@ -189,61 +125,8 @@ template <class type> inline type _ReadType_ (inputfile &SaveFile, const char *t
 
 #define ReadType(typename,fl)  _ReadType_<typename>(fl, #typename)
 
-inline void ReadData (char &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
-inline void ReadData (uChar &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
-inline void ReadData (short &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
-inline void ReadData (uShort &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
-//inline void ReadData (sLong &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); } //k8:64
-inline void ReadData (feuLong &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
-inline void ReadData (int &Type, inputfile &SaveFile) { Type = SaveFile.ReadNumber(); }
-inline void ReadData (packv2 &Type, inputfile &SaveFile) { Type = SaveFile.ReadVector2d(); }
-inline void ReadData (v2 &Type, inputfile &SaveFile) { Type = SaveFile.ReadVector2d(); }
-inline void ReadData (rect &Type, inputfile &SaveFile) { Type = SaveFile.ReadRect(); }
 
-void ReadData (festring &, inputfile &);
-void ReadData (fearray<sLong> &, inputfile &);
-void ReadData (fearray<festring> &, inputfile &);
-
-template <class type> inline void ReadData (fearray<type> &Array, inputfile &SaveFile) {
-  Array.Clear();
-  festring Word;
-  SaveFile.ReadWord(Word);
-  // one element?
-  if (Word == "==") {
-    Array.Allocate(1);
-    ReadData(Array.Data[0], SaveFile);
-    return;
-  }
-  // more than one element
-  typedef typename fearray<type>::sizetype sizetype;
-  sizetype Size;
-  // unknown number of elements?
-  if (Word == ":=") {
-    SaveFile.ReadWord(Word);
-    if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %d!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-    //fprintf(stderr, "counting array items; file: '%s'; line: %u\n", SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-    int count = SaveFile.countArrayItems('}');
-    // HACK
-    if (count < 1) ABORT("Array count error found in file %s, line %d!", SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-    Size = count;
-    //fprintf(stderr, "counted %u array items; file: '%s'; line: %u\n", Size, SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-  } else {
-    if (Word != "=") ABORT("Array syntax error: '=', '==' or ':=' expected in file %s, line %u!", SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-    SaveFile.ReadWord(Word);
-    if (Word != "{") ABORT("Array syntax error \"%s\" found in file %s, line %u!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-    Size = SaveFile.ReadNumber();
-    int count = SaveFile.countArrayItems('}');
-    if (count < 1) ABORT("Array count error found in file %s, line %d!", SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-    //HACK: 2 for vectors, 4 for rects
-    //if ((sizetype)count != Size && (sizetype)count/2 != Size && (sizetype)count/4 != Size) ABORT("Array count error (%u != %d) found in file %s, line %d!", Size, count, SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-    if ((sizetype)count != Size) ABORT("Array count error (%u != %d) found in file %s, line %d!", Size, count, SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-  }
-  Array.Allocate(Size);
-  for (sizetype c = 0; c < Size; ++c) ReadData(Array.Data[c], SaveFile);
-  if (SaveFile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %u!", Word.CStr(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
-}
-
-
+// ////////////////////////////////////////////////////////////////////////// //
 inline outputfile &operator << (outputfile &SaveFile, char Value) {
   SaveFile.Put(Value);
   return SaveFile;

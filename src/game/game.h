@@ -289,7 +289,7 @@ public:
   static void InitScript();
   static valuemap& GetGlobalValueMap() { return GlobalValueMap; }
   static void InitGlobalValueMap();
-  static void LoadGlobalValueMap (inputfile &SaveFile);
+  static void LoadGlobalValueMap (TextInput &SaveFile);
   static void TextScreen(cfestring&, v2 = ZERO_V2, col16 = 0xFFFF, truth = true, truth = true, bitmapeditor = 0);
   static void SetCursorPos(v2 What) { CursorPos = What; }
   static truth DoZoom() { return Zoom; }
@@ -491,7 +491,7 @@ public:
 
   static truth RunAllowScriptStr (cfestring &str);
 
-  static festring ldrGetVar (inputfile *fl, cfestring &name);
+  static festring ldrGetVar (TextInput *fl, cfestring &name);
 
 private:
   static truth RunOnEventStr (cfestring &name, cfestring &str);
@@ -499,7 +499,7 @@ private:
   static void SkipBlock (truth brcEaten);
   static void UpdateCameraCoordinate (int &, int, int, int);
   static truth DoOnEvent (truth brcEaten, truth AllowScript=false);
-  static int ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args, inputfile *fl=0, truth noterm=false);
+  static int ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args, TextInput *fl=0, truth noterm=false);
 
 private:
   static cchar* const Alignment[];
@@ -618,7 +618,7 @@ private:
   static cbitmap* EnterImage;
   static v2 EnterTextDisplacement;
   //
-  static std::stack<inputfile *> mFEStack;
+  static std::stack<TextInput *> mFEStack;
 
 public:
   static character *mChar;

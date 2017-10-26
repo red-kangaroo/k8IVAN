@@ -2346,7 +2346,7 @@ truth character::CheckAIZapOpportunity () {
 
 truth character::FollowLeader (character *Leader) {
   if (!Leader || Leader == this || !IsEnabled()) return false;
-  if (CommandFlags & FOLLOW_LEADER && Leader->CanBeSeenBy(this) && Leader->SquareUnderCanBeSeenBy(this, true)) {
+  if ((CommandFlags&FOLLOW_LEADER) && Leader->CanBeSeenBy(this) && Leader->SquareUnderCanBeSeenBy(this, true)) {
     v2 Distance = GetPos()-GoingTo;
     if (abs(Distance.X) <= 2 && abs(Distance.Y) <= 2) return false;
     return MoveTowardsTarget(false);
@@ -2365,7 +2365,7 @@ truth character::FollowLeader (character *Leader) {
 void character::SeekLeader (ccharacter *Leader) {
   if (Leader && Leader != this) {
     if (Leader->CanBeSeenBy(this) && (Leader->SquareUnderCanBeSeenBy(this, true) || !IsGoingSomeWhere())) {
-      if (CommandFlags & FOLLOW_LEADER) SetGoingTo(Leader->GetPos());
+      if (CommandFlags&FOLLOW_LEADER) SetGoingTo(Leader->GetPos());
     } else if (!IsGoingSomeWhere()) {
       team *Team = GetTeam();
       for (std::list<character *>::const_iterator i = Team->GetMember().begin(); i != Team->GetMember().end(); ++i) {
@@ -4452,7 +4452,7 @@ truth character::CanBeSeenByPlayer (truth Theoretically, truth IgnoreESP) const 
     if (game::IsInWilderness()) return Visible;
     if (MayBeESPSeen && (Theoretically || GetDistanceSquareFrom(PLAYER) <= PLAYER->GetESPRangeSquare())) return true;
     if (!Visible) return false;
-    return Theoretically || SquareUnderCanBeSeenByPlayer(MayBeInfraSeen);
+    return (Theoretically || SquareUnderCanBeSeenByPlayer(MayBeInfraSeen));
   }
   return false;
 }
@@ -4467,7 +4467,7 @@ truth character::CanBeSeenBy (ccharacter *Who, truth Theoretically, truth Ignore
     if (game::IsInWilderness()) return Visible;
     if (MayBeESPSeen && (Theoretically || GetDistanceSquareFrom(Who) <= Who->GetESPRangeSquare())) return true;
     if (!Visible) return false;
-    return Theoretically || SquareUnderCanBeSeenBy(Who, MayBeInfraSeen);
+    return (Theoretically || SquareUnderCanBeSeenBy(Who, MayBeInfraSeen));
   }
   return false;
 }
