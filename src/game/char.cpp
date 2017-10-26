@@ -7339,7 +7339,10 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
       List.AddDescription(CONST_S(""));
       List.AddDescription(festring(GetDescription(DEFINITE) + " is " + GetVerbalBurdenState()).CapitalizeCopy(), GetVerbalBurdenStateColor());
     }
-    for (int c = 0; c < GetEquipments(); ++c) {
+    int selected = -1, curit = 0;
+    truth selectedIsEmpty = false;
+    for (int c = 0; c < GetEquipments(); ++c, ++curit) {
+      int bpidx = (GetBodyPartOfEquipment(c) ? GetBodyPartOfEquipment(c)->GetBodyPartIndex() : -1);
       Entry = GetEquipmentName(c);
       Entry << ':';
       Entry.Resize(20);
@@ -7348,20 +7351,28 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
         Equipment->AddInventoryEntry(this, Entry, 1, true);
         AddSpecialEquipmentInfo(Entry, c);
         int ImageKey = game::AddToItemDrawVector(itemvector(1, Equipment));
+        if (selected < 0 && bpidx >= 0 && bpidx != RIGHT_ARM_INDEX && bpidx != LEFT_ARM_INDEX) selected = curit;
         List.AddEntry(Entry, (HasSomethingToEquipAt(c, false) ? ORANGE : LIGHT_GRAY), 20, ImageKey, true);
       } else {
-        Entry << (GetBodyPartOfEquipment(c) ? "-" : "can't use");
-        col16 color;
-        switch (HasSomethingToEquipAt(c, false)) {
-          case 0: color = RED; break;
-          case 1: color = LIGHT_GRAY; break;
-          default: color = ORANGE; break;
+        truth canUse = !!GetBodyPartOfEquipment(c);
+        Entry << (canUse ? "-" : "can't use");
+        col16 color = RED;
+        if (canUse) {
+          switch (HasSomethingToEquipAt(c, false)) {
+            case 0: color = RED; break;
+            case 1: color = LIGHT_GRAY; break;
+            default: color = ORANGE; break;
+          }
+        }
+        if (color != RED && bpidx >= 0 && bpidx != RIGHT_ARM_INDEX && bpidx != LEFT_ARM_INDEX) {
+          if (selected < 0 || !selectedIsEmpty) { selected = curit; selectedIsEmpty = true; }
         }
         List.AddEntry(Entry, color, 20, game::AddToItemDrawVector(itemvector()));
       }
     }
     game::DrawEverythingNoBlit();
     game::SetStandardListAttributes(List);
+    if (selected >= 0) List.SetSelected(selected);
     List.SetFlags(SELECTABLE|DRAW_BACKGROUND_AFTERWARDS);
     List.SetEntryDrawer(game::ItemEntryDrawer);
     Chosen = List.Draw();
