@@ -69,7 +69,9 @@ TextInput::TextInput (const valuemap *aValueMap) {
 
 
 TextInput::~TextInput () {
-  //Close();
+  //fprintf(stderr, "TI:~this();\n");
+  Close();
+  //fprintf(stderr, "TI:~this(); -- exit\n");
 }
 
 
@@ -86,6 +88,7 @@ void TextInput::setup (const valuemap *aValueMap) {
 
 
 void TextInput::Close () {
+  //fprintf(stderr, "TI:Close();\n");
   lastWasNL = false;
   while (!mIfStack.empty()) mIfStack.pop();
   mCharBufPos = 0;
@@ -93,7 +96,7 @@ void TextInput::Close () {
   mTokenLine = 0;
   mNumStr = "";
   mCollectingNumStr = false;
-  realClose();
+  //fprintf(stderr, "TI:Close(); -- exit\n");
 }
 
 
@@ -1124,14 +1127,16 @@ TextInputFile::TextInputFile (cfestring &FileName, const valuemap *aValueMap, tr
 
 
 TextInputFile::~TextInputFile () {
+  //fprintf(stderr, "TIF:~this();\n");
   Close();
+  //fprintf(stderr, "TIF:~this(); -- exit\n");
 }
 
 
 int TextInputFile::realGetChar () { return ifile.Get(); }
 bool TextInputFile::isRealEof () { return ifile.Eof(); }
 bool TextInputFile::isRealOpen () { return ifile.IsOpen(); }
-void TextInputFile::realClose () { ifile.Close(); }
+void TextInputFile::Close () { /*fprintf(stderr, "TIF:Close();\n");*/ ifile.Close(); TextInput::Close(); }
 void TextInputFile::realClearFlags () { ifile.ClearFlags(); }
 
 sLong TextInputFile::realGetPos () { return (ifile.IsOpen() ? ifile.TellPos() : 0); }
@@ -1154,7 +1159,9 @@ MemTextFile::MemTextFile (cfestring &afname, cfestring &str, const valuemap *aVa
 
 
 MemTextFile::~MemTextFile () {
+  //fprintf(stderr, "MTF:~this();\n");
   Close();
+  //fprintf(stderr, "MTF:~this(); -- exit\n");
 }
 
 
@@ -1168,7 +1175,8 @@ bool MemTextFile::isRealEof () { return (bufPos >= bufSize); }
 bool MemTextFile::isRealOpen () { return (buf != nullptr); }
 
 
-void MemTextFile:: realClose () {
+void MemTextFile::Close () {
+  //fprintf(stderr, "MTF:Close();\n");
   if (buf) {
     free(buf);
     buf = nullptr;
@@ -1176,6 +1184,7 @@ void MemTextFile:: realClose () {
     bufSize = 0;
     bufPos = 0;
   }
+  TextInput::Close();
 }
 
 void MemTextFile::realClearFlags () {}

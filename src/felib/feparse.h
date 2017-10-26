@@ -40,7 +40,7 @@ public:
   virtual cfestring &GetFileName () const = 0;
   truth IsOpen () { return isRealOpen(); }
   truth Eof ();
-  void Close ();
+  virtual void Close (); // for dtor
 
   int GetChar ();
   void UngetChar (int ch);
@@ -87,7 +87,6 @@ protected:
   virtual int realGetChar () = 0;
   virtual bool isRealEof () = 0;
   virtual bool isRealOpen () = 0;
-  virtual void realClose () = 0;
   virtual void realClearFlags () = 0;
 
   // used to save/restore parsing positions
@@ -123,12 +122,12 @@ public:
   virtual ~TextInputFile ();
 
   virtual cfestring &GetFileName () const override { return ifile.GetFileName(); }
+  virtual void Close () override;
 
 protected:
   virtual int realGetChar () override;
   virtual bool isRealEof () override;
   virtual bool isRealOpen () override;
-  virtual void realClose () override;
   virtual void realClearFlags () override;
 
   virtual sLong realGetPos () override;
@@ -146,12 +145,12 @@ public:
   virtual ~MemTextFile ();
 
   virtual cfestring &GetFileName () const override { return tfname; }
+  virtual void Close () override;
 
 protected:
   virtual int realGetChar () override;
   virtual bool isRealEof () override;
   virtual bool isRealOpen () override;
-  virtual void realClose () override;
   virtual void realClearFlags () override;
 
   virtual sLong realGetPos () override;
