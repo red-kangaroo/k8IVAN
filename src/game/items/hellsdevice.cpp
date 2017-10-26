@@ -112,7 +112,7 @@ void hellsdevice::explode (character *User, v2 pos) {
     Square->DrawParticles(RED);
     GetLevel()->Explosion(User, dmsg, pos, /*75+RAND()%25-RAND()%25*/400+RAND()%100);
   }
-  for (int f = 0; f < 9; ++f) {
+  for (int f = 0; f < 8; ++f) {
     if (RAND()%100 > 30) {
       v2 dest = pos+game::GetMoveVector(f);
       Square = GetNearLSquare(dest);
