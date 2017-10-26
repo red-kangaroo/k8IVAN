@@ -38,7 +38,7 @@ truthoption ivanconfig::BeNice("BeNice", "be nice to pets", true);
 truthoption ivanconfig::FullScreenMode("FullScreenMode", "run the game in full screen mode", false, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FullScreenModeChanger);
 /*k8*/
 scrollbaroption ivanconfig::DoubleResModifier("DoubleResModifier", "resolution multiplier (1+n/10)", 10, &ResModDisp, &ResModChangeIntf, &ResModChanger, &ResModHandler);
-truthoption ivanconfig::KickDownDoors("KickDownDoors", "kick down doors by default", false);
+truthoption ivanconfig::KickDownDoors("KickDownDoors", "kick closed doors", false);
 truthoption ivanconfig::AutoCenterMap("AutoCenterMap", "automatically center map when player moves", true);
 truthoption ivanconfig::AutoCenterMapOnLook("AutoCenterMapOnLook", "automatically center map when player looks", true);
 truthoption ivanconfig::FastListMode("FastLists", "instantly select list items with alpha keys", true, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FastListChanger);
