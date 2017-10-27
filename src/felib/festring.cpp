@@ -635,7 +635,7 @@ truth festring::endsWith (cchar *str, int slen) const {
   if (slen < 0) slen = (int)realslen; else if (slen > realslen) return false;
   if (slen == 0) return true;
   if ((sizetype)slen > Size) return false;
-  return (memcmp(Data+(Size-slen), str, slen) == 0);
+  return (memcmp(Data+Size-slen, str, slen) == 0);
 }
 
 
@@ -646,7 +646,7 @@ truth festring::startsWithCI (cchar *str, int slen) const {
   if (slen == 0) return true;
   if ((sizetype)slen > Size) return false;
   cchar *ep = Data;
-  for (; slen > 0; ++str, ++ep) {
+  for (; slen > 0; ++str, ++ep, --slen) {
     if (::Capitalize(*str) != ::Capitalize(*ep)) return false;
   }
   return true;
@@ -660,7 +660,7 @@ truth festring::endsWithCI (cchar *str, int slen) const {
   if (slen == 0) return true;
   if ((sizetype)slen > Size) return false;
   cchar *ep = Data+Size-slen;
-  for (; slen > 0; ++str, ++ep) {
+  for (; slen > 0; ++str, ++ep, --slen) {
     if (::Capitalize(*str) != ::Capitalize(*ep)) return false;
   }
   return true;
