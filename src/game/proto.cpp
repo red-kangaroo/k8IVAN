@@ -381,11 +381,14 @@ character* protosystem::CreateMonster (cfestring &What, int SpecialFlags, truth 
 item* protosystem::CreateItem (cfestring &What, truth Output) {
   std::pair<const item::prototype*, int> ID = SearchForProto<item>(What, Output);
   if (ID.first) {
-    item* Item = ID.first->Spawn(ID.second);
-    festring Q = "Do you want to wish for ";
-    Item->AddName(Q, INDEFINITE|STRIPPED);
-    Q << "?";
-    if (!game::TruthQuestion(Q)) { delete Item; return 0; }
+    item *Item = ID.first->Spawn(ID.second);
+    // only Wizard can confirm wishes
+    if (game::WizardModeIsActive()) {
+      festring Q = "Do you want to wish for ";
+      Item->AddName(Q, INDEFINITE|STRIPPED);
+      Q << "?";
+      if (!game::TruthQuestion(Q)) { delete Item; return 0; }
+    }
     return Item;
   }
   return 0;
