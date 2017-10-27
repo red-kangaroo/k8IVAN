@@ -2,10 +2,10 @@ siren
 {
   DefaultArmStrength = 3;
   DefaultLegStrength = 3;
-  DefaultDexterity = 15;
-  DefaultAgility = 20;
+  DefaultDexterity = 20;
+  DefaultAgility = 25;
   DefaultEndurance = 12;
-  DefaultPerception = 20;
+  DefaultPerception = 25;
   DefaultIntelligence = 10;
   DefaultWisdom = 15;
   DefaultCharisma = 50;
@@ -17,7 +17,8 @@ siren
   ArmBitmapPos = 80, 240;
   LegBitmapPos = 16, 240;
   TotalVolume = 40000;
-  TotalSize = 170;
+  Frequency = 2500;
+  TotalSize = 150;
   BaseUnarmedStrength = 200;
   CanRead = true;
   NameSingular = "siren";

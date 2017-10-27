@@ -458,6 +458,7 @@ decoration
     NameSingular = "table";
     BitmapPos = 48, 240;
     HPModifier = 25;
+    Walkability = ETHEREAL;
   }
 
   Config TORTURE_RACK;
