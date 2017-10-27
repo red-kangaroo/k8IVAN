@@ -7396,6 +7396,17 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
     if (!IsPlayer()) {
       List.AddDescription(CONST_S(""));
       List.AddDescription(festring(GetDescription(DEFINITE) + " is " + GetVerbalBurdenState()).CapitalizeCopy(), GetVerbalBurdenStateColor());
+    } else {
+      int totalWeight = 0;
+      for (int c = 0; c < GetEquipments(); ++c) {
+        item *Equipment = GetEquipment(c);
+        totalWeight += (Equipment ? Equipment->GetWeight() : 0);
+      }
+      festring Total("Total weight: ");
+      Total << totalWeight;
+      Total << "g";
+      List.AddDescription(CONST_S(""));
+      List.AddDescription(Total);
     }
     int firstEmpty = -1, firstNonEmpty = -1, selected = -1;
     feuLong selPickTime = 1;
