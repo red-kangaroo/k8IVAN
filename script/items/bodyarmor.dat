@@ -170,7 +170,7 @@ bodyarmor /* armor-> */
     CanBeCloned = false;
     CanBeMirrored = true;
     CanBeBroken = false;
-    CanBeBurned = false;
+    //k8:not-here-yet:CanBeBurned = false;
     IsDestroyable = false;
     MainMaterialConfig == OMMEL_HAIR;
     MaterialConfigChances == 100;
