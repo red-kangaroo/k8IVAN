@@ -1096,10 +1096,7 @@ truth character::TryMove (v2 MoveVector, truth Important, truth Run) {
                 /*if(!IsPlayer() || game::TruthQuestion(CONST_S("Do you want to open ")+Terrain->GetName(DEFINITE)+"?", false, game::GetMoveCommandKeyBetweenPoints(PLAYER->GetPos(), MoveToSquare[0]->GetPos()))) return MoveToSquare[c]->Open(this);*/
                 /* Non-players always try to open it */
                 if (!IsPlayer()) return MoveToSquare[c]->Open(this);
-                if (game::TruthQuestion(CONST_S("Do you want to open ")+
-                      Terrain->GetName(DEFINITE)+"?", false, game::GetMoveCommandKeyBetweenPoints(PLAYER->GetPos(),
-                      MoveToSquare[0]->GetPos())))
-                {
+                if (game::TruthQuestion(CONST_S("Do you want to open ")+Terrain->GetName(DEFINITE)+"?", false, game::GetMoveCommandKeyBetweenPoints(PLAYER->GetPos(), MoveToSquare[0]->GetPos()))) {
                   return MoveToSquare[c]->Open(this);
                 }
                 return false;
