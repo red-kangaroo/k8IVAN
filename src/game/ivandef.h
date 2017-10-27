@@ -106,12 +106,12 @@ const name##prototype name::ProtoType
 #define DATA_BASE_TRUTH(data) truth data() const { return DataBase->data; }
 #define DATA_BASE_TRUTH_WITH_PARAMETER(data, param) truth data(param) const { return DataBase->data; }
 
-#define HAS_HIT 0
-#define HAS_BLOCKED 1
-#define HAS_DODGED 2
-#define HAS_DIED 3
-#define DID_NO_DAMAGE 4
-#define HAS_FAILED 5
+#define HAS_HIT  (game::GetGlobalConst("HAS_HIT"))
+#define HAS_BLOCKED  (game::GetGlobalConst("HAS_BLOCKED"))
+#define HAS_DODGED  (game::GetGlobalConst("HAS_DODGED"))
+#define HAS_DIED  (game::GetGlobalConst("HAS_DIED"))
+#define DID_NO_DAMAGE  (game::GetGlobalConst("DID_NO_DAMAGE"))
+#define HAS_FAILED  (game::GetGlobalConst("HAS_FAILED"))
 
 #define OVER_FED_LEVEL 175000
 #define BLOATED_LEVEL 150000

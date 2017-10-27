@@ -2053,16 +2053,14 @@ void character::BeKicked (character *Kicker, item *Boot, bodypart *Leg, v2 HitPo
   if (game::RunOnCharEvent(this, CONST_S("before_be_kicked"))) { game::ClearEventData(); return; }
   game::ClearEventData();
   game::mActor = 0;
-  switch (TakeHit(Kicker, Boot, Leg, HitPos, KickDamage, ToHitValue, Success, KICK_ATTACK, Direction, Critical, ForceHit)) {
-    case HAS_HIT:
-    case HAS_BLOCKED:
-    case DID_NO_DAMAGE:
-      if (IsEnabled() && !CheckBalance(KickDamage)) {
-        if (IsPlayer()) ADD_MESSAGE("The kick throws you off balance.");
-        else if (Kicker->IsPlayer()) ADD_MESSAGE("The kick throws %s off balance.", CHAR_DESCRIPTION(DEFINITE));
-        v2 FallToPos = GetPos()+game::GetMoveVector(Direction);
-        FallTo(Kicker, FallToPos);
-      }
+  auto hitres = (TakeHit(Kicker, Boot, Leg, HitPos, KickDamage, ToHitValue, Success, KICK_ATTACK, Direction, Critical, ForceHit));
+  if (hitres == HAS_HIT || hitres == HAS_BLOCKED || hitres == DID_NO_DAMAGE) {
+    if (IsEnabled() && !CheckBalance(KickDamage)) {
+           if (IsPlayer()) ADD_MESSAGE("The kick throws you off balance.");
+      else if (Kicker->IsPlayer()) ADD_MESSAGE("The kick throws %s off balance.", CHAR_DESCRIPTION(DEFINITE));
+      v2 FallToPos = GetPos()+game::GetMoveVector(Direction);
+      FallTo(Kicker, FallToPos);
+    }
   }
 }
 

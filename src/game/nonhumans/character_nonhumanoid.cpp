@@ -220,15 +220,13 @@ void nonhumanoid::UnarmedHit (character *Enemy, v2 HitPos, int Direction, truth 
   EditNP(-50);
   EditAP(-GetUnarmedAPCost());
   EditStamina(-10000/GetAttribute(ARM_STRENGTH), false);
-  switch (Enemy->TakeHit(this, 0, GetTorso(), HitPos, GetUnarmedDamage(), GetUnarmedToHitValue(), RAND()%26-RAND()%26, UNARMED_ATTACK, Direction, !(RAND()%GetCriticalModifier()), ForceHit)) {
-    case HAS_HIT:
-    case HAS_BLOCKED:
-    case HAS_DIED:
-    case DID_NO_DAMAGE:
-      EditExperience(ARM_STRENGTH, 150, 1<<8);
-      //k8bug: forgotten 'break' here?
-    case HAS_DODGED:
-      EditExperience(DEXTERITY, 75, 1<<8);
+  auto hitres = (Enemy->TakeHit(this, 0, GetTorso(), HitPos, GetUnarmedDamage(), GetUnarmedToHitValue(), RAND()%26-RAND()%26, UNARMED_ATTACK, Direction, !(RAND()%GetCriticalModifier()), ForceHit));
+  if (hitres == HAS_HIT || hitres == HAS_BLOCKED || hitres == HAS_DIED || hitres == DID_NO_DAMAGE) {
+    EditExperience(ARM_STRENGTH, 150, 1<<8);
+    //k8bug: forgotten 'break' here?
+    EditExperience(DEXTERITY, 75, 1<<8);
+  } if (hitres == HAS_DODGED) {
+    EditExperience(DEXTERITY, 75, 1<<8);
   }
 }
 

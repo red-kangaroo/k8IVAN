@@ -392,22 +392,16 @@ void arm::Hit(character* Enemy, v2 HitPos, int Direction, int Flags)
     THW = TwoHandWieldIsActive();
   }
 
-  switch(Enemy->TakeHit(Master, Wielded ? Wielded : GetGauntlet(), this, HitPos, GetTypeDamage(Enemy), GetToHitValue(), RAND() % 26 - RAND() % 26, Wielded ? WEAPON_ATTACK : UNARMED_ATTACK, Direction, !(RAND() % Master->GetCriticalModifier()), Flags & SADIST_HIT))
-  {
-   case HAS_HIT:
-   case HAS_BLOCKED:
-   case HAS_DIED:
-   case DID_NO_DAMAGE:
-    EditExperience(ARM_STRENGTH, StrExp, 1 << 9);
-
-    if(THW && GetPairArm())
-      GetPairArm()->EditExperience(ARM_STRENGTH, StrExp, 1 << 9);
-
-   case HAS_DODGED:
+  auto hitres = Enemy->TakeHit(Master, Wielded ? Wielded : GetGauntlet(), this, HitPos, GetTypeDamage(Enemy), GetToHitValue(), RAND() % 26 - RAND() % 26, Wielded ? WEAPON_ATTACK : UNARMED_ATTACK, Direction, !(RAND() % Master->GetCriticalModifier()), Flags & SADIST_HIT);
+  if (hitres == HAS_HIT || hitres == HAS_BLOCKED || hitres == HAS_DIED || hitres == DID_NO_DAMAGE || hitres == HAS_DODGED) {
+    if (hitres != HAS_DODGED) {
+      // success hit increases arm strength
+      EditExperience(ARM_STRENGTH, StrExp, 1 << 9);
+      if (THW && GetPairArm()) GetPairArm()->EditExperience(ARM_STRENGTH, StrExp, 1 << 9);
+    }
+    // dodged part
     EditExperience(DEXTERITY, DexExp, 1 << 9);
-
-    if(THW && GetPairArm())
-      GetPairArm()->EditExperience(DEXTERITY, DexExp, 1 << 9);
+    if (THW && GetPairArm()) GetPairArm()->EditExperience(DEXTERITY, DexExp, 1 << 9);
   }
 }
 
