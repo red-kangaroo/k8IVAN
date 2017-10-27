@@ -129,7 +129,7 @@ public:
   void UpdateRandMap (sLong, truth);
   void InitRandMap ();
   v2 RandomizePixel () const;
-  void AlphaPutPixel (int, int, col16, col24, alpha);
+  void AlphaPutPixel (int x, int y, col16 SrcCol, col24 Luminance, alpha Alpha);
   void AlphaPutPixel (v2 Pos, col16 Color, col24 Luminance, alpha Alpha) { AlphaPutPixel(Pos.X, Pos.Y, Color, Luminance, Alpha); }
   void CalculateRandMap ();
   alpha CalculateAlphaAverage () const;

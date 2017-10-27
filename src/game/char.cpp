@@ -7625,16 +7625,18 @@ void character::SignalPossibleTransparencyChange () {
 
 int character::GetCursorData () const {
   int Bad = 0;
-  int Color = game::PlayerIsRunning() ? BLUE_CURSOR : DARK_CURSOR;
+  int Color = (game::PlayerIsRunning() ? BLUE_CURSOR : DARK_CURSOR);
   for (int c = 0; c < BodyParts; ++c) {
     bodypart *BodyPart = GetBodyPart(c);
     if (BodyPart && BodyPart->IsUsable()) {
       int ConditionColorIndex = BodyPart->GetConditionColorIndex();
       if ((BodyPartIsVital(c) && !ConditionColorIndex) || (ConditionColorIndex <= 1 && ++Bad == 2)) return Color|CURSOR_FLASH;
-    } else if (++Bad == 2) return Color|CURSOR_FLASH;
+    } else if (++Bad == 2) {
+      return Color|CURSOR_FLASH;
+    }
   }
-  Color = game::PlayerIsRunning() ? YELLOW_CURSOR : RED_CURSOR;
-  return Bad ? Color|CURSOR_FLASH : Color;
+  Color = (game::PlayerIsRunning() ? YELLOW_CURSOR : RED_CURSOR);
+  return (Bad ? Color|CURSOR_FLASH : Color);
 }
 
 

@@ -1880,6 +1880,7 @@ void bitmap::CalculateRandMap () {
 
 
 void bitmap::AlphaPutPixel (int x, int y, col16 SrcCol, col24 Luminance, alpha Alpha) {
+  if (x < 0 || y < 0 || x >= mSize.X || y >= mSize.Y) return;
   int DestCol = Image[y][x];
   int NewRedLuminance = (Luminance >> 7 & 0x1F800) - 0x10000;
   int NewGreenLuminance = (Luminance >> 4 & 0xFE0) - 0x800;

@@ -114,47 +114,56 @@ void igraph::DeInit()
   delete BackGround;
 }
 
-void igraph::DrawCursor(v2 Pos, int CursorData, int Index)
-{
-  /* Inefficient gum solution */
 
-  blitdata BlitData = { DOUBLE_BUFFER,
-      { 0, 0 },
-      { Pos.X, Pos.Y },
-      { TILE_SIZE, TILE_SIZE },
-      { ivanconfig::GetContrastLuminance() },
-      TRANSPARENT_COLOR,
-      0 };
+void igraph::DrawCursor (v2 Pos, int CursorData, int Index) {
+  /* Inefficient gum solution */
+  blitdata BlitData = {
+    DOUBLE_BUFFER,
+    { 0, 0 },
+    { Pos.X, Pos.Y },
+    { TILE_SIZE, TILE_SIZE },
+    { ivanconfig::GetContrastLuminance() },
+    TRANSPARENT_COLOR,
+    0
+  };
 
   bitmap* CursorBitmap;
   int SrcX = 0;
 
-  if(CursorData & CURSOR_BIG)
-  {
+  if (CursorData&CURSOR_BIG) {
     CursorBitmap = BigCursor[CursorData&~CURSOR_FLAGS];
     BlitData.Src.X = SrcX = (Index & 1) << 4;
     BlitData.Src.Y = (Index & 2) << 3;
-  }
-  else
+  } else {
     CursorBitmap = Cursor[CursorData&~CURSOR_FLAGS];
+  }
 
-  if(!(CursorData & (CURSOR_FLASH|CURSOR_TARGET)))
-  {
+  if (CursorData&CURSOR_SHADE) {
+    //auto sz = CursorBitmap->GetSize();
+    int xmul = (((GET_TICK()<<2)/3)>>4)%2;
+    for (int dy = 0; dy < 16; ++dy) {
+      for (int dx = 0; dx < 16; ++dx) {
+        DOUBLE_BUFFER->AlphaPutPixel(Pos.X+dx, Pos.Y+dy, MakeRGB16(255, 127, 0), MakeRGB24(255, 127, 0), 160*xmul);
+      }
+    }
+  }
+
+  if (!(CursorData&(CURSOR_FLASH|CURSOR_TARGET))) {
     CursorBitmap->LuminanceMaskedBlit(BlitData);
     return;
   }
 
-  if(!(CursorData & CURSOR_TARGET))
-  {
+  if (!(CursorData&CURSOR_TARGET)) {
     int Tick = GET_TICK() & 31;
     CursorBitmap->FillAlpha(95 + 10 * abs(Tick - 16));
     CursorBitmap->AlphaLuminanceBlit(BlitData);
     return;
   }
 
-  int Tick = (GET_TICK() << 2) / 3;
-  int Frame = (Tick >> 4) % 3;
-  int Base = Frame << 4;
+
+  int Tick = (GET_TICK()<<2)/3;
+  int Frame = (Tick >> 4)%3;
+  int Base = Frame<<4;
   BlitData.Src.X = SrcX + (CursorData & CURSOR_BIG ? Base << 1 : Base);
   CursorBitmap->FillAlpha(255 - (Tick & 0xF) * 16);
   CursorBitmap->AlphaLuminanceBlit(BlitData);
@@ -163,6 +172,7 @@ void igraph::DrawCursor(v2 Pos, int CursorData, int Index)
   CursorBitmap->FillAlpha((Tick & 0xF) * 16);
   CursorBitmap->AlphaLuminanceBlit(BlitData);
 }
+
 
 tilemap::iterator igraph::AddUser(const graphicid& GI)
 {

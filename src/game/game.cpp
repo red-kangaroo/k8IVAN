@@ -715,6 +715,7 @@ void game::DrawEverythingNoBlit (truth AnimationDraw) {
 
   if (OnScreen(CursorPos)) {
     v2 ScreenCoord = CalculateScreenCoordinates(CursorPos);
+
     blitdata B = {
       DOUBLE_BUFFER,
       { 0, 0 },
@@ -738,7 +739,7 @@ void game::DrawEverythingNoBlit (truth AnimationDraw) {
       DOUBLE_BUFFER->StretchBlit(B);
     }
 
-    igraph::DrawCursor(ScreenCoord, CursorData);
+    igraph::DrawCursor(ScreenCoord, CursorData|CURSOR_SHADE);
   }
 
   if (Player->IsEnabled()) {
@@ -1300,13 +1301,18 @@ v2 game::PositionQuestion (cfestring &Topic, v2 CursorPos, void (*Handler)(v2), 
   SetDoZoom(Zoom);
   v2 Return;
   CursorData = RED_CURSOR;
+  auto stpos = CursorPos;
   if (Handler) Handler(CursorPos);
   for (;;) {
     square *Square = GetCurrentArea()->GetSquare(CursorPos);
     if (!Square->HasBeenSeen() &&
         (!Square->GetCharacter() || !Square->GetCharacter()->CanBeSeenByPlayer()) &&
-        !GetSeeWholeMapCheatMode()) DOUBLE_BUFFER->Fill(CalculateScreenCoordinates(CursorPos), TILE_V2, BLACK);
-    else GetCurrentArea()->GetSquare(CursorPos)->SendStrongNewDrawRequest();
+        !GetSeeWholeMapCheatMode())
+    {
+      DOUBLE_BUFFER->Fill(CalculateScreenCoordinates(CursorPos), TILE_V2, BLACK);
+    } else {
+      GetCurrentArea()->GetSquare(CursorPos)->SendStrongNewDrawRequest();
+    }
 
     if (Key == ' ' || Key == '.' || Key == KEY_NUMPAD_5) { Return = CursorPos; break; }
     if (Key == KEY_ESC) { Return = ERROR_V2; break; }
@@ -1324,6 +1330,13 @@ v2 game::PositionQuestion (cfestring &Topic, v2 CursorPos, void (*Handler)(v2), 
       if (CursorPos == ERROR_V2 || CursorPos == ABORT_V2) {
         Return = CursorPos;
         break;
+      }
+      // return back to start
+      if (Key == 'H') {
+        if (CursorPos != stpos) {
+          CursorPos = stpos;
+          if (Handler) Handler(CursorPos);
+        }
       }
     }
 
@@ -2856,7 +2869,7 @@ void game::NameQuestion () {
 
 void game::PetHandler (v2 CursorPos) {
   character *Char = CurrentArea->GetSquare(CursorPos)->GetCharacter();
-  if (Char && Char->CanBeSeenByPlayer() && Char->IsPet() && !Char->IsPlayer()) CursorData = RED_CURSOR|CURSOR_TARGET;
+  if (Char && Char->CanBeSeenByPlayer() && Char->IsPet() && !Char->IsPlayer()) CursorData = RED_CURSOR|CURSOR_TARGET|CURSOR_SHADE;
   else CursorData = RED_CURSOR;
   if (Char && !Char->IsPlayer() && Char->IsPet()) LastPetUnderCursor = Char;
 }
@@ -2864,7 +2877,7 @@ void game::PetHandler (v2 CursorPos) {
 
 v2 game::CommandKeyHandler (v2 CursorPos, int Key) {
   if (SelectPet(Key)) return LastPetUnderCursor->GetPos();
-  if (Key == 'a' || Key == 'A') return CommandAll() ? ABORT_V2 : ERROR_V2;
+  if (Key == 'a' || Key == 'A') return (CommandAll() ? ABORT_V2 : ERROR_V2);
   return CursorPos;
 }
 
@@ -2999,9 +3012,9 @@ void game::InitAttributeMemory () {
 
 void game::TeleportHandler (v2 CursorPos) {
   if ((CursorPos-Player->GetPos()).GetLengthSquare() > Player->GetTeleportRangeSquare())
-    CursorData = BLUE_CURSOR|CURSOR_TARGET;
+    CursorData = BLUE_CURSOR|CURSOR_TARGET|CURSOR_SHADE;
   else
-    CursorData = RED_CURSOR|CURSOR_TARGET;
+    CursorData = RED_CURSOR|CURSOR_TARGET|CURSOR_SHADE;
 }
 
 
