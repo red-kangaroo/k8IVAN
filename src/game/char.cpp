@@ -2883,13 +2883,16 @@ void character::GoOn (go *Go, truth FirstStep) {
   int Squares = CalculateNewSquaresUnder(MoveToSquare, GetPos()+MoveVector);
   int moveDir = game::MoveVectorToDirection(MoveVector);
   //
-  if (!Squares || !CanMoveOn(MoveToSquare[0])) {
+  if (Squares == 0 || !CanMoveOn(MoveToSquare[0])) {
     dirlogf("just can't move\n");
     Go->Terminate(false);
     return;
   }
-  //
-  if (!FirstStep) {
+
+  if (FirstStep) {
+    // first step: mark all adjacent items as seen
+    MarkAdjacentItemsAsSeen(GetPos());
+  } else {
     // not a first step
 
     // check for corridor<->open place
@@ -2915,9 +2918,6 @@ void character::GoOn (go *Go, truth FirstStep) {
       Go->Terminate(false);
       return;
     }
-  } else {
-    // first step: mark all adjacent items as seen
-    MarkAdjacentItemsAsSeen(GetPos());
   }
 
   // if the state modified the direction, move and stop
@@ -2978,8 +2978,6 @@ void character::GoOn (go *Go, truth FirstStep) {
         return;
       }
     }
-  } else {
-    // first step, just do it
   }
 
   // now try to perform the move
@@ -3041,7 +3039,7 @@ void character::GoOn (go *Go, truth FirstStep) {
         for (int c = 0; c < sq2; ++c) {
           lsquare *Square = MoveToSquare2[c];
           if (IsPlayer()) {
-            if (Square->HasBeenSeen()) continue;
+            if (!Square->HasBeenSeen()) continue;
           } else {
             if (!Square->CanBeSeenBy(this)) continue;
           }

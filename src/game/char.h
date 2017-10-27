@@ -455,7 +455,7 @@ public:
   truth IsInTunnelDeadEnd () const;
   truth IsDangerousSquare (v2 pos) const;
   void MarkAdjacentItemsAsSeen (v2 pos);
-  void GoOn (go *, truth = false);
+  void GoOn (go *Go, truth FirstStep=false);
   virtual truth CheckKick () const;
   virtual int OpenMultiplier () const { return 2; }
   virtual int CloseMultiplier () const { return 2; }
