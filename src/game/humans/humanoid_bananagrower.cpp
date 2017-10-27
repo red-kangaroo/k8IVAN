@@ -66,7 +66,7 @@ void bananagrower::RandomizeProfession()
     Profession = CONST_S("an alchemist");
     break;
    case 6:
-    Profession = CONST_S("a renown mathematician");
+    Profession = CONST_S("a renowned mathematician");
     break;
    case 7:
     Profession = CONST_S("a priest of Silva");
