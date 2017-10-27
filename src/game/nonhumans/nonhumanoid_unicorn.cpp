@@ -43,7 +43,7 @@ int unicorn::TakeHit(character* Enemy, item* Weapon, bodypart* EnemyBodyPart, v2
      && (StateIsActivated(PANIC)
    || (RAND() & 1 && IsInBadCondition())
    || !(RAND() & 7)))
-    MonsterTeleport("neighs in terror");
+    MonsterTeleport(" in terror");
 
   return Return;
 }
@@ -52,13 +52,13 @@ int unicorn::TakeHit(character* Enemy, item* Weapon, bodypart* EnemyBodyPart, v2
 
 void unicorn::MonsterTeleport(cchar* NeighMsg)
 {
-  if(CanBeSeenByPlayer())
-    ADD_MESSAGE("%s %s and disappears!", CHAR_NAME(DEFINITE), NeighMsg);
+       if (IsPlayer()) ADD_MESSAGE("You neigh%s and disappear.", NeighMsg);
+  else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s neighs%s and disappears!", CHAR_NAME(DEFINITE), NeighMsg);
 
   Move(GetLevel()->GetRandomSquare(this), true);
 
-  if(CanBeSeenByPlayer())
-    ADD_MESSAGE("Suddenly %s appears from nothing!", CHAR_NAME(INDEFINITE));
+       if (IsPlayer()) ADD_MESSAGE("You reappear.");
+  else if(CanBeSeenByPlayer()) ADD_MESSAGE("Suddenly %s appears from nothing!", CHAR_NAME(INDEFINITE));
 
   EditAP(-1000);
 }
