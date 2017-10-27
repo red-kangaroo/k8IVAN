@@ -14,8 +14,7 @@ protected:
 #else
 
 
-
-col16 noxiousorchid::GetTorsoSpecialColor() const {
+col16 noxiousorchid::GetTorsoSpecialColor () const {
   if (!GetConfig()) return MakeRGB16(125+RAND()%100, RAND()%125, RAND()%100);
   if (GetConfig() == GREATER) return MakeRGB16(100+RAND()%100, RAND()%100, 155+RAND()%100);
   // giant
@@ -23,11 +22,9 @@ col16 noxiousorchid::GetTorsoSpecialColor() const {
 }
 
 
-
 void noxiousorchid::PostConstruct () {
   //GetTorso()->GetMainMaterial()->SetSpoilCounter(200+RAND_N(100));
 }
-
 
 
 void noxiousorchid::CreateCorpse (lsquare *Square) {
@@ -35,7 +32,6 @@ void noxiousorchid::CreateCorpse (lsquare *Square) {
   //for(int c = 0; c < Amount; ++c) Square->AddItem(kiwi::Spawn());
   nonhumanoid::CreateCorpse(Square);
 }
-
 
 
 truth noxiousorchid::Hit (character *Enemy, v2 HitPos, int Direction, int Flags) {
@@ -48,37 +44,35 @@ truth noxiousorchid::Hit (character *Enemy, v2 HitPos, int Direction, int Flags)
       ADD_MESSAGE("%s hits %s.", CHAR_DESCRIPTION(DEFINITE), Enemy->CHAR_DESCRIPTION(DEFINITE));
     }
     //
-    switch (GetConfig()) {
-      case 0:
-        switch (RAND() % 48) {
-          case 0: Fluid = liquid::Spawn(ANTIDOTE_LIQUID, 15+RAND()%25); break;
-          case 1: case 2: case 3: case 4: Fluid = liquid::Spawn(POISON_LIQUID, 15+RAND()%25); break;
-          case 5: Fluid = liquid::Spawn(LIQUID_HORROR, 15+RAND()%25); break;
-          case 6: case 7: case 8: Fluid = liquid::Spawn(SULPHURIC_ACID, 15+RAND()%25); break;
-          default: break;
-        };
-        break;
-      case GREATER:
-        switch (RAND()%24) {
-          case 0: Fluid = liquid::Spawn(ANTIDOTE_LIQUID, 25+RAND()%25); break;
-          case 1: case 2: case 3: case 4: Fluid = liquid::Spawn(POISON_LIQUID, 25+RAND()%25); break;
-          case 5: Fluid = liquid::Spawn(LIQUID_HORROR, 25+RAND()%25); break;
-          case 6: case 7: case 8: Fluid = liquid::Spawn(SULPHURIC_ACID, 25+RAND()%25); break;
-          default: break;
-        };
-        break;
-      case GIANTIC:
-        switch (RAND()%24) {
-          case 0: Fluid = liquid::Spawn(ANTIDOTE_LIQUID, 50+RAND()%50); break;
-          case 1: Fluid = liquid::Spawn(YELLOW_SLIME, 50+RAND()%50); break;
-          case 2: case 3: case 4: Fluid = liquid::Spawn(POISON_LIQUID, 50+RAND()%50); break;
-          case 5: Fluid = liquid::Spawn(LIQUID_HORROR, 50+RAND()%50); break;
-          case 6: case 7: case 8: Fluid = liquid::Spawn(SULPHURIC_ACID, 50+RAND()%50); break;
-          case 9: Fluid = liquid::Spawn(MUSTARD_GAS_LIQUID, 50+RAND()%50); break;
-          default: break;
-        };
-        break;
-      default: break; //Fluid = liquid::Spawn(WATER, 25+RAND()%25); break;
+    auto cfg = GetConfig();
+    if (cfg == 0) {
+      switch (RAND() % 48) {
+        case 0: Fluid = liquid::Spawn(ANTIDOTE_LIQUID, 15+RAND()%25); break;
+        case 1: case 2: case 3: case 4: Fluid = liquid::Spawn(POISON_LIQUID, 15+RAND()%25); break;
+        case 5: Fluid = liquid::Spawn(LIQUID_HORROR, 15+RAND()%25); break;
+        case 6: case 7: case 8: Fluid = liquid::Spawn(SULPHURIC_ACID, 15+RAND()%25); break;
+        default: break;
+      }
+    } else if (cfg == GREATER) {
+      switch (RAND()%24) {
+        case 0: Fluid = liquid::Spawn(ANTIDOTE_LIQUID, 25+RAND()%25); break;
+        case 1: case 2: case 3: case 4: Fluid = liquid::Spawn(POISON_LIQUID, 25+RAND()%25); break;
+        case 5: Fluid = liquid::Spawn(LIQUID_HORROR, 25+RAND()%25); break;
+        case 6: case 7: case 8: Fluid = liquid::Spawn(SULPHURIC_ACID, 25+RAND()%25); break;
+        default: break;
+      }
+    } else if (cfg == GIANTIC) {
+      switch (RAND()%24) {
+        case 0: Fluid = liquid::Spawn(ANTIDOTE_LIQUID, 50+RAND()%50); break;
+        case 1: Fluid = liquid::Spawn(YELLOW_SLIME, 50+RAND()%50); break;
+        case 2: case 3: case 4: Fluid = liquid::Spawn(POISON_LIQUID, 50+RAND()%50); break;
+        case 5: Fluid = liquid::Spawn(LIQUID_HORROR, 50+RAND()%50); break;
+        case 6: case 7: case 8: Fluid = liquid::Spawn(SULPHURIC_ACID, 50+RAND()%50); break;
+        case 9: Fluid = liquid::Spawn(MUSTARD_GAS_LIQUID, 50+RAND()%50); break;
+        default: break;
+      }
+    } else {
+      //Fluid = liquid::Spawn(WATER, 25+RAND()%25); break;
     }
     //
     if (Fluid) {
@@ -99,7 +93,6 @@ truth noxiousorchid::Hit (character *Enemy, v2 HitPos, int Direction, int Flags)
 }
 
 
-
 void noxiousorchid::GetAICommand () {
   SeekLeader(GetLeader());
   if (FollowLeader(GetLeader())) return;
@@ -108,4 +101,6 @@ void noxiousorchid::GetAICommand () {
   if (MoveRandomly()) return;
   EditAP(-1000);
 }
+
+
 #endif

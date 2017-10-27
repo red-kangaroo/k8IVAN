@@ -441,7 +441,7 @@ flesh
     AttachedGod = MORTIFER;
   }
 
-  Config WERE_WOLF_FLESH;
+  Config WEREWOLF_FLESH;
   {
     NameStem = "werewolf flesh";
     Effect = EFFECT_LYCANTHROPY;

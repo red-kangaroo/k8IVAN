@@ -27,7 +27,7 @@ werewolfhuman
   KnownCWeaponSkills == UNARMED;
   CWeaponSkillHits == 200;
   BaseUnarmedStrength = 300;
-  FleshMaterial = WERE_WOLF_FLESH;
+  FleshMaterial = WEREWOLF_FLESH;
   AttachedGod = INFUSCOR;
   UndeadVersions = false;
   HostileReplies :=

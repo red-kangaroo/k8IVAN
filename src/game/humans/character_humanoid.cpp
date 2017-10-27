@@ -1877,17 +1877,18 @@ truth humanoid::SpecialBiteEffect (character *Victim, v2 HitPos, int BodyPartInd
       }
       return Victim->ReceiveBodyPartDamage(this, 8+(RAND()%9), DRAIN, BodyPartIndex, Direction);
       */
-      if (IsPlayer())
+      if (IsPlayer()) {
         ADD_MESSAGE("You drain some precious lifeblood from %s!", Victim->CHAR_DESCRIPTION(DEFINITE));
-      else if (Victim->IsPlayer() || Victim->CanBeSeenByPlayer() || CanBeSeenByPlayer())
+      } else if (Victim->IsPlayer() || Victim->CanBeSeenByPlayer() || CanBeSeenByPlayer()) {
         ADD_MESSAGE("%s drains some precious lifeblood from %s!", CHAR_DESCRIPTION(DEFINITE), Victim->CHAR_DESCRIPTION(DEFINITE));
+      }
 
-      if (Victim->IsHumanoid() && !Victim->StateIsActivated(VAMPIRISM) && !Victim->StateIsActivated(LYCANTHROPY)) {
+      if (Victim->IsHumanoid() && !Victim->StateIsActivated(VAMPIRISM) && !Victim->StateIsActivated(LYCANTHROPY) && !Victim->StateIsActivated(DISEASE_IMMUNITY)) {
         Victim->BeginTemporaryState(VAMPIRISM, 2000 + RAND_N(500));
       }
 
       // HP recieved is about half the damage done; against werewolves this is full
-      int DrainDamage = (DoneDamage >> 1) + 1;
+      int DrainDamage = (DoneDamage>>1)+1;
       if (Victim->StateIsActivated(LYCANTHROPY)) DrainDamage = DoneDamage+1;
 
       // To perpetuate vampirism, simply keep doing drain attacks

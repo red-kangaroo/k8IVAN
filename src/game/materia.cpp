@@ -89,7 +89,7 @@ truth material::Effect(character* Char, int BodyPart, sLong Amount)
    case EFFECT_PEPSI: Char->ReceivePepsi(Amount); break;
    case EFFECT_KOBOLD_FLESH: Char->ReceiveKoboldFlesh(Amount); break;
    case EFFECT_HEAL: Char->ReceiveHeal(Amount); break;
-   case EFFECT_LYCANTHROPY: Char->BeginTemporaryState(LYCANTHROPY, Amount); break;
+   case EFFECT_LYCANTHROPY: if (!Char->StateIsActivated(DISEASE_IMMUNITY)) Char->BeginTemporaryState(LYCANTHROPY, Amount); break;
    case EFFECT_SCHOOL_FOOD: Char->ReceiveSchoolFood(Amount); break;
    case EFFECT_ANTIDOTE: Char->ReceiveAntidote(Amount); break;
    case EFFECT_CONFUSE: Char->BeginTemporaryState(CONFUSED, Amount); break;
@@ -99,26 +99,21 @@ truth material::Effect(character* Char, int BodyPart, sLong Amount)
    case EFFECT_MAGIC_MUSHROOM:
     {
       v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
-      Char->ActivateRandomState(SRC_MAGIC_MUSHROOM, Amount,
-        Volume % 250 + Pos.X + Pos.Y + 1);
+      Char->ActivateRandomState(SRC_MAGIC_MUSHROOM, Amount, Volume%250+Pos.X+Pos.Y+1);
       break;
     }
-   case EFFECT_TRAIN_PERCEPTION:
-    Char->EditExperience(PERCEPTION, Amount, 1 << 14);
-    break;
+   case EFFECT_TRAIN_PERCEPTION: Char->EditExperience(PERCEPTION, Amount, 1<<14); break;
    case EFFECT_HOLY_BANANA: Char->ReceiveHolyBanana(Amount); break;
    case EFFECT_EVIL_WONDER_STAFF_VAPOUR:
     {
       v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
-      Char->ActivateRandomState(SRC_EVIL, Amount,
-        Volume % 250 + Pos.X + Pos.Y + 1);
+      Char->ActivateRandomState(SRC_EVIL, Amount, Volume%250+Pos.X+Pos.Y+1);
       break;
     }
    case EFFECT_GOOD_WONDER_STAFF_VAPOUR:
     {
       v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
-      Char->ActivateRandomState(SRC_GOOD, Amount,
-        Volume % 250 + Pos.X + Pos.Y + 1);
+      Char->ActivateRandomState(SRC_GOOD, Amount, Volume%250+Pos.X+Pos.Y+1);
       break;
     }
    case EFFECT_PEA_SOUP: Char->ReceivePeaSoup(Amount); break;
@@ -129,8 +124,7 @@ truth material::Effect(character* Char, int BodyPart, sLong Amount)
    case EFFECT_MUSHROOM:
     {
       v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
-      Char->ActivateRandomState(SRC_MUSHROOM, Amount,
-        Volume % 250 + Pos.X + Pos.Y + 1);
+      Char->ActivateRandomState(SRC_MUSHROOM, Amount, Volume%250+Pos.X+Pos.Y+1);
       break;
     }
    case EFFECT_OMMEL_CERUMEN: Char->ReceiveOmmelCerumen(Amount); break;
@@ -140,9 +134,9 @@ truth material::Effect(character* Char, int BodyPart, sLong Amount)
    case EFFECT_OMMEL_BONE: Char->ReceiveOmmelBone(Amount); break;
    case EFFECT_MUSTARD_GAS: Char->ReceiveMustardGas(BodyPart, Amount); break;
    case EFFECT_MUSTARD_GAS_LIQUID: Char->ReceiveMustardGasLiquid(BodyPart, Amount); break;
-   case EFFECT_PANIC: Char->BeginTemporaryState(PANIC, Amount); break;
+   case EFFECT_PANIC: if (!Char->StateIsActivated(FEARLESS)) Char->BeginTemporaryState(PANIC, Amount); break;
    case EFFECT_TELEPORT: Char->BeginTemporaryState(TELEPORT, Amount); break;
-   case EFFECT_VAMPIRISM: Char->BeginTemporaryState(VAMPIRISM, Amount); break;
+   case EFFECT_VAMPIRISM: if (!Char->StateIsActivated(DISEASE_IMMUNITY)) Char->BeginTemporaryState(VAMPIRISM, Amount); break;
    case EFFECT_DETECTING: Char->BeginTemporaryState(DETECTING, Amount); break;
    default: return false;
   }
@@ -283,24 +277,20 @@ material* materialprototype::SpawnAndLoad(inputfile& SaveFile) const
   return Material;
 }
 
-material* material::MakeMaterial(int Config, sLong Volume)
-{
-  if(!Config)
-    return 0;
 
-  switch(Config >> 12)
-  {
-   case SOLID_ID >> 12: return solid::Spawn(Config, Volume);
-   case ORGANIC_ID >> 12: return organic::Spawn(Config, Volume);
-   case GAS_ID >> 12: return gas::Spawn(Config, Volume);
-   case LIQUID_ID >> 12: return liquid::Spawn(Config, Volume);
-   case FLESH_ID >> 12: return flesh::Spawn(Config, Volume);
-   case POWDER_ID >> 12: return powder::Spawn(Config, Volume);
-   case IRON_ALLOY_ID >> 12: return ironalloy::Spawn(Config, Volume);
-  }
+material* material::MakeMaterial (int Config, sLong Volume) {
+  if (!Config) return 0;
 
-  ABORT("Odd material configuration number %d of volume %d requested!",
-  Config, Volume);
+  auto cfg = (Config>>12);
+  if (cfg == SOLID_ID >> 12) return solid::Spawn(Config, Volume);
+  if (cfg == ORGANIC_ID >> 12) return organic::Spawn(Config, Volume);
+  if (cfg == GAS_ID >> 12) return gas::Spawn(Config, Volume);
+  if (cfg == LIQUID_ID >> 12) return liquid::Spawn(Config, Volume);
+  if (cfg == FLESH_ID >> 12) return flesh::Spawn(Config, Volume);
+  if (cfg == POWDER_ID >> 12) return powder::Spawn(Config, Volume);
+  if (cfg == IRON_ALLOY_ID >> 12) return ironalloy::Spawn(Config, Volume);
+
+  ABORT("Odd material configuration number %d of volume %d requested!", Config, Volume);
   return 0;
 }
 
@@ -339,30 +329,30 @@ truth material::BreatheEffect(character* Enemy)
   return Effect(Enemy, TORSO_INDEX, Max<sLong>(GetVolume() / 10, 50));
 }
 
-const materialdatabase* material::GetDataBase(int Config)
-{
-  const prototype* Proto = 0;
 
-  switch(Config >> 12)
-  {
-   case SOLID_ID >> 12: Proto = &solid::ProtoType; break;
-   case ORGANIC_ID >> 12: Proto = &organic::ProtoType; break;
-   case GAS_ID >> 12: Proto = &gas::ProtoType; break;
-   case LIQUID_ID >> 12: Proto = &liquid::ProtoType; break;
-   case FLESH_ID >> 12: Proto = &flesh::ProtoType; break;
-   case POWDER_ID >> 12: Proto = &powder::ProtoType; break;
-   case IRON_ALLOY_ID >> 12: Proto = &ironalloy::ProtoType; break;
-  }
+const materialdatabase* material::GetDataBase (int Config) {
+  const prototype *Proto = 0;
 
-  const database* DataBase;
+  auto cfg = (Config >> 12);
+       if (cfg == SOLID_ID >> 12) Proto = &solid::ProtoType;
+  else if (cfg == ORGANIC_ID >> 12) Proto = &organic::ProtoType;
+  else if (cfg == GAS_ID >> 12) Proto = &gas::ProtoType;
+  else if (cfg == LIQUID_ID >> 12) Proto = &liquid::ProtoType;
+  else if (cfg == FLESH_ID >> 12) Proto = &flesh::ProtoType;
+  else if (cfg == POWDER_ID >> 12) Proto = &powder::ProtoType;
+  else if (cfg == IRON_ALLOY_ID >> 12) Proto = &ironalloy::ProtoType;
+
+  //FIXME: k8: check for nullptr `Proto`?
+
+  const database *DataBase;
   databasecreator<material>::FindDataBase(DataBase, Proto, Config);
 
-  if(DataBase)
-    return DataBase;
+  if (DataBase) return DataBase;
 
   ABORT("Odd material configuration number %d requested!", Config);
   return 0;
 }
+
 
 void material::FinishConsuming(character* Consumer)
 {

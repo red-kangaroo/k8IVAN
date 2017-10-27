@@ -133,8 +133,41 @@ const name##prototype name::ProtoType
 #define BLOATED 5
 #define OVER_FED 6
 
-#define STATES 25
+//WARNING! state count and state order MUST be synced with "define.dat"
+#define STATES 30
 
+#define POLYMORPHED  (game::GetGlobalConst("POLYMORPHED"))
+#define HASTE  (game::GetGlobalConst("HASTE"))
+#define SLOW  (game::GetGlobalConst("SLOW"))
+#define POLYMORPH_CONTROL  (game::GetGlobalConst("POLYMORPH_CONTROL"))
+#define LIFE_SAVED  (game::GetGlobalConst("LIFE_SAVED"))
+#define LYCANTHROPY  (game::GetGlobalConst("LYCANTHROPY"))
+#define INVISIBLE  (game::GetGlobalConst("INVISIBLE"))
+#define INFRA_VISION  (game::GetGlobalConst("INFRA_VISION"))
+#define ESP  (game::GetGlobalConst("ESP"))
+#define POISONED  (game::GetGlobalConst("POISONED"))
+#define TELEPORT  (game::GetGlobalConst("TELEPORT"))
+#define POLYMORPH  (game::GetGlobalConst("POLYMORPH"))
+#define TELEPORT_CONTROL  (game::GetGlobalConst("TELEPORT_CONTROL"))
+#define PANIC  (game::GetGlobalConst("PANIC"))
+#define CONFUSED  (game::GetGlobalConst("CONFUSED"))
+#define PARASITIZED  (game::GetGlobalConst("PARASITIZED"))
+#define SEARCHING  (game::GetGlobalConst("SEARCHING"))
+#define GAS_IMMUNITY  (game::GetGlobalConst("GAS_IMMUNITY"))
+#define LEVITATION  (game::GetGlobalConst("LEVITATION"))
+#define LEPROSY  (game::GetGlobalConst("LEPROSY"))
+#define HICCUPS  (game::GetGlobalConst("HICCUPS"))
+#define VAMPIRISM  (game::GetGlobalConst("VAMPIRISM"))
+#define SWIMMING  (game::GetGlobalConst("SWIMMING"))
+#define DETECTING  (game::GetGlobalConst("DETECTING"))
+#define ETHEREAL_MOVING  (game::GetGlobalConst("ETHEREAL_MOVING"))
+#define FEARLESS  (game::GetGlobalConst("FEARLESS"))
+#define POLYMORPH_LOCK  (game::GetGlobalConst("POLYMORPH_LOCK"))
+#define REGENERATION  (game::GetGlobalConst("REGENERATION"))
+#define DISEASE_IMMUNITY  (game::GetGlobalConst("DISEASE_IMMUNITY"))
+#define TELEPORT_LOCK  (game::GetGlobalConst("TELEPORT_LOCK"))
+
+/*
 #define POLYMORPHED (1 << 0)
 #define HASTE (1 << 1)
 #define SLOW (1 << 2)
@@ -160,6 +193,8 @@ const name##prototype name::ProtoType
 #define DETECTING (1 << 22)
 #define ETHEREAL_MOVING (1 << 23)
 #define FEARLESS (1 << 24)
+*/
+
 
 #define THROW_ITEM_TYPES 5
 /*ThrowFlags */
@@ -659,10 +694,10 @@ cv2 SILHOUETTE_SIZE(48, 64);
 
 /* Entry indices, not actual config defines */
 
-#define STAIRS_UP 100
-#define STAIRS_DOWN 200
-#define WAYPOINT_DEEPER 1100
-#define WAYPOINT_SHALLOWER 1200
+//#define STAIRS_UP 100
+//#define STAIRS_DOWN 200
+//#define WAYPOINT_DEEPER 1100
+//#define WAYPOINT_SHALLOWER 1200
 //#define FOUNTAIN 0xFFFF  // in confdef.h
 
 #define NO_LIMIT 0xFFFF

@@ -32,6 +32,7 @@ item
   IsPolymorphSpawnable = true;
   IsAutoInitializable = true;
   Category = MISC;
+  EnergyResistance = 0;
   FireResistance = 0;
   PoisonResistance = 0;
   ElectricityResistance = 0;

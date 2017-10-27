@@ -379,10 +379,8 @@ cchar *item::GetItemCategoryName (sLong Category) {
 int item::GetResistance (int Type) const {
   switch (Type&0xFFF) {
     case PHYSICAL_DAMAGE: return GetStrengthValue();
-    case ENERGY:
-    case DRAIN:
-    case MUSTARD_GAS_DAMAGE:
-      return 0;
+    case ENERGY: return GetEnergyResistance();
+    case DRAIN: case MUSTARD_GAS_DAMAGE: return 0;
     case FIRE: return GetFireResistance();
     case POISON: return GetPoisonResistance();
     case ELECTRICITY: return GetElectricityResistance();

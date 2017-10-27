@@ -268,4 +268,17 @@ organic /* substances that spoil but are not flesh */
     SpoilModifier = 65000;
     CommonFlags = Base&~(CAN_BE_WISHED|CAN_BE_MIRRORED);
   }
+
+  Config RESIDUUM;
+  {
+    StrengthValue = 120;
+    ConsumeType = CT_MISC_ORGANIC;
+    Density = 10000;
+    Color = rgb16(107, 255, 251);
+    NameStem = "residuum";
+    Flexibility = 10;
+    SpoilModifier = 5000;
+    AttachedGod = MORTIFER;
+    CommonFlags = Base|IS_SPARKLING|IS_VALUABLE;
+  }
 }

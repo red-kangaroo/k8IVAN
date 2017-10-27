@@ -223,7 +223,9 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
           } else {
             //fprintf(stderr, "new config %d (%s) for %s\n", ConfigNumber, inFile->numStr().CStr(), defName.CStr());
             database *ConfigDataBase = new database(*Proto->ChooseBaseForConfig(TempConfig, Configs, ConfigNumber));
-            ConfigDataBase->InitDefaults(Proto, ConfigNumber, inFile->numStr());
+            festring cfgname = inFile->numStr();
+            festring infname = inFile->GetFileName();
+            ConfigDataBase->InitDefaults(Proto, ConfigNumber, cfgname);
             TempConfig[Configs++] = ConfigDataBase;
             if (inFile->ReadWord() != "{") ABORT("'{' missing in %s datafile %s line %d!", protocontainer<type>::GetMainClassID(), inFile->GetFileName().CStr(), inFile->TokenLine());
             for (inFile->ReadWord(Word); Word != "}"; inFile->ReadWord(Word)) {
@@ -231,7 +233,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
                 collectHandler(Proto->mOnEvents, infStack, &inFile);
                 continue;
               }
-              if (!AnalyzeData(*inFile, Word, *ConfigDataBase)) ABORT("Illegal datavalue %s found while building up %s config #%d, file %s, line %d!", Word.CStr(), Proto->GetClassID(), ConfigNumber, inFile->GetFileName().CStr(), inFile->TokenLine());
+              if (!AnalyzeData(*inFile, Word, *ConfigDataBase)) ABORT("Illegal datavalue %s found while building up %s config #%d (%s), file %s, line %d!", Word.CStr(), Proto->GetClassID(), ConfigNumber, cfgname.CStr(), infname.CStr(), inFile->TokenLine());
             }
             ConfigDataBase->PostProcess();
           }
@@ -567,6 +569,7 @@ template<> void databasecreator<item>::CreateDataBaseMemberMap () {
   ADD_MEMBER(IsPolymorphSpawnable);
   ADD_MEMBER(IsAutoInitializable);
   ADD_MEMBER(Category);
+  ADD_MEMBER(EnergyResistance);
   ADD_MEMBER(FireResistance);
   ADD_MEMBER(PoisonResistance);
   ADD_MEMBER(ElectricityResistance);

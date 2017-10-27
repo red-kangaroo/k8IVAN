@@ -1,7 +1,7 @@
 palmbranch
 {
   DefaultSize = 80;
-  Possibility = 0;
+  Possibility = 1;
   Category = MISC;
   DefaultMainVolume = 4000;
   StrengthModifier = 50;
@@ -15,4 +15,5 @@ palmbranch
   AttachedGod = SILVA;
   WieldedBitmapPos = 160, 208;
   IsValuable = false;
+  AllowedDungeons := { NEW_ATTNAM, UNDER_WATER_TUNNEL; }
 }

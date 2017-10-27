@@ -917,7 +917,7 @@ solid
     AttachedGod = MORTIFER;
     NaturalForm = stone;
     IntelligenceRequirement = 150;
-    CommonFlags = Base|IS_VALUABLE;
+    CommonFlags = (Base|IS_VALUABLE)&~CAN_BE_WISHED;
     CategoryFlags = Base;
     InteractionFlags = Base;
   }
@@ -939,6 +939,25 @@ solid
     IntelligenceRequirement = 20;
     CommonFlags = Base|IS_VALUABLE;
     CategoryFlags = Base|IS_SPARKLING|IS_GOLEM_MATERIAL;
+    InteractionFlags = Base&~CAN_DISSOLVE;
+  }
+
+  Config SUN_CRYSTAL;
+  {
+    StrengthValue = 150;
+    ConsumeType = CT_MINERAL;
+    Density = 2000;
+    Color = rgb16(224, 224, 0);
+    NameStem = "sun light crystal";
+    AdjectiveStem = "crystal";
+    Alpha = 150;
+    AttachedGod = TERRA;
+    Emitation = rgb24(160, 160, 160);
+    NaturalForm = stone;
+    PriceModifier = 8000;
+    IntelligenceRequirement = 20;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = Base|IS_SPARKLING;
     InteractionFlags = Base&~CAN_DISSOLVE;
   }
 
@@ -966,9 +985,27 @@ solid
     AttachedGod = SILVA;
     NaturalForm = stick;
     SoftenedMaterial = KAURI_WOOD;
+    HardenedMaterial = SIDGURE_WOOD;
     IntelligenceRequirement = 15;
     CommonFlags = Base|IS_VALUABLE;
     CategoryFlags = Base|IS_GOLEM_MATERIAL;
+  }
+
+  Config SIDGURE_WOOD; /* magical mango tree wood */
+  {
+    StrengthValue = 225;
+    ConsumeType = CT_MISC_ORGANIC;
+    Density = 600;
+    Color = rgb16(198, 110, 46);
+    NameStem = "sidgure";
+    AttachedGod = SILVA;
+    NaturalForm = stick;
+    SoftenedMaterial = RATA_WOOD; //k8:???
+    IntelligenceRequirement = 20;
+    CommonFlags = Base|IS_VALUABLE;
+    CategoryFlags = Base|IS_GOLEM_MATERIAL;
+    //k8:not yet; FireResistance = 5;
+    InteractionFlags = Base|CAN_BURN;
   }
 
   Config ROCK_CRYSTAL;

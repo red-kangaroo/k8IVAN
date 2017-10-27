@@ -13,27 +13,6 @@ ring
   WieldedBitmapPos = 160, 368;
   TeleportPriority = 300;
 
-  Config RING_OF_ACID_RESISTANCE;
-  {
-    Possibility = 20;
-    AcidResistance = 2;
-    PostFix = "of acid resistance";
-    MainMaterialConfig == GOLD;
-    Price = 250;
-    AttachedGod = LORICATUS;
-    TeleportPriority = 1000;
-  }
-
-  Config RING_OF_ELECTRICITY_RESISTANCE;
-  {
-    Possibility = 30;
-    ElectricityResistance = 15;
-    PostFix = "of electricity resistance";
-    MainMaterialConfig == EBONY_WOOD;
-    Price = 250;
-    AttachedGod = LORICATUS;
-  }
-
   Config RING_OF_FIRE_RESISTANCE;
   {
     Possibility = 40;
@@ -42,47 +21,6 @@ ring
     MainMaterialConfig == DRAGON_HIDE;
     Price = 250;
     AttachedGod = LORICATUS;
-  }
-
-  Config RING_OF_INFRA_VISION;
-  {
-    Possibility = 10;
-    PostFix = "of infravision";
-    MainMaterialConfig == SILVER;
-    GearStates = INFRA_VISION;
-    Price = 500;
-    AttachedGod = LEGIFER;
-  }
-
-  Config RING_OF_INVISIBILITY;
-  {
-    Possibility = 1;
-    PostFix = "of invisibility";
-    MainMaterialConfig == GLASS;
-    GearStates = INVISIBLE;
-    Price = 2500;
-    AttachedGod = CLEPTIA;
-  }
-
-  Config RING_OF_POISON_RESISTANCE;
-  {
-    Possibility = 30;
-    PoisonResistance = 2;
-    PostFix = "of poison resistance";
-    MainMaterialConfig == TIN;
-    Price = 250;
-    AttachedGod = SEGES;
-  }
-
-  Config RING_OF_POLYMORPH;
-  {
-    Possibility = 30;
-    PostFix = "of polymorph";
-    MainMaterialConfig == ARCANITE;
-    GearStates = POLYMORPH;
-    Price = 250;
-    WearWisdomLimit = 15;
-    AttachedGod = SCABIES;
   }
 
   Config RING_OF_POLYMORPH_CONTROL;
@@ -96,14 +34,14 @@ ring
     Alias == "polycontrol";
   }
 
-  Config RING_OF_SEARCHING;
+  Config RING_OF_INFRA_VISION;
   {
-    Possibility = 20;
-    PostFix = "of searching";
-    MainMaterialConfig == OAK_WOOD;
+    Possibility = 10;
+    PostFix = "of infravision";
+    MainMaterialConfig == SILVER;
+    GearStates = INFRA_VISION;
     Price = 500;
     AttachedGod = LEGIFER;
-    GearStates = SEARCHING;
   }
 
   Config RING_OF_TELEPORTATION;
@@ -129,4 +67,133 @@ ring
     TeleportPriority = 1000;
     Alias == "telecontrol";
   }
+
+  Config RING_OF_POLYMORPH;
+  {
+    Possibility = 30;
+    PostFix = "of polymorph";
+    MainMaterialConfig == ARCANITE;
+    GearStates = POLYMORPH;
+    Price = 250;
+    WearWisdomLimit = 15;
+    AttachedGod = SCABIES;
+  }
+
+  Config RING_OF_POISON_RESISTANCE;
+  {
+    Possibility = 30;
+    PoisonResistance = 2;
+    PostFix = "of poison resistance";
+    MainMaterialConfig == TIN;
+    Price = 250;
+    AttachedGod = SEGES;
+  }
+
+  Config RING_OF_INVISIBILITY;
+  {
+    Possibility = 1;
+    PostFix = "of invisibility";
+    MainMaterialConfig == GLASS;
+    GearStates = INVISIBLE;
+    Price = 2500;
+    AttachedGod = CLEPTIA;
+  }
+
+  Config RING_OF_ELECTRICITY_RESISTANCE;
+  {
+    Possibility = 30;
+    ElectricityResistance = 15;
+    PostFix = "of electricity resistance";
+    MainMaterialConfig == EBONY_WOOD;
+    Price = 250;
+    AttachedGod = LORICATUS;
+  }
+
+  Config RING_OF_SEARCHING;
+  {
+    Possibility = 20;
+    PostFix = "of searching";
+    MainMaterialConfig == OAK_WOOD;
+    Price = 500;
+    AttachedGod = LEGIFER;
+    GearStates = SEARCHING;
+  }
+
+  Config RING_OF_ACID_RESISTANCE;
+  {
+    Possibility = 20;
+    AcidResistance = 2;
+    PostFix = "of acid resistance";
+    MainMaterialConfig == GOLD;
+    Price = 250;
+    AttachedGod = LORICATUS;
+    TeleportPriority = 1000;
+  }
+
+  Config RING_OF_LIGHT;
+  {
+    Possibility = 2;
+    PostFix = "of light";
+    MainMaterialConfig == SUN_CRYSTAL;
+    Price = 500;
+    AttachedGod = LEGIFER;
+  }
+
+  Config RING_OF_MAGIC_RESISTANCE;
+  {
+    Possibility = 0;
+    EnergyResistance = 15;
+    PostFix = "of magic resistance";
+    MainMaterialConfig == OCTIRON;
+    Price = 250;
+    AttachedGod = INFUSCOR;
+  }
+
+  Config RING_OF_DETECTION;
+  {
+    Possibility = 10;
+    PostFix = "of detection";
+    MainMaterialConfig == OBSIDIAN;
+    Price = 500;
+    AttachedGod = SOPHOS;
+    GearStates = DETECTING;
+    Alias == "ring of detecting";
+  }
+
+  Config RING_OF_POLYMORPH_LOCK;
+  {
+    Possibility = 0;
+    PostFix = "of unchanging";
+    MainMaterialConfig == ICE;
+    GearStates = POLYMORPH_LOCK;
+    Price = 2500;
+    AttachedGod = SEGES;
+    TeleportPriority = 1000;
+    Alias == "ring of polymorph lock";
+  }
+
+  Config RING_OF_WORM;
+  {
+    Possibility = 1;
+    AcidResistance = 100;
+    PoisonResistance = 100;
+    NameSingular = "mutated symbiotic worm-ring";
+    MainMaterialConfig == MIND_WORM_FLESH;
+    Price = 2500;
+    AttachedGod = SCABIES;
+    GearStates = PARASITIZED;
+    TeleportPriority = 500;
+    ArticleMode = FORCE_THE;
+    CanBeWished = false;
+    IsMaterialChangeable = false;
+    IsPolymorphable = false;
+    IsDestroyable = false;
+    CanBeCloned = false;
+    CanBeMirrored = true;
+    CanBeBroken = false;
+    //k8:not-here-yet:CanBeBurned = false;
+    CanBePiled = false;
+    Alias == "worm ring";
+  }
+
 }

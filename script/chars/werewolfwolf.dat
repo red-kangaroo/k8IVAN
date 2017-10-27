@@ -30,7 +30,7 @@ werewolfwolf
   CanBeWished = false;
   ClassStates = INFRA_VISION;
   PanicLevel = 0;
-  FleshMaterial = WERE_WOLF_FLESH;
+  FleshMaterial = WEREWOLF_FLESH;
   AttachedGod = INFUSCOR;
   WillCarryItems = true;
   UndeadVersions = false;

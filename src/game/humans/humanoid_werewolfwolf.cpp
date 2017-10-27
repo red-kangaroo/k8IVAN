@@ -22,7 +22,7 @@ festring werewolfwolf::GetKillName() const
 truth werewolfwolf::SpecialBiteEffect(character* Victim, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour, truth Critical, int DoneDamage) {
   if (!BlockedByArmour && Victim->IsWarmBlooded() && (!(RAND() % 2) || Critical) && !Victim->AllowSpoil()) {
     // Werewolf wolf gives lycanthropy
-    if (Victim->IsHumanoid() && !Victim->StateIsActivated(VAMPIRISM) && !Victim->StateIsActivated(LYCANTHROPY)) {
+    if (Victim->IsHumanoid() && !Victim->StateIsActivated(VAMPIRISM) && !Victim->StateIsActivated(LYCANTHROPY) && !Victim->StateIsActivated(DISEASE_IMMUNITY)) {
       Victim->BeginTemporaryState(LYCANTHROPY, 6000 + RAND_N(2000));
     }
 

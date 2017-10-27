@@ -63,6 +63,7 @@ struct statedata {
 };
 
 
+//WARNING! state count and state order MUST be synced with "define.dat"
 const statedata StateData[STATES] =
 {
   {
@@ -286,6 +287,15 @@ const statedata StateData[STATES] =
     0,
     &character::VampirismSituationDangerModifier
   }, {
+    "Swimming",
+    SECRET,
+    &character::PrintBeginSwimmingMessage,
+    &character::PrintEndSwimmingMessage,
+    &character::BeginSwimming, &character::EndSwimming,
+    0,
+    0,
+    0
+  }, {
     "Detecting",
     SECRET|(RANDOMIZABLE&~(SRC_MUSHROOM|SRC_EVIL)),
     &character::PrintBeginDetectMessage,
@@ -312,6 +322,46 @@ const statedata StateData[STATES] =
     &character::BeginFearless,
     &character::EndFearless,
     0,
+    0,
+    0
+  }, {
+    "PolymorphLocked",
+    SECRET,
+    &character::PrintBeginPolymorphLockMessage,
+    &character::PrintEndPolymorphLockMessage,
+    0,
+    0,
+    &character::PolymorphLockHandler,
+    0,
+    0
+  }, {
+    "Regenerating",
+    SECRET|(RANDOMIZABLE&~SRC_EVIL),
+    &character::PrintBeginRegenerationMessage,
+    &character::PrintEndRegenerationMessage,
+    0,
+    0,
+    0,
+    0,
+    0
+  }, {
+    "DiseaseImmunity",
+    SECRET|(RANDOMIZABLE&~SRC_EVIL),
+    &character::PrintBeginDiseaseImmunityMessage,
+    &character::PrintEndDiseaseImmunityMessage,
+    0,
+    0,
+    0,
+    0,
+    0
+  }, {
+    "TeleportLocked",
+    SECRET,
+    &character::PrintBeginTeleportLockMessage,
+    &character::PrintEndTeleportLockMessage,
+    0,
+    0,
+    &character::TeleportLockHandler,
     0,
     0
   }
@@ -415,8 +465,11 @@ truth character::MustBeRemovedFromBone () const {
 
 int character::GetMoveType () const {// return (!StateIsActivated(LEVITATION) ? DataBase->MoveType : DataBase->MoveType | FLY); }
   return
-  ((!StateIsActivated(LEVITATION) ? DataBase->MoveType : DataBase->MoveType|FLY)|
-   (!StateIsActivated(ETHEREAL_MOVING) ? DataBase->MoveType : DataBase->MoveType|ETHEREAL));
+   (!StateIsActivated(LEVITATION) ? DataBase->MoveType : DataBase->MoveType|FLY)|
+   (!StateIsActivated(ETHEREAL_MOVING) ? DataBase->MoveType : DataBase->MoveType|ETHEREAL)|
+   (!StateIsActivated(SWIMMING) ? DataBase->MoveType : DataBase->MoveType|WALK|SWIM)|
+   0
+  ;
 }
 
 
@@ -753,7 +806,7 @@ void character::Be () {
       if (!Action || Action->AllowFoodConsumption()) Hunger();
     }
     if (Stamina != MaxStamina) RegenerateStamina();
-    if (HP != MaxHP) Regenerate();
+    if (HP != MaxHP || StateIsActivated(REGENERATION)) Regenerate();
     if (Action && AP >= 1000) ActionAutoTermination();
     if (Action && AP >= 1000) {
       Action->Handle();
@@ -3180,6 +3233,7 @@ void character::ChangeSecondaryMaterial (material *, int) {
 
 void character::TeleportRandomly (truth Intentional) {
   v2 TelePos = ERROR_V2;
+  if (StateIsActivated(TELEPORT_LOCK)) { ADD_MESSAGE("You flicker for a second."); return; }
   if (StateIsActivated(TELEPORT_CONTROL)) {
     if (IsPlayer()) {
       v2 Input = game::PositionQuestion(CONST_S("Where do you wish to teleport? [direction keys move cursor, space accepts]"), GetPos(), &game::TeleportHandler, 0, false);
@@ -3563,7 +3617,16 @@ int character::GetResistance (int Type) const {
 
 
 void character::Regenerate () {
-  if (HP == MaxHP) return;
+  if (HP == MaxHP) {
+    if (StateIsActivated(REGENERATION) && !(RAND()%3000)) {
+      bodypart *NewBodyPart = GenerateRandomBodyPart();
+      if (!NewBodyPart) return;
+      NewBodyPart->SetHP(1);
+           if (IsPlayer()) ADD_MESSAGE("You grow a new %s.", NewBodyPart->GetBodyPartName().CStr());
+      else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s grows a new %s.", CHAR_NAME(DEFINITE), NewBodyPart->GetBodyPartName().CStr());
+    }
+    return;
+  }
   sLong RegenerationBonus = 0;
   truth NoHealableBodyParts = true;
   for (int c = 0; c < BodyParts; ++c) {
@@ -4045,8 +4108,8 @@ void character::DrawPanel (truth AnimationDraw) const {
   /* Make this more elegant!!! */
   switch (GetHungerState()) {
     case STARVING: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Starving"); break;
-    case VERY_HUNGRY: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Very hungry"); break;
-    case HUNGRY: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Hungry"); break;
+    case VERY_HUNGRY: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Very hungry"); break;
+    case HUNGRY: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), ORANGE, "Hungry"); break;
     case SATIATED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Satiated"); break;
     case BLOATED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Bloated"); break;
     case OVER_FED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Overfed!"); break;
@@ -4054,13 +4117,13 @@ void character::DrawPanel (truth AnimationDraw) const {
 
   switch (GetBurdenState()) {
     case OVER_LOADED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Overload!"); break;
-    case STRESSED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Stressed"); break;
+    case STRESSED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), ORANGE, "Stressed"); break;
     case BURDENED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Burdened"); break;
   }
 
   switch (GetTirednessState()) {
     case FAINTING: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Fainting"); break;
-    case EXHAUSTED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Exhausted"); break;
+    case EXHAUSTED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), ORANGE, "Exhausted"); break;
   }
 
   if (game::PlayerIsRunning()) {
@@ -4399,6 +4462,8 @@ character *character::ForceEndPolymorph () {
 
 
 void character::LycanthropyHandler () {
+  if (StateIsActivated(POLYMORPH_LOCK)) return;
+  if (GetType() == werewolfwolf::ProtoType.GetIndex()) return;
   if (!(RAND() % 2000)) {
     if (StateIsActivated(POLYMORPH_CONTROL) && !game::TruthQuestion(CONST_S("Do you wish to change into a werewolf?"))) return;
     Polymorph(werewolfwolf::Spawn(), 1000 + RAND() % 2000);
@@ -4446,6 +4511,7 @@ void character::SaveLife () {
 
 character *character::PolymorphRandomly (int MinDanger, int MaxDanger, int Time) {
   character *NewForm = 0;
+  if (StateIsActivated(POLYMORPH_LOCK)) { ADD_MESSAGE("You feel uncertain about your body for a moment."); return NewForm; }
   if (StateIsActivated(POLYMORPH_CONTROL)) {
     if (IsPlayer()) {
       if (!GetNewFormForPolymorphWithControl(NewForm)) return NewForm;
@@ -4835,6 +4901,10 @@ truth character::CanUseStethoscope (truth PrintReason) const {
 /* Effect used by at least Sophos.
  * NOTICE: Doesn't check for death! */
 void character::TeleportSomePartsAway (int NumberToTeleport) {
+  if (StateIsActivated(TELEPORT_LOCK)) {
+    if (IsPlayer()) ADD_MESSAGE("You feel very itchy for a moment.");
+    return;
+  }
   for (int c = 0; c < NumberToTeleport; ++c) {
     int RandomBodyPart = GetRandomNonVitalBodyPart();
     if (RandomBodyPart == NONE_INDEX) {
@@ -7010,7 +7080,7 @@ void character::DecreaseStateCounter (sLong State, int Counter) {
 
 
 truth character::IsImmuneToLeprosy () const {
-  return DataBase->IsImmuneToLeprosy || UseMaterialAttributes();
+  return (DataBase->IsImmuneToLeprosy || UseMaterialAttributes() || StateIsActivated(DISEASE_IMMUNITY));
 }
 
 
@@ -7481,6 +7551,7 @@ void character::CalculateEnchantments () {
 
 
 truth character::GetNewFormForPolymorphWithControl (character *&NewForm) {
+  if (StateIsActivated(POLYMORPH_LOCK)) { ADD_MESSAGE("You feel uncertain about your body for a moment."); return false; }
   festring Topic, Temp;
   NewForm = 0;
   while (!NewForm) {
@@ -7518,7 +7589,7 @@ liquid *character::CreateSweat(sLong Volume) const {
 
 
 truth character::TeleportRandomItem (truth TryToHinderVisibility) {
-  if (IsImmuneToItemTeleport()) return false;
+  if (IsImmuneToItemTeleport() || StateIsActivated(TELEPORT_LOCK)) return false;
   itemvector ItemVector;
   std::vector<sLong> PossibilityVector;
   int TotalPossibility = 0;
@@ -7656,7 +7727,7 @@ void character::PoisonedSituationDangerModifier (double &Danger) const {
 
 
 void character::PolymorphingSituationDangerModifier (double &Danger) const {
-  if (!StateIsActivated(POLYMORPH_CONTROL)) Danger *= 1.5;
+  if ((!StateIsActivated(POLYMORPH_CONTROL)) && (!StateIsActivated(POLYMORPH_LOCK))) Danger *= 1.5;
 }
 
 
@@ -8540,3 +8611,64 @@ void character::PrintEndEtherealityMessage () const {
 void character::BeginEthereality () {}
 
 void character::EndEthereality () {}
+
+
+void character::PrintBeginPolymorphLockMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel incredibly stubborn about who you are.");
+}
+
+void character::PrintEndPolymorphLockMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel more open to new ideas.");
+}
+
+void character::PolymorphLockHandler () {
+  if (TemporaryStateIsActivated(POLYMORPHED)) {
+    EditTemporaryStateCounter(POLYMORPHED, 1);
+    if (GetTemporaryStateCounter(POLYMORPHED) < 1000) EditTemporaryStateCounter(POLYMORPHED, 1);
+  }
+}
+
+void character::PrintBeginRegenerationMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("Your heart races.");
+}
+
+void character::PrintEndRegenerationMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("Your rapid heartbeat calms down.");
+}
+
+void character::PrintBeginDiseaseImmunityMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel especially healthy.");
+}
+
+void character::PrintEndDiseaseImmunityMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You develop a sudden fear of germs.");
+}
+
+void character::PrintBeginTeleportLockMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("You feel firmly planted in reality.");
+}
+
+void character::PrintEndTeleportLockMessage () const {
+  if (IsPlayer()) ADD_MESSAGE("Your mind soars far and wide.");
+}
+
+void character::TeleportLockHandler () {
+  if (StateIsActivated(TELEPORT_LOCK)) {
+    EditTemporaryStateCounter(TELEPORT_LOCK, 1);
+    if (GetTemporaryStateCounter(TELEPORT_LOCK) < 1000) EditTemporaryStateCounter(TELEPORT_LOCK, 1);
+  }
+}
+
+
+void character::PrintBeginSwimmingMessage () const {
+       if (IsPlayer())  ADD_MESSAGE("You fondly remember the sound of ocean waves.");
+  else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s looks wet.", CHAR_NAME(DEFINITE));
+}
+
+void character::PrintEndSwimmingMessage () const {
+       if (IsPlayer()) ADD_MESSAGE("You suddenly remember how you nearly drowned as a child.");
+  else if (CanBeSeenByPlayer()) ADD_MESSAGE("Suddenly %s looks less wet.", CHAR_NAME(INDEFINITE));
+}
+
+void character::BeginSwimming () {}
+void character::EndSwimming () {}

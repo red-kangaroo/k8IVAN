@@ -30,22 +30,43 @@ cloak /* armor-> */
     CloakBitmapPos = 48, 496;
   }
 
-  Config CLOAK_OF_ACID_RESISTANCE;
-  {
-    Possibility = 10;
-    PostFix = "of acid resistance";
-    Price = 250;
-    AcidResistance = 4;
-    EnchantmentPlusChance = 5;
-    TeleportPriority = 1000;
-  }
-
-  Config BROKEN|CLOAK_OF_ACID_RESISTANCE;
+  Config CLOAK_OF_INVISIBILITY;
   {
     Possibility = 1;
+    GearStates = INVISIBLE;
+    PostFix = "of invisibility";
+    Price = 2500;
+    MainMaterialConfig == LEATHER;
+    MaterialConfigChances == 100;
+    EnchantmentPlusChance = 2;
+  }
+
+  Config BROKEN|CLOAK_OF_INVISIBILITY;
+  {
+    Possibility = 2;
     BitmapPos = 64, 304;
     InElasticityPenaltyModifier = 40;
-    AcidResistance = 2;
+    Price = 500;
+    GearStates = 0;
+    EnchantmentPlusChance = 4;
+    CloakBitmapPos = 48, 496;
+  }
+
+  Config CLOAK_OF_FIRE_RESISTANCE;
+  {
+    Possibility = 20;
+    PostFix = "of fire resistance";
+    Price = 250;
+    FireResistance = 25;
+    EnchantmentPlusChance = 5;
+  }
+
+  Config BROKEN|CLOAK_OF_FIRE_RESISTANCE;
+  {
+    Possibility = 2;
+    BitmapPos = 64, 304;
+    InElasticityPenaltyModifier = 40;
+    FireResistance = 10;
     Price = 150;
     MainMaterialConfig = { 4, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR, DRAGON_HIDE; }
     MaterialConfigChances = { 4, 300, 200, 100, 50; }
@@ -75,21 +96,22 @@ cloak /* armor-> */
     CloakBitmapPos = 48, 496;
   }
 
-  Config CLOAK_OF_FIRE_RESISTANCE;
+  Config CLOAK_OF_ACID_RESISTANCE;
   {
-    Possibility = 20;
-    PostFix = "of fire resistance";
+    Possibility = 10;
+    PostFix = "of acid resistance";
     Price = 250;
-    FireResistance = 25;
+    AcidResistance = 4;
     EnchantmentPlusChance = 5;
+    TeleportPriority = 1000;
   }
 
-  Config BROKEN|CLOAK_OF_FIRE_RESISTANCE;
+  Config BROKEN|CLOAK_OF_ACID_RESISTANCE;
   {
-    Possibility = 2;
+    Possibility = 1;
     BitmapPos = 64, 304;
     InElasticityPenaltyModifier = 40;
-    FireResistance = 10;
+    AcidResistance = 2;
     Price = 150;
     MainMaterialConfig = { 4, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR, DRAGON_HIDE; }
     MaterialConfigChances = { 4, 300, 200, 100, 50; }
@@ -97,29 +119,9 @@ cloak /* armor-> */
     CloakBitmapPos = 48, 496;
   }
 
-  Config CLOAK_OF_INVISIBILITY;
-  {
-    Possibility = 1;
-    GearStates = INVISIBLE;
-    PostFix = "of invisibility";
-    Price = 2500;
-    MainMaterialConfig == LEATHER;
-    MaterialConfigChances == 100;
-    EnchantmentPlusChance = 2;
-  }
-
-  Config BROKEN|CLOAK_OF_INVISIBILITY;
-  {
-    Possibility = 2;
-    BitmapPos = 64, 304;
-    InElasticityPenaltyModifier = 40;
-    Price = 500;
-    GearStates = 0;
-    EnchantmentPlusChance = 4;
-    CloakBitmapPos = 48, 496;
-  }
-
-  Config CLOAK_OF_WERE_WOLF_FUR;
+  //k8: old
+  /*
+  Config CLOAK_OF_WEREWOLF;
   {
     Possibility = 5;
     NameSingular = "werewolf fur cloak";
@@ -128,8 +130,27 @@ cloak /* armor-> */
     EnchantmentPlusChance = 5;
     Alias == "werewolf fur cloak";
   }
+  */
 
-  Config BROKEN|CLOAK_OF_WERE_WOLF_FUR;
+  //k8: community
+  Config CLOAK_OF_WEREWOLF;
+  {
+    Possibility = 1;
+    NameSingular = "werewolf fur cloak";
+    MainMaterialConfig == LEATHER;
+    MaterialConfigChances == 100;
+    GearStates = LYCANTHROPY|REGENERATION;
+    EnchantmentPlusChance = 5;
+    ArticleMode = FORCE_THE;
+    CanBeWished = false;
+    IsMaterialChangeable = false;
+    IsPolymorphable = false;
+    CanBeCloned = false;
+    CanBeMirrored = true;
+    CanBePiled = false;
+  }
+
+  Config BROKEN|CLOAK_OF_WEREWOLF;
   {
     Possibility = 0;
     BitmapPos = 64, 304;
@@ -159,5 +180,131 @@ cloak /* armor-> */
     //k8:not-here-yet:CanBeBurned = false;
     ArticleMode = FORCE_THE;
     CanBeEnchanted = false;
+  }
+
+  Config CLOAK_OF_ORCS;
+  {
+    Possibility = 1;
+    NameSingular = "mantle";
+    PostFix = "of Al-Khan";
+    MainMaterialConfig == SPIDER_SILK;
+    MaterialConfigChances == 100;
+    GearStates = INVISIBLE|TELEPORT;
+    AffectsEndurance = true;
+    BaseEnchantment = 1;
+    EnchantmentPlusChance = 5;
+    ArticleMode = FORCE_THE;
+    CanBeWished = false;
+    IsMaterialChangeable = false;
+    IsPolymorphable = false;
+    CanBeCloned = false;
+    CanBeMirrored = true;
+    CanBePiled = false;
+  }
+
+  Config BROKEN|CLOAK_OF_ORCS;
+  {
+    Possibility = 0;
+    BitmapPos = 64, 304;
+    InElasticityPenaltyModifier = 40;
+    GearStates = 0;
+    EnchantmentPlusChance = 10;
+    CloakBitmapPos = 48, 496;
+    AffectsEndurance = false;
+  }
+
+  Config CLOAK_OF_FLYING;
+  {
+    Possibility = 0;
+    GearStates = LEVITATION;
+    PostFix = "of flying";
+    Price = 2500;
+    MainMaterialConfig == OMMEL_HAIR;
+    MaterialConfigChances == 100;
+    EnchantmentPlusChance = 2;
+  }
+
+  Config BROKEN|CLOAK_OF_FLYING;
+  {
+    Possibility = 0;
+    BitmapPos = 64, 304;
+    InElasticityPenaltyModifier = 40;
+    Price = 500;
+    GearStates = 0;
+    EnchantmentPlusChance = 4;
+    CloakBitmapPos = 48, 496;
+  }
+
+  Config CLOAK_OF_QUICKNESS;
+  {
+    Possibility = 1;
+    PostFix = "of quickness";
+    AffectsAgility = true;
+    BaseEnchantment = 1;
+    Price = 2500;
+    MainMaterialConfig == NYMPH_HAIR;
+    MaterialConfigChances == 100;
+    EnchantmentPlusChance = 2;
+  }
+
+  Config BROKEN|CLOAK_OF_QUICKNESS;
+  {
+    Possibility = 2;
+    BitmapPos = 64, 304;
+    InElasticityPenaltyModifier = 40;
+    Price = 500;
+    AffectsAgility = false;
+    EnchantmentPlusChance = 4;
+    CloakBitmapPos = 48, 496;
+  }
+
+  Config CLOAK_OF_PROTECTION;
+  {
+    Possibility = 5;
+    PostFix = "of protection";
+    Price = 250;
+    StrengthModifier = 150;
+    AttachedGod = ATAVUS;
+    InElasticityPenaltyModifier = 10;
+    MainMaterialConfig = { 5, IRON, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    MaterialConfigChances = { 5, 1000, 100, 10, 5, 1; }
+    Alias == "invulnerability";
+  }
+
+  Config BROKEN|CLOAK_OF_PROTECTION;
+  {
+    Possibility = 0;
+    BitmapPos = 64, 304;
+    InElasticityPenaltyModifier = 5;
+    Price = 150;
+    CloakBitmapPos = 48, 496;
+  }
+
+  Config CLOAK_OF_VAMPIRE;
+  {
+    Possibility = 1;
+    NameSingular = "vampire's cowl";
+    MainMaterialConfig == BLACK_LEATHER;
+    MaterialConfigChances == 100;
+    GearStates = VAMPIRISM|INFRA_VISION;
+    EnchantmentPlusChance = 5;
+    InElasticityPenaltyModifier = 30;
+    ArticleMode = FORCE_THE;
+    CanBeWished = false;
+    IsMaterialChangeable = false;
+    IsPolymorphable = false;
+    CanBeCloned = false;
+    CanBeMirrored = true;
+    CanBePiled = false;
+  }
+
+  Config BROKEN|CLOAK_OF_VAMPIRE;
+  {
+    Possibility = 0;
+    BitmapPos = 64, 304;
+    InElasticityPenaltyModifier = 20;
+    GearStates = 0;
+    EnchantmentPlusChance = 10;
+    CloakBitmapPos = 48, 496;
   }
 }

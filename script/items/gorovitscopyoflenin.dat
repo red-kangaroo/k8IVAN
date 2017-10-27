@@ -16,4 +16,5 @@ gorovitscopyoflenin /* item-> */
   Possibility = 0;
   Price = 50;
   Alias == "Lenin";
+  IsQuestItem = true;
 }

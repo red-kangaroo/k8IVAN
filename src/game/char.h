@@ -702,6 +702,18 @@ public:
   void PrintBeginHiccupsMessage () const;
   void PrintEndHiccupsMessage () const;
   void EndPolymorph ();
+  void PrintBeginPolymorphLockMessage () const;
+  void PrintEndPolymorphLockMessage () const;
+  void PolymorphLockHandler ();
+  void PrintBeginRegenerationMessage () const;
+  void PrintEndRegenerationMessage () const;
+  void PrintBeginDiseaseImmunityMessage () const;
+  void PrintEndDiseaseImmunityMessage () const;
+  void PrintBeginTeleportLockMessage () const;
+  void PrintEndTeleportLockMessage () const;
+  void PrintBeginSwimmingMessage () const;
+  void PrintEndSwimmingMessage () const;
+  void TeleportLockHandler ();
   character *ForceEndPolymorph ();
   void LycanthropyHandler ();
   void SearchingHandler ();
@@ -715,7 +727,9 @@ public:
   void HiccupsHandler ();
   void VampirismHandler ();
   void BeginEthereality();
-  void EndEthereality();
+  void EndEthereality ();
+  void BeginSwimming ();
+  void EndSwimming ();
   character *PolymorphRandomly (int, int, int);
   virtual truth EquipmentEasilyRecognized (int) const { return true; }
   void StartReading (item *, sLong);

@@ -1,6 +1,6 @@
 ullrbone
 {
-  Possibility = 5;
+  Possibility = 5; /*k8: 1 in comm*/
   DefaultMainVolume = 500;
   StrengthModifier = 150;
   BitmapPos = 16, 240;
@@ -10,14 +10,25 @@ ullrbone
   NameSingular = "bone";
   PostFix = "of Ullr";
   ArticleMode = FORCE_THE;
-  IsPolymorphable = false;
+  WeaponCategory = BLUNT_WEAPONS; /*k8: comm*/
   Roundness = 20;
   WieldedBitmapPos = 160, 336;
+  //MainMaterialConfig == BONE;
+  MainMaterialConfig == OMMEL_BONE; /*k8: comm*/
+  AllowEquip = true;
+
+  IsMaterialChangeable = false; /*k8: comm*/
+  IsPolymorphable = false;
+  IsDestroyable = false; /*k8: comm*/
+  IsValuable = true;
+
+  CanBeWished = false; /*k8: comm*/
   CanBePiled = false;
   CanBeBroken = false;
-  MainMaterialConfig == BONE;
   CanBeCloned = false;
   CanBeMirrored = false;
-  AllowEquip = true;
-  IsValuable = true;
+  //k8:not-here-yet:CanBeBurned = false; /*k8: comm*/
+
+  AttachedGod = INFUSCOR; /*k8: comm*/
+  GearStates = SWIMMING; /*k8: comm*/
 }

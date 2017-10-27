@@ -425,9 +425,9 @@ meleeweapon
     DefaultMainVolume = 3000;
     DefaultSecondaryVolume = 200;
     NameSingular = "quarterstaff";
-    MainMaterialConfig = { 10, BALSA_WOOD, PINE_WOOD, FIR_WOOD, BIRCH_WOOD, OAK_WOOD, TEAK_WOOD, EBONY_WOOD, ARCANITE, OCTIRON, OMMEL_BONE; }
-    SecondaryMaterialConfig = { 10, BALSA_WOOD, PINE_WOOD, FIR_WOOD, BIRCH_WOOD, OAK_WOOD, TEAK_WOOD, EBONY_WOOD, ARCANITE, OCTIRON, OMMEL_BONE; }
-    MaterialConfigChances = { 10, 100, 350, 300, 250, 200, 150, 100, 75, 25, 5; }
+    MainMaterialConfig := { BALSA_WOOD, PINE_WOOD, FIR_WOOD, BIRCH_WOOD, OAK_WOOD, TEAK_WOOD, EBONY_WOOD, ARCANITE, OCTIRON, OMMEL_BONE, KAURI_WOOD, RATA_WOOD, SIDGURE_WOOD; }
+    SecondaryMaterialConfig := { BALSA_WOOD, PINE_WOOD, FIR_WOOD, BIRCH_WOOD, OAK_WOOD, TEAK_WOOD, EBONY_WOOD, ARCANITE, OCTIRON, OMMEL_BONE, KAURI_WOOD, RATA_WOOD, SIDGURE_WOOD; }
+    MaterialConfigChances := { 100, 300, 250, 250, 200, 150, 100, 75, 25, 5, 50, 30, 20; }
     Roundness = 10;
     IsTwoHanded = true;
     AttachedGod = SILVA;
@@ -440,9 +440,9 @@ meleeweapon
     Possibility = 20;
     BitmapPos = 64, 256;
     WieldedBitmapPos = 176, 304;
-    MainMaterialConfig = { 3, EBONY_WOOD, ARCANITE, OCTIRON; }
-    SecondaryMaterialConfig = { 3, EBONY_WOOD, ARCANITE, OCTIRON; }
-    MaterialConfigChances = { 3, 500, 200, 25; }
+    MainMaterialConfig := { EBONY_WOOD, ARCANITE, OCTIRON, KAURI_WOOD, RATA_WOOD, SIDGURE_WOOD; }
+    SecondaryMaterialConfig := { EBONY_WOOD, ARCANITE, OCTIRON, KAURI_WOOD, RATA_WOOD, SIDGURE_WOOD; }
+    MaterialConfigChances := { 300, 200, 25, 100, 50, 50; }
     EnchantmentPlusChance = 40;
   }
 
@@ -611,9 +611,9 @@ meleeweapon
     DefaultMainVolume = 100;
     DefaultSecondaryVolume = 2500;
     NameSingular = "spear";
-    MainMaterialConfig = { 13, BIRCH_WOOD, OAK_WOOD, TEAK_WOOD, EBONY_WOOD, BONE, COPPER, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_BONE, OMMEL_TOOTH; }
+    MainMaterialConfig := { BIRCH_WOOD, OAK_WOOD, TEAK_WOOD, EBONY_WOOD, BONE, COPPER, BRONZE, IRON, STEEL, METEORIC_STEEL, MITHRIL, OMMEL_BONE, OMMEL_TOOTH, KAURI_WOOD, RATA_WOOD, SIDGURE_WOOD, FLINT, OBSIDIAN, LEAD; }
     SecondaryMaterialConfig == PINE_WOOD;
-    MaterialConfigChances = { 13, 250, 200, 150, 100, 250, 650, 500, 350, 200, 50, 50, 25, 10; }
+    MaterialConfigChances := { 200, 200, 150, 100, 200, 550, 450, 300, 200, 50, 50, 25, 10, 50, 50, 50, 50, 50, 50; }
     Roundness = 10;
     IsTwoHanded = true;
     AttachedGod = CRUENTUS;

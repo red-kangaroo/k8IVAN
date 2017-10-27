@@ -26,12 +26,11 @@ truth horn::Apply (character *Blower) {
     LastUsed = game::GetTick();
     //cchar* SoundDescription = GetConfig() == BRAVERY ? "loud but calming" : "frightening, almost scream-like";
     cchar *SoundDescription;
-    switch (GetConfig()) {
-      case BRAVERY: SoundDescription = "loud but calming"; break;
-      case FEAR: SoundDescription = "frightening, almost scream-like"; break;
-      case CONFUSION: SoundDescription = "strange and dissonant"; break;
-      default: SoundDescription = "never-before heard"; break;
-    }
+    auto cfg = GetConfig();
+         if (cfg == BRAVERY) SoundDescription = "loud but calming";
+    else if (cfg == FEAR) SoundDescription = "frightening, almost scream-like";
+    else if (cfg == CONFUSION) SoundDescription = "strange and dissonant";
+    else SoundDescription = "never-before heard";
 
     if (Blower->IsPlayer()) {
       if (Blower->CanHear()) ADD_MESSAGE("You produce a %s sound.", SoundDescription);

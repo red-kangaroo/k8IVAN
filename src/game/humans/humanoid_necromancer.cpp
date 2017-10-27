@@ -191,25 +191,23 @@ void necromancer::GetAICommand () {
 
     truth Interrupt = false;
 
-    switch (GetConfig()) {
-      case APPRENTICE_NECROMANCER:
+    auto cfg = GetConfig();
+    if (cfg == APPRENTICE_NECROMANCER) {
+      RaiseSkeleton();
+    } else if (cfg == MASTER_NECROMANCER) {
+      if (RAND()%5) {
         RaiseSkeleton();
-        break;
-      case MASTER_NECROMANCER:
-        if(RAND() % 5) {
-          RaiseSkeleton();
-        } else {
-          Square->DrawLightning(v2(8, 8), WHITE, YOURSELF);
-          beamdata Beam(
-            this,
-            CONST_S("killed by the spells of ") + GetName(INDEFINITE),
-            YOURSELF,
-            0
-          );
-          Square->Lightning(Beam);
-          Interrupt = true;
-        }
-        break;
+      } else {
+        Square->DrawLightning(v2(8, 8), WHITE, YOURSELF);
+        beamdata Beam(
+          this,
+          CONST_S("killed by the spells of ") + GetName(INDEFINITE),
+          YOURSELF,
+          0
+        );
+        Square->Lightning(Beam);
+        Interrupt = true;
+      }
     }
 
     if (Interrupt) {
@@ -293,11 +291,11 @@ void necromancer::RaiseSkeleton () {
 
 
 int necromancer::GetSpellAPCost () const {
-  switch (GetConfig()) {
-    case APPRENTICE_NECROMANCER: return 2000;
-    case MASTER_NECROMANCER: return 1000;
-  }
+  auto cfg = GetConfig();
+  if (cfg == APPRENTICE_NECROMANCER) return 2000;
+  if (cfg == MASTER_NECROMANCER) return 1000;
   return 4000;
 }
+
 
 #endif
