@@ -61,5 +61,10 @@ typedef lockable<belt, itemlock> lockablebelt;
 #include "gears/meleeweapon_kawai.cpp"
 #include "gears/meleeweapon_superkawai.cpp"
 
+#include "gears/meleeweapon_darkaxe.cpp"
+#include "gears/meleeweapon_slowaxe.cpp"
+#include "gears/meleeweapon_terrorscythe.cpp"
+#include "gears/meleeweapon_bansheesickle.cpp"
+
 // alien mod
 #include "gears/alien_wristblades.cpp"

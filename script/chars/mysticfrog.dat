@@ -44,6 +44,7 @@ mysticfrog
     DefaultIntelligence = 25;
     DefaultWisdom = 35;
     DefaultCharisma = 30;
+    BloodMaterial = LIGHT_FROG_BLOOD;
     SkinColor = rgb16(32, 88, 32);
     Adjective = "mystic light";
     ClassStates = TELEPORT_CONTROL|INVISIBLE|ESP;

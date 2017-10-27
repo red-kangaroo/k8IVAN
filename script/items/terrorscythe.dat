@@ -1,0 +1,32 @@
+terrorscythe  /* meleeweapon-> */
+{
+  DefaultSize = 200;
+  Possibility = 10;
+  WeaponCategory = POLE_ARMS;
+  DefaultMainVolume = 150;
+  DefaultSecondaryVolume = 1800;
+  BitmapPos = 64, 112;
+  FormModifier = 80;
+  StrengthModifier = 50;
+  NameSingular = "scythe";
+  PostFix = "of terror";
+  MainMaterialConfig = {9, OMMEL_BONE, OMMEL_TOOTH, BRONZE, IRON, STEEL, METEORIC_STEEL, OCTIRON, PSYPHER, MITHRIL; }
+  SecondaryMaterialConfig == EBONY_WOOD;
+  MaterialConfigChances = {9, 30, 10, 250, 200, 150, 100, 60, 1, 90; }
+  Roundness = 10;
+  Price = 150;
+  IsGoodWithPlants = true;
+  IsTwoHanded = true;
+  AttachedGod = MORTIFER;
+  WieldedBitmapPos = 176, 48;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH;
+
+  Config BROKEN;
+  {
+    Possibility = 5;
+    BitmapPos = 64, 128;
+    WieldedBitmapPos = 160, 48;
+    EnchantmentPlusChance = 4;
+  }
+}

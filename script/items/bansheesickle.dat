@@ -1,0 +1,30 @@
+bansheesickle  /* meleeweapon-> */
+{
+  DefaultSize = 40;
+  Possibility = 10;
+  WeaponCategory = SMALL_SWORDS;
+  DefaultMainVolume = 100;
+  DefaultSecondaryVolume = 50;
+  BitmapPos = 48, 144;
+  FormModifier = 60;
+  StrengthModifier = 40;
+  NameSingular = "banshee sickle";
+  MainMaterialConfig = {9, OMMEL_BONE, OMMEL_TOOTH, BRONZE, IRON, STEEL, METEORIC_STEEL, SILVER, GOLD, MITHRIL; }
+  SecondaryMaterialConfig == OCTIRON;
+  MaterialConfigChances = {9, 30, 15, 250, 200, 150, 100, 10, 10, 90; }
+  Roundness = 20;
+  Price = 150;
+  IsGoodWithPlants = true;
+  AttachedGod = SEGES;
+  WieldedBitmapPos = 176, 32;
+  EnchantmentPlusChance = 2;
+  DamageFlags = SLASH;
+
+  Config BROKEN;
+  {
+    Possibility = 5;
+    BitmapPos = 48, 176;
+    WieldedBitmapPos = 176, 240;
+    EnchantmentPlusChance = 4;
+  }
+}

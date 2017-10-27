@@ -506,4 +506,35 @@ liquid
     Stickiness = 25;
     StepInWisdomLimit = 5;
   }
+
+  Config LIQUID_DARKNESS;
+  {
+    StrengthValue = 1;
+    Density = 10;
+    NutritionValue = 1;
+    RustModifier = 0;
+    Color = rgb16(0, 0, 0);
+    Emitation = rgb24(35, 35, 35);
+    NameStem = "liquid darkness";
+    Effect = EFFECT_DARKNESS;
+    ConsumeWisdomLimit = 3;
+    Alpha = 175;
+    AttachedGod = MORTIFER;
+  }
+
+  Config LIGHT_FROG_BLOOD;
+  {
+    StrengthValue = 1;
+    NutritionValue = 40;
+    Color = rgb16(150, 0, 0);
+    NameStem = "light frog blood";
+    Alpha = 175;
+    Flexibility = 40;
+    AttachedGod = CRUENTUS;
+    CategoryFlags = IS_BLOOD;
+    InteractionFlags = Base|EFFECT_IS_GOOD;
+    Effect = EFFECT_ANTIDOTE;
+    ConsumeEndMessage = CEM_ANTIDOTE;
+    EffectStrength = 50;
+  }
 }

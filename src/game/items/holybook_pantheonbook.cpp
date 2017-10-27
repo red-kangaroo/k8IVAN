@@ -16,7 +16,7 @@ void pantheonbook::FinishReading(character* Reader)
 {
   if(Reader->IsPlayer())
   {
-    PLAYER->EditExperience(INTELLIGENCE, 75, 1 << 12); //CLIVAN: 2000
+    PLAYER->EditExperience(INTELLIGENCE, /*75*/1000/2, 1 << 12); //CLIVAN: 2000
     PLAYER->EditExperience(WISDOM, 1000, 1 << 12); //CLIVAN: 2000
 
     ADD_MESSAGE("The book reveals many divine secrets of the pantheon to you and disappears.");

@@ -38,8 +38,9 @@ zombie
 
   Config ZOMBIE_OF_KHAZ_ZADM;
   {
-    DefaultName = "Khaz-zadm";
-    TamingDifficulty = NO_TAMING;
+    DefaultName = "Moonrise Stealing Dark";
+    PostFix = "of Khaz-zadm";
+    TamingDifficulty = 20;
     IsNameable = false;
     IsUnique = true;
     DefaultArmStrength = 15;
@@ -49,14 +50,35 @@ zombie
     DefaultEndurance = 15;
     DefaultPerception = 18;
     DefaultIntelligence = 7;
-    DefaultWisdom = 5;
+    DefaultWisdom = 15;
     DefaultCharisma = 5;
-    RightWielded = VALPURIUM meleeweapon(HAMMER);
+    HeadBitmapPos = 112, 160; /* all dwarves have beards, no exceptions */
+    RightWielded = OCTIRON darkaxe;
+    LeftWielded = OCTIRON darkaxe;
+    KnownCWeaponSkills == AXES;
+    CWeaponSkillHits == 150;
+    RightSWeaponSkillHits = 100;
+    LeftSWeaponSkillHits = 100;
     ClassStates = LEPROSY;
-    Sex = MALE;
+    FleshMaterial = DWARF_FLESH;
+    IsExtraFragile = false;
+    Sex = FEMALE;
+    FireResistance = 25;
+    ElectricityResistance = 15;
+    EnergyResistance = 15;
     IsImmuneToLeprosy = true;
     CanBeGenerated = false;
     CreateUndeadConfigurations = false;
+    DeathMessage = "As @Dd collapses, you hear her hiss: \"Peeeeeetrrrruuuuuuuss!!!\"";
+    FriendlyReplies :=
+    {
+      "\"Once, I was a duchess of a great dwarven fortress-city of Khaz-zadm.\"",
+      "\"After the Dwarven Wars, our land lay in ruins. Our mines were undermined and filled with masterless golems. Our resources were stretched thin. That was when Petrus came with his offer of charity. I should have known better.\"",
+      "\"Naught but ashes remain from my people. Petrus even saw that the word would not spread to Kharaz-arad or other dwarven lands.\"",
+      "\"No one remembers Priscus, the former High Priest of Valpurus, these days. Only me.\"",
+      "\"After the coup, I knew that another war would come. Priscus was a politician. Petrus was a warrior.\"";
+    }
+    Inventory == OCTIRON key(HEXAGONAL_LOCK);
   }
 
   Config IMPRISONED_ZOMBIE;

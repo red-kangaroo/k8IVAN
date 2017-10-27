@@ -168,6 +168,7 @@
 #define MUSTARD_GAS_LIQUID  (game::GetGlobalConst("MUSTARD_GAS_LIQUID"))
 #define OMMEL_VOMIT  (game::GetGlobalConst("OMMEL_VOMIT"))
 #define LIQUID_HORROR  (game::GetGlobalConst("LIQUID_HORROR"))
+#define LIQUID_DARKNESS  (game::GetGlobalConst("LIQUID_DARKNESS"))
 #define VINEGAR  (game::GetGlobalConst("VINEGAR"))
 #define OMMEL_BLOOD  (game::GetGlobalConst("OMMEL_BLOOD"))
 #define CURDLED_OMMEL_BLOOD  (game::GetGlobalConst("CURDLED_OMMEL_BLOOD"))

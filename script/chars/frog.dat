@@ -93,6 +93,7 @@ frog
     DefaultMana = 30;
     BaseBiteStrength = 1250;
     TotalVolume = 250000;
+    BloodMaterial = LIGHT_FROG_BLOOD;
     TorsoBitmapPos = 64, 0;
     TotalSize = 200;
     SkinColor = rgb16(32, 88, 32);
@@ -151,6 +152,7 @@ frog
     DefaultMana = 25;
     BaseBiteStrength = 1000;
     TotalVolume = 50000;
+    BloodMaterial = LIGHT_FROG_BLOOD;
     TorsoBitmapPos = 96, 0;
     TotalSize = 100;
     SkinColor = rgb16(32, 88, 32);
@@ -175,6 +177,7 @@ frog
     DefaultCharisma = 15;
     DefaultMana = 20;
     TotalVolume = 5000;
+    BloodMaterial = LIGHT_FROG_BLOOD;
     TorsoBitmapPos = 80, 0;
     TotalSize = 25;
     SkinColor = rgb16(32, 88, 32);
