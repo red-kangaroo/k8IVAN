@@ -13,7 +13,7 @@ whip /* meleeweapon-> */
   MaterialConfigChances = { 4, 75, 50, 25, 10; }
   Roundness = 2;
   FormModifier = 10; /* this is multiplied by MainMaterial's flexibility */
-  CanBeBroken = false;
+  CanBeBroken = true;
   AttachedGod = NEFAS;
   WieldedBitmapPos = 160, 224;
   EnchantmentPlusChance = 30;

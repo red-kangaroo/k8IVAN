@@ -14,6 +14,7 @@ whipofthievery /* meleeweapon->whip-> */
   Price = 500;
   AttachedGod = CLEPTIA;
   EnchantmentPlusChance = 10;
+  CanBeBroken = true;
 
   Config BROKEN;
   {

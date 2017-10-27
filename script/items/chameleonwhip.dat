@@ -15,6 +15,7 @@ chameleonwhip /* meleeweapon->whip-> */
   WieldedBitmapPos = 160, 224;
   EnchantmentMinusChance = 50;
   EnchantmentPlusChance = 50;
+  CanBeBroken = true;
 
   Config BROKEN;
   {
