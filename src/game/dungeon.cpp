@@ -89,6 +89,7 @@ truth dungeon::PrepareLevel (int Index, truth Visual) {
         game::SetEnterImage(0);
         delete EnterImage;
       } else {
+        game::SetEnterTextDisplacement(ZERO_V2);
         game::TextScreen(CONST_S("Entering ")+GetLevelDescription(Index)+CONST_S("...\n\nThis may take some time, please wait."), ZERO_V2, WHITE, false, true, &game::BusyAnimation);
       }
     }

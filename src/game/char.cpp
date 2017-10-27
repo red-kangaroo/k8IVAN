@@ -4447,7 +4447,7 @@ void character::LycanthropyHandler () {
   if (StateIsActivated(POLYMORPH_LOCK)) return;
   if (GetType() == werewolfwolf::ProtoType.GetIndex()) return;
   if (!(RAND() % 2000)) {
-    if (StateIsActivated(POLYMORPH_CONTROL) && !game::TruthQuestion(CONST_S("Do you wish to change into a werewolf?"))) return;
+    if (StateIsActivated(POLYMORPH_CONTROL) && (IsPlayer() ? !game::TruthQuestion(CONST_S("Do you wish to change into a werewolf?")) : false)) return;
     Polymorph(werewolfwolf::Spawn(), 1000 + RAND() % 2000);
   }
 }
