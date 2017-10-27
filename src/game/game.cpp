@@ -112,6 +112,7 @@ v2 game::GlobalRainSpeed;
 sLong game::GlobalRainTimeModifier;
 truth game::PlayerSumoChampion;
 truth game::PlayerSolicitusChampion;
+truth game::TouristHasSpider;
 feuLong game::SquarePartEmitationTick = 0;
 sLong game::Turn;
 truth game::PlayerRunning;
@@ -424,6 +425,7 @@ truth game::Init (cfestring &Name) {
       GlobalRainTimeModifier = 2048-(RAND()&4095);
       PlayerSumoChampion = false;
       PlayerSolicitusChampion = false;
+      TouristHasSpider = false;
       protosystem::InitCharacterDataBaseFlags();
       memset(EquipmentMemory, 0, sizeof(EquipmentMemory));
       PlayerRunning = false;
@@ -787,7 +789,7 @@ truth game::Save (cfestring &SaveName) {
   SaveFile << WizardMode << SeeWholeMapCheatMode << GoThroughWallsCheat;
   SaveFile << Tick << Turn << InWilderness << NextCharacterID << NextItemID << NextTrapID << NecroCounter;
   SaveFile << SumoWrestling << PlayerSumoChampion << GlobalRainTimeModifier;
-  SaveFile << PlayerSolicitusChampion;
+  SaveFile << PlayerSolicitusChampion << TouristHasSpider;
   //sLong Seed = RAND();
   //femath::SetSeed(Seed);
   //SaveFile << Seed;
@@ -840,7 +842,7 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> WizardMode >> SeeWholeMapCheatMode >> GoThroughWallsCheat;
   SaveFile >> Tick >> Turn >> InWilderness >> NextCharacterID >> NextItemID >> NextTrapID >> NecroCounter;
   SaveFile >> SumoWrestling >> PlayerSumoChampion >> GlobalRainTimeModifier;
-  SaveFile >> PlayerSolicitusChampion;
+  SaveFile >> PlayerSolicitusChampion >> TouristHasSpider;
   //femath::SetSeed(ReadType(sLong, SaveFile));
   femath::LoadPRNG(SaveFile);
   SaveFile >> AveragePlayerArmStrengthExperience;

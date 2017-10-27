@@ -1,6 +1,8 @@
 #ifdef HEADER_PHASE
 CHARACTER(lobhse, largecreature)
 {
+ public:
+  virtual truth IsSpider() const { return true; }
  protected:
   virtual truth SpecialBiteEffect(character*, v2, int, int, truth, truth Critical, int DoneDamage);
   virtual void GetAICommand();
@@ -42,10 +44,11 @@ truth lobhse::SpecialBiteEffect(character* Char, v2, int, int, truth BlockedByAr
 
 void lobhse::GetAICommand()
 {
-  StandIdleAI();
+  SeekLeader(GetLeader()); // will follow if tamed
+  if (FollowLeader(GetLeader())) return;
+  //StandIdleAI(); //k8:??? removed in comm. fork
   if (MoveRandomly()) {
     web *Web = web::Spawn();
-    //
     Web->SetStrength(GetConfig() == LARGE ? 50 : 100);
     if (GetLSquareUnder()->AddTrap(Web)) {
       if (CanBeSeenByPlayer()) ADD_MESSAGE("%s spins a web.", CHAR_NAME(DEFINITE));

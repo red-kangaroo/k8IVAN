@@ -438,6 +438,8 @@ public:
   static truth PlayerIsSumoChampion() { return PlayerSumoChampion; }
   static truth PlayerIsSolicitusChampion() { return PlayerSolicitusChampion; }
   static void MakePlayerSolicitusChampion() { PlayerSolicitusChampion = true; }
+  static truth ChildTouristHasSpider () { return TouristHasSpider; }
+  static void SetTouristHasSpider () { TouristHasSpider = true; }
   static v2 GetSunLightDirectionVector();
   static int CalculateMinimumEmitationRadius(col24);
   static feuLong IncreaseSquarePartEmitationTicks();
@@ -604,6 +606,7 @@ private:
   static sLong GlobalRainTimeModifier;
   static truth PlayerSumoChampion;
   static truth PlayerSolicitusChampion;
+  static truth TouristHasSpider;
   static feuLong SquarePartEmitationTick;
   static cint LargeMoveDirection[];
   static sLong Turn;

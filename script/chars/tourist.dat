@@ -35,7 +35,7 @@ tourist
     LegMainColor = rgb16(50, 100, 132);
     CapColor = rgb16(40, 40, 40);
     AttackStyle = USE_ARMS|USE_LEGS|USE_HEAD;
-    HostileReplies == "\"Daddy!!! Hit this man!!! He teases me!!!\"";
+    //k8: moved to the engine (due to spider subquest) HostileReplies == "\"Daddy!!! Hit this man!!! He teases me!!!\"";
     FriendlyReplies :=
     {
       "\"A real native!!! Can I touch him, mommy? Can I? Can I?\"",

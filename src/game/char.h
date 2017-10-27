@@ -997,6 +997,7 @@ public:
   virtual truth CheckIfSatiated () { return GetNP() > SATIATED_LEVEL; }
   virtual void SignalNaturalGeneration () {}
   virtual truth IsBunny () const { return false; }
+  virtual truth IsSpider () const { return false; }
   void SetConfig (int, int = 0);
   bodypartslot *GetBodyPartSlot (int I) { return &BodyPartSlot[I]; }
   virtual truth CheckConsume (cfestring &) const;

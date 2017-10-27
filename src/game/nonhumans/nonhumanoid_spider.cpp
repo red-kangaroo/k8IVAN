@@ -1,6 +1,8 @@
 #ifdef HEADER_PHASE
 CHARACTER(spider, nonhumanoid)
 {
+ public:
+  virtual truth IsSpider() const { return true; }
  protected:
   virtual truth SpecialBiteEffect(character*, v2, int, int, truth, truth Critical, int DoneDamage);
   virtual void GetAICommand();
