@@ -10,7 +10,7 @@ olterraincontainer /* olterrain->decoration-> */
     MainMaterialConfig == FIR_WOOD;
     NameSingular = "bookcase";
     BitmapPos = 16, 272;
-    SitMessage = "The bookcase is very unconfortable to sit on.";
+    SitMessage = "The bookcase is very uncomfortable to sit on.";
     StorageVolume = 100000;
     // CLIVAN; old -- HPModifier = 20;
     HPModifier = 5;
@@ -24,7 +24,7 @@ olterraincontainer /* olterrain->decoration-> */
     MainMaterialConfig == FIR_WOOD;
     NameSingular = "chest of drawers";
     BitmapPos = 0, 224;
-    SitMessage = "The chest of drawers is very unconfortable to sit on.";
+    SitMessage = "The chest of drawers is very uncomfortable to sit on.";
     StorageVolume = 50000;
     HPModifier = 40;
     AttachedGod = SOPHOS;
@@ -37,7 +37,7 @@ olterraincontainer /* olterrain->decoration-> */
     MainMaterialConfig == FIR_WOOD;
     NameSingular = "";
     BitmapPos = 16, 128;
-    SitMessage = "The shelf is very unconfortable to sit on.";
+    SitMessage = "The shelf is very uncomfortable to sit on.";
     StorageVolume = 80000;
     HPModifier = 20;
     AttachedGod = ATAVUS;

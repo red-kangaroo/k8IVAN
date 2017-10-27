@@ -53,6 +53,7 @@ void valpurus::PrayBadEffect () {
 
 
 void valpurus::Pray () {
+  LastPray = 0;
   if (!Timer && Relation == 1000) {
     ADD_MESSAGE("You feel %s is very pleased.", GetName());
     PrayGoodEffect();

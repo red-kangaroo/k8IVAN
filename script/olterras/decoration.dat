@@ -60,7 +60,7 @@ decoration
     BitmapPos = 0, 400;
     RestModifier = 2;
     MaterialColorB = rgb16(200, 200, 0);
-    SitMessage = "The couch is extremely soft and confortable. You relax well.";
+    SitMessage = "The couch is extremely soft and comfortable. You relax well.";
     RestMessage = "You rest well on the soft sofa.";
     HPModifier = 25;
     LeftOverItems == stone { Times = 1:2; }
@@ -78,7 +78,7 @@ decoration
     ShowMaterial = false;
     RestModifier = 5;
     SitMessage = "The beautiful bed is very soft. You get a feeling it's not meant for your kind of people.";
-    RestMessage = "You lay yourself on the confortable bed.";
+    RestMessage = "You lay yourself on the comfortable bed.";
     HPModifier = 25;
     LeftOverItems == 0;
   }

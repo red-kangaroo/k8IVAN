@@ -72,7 +72,7 @@ void highscore::Draw () const {
     return;
   }
   if (GetVersion() != HIGH_SCORE_VERSION) {
-    iosystem::TextScreen(CONST_S("The highscore file is for an other version of IVAN."));
+    iosystem::TextScreen(CONST_S("The highscore file is for another version of IVAN."));
     return;
   }
   felist List(CONST_S("Adventurers' Hall of Fame"));
