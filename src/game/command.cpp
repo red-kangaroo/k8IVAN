@@ -192,7 +192,7 @@ static truth Consume (character* Char, cchar *ConsumeVerb, sorter Sorter) {
   itemvector Item;
   festring Question = CONST_S("What do you wish to ")+ConsumeVerb+'?';
   if (!game::IsInWilderness() && StackUnder->SortedItems(Char, Sorter))
-    Inventory->DrawContents(Item, StackUnder, Char, Question, CONST_S("Items in your inventory"), CONST_S("Items on the ground"), CONST_S(""), 0, NO_MULTI_SELECT, Sorter);
+    Inventory->DrawContents(Item, StackUnder, Char, Question, CONST_S("Items in your inventory"), CONST_S("Items on the ground"), CONST_S(""), 0, NO_MULTI_SELECT|SELECT_ZEROPICK_FIRST, Sorter);
   else
     Inventory->DrawContents(Item, Char, Question, NO_MULTI_SELECT, Sorter);
   return !Item.empty() ? Char->ConsumeItem(Item[0], ConsumeVerb+CONST_S("ing")) : false;

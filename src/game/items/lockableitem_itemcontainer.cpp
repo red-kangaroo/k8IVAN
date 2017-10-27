@@ -32,6 +32,7 @@ ITEM(itemcontainer, lockableitem)
   virtual void SetParameters(int);
   virtual void Disappear();
   virtual stack* GetContained() const { return Contained; }
+  virtual truth IsLockableContainer () const override { return true; }
  protected:
   virtual col16 GetMaterialColorB(int) const;
   virtual void PostConstruct();

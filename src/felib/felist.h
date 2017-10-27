@@ -33,7 +33,7 @@ class felist {
 public:
   felist (cfestring &Topic, col16 TopicColor=WHITE, uInt Maximum=0);
   ~felist ();
-  void AddEntry (cfestring &Str, col16 Color, uInt Marginal=0, uInt Key=NO_IMAGE, truth Selectable=true, feuLong udata=0);
+  void AddEntry (cfestring &Str, col16 Color, uInt Marginal=0, uInt Key=NO_IMAGE, truth Selectable=true, feuLong udata=0, void *uptr=nullptr);
   void AddDescription (cfestring &Str, col16 Color=WHITE);
   uInt Draw ();
   void QuickDraw (bitmap *Bitmap, uInt PageLength) const;
@@ -65,6 +65,8 @@ public:
   truth IsEntrySelectable (uInt idx) const;
   feuLong GetEntryUData (uInt idx) const;
   void SetEntryUData (uInt idx, feuLong udata);
+  void *GetEntryUPtr (uInt idx) const;
+  void SetEntryUPtr (uInt idx, void *uptr);
   col16 GetColor (uInt I) const;
   void SetColor (uInt I, col16 What);
 

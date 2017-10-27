@@ -356,34 +356,49 @@ int stack::DrawContents (itemvector &ReturnVector, stack *MergeStack,
   if ((Flags&NO_SELECT) == 0) Contents.AddFlags(SELECTABLE);
 
   // `Contents.Draw()` will fix invalid selections
-  int selected = 0;
-  if (Flags&REMEMBER_SELECTED) {
-    if ((Flags&NONE_AS_CHOICE) && (Flags&SKIP_FIRST_IF_NO_OLD) && !hiitem && GetSelected() == 0) {
-      selected = 1;
-    }
-  } else {
+  if ((Flags&NO_SELECT) == 0) {
+    int selected = -1;
+
     if ((Flags&NONE_AS_CHOICE) && (Flags&SKIP_FIRST_IF_NO_OLD) && !hiitem) {
-      selected = 1;
+      if ((Flags&REMEMBER_SELECTED) == 0 || GetSelected() == 0) selected = 1;
     }
-  }
 
-  if ((Flags&NO_SELECT) == 0 && (Flags&SELECT_MOST_RECENT)) {
-    int cursel = -1;
-    feuLong maxpt = 0;
-    for (uInt c = 0; c < Contents.GetLength(); ++c) {
-      if (!Contents.IsEntrySelectable(c)) continue;
-      ++cursel;
-      if (cursel < selected) continue;
-      feuLong pt = Contents.GetEntryUData(c);
-      if (pt <= 1 || game::GetTick()-pt > 15+4) continue;
-      if (pt < maxpt) continue;
-      maxpt = pt;
-      selected = cursel;
+    if (Flags&SELECT_MOST_RECENT) {
+      int cursel = -1;
+      feuLong maxpt = 0;
+      for (uInt c = 0; c < Contents.GetLength(); ++c) {
+        if (!Contents.IsEntrySelectable(c)) continue;
+        ++cursel;
+        if (cursel < selected) continue;
+        feuLong pt = Contents.GetEntryUData(c);
+        if (pt <= 1 || game::GetTick()-pt > game::PickTimeout) continue;
+        if (pt < maxpt) continue;
+        if (Flags&DONT_SELECT_CONTAINERS) {
+          item *it = (item *)Contents.GetEntryUPtr(c);
+          if (it && it->IsLockableContainer()) continue;
+        }
+        maxpt = pt;
+        selected = cursel;
+      }
     }
-  }
 
-  if (selected <= 0) selected = GetSelected();
-  Contents.SetSelected(selected);
+    if (Flags&SELECT_ZEROPICK_FIRST) {
+      int cursel = -1;
+      for (uInt c = 0; c < Contents.GetLength(); ++c) {
+        if (!Contents.IsEntrySelectable(c)) continue;
+        ++cursel;
+        if (Flags&DONT_SELECT_CONTAINERS) {
+          item *it = (item *)Contents.GetEntryUPtr(c);
+          if (it && it->IsLockableContainer()) continue;
+        }
+        feuLong pt = Contents.GetEntryUData(c);
+        if (pt == 0) { selected = cursel; break; }
+      }
+    }
+
+    if (selected <= 0) selected = GetSelected();
+    Contents.SetSelected(selected);
+  }
 
   game::DrawEverythingNoBlit(); //doesn't prevent mirage puppies
   int Chosen = Contents.Draw();
@@ -446,7 +461,7 @@ void stack::AddContentsToList (felist &Contents, ccharacter *Viewer, cfestring &
     Entry.Empty();
     Item->AddInventoryEntry(Viewer, Entry, PileVector[p].size(), !(Flags & NO_SPECIAL_INFO));
     int ImageKey = game::AddToItemDrawVector(PileVector[p]);
-    Contents.AddEntry(Entry, (Item == hiitem ? WHITE : LIGHT_GRAY), 0, ImageKey, true, Item->pickupTime);
+    Contents.AddEntry(Entry, (Item == hiitem ? WHITE : LIGHT_GRAY), 0, ImageKey, true, Item->pickupTime, (void *)Item);
   }
 }
 
@@ -796,7 +811,7 @@ truth stack::TakeSomethingFrom (character *Opener, cfestring &ContainerName) {
   for (;;) {
     itemvector ToTake;
     game::DrawEverythingNoBlit();
-    DrawContents(ToTake, Opener, CONST_S("What do you want to take from ")+ContainerName+'?', REMEMBER_SELECTED);
+    DrawContents(ToTake, Opener, CONST_S("What do you want to take from ")+ContainerName+'?', REMEMBER_SELECTED|DONT_SELECT_CONTAINERS);
     if (ToTake.empty()) break;
     if (!IsOnGround() || !Room || Room->PickupItem(Opener, ToTake[0], ToTake.size())) {
       for (uInt c = 0; c < ToTake.size(); ++c) ToTake[c]->MoveTo(Opener->GetStack());
@@ -821,7 +836,7 @@ truth stack::PutSomethingIn (character *Opener, cfestring &ContainerName, sLong 
   for (;;) {
     itemvector ToPut;
     game::DrawEverythingNoBlit();
-    Opener->GetStack()->DrawContents(ToPut, Opener, CONST_S("What do you want to put in ")+ContainerName+'?', REMEMBER_SELECTED|SELECT_MOST_RECENT);
+    Opener->GetStack()->DrawContents(ToPut, Opener, CONST_S("What do you want to put in ")+ContainerName+'?', REMEMBER_SELECTED|SELECT_MOST_RECENT|DONT_SELECT_CONTAINERS);
     if (ToPut.empty()) break;
     if (ToPut[0]->GetID() == ContainerID) {
       ADD_MESSAGE("You can't put %s inside itself!", ContainerName.CStr());

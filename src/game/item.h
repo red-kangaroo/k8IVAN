@@ -328,6 +328,7 @@ class item : public object
   virtual truth HasLock(ccharacter*) const { return false; }
   virtual truth IsOnGround() const;
   virtual truth IsFlaming (ccharacter *) const { return CanFlame(); }
+  virtual truth IsLockableContainer () const { return false; }
   int GetResistance(int) const;
   virtual void Be();
   int GetType() const { return GetProtoType()->GetIndex(); }

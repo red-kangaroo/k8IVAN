@@ -5900,11 +5900,13 @@ void character::SetBodyPart (int I, bodypart *What) {
 
 
 truth character::ConsumeItem (item *Item, cfestring &ConsumeVerb) {
-  if (IsPlayer() && HasHadBodyPart(Item) && !game::TruthQuestion(CONST_S("Are you sure? You may be able to put it back...")))
+  if (IsPlayer() && HasHadBodyPart(Item) && !game::TruthQuestion(CONST_S("Are you sure? You may be able to put it back..."))) {
     return false;
-  if (Item->IsOnGround() && GetRoom() && !GetRoom()->ConsumeItem(this, Item, 1))
+  }
+  if (Item->IsOnGround() && GetRoom() && !GetRoom()->ConsumeItem(this, Item, 1)) {
     return false;
-  if (IsPlayer()) ADD_MESSAGE("You begin %s %s.", ConsumeVerb.CStr(), Item->CHAR_NAME(DEFINITE));
+  }
+       if (IsPlayer()) ADD_MESSAGE("You begin %s %s.", ConsumeVerb.CStr(), Item->CHAR_NAME(DEFINITE));
   else if (CanBeSeenByPlayer()) ADD_MESSAGE("%s begins %s %s.", CHAR_NAME(DEFINITE), ConsumeVerb.CStr(), Item->CHAR_NAME(DEFINITE));
   consume *Consume = consume::Spawn(this);
   Consume->SetDescription(ConsumeVerb);
@@ -7426,7 +7428,7 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
       item *Equipment = GetEquipment(c);
       feuLong pickTm = (equippable ? HasSomethingToEquipAtRecentTime(c, false) : 0);
       int availEquipCount = (equippable ? HasSomethingToEquipAt(c, false) : 0);
-      if (pickTm > 1 && game::GetTick()-pickTm > 15+4) pickTm = 0;
+      if (pickTm > 1 && game::GetTick()-pickTm > game::PickTimeout) pickTm = 0;
       //fprintf(stderr, "c=%d; equippable=%d; availcount=%d; pickTm=%u; tick=%u\n", c, (int)equippable, availEquipCount, pickTm, game::GetTick());
       if (Equipment) {
         Equipment->AddInventoryEntry(this, Entry, 1, true);

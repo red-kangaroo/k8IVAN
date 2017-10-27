@@ -187,6 +187,8 @@ struct FuncArg {
 
 class game {
 public:
+  enum { PickTimeout = 32 };
+public:
   static void InitPlaces ();
   static truth Init(cfestring& = CONST_S(""));
   static void DeInit();

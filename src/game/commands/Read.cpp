@@ -11,7 +11,7 @@ COMMAND(Read) {
     ADD_MESSAGE("It is too dark to read.");
     return false;
   }
-  item *Item = Char->GetStack()->DrawContents(Char, CONST_S("What do you want to read?"), 0, &item::IsReadable);
+  item *Item = Char->GetStack()->DrawContents(Char, CONST_S("What do you want to read?"), SELECT_MOST_RECENT, &item::IsReadable);
   if (Item) {
     if (ivanconfig::GetConfirmScrollReading() && Item->IsScroll()) {
       if (!game::TruthQuestion(festring("Do you really want to read ")+Item->CHAR_NAME(DEFINITE)+"?")) return false;

@@ -596,14 +596,16 @@ cv2 SILHOUETTE_SIZE(48, 64);
 
 /* stack::DrawContents flags */
 
-#define NO_SELECT 1       // only show items
-#define NO_MULTI_SELECT 2     // select only one item
-#define NO_SPECIAL_INFO 4     // show only name and amount
-#define REMEMBER_SELECTED 8   // if DrawContents will be called multiple times, remember the selected item
-#define NONE_AS_CHOICE 16     // "none" is a choice, for instance when wielding
-#define SELECT_PAIR 32        // if NO_MULTI_SELECT is on, selects a pair if appropriate
-#define SKIP_FIRST_IF_NO_OLD 64  // skip first list item if `hiitem` in `stack::DrawContents()` is non-empty
-#define SELECT_MOST_RECENT  128  // select most recent picked item in `stack::DrawContents()` (with timeout)
+#define NO_SELECT                   1 // only show items
+#define NO_MULTI_SELECT             2 // select only one item
+#define NO_SPECIAL_INFO             4 // show only name and amount
+#define REMEMBER_SELECTED           8 // if DrawContents will be called multiple times, remember the selected item
+#define NONE_AS_CHOICE             16 // "none" is a choice, for instance when wielding
+#define SELECT_PAIR                32 // if NO_MULTI_SELECT is on, selects a pair if appropriate
+#define SKIP_FIRST_IF_NO_OLD       64 // skip first list item if `hiitem` in `stack::DrawContents()` is non-empty
+#define SELECT_MOST_RECENT        128 // select most recent picked item in `stack::DrawContents()` (with timeout)
+#define SELECT_ZEROPICK_FIRST     256 // select first non-picked item in `stack::DrawContents()`
+#define DONT_SELECT_CONTAINERS    512
 
 #define RECTANGLE  (game::GetGlobalConst("RECTANGLE"))
 #define ROUND_CORNERS  (game::GetGlobalConst("ROUND_CORNERS"))

@@ -36,13 +36,14 @@ truth FelistDrawController () {
 
 struct felistentry {
   felistentry () : ImageKey(NO_IMAGE) {}
-  felistentry (cfestring &String, col16 Color, uInt Marginal, uInt ImageKey, truth Selectable, feuLong udata) :
+  felistentry (cfestring &String, col16 Color, uInt Marginal, uInt ImageKey, truth Selectable, feuLong udata, void *uptr) :
     String(String),
     Color(Color),
     Marginal(Marginal),
     ImageKey(ImageKey),
     Selectable(Selectable),
-    UData(udata) {}
+    UData(udata),
+    UPtr(uptr) {}
 
   festring String;
   col16 Color;
@@ -50,6 +51,7 @@ struct felistentry {
   uInt ImageKey;
   truth Selectable;
   feuLong UData;
+  void *UPtr;
 };
 
 
@@ -99,19 +101,13 @@ felist::~felist () {
 }
 
 
-truth felist::IsEntrySelectable (uInt idx) const {
-  return (idx < Entry.size() ? Entry[idx]->Selectable : false);
-}
+truth felist::IsEntrySelectable (uInt idx) const { return (idx < Entry.size() ? Entry[idx]->Selectable : false); }
 
+feuLong felist::GetEntryUData (uInt idx) const { return (idx < Entry.size() ? Entry[idx]->UData : 0); }
+void felist::SetEntryUData (uInt idx, feuLong udata) { if (idx < Entry.size()) Entry[idx]->UData = udata; }
 
-feuLong felist::GetEntryUData (uInt idx) const {
-  return (idx < Entry.size() ? Entry[idx]->UData : 0);
-}
-
-
-void felist::SetEntryUData (uInt idx, feuLong udata) {
-  if (idx < Entry.size()) Entry[idx]->UData = udata;
-}
+void *felist::GetEntryUPtr (uInt idx) const { return (idx < Entry.size() ? Entry[idx]->UPtr : 0); }
+void felist::SetEntryUPtr (uInt idx, void *uptr) { if (idx < Entry.size()) Entry[idx]->UPtr = uptr; }
 
 
 void felist::Pop () {
@@ -490,8 +486,8 @@ void felist::Empty () {
 }
 
 
-void felist::AddEntry (cfestring &Str, col16 Color, uInt Marginal, uInt Key, truth Selectable, feuLong udata) {
-  Entry.push_back(new felistentry(Str, Color, Marginal, Key, Selectable, udata));
+void felist::AddEntry (cfestring &Str, col16 Color, uInt Marginal, uInt Key, truth Selectable, feuLong udata, void *uptr) {
+  Entry.push_back(new felistentry(Str, Color, Marginal, Key, Selectable, udata, uptr));
   if (Maximum && Entry.size() > feuLong(Maximum)) {
     delete Entry[0];
     Entry.erase(Entry.begin());
