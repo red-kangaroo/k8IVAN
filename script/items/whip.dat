@@ -5,7 +5,7 @@ whip /* meleeweapon-> */
   WeaponCategory = WHIPS;
   DefaultMainVolume = 500;
   DefaultSecondaryVolume = 20;
-  StrengthModifier = 10;
+  StrengthModifier = 70;
   BitmapPos = 32, 0;
   NameSingular = "whip";
   MainMaterialConfig = { 4, LEATHER, HARDENED_LEATHER, NYMPH_HAIR, OMMEL_HAIR; }
@@ -38,7 +38,7 @@ whip /* meleeweapon-> */
     Possibility = 15;
     DefaultMainVolume = 200;
     DefaultSecondaryVolume = 50;
-    StrengthModifier = 20;
+    StrengthModifier = 80;
     MainMaterialConfig = { 4, BRONZE, IRON, STEEL, METEORIC_STEEL; }
     MaterialConfigChances = { 4, 75, 50, 25, 10; }
     Adjective = "chain";
@@ -52,7 +52,7 @@ whip /* meleeweapon-> */
     Possibility = 15; /* CLIVAN; old: 25 */
     DefaultMainVolume = 750;
     DefaultSecondaryVolume = 50;
-    StrengthModifier = 20;
+    StrengthModifier = 80;
     Adjective = "runed";
     FormModifier = 20;
     EnchantmentPlusChance = 20;

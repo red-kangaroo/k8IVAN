@@ -4,7 +4,7 @@ chameleonwhip /* meleeweapon->whip-> */
   Possibility = 10;
   DefaultMainVolume = 1000;
   DefaultSecondaryVolume = 50;
-  StrengthModifier = 30;
+  StrengthModifier = 100;
   NameSingular = "chameleon whip";
   MainMaterialConfig == OMMEL_HAIR;
   SecondaryMaterialConfig == RUBY;
