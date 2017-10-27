@@ -104,6 +104,7 @@ public:
   void Insert (sizetype Pos, cchar *CStr) { Insert(Pos, CStr, strlen(CStr)); }
   void Insert (sizetype Pos, cchar *CStr, sizetype N);
   void Insert (sizetype Pos, cfestring& S) { Insert(Pos, S.Data, S.Size); }
+  void Insert (sizetype Pos, char ch) { Insert(Pos, &ch, 1); }
   festring &Append (cfestring &Str, sizetype N) { return Append(Str.Data, N); }
 
   truth startsWith (cchar *str, int slen=-1) const;

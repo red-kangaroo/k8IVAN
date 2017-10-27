@@ -213,13 +213,13 @@ int iosystem::StringQuestion (festring &Input, cfestring &Topic, v2 Pos, col16 C
   festring::sizetype MinLetters, festring::sizetype MaxLetters, truth Fade, truth AllowExit,
   stringkeyhandler StringKeyHandler)
 {
-  v2 V(RES.X, 9); ///???????????
+  v2 V(RES.X, 10); ///???????????
   bitmap BackUp(V, 0);
   blitdata B = {
     &BackUp,
     { Pos.X, Pos.Y + 10 },
     { 0, 0 },
-    { (int)((MaxLetters << 3) + 9), 9 },
+    { (int)((MaxLetters << 3) + 9), 10 },
     { 0 },
     0,
     0
@@ -237,11 +237,14 @@ int iosystem::StringQuestion (festring &Input, cfestring &Topic, v2 Pos, col16 C
   truth TooShort = false;
   FONT->Printf(DOUBLE_BUFFER, Pos, Color, "%s", Topic.CStr());
   Swap(B.Src, B.Dest);
+  int curpos = Input.GetSize();
   for (int LastKey = 0;; LastKey = 0) {
     B.Bitmap = DOUBLE_BUFFER;
     BackUp.NormalBlit(B);
     FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y+10), Color, "%s", Input.CStr());
-    graphics::gotoXY(Pos.X+Input.GetSize()*8, Pos.Y+10+7);
+    if (curpos > (int)Input.GetSize()) curpos = (int)Input.GetSize();
+    if (curpos < 0) curpos = 0;
+    graphics::gotoXY(Pos.X+curpos*8, Pos.Y+10+7);
     if (TooShort) {
       FONT->Printf(DOUBLE_BUFFER, v2(Pos.X, Pos.Y+30), Color, "Too short!");
       TooShort = false;
@@ -256,15 +259,33 @@ int iosystem::StringQuestion (festring &Input, cfestring &Topic, v2 Pos, col16 C
     if (!LastKey) continue;
     if (LastKey == KEY_ESC && AllowExit) return ABORTED;
     if (LastKey == KEY_BACK_SPACE) {
-      if (!Input.IsEmpty()) Input.Resize(Input.GetSize()-1);
+      //if (!Input.IsEmpty()) Input.Resize(Input.GetSize()-1);
+      if (!Input.IsEmpty() && curpos > 0) {
+        if (curpos == (int)Input.GetSize()) {
+          Input.Resize(Input.GetSize()-1);
+        } else {
+          Input.Erase(curpos-1, 1);
+        }
+        --curpos;
+      }
       continue;
     }
+    if (LastKey == KEY_LEFT) { --curpos; continue; }
+    if (LastKey == KEY_RIGHT) { ++curpos; continue; }
+    if (LastKey == KEY_HOME) { curpos = 0; continue; }
+    if (LastKey == KEY_END) { curpos = (int)Input.GetSize(); continue; }
+    if (LastKey == KEY_UP || LastKey == KEY_DOWN) continue;
     if (LastKey == KEY_ENTER) {
       if (Input.GetSize() >= MinLetters) break;
       TooShort = true;
       continue;
     }
-    if (LastKey >= 0x20 && Input.GetSize() < MaxLetters && (LastKey != ' ' || !Input.IsEmpty())) Input << char(LastKey);
+    if (LastKey >= ' ' && LastKey < 127 && Input.GetSize() < MaxLetters && (LastKey != ' ' || !Input.IsEmpty())) {
+      //Input << char(LastKey);
+      Input.Insert(curpos, (char)LastKey);
+      ++curpos;
+      continue;
+    }
   }
   /* Delete all the trailing spaces */
   festring::sizetype LastAlpha = festring::NPos;
@@ -280,13 +301,13 @@ int iosystem::StringQuestion (festring &Input, cfestring &Topic, v2 Pos, col16 C
    coled. If Fade is true the question is asked on a black background
    and the transition to that is a fade. */
 sLong iosystem::NumberQuestion (cfestring &Topic, v2 Pos, col16 Color, truth Fade, truth ReturnZeroOnEsc) {
-  v2 V(RES.X, 9); ///???????????
+  v2 V(RES.X, 10); ///???????????
   bitmap BackUp(V, 0);
   blitdata B = {
     &BackUp,
     { Pos.X, Pos.Y + 10 },
     { 0, 0 },
-    { 105, 9 },
+    { 105, 10 },
     { 0 },
     0,
     0
@@ -426,16 +447,28 @@ sLong iosystem::ScrollBarQuestion (cfestring &Topic, v2 Pos, sLong StartValue, s
       continue;
     }
     if (LastKey == KEY_ENTER || LastKey == KEY_SPACE) break;
-    if (LastKey == '<' || LastKey == LeftKey) {
+    if (LastKey == '<' || LastKey == LeftKey || LastKey == KEY_LEFT) {
       BarValue -= Step;
       if (BarValue < Min) BarValue = Min;
       Input.Empty();
       Input << BarValue;
       continue;
     }
-    if (LastKey == '>' || LastKey == RightKey) {
+    if (LastKey == '>' || LastKey == RightKey || LastKey == KEY_RIGHT) {
       BarValue += Step;
       if (BarValue > Max) BarValue = Max;
+      Input.Empty();
+      Input << BarValue;
+      continue;
+    }
+    if (LastKey == KEY_HOME) {
+      BarValue = Min;
+      Input.Empty();
+      Input << BarValue;
+      continue;
+    }
+    if (LastKey == KEY_END) {
+      BarValue = Max;
       Input.Empty();
       Input << BarValue;
       continue;
