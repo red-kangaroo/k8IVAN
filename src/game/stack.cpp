@@ -814,7 +814,7 @@ truth stack::TakeSomethingFrom (character *Opener, cfestring &ContainerName) {
     DrawContents(ToTake, Opener, CONST_S("What do you want to take from ")+ContainerName+'?', REMEMBER_SELECTED|DONT_SELECT_CONTAINERS);
     if (ToTake.empty()) break;
     if (!IsOnGround() || !Room || Room->PickupItem(Opener, ToTake[0], ToTake.size())) {
-      for (uInt c = 0; c < ToTake.size(); ++c) ToTake[c]->MoveTo(Opener->GetStack());
+      for (uInt c = 0; c < ToTake.size(); ++c) ToTake[c]->MoveTo(Opener->GetStack(), -1);
       ADD_MESSAGE("You take %s from %s.", ToTake[0]->GetName(DEFINITE, ToTake.size()).CStr(), ContainerName.CStr());
       Success = true;
     }

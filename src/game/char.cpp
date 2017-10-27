@@ -7461,9 +7461,9 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
     game::SetStandardListAttributes(List);
 
     //fprintf(stderr, "  selected=%d; firstEmpty=%d; firstNonEmpty=%d; armFirst=%d; armPickTime=%u\n", selected, firstEmpty, firstNonEmpty, armFirst, armPickTime);
-    if (firstEmpty >= 0) selected = firstEmpty;
     if (selected < 0) {
            if (armPickTime > 0) selected = armFirst;
+      else if (firstEmpty >= 0) selected = firstEmpty;
       else if (firstNonEmpty >= 0) selected = firstNonEmpty;
     }
     if (selected >= 0) List.SetSelected(selected);

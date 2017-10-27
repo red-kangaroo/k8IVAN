@@ -344,7 +344,7 @@ void item::MoveTo (stack *Stack, truth setPickupTime) {
   RemoveFromSlot();
   Stack->AddItem(this);
   if (setPickupTime) {
-    pickupTime = game::GetTick();
+    if (setPickupTime > 0 || pickupTime == 0) pickupTime = game::GetTick();
     //fprintf(stderr, "item '%s'; pickuptime set to %u\n", GetNameSingular().CStr(), pickupTime);
   }
 }
