@@ -190,29 +190,33 @@ truth nonhumanoid::Hit (character *Enemy, v2 HitPos, int Direction, int Flags) {
       break;
     }
   }
-  switch (Chosen) {
-    case USE_ARMS:
-      msgsystem::EnterBigMessageMode();
-      Hostility(Enemy);
-      UnarmedHit(Enemy, HitPos, Direction, Flags&SADIST_HIT);
-      msgsystem::LeaveBigMessageMode();
-      return true;
-    case USE_LEGS:
-      msgsystem::EnterBigMessageMode();
-      Hostility(Enemy);
-      Kick(GetNearLSquare(HitPos), Direction, Flags&SADIST_HIT);
-      msgsystem::LeaveBigMessageMode();
-      return true;
-    case USE_HEAD:
-      msgsystem::EnterBigMessageMode();
-      Hostility(Enemy);
-      Bite(Enemy, HitPos, Direction, Flags&SADIST_HIT);
-      msgsystem::LeaveBigMessageMode();
-      return true;
-    default:
-      ABORT("Strange alien attack style requested!");
-      return false;
-   }
+
+  if (Chosen == USE_ARMS) {
+    msgsystem::EnterBigMessageMode();
+    Hostility(Enemy);
+    UnarmedHit(Enemy, HitPos, Direction, Flags&SADIST_HIT);
+    msgsystem::LeaveBigMessageMode();
+    return true;
+  }
+
+  if (Chosen == USE_LEGS) {
+    msgsystem::EnterBigMessageMode();
+    Hostility(Enemy);
+    Kick(GetNearLSquare(HitPos), Direction, Flags&SADIST_HIT);
+    msgsystem::LeaveBigMessageMode();
+    return true;
+  }
+
+  if (Chosen == USE_HEAD) {
+    msgsystem::EnterBigMessageMode();
+    Hostility(Enemy);
+    Bite(Enemy, HitPos, Direction, Flags&SADIST_HIT);
+    msgsystem::LeaveBigMessageMode();
+    return true;
+  }
+
+  ABORT("Strange alien attack style requested!");
+  return false;
 }
 
 

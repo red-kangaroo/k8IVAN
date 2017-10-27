@@ -1232,15 +1232,12 @@ stack* lsquare::GetStackOfAdjacentSquare(int I) const
 {
   lsquare* Square = 0;
 
-  switch(I)
-  {
-   case LEFT:  Square = NeighbourLSquare[3]; break;
-   case DOWN:  Square = NeighbourLSquare[6]; break;
-   case UP:    Square = NeighbourLSquare[1]; break;
-   case RIGHT: Square = NeighbourLSquare[4]; break;
-  }
+       if (I == LEFT)  Square = NeighbourLSquare[3];
+  else if (I == DOWN)  Square = NeighbourLSquare[6];
+  else if (I == UP)    Square = NeighbourLSquare[1];
+  else if (I == RIGHT) Square = NeighbourLSquare[4];
 
-  return Square ? Square->Stack : 0;
+  return (Square ? Square->Stack : 0);
 }
 
 void lsquare::SendMemorizedUpdateRequest()

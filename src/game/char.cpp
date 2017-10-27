@@ -578,46 +578,37 @@ character::~character () {
 
 
 void character::Hunger () {
-  switch (GetBurdenState()) {
-    case OVER_LOADED:
-    case STRESSED:
-      EditNP(-8);
-      EditExperience(LEG_STRENGTH, 150, 1 << 2);
-      EditExperience(AGILITY, -50, 1 << 2);
-      break;
-    case BURDENED:
-      EditNP(-2);
-      EditExperience(LEG_STRENGTH, 75, 1 << 1);
-      EditExperience(AGILITY, -25, 1 << 1);
-      break;
-    case UNBURDENED:
-      EditNP(-1);
-      break;
+  auto bst = GetBurdenState();
+  if (bst == OVER_LOADED || bst == STRESSED) {
+    EditNP(-8);
+    EditExperience(LEG_STRENGTH, 150, 1 << 2);
+    EditExperience(AGILITY, -50, 1 << 2);
+  } else if (bst == BURDENED) {
+    EditNP(-2);
+    EditExperience(LEG_STRENGTH, 75, 1 << 1);
+    EditExperience(AGILITY, -25, 1 << 1);
+  } else if (bst == UNBURDENED) {
+    EditNP(-1);
   }
 
-  switch (GetHungerState()) {
-    case STARVING:
-      EditExperience(ARM_STRENGTH, -75, 1 << 3);
-      EditExperience(LEG_STRENGTH, -75, 1 << 3);
-      break;
-   case VERY_HUNGRY:
-      EditExperience(ARM_STRENGTH, -50, 1 << 2);
-      EditExperience(LEG_STRENGTH, -50, 1 << 2);
-      break;
-    case HUNGRY:
-      EditExperience(ARM_STRENGTH, -25, 1 << 1);
-      EditExperience(LEG_STRENGTH, -25, 1 << 1);
-      break;
-    case SATIATED:
-      EditExperience(AGILITY, -25, 1 << 1);
-      break;
-    case BLOATED:
-      EditExperience(AGILITY, -50, 1 << 2);
-      break;
-    case OVER_FED:
-      EditExperience(AGILITY, -75, 1 << 3);
-      break;
+  auto hst = GetHungerState();
+  if (hst == STARVING) {
+    EditExperience(ARM_STRENGTH, -75, 1 << 3);
+    EditExperience(LEG_STRENGTH, -75, 1 << 3);
+  } else if (hst == VERY_HUNGRY) {
+    EditExperience(ARM_STRENGTH, -50, 1 << 2);
+    EditExperience(LEG_STRENGTH, -50, 1 << 2);
+  } else if (hst == HUNGRY) {
+    EditExperience(ARM_STRENGTH, -25, 1 << 1);
+    EditExperience(LEG_STRENGTH, -25, 1 << 1);
+  } else if (hst == SATIATED) {
+    EditExperience(AGILITY, -25, 1 << 1);
+  } else if (hst == BLOATED) {
+    EditExperience(AGILITY, -50, 1 << 2);
+  } else if (hst == OVER_FED) {
+    EditExperience(AGILITY, -75, 1 << 3);
   }
+
   CheckStarvationDeath(CONST_S("starved to death"));
 }
 
@@ -678,35 +669,15 @@ int character::TakeHit (character *Enemy, item *Weapon, bodypart *EnemyBodyPart,
 
   int BodyPart = ChooseBodyPartToReceiveHit(ToHitValue, DodgeValue);
   if (Critical) {
-    switch (Type) {
-      case UNARMED_ATTACK:
-        Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonCriticalUnarmedHitVerb(), Enemy->ThirdPersonCriticalUnarmedHitVerb(), BodyPart);
-        break;
-      case WEAPON_ATTACK:
-        Enemy->AddWeaponHitMessage(this, Weapon, BodyPart, true);
-        break;
-      case KICK_ATTACK:
-        Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonCriticalKickVerb(), Enemy->ThirdPersonCriticalKickVerb(), BodyPart);
-        break;
-      case BITE_ATTACK:
-        Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonCriticalBiteVerb(), Enemy->ThirdPersonCriticalBiteVerb(), BodyPart);
-        break;
-    }
+         if (Type == UNARMED_ATTACK) Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonCriticalUnarmedHitVerb(), Enemy->ThirdPersonCriticalUnarmedHitVerb(), BodyPart);
+    else if (Type == WEAPON_ATTACK) Enemy->AddWeaponHitMessage(this, Weapon, BodyPart, true);
+    else if (Type == KICK_ATTACK) Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonCriticalKickVerb(), Enemy->ThirdPersonCriticalKickVerb(), BodyPart);
+    else if (Type == BITE_ATTACK) Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonCriticalBiteVerb(), Enemy->ThirdPersonCriticalBiteVerb(), BodyPart);
   } else {
-    switch (Type) {
-      case UNARMED_ATTACK:
-        Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonUnarmedHitVerb(), Enemy->ThirdPersonUnarmedHitVerb(), BodyPart);
-        break;
-     case WEAPON_ATTACK:
-        Enemy->AddWeaponHitMessage(this, Weapon, BodyPart, false);
-        break;
-     case KICK_ATTACK:
-        Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonKickVerb(), Enemy->ThirdPersonKickVerb(), BodyPart);
-        break;
-     case BITE_ATTACK:
-        Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonBiteVerb(), Enemy->ThirdPersonBiteVerb(), BodyPart);
-        break;
-    }
+         if (Type == UNARMED_ATTACK) Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonUnarmedHitVerb(), Enemy->ThirdPersonUnarmedHitVerb(), BodyPart);
+    else if (Type == WEAPON_ATTACK) Enemy->AddWeaponHitMessage(this, Weapon, BodyPart, false);
+    else if (Type == KICK_ATTACK) Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonKickVerb(), Enemy->ThirdPersonKickVerb(), BodyPart);
+    else if (Type == BITE_ATTACK) Enemy->AddPrimitiveHitMessage(this, Enemy->FirstPersonBiteVerb(), Enemy->ThirdPersonBiteVerb(), BodyPart);
   }
 
   if (!Critical && TrueDamage && Enemy->AttackIsBlockable(Type)) {
@@ -891,11 +862,10 @@ void character::Move (v2 MoveTo, truth TeleportMove, truth Run) {
         EditNP(-24*ED);
         EditExperience(AGILITY, 125, ED<<7);
         if (IsPlayer()) {
-          switch (GetHungerState()) {
-            case SATIATED: Base = 11000; break;
-            case BLOATED: Base = 12500; break;
-            case OVER_FED: Base = 15000; break;
-          }
+          auto hst = GetHungerState();
+               if (hst == SATIATED) Base = 11000;
+          else if (hst == BLOATED) Base = 12500;
+          else if (hst == OVER_FED) Base = 15000;
         }
         EditStamina(-Base/Max(GetAttribute(LEG_STRENGTH), 1), true);
       } else {
@@ -1674,7 +1644,7 @@ void character::CalculateBurdenState () {
   int OldBurdenState = BurdenState;
   sLong SumOfMasses = GetCarriedWeight();
   sLong CarryingStrengthUnits = sLong(GetCarryingStrength())*2500;
-  if (SumOfMasses > (CarryingStrengthUnits << 1) + CarryingStrengthUnits) BurdenState = OVER_LOADED;
+       if (SumOfMasses > (CarryingStrengthUnits << 1) + CarryingStrengthUnits) BurdenState = OVER_LOADED;
   else if (SumOfMasses > CarryingStrengthUnits << 1) BurdenState = STRESSED;
   else if (SumOfMasses > CarryingStrengthUnits) BurdenState = BURDENED;
   else BurdenState = UNBURDENED;
@@ -2485,12 +2455,9 @@ void character::SeekLeader (ccharacter *Leader) {
 
 
 int character::GetMoveEase () const {
-  switch (BurdenState) {
-    case OVER_LOADED:
-    case STRESSED: return 50;
-    case BURDENED: return 75;
-    case UNBURDENED: return 100;
-  }
+  if (BurdenState == OVER_LOADED || BurdenState == STRESSED) return 50;
+  if (BurdenState == BURDENED) return 75;
+  if (BurdenState == UNBURDENED) return 100;
   return 666;
 }
 
@@ -3363,20 +3330,18 @@ void character::RestoreLivingHP () {
 
 
 truth character::AllowDamageTypeBloodSpill (int Type) {
-  switch (Type&0xFFF) {
-    case PHYSICAL_DAMAGE:
-    case SOUND:
-    case ENERGY:
-      return true;
-    case ACID:
-    case FIRE:
-    case DRAIN:
-    case POISON:
-    case ELECTRICITY:
-    case MUSTARD_GAS_DAMAGE:
-    case PSI:
-      return false;
-  }
+  if ((Type&0xFFF) == PHYSICAL_DAMAGE) return true;
+  if ((Type&0xFFF) == SOUND) return true;
+  if ((Type&0xFFF) == ENERGY) return true;
+
+  if ((Type&0xFFF) == ACID) return false;
+  if ((Type&0xFFF) == FIRE) return false;
+  if ((Type&0xFFF) == DRAIN) return false;
+  if ((Type&0xFFF) == POISON) return false;
+  if ((Type&0xFFF) == ELECTRICITY) return false;
+  if ((Type&0xFFF) == MUSTARD_GAS_DAMAGE) return false;
+  if ((Type&0xFFF) == PSI) return false;
+
   ABORT("Unknown blood effect destroyed the dungeon!");
   return false;
 }
@@ -3596,19 +3561,18 @@ truth character::CheckKick () const {
 
 
 int character::GetResistance (int Type) const {
-  switch (Type&0xFFF) {
-    case PHYSICAL_DAMAGE:
-    case DRAIN:
-    case MUSTARD_GAS_DAMAGE:
-    case PSI:
-      return 0;
-    case ENERGY: return GetEnergyResistance();
-    case FIRE: return GetFireResistance();
-    case POISON: return GetPoisonResistance();
-    case ELECTRICITY: return GetElectricityResistance();
-    case ACID: return GetAcidResistance();
-    case SOUND: return GetSoundResistance();
-  }
+  if ((Type&0xFFF) == PHYSICAL_DAMAGE) return 0;
+  if ((Type&0xFFF) == DRAIN) return 0;
+  if ((Type&0xFFF) == MUSTARD_GAS_DAMAGE) return 0;
+  if ((Type&0xFFF) == PSI) return 0;
+
+  if ((Type&0xFFF) == ENERGY) return GetEnergyResistance();
+  if ((Type&0xFFF) == FIRE) return GetFireResistance();
+  if ((Type&0xFFF) == POISON) return GetPoisonResistance();
+  if ((Type&0xFFF) == ELECTRICITY) return GetElectricityResistance();
+  if ((Type&0xFFF) == ACID) return GetAcidResistance();
+  if ((Type&0xFFF) == SOUND) return GetSoundResistance();
+
   ABORT("Resistance lack detected!");
   return 0;
 }
@@ -4103,26 +4067,22 @@ void character::DrawPanel (truth AnimationDraw) const {
     }
   }
 
-  /* Make this more elegant!!! */
-  switch (GetHungerState()) {
-    case STARVING: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Starving"); break;
-    case VERY_HUNGRY: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Very hungry"); break;
-    case HUNGRY: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), ORANGE, "Hungry"); break;
-    case SATIATED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Satiated"); break;
-    case BLOATED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Bloated"); break;
-    case OVER_FED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Overfed!"); break;
-  }
+  auto hst = GetHungerState();
+       if (hst == STARVING) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Starving");
+  else if (hst == VERY_HUNGRY) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Very hungry");
+  else if (hst == HUNGRY) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), ORANGE, "Hungry");
+  else if (hst == SATIATED) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Satiated");
+  else if (hst == BLOATED) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Bloated");
+  else if (hst == OVER_FED) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "Overfed!");
 
-  switch (GetBurdenState()) {
-    case OVER_LOADED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Overload!"); break;
-    case STRESSED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), ORANGE, "Stressed"); break;
-    case BURDENED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Burdened"); break;
-  }
+  auto bst = GetBurdenState();
+       if (bst == OVER_LOADED) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Overload!");
+  else if (bst == STRESSED) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), ORANGE, "Stressed");
+  else if (bst == BURDENED) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), BLUE, "Burdened");
 
-  switch (GetTirednessState()) {
-    case FAINTING: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Fainting"); break;
-    case EXHAUSTED: FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), ORANGE, "Exhausted"); break;
-  }
+  auto trst = GetTirednessState();
+       if (trst == FAINTING) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), RED, "Fainting");
+  else if (trst == EXHAUSTED) FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), ORANGE, "Exhausted");
 
   if (game::PlayerIsRunning()) {
     FONT->Printf(DOUBLE_BUFFER, v2(PanelPosX, PanelPosY++ * 10), WHITE, "%s", GetRunDescriptionLine(0));
@@ -4140,20 +4100,18 @@ void character::CalculateDodgeValue () {
 
 
 truth character::DamageTypeAffectsInventory (int Type) {
-  switch (Type&0xFFF) {
-    case SOUND:
-    case ENERGY:
-    case ACID:
-    case FIRE:
-    case ELECTRICITY:
-      return true;
-    case PHYSICAL_DAMAGE:
-    case POISON:
-    case DRAIN:
-    case MUSTARD_GAS_DAMAGE:
-    case PSI:
-      return false;
-  }
+  if ((Type&0xFFF) == SOUND) return true;
+  if ((Type&0xFFF) == ENERGY) return true;
+  if ((Type&0xFFF) == ACID) return true;
+  if ((Type&0xFFF) == FIRE) return true;
+  if ((Type&0xFFF) == ELECTRICITY) return true;
+
+  if ((Type&0xFFF) == PHYSICAL_DAMAGE) return false;
+  if ((Type&0xFFF) == POISON) return false;
+  if ((Type&0xFFF) == DRAIN) return false;
+  if ((Type&0xFFF) == MUSTARD_GAS_DAMAGE) return false;
+  if ((Type&0xFFF) == PSI) return false;
+
   ABORT("Unknown reaping effect destroyed dungeon!");
   return false;
 }
@@ -4168,12 +4126,10 @@ int character::CheckForBlockWithArm (character *Enemy, item *Weapon, arm *Arm,
     item *Blocker = Arm->GetWielded();
     if (RAND() % int(100+WeaponToHitValue/BlockValue/(1<<BlocksSinceLastTurn)*(100+Success)) < 100) {
       int NewDamage = BlockStrength < Damage ? Damage-BlockStrength : 0;
-      switch (Type) {
-        case UNARMED_ATTACK: AddBlockMessage(Enemy, Blocker, Enemy->UnarmedHitNoun(), NewDamage); break;
-        case WEAPON_ATTACK: AddBlockMessage(Enemy, Blocker, "attack", NewDamage); break;
-        case KICK_ATTACK: AddBlockMessage(Enemy, Blocker, Enemy->KickNoun(), NewDamage); break;
-        case BITE_ATTACK: AddBlockMessage(Enemy, Blocker, Enemy->BiteNoun(), NewDamage); break;
-      }
+           if (Type == UNARMED_ATTACK) AddBlockMessage(Enemy, Blocker, Enemy->UnarmedHitNoun(), NewDamage);
+      else if (Type == WEAPON_ATTACK) AddBlockMessage(Enemy, Blocker, "attack", NewDamage);
+      else if (Type == KICK_ATTACK) AddBlockMessage(Enemy, Blocker, Enemy->KickNoun(), NewDamage);
+      else if (Type == BITE_ATTACK) AddBlockMessage(Enemy, Blocker, Enemy->BiteNoun(), NewDamage);
       sLong Weight = Blocker->GetWeight();
       sLong StrExp = Limit(15 * Weight / 200, 75, 300);
       sLong DexExp = Weight ? Limit(75000 / Weight, 75, 300) : 300;
@@ -5215,30 +5171,21 @@ truth character::HitEffect (character *Enemy, item* Weapon, v2 HitPos, int Type,
   int Direction, truth BlockedByArmour, truth Critical, int DoneDamage)
 {
   if (Weapon) return Weapon->HitEffect(this, Enemy, HitPos, BodyPartIndex, Direction, BlockedByArmour);
-  switch (Type) {
-    case UNARMED_ATTACK: return Enemy->SpecialUnarmedEffect(this, HitPos, BodyPartIndex, Direction, BlockedByArmour);
-    case KICK_ATTACK: return Enemy->SpecialKickEffect(this, HitPos, BodyPartIndex, Direction, BlockedByArmour);
-    case BITE_ATTACK: return Enemy->SpecialBiteEffect(this, HitPos, BodyPartIndex, Direction, BlockedByArmour, Critical, DoneDamage);
-  }
+  if (Type == UNARMED_ATTACK) return Enemy->SpecialUnarmedEffect(this, HitPos, BodyPartIndex, Direction, BlockedByArmour);
+  if (Type == KICK_ATTACK) return Enemy->SpecialKickEffect(this, HitPos, BodyPartIndex, Direction, BlockedByArmour);
+  if (Type == BITE_ATTACK) return Enemy->SpecialBiteEffect(this, HitPos, BodyPartIndex, Direction, BlockedByArmour, Critical, DoneDamage);
   return false;
 }
 
 
 void character::WeaponSkillHit (item *Weapon, int Type, int Hits) {
   int Category;
-  switch (Type) {
-    case UNARMED_ATTACK: Category = UNARMED; break;
-    case WEAPON_ATTACK: Weapon->WeaponSkillHit(Hits); return;
-    case KICK_ATTACK: Category = KICK; break;
-    case BITE_ATTACK: Category = BITE; break;
-    case THROW_ATTACK:
-      if (!IsHumanoid()) return;
-      Category = Weapon->GetWeaponCategory();
-      break;
-    default:
-      ABORT("Illegal Type %d passed to character::WeaponSkillHit()!", Type);
-      return;
-  }
+       if (Type == UNARMED_ATTACK) Category = UNARMED;
+  else if (Type == WEAPON_ATTACK) { Weapon->WeaponSkillHit(Hits); return; }
+  else if (Type == KICK_ATTACK) Category = KICK;
+  else if (Type == BITE_ATTACK) Category = BITE;
+  else if (Type == THROW_ATTACK) { if (!IsHumanoid()) return; Category = Weapon->GetWeaponCategory(); }
+  else { ABORT("Illegal Type %d passed to character::WeaponSkillHit()!", Type); return; }
   if (GetCWeaponSkill(Category)->AddHit(Hits)) {
     CalculateBattleInfo();
     if (IsPlayer()) GetCWeaponSkill(Category)->AddLevelUpMessage(Category);
@@ -6982,18 +6929,16 @@ void character::RegenerateStamina () {
     } else if (Action->IsUnconsciousness()) Bonus = 2;
   }
   int Plus1 = 100;
-  switch (GetBurdenState()) {
-    case OVER_LOADED: Plus1 = 25; break;
-    case STRESSED: Plus1 = 50; break;
-    case BURDENED: Plus1 = 75; break;
-  }
+  auto bst = GetBurdenState();
+       if (bst == OVER_LOADED) Plus1 = 25;
+  else if (bst == STRESSED) Plus1 = 50;
+  else if (bst == BURDENED) Plus1 = 75;
   int Plus2 = 100;
   if (IsPlayer()) {
-    switch (GetHungerState()) {
-      case STARVING: Plus2 = 25; break;
-      case VERY_HUNGRY: Plus2 = 50; break;
-      case HUNGRY: Plus2 = 75; break;
-    }
+    auto hst = GetHungerState();
+         if (hst == STARVING) Plus2 = 25;
+    else if (hst == VERY_HUNGRY) Plus2 = 50;
+    else if (hst == HUNGRY) Plus2 = 75;
   }
   Stamina += Plus1 * Plus2 * Bonus / 1000;
   if (Stamina > MaxStamina) Stamina = MaxStamina;

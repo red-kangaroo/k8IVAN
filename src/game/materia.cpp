@@ -72,74 +72,64 @@ void material::Load(inputfile& SaveFile)
   databasecreator<material>::InstallDataBase(this, ReadType(uShort, SaveFile));
 }
 
-truth material::Effect(character* Char, int BodyPart, sLong Amount)
-{
+
+truth material::Effect (character *Char, int BodyPart, sLong Amount) {
   /* Receivexxx should return truth! */
 
-  Amount = Amount * GetEffectStrength() / 100;
+  Amount = Amount*GetEffectStrength()/100;
 
-  if(!Amount)
-    return false;
+  if (!Amount) return false;
 
-  switch(GetEffect())
-  {
-   case EFFECT_POISON: Char->BeginTemporaryState(POISONED, Amount); break;
-   case EFFECT_DARKNESS: Char->ReceiveDarkness(Amount); break;
-   case EFFECT_OMMEL_URINE: Char->ReceiveOmmelUrine(Amount); break;
-   case EFFECT_PEPSI: Char->ReceivePepsi(Amount); break;
-   case EFFECT_KOBOLD_FLESH: Char->ReceiveKoboldFlesh(Amount); break;
-   case EFFECT_HEAL: Char->ReceiveHeal(Amount); break;
-   case EFFECT_LYCANTHROPY: if (!Char->StateIsActivated(DISEASE_IMMUNITY)) Char->BeginTemporaryState(LYCANTHROPY, Amount); break;
-   case EFFECT_SCHOOL_FOOD: Char->ReceiveSchoolFood(Amount); break;
-   case EFFECT_ANTIDOTE: Char->ReceiveAntidote(Amount); break;
-   case EFFECT_CONFUSE: Char->BeginTemporaryState(CONFUSED, Amount); break;
-   case EFFECT_POLYMORPH: Char->BeginTemporaryState(POLYMORPH, Amount); break;
-   case EFFECT_ESP: Char->BeginTemporaryState(ESP, Amount); break;
-   case EFFECT_SKUNK_SMELL: Char->BeginTemporaryState(POISONED, Amount); break;
-   case EFFECT_MAGIC_MUSHROOM:
-    {
-      v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
-      Char->ActivateRandomState(SRC_MAGIC_MUSHROOM, Amount, Volume%250+Pos.X+Pos.Y+1);
-      break;
-    }
-   case EFFECT_TRAIN_PERCEPTION: Char->EditExperience(PERCEPTION, Amount, 1<<14); break;
-   case EFFECT_HOLY_BANANA: Char->ReceiveHolyBanana(Amount); break;
-   case EFFECT_EVIL_WONDER_STAFF_VAPOUR:
-    {
-      v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
-      Char->ActivateRandomState(SRC_EVIL, Amount, Volume%250+Pos.X+Pos.Y+1);
-      break;
-    }
-   case EFFECT_GOOD_WONDER_STAFF_VAPOUR:
-    {
-      v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
-      Char->ActivateRandomState(SRC_GOOD, Amount, Volume%250+Pos.X+Pos.Y+1);
-      break;
-    }
-   case EFFECT_PEA_SOUP: Char->ReceivePeaSoup(Amount); break;
-   case EFFECT_BLACK_UNICORN_FLESH: Char->ReceiveBlackUnicorn(Amount); break;
-   case EFFECT_GRAY_UNICORN_FLESH: Char->ReceiveGrayUnicorn(Amount); break;
-   case EFFECT_WHITE_UNICORN_FLESH: Char->ReceiveWhiteUnicorn(Amount); break;
-   case EFFECT_TELEPORT_CONTROL: Char->BeginTemporaryState(TELEPORT_CONTROL, Amount); break;
-   case EFFECT_MUSHROOM:
-    {
-      v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
-      Char->ActivateRandomState(SRC_MUSHROOM, Amount, Volume%250+Pos.X+Pos.Y+1);
-      break;
-    }
-   case EFFECT_OMMEL_CERUMEN: Char->ReceiveOmmelCerumen(Amount); break;
-   case EFFECT_OMMEL_SWEAT: Char->ReceiveOmmelSweat(Amount); break;
-   case EFFECT_OMMEL_TEARS: Char->ReceiveOmmelTears(Amount); break;
-   case EFFECT_OMMEL_SNOT: Char->ReceiveOmmelSnot(Amount); break;
-   case EFFECT_OMMEL_BONE: Char->ReceiveOmmelBone(Amount); break;
-   case EFFECT_MUSTARD_GAS: Char->ReceiveMustardGas(BodyPart, Amount); break;
-   case EFFECT_MUSTARD_GAS_LIQUID: Char->ReceiveMustardGasLiquid(BodyPart, Amount); break;
-   case EFFECT_PANIC: if (!Char->StateIsActivated(FEARLESS)) Char->BeginTemporaryState(PANIC, Amount); break;
-   case EFFECT_TELEPORT: Char->BeginTemporaryState(TELEPORT, Amount); break;
-   case EFFECT_VAMPIRISM: if (!Char->StateIsActivated(DISEASE_IMMUNITY)) Char->BeginTemporaryState(VAMPIRISM, Amount); break;
-   case EFFECT_DETECTING: Char->BeginTemporaryState(DETECTING, Amount); break;
-   default: return false;
+  auto eff = GetEffect();
+
+       if (eff == EFFECT_POISON) Char->BeginTemporaryState(POISONED, Amount);
+  else if (eff == EFFECT_DARKNESS) Char->ReceiveDarkness(Amount);
+  else if (eff == EFFECT_OMMEL_URINE) Char->ReceiveOmmelUrine(Amount);
+  else if (eff == EFFECT_PEPSI) Char->ReceivePepsi(Amount);
+  else if (eff == EFFECT_KOBOLD_FLESH) Char->ReceiveKoboldFlesh(Amount);
+  else if (eff == EFFECT_HEAL) Char->ReceiveHeal(Amount);
+  else if (eff == EFFECT_LYCANTHROPY) { if (!Char->StateIsActivated(DISEASE_IMMUNITY)) Char->BeginTemporaryState(LYCANTHROPY, Amount); }
+  else if (eff == EFFECT_SCHOOL_FOOD) Char->ReceiveSchoolFood(Amount);
+  else if (eff == EFFECT_ANTIDOTE) Char->ReceiveAntidote(Amount);
+  else if (eff == EFFECT_CONFUSE) Char->BeginTemporaryState(CONFUSED, Amount);
+  else if (eff == EFFECT_POLYMORPH) Char->BeginTemporaryState(POLYMORPH, Amount);
+  else if (eff == EFFECT_ESP) Char->BeginTemporaryState(ESP, Amount);
+  else if (eff == EFFECT_SKUNK_SMELL) Char->BeginTemporaryState(POISONED, Amount);
+  else if (eff == EFFECT_MAGIC_MUSHROOM) {
+    v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
+    Char->ActivateRandomState(SRC_MAGIC_MUSHROOM, Amount, Volume%250+Pos.X+Pos.Y+1);
   }
+  else if (eff == EFFECT_TRAIN_PERCEPTION) Char->EditExperience(PERCEPTION, Amount, 1<<14);
+  else if (eff == EFFECT_HOLY_BANANA) Char->ReceiveHolyBanana(Amount);
+  else if (eff == EFFECT_EVIL_WONDER_STAFF_VAPOUR) {
+    v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
+    Char->ActivateRandomState(SRC_EVIL, Amount, Volume%250+Pos.X+Pos.Y+1);
+  }
+  else if (eff == EFFECT_GOOD_WONDER_STAFF_VAPOUR) {
+    v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
+    Char->ActivateRandomState(SRC_GOOD, Amount, Volume%250+Pos.X+Pos.Y+1);
+  }
+  else if (eff == EFFECT_PEA_SOUP) Char->ReceivePeaSoup(Amount);
+  else if (eff == EFFECT_BLACK_UNICORN_FLESH) Char->ReceiveBlackUnicorn(Amount);
+  else if (eff == EFFECT_GRAY_UNICORN_FLESH) Char->ReceiveGrayUnicorn(Amount);
+  else if (eff == EFFECT_WHITE_UNICORN_FLESH) Char->ReceiveWhiteUnicorn(Amount);
+  else if (eff == EFFECT_TELEPORT_CONTROL) Char->BeginTemporaryState(TELEPORT_CONTROL, Amount);
+  else if (eff == EFFECT_MUSHROOM) {
+    v2 Pos = GetMotherEntity()->GetSquareUnderEntity()->GetPos();
+    Char->ActivateRandomState(SRC_MUSHROOM, Amount, Volume%250+Pos.X+Pos.Y+1);
+  }
+  else if (eff == EFFECT_OMMEL_CERUMEN) Char->ReceiveOmmelCerumen(Amount);
+  else if (eff == EFFECT_OMMEL_SWEAT) Char->ReceiveOmmelSweat(Amount);
+  else if (eff == EFFECT_OMMEL_TEARS) Char->ReceiveOmmelTears(Amount);
+  else if (eff == EFFECT_OMMEL_SNOT) Char->ReceiveOmmelSnot(Amount);
+  else if (eff == EFFECT_OMMEL_BONE) Char->ReceiveOmmelBone(Amount);
+  else if (eff == EFFECT_MUSTARD_GAS) Char->ReceiveMustardGas(BodyPart, Amount);
+  else if (eff == EFFECT_MUSTARD_GAS_LIQUID) Char->ReceiveMustardGasLiquid(BodyPart, Amount);
+  else if (eff == EFFECT_PANIC) { if (!Char->StateIsActivated(FEARLESS)) Char->BeginTemporaryState(PANIC, Amount); }
+  else if (eff == EFFECT_TELEPORT) Char->BeginTemporaryState(TELEPORT, Amount);
+  else if (eff == EFFECT_VAMPIRISM) { if (!Char->StateIsActivated(DISEASE_IMMUNITY)) Char->BeginTemporaryState(VAMPIRISM, Amount); }
+  else if (eff == EFFECT_DETECTING) Char->BeginTemporaryState(DETECTING, Amount);
+  else return false;
 
   return true;
 }
@@ -203,20 +193,18 @@ truth material::HitEffect(character* Enemy, bodypart* BodyPart)
   if(!Volume)
     return false;
 
-  switch(GetHitMessage())
-  {
-   case HM_SCHOOL_FOOD: Enemy->AddSchoolFoodHitMessage(); break;
-   case HM_FROG_FLESH: Enemy->AddFrogFleshConsumeEndMessage(); break;
-   case HM_OMMEL: Enemy->AddOmmelConsumeEndMessage(); break;
-   case HM_PEPSI: Enemy->AddPepsiConsumeEndMessage(); break;
-   case HM_KOBOLD_FLESH: Enemy->AddKoboldFleshHitMessage(); break;
-   case HM_HEALING_LIQUID: Enemy->AddHealingLiquidConsumeEndMessage(); break;
-   case HM_ANTIDOTE: Enemy->AddAntidoteConsumeEndMessage(); break;
-   case HM_CONFUSE: Enemy->AddConfuseHitMessage(); break;
-   case HM_HOLY_BANANA: Enemy->AddHolyBananaConsumeEndMessage(); break;
-   case HM_HOLY_MANGO: Enemy->AddHolyMangoConsumeEndMessage(); break;
-   case HM_ALIEN_FLESH: Enemy->AddAlienFleshConsumeEndMessage(); break;
-  }
+  auto mtp = GetHitMessage();
+       if (mtp == HM_SCHOOL_FOOD) Enemy->AddSchoolFoodHitMessage();
+  else if (mtp == HM_FROG_FLESH) Enemy->AddFrogFleshConsumeEndMessage();
+  else if (mtp == HM_OMMEL) Enemy->AddOmmelConsumeEndMessage();
+  else if (mtp == HM_PEPSI) Enemy->AddPepsiConsumeEndMessage();
+  else if (mtp == HM_KOBOLD_FLESH) Enemy->AddKoboldFleshHitMessage();
+  else if (mtp == HM_HEALING_LIQUID) Enemy->AddHealingLiquidConsumeEndMessage();
+  else if (mtp == HM_ANTIDOTE) Enemy->AddAntidoteConsumeEndMessage();
+  else if (mtp == HM_CONFUSE) Enemy->AddConfuseHitMessage();
+  else if (mtp == HM_HOLY_BANANA) Enemy->AddHolyBananaConsumeEndMessage();
+  else if (mtp == HM_HOLY_MANGO) Enemy->AddHolyMangoConsumeEndMessage();
+  else if (mtp == HM_ALIEN_FLESH) Enemy->AddAlienFleshConsumeEndMessage();
 
   sLong Amount = Max<sLong>(GetVolume() >> 1, 1);
   truth Success;
@@ -248,37 +236,36 @@ truth material::HitEffect(character* Enemy, bodypart* BodyPart)
 
 
 void material::AddConsumeEndMessage (character *Eater) const {
-  switch (GetConsumeEndMessage()) {
-    case CEM_SCHOOL_FOOD: Eater->AddSchoolFoodConsumeEndMessage(); break;
-    case CEM_BONE: Eater->AddBoneConsumeEndMessage(); break;
-    case CEM_FROG_FLESH: Eater->AddFrogFleshConsumeEndMessage(); break;
-    case CEM_OMMEL: Eater->AddOmmelConsumeEndMessage(); break;
-    case CEM_PEPSI: Eater->AddPepsiConsumeEndMessage(); break;
-    case CEM_KOBOLD_FLESH: Eater->AddKoboldFleshConsumeEndMessage(); break;
-    case CEM_HEALING_LIQUID: Eater->AddHealingLiquidConsumeEndMessage(); break;
-    case CEM_ANTIDOTE: Eater->AddAntidoteConsumeEndMessage(); break;
-    case CEM_ESP: Eater->AddESPConsumeMessage(); break;
-    case CEM_HOLY_BANANA: Eater->AddHolyBananaConsumeEndMessage(); break;
-    case CEM_PEA_SOUP: Eater->AddPeaSoupConsumeEndMessage(); break;
-    case CEM_BLACK_UNICORN_FLESH: Eater->AddBlackUnicornConsumeEndMessage(); break;
-    case CEM_GRAY_UNICORN_FLESH: Eater->AddGrayUnicornConsumeEndMessage(); break;
-    case CEM_WHITE_UNICORN_FLESH: Eater->AddWhiteUnicornConsumeEndMessage(); break;
-    case CEM_OMMEL_BONE: Eater->AddOmmelBoneConsumeEndMessage(); break;
-    case CEM_LIQUID_HORROR: Eater->AddLiquidHorrorConsumeEndMessage(); break;
-    case CEM_HOLY_MANGO: Eater->AddHolyMangoConsumeEndMessage(); break;
-    case CEM_ALIEN_FLESH: Eater->AddAlienFleshConsumeEndMessage(); break;
-  }
+  auto mtp = GetConsumeEndMessage();
+  if (mtp == CEM_SCHOOL_FOOD) { Eater->AddSchoolFoodConsumeEndMessage(); return; }
+  if (mtp == CEM_BONE) { Eater->AddBoneConsumeEndMessage(); return; }
+  if (mtp == CEM_FROG_FLESH) { Eater->AddFrogFleshConsumeEndMessage(); return; }
+  if (mtp == CEM_OMMEL) { Eater->AddOmmelConsumeEndMessage(); return; }
+  if (mtp == CEM_PEPSI) { Eater->AddPepsiConsumeEndMessage(); return; }
+  if (mtp == CEM_KOBOLD_FLESH) { Eater->AddKoboldFleshConsumeEndMessage(); return; }
+  if (mtp == CEM_HEALING_LIQUID) { Eater->AddHealingLiquidConsumeEndMessage(); return; }
+  if (mtp == CEM_ANTIDOTE) { Eater->AddAntidoteConsumeEndMessage(); return; }
+  if (mtp == CEM_ESP) { Eater->AddESPConsumeMessage(); return; }
+  if (mtp == CEM_HOLY_BANANA) { Eater->AddHolyBananaConsumeEndMessage(); return; }
+  if (mtp == CEM_PEA_SOUP) { Eater->AddPeaSoupConsumeEndMessage(); return; }
+  if (mtp == CEM_BLACK_UNICORN_FLESH) { Eater->AddBlackUnicornConsumeEndMessage(); return; }
+  if (mtp == CEM_GRAY_UNICORN_FLESH) { Eater->AddGrayUnicornConsumeEndMessage(); return; }
+  if (mtp == CEM_WHITE_UNICORN_FLESH) { Eater->AddWhiteUnicornConsumeEndMessage(); return; }
+  if (mtp == CEM_OMMEL_BONE) { Eater->AddOmmelBoneConsumeEndMessage(); return; }
+  if (mtp == CEM_LIQUID_HORROR) { Eater->AddLiquidHorrorConsumeEndMessage(); return; }
+  if (mtp == CEM_HOLY_MANGO) { Eater->AddHolyMangoConsumeEndMessage(); return; }
+  if (mtp == CEM_ALIEN_FLESH) { Eater->AddAlienFleshConsumeEndMessage(); return; }
 }
 
-material* materialprototype::SpawnAndLoad(inputfile& SaveFile) const
-{
-  material* Material = Spawner(0, 0, true);
+
+material *materialprototype::SpawnAndLoad (inputfile &SaveFile) const {
+  material *Material = Spawner(0, 0, true);
   Material->Load(SaveFile);
   return Material;
 }
 
 
-material* material::MakeMaterial (int Config, sLong Volume) {
+material *material::MakeMaterial (int Config, sLong Volume) {
   if (!Config) return 0;
 
   auto cfg = (Config>>12);

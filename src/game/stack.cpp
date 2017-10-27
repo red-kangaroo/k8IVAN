@@ -229,19 +229,21 @@ void stack::CheckForStepOnEffect (character *Stepper) {
 
 
 lsquare *stack::GetLSquareTrulyUnder (int SquarePosition) const {
-  switch (SquarePosition) {
-    case DOWN:
-      if (GetArea()->IsValidPos(GetPos()+v2(0, 1))) return GetNearLSquare(GetPos() + v2(0, 1));
-      return 0;
-    case LEFT:
-      if (GetArea()->IsValidPos(GetPos()+v2(-1, 0))) return GetNearLSquare(GetPos() + v2(-1, 0));
-      return 0;
-    case UP:
-      if (GetArea()->IsValidPos(GetPos()+v2(0, -1))) return GetNearLSquare(GetPos() + v2(0, -1));
-      return 0;
-    case RIGHT:
-      if (GetArea()->IsValidPos(GetPos()+v2(1, 0))) return GetNearLSquare(GetPos() + v2(1, 0));
-      return 0;
+  if (SquarePosition == DOWN) {
+    if (GetArea()->IsValidPos(GetPos()+v2(0, 1))) return GetNearLSquare(GetPos() + v2(0, 1));
+    return 0;
+  }
+  if (SquarePosition == LEFT) {
+    if (GetArea()->IsValidPos(GetPos()+v2(-1, 0))) return GetNearLSquare(GetPos() + v2(-1, 0));
+    return 0;
+  }
+  if (SquarePosition == UP) {
+    if (GetArea()->IsValidPos(GetPos()+v2(0, -1))) return GetNearLSquare(GetPos() + v2(0, -1));
+    return 0;
+  }
+  if (SquarePosition == RIGHT) {
+    if (GetArea()->IsValidPos(GetPos()+v2(1, 0))) return GetNearLSquare(GetPos() + v2(1, 0));
+    return 0;
   }
   return GetLSquareUnder();
 }

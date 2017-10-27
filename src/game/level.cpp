@@ -229,17 +229,14 @@ truth level::Generate (int Index) {
 
   int Type = LevelScript->GetType() ? *LevelScript->GetType() : 0;
 
-  switch (Type) {
-    case 0: return GenerateDungeon(Index); break;
-    case DESERT: return GenerateDesert(); break;
-    case JUNGLE: return GenerateJungle(); break;
-    case STEPPE: return GenerateSteppe(); break;
-    case LEAFY_FOREST: return GenerateLeafyForest(); break;
-    case EVERGREEN_FOREST: return GenerateEvergreenForest(); break;
-    case TUNDRA: return GenerateTundra(); break;
-    case GLACIER: return GenerateGlacier(); break;
-    default: break;
-  }
+  if (Type == 0) return GenerateDungeon(Index);
+  if (Type == DESERT) return GenerateDesert();
+  if (Type == JUNGLE) return GenerateJungle();
+  if (Type == STEPPE) return GenerateSteppe();
+  if (Type == LEAFY_FOREST) return GenerateLeafyForest();
+  if (Type == EVERGREEN_FOREST) return GenerateEvergreenForest();
+  if (Type == TUNDRA) return GenerateTundra();
+  if (Type == GLACIER) return GenerateGlacier();
 
   ABORT("You are a terrorist. Please stop creating wterrains that are stupid.");
   return false;

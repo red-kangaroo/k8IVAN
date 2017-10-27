@@ -40,13 +40,11 @@ int ironalloy::GetStrengthValue() const
 {
   int Base = material::GetStrengthValue();
 
-  switch(GetRustLevel())
-  {
-   case NOT_RUSTED: return Base;
-   case SLIGHTLY_RUSTED: return ((Base << 3) + Base) / 10;
-   case RUSTED: return ((Base << 1) + Base) >> 2;
-   case VERY_RUSTED: return Base >> 1;
-  }
+  auto rlev = GetRustLevel();
+  if (rlev == NOT_RUSTED) return Base;
+  if (rlev == SLIGHTLY_RUSTED) return ((Base << 3) + Base) / 10;
+  if (rlev == RUSTED) return ((Base << 1) + Base) >> 2;
+  if (rlev == VERY_RUSTED) return Base >> 1;
 
   return 0; /* not possible */
 }
@@ -61,18 +59,10 @@ truth ironalloy::AddRustLevelDescription(festring& Name, truth Articled) const
   if(Articled)
     Name << "a ";
 
-  switch(GetRustLevel())
-  {
-   case SLIGHTLY_RUSTED:
-    Name << "slightly rusted ";
-    break;
-   case RUSTED:
-    Name << "rusted ";
-    break;
-   case VERY_RUSTED:
-    Name << "very rusted ";
-    break;
-  }
+  auto rlev = GetRustLevel();
+  if (rlev == SLIGHTLY_RUSTED) Name << "slightly rusted ";
+  if (rlev == RUSTED) Name << "rusted ";
+  if (rlev == VERY_RUSTED) Name << "very rusted ";
 
   return true;
 }

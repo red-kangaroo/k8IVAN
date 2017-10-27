@@ -113,25 +113,25 @@ const name##prototype name::ProtoType
 #define DID_NO_DAMAGE  (game::GetGlobalConst("DID_NO_DAMAGE"))
 #define HAS_FAILED  (game::GetGlobalConst("HAS_FAILED"))
 
-#define OVER_FED_LEVEL 175000
-#define BLOATED_LEVEL 150000
-#define SATIATED_LEVEL 100000
-#define NOT_HUNGER_LEVEL 30000
-#define HUNGER_LEVEL 20000
-#define VERY_HUNGER_LEVEL 10000
+#define OVER_FED_LEVEL  (game::GetGlobalConst("OVER_FED_LEVEL"))
+#define BLOATED_LEVEL  (game::GetGlobalConst("BLOATED_LEVEL"))
+#define SATIATED_LEVEL  (game::GetGlobalConst("SATIATED_LEVEL"))
+#define NOT_HUNGER_LEVEL  (game::GetGlobalConst("NOT_HUNGER_LEVEL"))
+#define HUNGER_LEVEL  (game::GetGlobalConst("HUNGER_LEVEL"))
+#define VERY_HUNGER_LEVEL  (game::GetGlobalConst("VERY_HUNGER_LEVEL"))
 
-#define OVER_LOADED 0
-#define STRESSED 1
-#define BURDENED 2
-#define UNBURDENED 3
+#define OVER_LOADED  (game::GetGlobalConst("OVER_LOADED"))
+#define STRESSED  (game::GetGlobalConst("STRESSED"))
+#define BURDENED  (game::GetGlobalConst("BURDENED"))
+#define UNBURDENED  (game::GetGlobalConst("UNBURDENED"))
 
-#define STARVING 0
-#define VERY_HUNGRY 1
-#define HUNGRY 2
-#define NOT_HUNGRY 3
-#define SATIATED 4
-#define BLOATED 5
-#define OVER_FED 6
+#define STARVING  (game::GetGlobalConst("STARVING"))
+#define VERY_HUNGRY  (game::GetGlobalConst("VERY_HUNGRY"))
+#define HUNGRY  (game::GetGlobalConst("HUNGRY"))
+#define NOT_HUNGRY  (game::GetGlobalConst("NOT_HUNGRY"))
+#define SATIATED  (game::GetGlobalConst("SATIATED"))
+#define BLOATED  (game::GetGlobalConst("BLOATED"))
+#define OVER_FED  (game::GetGlobalConst("OVER_FED"))
 
 //WARNING! state count and state order MUST be synced with "define.dat"
 #define STATES 30
@@ -167,42 +167,15 @@ const name##prototype name::ProtoType
 #define DISEASE_IMMUNITY  (game::GetGlobalConst("DISEASE_IMMUNITY"))
 #define TELEPORT_LOCK  (game::GetGlobalConst("TELEPORT_LOCK"))
 
-/*
-#define POLYMORPHED (1 << 0)
-#define HASTE (1 << 1)
-#define SLOW (1 << 2)
-#define POLYMORPH_CONTROL (1 << 3)
-#define LIFE_SAVED (1 << 4)
-#define LYCANTHROPY (1 << 5)
-#define INVISIBLE (1 << 6)
-#define INFRA_VISION (1 << 7)
-#define ESP (1 << 8)
-#define POISONED (1 << 9)
-#define TELEPORT (1 << 10)
-#define POLYMORPH (1 << 11)
-#define TELEPORT_CONTROL (1 << 12)
-#define PANIC (1 << 13)
-#define CONFUSED (1 << 14)
-#define PARASITIZED (1 << 15)
-#define SEARCHING (1 << 16)
-#define GAS_IMMUNITY (1 << 17)
-#define LEVITATION (1 << 18)
-#define LEPROSY (1 << 19)
-#define HICCUPS (1 << 20)
-#define VAMPIRISM (1 << 21)
-#define DETECTING (1 << 22)
-#define ETHEREAL_MOVING (1 << 23)
-#define FEARLESS (1 << 24)
-*/
 
-
-#define THROW_ITEM_TYPES 5
+#define THROW_ITEM_TYPES  (game::GetGlobalConst("THROW_ITEM_TYPES"))
 /*ThrowFlags */
-#define THROW_BONE (1 << 0)
-#define THROW_POTION (1 << 1)
-#define THROW_AXE (1 << 2)
-#define THROW_GAS_GRENADE (1 << 3)
-#define THROW_WAND (1 << 4)
+#define THROW_BONE  (game::GetGlobalConst("THROW_BONE"))
+#define THROW_POTION  (game::GetGlobalConst("THROW_POTION"))
+#define THROW_AXE  (game::GetGlobalConst("THROW_AXE"))
+#define THROW_GAS_GRENADE  (game::GetGlobalConst("THROW_GAS_GRENADE"))
+#define THROW_WAND  (game::GetGlobalConst("THROW_WAND"))
+
 
 #define TORSO 1
 #define HEAD 2
@@ -216,23 +189,24 @@ const name##prototype name::ProtoType
 #define OTHER 128
 #define ALL 255
 
-#define PHYSICAL_DAMAGE 1
-#define SOUND 2
-#define ACID 4
-#define FIRE 8
-#define ELECTRICITY 16
-#define ENERGY 32
-#define POISON 64
-#define DRAIN 128
-#define MUSTARD_GAS_DAMAGE 256
-#define PSI 512
-#define THROW 32768
+
+#define PHYSICAL_DAMAGE  (game::GetGlobalConst("PHYSICAL_DAMAGE"))
+#define SOUND  (game::GetGlobalConst("SOUND"))
+#define ACID  (game::GetGlobalConst("ACID"))
+#define FIRE  (game::GetGlobalConst("FIRE"))
+#define ELECTRICITY  (game::GetGlobalConst("ELECTRICITY"))
+#define ENERGY  (game::GetGlobalConst("ENERGY"))
+#define POISON  (game::GetGlobalConst("POISON"))
+#define DRAIN  (game::GetGlobalConst("DRAIN"))
+#define MUSTARD_GAS_DAMAGE  (game::GetGlobalConst("MUSTARD_GAS_DAMAGE"))
+#define PSI  (game::GetGlobalConst("PSI"))
+#define THROW  (game::GetGlobalConst("THROW"))
 
 
-#define UNDEFINED 0
-#define MALE 1
-#define FEMALE 2
-#define TRANSSEXUAL 3
+#define UNDEFINED  (game::GetGlobalConst("UNDEFINED"))
+#define MALE  (game::GetGlobalConst("MALE"))
+#define FEMALE  (game::GetGlobalConst("FEMALE"))
+#define TRANSSEXUAL  (game::GetGlobalConst("TRANSSEXUAL"))
 
 #define ALL_BODYPART_FLAGS 0x7F
 
@@ -324,171 +298,172 @@ const name##prototype name::ProtoType
 #define WOBBLE_VERTICALLY WOBBLE
 #define WOBBLE_HORIZONTALLY (WOBBLE|WOBBLE_HORIZONTALLY_BIT)
 #define WOBBLE_SPEED_SHIFT 2
-#define WOBBLE_SPEED_RANGE (3 << WOBBLE_SPEED_SHIFT)
+#define WOBBLE_SPEED_RANGE (3<<WOBBLE_SPEED_SHIFT)
 #define WOBBLE_FREQ_SHIFT 4
-#define WOBBLE_FREQ_RANGE (3 << WOBBLE_FREQ_SHIFT)
+#define WOBBLE_FREQ_RANGE (3<<WOBBLE_FREQ_SHIFT)
 
 cv2 SILHOUETTE_SIZE(48, 64);
 
+//WARNING! keep in sync with "define.dat"!
 #define ITEM_CATEGORIES 18
 
-#define ANY_CATEGORY 0x7FFFFFFF
-#define HELMET (1 << 0)
-#define AMULET (1 << 1)
-#define CLOAK (1 << 2)
-#define BODY_ARMOR (1 << 3)
-#define WEAPON (1 << 4)
-#define SHIELD (1 << 5)
-#define RING (1 << 6)
-#define GAUNTLET (1 << 7)
-#define BELT (1 << 8)
-#define BOOT (1 << 9)
-#define FOOD (1 << 10)
-#define POTION (1 << 11)
-#define SCROLL (1 << 12)
-#define BOOK (1 << 13)
-#define WAND (1 << 14)
-#define TOOL (1 << 15)
-#define VALUABLE (1 << 16)
-#define MISC (1 << 17)
+#define ANY_CATEGORY  (game::GetGlobalConst("ANY_CATEGORY"))
+#define HELMET  (game::GetGlobalConst("HELMET"))
+#define AMULET  (game::GetGlobalConst("AMULET"))
+#define CLOAK  (game::GetGlobalConst("CLOAK"))
+#define BODY_ARMOR  (game::GetGlobalConst("BODY_ARMOR"))
+#define WEAPON  (game::GetGlobalConst("WEAPON"))
+#define SHIELD  (game::GetGlobalConst("SHIELD"))
+#define RING  (game::GetGlobalConst("RING"))
+#define GAUNTLET  (game::GetGlobalConst("GAUNTLET"))
+#define BELT  (game::GetGlobalConst("BELT"))
+#define BOOT  (game::GetGlobalConst("BOOT"))
+#define FOOD  (game::GetGlobalConst("FOOD"))
+#define POTION  (game::GetGlobalConst("POTION"))
+#define SCROLL  (game::GetGlobalConst("SCROLL"))
+#define BOOK  (game::GetGlobalConst("BOOK"))
+#define WAND  (game::GetGlobalConst("WAND"))
+#define TOOL  (game::GetGlobalConst("TOOL"))
+#define VALUABLE  (game::GetGlobalConst("VALUABLE"))
+#define MISC  (game::GetGlobalConst("MISC"))
 
-#define GOOD 1
-#define NEUTRAL 2
-#define EVIL 3
+#define GOOD  (game::GetGlobalConst("GOOD"))
+#define NEUTRAL  (game::GetGlobalConst("NEUTRAL"))
+#define EVIL  (game::GetGlobalConst("EVIL"))
 // new
-#define TOPPLED 4
+#define TOPPLED  (game::GetGlobalConst("TOPPLED"))
 
 /* ConsumeTypes */
 
-#define CT_FRUIT 1
-#define CT_MEAT 2
-#define CT_METAL 4
-#define CT_MINERAL 8
-#define CT_LIQUID 16
-#define CT_BONE 32
-#define CT_PROCESSED 64
-#define CT_MISC_ORGANIC 128
-#define CT_PLASTIC 256
-#define CT_GAS 512
+#define CT_FRUIT  (game::GetGlobalConst("CT_FRUIT"))
+#define CT_MEAT  (game::GetGlobalConst("CT_MEAT"))
+#define CT_METAL  (game::GetGlobalConst("CT_METAL"))
+#define CT_MINERAL  (game::GetGlobalConst("CT_MINERAL"))
+#define CT_LIQUID  (game::GetGlobalConst("CT_LIQUID"))
+#define CT_BONE  (game::GetGlobalConst("CT_BONE"))
+#define CT_PROCESSED  (game::GetGlobalConst("CT_PROCESSED"))
+#define CT_MISC_ORGANIC  (game::GetGlobalConst("CT_MISC_ORGANIC"))
+#define CT_PLASTIC  (game::GetGlobalConst("CT_PLASTIC"))
+#define CT_GAS  (game::GetGlobalConst("CT_GAS"))
 
 /* Possible square positions for item. The first four are used for items
    on walls */
 
-#define LEFT 0
-#define DOWN 1
-#define UP 2
-#define RIGHT 3
-#define CENTER 4 // item on ground
+#define LEFT  (game::GetGlobalConst("LEFT"))
+#define DOWN  (game::GetGlobalConst("DOWN"))
+#define UP  (game::GetGlobalConst("UP"))
+#define RIGHT  (game::GetGlobalConst("RIGHT"))
+#define CENTER  (game::GetGlobalConst("CENTER")) // item on ground
 
-#define HOSTILE 1
-#define UNCARING 2
-#define FRIEND 4
+#define HOSTILE  (game::GetGlobalConst("HOSTILE"))
+#define UNCARING  (game::GetGlobalConst("UNCARING"))
+#define FRIEND  (game::GetGlobalConst("FRIEND"))
 
 #define MARTIAL_SKILL_CATEGORIES 3
 #define WEAPON_SKILL_CATEGORIES 11
 
-#define UNARMED 0
-#define KICK 1
-#define BITE 2
-#define UNCATEGORIZED 3
-#define SMALL_SWORDS 4
-#define LARGE_SWORDS 5
-#define BLUNT_WEAPONS 6
-#define AXES 7
-#define POLE_ARMS 8
-#define WHIPS 9
-#define SHIELDS 10
+#define UNARMED  (game::GetGlobalConst("UNARMED"))
+#define KICK  (game::GetGlobalConst("KICK"))
+#define BITE  (game::GetGlobalConst("BITE"))
+#define UNCATEGORIZED  (game::GetGlobalConst("UNCATEGORIZED"))
+#define SMALL_SWORDS  (game::GetGlobalConst("SMALL_SWORDS"))
+#define LARGE_SWORDS  (game::GetGlobalConst("LARGE_SWORDS"))
+#define BLUNT_WEAPONS  (game::GetGlobalConst("BLUNT_WEAPONS"))
+#define AXES  (game::GetGlobalConst("AXES"))
+#define POLE_ARMS  (game::GetGlobalConst("POLE_ARMS"))
+#define WHIPS  (game::GetGlobalConst("WHIPS"))
+#define SHIELDS  (game::GetGlobalConst("SHIELDS"))
 
-#define LOCKED 1
+#define LOCKED  (game::GetGlobalConst("LOCKED"))
 
-#define EFFECT_NOTHING 0
-#define EFFECT_POISON 1
-#define EFFECT_DARKNESS 2
-#define EFFECT_OMMEL_URINE 3
-#define EFFECT_PEPSI 4
-#define EFFECT_KOBOLD_FLESH 5
-#define EFFECT_HEAL 6
-#define EFFECT_LYCANTHROPY 7
-#define EFFECT_SCHOOL_FOOD 8
-#define EFFECT_ANTIDOTE 9
-#define EFFECT_CONFUSE 10
-#define EFFECT_POLYMORPH 11
-#define EFFECT_ESP 12
-#define EFFECT_SKUNK_SMELL 13
-#define EFFECT_MAGIC_MUSHROOM 14
-#define EFFECT_TRAIN_PERCEPTION 15
-#define EFFECT_HOLY_BANANA 16
-#define EFFECT_EVIL_WONDER_STAFF_VAPOUR 17
-#define EFFECT_GOOD_WONDER_STAFF_VAPOUR 18
-#define EFFECT_PEA_SOUP 19
-#define EFFECT_BLACK_UNICORN_FLESH 20
-#define EFFECT_GRAY_UNICORN_FLESH 21
-#define EFFECT_WHITE_UNICORN_FLESH 22
-#define EFFECT_TELEPORT_CONTROL 23
-#define EFFECT_MUSHROOM 24
-#define EFFECT_OMMEL_CERUMEN 25
-#define EFFECT_OMMEL_SWEAT 26
-#define EFFECT_OMMEL_TEARS 27
-#define EFFECT_OMMEL_SNOT 28
-#define EFFECT_OMMEL_BONE 29
-#define EFFECT_MUSTARD_GAS 30
-#define EFFECT_MUSTARD_GAS_LIQUID 31
+#define EFFECT_NOTHING  (game::GetGlobalConst("EFFECT_NOTHING"))
+#define EFFECT_POISON  (game::GetGlobalConst("EFFECT_POISON"))
+#define EFFECT_DARKNESS  (game::GetGlobalConst("EFFECT_DARKNESS"))
+#define EFFECT_OMMEL_URINE  (game::GetGlobalConst("EFFECT_OMMEL_URINE"))
+#define EFFECT_PEPSI  (game::GetGlobalConst("EFFECT_PEPSI"))
+#define EFFECT_KOBOLD_FLESH  (game::GetGlobalConst("EFFECT_KOBOLD_FLESH"))
+#define EFFECT_HEAL  (game::GetGlobalConst("EFFECT_HEAL"))
+#define EFFECT_LYCANTHROPY  (game::GetGlobalConst("EFFECT_LYCANTHROPY"))
+#define EFFECT_SCHOOL_FOOD  (game::GetGlobalConst("EFFECT_SCHOOL_FOOD"))
+#define EFFECT_ANTIDOTE  (game::GetGlobalConst("EFFECT_ANTIDOTE"))
+#define EFFECT_CONFUSE  (game::GetGlobalConst("EFFECT_CONFUSE"))
+#define EFFECT_POLYMORPH  (game::GetGlobalConst("EFFECT_POLYMORPH"))
+#define EFFECT_ESP  (game::GetGlobalConst("EFFECT_ESP"))
+#define EFFECT_SKUNK_SMELL  (game::GetGlobalConst("EFFECT_SKUNK_SMELL"))
+#define EFFECT_MAGIC_MUSHROOM  (game::GetGlobalConst("EFFECT_MAGIC_MUSHROOM"))
+#define EFFECT_TRAIN_PERCEPTION  (game::GetGlobalConst("EFFECT_TRAIN_PERCEPTION"))
+#define EFFECT_HOLY_BANANA  (game::GetGlobalConst("EFFECT_HOLY_BANANA"))
+#define EFFECT_EVIL_WONDER_STAFF_VAPOUR  (game::GetGlobalConst("EFFECT_EVIL_WONDER_STAFF_VAPOUR"))
+#define EFFECT_GOOD_WONDER_STAFF_VAPOUR  (game::GetGlobalConst("EFFECT_GOOD_WONDER_STAFF_VAPOUR"))
+#define EFFECT_PEA_SOUP  (game::GetGlobalConst("EFFECT_PEA_SOUP"))
+#define EFFECT_BLACK_UNICORN_FLESH  (game::GetGlobalConst("EFFECT_BLACK_UNICORN_FLESH"))
+#define EFFECT_GRAY_UNICORN_FLESH  (game::GetGlobalConst("EFFECT_GRAY_UNICORN_FLESH"))
+#define EFFECT_WHITE_UNICORN_FLESH  (game::GetGlobalConst("EFFECT_WHITE_UNICORN_FLESH"))
+#define EFFECT_TELEPORT_CONTROL  (game::GetGlobalConst("EFFECT_TELEPORT_CONTROL"))
+#define EFFECT_MUSHROOM  (game::GetGlobalConst("EFFECT_MUSHROOM"))
+#define EFFECT_OMMEL_CERUMEN  (game::GetGlobalConst("EFFECT_OMMEL_CERUMEN"))
+#define EFFECT_OMMEL_SWEAT  (game::GetGlobalConst("EFFECT_OMMEL_SWEAT"))
+#define EFFECT_OMMEL_TEARS  (game::GetGlobalConst("EFFECT_OMMEL_TEARS"))
+#define EFFECT_OMMEL_SNOT  (game::GetGlobalConst("EFFECT_OMMEL_SNOT"))
+#define EFFECT_OMMEL_BONE  (game::GetGlobalConst("EFFECT_OMMEL_BONE"))
+#define EFFECT_MUSTARD_GAS  (game::GetGlobalConst("EFFECT_MUSTARD_GAS"))
+#define EFFECT_MUSTARD_GAS_LIQUID  (game::GetGlobalConst("EFFECT_MUSTARD_GAS_LIQUID"))
 // new; wtf is EFFECT_PANIC?
-#define EFFECT_PANIC 32
-#define EFFECT_TELEPORT 33
-#define EFFECT_VAMPIRISM 34
-#define EFFECT_DETECTING 35
-#define EFFECT_HOLY_MANGO 36
+#define EFFECT_PANIC  (game::GetGlobalConst("EFFECT_PANIC"))
+#define EFFECT_TELEPORT  (game::GetGlobalConst("EFFECT_TELEPORT"))
+#define EFFECT_VAMPIRISM  (game::GetGlobalConst("EFFECT_VAMPIRISM"))
+#define EFFECT_DETECTING  (game::GetGlobalConst("EFFECT_DETECTING"))
+#define EFFECT_HOLY_MANGO  (game::GetGlobalConst("EFFECT_HOLY_MANGO"))
 
 /* CEM = Consume End Message */
 
-#define CEM_NOTHING 0
-#define CEM_SCHOOL_FOOD 1
-#define CEM_BONE 2
-#define CEM_FROG_FLESH 3
-#define CEM_OMMEL 4
-#define CEM_PEPSI 5
-#define CEM_KOBOLD_FLESH 6
-#define CEM_HEALING_LIQUID 7
-#define CEM_ANTIDOTE 8
-#define CEM_ESP 9
-#define CEM_HOLY_BANANA 10
-#define CEM_PEA_SOUP 11
-#define CEM_BLACK_UNICORN_FLESH 12
-#define CEM_GRAY_UNICORN_FLESH 13
-#define CEM_WHITE_UNICORN_FLESH 14
-#define CEM_OMMEL_BONE 15
+#define CEM_NOTHING  (game::GetGlobalConst("CEM_NOTHING"))
+#define CEM_SCHOOL_FOOD  (game::GetGlobalConst("CEM_SCHOOL_FOOD"))
+#define CEM_BONE  (game::GetGlobalConst("CEM_BONE"))
+#define CEM_FROG_FLESH  (game::GetGlobalConst("CEM_FROG_FLESH"))
+#define CEM_OMMEL  (game::GetGlobalConst("CEM_OMMEL"))
+#define CEM_PEPSI  (game::GetGlobalConst("CEM_PEPSI"))
+#define CEM_KOBOLD_FLESH  (game::GetGlobalConst("CEM_KOBOLD_FLESH"))
+#define CEM_HEALING_LIQUID  (game::GetGlobalConst("CEM_HEALING_LIQUID"))
+#define CEM_ANTIDOTE  (game::GetGlobalConst("CEM_ANTIDOTE"))
+#define CEM_ESP  (game::GetGlobalConst("CEM_ESP"))
+#define CEM_HOLY_BANANA  (game::GetGlobalConst("CEM_HOLY_BANANA"))
+#define CEM_PEA_SOUP  (game::GetGlobalConst("CEM_PEA_SOUP"))
+#define CEM_BLACK_UNICORN_FLESH  (game::GetGlobalConst("CEM_BLACK_UNICORN_FLESH"))
+#define CEM_GRAY_UNICORN_FLESH  (game::GetGlobalConst("CEM_GRAY_UNICORN_FLESH"))
+#define CEM_WHITE_UNICORN_FLESH  (game::GetGlobalConst("CEM_WHITE_UNICORN_FLESH"))
+#define CEM_OMMEL_BONE  (game::GetGlobalConst("CEM_OMMEL_BONE"))
 // new
-#define CEM_LIQUID_HORROR 16
-#define CEM_HOLY_MANGO 17
+#define CEM_LIQUID_HORROR  (game::GetGlobalConst("CEM_LIQUID_HORROR"))
+#define CEM_HOLY_MANGO  (game::GetGlobalConst("CEM_HOLY_MANGO"))
 // alien mod
-#define CEM_ALIEN_FLESH 18
+#define CEM_ALIEN_FLESH  (game::GetGlobalConst("CEM_ALIEN_FLESH"))
 
 /* HM = Hit Message */
 
-#define HM_NOTHING 0
-#define HM_SCHOOL_FOOD 1
-#define HM_FROG_FLESH 2
-#define HM_OMMEL 3
-#define HM_PEPSI 4
-#define HM_KOBOLD_FLESH 5
-#define HM_HEALING_LIQUID 6
-#define HM_ANTIDOTE 7
-#define HM_CONFUSE 8
-#define HM_HOLY_BANANA 9
-#define HM_HOLY_MANGO 10
+#define HM_NOTHING  (game::GetGlobalConst("HM_NOTHING"))
+#define HM_SCHOOL_FOOD  (game::GetGlobalConst("HM_SCHOOL_FOOD"))
+#define HM_FROG_FLESH  (game::GetGlobalConst("HM_FROG_FLESH"))
+#define HM_OMMEL  (game::GetGlobalConst("HM_OMMEL"))
+#define HM_PEPSI  (game::GetGlobalConst("HM_PEPSI"))
+#define HM_KOBOLD_FLESH  (game::GetGlobalConst("HM_KOBOLD_FLESH"))
+#define HM_HEALING_LIQUID  (game::GetGlobalConst("HM_HEALING_LIQUID"))
+#define HM_ANTIDOTE  (game::GetGlobalConst("HM_ANTIDOTE"))
+#define HM_CONFUSE  (game::GetGlobalConst("HM_CONFUSE"))
+#define HM_HOLY_BANANA  (game::GetGlobalConst("HM_HOLY_BANANA"))
+#define HM_HOLY_MANGO  (game::GetGlobalConst("HM_HOLY_MANGO"))
 // alien mod
-#define HM_ALIEN_FLESH 11
+#define HM_ALIEN_FLESH  (game::GetGlobalConst("HM_ALIEN_FLESH"))
 
-#define UNARMED_ATTACK 0
-#define WEAPON_ATTACK 1
-#define KICK_ATTACK 2
-#define BITE_ATTACK 3
-#define THROW_ATTACK 4
+#define UNARMED_ATTACK  (game::GetGlobalConst("UNARMED_ATTACK"))
+#define WEAPON_ATTACK  (game::GetGlobalConst("WEAPON_ATTACK"))
+#define KICK_ATTACK  (game::GetGlobalConst("KICK_ATTACK"))
+#define BITE_ATTACK  (game::GetGlobalConst("BITE_ATTACK"))
+#define THROW_ATTACK  (game::GetGlobalConst("THROW_ATTACK"))
 
-#define USE_ARMS 1
-#define USE_LEGS 2
-#define USE_HEAD 4
+#define USE_ARMS  (game::GetGlobalConst("USE_ARMS"))
+#define USE_LEGS  (game::GetGlobalConst("USE_LEGS"))
+#define USE_HEAD  (game::GetGlobalConst("USE_HEAD"))
 
 #define ATTRIBUTES 11
 #define BASE_ATTRIBUTES 7
@@ -506,18 +481,18 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define DEXTERITY 9
 #define AGILITY 10
 
-#define F_ENDURANCE (1 << ENDURANCE)
-#define F_PERCEPTION (1 << PERCEPTION)
-#define F_INTELLIGENCE (1 << INTELLIGENCE)
-#define F_WISDOM (1 << WISDOM)
-#define F_WILL_POWER (1 << WILL_POWER)
-#define F_CHARISMA (1 << CHARISMA)
-#define F_MANA (1 << MANA)
+#define F_ENDURANCE (1<<ENDURANCE)
+#define F_PERCEPTION (1<<PERCEPTION)
+#define F_INTELLIGENCE (1<<INTELLIGENCE)
+#define F_WISDOM (1<<WISDOM)
+#define F_WILL_POWER (1<<WILL_POWER)
+#define F_CHARISMA (1<<CHARISMA)
+#define F_MANA (1<<MANA)
 
-#define F_ARM_STRENGTH (1 << ARM_STRENGTH)
-#define F_LEG_STRENGTH (1 << LEG_STRENGTH)
-#define F_DEXTERITY (1 << DEXTERITY)
-#define F_AGILITY (1 << AGILITY)
+#define F_ARM_STRENGTH (1<<ARM_STRENGTH)
+#define F_LEG_STRENGTH (1<<LEG_STRENGTH)
+#define F_DEXTERITY (1<<DEXTERITY)
+#define F_AGILITY (1<<AGILITY)
 
 #define NO 0
 #define YES 1
@@ -572,17 +547,17 @@ cv2 SILHOUETTE_SIZE(48, 64);
 
 #define LOAD 1
 #define NO_PIC_UPDATE 2
-#define NO_EQUIPMENT_PIC_UPDATE (NO_PIC_UPDATE << 1)
+#define NO_EQUIPMENT_PIC_UPDATE (NO_PIC_UPDATE<<1)
 #define NO_MATERIALS 8
 #define NO_EQUIPMENT 16
 #define NO_SIGNALS 32
 
-#define NOT_WALKABLE 1
-#define HAS_CHARACTER 2
-#define IN_ROOM 4
-#define NOT_IN_ROOM 8
-#define ATTACHABLE (16|NOT_IN_ROOM) /* overrides IN_ROOM */
-#define HAS_NO_OTERRAIN 32
+#define NOT_WALKABLE  (game::GetGlobalConst("NOT_WALKABLE"))
+#define HAS_CHARACTER  (game::GetGlobalConst("HAS_CHARACTER"))
+#define IN_ROOM  (game::GetGlobalConst("IN_ROOM"))
+#define NOT_IN_ROOM  (game::GetGlobalConst("NOT_IN_ROOM"))
+#define ATTACHABLE  (game::GetGlobalConst("ATTACHABLE")) /* overrides IN_ROOM */
+#define HAS_NO_OTERRAIN  (game::GetGlobalConst("HAS_NO_OTERRAIN"))
 
 #define DEFAULT_ATTACHED_AREA 0xFE
 #define DEFAULT_ATTACHED_ENTRY 0xFE
@@ -685,9 +660,9 @@ cv2 SILHOUETTE_SIZE(48, 64);
 // WARNING! sync with "define.dat"
 #define BEAM_STYLES 3
 
-#define PARTICLE_BEAM 0
-#define LIGHTNING_BEAM 1
-#define SHIELD_BEAM 2
+#define PARTICLE_BEAM  (game::GetGlobalConst("PARTICLE_BEAM"))
+#define LIGHTNING_BEAM  (game::GetGlobalConst("LIGHTNING_BEAM"))
+#define SHIELD_BEAM  (game::GetGlobalConst("SHIELD_BEAM"))
 
 
 #define RANDOM_COLOR 0x10000
@@ -749,41 +724,41 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define MAX_SQUARES_UNDER 16
 #define MAX_NEIGHBOUR_SQUARES 20
 
-#define N_LOCK_ID 1024
-#define S_LOCK_ID 16384
-#define LOCK_DELTA 1024
+#define N_LOCK_ID  (game::GetGlobalConst("N_LOCK_ID"))
+#define S_LOCK_ID  (game::GetGlobalConst("S_LOCK_ID"))
+#define LOCK_DELTA  (game::GetGlobalConst("LOCK_DELTA"))
 
 #define LOCK_BITS 0xFC00
 
-#define BROKEN_LOCK S_LOCK_ID
+#define BROKEN_LOCK  (game::GetGlobalConst("BROKEN_LOCK"))
 
 /* Normal lock types, which can be randomized */
 
-#define ROUND_LOCK (N_LOCK_ID + LOCK_DELTA * 1)
-#define SQUARE_LOCK (N_LOCK_ID + LOCK_DELTA * 2)
-#define TRIANGULAR_LOCK (N_LOCK_ID + LOCK_DELTA * 3)
+#define ROUND_LOCK  (game::GetGlobalConst("ROUND_LOCK"))
+#define SQUARE_LOCK  (game::GetGlobalConst("SQUARE_LOCK"))
+#define TRIANGULAR_LOCK  (game::GetGlobalConst("TRIANGULAR_LOCK"))
 
 /* Special lock types, which must be generated in the script */
 
-#define HEXAGONAL_LOCK (S_LOCK_ID + LOCK_DELTA * 1)
-#define OCTAGONAL_LOCK (S_LOCK_ID + LOCK_DELTA * 2)
-#define HEART_SHAPED_LOCK (S_LOCK_ID + LOCK_DELTA * 3)
-#define PENTAGONAL_LOCK (S_LOCK_ID + LOCK_DELTA * 4)
+#define HEXAGONAL_LOCK  (game::GetGlobalConst("HEXAGONAL_LOCK"))
+#define OCTAGONAL_LOCK  (game::GetGlobalConst("OCTAGONAL_LOCK"))
+#define HEART_SHAPED_LOCK  (game::GetGlobalConst("HEART_SHAPED_LOCK"))
+#define PENTAGONAL_LOCK  (game::GetGlobalConst("PENTAGONAL_LOCK"))
 
-#define DESERT 1
-#define JUNGLE 2
-#define STEPPE 3
-#define LEAFY_FOREST 4
-#define EVERGREEN_FOREST 5
-#define TUNDRA 6
-#define GLACIER 7
+#define DESERT  (game::GetGlobalConst("DESERT"))
+#define JUNGLE  (game::GetGlobalConst("JUNGLE"))
+#define STEPPE  (game::GetGlobalConst("STEPPE"))
+#define LEAFY_FOREST  (game::GetGlobalConst("LEAFY_FOREST"))
+#define EVERGREEN_FOREST  (game::GetGlobalConst("EVERGREEN_FOREST"))
+#define TUNDRA  (game::GetGlobalConst("TUNDRA"))
+#define GLACIER  (game::GetGlobalConst("GLACIER"))
 
-#define NO_MOVE 0
-#define WALK 1
-#define SWIM 2
-#define FLY  4
-#define ETHEREAL 8
-#define ANY_MOVE 15
+#define NO_MOVE  (game::GetGlobalConst("NO_MOVE"))
+#define WALK  (game::GetGlobalConst("WALK"))
+#define SWIM  (game::GetGlobalConst("SWIM"))
+#define FLY  (game::GetGlobalConst("FLY"))
+#define ETHEREAL  (game::GetGlobalConst("ETHEREAL"))
+#define ANY_MOVE  (game::GetGlobalConst("ANY_MOVE"))
 
 #define KEY_UP_INDEX 1
 #define KEY_LEFT_INDEX 3
@@ -798,15 +773,15 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define CHARACTER_SLOT 2
 #define GEAR_SLOT 3
 
-#define NOT_RUSTED 0
-#define SLIGHTLY_RUSTED 1
-#define RUSTED 2
-#define VERY_RUSTED 3
+#define NOT_RUSTED  (game::GetGlobalConst("NOT_RUSTED"))
+#define SLIGHTLY_RUSTED  (game::GetGlobalConst("SLIGHTLY_RUSTED"))
+#define RUSTED  (game::GetGlobalConst("RUSTED"))
+#define VERY_RUSTED  (game::GetGlobalConst("VERY_RUSTED"))
 
 #define HUMAN_BODY_ARMOR_PIXELS 68
 
-#define ARMOR_OUTLINE_PRIORITY ((7 << 4) + 7)
-#define CLOAK_PRIORITY ((8 << 4) + 7)
+#define ARMOR_OUTLINE_PRIORITY ((7<<4)+7)
+#define CLOAK_PRIORITY ((8<<4)+7)
 
 #define BODY_ARMOR_PARTS 6
 
@@ -877,8 +852,8 @@ cv2 SILHOUETTE_SIZE(48, 64);
 
 /* contentscript<character> flags */
 
-#define IS_LEADER 1
-#define IS_MASTER 2
+#define IS_LEADER  (game::GetGlobalConst("IS_LEADER"))
+#define IS_MASTER  (game::GetGlobalConst("IS_MASTER"))
 
 /* stack flags */
 
@@ -1033,20 +1008,20 @@ cv2 SILHOUETTE_SIZE(48, 64);
 /*************************/
 
 /* CommonFlags */
-#define IS_ABSTRACT 1
-#define HAS_SECONDARY_MATERIAL 2
-#define CREATE_DIVINE_CONFIGURATIONS 4
-#define CAN_BE_WISHED 8
-#define CAN_BE_DESTROYED 16
-#define IS_VALUABLE 32
-#define CAN_BE_MIRRORED 64
+#define IS_ABSTRACT  (game::GetGlobalConst("IS_ABSTRACT"))
+#define HAS_SECONDARY_MATERIAL  (game::GetGlobalConst("HAS_SECONDARY_MATERIAL"))
+#define CREATE_DIVINE_CONFIGURATIONS  (game::GetGlobalConst("CREATE_DIVINE_CONFIGURATIONS"))
+#define CAN_BE_WISHED  (game::GetGlobalConst("CAN_BE_WISHED"))
+#define CAN_BE_DESTROYED  (game::GetGlobalConst("CAN_BE_DESTROYED"))
+#define IS_VALUABLE  (game::GetGlobalConst("IS_VALUABLE"))
+#define CAN_BE_MIRRORED  (game::GetGlobalConst("CAN_BE_MIRRORED"))
 
 /* NameFlags */
-#define USE_AN 1
-#define USE_ADJECTIVE_AN 2
-#define NO_ARTICLE 4 // for instance "Petrus's wive number 4"
-#define FORCE_THE 8
-#define SHOW_MATERIAL 16 // only works for terrains
+#define USE_AN  (game::GetGlobalConst("USE_AN"))
+#define USE_ADJECTIVE_AN  (game::GetGlobalConst("USE_ADJECTIVE_AN"))
+#define NO_ARTICLE  (game::GetGlobalConst("NO_ARTICLE")) /* for instance "Petrus's wive number 4" */
+#define FORCE_THE  (game::GetGlobalConst("FORCE_THE"))
+#define SHOW_MATERIAL  (game::GetGlobalConst("SHOW_MATERIAL")) /* only works for terrains */
 
 /* Spatial Flags (unused for now) */
 #define MF_OBJECT  256
@@ -1068,6 +1043,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 /* NameFlags */
 
 /* BodyFlags */
+/*
 #define HAS_HEAD
 #define HAS_EYES
 #define HAS_A_LEG
@@ -1079,8 +1055,10 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define IS_EXTRA_FRAGILE
 #define IS_PLANT
 #define IS_ROOTED
+*/
 
 /* AbilityFlags */
+/*
 #define CAN_USE_EQUIPMENT
 #define CAN_KICK
 #define CAN_TALK
@@ -1090,18 +1068,24 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define CAN_THROW
 #define CAN_APPLY
 #define CAN_HEAR
+*/
 
 /* CopyrightFlags */
+/*
 #define IS_UNIQUE
 #define CAN_BE_GENERATED
 #define CAN_BE_NAMED
+*/
 
 /* EffectFlags; */
+/*
 #define BODY_PARTS_DISAPPEAR_WHEN_SEVERED
 #define DESTROYS_WALLS
 #define BITE_CAPTURES_BODY_PART
+*/
 
 /* ImmunityFlags */
+/*
 #define IMMUNITY_POLYMORPH
 #define IMMUNITY_CHARM
 #define IMMUNITY_CLONING
@@ -1111,6 +1095,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define IMMUNITY_STICKINESS
 #define IMMUNITY_CHOKING
 #define IMMUNITY_UNCONSCIOUSNESS
+*/
 
 /* MiscFlags */
 #define CREATE_GOLEM_MATERIAL_CONFIGURATIONS 2
@@ -1129,26 +1114,31 @@ cv2 SILHOUETTE_SIZE(48, 64);
 
 /* GenerationFlags*/
 #define CREATE_LOCK_CONFIGURATIONS 2
-#define CAN_BE_AUTO_INITIALIZED 4 // used only in WMode
+#define CAN_BE_AUTO_INITIALIZED 4 /* used only in WMode */
 #define CAN_BE_GENERATED_IN_CONTAINER 8
 #define CAN_BE_SPAWNED_BY_POLYMORPH 16
 
 /* InteractionFlags */
+/*
 #define MATERIAL_CAN_BE_CHANGED
 #define CAN_BE_POLYMORPHED
 #define CAN_BE_CLONED
 #define CAN_BE_ENCHANTED
 #define CAN_BE_BROKEN
 #define AFFECTS_CARRYING_CAPACITY
+*/
 
 /* CategoryFlags */
+/*
 #define IS_QUEST_ITEM
 #define CAN_BE_USED_BY_SMITH
 #define IS_KAMIKAZE_WEAPON
 #define IS_TWO_HANDED
 #define IS_GOOD_WITH_PLANTS
+*/
 
 /* MiscFlags */
+/*
 #define HANDLE_IN_PAIRS
 #define PRICE_IS_PROPORTIONAL_TO_ENCHANTMENT
 #define FLEXIBILITY_IS_ESSENTIAL
@@ -1156,6 +1146,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define CAN_BE_PILED
 #define CAN_BE_PICKED_UP
 #define ALLOW_EQUIP
+*/
 
 /**************************/
 /* Terrain DataBase flags */
@@ -1167,12 +1158,14 @@ cv2 SILHOUETTE_SIZE(48, 64);
 /* OLTerrainFlags */
 #define CREATE_LOCK_CONFIGURATIONS 2
 #define CREATE_WINDOW_CONFIGURATIONS 4
+/*
 #define IS_UP_LINK
 #define IS_WALL
 #define USE_BORDER_TILES
 #define IS_ALWAYS_TRANSPARENT
 #define SHOW_THINGS_UNDER
 #define IS_SAFE_TO_CREATE_DOOR
+*/
 
 /***************************/
 /* Material DataBase flags */
@@ -1182,29 +1175,29 @@ cv2 SILHOUETTE_SIZE(48, 64);
 /* NameFlags (only USE_AN) */
 
 /* CategoryFlags */
-#define IS_METAL 1
-#define IS_BLOOD 2
-#define CAN_BE_TAILORED 4
-#define IS_SPARKLING 8
-#define IS_SCARY 16
-#define IS_GOLEM_MATERIAL 32
-#define IS_BEVERAGE 64
+#define IS_METAL  (game::GetGlobalConst("IS_METAL"))
+#define IS_BLOOD  (game::GetGlobalConst("IS_BLOOD"))
+#define CAN_BE_TAILORED  (game::GetGlobalConst("CAN_BE_TAILORED"))
+#define IS_SPARKLING  (game::GetGlobalConst("IS_SPARKLING"))
+#define IS_SCARY  (game::GetGlobalConst("IS_SCARY"))
+#define IS_GOLEM_MATERIAL  (game::GetGlobalConst("IS_GOLEM_MATERIAL"))
+#define IS_BEVERAGE  (game::GetGlobalConst("IS_BEVERAGE"))
 
 /* BodyFlags */
-#define IS_ALIVE 1
-#define IS_WARM 2
-#define CAN_HAVE_PARASITE 4
-#define USE_MATERIAL_ATTRIBUTES 8
-#define CAN_REGENERATE 16
-#define IS_WARM_BLOODED 32
+#define IS_ALIVE  (game::GetGlobalConst("IS_ALIVE"))
+#define IS_WARM  (game::GetGlobalConst("IS_WARM"))
+#define CAN_HAVE_PARASITE  (game::GetGlobalConst("CAN_HAVE_PARASITE"))
+#define USE_MATERIAL_ATTRIBUTES  (game::GetGlobalConst("USE_MATERIAL_ATTRIBUTES"))
+#define CAN_REGENERATE  (game::GetGlobalConst("CAN_REGENERATE"))
+#define IS_WARM_BLOODED  (game::GetGlobalConst("IS_WARM_BLOODED"))
 
 /* InteractionFlags */
-#define CAN_BURN 1
-#define CAN_EXPLODE 2
-#define CAN_DISSOLVE 4
-#define AFFECT_INSIDE 8
-#define EFFECT_IS_GOOD 16
-#define IS_AFFECTED_BY_MUSTARD_GAS 32
+#define CAN_BURN  (game::GetGlobalConst("CAN_BURN"))
+#define CAN_EXPLODE  (game::GetGlobalConst("CAN_EXPLODE"))
+#define CAN_DISSOLVE  (game::GetGlobalConst("CAN_DISSOLVE"))
+#define AFFECT_INSIDE  (game::GetGlobalConst("AFFECT_INSIDE"))
+#define EFFECT_IS_GOOD  (game::GetGlobalConst("EFFECT_IS_GOOD"))
+#define IS_AFFECTED_BY_MUSTARD_GAS  (game::GetGlobalConst("IS_AFFECTED_BY_MUSTARD_GAS"))
 
 /*************************/
 /* End of DataBase flags */
@@ -1224,7 +1217,7 @@ cv2 TILE_V2(TILE_SIZE, TILE_SIZE);
 #define TALENT_HEALTHY 2
 #define TALENT_CLEVER 3
 
-#define BORDER_PARTNER_ANIMATED (16 << 24)
+#define BORDER_PARTNER_ANIMATED (16<<24)
 
 /* room flags */
 

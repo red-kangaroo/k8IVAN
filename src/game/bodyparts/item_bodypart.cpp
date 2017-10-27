@@ -787,7 +787,7 @@ void bodypart::TryToRust(sLong LiquidModifier)
 {
   if(MainMaterial->TryToRust(LiquidModifier << 4))
   {
-    cchar* MoreMsg = MainMaterial->GetRustLevel() == NOT_RUSTED ? "" : " more";
+    cchar* MoreMsg = (MainMaterial->GetRustLevel() == NOT_RUSTED ? "" : " more");
 
     if(Master)
     {

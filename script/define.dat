@@ -19,6 +19,29 @@
  * proceed at your own risk!
  */
 
+
+/*k8: this now can be controlled from here; 'cause why not? */
+#define OVER_FED_LEVEL 175000
+#define BLOATED_LEVEL 150000
+#define SATIATED_LEVEL 100000
+#define NOT_HUNGER_LEVEL 30000
+#define HUNGER_LEVEL 20000
+#define VERY_HUNGER_LEVEL 10000
+
+#define OVER_LOADED 0
+#define STRESSED 1
+#define BURDENED 2
+#define UNBURDENED 3
+
+#define STARVING 0
+#define VERY_HUNGRY 1
+#define HUNGRY 2
+#define NOT_HUNGRY 3
+#define SATIATED 4
+#define BLOATED 5
+#define OVER_FED 6
+
+
 /* Numerical defines for other script files */
 
 #enum {
@@ -113,9 +136,9 @@
   POISON,
   DRAIN,
   MUSTARD_GAS_DAMAGE,
-};
-
-#define THROW             32768
+  PSI,
+}
+#define THROW 32768
 
 
 #enum {
@@ -151,16 +174,18 @@
   ACMM,
 };
 
-
+/*
 #define UNARTICLED    0
 #define PLURAL        1
 #define ARTICLE_BIT   2
 #define DEFINITE      2
 #define INDEFINE_BIT  4
 #define INDEFINITE    6
+#define STRIPPED 8
+*/
+
 
 #define ANY_CATEGORY 2147483647
-
 #bitenum {
   HELMET,
   AMULET,
@@ -219,8 +244,8 @@
 #define UNCARING  2
 #define FRIEND    4
 
-#define MARTIAL_SKILL_CATEGORIES  3
-#define WEAPON_SKILL_CATEGORIES  11
+//#define MARTIAL_SKILL_CATEGORIES  3
+//#define WEAPON_SKILL_CATEGORIES  11
 
 #enum {
   UNARMED,
@@ -582,6 +607,7 @@
   WEAPON_ATTACK,
   KICK_ATTACK,
   BITE_ATTACK,
+  THROW_ATTACK,
 };
 
 
@@ -589,9 +615,10 @@
 #define USE_LEGS  2
 #define USE_HEAD  4
 
-#define ATTRIBUTES      11
-#define BASE_ATTRIBUTES  7
+//#define ATTRIBUTES      11
+//#define BASE_ATTRIBUTES  7
 
+/*
 #enum {
   ENDURANCE,
   PERCEPTION,
@@ -605,8 +632,10 @@
   DEXTERITY,
   AGILITY,
 };
+*/
 
 
+/*
 #enum {
   HELMET_INDEX,
   AMULET_INDEX,
@@ -622,6 +651,7 @@
   RIGHT_BOOT_INDEX,
   LEFT_BOOT_INDEX,
 };
+*/
 
 
 #define SUPER    64
@@ -1460,7 +1490,7 @@
 #define NO_TAMING  -1
 
 
-/* for scripts */
+/* for the engine */
 #enum {
   HAS_HIT,
   HAS_BLOCKED,

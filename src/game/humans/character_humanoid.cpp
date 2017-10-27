@@ -282,58 +282,66 @@ truth humanoid::Hit (character *Enemy, v2 HitPos, int Direction, int Flags) {
     }
   }
   if (StateIsActivated(VAMPIRISM) && !(RAND()%2)) Chosen = USE_HEAD;
-  switch (Chosen) {
-    case USE_ARMS:
-      if (CanAttackWithAnArm() && (!(Flags&SADIST_HIT) || HasSadistWeapon())) {
-        msgsystem::EnterBigMessageMode();
-        Hostility(Enemy);
-        sLong FirstAPCost = 0, SecondAPCost = 0;
-        arm *FirstArm, *SecondArm;
-        if (RAND()&1) {
-          FirstArm = GetRightArm();
-          SecondArm = GetLeftArm();
-        } else {
-          FirstArm = GetLeftArm();
-          SecondArm = GetRightArm();
-        }
-        int Strength = Max(GetAttribute(ARM_STRENGTH), 1);
-        if (FirstArm && FirstArm->GetDamage() && (!(Flags&SADIST_HIT) || FirstArm->HasSadistWeapon())) {
-          FirstAPCost = FirstArm->GetAPCost();
-          FirstArm->Hit(Enemy, HitPos, Direction, Flags);
-          if (StateIsActivated(LEPROSY) && !RAND_N(25*GetAttribute(ENDURANCE))) DropBodyPart(FirstArm->GetBodyPartIndex());
-        }
-        if (!GetAction() && IsEnabled() && Enemy->IsEnabled() && SecondArm && SecondArm->GetDamage() &&
-            (!(Flags&SADIST_HIT) || SecondArm->HasSadistWeapon()))
-        {
-          SecondAPCost = SecondArm->GetAPCost();
-          SecondArm->Hit(Enemy, HitPos, Direction, Flags);
-          if (StateIsActivated(LEPROSY) && !RAND_N(25*GetAttribute(ENDURANCE))) DropBodyPart(SecondArm->GetBodyPartIndex());
-        }
-        EditNP(-50);
-        EditAP(-Max(FirstAPCost, SecondAPCost));
-        EditStamina(-10000/Strength, false);
-        msgsystem::LeaveBigMessageMode();
-        return true;
+
+  if (Chosen == USE_ARMS) {
+    if (CanAttackWithAnArm() && (!(Flags&SADIST_HIT) || HasSadistWeapon())) {
+      msgsystem::EnterBigMessageMode();
+      Hostility(Enemy);
+      sLong FirstAPCost = 0, SecondAPCost = 0;
+      arm *FirstArm, *SecondArm;
+      if (RAND()&1) {
+        FirstArm = GetRightArm();
+        SecondArm = GetLeftArm();
+      } else {
+        FirstArm = GetLeftArm();
+        SecondArm = GetRightArm();
       }
-    case USE_LEGS:
-      if (HasTwoUsableLegs()) {
-        msgsystem::EnterBigMessageMode();
-        Hostility(Enemy);
-        Kick(GetNearLSquare(HitPos), Direction, Flags&SADIST_HIT);
-        if (StateIsActivated(LEPROSY) && !RAND_N(25*GetAttribute(ENDURANCE))) DropBodyPart(RAND_2 ? RIGHT_LEG_INDEX : LEFT_LEG_INDEX);
-        msgsystem::LeaveBigMessageMode();
-        return true;
+      int Strength = Max(GetAttribute(ARM_STRENGTH), 1);
+      if (FirstArm && FirstArm->GetDamage() && (!(Flags&SADIST_HIT) || FirstArm->HasSadistWeapon())) {
+        FirstAPCost = FirstArm->GetAPCost();
+        FirstArm->Hit(Enemy, HitPos, Direction, Flags);
+        if (StateIsActivated(LEPROSY) && !RAND_N(25*GetAttribute(ENDURANCE))) DropBodyPart(FirstArm->GetBodyPartIndex());
       }
-    case USE_HEAD:
-      if (GetHead()) {
-        msgsystem::EnterBigMessageMode();
-        Hostility(Enemy);
-        Bite(Enemy, HitPos, Direction, Flags&SADIST_HIT);
-        msgsystem::LeaveBigMessageMode();
-        return true;
+      if (!GetAction() && IsEnabled() && Enemy->IsEnabled() && SecondArm && SecondArm->GetDamage() &&
+          (!(Flags&SADIST_HIT) || SecondArm->HasSadistWeapon()))
+      {
+        SecondAPCost = SecondArm->GetAPCost();
+        SecondArm->Hit(Enemy, HitPos, Direction, Flags);
+        if (StateIsActivated(LEPROSY) && !RAND_N(25*GetAttribute(ENDURANCE))) DropBodyPart(SecondArm->GetBodyPartIndex());
       }
-    default: if (IsPlayer()) ADD_MESSAGE("You are currently quite unable to damage anything."); return false;
+      EditNP(-50);
+      EditAP(-Max(FirstAPCost, SecondAPCost));
+      EditStamina(-10000/Strength, false);
+      msgsystem::LeaveBigMessageMode();
+      return true;
+    }
+    Chosen = USE_LEGS; // try next
   }
+
+  if (Chosen == USE_LEGS) {
+    if (HasTwoUsableLegs()) {
+      msgsystem::EnterBigMessageMode();
+      Hostility(Enemy);
+      Kick(GetNearLSquare(HitPos), Direction, Flags&SADIST_HIT);
+      if (StateIsActivated(LEPROSY) && !RAND_N(25*GetAttribute(ENDURANCE))) DropBodyPart(RAND_2 ? RIGHT_LEG_INDEX : LEFT_LEG_INDEX);
+      msgsystem::LeaveBigMessageMode();
+      return true;
+    }
+    Chosen = USE_HEAD; // try next
+  }
+
+  if (Chosen == USE_HEAD) {
+    if (GetHead()) {
+      msgsystem::EnterBigMessageMode();
+      Hostility(Enemy);
+      Bite(Enemy, HitPos, Direction, Flags&SADIST_HIT);
+      msgsystem::LeaveBigMessageMode();
+      return true;
+    }
+  }
+
+  if (IsPlayer()) ADD_MESSAGE("You are currently quite unable to damage anything.");
+  return false;
 }
 
 
@@ -1208,17 +1216,17 @@ truth humanoid::CanUseStethoscope (truth PrintReason) const {
 
 
 truth humanoid::IsUsingArms () const {
-  return GetAttackStyle()&USE_ARMS && CanAttackWithAnArm();
+  return (GetAttackStyle()&USE_ARMS) && CanAttackWithAnArm();
 }
 
 
 truth humanoid::IsUsingLegs () const {
-  return (GetAttackStyle()&USE_LEGS || (GetAttackStyle()&USE_ARMS && !CanAttackWithAnArm())) && HasTwoUsableLegs();
+  return ((GetAttackStyle()&USE_LEGS) || ((GetAttackStyle()&USE_ARMS) && !CanAttackWithAnArm())) && HasTwoUsableLegs();
 }
 
 
 truth humanoid::IsUsingHead () const {
-  return (GetAttackStyle()&USE_HEAD || ((GetAttackStyle()&USE_LEGS || (GetAttackStyle()&USE_ARMS && !CanAttackWithAnArm())) && !HasTwoUsableLegs())) && GetHead();
+  return ((GetAttackStyle()&USE_HEAD) || (((GetAttackStyle()&USE_LEGS) || ((GetAttackStyle()&USE_ARMS) && !CanAttackWithAnArm())) && !HasTwoUsableLegs())) && GetHead();
 }
 
 

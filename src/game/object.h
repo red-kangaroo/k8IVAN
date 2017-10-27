@@ -19,6 +19,7 @@
 #include "id.h"
 #include "fearray.h"
 #include "festring.h"
+#include "game.h"
 
 
 class god;

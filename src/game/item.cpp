@@ -352,41 +352,37 @@ void item::MoveTo (stack *Stack, truth setPickupTime) {
 
 cchar *item::GetItemCategoryName (sLong Category) {
   // convert to array
-  switch (Category) {
-    case HELMET: return "Helmets";
-    case AMULET: return "Amulets";
-    case CLOAK: return "Cloaks";
-    case BODY_ARMOR: return "Body armors";
-    case WEAPON: return "Weapons";
-    case SHIELD: return "Shields";
-    case RING: return "Rings";
-    case GAUNTLET: return "Gauntlets";
-    case BELT: return "Belts";
-    case BOOT: return "Boots";
-    case FOOD: return "Food";
-    case POTION: return "Potions";
-    case SCROLL: return "Scrolls";
-    case BOOK: return "Books";
-    case WAND: return "Wands";
-    case TOOL: return "Tools";
-    case VALUABLE: return "Valuables";
-    case MISC: return "Miscellaneous items";
-  }
+  if (Category == HELMET) return "Helmets";
+  if (Category == AMULET) return "Amulets";
+  if (Category == CLOAK) return "Cloaks";
+  if (Category == BODY_ARMOR) return "Body armors";
+  if (Category == WEAPON) return "Weapons";
+  if (Category == SHIELD) return "Shields";
+  if (Category == RING) return "Rings";
+  if (Category == GAUNTLET) return "Gauntlets";
+  if (Category == BELT) return "Belts";
+  if (Category == BOOT) return "Boots";
+  if (Category == FOOD) return "Food";
+  if (Category == POTION) return "Potions";
+  if (Category == SCROLL) return "Scrolls";
+  if (Category == BOOK) return "Books";
+  if (Category == WAND) return "Wands";
+  if (Category == TOOL) return "Tools";
+  if (Category == VALUABLE) return "Valuables";
+  if (Category == MISC) return "Miscellaneous items";
   return "Warezzz";
 }
 
 
 int item::GetResistance (int Type) const {
-  switch (Type&0xFFF) {
-    case PHYSICAL_DAMAGE: return GetStrengthValue();
-    case ENERGY: return GetEnergyResistance();
-    case DRAIN: case MUSTARD_GAS_DAMAGE: return 0;
-    case FIRE: return GetFireResistance();
-    case POISON: return GetPoisonResistance();
-    case ELECTRICITY: return GetElectricityResistance();
-    case ACID: return GetAcidResistance();
-    case SOUND: return GetSoundResistance();
-  }
+  if ((Type&0xFFF) == PHYSICAL_DAMAGE) return GetStrengthValue();
+  if ((Type&0xFFF) == ENERGY) return GetEnergyResistance();
+  if ((Type&0xFFF) == DRAIN || (Type&0xFFF) == MUSTARD_GAS_DAMAGE) return 0;
+  if ((Type&0xFFF) == FIRE) return GetFireResistance();
+  if ((Type&0xFFF) == POISON) return GetPoisonResistance();
+  if ((Type&0xFFF) == ELECTRICITY) return GetElectricityResistance();
+  if ((Type&0xFFF) == ACID) return GetAcidResistance();
+  if ((Type&0xFFF) == SOUND) return GetSoundResistance();
   ABORT("Resistance lack detected!");
   return 0;
 }

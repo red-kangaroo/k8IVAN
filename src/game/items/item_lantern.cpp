@@ -50,14 +50,11 @@ void lantern::SignalSquarePositionChange(int SquarePosition)
 
 int lantern::GetSpecialFlags() const
 {
-  switch(GetSquarePosition())
-  {
-   case LEFT: return ROTATE|MIRROR;
-   case DOWN: return FLIP;
-   case UP: return 0;
-   case RIGHT: return ROTATE;
-  }
-
+  auto sqpos = GetSquarePosition();
+  if (sqpos == LEFT) return ROTATE|MIRROR;
+  if (sqpos == DOWN) return FLIP;
+  if (sqpos == UP) return 0;
+  if (sqpos == RIGHT) return ROTATE;
   return 0;
 }
 

@@ -105,11 +105,10 @@ int angel::GetAttribute (int Identifier, truth AllowBonus) const {
 
 
 col24 angel::GetBaseEmitation () const {
-  switch (GetMasterGod()->GetBasicAlignment()) {
-    case GOOD: return MakeRGB24(150, 150, 150);
-    case NEUTRAL: return MakeRGB24(120, 120, 150);
-    case EVIL: return MakeRGB24(150, 110, 110);
-  }
+  auto al = GetMasterGod()->GetBasicAlignment();
+  if (al == GOOD) return MakeRGB24(150, 150, 150);
+  if (al == NEUTRAL) return MakeRGB24(120, 120, 150);
+  if (al == EVIL) return MakeRGB24(150, 110, 110);
   return 0;
 }
 

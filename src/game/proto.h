@@ -21,6 +21,7 @@
 #include "fesave.h"
 #include "feparse.h"
 #include "festring.h"
+#include "game.h"
 
 
 class character;
