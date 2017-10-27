@@ -108,7 +108,7 @@ truth inputfile::fileExists (const festring &fname) {
 }
 
 
-festring inputfile::GetMyDir (void) {
+festring inputfile::GetMyDir () {
 #ifdef IVAN_DATA_DIR
   return IVAN_DATA_DIR;
 #else
@@ -117,8 +117,9 @@ festring inputfile::GetMyDir (void) {
   pid_t mypid = getpid();
   memset(myDir, 0, sizeof(myDir));
   sprintf(buf, "/proc/%u/exe", (unsigned int)mypid);
-  if (readlink(buf, myDir, sizeof(myDir)-1) < 0) strcpy(myDir, ".");
-  else {
+  if (readlink(buf, myDir, sizeof(myDir)-1) < 0) {
+    strcpy(myDir, ".");
+  } else {
     char *p = (char *)strrchr(myDir, '/');
     if (!p) strcpy(myDir, "."); else *p = '\0';
   }
@@ -167,7 +168,12 @@ bool inputfile::Open (cfestring &aFileName, truth AbortOnErr) {
 #else
   Buffer = fopen(aFileName.CStr(), "rb");
 #endif
-  FileName = FileName;
+  FileName = aFileName;
+  mRetFName = aFileName;
+  auto mydir = GetMyDir();
+  if (mydir.GetSize() > 0 && mRetFName.startsWith(mydir)) {
+    mRetFName.Erase(0, mydir.GetSize()+(mydir[mydir.GetSize()-1] != '/' ? 1 : 0));
+  }
   if (AbortOnErr && !IsOpen()) ABORT("File %s not found!", aFileName.CStr());
   return IsOpen();
 }

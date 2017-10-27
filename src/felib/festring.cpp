@@ -619,17 +619,58 @@ festring::sizetype festring::rawLength () const {
 static inline char Capitalize (char Char) { return (char)(Char >= 'a' && Char <= 'z' ? Char-32 : Char); }
 
 
-truth festring::endsWithCI (cchar *str) const {
-  if (!str) return true;
-  auto slen = strlen(str);
-  if (slen < 1) return true;
-  if (Size < slen) return false;
-  cchar *ep = Data+Size-slen;
-  for (; *str; ++str, ++ep) {
+truth festring::startsWith (cchar *str, int slen) const {
+  if (!str) return (slen <= 0);
+  int realslen = (int)strlen(str);
+  if (slen < 0) slen = (int)realslen; else if (slen > realslen) return false;
+  if ((sizetype)slen > Size) return false;
+  if (slen == 0) return true;
+  return (memcmp(Data, str, slen) == 0);
+}
+
+
+truth festring::endsWith (cchar *str, int slen) const {
+  if (!str) return (slen <= 0);
+  int realslen = (int)strlen(str);
+  if (slen < 0) slen = (int)realslen; else if (slen > realslen) return false;
+  if (slen == 0) return true;
+  if ((sizetype)slen > Size) return false;
+  return (memcmp(Data+(Size-slen), str, slen) == 0);
+}
+
+
+truth festring::startsWithCI (cchar *str, int slen) const {
+  if (!str) return (slen <= 0);
+  int realslen = (int)strlen(str);
+  if (slen < 0) slen = (int)realslen; else if (slen > realslen) return false;
+  if (slen == 0) return true;
+  if ((sizetype)slen > Size) return false;
+  cchar *ep = Data;
+  for (; slen > 0; ++str, ++ep) {
     if (::Capitalize(*str) != ::Capitalize(*ep)) return false;
   }
   return true;
 }
+
+
+truth festring::endsWithCI (cchar *str, int slen) const {
+  if (!str) return (slen <= 0);
+  int realslen = (int)strlen(str);
+  if (slen < 0) slen = (int)realslen; else if (slen > realslen) return false;
+  if (slen == 0) return true;
+  if ((sizetype)slen > Size) return false;
+  cchar *ep = Data+Size-slen;
+  for (; slen > 0; ++str, ++ep) {
+    if (::Capitalize(*str) != ::Capitalize(*ep)) return false;
+  }
+  return true;
+}
+
+
+truth festring::startsWith (cfestring &str) const { return startsWith(str.Data, (int)str.Size); }
+truth festring::endsWith (cfestring &str) const { return endsWith(str.Data, (int)str.Size); }
+truth festring::startsWithCI (cfestring &str) const { return startsWithCI(str.Data, (int)str.Size); }
+truth festring::endsWithCI (cfestring &str) const { return endsWithCI(str.Data, (int)str.Size); }
 
 
 /* Returns the position of the first occurance of What in Where

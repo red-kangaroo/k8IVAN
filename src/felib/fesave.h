@@ -92,11 +92,11 @@ public:
   void SeekPosCurrent (sLong Offset);
   void SeekPosEnd (sLong Offset);
   sLong TellPos ();
-  cfestring &GetFileName () const { return FileName; }
+  cfestring &GetFileName () const { return mRetFName; }
   void Close ();
 
   static truth fileExists (const festring &fname);
-  static festring GetMyDir (void);
+  static festring GetMyDir ();
 
 protected:
 #ifdef USE_ZLIB
@@ -105,6 +105,7 @@ protected:
   FILE *Buffer;
 #endif
   festring FileName;
+  festring mRetFName; // with `GetMyDir()` stripped
 #ifdef USE_ZLIB
   int mFileSize;
 #endif
