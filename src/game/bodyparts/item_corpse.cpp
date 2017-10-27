@@ -279,7 +279,7 @@ truth corpse::RaiseTheDead(character* Summoner)
     RemoveFromSlot();
     GetDeceased()->SetMotherEntity(0);
 
-    if(Summoner && GetDeceased()->IsCharmable() && !GetDeceased()->IsPlayer())
+    if(Summoner && GetDeceased()->CanTameWithResurrection(Summoner) && !GetDeceased()->IsPlayer())
       GetDeceased()->ChangeTeam(Summoner->GetTeam());
 
     GetDeceased()->PutToOrNear(Pos);

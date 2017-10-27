@@ -8453,6 +8453,14 @@ truth character::CanTameWithScroll (const character *Tamer) const {
 }
 
 
+truth character::CanTameWithResurrection (const character *Tamer) const {
+  int TamingDifficulty = GetTamingDifficulty();
+  if (TamingDifficulty == NO_TAMING) return false;
+  if (TamingDifficulty == 0) return true;
+  return (Tamer->GetAttribute(CHARISMA) >= TamingDifficulty/2);
+}
+
+
 truth character::CheckSadism () {
   if (!IsSadist() || !HasSadistAttackMode() || !IsSmall()) return false; // gum
   if (!RAND_N(10)) {
