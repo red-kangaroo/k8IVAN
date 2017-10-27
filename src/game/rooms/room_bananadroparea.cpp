@@ -65,7 +65,7 @@ truth bananadroparea::DropItem (character *Dropper, item *Item, int) {
 
 void bananadroparea::KickSquare (character *Kicker, lsquare *Square) {
   if (game::GetLiberator()) return;
-  if (AllowKick(Kicker, Square) && Kicker->IsPlayer() && game::GetTeam(NEW_ATTNAM_TEAM)->GetRelation(Kicker->GetTeam()) != HOSTILE) {
+  if (!AllowKick(Kicker, Square) && Kicker->IsPlayer() && game::GetTeam(NEW_ATTNAM_TEAM)->GetRelation(Kicker->GetTeam()) != HOSTILE) {
     for (stackiterator i = Square->GetStack()->GetBottom(); i.HasItem(); ++i) {
       if (i->IsBanana() || i->IsLanternOnWall()) {
         ADD_MESSAGE("You have harmed the property of the town!");

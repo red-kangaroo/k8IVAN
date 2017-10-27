@@ -16,7 +16,6 @@ public:
 #else
 
 
-
 void library::Enter (character *Customer) {
   if (Customer->IsPlayer()) {
     if (MasterIsActive()) {
@@ -35,7 +34,6 @@ void library::Enter (character *Customer) {
     }
   }
 }
-
 
 
 truth library::PickupItem (character *Customer, item *ForSale, int Amount) {
@@ -98,7 +96,6 @@ truth library::PickupItem (character *Customer, item *ForSale, int Amount) {
 }
 
 
-
 truth library::DropItem (character *Customer, item *ForSale, int Amount) {
   if (!MasterIsActive() || Customer == GetMaster() || GetMaster()->GetRelation(Customer) == HOSTILE) return true;
 
@@ -154,7 +151,6 @@ truth library::DropItem (character *Customer, item *ForSale, int Amount) {
 }
 
 
-
 void library::KickSquare (character *Infidel, lsquare *Square) {
   if (!AllowKick(Infidel, Square)) {
     ADD_MESSAGE("\"You book vandal!\"");
@@ -163,11 +159,9 @@ void library::KickSquare (character *Infidel, lsquare *Square) {
 }
 
 
-
 truth library::ConsumeItem (character *, item *, int) {
   return true;
 }
-
 
 
 void library::TeleportSquare (character *Infidel, lsquare *Square) {
@@ -182,14 +176,13 @@ void library::TeleportSquare (character *Infidel, lsquare *Square) {
 }
 
 
-
 truth library::AllowKick (ccharacter *Char, const lsquare *LSquare) const {
-  return (!LSquare->GetStack()->GetItems() ||
+  return
+    !LSquare->GetStack()->GetItems() ||
     !MasterIsActive() || Char == GetMaster() ||
     GetMaster()->GetRelation(Char) == HOSTILE ||
-    LSquare->CanBeSeenBy(GetMaster()));
+    !LSquare->CanBeSeenBy(GetMaster());
 }
-
 
 
 void library::HostileAction (character *Guilty) const {
@@ -200,4 +193,6 @@ void library::HostileAction (character *Guilty) const {
     Guilty->Hostility(GetMaster());
   }
 }
+
+
 #endif

@@ -59,6 +59,7 @@ guard
     LeftSWeaponSkillHits = 50;
     PanicLevel = 10;
     TotalVolume = 80000;
+    TamingDifficulty = 30;
     ClothColor = rgb16(220, 220, 220);
     NaturalSparkleFlags = CLOTH_COLOR;
     FriendlyReplies :=

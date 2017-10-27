@@ -2108,6 +2108,7 @@ Dungeon ELPURI_CAVE;
       Shape = RECTANGLE;
       GenerateLanterns = false;
       AllowLockedDoors = false;
+      AllowBoobyTrappedDoors = false;
 
       CharacterMap
       {

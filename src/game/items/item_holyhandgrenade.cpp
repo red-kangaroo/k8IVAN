@@ -19,6 +19,7 @@ ITEM(holyhandgrenade, item)
   virtual truth AllowAlphaEverywhere() const { return true; }
   virtual col16 GetMaterialColorB(int) const;
   virtual bool WillExplodeSoon() const;
+  virtual truth IsKamikazeWeapon(ccharacter*) const;
  protected:
   feuLong PinPulledTick;
   int Count;
@@ -27,6 +28,8 @@ ITEM(holyhandgrenade, item)
 
 
 #else
+
+truth holyhandgrenade::IsKamikazeWeapon (ccharacter *) const { return CalculateHasBe(); }
 
 
 truth holyhandgrenade::Apply (character* Applier) {
