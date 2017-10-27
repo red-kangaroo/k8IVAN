@@ -1,0 +1,9 @@
+scrollofearthquake /* scroll-> */
+{
+  Possibility = 10;
+  Price = 1000;
+  PostFix = "of earthquake";
+  AttachedGod = SILVA;
+  ReadDifficulty = 2500;
+  Alias := { "scroll of earthquakes", "earthquake"; }
+}

@@ -1,9 +1,9 @@
 scrolloffireballs /* scroll-> */
 {
-  Possibility = 15;
+  Possibility = 20;
   Price = 1000;
   PostFix = "of fireballs";
-  Alias == "SoFB";
+  Alias := { "SoFB", "scroll of fireballs", "scroll of fireball", "power", "magic"; }
   AttachedGod = LEGIFER;
   ReadDifficulty = 1000;
   IsPolymorphSpawnable = false;

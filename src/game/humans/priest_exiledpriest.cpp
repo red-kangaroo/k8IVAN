@@ -111,7 +111,7 @@ void exiledpriest::healDeseases () {
     }
   }
   if (PLAYER->TemporaryStateIsActivated(LYCANTHROPY)) {
-    ADD_MESSAGE("\"You seem to be turning into a werewolf quite frequently. Well, everyone has right to little secret habits, but I could pray %s to remove the canine blood from your veins, just so you don't scare our blessed youth.\"", GetMasterGod()->GetName());
+    ADD_MESSAGE("\"You seem to be turning into a werewolf quite frequently. Well, everyone has right to little secret habits, but I could pray to %s to remove the canine blood from your veins, just so you don't scare our blessed youth.\"", GetMasterGod()->GetName());
     if (game::TruthQuestion(CONST_S("Do you agree?"))) {
       ADD_MESSAGE("You feel better.");
       PLAYER->DeActivateTemporaryState(LYCANTHROPY);

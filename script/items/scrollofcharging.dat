@@ -7,4 +7,5 @@ scrollofcharging /* scroll-> */
   IsPolymorphSpawnable = false;
   AttachedGod = SOPHOS;
   ReadDifficulty = 500;
+  Alias := { "scroll of recharge", "scroll of recharging"; }
 }

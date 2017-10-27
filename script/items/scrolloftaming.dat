@@ -5,4 +5,5 @@ scrolloftaming /* scroll-> */
   PostFix = "of taming";
   AttachedGod = DULCIS;
   ReadDifficulty = 100;
+  Alias := { "pet", "ally", "minion", "companion", "familiar", "slave", "friend", "help"; }
 }

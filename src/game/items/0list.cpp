@@ -74,6 +74,8 @@
 #include "items/item_gorovitscopyoflenin.cpp"
 #include "items/item_firstbornchild.cpp"
 #include "items/item_ullrbone.cpp"
+#include "items/scroll_scrollofearthquake.cpp"
+#include "items/scroll_scrollofbodyswitch.cpp"
 
 #include "items/item_moneybag.cpp"
 

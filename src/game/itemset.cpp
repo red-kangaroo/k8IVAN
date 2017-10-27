@@ -49,6 +49,7 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(item)(0, 0, 0, "item");
 #include "fluid.h"
 #include "rawbit.h"
 #include "balance.h"
+#include "lterras.h"
 
 #include "item.cpp"
 #include "bodypart.cpp"
