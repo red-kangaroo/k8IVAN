@@ -899,7 +899,7 @@ public:
   virtual void SetWayPoints (const fearray<packv2> &) {}
   int HasSomethingToEquipAt (int chosen, truth equippedIsTrue); // counter
   feuLong HasSomethingToEquipAtRecentTime (int chosen, truth equippedIsTrue); // returns 0, 1 or pickup time
-  truth TryToChangeEquipment (stack *, stack *, int);
+  int TryToChangeEquipment (stack *, stack *, int); // number of items worn (is this the right word?)
   void PrintBeginParasitizedMessage () const;
   void PrintEndParasitizedMessage () const;
   void ParasitizedHandler ();

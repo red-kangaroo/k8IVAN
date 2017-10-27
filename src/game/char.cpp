@@ -5710,23 +5710,23 @@ truth character::MoveTowardsHomePos () {
 }
 
 
-truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Chosen) {
+int character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Chosen) {
   if (!GetBodyPartOfEquipment(Chosen)) {
     ADD_MESSAGE("Bodypart missing!");
-    return false;
+    return 0;
   }
 
   item *OldEquipment = GetEquipment(Chosen);
   if (!IsPlayer() && BoundToUse(OldEquipment, Chosen)) {
     ADD_MESSAGE("%s refuses to unequip %s.", CHAR_DESCRIPTION(DEFINITE), OldEquipment->CHAR_NAME(DEFINITE));
-    return false;
+    return 0;
   }
   if (OldEquipment) OldEquipment->MoveTo(MainStack);
 
   sorter Sorter = EquipmentSorter(Chosen);
   if (!MainStack->SortedItems(this, Sorter) && (!SecStack || !SecStack->SortedItems(this, Sorter))) {
     ADD_MESSAGE("You haven't got any item that could be used for this purpose.");
-    return false;
+    return 0;
   }
 
   game::DrawEverythingNoBlit();
@@ -5744,17 +5744,17 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
       OldEquipment->RemoveFromSlot();
       SetEquipment(Chosen, OldEquipment);
     }
-    return false;
+    return 0;
   }
 
   item *Item = (ItemVector.empty() ? 0 : ItemVector[0]);
+  int otherChosen = -1;
 
   if (Item) {
     if (!IsPlayer() && !AllowEquipment(Item, Chosen)) {
       ADD_MESSAGE("%s refuses to equip %s.", CHAR_DESCRIPTION(DEFINITE), Item->CHAR_NAME(DEFINITE));
-      return false;
+      return 0;
     }
-    int otherChosen = -1;
     if (ItemVector[0]->HandleInPairs() && ItemVector.size() > 1) {
       switch (Chosen) {
         case RIGHT_GAUNTLET_INDEX: otherChosen = LEFT_GAUNTLET_INDEX; break;
@@ -5765,7 +5765,7 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
       }
       if (otherChosen != -1) {
         if (GetBodyPartOfEquipment(otherChosen)) {
-          if (!game::TruthQuestion("Wear both items?", NO)) otherChosen = -1;
+          if (!game::TruthQuestion("Do you want to wear both items?", NO)) otherChosen = -1;
         } else {
           otherChosen = -1;
         }
@@ -5774,22 +5774,25 @@ truth character::TryToChangeEquipment (stack *MainStack, stack *SecStack, int Ch
     // wear/wield first item
     Item->RemoveFromSlot();
     SetEquipment(Chosen, Item);
-    if (CheckIfEquipmentIsNotUsable(Chosen)) { Item->MoveTo(MainStack); Item = 0; } // small bug?
+    if (CheckIfEquipmentIsNotUsable(Chosen)) { Item->MoveTo(MainStack); Item = 0; otherChosen = -1; } // small bug?
     // wear/wield possible second item
     if (Item && otherChosen != -1 && ItemVector[0]->HandleInPairs() && ItemVector.size() > 1 && GetBodyPartOfEquipment(otherChosen)) {
       item *otherOld = GetEquipment(otherChosen);
       if (otherOld && !IsPlayer() && BoundToUse(otherOld, otherChosen)) {
         ADD_MESSAGE("%s refuses to unequip %s.", CHAR_DESCRIPTION(DEFINITE), otherOld->CHAR_NAME(DEFINITE));
+        otherChosen = -1;
       } else if (otherOld) {
         otherOld->MoveTo(MainStack);
       }
-      ItemVector[1]->RemoveFromSlot();
-      SetEquipment(otherChosen, ItemVector[1]);
-      if (CheckIfEquipmentIsNotUsable(otherChosen)) { ItemVector[1]->MoveTo(MainStack); } // small bug?
+      if (otherChosen != -1) {
+        ItemVector[1]->RemoveFromSlot();
+        SetEquipment(otherChosen, ItemVector[1]);
+        if (CheckIfEquipmentIsNotUsable(otherChosen)) { ItemVector[1]->MoveTo(MainStack); otherChosen = -1; } // small bug?
+      }
     }
   }
 
-  return (Item != OldEquipment);
+  return (Item != OldEquipment ? (otherChosen != -1 ? 2 : 1) : 0);
 }
 
 
