@@ -160,7 +160,7 @@ void meleeweapon::AddInventoryEntry (ccharacter *Viewer, festring &Entry, int, t
   if (ShowSpecialInfo) {
     Entry << " [\1C" << GetWeight() << "g\2, DAM \1Y" << GetBaseMinDamage() << "\2-\1Y" << GetBaseMaxDamage() << "\2";
     Entry << ", " << GetBaseToHitValueDescription();
-    if (!IsBroken() && !IsWhip()) Entry << ", " << GetStrengthValueDescription();
+    if (!IsBroken()) Entry << ", " << GetStrengthValueDescription();
     //
     int CWeaponSkillLevel = Viewer->GetCWeaponSkillLevel(this);
     int SWeaponSkillLevel = Viewer->GetSWeaponSkillLevel(this);
