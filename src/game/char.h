@@ -454,6 +454,7 @@ public:
   cv2 GetDiagonalForDirs (int moveDir, int newDir) const;
   truth IsInTunnelDeadEnd () const;
   truth IsDangerousSquare (v2 pos) const;
+  void MarkAdjacentItemsAsSeen (v2 pos);
   void GoOn (go *, truth = false);
   virtual truth CheckKick () const;
   virtual int OpenMultiplier () const { return 2; }
