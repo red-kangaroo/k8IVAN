@@ -1,36 +1,39 @@
 thievesgirdle /* armor-> (belt) */
 {
-  DefaultSize = 150;
-  Possibility = 6;
-  WeaponCategory = WHIPS;
-  Category = BELT;
-  DefaultMainVolume = 250;
-  StrengthModifier = 100;
-  BitmapPos = 32, 384;
-  NameSingular = "thieves' girdle";
-  Alias == "girdle";
-  MainMaterialConfig = { 4, HARDENED_LEATHER, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR; }
-  MaterialConfigChances = { 4, 1500, 500, 250, 100; }
-  Roundness = 10;
-  FormModifier = 10; /* this is multiplied by MainMaterial's flexibility */
-  WieldedBitmapPos = 160, 224;
-  BeltBitmapPos = 48, 432;
-  CanBeBroken = true;
-  EnchantmentPlusChance = 10;
-  DamageFlags = SLASH;
-  IsSadistWeapon = true;
-  AffectsDexterity = true;
   AffectsAgility = true;
+  AffectsDexterity = true;
+  AttachedGod = CLEPTIA;
   BaseEnchantment = 2;
+  BeltBitmapPos = 48, 432;
+  BitmapPos = 32, 384;
+  CanBeBroken = true;
+  Category = BELT;
+  DamageFlags = SLASH;
+  DefaultMainVolume = 250;
+  DefaultSize = 150;
+  EnchantmentPlusChance = 5;
+  FormModifier = 10; /* this is multiplied by MainMaterial's flexibility */
+  IsSadistWeapon = true;
+  MainMaterialConfig := { HARDENED_LEATHER, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR; }
+  MaterialConfigChances := { 1500, 500, 250, 100; }
+  NameSingular = "thieves' girdle";
+  Possibility = 5;
+  Price = 500;
+  PriceIsProportionalToEnchantment = true;
+  Roundness = 10;
+  StrengthModifier = 100;
+  WeaponCategory = WHIPS;
+  WieldedBitmapPos = 160, 224;
+  Alias := { "girdle", "thief belt", "dexterity", "agility"; }
 
   Config BROKEN;
   {
     DefaultSize = 150;
-    Possibility = 2;
-    MainMaterialConfig = { 5, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR, DRAGON_HIDE, SPIDER_SILK; }
-    MaterialConfigChances = { 5, 0, 0, 50, 25, 5; }
+    Possibility = 5;
+    MainMaterialConfig := { TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR, DRAGON_HIDE, SPIDER_SILK; }
+    MaterialConfigChances := { 0, 0, 50, 25, 5; }
     BitmapPos = 80, 384;
-    EnchantmentPlusChance = 20;
+    EnchantmentPlusChance = 10;
     BeltBitmapPos = 48, 512;
   }
 }

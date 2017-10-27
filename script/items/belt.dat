@@ -8,8 +8,8 @@ belt /* armor-> */
   StrengthModifier = 100;
   BitmapPos = 32, 384;
   NameSingular = "belt";
-  MainMaterialConfig = { 4, HARDENED_LEATHER, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR; }
-  MaterialConfigChances = { 4, 1500, 500, 250, 100; }
+  MainMaterialConfig := { HARDENED_LEATHER, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR; }
+  MaterialConfigChances := { 1500, 500, 250, 100; }
   Roundness = 10;
   FormModifier = 5; /* this is multiplied by MainMaterial's flexibility */
   WieldedBitmapPos = 160, 224;
@@ -19,16 +19,27 @@ belt /* armor-> */
   DamageFlags = SLASH;
   IsSadistWeapon = true;
 
+  Config BROKEN;
+  {
+    DefaultSize = 150;
+    Possibility = 25;
+    MainMaterialConfig := { TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR, DRAGON_HIDE, MITHRIL; }
+    MaterialConfigChances := { 500, 250, 100, 25, 10; }
+    BitmapPos = 80, 384;
+    EnchantmentPlusChance = 20;
+    BeltBitmapPos = 48, 512;
+  }
+
   Config BELT_OF_CARRYING;
   {
-    Possibility = 10;
+    Possibility = 5;
     PostFix = "of carrying";
     AffectsCarryingCapacity = true;
     Price = 75;
     BaseEnchantment = 1;
     PriceIsProportionalToEnchantment = true;
     AttachedGod = MELLIS;
-    MainMaterialConfig == TROLL_HIDE;
+    MainMaterialConfig == FABRIC; /*k8: was TROLL_HIDE*/
     MaterialConfigChances == 100;
     EnchantmentPlusChance = 2;
   }
@@ -67,14 +78,73 @@ belt /* armor-> */
     BeltBitmapPos = 48, 512;
   }
 
-  Config BROKEN;
+  Config BELT_OF_PROTECTION;
   {
-    DefaultSize = 150;
-    Possibility = 25;
-    MainMaterialConfig = { 5, TROLL_HIDE, NYMPH_HAIR, OMMEL_HAIR, DRAGON_HIDE, MITHRIL; }
-    MaterialConfigChances = { 5, 500, 250, 100, 25, 10; }
+    DefaultMainVolume = 300;
+    StrengthModifier = 150;
+    Possibility = 5;
+    PostFix = "of protection";
+    Price = 100;
+    AttachedGod = ATAVUS;
+    MainMaterialConfig := { IRON, STEEL, METEORIC_STEEL, MITHRIL, ADAMANT; }
+    MaterialConfigChances := { 1000, 100, 10, 5, 1; }
+  }
+
+  Config BROKEN|BELT_OF_PROTECTION;
+  {
+    Possibility = 2;
+    Price = 50;
     BitmapPos = 80, 384;
-    EnchantmentPlusChance = 20;
     BeltBitmapPos = 48, 512;
+  }
+
+  Config BELT_OF_GIANT_STRENGTH;
+  {
+    Possibility = 5;
+    PostFix = "of giant strength";
+    Price = 500;
+    AffectsArmStrength = true;
+    AffectsLegStrength = true;
+    BaseEnchantment = 1;
+    PriceIsProportionalToEnchantment = true;
+    AttachedGod = CRUENTUS;
+    MainMaterialConfig == TROLL_HIDE;
+    MaterialConfigChances == 100;
+    EnchantmentPlusChance = 2;
+    Alias = { 2, "belt of strength", "strength"; }
+  }
+
+  Config BROKEN|BELT_OF_GIANT_STRENGTH;
+  {
+    Possibility = 3;
+    AffectsArmStrength = false;
+    AffectsLegStrength = false;
+    Price = 100;
+    BitmapPos = 80, 384;
+    BeltBitmapPos = 48, 512;
+    EnchantmentPlusChance = 4;
+  }
+
+  Config BELT_OF_REGENERATION;
+  {
+    Possibility = 2;
+    PostFix = "of regeneration";
+    GearStates = REGENERATION;
+    Price = 100;
+    AttachedGod = SCABIES;
+    MainMaterialConfig == TROLL_HIDE;
+    MaterialConfigChances == 100;
+    EnchantmentPlusChance = 2;
+    Alias == "regeneration";
+  }
+
+  Config BROKEN|BELT_OF_REGENERATION;
+  {
+    Possibility = 3;
+    GearStates = 0;
+    Price = 50;
+    BitmapPos = 80, 384;
+    BeltBitmapPos = 48, 512;
+    EnchantmentPlusChance = 4;
   }
 }
