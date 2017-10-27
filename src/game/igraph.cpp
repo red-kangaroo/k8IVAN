@@ -171,6 +171,16 @@ void igraph::DrawCursor (v2 Pos, int CursorData, int Index) {
   BlitData.Src.X = SrcX + (CursorData & CURSOR_BIG ? Base << 1 : Base);
   CursorBitmap->FillAlpha((Tick & 0xF) * 16);
   CursorBitmap->AlphaLuminanceBlit(BlitData);
+
+  {
+    int xalpha = (((GET_TICK()<<2)/3)>>3)%8;
+    xalpha = (xalpha < 4 ? 32+16*xalpha : 32+16*(7-xalpha));
+    for (int dy = 0; dy < (CursorData&CURSOR_BIG ? 32 : 16); ++dy) {
+      for (int dx = 0; dx < (CursorData&CURSOR_BIG ? 32 : 16); ++dx) {
+        DOUBLE_BUFFER->AlphaPutPixel(Pos.X+dx, Pos.Y+dy, MakeRGB16(255, 255, 0), MakeRGB24(255, 255, 0), xalpha);
+      }
+    }
+  }
 }
 
 
