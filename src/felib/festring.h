@@ -44,18 +44,17 @@ public:
   */
   festring (cchar *CStr, sizetype N) : Data(const_cast<char *>(CStr)), Size(N), Reserved(0), OwnsData(false) {
     //if (N > 0x7ffff000) ABORT("String too big (or invalid)");
-    if (N > 0 && (!CStr || strlen(CStr) != N)) {
-      auto slen = (CStr ? strlen(CStr) : 0);
+    if (N == 0) { Data = 0; return; }
+    sizetype slen = (CStr ? (sizetype)strlen(CStr) : 0);
+    if (slen != N) {
       if (slen > N) slen = N;
       Reserved = N|FESTRING_PAGE;
       char *Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
       REFS(Ptr) = 0;
       Data = Ptr;
       memset(Data, 0, N);
-      if (slen) memmove(Data, CStr, slen);
+      if (slen) memcpy(Data, CStr, slen);
       OwnsData = true;
-    } else {
-      if (N == 0) Data = 0;
     }
   }
   festring (cfestring &);
@@ -393,7 +392,8 @@ struct ignorecaseorderer {
 };
 
 
-#define CONST_S(str) festring(str, sizeof(str)-1)
+//#define CONST_S(str) festring(str, sizeof(str)-1)
+#define CONST_S(str) festring(str)
 
 
 /*
