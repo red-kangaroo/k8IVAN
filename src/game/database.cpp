@@ -12,6 +12,7 @@
 /* Compiled through dataset.cpp */
 #include <stack>
 #include "feparse.h"
+#include "wterra.h"
 
 
 int CreateConfigTable (databasebase ***ConfigTable, databasebase ***TempTable,
@@ -83,7 +84,8 @@ static void collectHandler (festring &dest, std::stack<TextInput *> &infStack, T
 
 template <class type> void databasecreator<type>::ReadFrom (const festring &baseFileName) {
   std::stack<TextInput *> infStack;
-  for (int fno = 99; fno >= -1; fno--) {
+  // scan directory
+  for (int fno = 99; fno >= -1; --fno) {
     festring cfname;
     cfname << game::GetGameDir() << "script/" << baseFileName;
     if (fno >= 0) {
@@ -98,16 +100,12 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
       delete ifl;
       continue;
     }
+    //fprintf(stderr, "found: %s\n", ifl->GetFileName().CStr());
     infStack.push(ifl);
   }
-  //
-  /*
-  for (size_t f = 0; f < infStack.size(); f++) {
-    inputfile *inFile = infStack.at(f);
-    fprintf(stderr, "found: %s\n", inFile->GetFileName().CStr());
-  }
-  */
-  //
+  if (infStack.size() == 0) ABORT("Cannot find '%s' scripts!", baseFileName.CStr());
+
+  // load files
   typedef typename type::prototype prototype;
   festring Word, defName;
   database *TempConfig[1024];
@@ -116,7 +114,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
   int TempTables = 1;
   databasebase *FirstTempTable[CONFIG_TABLE_SIZE];
   TempTable[0] = FirstTempTable;
-  memset(TempTableInfo, 0, CONFIG_TABLE_SIZE*sizeof(sLong));
+  memset(TempTableInfo, 0, sizeof(TempTableInfo));
   CreateDataBaseMemberMap();
   while (!infStack.empty()) {
     TextInput *inFile = infStack.top();
@@ -153,6 +151,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
       defName = Word;
       int Type = protocontainer<type>::SearchCodeName(Word);
       if (!Type) ABORT("Odd term <%s> encountered in %s datafile %s line %d!", Word.CStr(), protocontainer<type>::GetMainClassID(), inFile->GetFileName().CStr(), inFile->TokenLine());
+      //fprintf(stderr, "class <%s>\n", Word.CStr());
       prototype *Proto = protocontainer<type>::GetProtoData()[Type];
       if (!Proto) ABORT("Something weird with <%s> in file %s at line %d!", defName.CStr(), inFile->GetFileName().CStr(), inFile->TokenLine());
       database *DataBase;
@@ -217,9 +216,12 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
           if (isString) {
             // include file
             //fprintf(stderr, "loading: %s\n", fname.CStr());
+            /*
             TextInput *incf = new TextInputFile(game::GetGameDir()+"script/"+fname, &game::GetGlobalValueMap());
             infStack.push(inFile);
             inFile = incf;
+            */
+            ABORT("Config includes aren't supported yet!");
           } else {
             //fprintf(stderr, "new config %d (%s) for %s\n", ConfigNumber, inFile->numStr().CStr(), defName.CStr());
             database *ConfigDataBase = new database(*Proto->ChooseBaseForConfig(TempConfig, Configs, ConfigNumber));
@@ -363,6 +365,11 @@ INST_ADD_MEMBER(olterrain, v2);
 INST_ADD_MEMBER(olterrain, festring);
 INST_ADD_MEMBER(olterrain, fearray<sLong>);
 INST_ADD_MEMBER(olterrain, fearray<contentscript<item> >);
+
+INST_ADD_MEMBER(owterrain, int);
+//INST_ADD_MEMBER(owterrain, sLong); //k8:64
+INST_ADD_MEMBER(owterrain, v2);
+INST_ADD_MEMBER(owterrain, festring);
 
 INST_ADD_MEMBER(material, int);
 //INST_ADD_MEMBER(material, sLong); //k8:64
@@ -731,6 +738,27 @@ template<> void databasecreator<olterrain>::CreateDataBaseMemberMap () {
 }
 
 
+template<> void databasecreator<owterrain>::CreateDataBaseMemberMap () {
+  //CreateWTerrainDataBaseMemberMap();
+  databasemembermap &Map = GetDataBaseMemberMap();
+  ADD_MEMBER(BitmapPos);
+  ADD_MEMBER(IsAbstract);
+  ADD_MEMBER(NameSingular);
+  ADD_MEMBER(NameStem);
+  ADD_MEMBER(UsesLongArticle);
+  ADD_MEMBER(AttachedDungeon);
+  ADD_MEMBER(AttachedArea);
+  ADD_MEMBER(CanBeGenerated);
+  ADD_MEMBER(NativeGTerrainType);
+  ADD_MEMBER(RevealEnvironmentInitially);
+  ADD_MEMBER(CanBeOnAnyTerrain);
+  ADD_MEMBER(WantContinentWith);
+  ADD_MEMBER(Probability);
+  ADD_MEMBER(CanBeSkipped);
+  ADD_MEMBER(PlaceInitially);
+}
+
+
 template<> void databasecreator<material>::CreateDataBaseMemberMap () {
   databasemembermap &Map = GetDataBaseMemberMap();
   ADD_MEMBER(CommonFlags);
@@ -856,6 +884,11 @@ template <> void databasecreator<material>::CheckDefaults (cfestring &Word, mate
 }
 
 
+template<> void databasecreator<owterrain>::CheckDefaults (cfestring& Word, owterrain::database& DataBase) {
+}
+
+
+
 void databasesystem::Initialize () {
   /* Must be before character */
   databasecreator<material>::ReadFrom("material");
@@ -864,6 +897,8 @@ void databasesystem::Initialize () {
   databasecreator<item>::ReadFrom("item");
   databasecreator<glterrain>::ReadFrom("glterra");
   databasecreator<olterrain>::ReadFrom("olterra");
+  /* Must be last */
+  databasecreator<owterrain>::ReadFrom("owterra");
 }
 
 
@@ -904,3 +939,4 @@ INST_INSTALL_DATABASE(character);
 INST_INSTALL_DATABASE(item);
 INST_INSTALL_DATABASE(glterrain);
 INST_INSTALL_DATABASE(olterrain);
+INST_INSTALL_DATABASE(owterrain);

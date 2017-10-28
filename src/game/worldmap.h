@@ -29,15 +29,6 @@ typedef std::vector<character *> charactervector;
 typedef owterrain *(*PlaceSpawner) ();
 
 
-struct WorldMapPlace {
-  owterrain *terra;
-  int type;
-  int dungeon;
-  PlaceSpawner spawner;
-  truth allowSpawn;
-};
-
-
 class worldmap : public area {
 public:
   worldmap (int, int);
@@ -72,7 +63,17 @@ public:
   wsquare ***GetMap () const { return Map; }
   void UpdateLOS ();
 
-  static void RegisterPlace (owterrain *, cint ttype, cint didx, PlaceSpawner aspawner, truth aAllowSpawn=true);
+protected:
+  // POI placement
+  void poiReset ();
+  std::vector<continent *> poiFindPlacesFor (owterrain *terra, truth shuffle);
+  truth poiPlaceAttnamsAndUT (continent *PetrusLikes);
+  truth poiIsOccupied (v2 pos);
+
+  void resetItAll (truth recreate);
+
+public:
+  void poiPlaceAtMap (owterrain *terra, truth forceReveal=false); // does map revealing if necessary
 
 protected:
   wsquare ***Map;
@@ -83,12 +84,13 @@ protected:
   short **OldAltitudeBuffer;
   uChar **ContinentBuffer;
   charactervector PlayerGroup;
-  //
+
+  /*
   std::vector<v2> PlacePosition;
   std::vector<truth> PlaceRevealed;
   std::vector<continent *> PlaceContinent;
-  //
   static std::vector<WorldMapPlace> Places;
+  */
 };
 
 outputfile &operator << (outputfile &, const worldmap *);

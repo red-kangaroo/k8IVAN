@@ -1,91 +1,165 @@
-/* this will be the script to control WorldMap Place spawning */
-/* does absolutely nothing for now */
-
-
-/* a possible config for spawning */
-/*
-WorldMapPlace alienvessel;
-{
-  Dungeon = ALIEN_VESSEL;
-  Area == jungle; // ocean; snow; glacier; evergreenforest; leafyforest; steppe; desert; jungle;
-  Hidden = false;
-  Enabled = true;
-}
-
-need two more consts:
-GW_OCEAN, // ocean
-GW_SNOW, // snow
-*/
-
-
-/******************************************************************************/
-/* or from comm. fork                                                         */
-/******************************************************************************/
-/* Numerical owterrain data loaded during game startup */
-
-/* Default values: */
-
+// worldmap points of interest
 owterrain
 {
   /* Obligatory: BitmapPos */
+  NameSingular = "<unknown>";
   NameStem = "";
   IsAbstract = true; /* This is false by default and does not inherit! */
   UsesLongArticle = false;
   AttachedArea = 0;
   CanBeGenerated = false; // "Enabled"
   NativeGTerrainType = 0;
-  RevealEnvironmentInitially = false; /* Overridden by the world map generator for core locations (Hidden) */
-  HideLocationInitially = false; /* Overridden by the world map generator for core locations */
-  CanBeOnAnyTerrain = false; /* Overridden by the world map generator for core locations */
-}
+  RevealEnvironmentInitially = false;
+  PlaceInitially = true; // POI can be placed, but not revealed
+  CanBeOnAnyTerrain = false;
+  WantContinentWith = 0; // WARNING: POIs will be created in the order of declaration!
+  //TODO
+  Probability = 100; // in percents
+  CanBeSkipped = false; // if it is impossible to generate such POI, skip it
 
-attnam
-{
-  BitmapPos = 0, 48;
-  NameStem = "mighty cathedral reaching the clouds";
-  UsesLongArticle = false;
-  AttachedDungeon = ATTNAM;
-  CanBeGenerated = false; /* Overridden by the world map generator */
-  NativeGTerrainType = EVERGREEN_FOREST;
-}
+  // special POI
+  Config ATTNAM;
+  {
+    NameSingular = "Attnam";
+    BitmapPos = 0, 48;
+    NameStem = "mighty cathedral reaching the clouds";
+    UsesLongArticle = false;
+    AttachedDungeon = ATTNAM;
+    CanBeGenerated = true;
+    NativeGTerrainType = EVERGREEN_FOREST;
+    CanBeOnAnyTerrain = true;
+    WantContinentWith = ATTNAM; // yeah, sorry
+    RevealEnvironmentInitially = true;
+  }
 
-elpuricave
-{
-  BitmapPos = 16, 48;
-  NameStem = "hideous cave entry radiating pure evil";
-  UsesLongArticle = false;
-  AttachedDungeon = ELPURI_CAVE;
-  CanBeGenerated = false; /* Overridden by the world map generator */
-  NativeGTerrainType = TUNDRA;
-}
+  // special POI
+  Config NEW_ATTNAM;
+  {
+    NameSingular = "New Attnam";
+    BitmapPos = 16, 64;
+    NameStem = "primitive village";
+    UsesLongArticle = false;
+    AttachedDungeon = NEW_ATTNAM;
+    CanBeGenerated = true;
+    NativeGTerrainType = LEAFY_FOREST;
+    CanBeOnAnyTerrain = true;
+    RevealEnvironmentInitially = true;
+  }
 
-newattnam
-{
-  BitmapPos = 16, 64;
-  NameStem = "primitive village";
-  UsesLongArticle = false;
-  AttachedDungeon = NEW_ATTNAM;
-  CanBeGenerated = false; /* Overridden by the world map generator */
-  NativeGTerrainType = JUNGLE;
-}
+  // special POI
+  Config UNDER_WATER_TUNNEL;
+  {
+    BitmapPos = 32, 64;
+    NameStem = "entrance to an underwater tunnel";
+    UsesLongArticle = true;
+    AttachedDungeon = UNDER_WATER_TUNNEL;
+    CanBeGenerated = true;
+    NativeGTerrainType = LEAFY_FOREST;
+    CanBeOnAnyTerrain = true;
+    WantContinentWith = NEW_ATTNAM;
+    RevealEnvironmentInitially = true;
+  }
 
-underwatertunnel
-{
-  BitmapPos = 32, 64;
-  NameStem = "entrance to an underwater tunnel";
-  UsesLongArticle = true;
-  AttachedDungeon = UNDER_WATER_TUNNEL;
-  CanBeGenerated = false; /* Overridden by the world map generator */
-  NativeGTerrainType = JUNGLE;
-}
+  // special POI
+  Config UNDER_WATER_TUNNEL_EXIT;
+  {
+    BitmapPos = 32, 64;
+    NameStem = "exit from an underwater tunnel";
+    UsesLongArticle = true;
+    AttachedDungeon = UNDER_WATER_TUNNEL;
+    AttachedArea = 2; /* underwater tunnel level 3 */
+    CanBeGenerated = true;
+    NativeGTerrainType = LEAFY_FOREST;
+    CanBeOnAnyTerrain = true;
+    WantContinentWith = ATTNAM;
+    RevealEnvironmentInitially = true;
+  }
 
-underwatertunnelexit
-{
-  BitmapPos = 32, 64;
-  NameStem = "exit from an underwater tunnel";
-  UsesLongArticle = true;
-  AttachedDungeon = UNDER_WATER_TUNNEL;
-  AttachedArea = 2; /*underwater tunnel level 3*/
-  CanBeGenerated = false; /* Overridden by the world map generator */
-  NativeGTerrainType = JUNGLE;
+  Config ELPURI_CAVE;
+  {
+    NameSingular = "Gloomy Caves";
+    BitmapPos = 16, 48;
+    NameStem = "hideous cave entry radiating pure evil";
+    UsesLongArticle = false;
+    AttachedDungeon = ELPURI_CAVE;
+    CanBeGenerated = true;
+    NativeGTerrainType = TUNDRA;
+    WantContinentWith = ATTNAM;
+  }
+
+  Config MONDEDR;
+  {
+    NameSingular = "Mondedr";
+    BitmapPos = 16, 64;
+    NameStem = "hidden village";
+    UsesLongArticle = false;
+    AttachedDungeon = MONDEDR;
+    CanBeGenerated = true;
+    NativeGTerrainType = STEPPE;
+    WantContinentWith = ATTNAM;
+    PlaceInitially = false;
+  }
+
+  Config MUNTUO;
+  {
+    NameSingular = "Muntuo";
+    BitmapPos = 80, 96;
+    NameStem = "isolated, ruined temple";
+    UsesLongArticle = false;
+    AttachedDungeon = MUNTUO;
+    CanBeGenerated = true;
+    NativeGTerrainType = LEAFY_FOREST;
+    WantContinentWith = ATTNAM;
+  }
+
+  Config DARK_FOREST;
+  {
+    NameSingular = "Dark Forest";
+    BitmapPos = 80, 80;
+    NameStem = "dark forest";
+    UsesLongArticle = false;
+    AttachedDungeon = DARK_FOREST;
+    CanBeGenerated = true;
+    NativeGTerrainType = LEAFY_FOREST;
+    WantContinentWith = ATTNAM;
+  }
+
+  Config XINROCH_TOMB;
+  {
+    NameSingular = "Xinroch Tomb";
+    BitmapPos = 64, 80;
+    NameStem = "tomb of utter darkness where dwells the soul of Xinroch";
+    UsesLongArticle = false;
+    AttachedDungeon = XINROCH_TOMB;
+    CanBeGenerated = true;
+    NativeGTerrainType = TUNDRA; /* snow */
+    WantContinentWith = ATTNAM;
+    PlaceInitially = false;
+  }
+
+  Config DRAGON_TOWER;
+  {
+    NameSingular = "Dragon Tower";
+    BitmapPos = 50, 80;
+    NameStem = "ruined tower";
+    UsesLongArticle = false;
+    AttachedDungeon = DRAGON_TOWER;
+    CanBeGenerated = false; // disabled for now
+    NativeGTerrainType = STEPPE;
+    WantContinentWith = ATTNAM;
+  }
+
+  Config ALIEN_VESSEL;
+  {
+    Probability = 60;
+    CanBeSkipped = true; // don't restart generation if we can't put it on the map
+    NameSingular = "Alien Vessel";
+    BitmapPos = 32, 48;
+    NameStem = "strange vessel of unknow nature";
+    UsesLongArticle = false;
+    AttachedDungeon = ALIEN_VESSEL;
+    CanBeGenerated = true;
+    NativeGTerrainType = /*JUNGLE*/EVERGREEN_FOREST;
+    WantContinentWith = ATTNAM;
+  }
 }

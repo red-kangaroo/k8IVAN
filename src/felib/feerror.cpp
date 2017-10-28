@@ -48,12 +48,10 @@ void globalerrorhandler::Abort (cchar *Format, ...) {
   char Buffer[2048];
   char *bufptr = Buffer;
   int bufsz = (int)sizeof(Buffer)-1;
-  //
   for (;;) {
     va_list ap;
     int n;
     char *np;
-    //
     va_start(ap, Format);
     n = vsnprintf(bufptr, bufsz, Format, ap);
     va_end(ap);
@@ -62,9 +60,7 @@ void globalerrorhandler::Abort (cchar *Format, ...) {
     np = (char *)realloc((bufptr == Buffer ? NULL : bufptr), n+1);
     if (np == NULL) exit(4); //FIXME
   }
-  //
   fprintf(stderr, "%s%s", bufptr, BugMsg);
-  //
   {
     festring mydir = inputfile::GetMyDir();
     mydir << "/" << "crash.log";
@@ -75,6 +71,7 @@ void globalerrorhandler::Abort (cchar *Format, ...) {
       fclose(fo);
     }
   }
+  //*(int *)(0) = 42;
   exit(4);
 }
 

@@ -3,13 +3,9 @@ COMMAND(WizardMode) {
     if (game::TruthQuestion(CONST_S("Do you want to cheat, cheater? This action cannot be undone."))) {
       game::ActivateWizardMode();
       ADD_MESSAGE("Wizard mode activated.");
-      if (!game::IsInWilderness()) game::LoadWorldMap();
-      v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
-      game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
-      game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
-      if (game::IsInWilderness()) game::GetWorldMap()->SendNewDrawRequest(); else game::SaveWorldMap();
-      game::Save();
-      game::Save(game::GetAutoSaveFileName());
+      game::RevealPOI(game::elpuricavePOI());
+      //game::RevealPOI(game::underwatertunnelexitPOI());
+      game::ScheduleImmediateSave();
     }
     return false;
   }

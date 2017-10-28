@@ -26,14 +26,16 @@ wsquare::~wsquare () {
 
 void wsquare::Save (outputfile &SaveFile) const {
   square::Save(SaveFile);
-  SaveFile << GWTerrain << OWTerrain;
+  SaveFile << GWTerrain;
+  SaveFile << OWTerrain;
   SaveFile.Put(!!LastSeen);
 }
 
 
 void wsquare::Load (inputfile &SaveFile) {
   square::Load(SaveFile);
-  SaveFile >> GWTerrain >> OWTerrain;
+  SaveFile >> GWTerrain;
+  SaveFile >> OWTerrain;
   LastSeen = SaveFile.Get();
   CalculateLuminance();
 }
@@ -54,10 +56,12 @@ void wsquare::Draw (blitdata &BlitData) {
 }
 
 
+/*
 void wsquare::ChangeWTerrain (gwterrain *NewGround, owterrain *NewOver) {
   ChangeGWTerrain(NewGround);
   ChangeOWTerrain(NewOver);
 }
+*/
 
 
 void wsquare::ChangeGWTerrain (gwterrain *NewGround) {

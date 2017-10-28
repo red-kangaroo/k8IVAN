@@ -267,7 +267,8 @@ commandsystem::commandsystem () {
   RegisterCommand(new command("Possess", &Possess, "possess creature", '{', '{', false, true));
   RegisterCommand(new command("Polymorph", &Polymorph, "polymorph", '[', '[', true, true));
   RegisterCommand(new command("GetScroll", &GetScroll, "get scroll", 'R', 'R', true, true));
-  RegisterCommand(new command("OpenMondedr", &OpenMondedr, "open Mondedr", 'M', 'M', true, true));
+  RegisterCommand(new command("OpenMondedr", &OpenMondedr, "open Mondedr", 'N', 'N', true, true));
+  RegisterCommand(new command("OpenXinTomb", &OpenXinTomb, "open Xinroch Tomb", 'T', 'T', true, true));
   RegisterCommand(new command("ShowCoords", &ShowCoords, "show current coordinates", '(', '(', true, true));
   RegisterCommand(new command("WizardHeal", &WizardHeal, "wizard healing", 'H', 'H', true, true));
   RegisterCommand(new command("WizardBlow", &WizardBlow, "wizard blowing", '%', '%', false, true));

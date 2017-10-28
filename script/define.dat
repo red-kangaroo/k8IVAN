@@ -43,12 +43,11 @@
 
 
 /* Numerical defines for other script files */
-
-#enum {
+#bitenum {
   NONE,
   MIRROR,
   FLIP,
-  ROTATE = 4,
+  ROTATE,
 };
 
 #define RED    63488
@@ -64,6 +63,7 @@
 #define BLACK       0
 
 #define TRANSPARENT_COLOR  63519
+
 
 #bitenum {
   POLYMORPHED,
@@ -1230,6 +1230,7 @@
 #define HAS_NO_OTERRAIN 32
 
 // dungeon indicies; just add your own to enum
+// also, world points of interest
 #enum {
   RANDOM,
   ELPURI_CAVE,
@@ -1243,8 +1244,12 @@
   XINROCH_TOMB,
   ALIEN_VESSEL,
 };
-#define KHARAZ_ARAD_SHOP 127
-#define UNDER_WATER_TUNNEL_EXIT 128
+
+// POIs without special dungeons {
+#enum {
+  KHARAZ_ARAD_SHOP = 127,
+  UNDER_WATER_TUNNEL_EXIT, // 128
+};
 
 /* dungeon tags */
 #define ALL_DUNGEONS  32767
@@ -1373,11 +1378,9 @@
   STEPPE,
   LEAFY_FOREST,
   EVERGREEN_FOREST,
-  TUNDRA,
+  TUNDRA, // this is actually snow, wtf?!
   GLACIER,
-  // not used for explicit terrain generation in engine code, but we need those for "owterra.dat"
-  GW_OCEAN, // ocean
-  GW_SNOW, // snow
+  OCEAN,
 }
 
 #define NO_MOVE 0

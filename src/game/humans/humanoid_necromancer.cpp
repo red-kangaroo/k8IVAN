@@ -116,12 +116,7 @@ void necromancer::BeTalkedTo () {
                                    "with the help of our god, Infuscor... ...it might require some offering, or exchange?\n"
                                    "I cannot say what trial would await you to retrieve the lost sword.\""));
 
-          game::LoadWorldMap();
-          v2 XinrochTombPos = game::GetWorldMap()->GetEntryPos(0, XINROCH_TOMB);
-          game::GetWorldMap()->GetWSquare(XinrochTombPos)->ChangeOWTerrain(xinrochtomb::Spawn());
-          game::GetWorldMap()->RevealEnvironment(XinrochTombPos, 1);
-          game::SaveWorldMap();
-
+          game::RevealPOI(game::xinrochtombPOI());
           GetArea()->SendNewDrawRequest();
 
           ADD_MESSAGE("\"By the way, if you find anything belonging to Xinroch, then don't lose it! I have a feeling it will help you greatly in your quest.\"");

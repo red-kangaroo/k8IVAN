@@ -49,6 +49,7 @@ public:
   truth IsValidPos (int X, int Y) const { return X >= 0 && Y >= 0 && X < XSize && Y < YSize; }
   const rect &GetBorder () const { return Border; }
   void SetEntryPos (int, v2);
+  void ClearEntryPoints ();
 
 protected:
   square ***Map;

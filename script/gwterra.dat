@@ -21,8 +21,6 @@
  * proceed at your own risk!
  */
 
-/* Numerical owterrain data loaded during game startup */
-
 /* Default values: */
 
 gwterrain

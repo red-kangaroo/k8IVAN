@@ -2,7 +2,7 @@
 GWTERRAIN(jungle, gwterrain)
 {
 public:
-  virtual cchar *GetNameStem () const;
+  virtual festring GetNameStem () const;
   virtual v2 GetBitmapPos (int) const;
   virtual int GetPriority () const;
 };
@@ -12,7 +12,7 @@ public:
 
 
 int jungle::GetPriority () const { return 50; }
-cchar *jungle::GetNameStem () const { return "jungle"; }
+festring jungle::GetNameStem () const { return "jungle"; }
 v2 jungle::GetBitmapPos (int) const { return v2(208, 16); }
 
 

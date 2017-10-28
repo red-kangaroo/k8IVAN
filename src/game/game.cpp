@@ -45,6 +45,7 @@
 #include "balance.h"
 #include "confdef.h"
 #include "wmapset.h"
+#include "wterra.h"
 
 #define SAVE_FILE_VERSION 134 // Increment this if changes make savefiles incompatible
 #define BONE_FILE_VERSION 119 // Increment this if changes make bonefiles incompatible
@@ -186,7 +187,54 @@ std::vector<int> game::SpecialCursorData;
 cbitmap *game::EnterImage;
 v2 game::EnterTextDisplacement;
 
+truth game::mImmediateSave = false;
 
+
+// ////////////////////////////////////////////////////////////////////////// //
+owterrain **game::pois = nullptr;
+int game::poisSize = 0;
+
+
+int game::poiCount () { return poisSize; }
+
+
+owterrain *game::poiByIndex (int idx, truth abortOnNotFound) {
+  if (idx >= 0 && idx < poisSize) {
+    if (!abortOnNotFound || pois[idx]) return pois[idx];
+  }
+  if (abortOnNotFound) ABORT("POI with index %d not found!", idx);
+  return nullptr;
+}
+
+
+owterrain *game::poi (cfestring &name, truth abortOnNotFound) {
+  auto pcfg = FindGlobalValue(name, -1);
+  //fprintf(stderr, "<%s>=%d\n", name.CStr(), pcfg);
+  for (int f = 0; f < poisSize; ++f) {
+    if (pois[f] && pois[f]->GetConfig() == pcfg) return pois[f];
+  }
+  if (abortOnNotFound) {
+    //*(int*)(0) = 42;
+    ABORT("POI config '%s' not found!", name.CStr());
+  }
+  return nullptr;
+}
+
+
+owterrain *game::alienvesselPOI () { return poi("ALIEN_VESSEL", true); }
+owterrain *game::attnamPOI () { return poi("ATTNAM", true); }
+owterrain *game::darkforestPOI () { return poi("DARK_FOREST", true); }
+owterrain *game::dragontowerPOI () { return poi("DRAGON_TOWER", true); }
+owterrain *game::elpuricavePOI () { return poi("ELPURI_CAVE", true); }
+owterrain *game::mondedrPOI () { return poi("MONDEDR", true); }
+owterrain *game::muntuoPOI () { return poi("MUNTUO", true); }
+owterrain *game::newattnamPOI () { return poi("NEW_ATTNAM", true); }
+owterrain *game::underwatertunnelPOI () { return poi("UNDER_WATER_TUNNEL", true); }
+owterrain *game::underwatertunnelexitPOI () { return poi("UNDER_WATER_TUNNEL_EXIT", true); }
+owterrain *game::xinrochtombPOI () { return poi("XINROCH_TOMB", true); }
+
+
+// ////////////////////////////////////////////////////////////////////////// //
 // -1: none
 int game::MoveVectorToDirection (cv2 &mv) {
   for (int c = 0; c < 9; ++c) if (MoveVector[c] == mv) return c;
@@ -286,6 +334,75 @@ void game::InitScript () {
 }
 
 
+void game::DeInitPlaces () {
+  for (int f = 0; f < poisSize; ++f) delete pois[f];
+  delete [] pois;
+  poisSize = 0;
+  pois = nullptr;
+}
+
+
+void game::InitPlaces () {
+  // spawn all POI configs (except 0, which is abstract base)
+  //fprintf(stderr, "owterras: %u\n", protocontainer<owterrain>::GetSize());
+  auto xtype = protocontainer<owterrain>::SearchCodeName("owterrain");
+  if (!xtype) ABORT("Your worldmap is dull and empty.");
+  const owterrain::prototype* proto = protocontainer<owterrain>::GetProto(xtype);
+  if (!proto) ABORT("wtf?!");
+  const owterrain::database *const *configs = proto->GetConfigData();
+  int cfgcount = proto->GetConfigSize();
+  //fprintf(stderr, "owterrain configs: %d\n", cfgcount);
+  // count "good" pois
+  int goodPOIs = 0;
+  for (int f = 0; f < cfgcount; ++f) {
+    auto cfg = configs[f];
+    if (cfg->IsAbstract) continue;
+    if (cfg->Config == 0) continue; // base config, skip it (just in case)
+    if (!cfg->CanBeGenerated) continue;
+    if (cfg->Probability < 1) continue;
+    //fprintf(stderr, "***POI <%s>\n", cfg->CfgStrName.CStr());
+    ++goodPOIs;
+  }
+  // at least 4: attnam, new attnam, and two entries to underwater tunner
+  if (goodPOIs < 4) ABORT("The world is so dull and boring...");
+  pois = new owterrain *[goodPOIs];
+  poisSize = 0; // will be used as counter
+  for (int f = 0; f < cfgcount; ++f) {
+    auto cfg = configs[f];
+    if (cfg->IsAbstract) continue;
+    if (cfg->Config == 0) continue; // base config, skip it (just in case)
+    if (!cfg->CanBeGenerated) continue;
+    if (cfg->Probability < 1) continue;
+    //if (!ConfigData[c2]->IsAbstract && ConfigData[c2]->IsAutoInitializable)
+    //fprintf(stderr, "POI <%s>\n", cfg->CfgStrName.CStr());
+    owterrain *poi = proto->Spawn(cfg->Config);
+    poi->SetRevealed(false); // for now
+    poi->SetPlaced(false); // for now
+    if (poisSize >= goodPOIs) ABORT("Somehow i cannot count right!");
+    pois[poisSize++] = poi;
+  }
+}
+
+
+void game::RevealPOI (owterrain *terra) {
+  if (!terra) return;
+  for (int f = 0; f < poisSize; ++f) {
+    if (pois[f] == terra) {
+      if (!IsInWilderness()) LoadWorldMap();
+      GetWorldMap()->poiPlaceAtMap(terra, true); // force revealing
+      //GetWorldMap()->RevealEnvironment(terra->GetPosition(), 1);
+      if (IsInWilderness()) {
+        //fprintf(stderr, "NEW DRAW REQUEST SENT!\n");
+        GetWorldMap()->SendNewDrawRequest();
+      } else {
+        // for some reason doing this in wilderness temporarily resets player postion and corrupt saves
+        SaveWorldMap();
+      }
+    }
+  }
+}
+
+
 truth game::Init (cfestring &Name) {
   if (Name.IsEmpty()) {
     if (ivanconfig::GetDefaultName().IsEmpty()) {
@@ -301,12 +418,13 @@ truth game::Init (cfestring &Name) {
   mkdir(GetSavePath().CStr(), S_IRWXU|S_IRWXG);
   mkdir(GetBonePath().CStr(), S_IRWXU|S_IRWXG);
 
-  ::InitPlaces();
   LOSTick = 2;
   DangerFound = 0;
   CausePanicFlag = false;
+  InitPlaces();
   pool::KillBees();
-  //???
+  mImmediateSave = false;
+
   switch (Load(SaveName(PlayerName))) {
     case LOADED: {
       globalwindowhandler::InstallControlLoop(AnimationController);
@@ -349,6 +467,7 @@ truth game::Init (cfestring &Name) {
         "word. The point is that tomorrow you can finally forget your home and\n"
         "face the untold adventures ahead."));
       pool::RemoveEverything(); // memory leak!
+      InitPlaces(); // why not
       CurrentLevel = 0;
       globalwindowhandler::InstallControlLoop(AnimationController);
       LOSTick = 2;
@@ -452,6 +571,7 @@ truth game::Init (cfestring &Name) {
 
 void game::DeInit () {
   pool::BurnHell();
+  DeInitPlaces();
   delete WorldMap;
   WorldMap = 0;
   if (Dungeon) {
@@ -476,8 +596,22 @@ void game::DeInit () {
 }
 
 
+void game::ScheduleImmediateSave () {
+  game::Save();
+  game::Save(game::GetAutoSaveFileName());
+  mImmediateSave = false;
+}
+
+
 void game::Run () {
   for (;;) {
+    if (mImmediateSave) {
+      fprintf(stderr, "force saving!\n");
+      mImmediateSave = false;
+      game::Save();
+      game::Save(game::GetAutoSaveFileName());
+    }
+
     if (!InWilderness) {
       /* Temporary places */
       static int Counter = 0;
@@ -505,7 +639,7 @@ void game::Run () {
           NecroCounter += 50;
         } else {
           delete Char;
-          //Char->SendToHell(); // k8:equipment
+          //Char->SendToHell(); // k8:equipment crash?
         }
       }
 
@@ -517,62 +651,6 @@ void game::Run () {
         if (NewVolume && !OldVolume) CurrentLevel->EnableGlobalRain();
         else if(!NewVolume && OldVolume) CurrentLevel->DisableGlobalRain();
         GlobalRainLiquid->SetVolumeNoSignals(NewVolume);
-        /*
-        {
-          item *Item;
-          if (!RAND_N(2)) Item = wand::Spawn(1 + RAND_N(12));
-          else if(!RAND_N(2)) {
-            Item = beartrap::Spawn();
-            Item->SetIsActive(true);
-            Item->SetTeam(MONSTER_TEAM);
-          } else if(!RAND_N(2)) {
-            Item = mine::Spawn();
-            Item->SetIsActive(true);
-            Item->SetTeam(MONSTER_TEAM);
-          } else Item = holybanana::Spawn();
-          CurrentLevel->GetLSquare(CurrentLevel->GetRandomSquare())->AddItem(Item);
-        }
-
-        if(!RAND_N(10)) {
-          character *Char = protosystem::CreateMonster(0, 1000000);
-          Char->ChangeTeam(GetTeam(RAND() % Teams));
-          Char->PutTo(CurrentLevel->GetRandomSquare(Char));
-        }
-
-        if (!RAND_N(5)) {
-          character *Char;
-          if (!RAND_N(5)) Char = spider::Spawn(GIANT);
-          else if (!RAND_N(5)) Char = darkmage::Spawn(1 + RAND_N(4));
-          else if (!RAND_N(5)) Char = necromancer::Spawn(1 + RAND_N(2));
-          else if (!RAND_N(5)) Char = chameleon::Spawn();
-          else if (!RAND_N(5)) Char = kamikazedwarf::Spawn(1 + RAND_N(GODS));
-          else if (!RAND_N(5)) Char = mommo::Spawn(1 + RAND_N(2));
-          else if (!RAND_N(3)) Char = bunny::Spawn(RAND_2 ? ADULT_MALE : ADULT_FEMALE);
-          else if (!RAND_N(3)) Char = eddy::Spawn();
-          else if (!RAND_N(3)) Char = magicmushroom::Spawn();
-          else if (!RAND_N(5)) Char = mushroom::Spawn();
-          else if (!RAND_N(3)) Char = blinkdog::Spawn();
-          else if (!RAND_N(5)) Char = tourist::Spawn(1 + RAND_N(3));
-          else if (!RAND_N(5)) Char = hattifattener::Spawn();
-          else if (!RAND_N(5)) Char = genetrixvesana::Spawn();
-          else if (!RAND_N(5)) Char = skunk::Spawn();
-          else if (!RAND_N(5)) Char = ennerbeast::Spawn();
-          else if (!RAND_N(5)) Char = werewolfhuman::Spawn();
-          else if (!RAND_N(5)) Char = unicorn::Spawn(1 + RAND_N(3));
-          else if (!RAND_N(5)) Char = floatingeye::Spawn();
-          else if (!RAND_N(5)) Char = zombie::Spawn();
-          else if (!RAND_N(5)) Char = magpie::Spawn();
-          else if (!RAND_N(5)) Char = elpuri::Spawn();
-          else if (!RAND_N(5)) Char = vladimir::Spawn();
-          else if (!RAND_N(5)) Char = billswill::Spawn();
-          else if (!RAND_N(5)) Char = ghost::Spawn();
-          else if (!RAND_N(5)) Char = dolphin::Spawn();
-          else if (!RAND_N(5)) Char = cossack::Spawn();
-          else Char = invisiblestalker::Spawn();
-          Char->SetTeam(GetTeam(RAND() % Teams));
-          Char->PutTo(CurrentLevel->GetRandomSquare(Char));
-        }
-        */
       }
     }
 
@@ -581,6 +659,7 @@ void game::Run () {
       pool::BurnHell();
       IncreaseTick();
       ApplyDivineTick();
+
     } catch (quitrequest) {
       break;
     } catch (areachangerequest) {
@@ -773,7 +852,8 @@ void game::DrawEverythingNoBlit (truth AnimationDraw) {
 
 
 truth game::Save (cfestring &SaveName) {
-  if (!GetCurrentArea()->GetSquare(Player->GetPos())->GetCharacter()) {
+  //fprintf(stderr, "plrpos=(%d,%d)\n", Player->GetPos().X, Player->GetPos().Y);
+  if (!GetCurrentArea() || !GetCurrentArea()->GetSquare(Player->GetPos()) || !GetCurrentArea()->GetSquare(Player->GetPos())->GetCharacter()) {
     Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, can't save due to I.V.A.N. bug.\r"), CONST_S("Continue\r"), LIGHT_GRAY);
     return false;
   }
@@ -790,9 +870,12 @@ truth game::Save (cfestring &SaveName) {
   SaveFile << Tick << Turn << InWilderness << NextCharacterID << NextItemID << NextTrapID << NecroCounter;
   SaveFile << SumoWrestling << PlayerSumoChampion << GlobalRainTimeModifier;
   SaveFile << PlayerSolicitusChampion << TouristHasSpider;
-  //sLong Seed = RAND();
-  //femath::SetSeed(Seed);
-  //SaveFile << Seed;
+  // POIs
+  //fprintf(stderr, "saving POIs...\n");
+  SaveFile << (sLong)poisSize;
+  for (int pc = 0; pc < poisSize; ++pc) SaveFile << pois[pc];
+  //fprintf(stderr, "POIs saved (0x%08x)\n", (unsigned)SaveFile.TellPos());
+  //
   femath::SavePRNG(SaveFile);
   SaveFile << AveragePlayerArmStrengthExperience;
   SaveFile << AveragePlayerLegStrengthExperience;
@@ -843,7 +926,30 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> Tick >> Turn >> InWilderness >> NextCharacterID >> NextItemID >> NextTrapID >> NecroCounter;
   SaveFile >> SumoWrestling >> PlayerSumoChampion >> GlobalRainTimeModifier;
   SaveFile >> PlayerSolicitusChampion >> TouristHasSpider;
-  //femath::SetSeed(ReadType(sLong, SaveFile));
+  // POIs
+  sLong pcnt;
+  //fprintf(stderr, "loading POIs...\n");
+  SaveFile >> pcnt;
+  if (pcnt != poisSize) {
+    if (!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is incompatible with the new version (POIs).\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY)) {
+      return NEW_GAME;
+    } else {
+      return BACK;
+    }
+  }
+  for (int pc = 0; pc < pcnt; ++pc) {
+    delete pois[pc];
+    SaveFile >> pois[pc];
+    if (!pois[pc]) {
+      if (!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is broken.\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY)) {
+        return NEW_GAME;
+      } else {
+        return BACK;
+      }
+    }
+  }
+  //fprintf(stderr, "POIs loaded (0x%08x)\n", (unsigned)SaveFile.TellPos());
+  //
   femath::LoadPRNG(SaveFile);
   SaveFile >> AveragePlayerArmStrengthExperience;
   SaveFile >> AveragePlayerLegStrengthExperience;
@@ -852,7 +958,7 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> Teams >> Dungeons >> StoryState >> PlayerRunning;
   SaveFile >> MondedrPass >> RingOfThieves >> Masamune >> Muramasa >> LoricatusHammer >> Liberator;
   SaveFile >> OmmelBloodMission >> RegiiTalkState >> XinrochTombStoryState;
-;  SaveFile >> PlayerMassacreMap >> PetMassacreMap >> MiscMassacreMap;
+  SaveFile >> PlayerMassacreMap >> PetMassacreMap >> MiscMassacreMap;
   SaveFile >> PlayerMassacreAmount >> PetMassacreAmount >> MiscMassacreAmount;
   LoadArray(SaveFile, EquipmentMemory, MAX_EQUIPMENT_SLOTS);
   for (int c = 0; c < ATTRIBUTES; ++c) SaveFile >> OldAttribute[c] >> NewAttribute[c] >> LastAttributeChangeTick[c];
@@ -1743,6 +1849,7 @@ void game::CalculateNextDanger () {
 
 
 truth game::TryTravel (int Dungeon, int Area, int EntryIndex, truth AllowHostiles, truth AlliesFollow) {
+  //fprintf(stderr, "game::TryTravel: Dungeon=%d; Area=%d; EntryIndex=%d\n", Dungeon, Area, EntryIndex);
   charactervector Group;
   if (LeaveArea(Group, AllowHostiles, AlliesFollow)) {
     CurrentDungeonIndex = Dungeon;
@@ -1780,7 +1887,9 @@ void game::EnterArea (charactervector &Group, int Area, int EntryIndex) {
     if (Player) {
       GetCurrentLevel()->GetLSquare(Pos)->KickAnyoneStandingHereAway();
       Player->PutToOrNear(Pos);
-    } else SetPlayer(GetCurrentLevel()->GetLSquare(Pos)->GetCharacter());
+    } else {
+      SetPlayer(GetCurrentLevel()->GetLSquare(Pos)->GetCharacter());
+    }
     uInt c;
     for (c = 0; c < Group.size(); ++c) {
       v2 NPCPos = GetCurrentLevel()->GetNearestFreeSquare(Group[c], Pos);
@@ -1835,6 +1944,7 @@ void game::EnterArea (charactervector &Group, int Area, int EntryIndex) {
     SetCurrentArea(WorldMap);
     CurrentWSquareMap = WorldMap->GetMap();
     GetWorldMap()->GetPlayerGroup().swap(Group);
+    //fprintf(stderr, "EINDEX=%d; pos=(%d,%d)\n", EntryIndex, GetWorldMap()->GetEntryPos(Player, EntryIndex).X, GetWorldMap()->GetEntryPos(Player, EntryIndex).Y);
     Player->PutTo(GetWorldMap()->GetEntryPos(Player, EntryIndex));
     SendLOSUpdateRequest();
     UpdateCamera();
@@ -2557,7 +2667,7 @@ truth game::TryToExitSumoArena () {
   itemvector IVector;
   charactervector CVector;
   if (IsSumoWrestling()) {
-    if (TruthQuestion("Do you really wish to give up? [y/N]")) return EndSumoWrestling(LOST);
+    if (TruthQuestion("Do you really wish to give up?")) return EndSumoWrestling(LOST);
     return false;
   } else {
     pool::AbortBe();
@@ -3346,40 +3456,6 @@ truth game::DoOnEvent (truth brcEaten, truth AllowScript) {
         continue;
       }
       */
-      if (w == "ActivateTombOfXinroch") {
-        //GetArea()->SendNewDrawRequest();
-        //game::ActivateWizardMode();
-        //ADD_MESSAGE("Wizard mode activated.");
-
-        //game::SetXinrochTombStoryState(1);
-        //game::SaveWorldMap();
-
-        maptotombofxinroch *MapToTombOfXinroch = maptotombofxinroch::Spawn();
-        MapToTombOfXinroch->MoveTo(PLAYER->GetStack());
-        //MapToTombOfXinroch->FinishReading(PLAYER);
-
-        /*
-        if (!game::IsInWilderness()) game::LoadWorldMap();
-        v2 XinrochTombPos = game::GetWorldMap()->GetEntryPos(0, XINROCH_TOMB);
-        game::GetWorldMap()->GetWSquare(XinrochTombPos)->ChangeOWTerrain(xinrochtomb::Spawn());
-        game::GetWorldMap()->RevealEnvironment(XinrochTombPos, 1);
-        */
-        //game::SaveWorldMap();
-
-        (belt::Spawn(BELT_OF_LEVITATION))->MoveTo(Player->GetStack());
-
-        /*
-        if (!game::IsInWilderness()) game::LoadWorldMap();
-        v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
-        game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
-        game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
-        if (game::IsInWilderness()) game::GetWorldMap()->SendNewDrawRequest(); else game::SaveWorldMap();
-        */
-
-        //game::Save();
-        //game::Save(game::GetAutoSaveFileName());
-        continue;
-      }
       if (w == "SetMoney") {
         ParseFuncArgs("n", args);
         sLong n = args[0].ival;

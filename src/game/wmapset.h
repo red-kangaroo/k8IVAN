@@ -15,7 +15,4 @@
 #include "ivancommon.h"
 
 
-extern void InitPlaces ();
-
-
 #endif

@@ -4,7 +4,7 @@ GWTERRAIN(ocean, gwterrain)
 public:
   ocean ();
 
-  virtual cchar *GetNameStem () const;
+  virtual festring GetNameStem () const;
   virtual truth UsesLongArticle () const;
   virtual v2 GetBitmapPos (int) const;
   virtual int GetPriority () const;
@@ -29,7 +29,7 @@ ocean::ocean () {
 int ocean::GetPriority () const { return 10; }
 truth ocean::UsesLongArticle () const { return true; }
 truth ocean::IsFatalToStay () const { return true; }
-cchar *ocean::GetNameStem () const { return "ocean"; }
+festring ocean::GetNameStem () const { return "ocean"; }
 v2 ocean::GetBitmapPos (int Frame) const { return v2(48 + ((Frame << 3)&~8), 48); }
 cchar *ocean::SurviveMessage () const { return "you manage to reach the shore"; }
 cchar *ocean::MonsterSurviveMessage () const { return "manages to reach the shore"; }

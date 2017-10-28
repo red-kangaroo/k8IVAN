@@ -20,9 +20,10 @@
 
 
 void *operator new (std::size_t size) throw (std::bad_alloc) {
-  void *p = malloc(size+1);
+  if (size > 0x1fffffff) abort();
+  void *p = malloc(size+64);
   if (!p) throw std::bad_alloc(); // ANSI/ISO compliant behavior
-  memset(p, 0, size+1);
+  memset(p, 0, size+64);
   //fprintf(stderr, "GLOBAL NEW!\n");
   return p;
 }

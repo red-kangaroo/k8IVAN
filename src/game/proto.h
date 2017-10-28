@@ -29,6 +29,7 @@ class item;
 class material;
 class god;
 class level;
+class owterrain;
 template <class type> class databasecreator;
 struct itemdatabase;
 

@@ -2,7 +2,7 @@
 GWTERRAIN(glacier, gwterrain)
 {
 public:
-  virtual cchar *GetNameStem () const;
+  virtual festring GetNameStem () const;
   virtual v2 GetBitmapPos (int) const;
   virtual int GetPriority () const;
 };
@@ -12,7 +12,7 @@ public:
 
 
 int glacier::GetPriority () const { return 90; }
-cchar *glacier::GetNameStem () const { return "glacier"; }
+festring glacier::GetNameStem () const { return "glacier"; }
 v2 glacier::GetBitmapPos (int) const { return v2(16, 16); }
 
 

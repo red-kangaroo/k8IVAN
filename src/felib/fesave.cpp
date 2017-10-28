@@ -99,6 +99,11 @@ void outputfile::Write (cchar *Offset, sLong Size) {
 }
 
 
+sLong outputfile::TellPos () {
+  return Xtell(Buffer);
+}
+
+
 // ////////////////////////////////////////////////////////////////////////// //
 truth inputfile::fileExists (const festring &fname) {
   struct stat st;

@@ -63,9 +63,11 @@ void area::SendNewDrawRequest () {
   cint YMin = Max(game::GetCamera().Y, 0);
   cint XMax = Min(XSize, game::GetCamera().X + game::GetScreenXSize());
   cint YMax = Min(YSize, game::GetCamera().Y + game::GetScreenYSize());
-  for (int x = XMin; x < XSize && x < XMax; ++x)
-    for (int y = YMin; y < YMax; ++y)
+  for (int x = XMin; x < XSize && x < XMax; ++x) {
+    for (int y = YMin; y < YMax; ++y) {
       Map[x][y]->SendStrongNewDrawRequest();
+    }
+  }
   igraph::GetBackGround()->FastBlit(DOUBLE_BUFFER);
   DOUBLE_BUFFER->DrawRectangle(14, 30, 17 + (game::GetScreenXSize() << 4), 33 + (game::GetScreenYSize() << 4), DARK_GRAY, true);
   DOUBLE_BUFFER->Fill(16, 32, game::GetScreenXSize() << 4, game::GetScreenYSize() << 4, BLACK);
@@ -81,4 +83,9 @@ square *area::GetNeighbourSquare (v2 Pos, int I) const {
 
 void area::SetEntryPos (int I, v2 Pos) {
   EntryMap.insert(std::make_pair(I, Pos));
+}
+
+
+void area::ClearEntryPoints () {
+  EntryMap.clear();
 }

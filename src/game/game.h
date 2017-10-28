@@ -53,6 +53,7 @@ class rain;
 class liquid;
 class entity;
 class olterrain;
+class owterrain;
 struct explosion;
 
 typedef std::map<festring, sLong> valuemap;
@@ -190,6 +191,7 @@ public:
   enum { PickTimeout = 32 };
 public:
   static void InitPlaces ();
+  static void DeInitPlaces ();
   static truth Init(cfestring& = CONST_S(""));
   static void DeInit();
   static void Run();
@@ -294,6 +296,8 @@ public:
   static truth HasGlobalValue (cfestring &name);
   static sLong FindGlobalValue (cfestring &name, sLong defval=-1, truth* found=0);
   static sLong FindGlobalValue (cfestring &name, truth* found=0);
+
+  static void ScheduleImmediateSave ();
 
   // this will fail if there is no such constant
   //TODO: cache values
@@ -632,8 +636,37 @@ private:
   static truth PlayerHasReceivedAllGodsKnownBonus;
   static cbitmap* EnterImage;
   static v2 EnterTextDisplacement;
-  //
+
   static std::stack<TextInput *> mFEStack;
+  static truth mImmediateSave;
+
+  // worldmap "places of interest"
+private:
+  static owterrain **pois;
+  static int poisSize;
+
+public:
+  static int poiCount ();
+  static owterrain *poiByIndex (int pcfg, truth abortOnNotFound=true); // can return nullptr
+
+  // not by POI name, but by POI constant name from "define.dat"!
+  static owterrain *poi (cfestring &name, truth abortOnNotFound=true); // can return nullptr
+
+  static void RevealPOI (owterrain *terra);
+
+public:
+  // convenient accessors
+  static owterrain *alienvesselPOI ();
+  static owterrain *attnamPOI ();
+  static owterrain *darkforestPOI ();
+  static owterrain *dragontowerPOI ();
+  static owterrain *elpuricavePOI ();
+  static owterrain *mondedrPOI ();
+  static owterrain *muntuoPOI ();
+  static owterrain *newattnamPOI ();
+  static owterrain *underwatertunnelPOI ();
+  static owterrain *underwatertunnelexitPOI ();
+  static owterrain *xinrochtombPOI ();
 
 public:
   static character *mChar;

@@ -63,13 +63,6 @@ void morbe::BeTalkedTo () {
         "where dwells the soul of the ancient Warlord Xinroch.\n"
         "His bones have long since departed that place, but his soul still dwells beneath.\n"
         "It is stirring as we speak.\""));
-      /*
-      game::LoadWorldMap();
-      v2 XinrochTombPos = game::GetWorldMap()->GetEntryPos(0, XINROCH_TOMB);
-      game::GetWorldMap()->GetWSquare(XinrochTombPos)->ChangeOWTerrain(xinrochtomb::Spawn());
-      game::GetWorldMap()->RevealEnvironment(XinrochTombPos, 1);
-      game::SaveWorldMap();
-      */
       GetArea()->SendNewDrawRequest();
       game::SetOmmelBloodMission(2);
       if (!game::GetXinrochTombStoryState()) {

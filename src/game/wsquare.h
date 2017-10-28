@@ -33,10 +33,9 @@ public:
   virtual void Load (inputfile &);
   void Draw (blitdata &);
   void SetGWTerrain (gwterrain *);
-  void SetOWTerrain (owterrain *);
   gwterrain *GetGWTerrain () const { return GWTerrain; }
   owterrain *GetOWTerrain () const { return OWTerrain; }
-  void ChangeWTerrain (gwterrain *, owterrain *);
+  //void ChangeWTerrain (gwterrain *, owterrain *);
   worldmap *GetWorldMap () const { return static_cast<worldmap*>(AreaUnder); }
   void SetWorldMapUnder (worldmap *What) { AreaUnder = What; }
   void UpdateMemorizedDescription (truth = false);
@@ -52,6 +51,9 @@ public:
   virtual int GetSquareWalkability () const { return GetWalkability(); }
   virtual truth CanBeSeenByPlayer (truth = false) const;
   virtual truth CanBeSeenFrom (v2, sLong, truth = false) const;
+
+protected:
+  void SetOWTerrain (owterrain *);
 
 protected:
   gwterrain *GWTerrain;

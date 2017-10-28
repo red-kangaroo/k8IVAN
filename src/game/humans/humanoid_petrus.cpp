@@ -263,11 +263,7 @@ void petrus::BeTalkedTo () {
         "into it and slay the vile frog. Bring Us its head and We reward thee with freedom.\n"
         "Shouldst thou also find the Shirt, We'll knight thee. Good luck, and return when\n"
         "thou hast succeeded.\""));
-      game::LoadWorldMap();
-      v2 ElpuriCavePos = game::GetWorldMap()->GetEntryPos(0, ELPURI_CAVE);
-      game::GetWorldMap()->GetWSquare(ElpuriCavePos)->ChangeOWTerrain(elpuricave::Spawn());
-      game::GetWorldMap()->RevealEnvironment(ElpuriCavePos, 1);
-      game::SaveWorldMap();
+      game::RevealPOI(game::elpuricavePOI());
       GetArea()->SendNewDrawRequest();
       ADD_MESSAGE("\"And by the way, visit the librarian. He might have advice for thee.\"");
       game::SetStoryState(1);

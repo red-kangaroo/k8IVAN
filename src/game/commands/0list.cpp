@@ -51,6 +51,7 @@
 #include "commands/LowerGodRelations.cpp"
 #include "commands/LowerStats.cpp"
 #include "commands/OpenMondedr.cpp"
+#include "commands/OpenXinTomb.cpp"
 #include "commands/Polymorph.cpp"
 #include "commands/Possess.cpp"
 #include "commands/RaiseGodRelations.cpp"

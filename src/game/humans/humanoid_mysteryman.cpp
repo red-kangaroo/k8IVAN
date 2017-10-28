@@ -25,11 +25,7 @@ void mysteryman::BeTalkedTo () {
         "\"I have revealed the location of Mondedr.\" He hands you a map.\n"
         "\"It is a good thing I was born in this world, no? You owe me nothing, the \n"
         "the amount of information in the sheet of paper is what repays it.\"\n\n"""));
-      game::LoadWorldMap();
-      v2 MondedrPos = game::GetWorldMap()->GetEntryPos(0, MONDEDR);
-      game::GetWorldMap()->GetWSquare(MondedrPos)->ChangeOWTerrain(mondedr::Spawn());
-      game::GetWorldMap()->RevealEnvironment(MondedrPos, 1);
-      game::SaveWorldMap();
+      game::RevealPOI(game::mondedrPOI());
       GetArea()->SendNewDrawRequest();
       ADD_MESSAGE("\"And by the way, the government always watches you.\"");
       game::SetMondedrPass(1);

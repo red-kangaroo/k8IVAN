@@ -26,10 +26,11 @@ class inputfile;
 
 class continent {
   friend class worldmap;
+
 public:
   continent ();
   continent (int);
-  virtual ~continent () {}
+  virtual ~continent ();
 
   void AttachTo (continent *);
   void Add (v2);
@@ -47,10 +48,13 @@ private:
   static uChar **TypeBuffer;
   static short **AltitudeBuffer;
   static uChar **ContinentBuffer;
+
+private:
+  enum { TerrainTypeLimit = 256 };
+  sLong ttypeCount[TerrainTypeLimit];
+  int Index;
   festring Name;
   std::vector<v2> Member;
-  std::vector<sLong> GTerrainAmount;
-  int Index;
 };
 
 outputfile &operator << (outputfile &, const continent *);

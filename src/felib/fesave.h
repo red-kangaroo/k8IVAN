@@ -63,6 +63,7 @@ public:
   truth IsOpen () { return (Buffer != 0); }
   void Close ();
   void Flush ();
+  sLong TellPos ();
 
 private:
 #ifdef USE_ZLIB

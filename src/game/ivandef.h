@@ -82,24 +82,20 @@ class simplesysbase : public base
 };
 
 #define SYSTEM_SPECIALIZATIONS(name)\
-name##prototype** name##_ProtoData;\
-valuemap name##_CodeNameMap;\
-int name##_ProtoSize;\
-\
-template<> name##prototype**& protocontainer<name>::GetProtoData()\
-{ return name##_ProtoData; }\
-template<> valuemap& protocontainer<name>::GetCodeNameMap()\
-{ return name##_CodeNameMap; }\
-template<> int& protocontainer<name>::GetSizeRef()\
-{ return name##_ProtoSize; }
+  name##prototype** name##_ProtoData;\
+  valuemap name##_CodeNameMap;\
+  int name##_ProtoSize;\
+  \
+  template<> name##prototype**& protocontainer<name>::GetProtoData() { return name##_ProtoData; }\
+  template<> valuemap& protocontainer<name>::GetCodeNameMap() { return name##_CodeNameMap; }\
+  template<> int& protocontainer<name>::GetSizeRef() { return name##_ProtoSize; }
 
 #define EXTENDED_SYSTEM_SPECIALIZATIONS(name)\
-SYSTEM_SPECIALIZATIONS(name)\
-databasecreator<name>::databasemembermap name##_DataBaseMemberMap;\
-template<> databasecreator<name>::databasemembermap&\
-databasecreator<name>::GetDataBaseMemberMap()\
-{ return name##_DataBaseMemberMap; }\
-const name##prototype name::ProtoType
+  SYSTEM_SPECIALIZATIONS(name)\
+  databasecreator<name>::databasemembermap name##_DataBaseMemberMap;\
+  template<> databasecreator<name>::databasemembermap&\
+  databasecreator<name>::GetDataBaseMemberMap() { return name##_DataBaseMemberMap; }\
+  const name##prototype name::ProtoType
 
 #define DATA_BASE_VALUE(type, data) type Get##data() const { return DataBase->data; }
 #define DATA_BASE_VALUE_WITH_PARAMETER(type, data, param) type Get##data(param) const { return DataBase->data; }
@@ -564,6 +560,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define NO_ENTRY 0
 
 #define RANDOM  (game::GetGlobalConst("RANDOM"))
+/*
 #define ELPURI_CAVE  (game::GetGlobalConst("ELPURI_CAVE"))
 #define ATTNAM  (game::GetGlobalConst("ATTNAM"))
 #define NEW_ATTNAM  (game::GetGlobalConst("NEW_ATTNAM"))
@@ -576,8 +573,34 @@ cv2 SILHOUETTE_SIZE(48, 64);
 // alien mod
 #define ALIEN_VESSEL  (game::GetGlobalConst("ALIEN_VESSEL"))
 
-#define KHARAZ_ARAD_SHOP  (game::GetGlobalConst("KHARAZ_ARAD_SHOP"))
 #define UNDER_WATER_TUNNEL_EXIT  (game::GetGlobalConst("UNDER_WATER_TUNNEL_EXIT"))
+*/
+#define NEW_ATTNAM  (game::GetGlobalConst("NEW_ATTNAM"))
+#define UNDER_WATER_TUNNEL  (game::GetGlobalConst("UNDER_WATER_TUNNEL"))
+#define UNDER_WATER_TUNNEL_EXIT  (game::GetGlobalConst("UNDER_WATER_TUNNEL_EXIT"))
+#define ATTNAM  (game::GetGlobalConst("ATTNAM"))
+#define ELPURI_CAVE  (game::GetGlobalConst("ELPURI_CAVE"))
+#define MONDEDR  (game::GetGlobalConst("MONDEDR"))
+#define MUNTUO  (game::GetGlobalConst("MUNTUO"))
+#define DARK_FOREST  (game::GetGlobalConst("DARK_FOREST"))
+#define XINROCH_TOMB  (game::GetGlobalConst("XINROCH_TOMB"))
+#define DRAGON_TOWER  (game::GetGlobalConst("DRAGON_TOWER"))
+#define ALIEN_VESSEL  (game::GetGlobalConst("ALIEN_VESSEL"))
+
+#define alienvessel           (game::alienvesselPOI())
+#define attnam                (game::attnamPOI())
+#define darkforest            (game::darkforestPOI())
+#define dragontower           (game::dragontowerPOI())
+#define elpuricave            (game::elpuricavePOI())
+#define mondedr               (game::mondedrPOI())
+#define muntuo                (game::muntuoPOI())
+#define newattnam             (game::newattnamPOI())
+#define underwatertunnel      (game::underwatertunnelPOI())
+#define underwatertunnelexit  (game::underwatertunnelexitPOI())
+#define xinrochtomb           (game::xinrochtombPOI())
+
+
+#define KHARAZ_ARAD_SHOP  (game::GetGlobalConst("KHARAZ_ARAD_SHOP"))
 
 //#define VESANA_LEVEL  (game::GetGlobalConst("VESANA_LEVEL"))
 //#define CRYSTAL_LEVEL  (game::GetGlobalConst("CRYSTAL_LEVEL"))

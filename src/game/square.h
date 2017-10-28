@@ -39,6 +39,7 @@ class square
   virtual character* GetCharacter() const { return Character; }
   feuLong GetLastSeen() const { return LastSeen; }
   v2 GetPos() const { return Pos; }
+  void SetPos(v2 apos) { Pos = apos; }
   area* GetArea() const { return AreaUnder; }
   virtual gterrain* GetGTerrain() const = 0;
   virtual oterrain* GetOTerrain() const = 0;

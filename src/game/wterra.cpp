@@ -10,29 +10,16 @@
  *
  */
 /* Compiled through wmapset.cpp */
+#include "database.h"
 
 
-gwterrainprototype::gwterrainprototype (gwterrainspawner Spawner, cchar *ClassID) :
-  Spawner(Spawner),
-  ClassID(ClassID)
-{
-  Index = protocontainer<gwterrain>::Add(this);
+// ////////////////////////////////////////////////////////////////////////// //
+truth DrawOrderer (const std::pair<v2, int> &Pair1, const std::pair<v2, int> &Pair2) {
+  return Pair1.second < Pair2.second;
 }
 
 
-owterrainprototype::owterrainprototype (owterrainspawner Spawner, cchar *ClassID) :
-  Spawner(Spawner),
-  ClassID(ClassID)
-{
-  Index = protocontainer<owterrain>::Add(this);
-}
-
-
-int gwterrain::GetWalkability () const { return ANY_MOVE&~SWIM; }
-int owterrain::GetWalkability () const { return ANY_MOVE; }
-int owterrain::GetAttachedEntry () const { return STAIRS_UP; }
-
-
+// ////////////////////////////////////////////////////////////////////////// //
 void wterrain::AddName (festring &String, int Case) const {
   if (!(Case & PLURAL)) {
     if (!(Case & ARTICLE_BIT)) String << GetNameStem();
@@ -54,6 +41,34 @@ festring wterrain::GetName (int Case) const {
 }
 
 
+void wterrain::Save (outputfile &SaveFile) const {
+}
+
+
+void wterrain::Load (inputfile &) {
+  WSquareUnder = (wsquare*)game::GetSquareInLoad();
+}
+
+
+// ////////////////////////////////////////////////////////////////////////// //
+gwterrainprototype::gwterrainprototype (gwterrainspawner Spawner, cchar *ClassID) :
+  Spawner(Spawner),
+  ClassID(ClassID)
+{
+  Index = protocontainer<gwterrain>::Add(this);
+}
+
+
+gwterrain *gwterrainprototype::SpawnAndLoad (inputfile &SaveFile) const {
+  gwterrain *Terrain = Spawner();
+  Terrain->Load(SaveFile);
+  return Terrain;
+}
+
+
+int gwterrain::GetWalkability () const { return ANY_MOVE&~SWIM; }
+
+
 void gwterrain::Draw (blitdata &BlitData) const {
   cint AF = AnimationFrames;
   cint F = !(BlitData.CustomData & ALLOW_ANIMATE) || AF == 1 ? 0 : GET_TICK() & (AF - 1);
@@ -67,46 +82,8 @@ void gwterrain::Draw (blitdata &BlitData) const {
 }
 
 
-void owterrain::Draw (blitdata &BlitData) const {
-  cint AF = AnimationFrames;
-  cint F = !(BlitData.CustomData & ALLOW_ANIMATE) || AF == 1 ? 0 : GET_TICK() & (AF - 1);
-  BlitData.Src = GetBitmapPos(F);
-  igraph::GetWTerrainGraphic()->LuminanceMaskedBlit(BlitData);
-  BlitData.Src.X = BlitData.Src.Y = 0;
-}
-
-
-void wterrain::Load (inputfile &) {
-  WSquareUnder = (wsquare*)game::GetSquareInLoad();
-}
-
-
 void gwterrain::Save (outputfile &SaveFile) const {
   SaveFile << (uShort)GetType();
-}
-
-
-void owterrain::Save (outputfile &SaveFile) const {
-  SaveFile << (uShort)GetType();
-}
-
-
-gwterrain *gwterrainprototype::SpawnAndLoad (inputfile &SaveFile) const {
-  gwterrain *Terrain = Spawner();
-  Terrain->Load(SaveFile);
-  return Terrain;
-}
-
-
-owterrain *owterrainprototype::SpawnAndLoad (inputfile &SaveFile) const {
-  owterrain *Terrain = Spawner();
-  Terrain->Load(SaveFile);
-  return Terrain;
-}
-
-
-truth DrawOrderer (const std::pair<v2, int> &Pair1, const std::pair<v2, int> &Pair2) {
-  return Pair1.second < Pair2.second;
 }
 
 
@@ -132,6 +109,100 @@ void gwterrain::CalculateNeighbourBitmapPoses () {
 }
 
 
+// ////////////////////////////////////////////////////////////////////////// //
+void owterraindatabase::InitDefaults (const owterrainprototype *NewProtoType, int NewConfig, cfestring &acfgstrname)
+{
+  IsAbstract = false;
+  ProtoType = NewProtoType;
+  Config = NewConfig;
+  CfgStrName = acfgstrname;
+}
+
+
+owterrainprototype::owterrainprototype (const owterrainprototype *Base, owterrainspawner Spawner, cchar *ClassID) :
+  Base(Base),
+  Spawner(Spawner),
+  ClassID(ClassID)
+{
+  Index = protocontainer<owterrain>::Add(this);
+  //fprintf(stderr, "CID: <%s> (%s)\n", ClassID, (Spawner ? "tan" : "ona"));
+}
+
+
+owterrain *owterrainprototype::Spawn (int Config, int SpecialFlags) const {
+  owterrain *res = Spawner(Config, SpecialFlags);
+  res->mPos = v2(-1, -1);
+  res->mRevealed = false;
+  res->mPlaced = false;
+  res->mGenerated = false;
+  return res;
+}
+
+
+owterrain* owterrainprototype::SpawnAndLoad (inputfile &SaveFile) const {
+  owterrain *Terrain = Spawner(0, LOAD);
+  Terrain->Load(SaveFile);
+  return Terrain;
+}
+
+
+void owterrain::InstallDataBase (int NewConfig) { databasecreator<owterrain>::InstallDataBase(this, NewConfig); }
+
+int owterrain::GetWalkability () const { return ANY_MOVE; }
+int owterrain::GetAttachedEntry () const { return STAIRS_UP; }
+
+
+owterrain *owterrain::Clone () const {
+  owterrain *res = ProtoType.Spawn(GetConfig());
+  res->mPos = mPos;
+  res->mRevealed = mRevealed;
+  res->mPlaced = mPlaced;
+  res->mGenerated = mGenerated;
+  return res;
+}
+
+
+void owterrain::Initialize (int NewConfig, int SpecialFlags) {
+  mRevealed = false;
+  mPlaced = false;
+  if (!(SpecialFlags&LOAD)) {
+    databasecreator<owterrain>::InstallDataBase(this, NewConfig);
+  }
+}
+
+
+void owterrain::Draw (blitdata &BlitData) const {
+  cint AF = AnimationFrames;
+  cint F = !(BlitData.CustomData & ALLOW_ANIMATE) || AF == 1 ? 0 : GET_TICK() & (AF - 1);
+  BlitData.Src = GetBitmapPos(F);
+  igraph::GetWTerrainGraphic()->LuminanceMaskedBlit(BlitData);
+  BlitData.Src.X = BlitData.Src.Y = 0;
+}
+
+
+void owterrain::Save (outputfile &SaveFile) const {
+  //fprintf(stderr, "owterrain::Save: pos0=0x%08x\n", (unsigned)SaveFile.TellPos());
+  SaveFile << (uShort)(GetType());
+  wterrain::Save(SaveFile);
+  SaveFile << (uShort)(GetConfig());
+  SaveFile << mRevealed;
+  SaveFile << mPlaced;
+  SaveFile << mPos;
+  SaveFile << mGenerated;
+}
+
+
+void owterrain::Load (inputfile &SaveFile) {
+  //fprintf(stderr, "owterrain::Load: pos0=0x%08x\n", (unsigned)SaveFile.TellPos());
+  wterrain::Load(SaveFile);
+  databasecreator<owterrain>::InstallDataBase(this, ReadType(uShort, SaveFile));
+  SaveFile >> mRevealed;
+  SaveFile >> mPlaced;
+  SaveFile >> mPos;
+  SaveFile >> mGenerated;
+}
+
+
 truth owterrain::Enter (truth DirectionUp) const {
   if (DirectionUp) {
     if (!PLAYER->IsFlying()) ADD_MESSAGE("You jump into the air. For some reason you don't get too far above.");
@@ -142,11 +213,18 @@ truth owterrain::Enter (truth DirectionUp) const {
 }
 
 
+/*
+v2 owterrain::GetBitmapPos (int) const { return DataBase->BitmapPos; }
+festring owterrain::GetNameStem () const { return DataBase->NameStem; }
+*/
+
+
 // base ivan thing
 truth owterrain::IsSuitableContinent (continent *Continent) {
+  if (!Continent) return false;
+  if (Continent->GetSize() < 25 || Continent->GetSize() > 700) return false; // 1000 is the previous value. It was lowered to make continents smaller.
   return
-    (Continent->GetSize() > 25 && Continent->GetSize() < 700 && // 1000 is the previous value. It was lowered to make continents smaller
      Continent->GetGTerrainAmount(EGForestType) &&
      Continent->GetGTerrainAmount(SnowType) &&
-     Continent->GetGTerrainAmount(SteppeType));
+     Continent->GetGTerrainAmount(SteppeType);
 }
