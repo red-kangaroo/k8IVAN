@@ -358,6 +358,7 @@ int stack::DrawContents (itemvector &ReturnVector, stack *MergeStack,
   // `Contents.Draw()` will fix invalid selections
   if ((Flags&NO_SELECT) == 0) {
     int selected = -1;
+    truth foundSomething = false;
 
     if ((Flags&NONE_AS_CHOICE) && (Flags&SKIP_FIRST_IF_NO_OLD) && !hiitem) {
       if ((Flags&REMEMBER_SELECTED) == 0 || GetSelected() == 0) selected = 1;
@@ -379,6 +380,7 @@ int stack::DrawContents (itemvector &ReturnVector, stack *MergeStack,
         }
         maxpt = pt;
         selected = cursel;
+        foundSomething = true;
       }
     }
 
@@ -392,11 +394,11 @@ int stack::DrawContents (itemvector &ReturnVector, stack *MergeStack,
           if (it && it->IsLockableContainer()) continue;
         }
         feuLong pt = Contents.GetEntryUData(c);
-        if (pt == 0) { selected = cursel; break; }
+        if (pt == 0) { selected = cursel; foundSomething = true; break; }
       }
     }
 
-    if (selected <= 0) selected = GetSelected();
+    if (selected < 0 && !foundSomething && (Flags&REMEMBER_SELECTED)) selected = GetSelected();
     Contents.SetSelected(selected);
   }
 
