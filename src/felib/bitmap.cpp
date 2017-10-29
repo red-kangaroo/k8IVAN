@@ -757,12 +757,12 @@ void bitmap::NormalBlit (cblitdata &BlitData) const {
   blitdata B = BlitData;
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap blit attempt detected!");
-    if (B.Flags & ROTATE && B.Border.X != B.Border.Y) ABORT("Blit error: FeLib supports only square rotating!");
+    if ((B.Flags&ROTATE) && B.Border.X != B.Border.Y) ABORT("Blit error: FeLib supports only square rotating!");
     if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
   packcol16 **SrcImage = Image;
   packcol16 **DestImage = B.Bitmap->Image;
-  switch (B.Flags & 7) {
+  switch (B.Flags&7) {
     case NONE: {
       if (!B.Src.X && !B.Src.Y && !B.Dest.X && !B.Dest.Y && B.Border.X == mSize.X && B.Border.Y == mSize.Y &&
           B.Border.X == B.Bitmap->mSize.X && B.Border.Y == B.Bitmap->mSize.Y) {
@@ -879,13 +879,13 @@ void bitmap::NormalMaskedBlit (cblitdata &BlitData) const {
   blitdata B = BlitData;
   if (!FastFlag) {
     if (!B.Border.X || !B.Border.Y) ABORT("Zero-sized bitmap masked blit attempt detected!");
-    if (B.Flags & ROTATE && B.Border.X != B.Border.Y) ABORT("MaskedBlit error: FeLib supports only square rotating!");
+    if ((B.Flags&ROTATE) && B.Border.X != B.Border.Y) ABORT("MaskedBlit error: FeLib supports only square rotating!");
     if (!femath::Clip(B.Src.X, B.Src.Y, B.Dest.X, B.Dest.Y, B.Border.X, B.Border.Y, mSize.X, mSize.Y, B.Bitmap->mSize.X, B.Bitmap->mSize.Y)) return;
   }
   packcol16 **SrcImage = Image;
   packcol16 **DestImage = B.Bitmap->Image;
   packcol16 PackedMaskColor = B.MaskColor;
-  switch (B.Flags & 7) {
+  switch (B.Flags&7) {
     case NONE: {
       for (int y = 0; y < B.Border.Y; ++y) {
         cpackcol16 *SrcPtr = &SrcImage[B.Src.Y + y][B.Src.X];
@@ -1590,14 +1590,14 @@ truth bitmap::CreateLightning (v2 StartPos, v2 Direction, int MaxLength, col16 C
 void bitmap::BlitAndCopyAlpha (bitmap *Bitmap, int Flags) const {
   if (!FastFlag) {
     if (!AlphaMap || !Bitmap->AlphaMap) ABORT("Attempt to blit and copy alpha without an alpha map detected!");
-    if (Flags & ROTATE && mSize.X != mSize.Y) ABORT("Blit and copy alpha error: FeLib supports only square rotating!");
+    if ((Flags&ROTATE) && mSize.X != mSize.Y) ABORT("Blit and copy alpha error: FeLib supports only square rotating!");
     if (mSize.X != Bitmap->mSize.X || mSize.Y != Bitmap->mSize.Y) ABORT("Blit and copy alpha attempt of noncongruent bitmaps detected!");
   }
   packcol16 **SrcImage = Image;
   packalpha **SrcAlphaMap = AlphaMap;
   packcol16 **DestImage = Bitmap->Image;
   packalpha **DestAlphaMap = Bitmap->AlphaMap;
-  switch (Flags & 7) {
+  switch (Flags&7) {
     case NONE: {
       memmove(DestImage[0], SrcImage[0], XSizeTimesYSize * sizeof(packcol16));
       memmove(DestAlphaMap[0], SrcAlphaMap[0], XSizeTimesYSize * sizeof(packalpha));

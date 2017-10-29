@@ -125,7 +125,6 @@ material *object::SetMaterial (material *&Material, material *NewMaterial, sLong
 
 void object::UpdatePictures () {
   static cv2 ZeroPos(0, 0);
-  //
   UpdatePictures(GraphicData, ZeroPos, VisualEffects|GetSpecialFlags(), GetMaxAlpha(), GetGraphicsContainerIndex(), &object::GetBitmapPos);
 }
 
@@ -232,7 +231,7 @@ void object::UpdatePictures (graphicdata &GraphicData, v2 Position, int SpecialF
       delete [] GraphicData.Picture;
       delete [] GraphicData.GraphicIterator;
     }
-    GraphicData.Picture = new bitmap * [AnimationFrames];
+    GraphicData.Picture = new bitmap *[AnimationFrames];
     GraphicData.GraphicIterator = new tilemap::iterator[AnimationFrames];
   }
   GraphicData.AnimationFrames = AnimationFrames;

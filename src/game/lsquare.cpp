@@ -1175,6 +1175,8 @@ void lsquare::SignalSeen(feuLong Tick)
 }
 
 
+#define DIMMED_LUMINANCE  0x656565
+
 void lsquare::DrawMemorized (blitdata &BlitData) const {
   LastSeen = 0;
   Flags &= ~STRONG_NEW_DRAW_REQUEST;
@@ -1182,7 +1184,7 @@ void lsquare::DrawMemorized (blitdata &BlitData) const {
 
   if (FowMemorized) {
     blitdata nbd = BlitData;
-    if (nbd.Luminance == NORMAL_LUMINANCE) nbd.Luminance = 0x656565;
+    if (nbd.Luminance == NORMAL_LUMINANCE) nbd.Luminance = DIMMED_LUMINANCE;
     FowMemorized->LuminanceBlit(nbd);
   } else {
     DOUBLE_BUFFER->Fill(BlitData.Dest, BlitData.Border, 0);
@@ -1203,7 +1205,7 @@ void lsquare::DrawMemorizedCharacter (blitdata &BlitData) const {
 
   if (FowMemorized) {
     blitdata nbd = BlitData;
-    if (nbd.Luminance == NORMAL_LUMINANCE) nbd.Luminance = 0x656565;
+    if (nbd.Luminance == NORMAL_LUMINANCE) nbd.Luminance = DIMMED_LUMINANCE;
     FowMemorized->LuminanceBlit(nbd);
   } else {
     DOUBLE_BUFFER->Fill(BlitData.Dest, BlitData.Border, 0);

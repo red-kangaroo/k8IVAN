@@ -1047,24 +1047,32 @@ void item::Draw(blitdata& BlitData) const
     DrawFluids(BlitData);
 }
 
-v2 item::GetLargeBitmapPos(v2 BasePos, int I) const
-{
-  cint SquareIndex = I ? I / (GraphicData.AnimationFrames >> 2) : 0;
-  return v2(SquareIndex & 1 ? BasePos.X + 16 : BasePos.X, SquareIndex & 2 ? BasePos.Y + 16 : BasePos.Y);
+
+v2 item::GetLargeBitmapPos (v2 BasePos, int I) const {
+  /*
+  cint SquareIndex = (I ? I / (GraphicData.AnimationFrames >> 2) : 0);
+  return v2(BasePos.X+(SquareIndex&1 ? 16 : 0), BasePos.Y+(SquareIndex&2 ? 16 : 0));
+  */
+  //fprintf(stderr, "GetLargeBitmapPos(0x%08x): I=%d; AF=%u\n", (unsigned)this, I, GraphicData.AnimationFrames);
+  if (I && GraphicData.AnimationFrames > 4) I /= GraphicData.AnimationFrames/4;
+  return v2(BasePos.X+(I&1)*16, BasePos.Y+(I&2)*8);
 }
 
-void item::LargeDraw(blitdata& BlitData) const
-{
-  cint TrueAF = GraphicData.AnimationFrames >> 2;
-  cint SquareIndex = BlitData.CustomData & SQUARE_INDEX_MASK;
-  cint F = !(BlitData.CustomData & ALLOW_ANIMATE) ? SquareIndex * TrueAF : SquareIndex * TrueAF + (GET_TICK() & (TrueAF - 1));
-  cbitmap* P = GraphicData.Picture[F];
 
-  if(BlitData.CustomData & ALLOW_ALPHA)
+void item::LargeDraw (blitdata &BlitData) const {
+  cint TrueAF = GraphicData.AnimationFrames>>2;
+  cint SquareIndex = BlitData.CustomData&SQUARE_INDEX_MASK;
+  cint F = ((BlitData.CustomData&ALLOW_ANIMATE) == 0 ? SquareIndex*TrueAF : SquareIndex*TrueAF+(GET_TICK()&(TrueAF-1)));
+  cbitmap *P = GraphicData.Picture[F];
+  //fprintf(stderr, "LargeDraw(0x%08x): SquareIndex=%u (anim:%d); AF=%u\n", (unsigned)this, (unsigned)(BlitData.CustomData&SQUARE_INDEX_MASK), (BlitData.CustomData&ALLOW_ANIMATE ? 1 : 0), GraphicData.AnimationFrames);
+
+  if (BlitData.CustomData&ALLOW_ALPHA) {
     P->AlphaLuminanceBlit(BlitData);
-  else
+  } else {
     P->LuminanceMaskedBlit(BlitData);
+  }
 }
+
 
 void item::DonateIDTo(item* Item)
 {
