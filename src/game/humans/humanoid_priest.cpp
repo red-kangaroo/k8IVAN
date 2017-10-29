@@ -27,7 +27,7 @@ void priest::BeTalkedTo () {
             if (!OldBodyPart->CanRegenerate())
               ADD_MESSAGE("\"Sorry, I cannot put back bodyparts made of %s, not even your severed %s.\"", OldBodyPart->GetMainMaterial()->GetName(false, false).CStr(), PLAYER->GetBodyPartName(c).CStr());
             else {
-              ADD_MESSAGE("\"I could put your old %s back in exchange for %d gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+              ADD_MESSAGE("\"I could put your old %s back in exchange for \1Y%d\2 gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
               if (game::TruthQuestion(CONST_S("Do you agree?"))) {
                 OldBodyPart->SetHP(1);
                 PLAYER->SetMoney(PLAYER->GetMoney()-Price);
@@ -45,9 +45,9 @@ void priest::BeTalkedTo () {
       sLong Price = GetConfig() == VALPURUS ? 100 : 20;
       if (PLAYER->GetMoney() >= Price) {
         if (HasOld)
-          ADD_MESSAGE("\"I could still summon up a new one for %d gold.\"", Price);
+          ADD_MESSAGE("\"I could still summon up a new one for \1Y%d\2 gold.\"", Price);
         else
-          ADD_MESSAGE("\"Since you don't seem to have your original %s with you, I could summon up a new one for %d gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
+          ADD_MESSAGE("\"Since you don't seem to have your original %s with you, I could summon up a new one for \1Y%d\2 gold.\"", PLAYER->GetBodyPartName(c).CStr(), Price);
         if (game::TruthQuestion(CONST_S("Agreed?"))) {
           PLAYER->SetMoney(PLAYER->GetMoney()-Price);
           SetMoney(GetMoney()+Price);
@@ -63,7 +63,7 @@ void priest::BeTalkedTo () {
   if (PLAYER->TemporaryStateIsActivated(POISONED)) {
     sLong Price = GetConfig() == VALPURUS ? 25 : 5;
     if (PLAYER->GetMoney() >= Price) {
-      ADD_MESSAGE("\"You seem to be rather ill. I could give you a small dose of antidote for %d gold pieces.\"", Price);
+      ADD_MESSAGE("\"You seem to be rather ill. I could give you a small dose of antidote for \1Y%d\2 gold pieces.\"", Price);
       if (game::TruthQuestion(CONST_S("Do you agree?"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(POISONED);
@@ -72,13 +72,13 @@ void priest::BeTalkedTo () {
         return;
       }
     } else {
-      ADD_MESSAGE("\"You seem to be rather ill. Get %d gold pieces and I'll fix that.\"", Price);
+      ADD_MESSAGE("\"You seem to be rather ill. Get \1Y%d\2 gold pieces and I'll fix that.\"", Price);
     }
   }
   if (PLAYER->TemporaryStateIsActivated(LEPROSY)) {
     sLong Price = GetConfig() == VALPURUS ? 100 : 20;
     if (PLAYER->GetMoney() >= Price) {
-      ADD_MESSAGE("\"You seem to have contracted the vile disease of leprosy. I could give you a small dose of medicince for %d gold pieces.\"", Price);
+      ADD_MESSAGE("\"You seem to have contracted the vile disease of leprosy. I could give you a small dose of medicince for \1Y%d\2 gold pieces.\"", Price);
       if (game::TruthQuestion(CONST_S("Do you agree?"))) {
         ADD_MESSAGE("You feel better.");
         PLAYER->DeActivateTemporaryState(LEPROSY);
@@ -87,7 +87,7 @@ void priest::BeTalkedTo () {
         return;
       }
     } else {
-      ADD_MESSAGE("\"You seem to be falling apart. Get %d gold pieces and I'll fix that.\"", Price);
+      ADD_MESSAGE("\"You seem to be falling apart. Get \1Y%d\2 gold pieces and I'll fix that.\"", Price);
     }
   }
   if (PLAYER->TemporaryStateIsActivated(LYCANTHROPY)) {

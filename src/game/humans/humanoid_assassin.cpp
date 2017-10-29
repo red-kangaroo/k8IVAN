@@ -13,7 +13,7 @@ public:
 void assassin::BeTalkedTo () {
   if (GetRelation(PLAYER) == HOSTILE) {
     if (PLAYER->GetMoney() >= 1500) {
-      ADD_MESSAGE("%s talks: \"If you shell out 1500 gold pieces I'll join your side\"", CHAR_DESCRIPTION(DEFINITE));
+      ADD_MESSAGE("%s talks: \"If you shell out \1Y1500\2 gold pieces I'll join your side\"", CHAR_DESCRIPTION(DEFINITE));
       if (game::TruthQuestion(CONST_S("Do you want to bribe him?"))) {
         PLAYER->SetMoney(PLAYER->GetMoney()-1500);
         ChangeTeam(PLAYER->GetTeam());

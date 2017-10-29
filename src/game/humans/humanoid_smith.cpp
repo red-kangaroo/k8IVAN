@@ -44,11 +44,11 @@ void smith::BeTalkedTo()
 
     if(PLAYER->GetMoney() < FixPrice)
     {
-      ADD_MESSAGE("\"Getting that fixed costs you %d gold pieces. Get the money and we'll talk.\"", FixPrice);
+      ADD_MESSAGE("\"Getting that fixed costs you \1Y%d\2 gold pieces. Get the money and we'll talk.\"", FixPrice);
       return;
     }
 
-    ADD_MESSAGE("\"I can fix your %s, but it'll cost you %d gold pieces.\"", Item->CHAR_NAME(UNARTICLED), FixPrice);
+    ADD_MESSAGE("\"I can fix your %s, but it'll cost you \1Y%d\2 gold pieces.\"", Item->CHAR_NAME(UNARTICLED), FixPrice);
 
     if(game::TruthQuestion(CONST_S("Do you accept this deal?")))
     {

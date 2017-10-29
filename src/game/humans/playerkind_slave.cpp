@@ -31,7 +31,7 @@ void slave::BeTalkedTo()
 
     if(PLAYER->GetMoney() >= 50)
     {
-      ADD_MESSAGE("%s talks: \"Do you want to buy me? 50 gold pieces. I work very hard.\"", CHAR_DESCRIPTION(DEFINITE));
+      ADD_MESSAGE("%s talks: \"Do you want to buy me? \1Y50\2 gold pieces. I work very hard.\"", CHAR_DESCRIPTION(DEFINITE));
 
       if(game::TruthQuestion(CONST_S("Do you want to buy him?")))
       {
@@ -42,7 +42,7 @@ void slave::BeTalkedTo()
       }
     }
     else
-      ADD_MESSAGE("\"Don't touch me! Master doesn't want people to touch sale items. I'm worth 50 gold pieces, you know!\"");
+      ADD_MESSAGE("\"Don't touch me! Master doesn't want people to touch sale items. I'm worth \1YT50\2 gold pieces, you know!\"");
 
     return;
   }
