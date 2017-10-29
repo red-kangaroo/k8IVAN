@@ -189,6 +189,17 @@ int Main (int argc, char *argv[]) {
   //femath::SetSeed(time(0));
   femath::RandSeed();
   game::InitGlobalValueMap();
+
+  // some sanity checks
+  if (game::GetGlobalConst("NONE") != 0) ABORT("`NONE` is not 0");
+  if (game::GetGlobalConst("MIRROR") != 1) ABORT("`MIRROR` is not 1");
+  if (game::GetGlobalConst("FLIP") != 2) ABORT("`FLIP` is not 2");
+  if (game::GetGlobalConst("ROTATE") != 4) ABORT("`ROTATE` is not 4");
+
+  if (game::GetGlobalConst("GOOD") != 1) ABORT("`GOOD` is not 1");
+  if (game::GetGlobalConst("NEUTRAL") != 2) ABORT("`NEUTRAL` is not 2");
+  if (game::GetGlobalConst("EVIL") != 3) ABORT("`EVIL` is not 3");
+
   scriptsystem::Initialize();
   databasesystem::Initialize();
   game::InitLuxTable();
