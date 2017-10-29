@@ -1533,15 +1533,19 @@ void game::LoadGlobalValueMap (TextInput &fl) {
     if (word != "#") ABORT("Illegal datafile define in file %s on line %d!", fl.GetFileName().CStr(), fl.TokenLine());
     fl.ReadWord(word, true);
     if (word == "enum" || word == "bitenum") {
-      truth isBit = word == "bitenum";
+      truth isBit = (word == "bitenum");
       sLong idx = 0;
       if (fl.ReadWord() != "{") ABORT("'{' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
       festring idName;
       truth done = false;
       while (!done) {
+        truth forcedIndex = false;
+        sLong forceIdx = 0;
+        // read name
         fl.ReadWord(word, true);
         if (word == "}") break;
         if (word == "=") {
+          // nameless
           idName.Empty();
         } else {
           idName = word;
@@ -1549,16 +1553,34 @@ void game::LoadGlobalValueMap (TextInput &fl) {
         }
         if (word == "=") {
           // set current index
-          idx = fl.ReadNumber();
+          forceIdx = fl.ReadNumber();
+          forcedIndex = true;
+          //fprintf(stderr, "force index for `%s`(%s): %d (idx=%d)\n", idName.CStr(), (idName.GetSize() == 0 ? "empty" : "non-empty"), forceIdx, idx);
         } else {
           if (word != "," && word != ";" && word != "}") ABORT("',' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
           if (word == "}") done = true;
+          forcedIndex = false;
         }
-        if (idName.GetSize() > 0) {
+        if (forcedIndex) {
+          if (isBit) {
+            // for bitsets, nameless "=" forces new bit index, otherwise index isn't changed, and taken as is (without shifts)
+            if (idName.GetSize()) {
+              GlobalValueMap.insert(std::make_pair(idName, forceIdx));
+            } else {
+              idx = forceIdx;
+            }
+          } else {
+            // for enums, index is always forced, but not increased for nameless "="
+            if (idName.GetSize()) GlobalValueMap.insert(std::make_pair(idName, forceIdx++));
+            idx = forceIdx;
+          }
+        } else {
+          // no forced index
+          if (idName.GetSize() == 0) ABORT("The thing that should not be");
           sLong i = idx;
           if (isBit) i = 1<<i;
           GlobalValueMap.insert(std::make_pair(idName, i));
-          idx++;
+          ++idx; // advance index
         }
       }
       fl.skipBlanks();
