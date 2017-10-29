@@ -44,7 +44,7 @@
 
 /* Numerical defines for other script files */
 #bitenum {
-  NONE,
+  NONE = 0, // this will not force-change index
   MIRROR,
   FLIP,
   ROTATE,
