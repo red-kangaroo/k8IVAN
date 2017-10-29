@@ -127,43 +127,48 @@ truth TextInput::Eof () {
 }
 
 
+// just read `ch`, skip possible comment; returns `ch` or -1
+int TextInput::gotCharSkipComment (int ch, truth allowSingleLineComments) {
+  if (ch < 0) ABORT("The thing that should not be");
+  if (ch != '/') return ch;
+  ch = GetChar();
+  if (ch == EOF) return '/';
+  // single-line comment?
+  if (allowSingleLineComments && ch == '/') {
+    while (ch != EOF && ch != '\n') ch = GetChar();
+    return -1;
+  }
+  // multiline comment? (possibly nested)
+  if (ch != '*') { UngetChar(ch); return '/'; }
+  int prevch = 0, level = 1;
+  for (;;) {
+    ch = GetChar();
+    if (ch == EOF) ABORT("Unterminated comment in file %s, beginning at line %d!", GetFileName().CStr(), mTokenLine);
+    // close comment
+    if (prevch == '*' && ch == '/') {
+      if (--level == 0) return -1;
+      prevch = 0;
+      continue;
+    }
+    // open comment
+    if (prevch == '/' && ch == '*') {
+      ++level;
+      prevch = 0;
+      continue;
+    }
+    // other chars
+    prevch = ch;
+  }
+}
+
+
 void TextInput::skipBlanks () {
   for (;;) {
     int ch = GetChar();
     if (ch == EOF) return;
-    // comment?
-    if (ch == '/') {
-      if (Eof()) { UngetChar(ch); return; }
-      ch = GetChar();
-      // multiline comment? (possibly nested)
-      if (ch == '*') {
-        int prevch = ' ', level = 1;
-        for (;;) {
-          if (Eof()) return;
-          ch = GetChar();
-          if (prevch == '*' && ch == '/') {
-            if (--level == 0) break;
-            prevch = ' ';
-          } else if (prevch == '/' && ch == '*') {
-            ++level;
-            prevch = ' ';
-          } else {
-            prevch = ch;
-          }
-        }
-        continue;
-      }
-      // one-line comment?
-      if (ch == '/') {
-        while (!Eof()) { ch = GetChar(); if (ch == '\n') break; }
-        continue;
-      }
-      UngetChar('/');
-      return;
-    }
-    // space?
-    if (ch >= 0 && ch <= ' ') continue;
-    // not a space
+    if (ch <= ' ') continue;
+    ch = gotCharSkipComment(ch);
+    if (ch < 0) continue;
     UngetChar(ch);
     return;
   }
@@ -252,7 +257,6 @@ festring TextInput::findVar (cfestring &name, truth *found) const {
 festring TextInput::getVar (cfestring &name) {
   truth found;
   festring res = findVar(name, &found);
-  //
   if (!found) {
     if (mGetVar) {
       res = mGetVar(this, name);
@@ -410,11 +414,10 @@ done:
 // -4: skiping whole 'if', 'else' part
 // -666: skiping '{}'
 // 666: in '{}', processing
-void TextInput::ReadWord (festring &str, truth AbortOnEOF, truth skipIt) {
-  int prc;
+truth TextInput::ReadWord (festring &str, truth abortOnEOF) {
   for (;;) {
-    if (!mIfStack.empty()) prc = mIfStack.top(); else prc = 0;
-    readWordIntr(str, AbortOnEOF);
+    int prc = (mIfStack.empty() ? 0 : mIfStack.top());
+    if (!readWordIntr(str, abortOnEOF)) return false; // EOF
     if (str == "if") {
       readWordIntr(str, true);
       festring res = readCondition(str, maxCPrio, prc<0);
@@ -423,7 +426,7 @@ void TextInput::ReadWord (festring &str, truth AbortOnEOF, truth skipIt) {
         // skiping
         mIfStack.push(-3);
       } else {
-        mIfStack.push(res!="" ? 1 : -1);
+        mIfStack.push(res.IsEmpty() ? -1 : 1);
       }
       continue;
     }
@@ -460,210 +463,128 @@ void TextInput::ReadWord (festring &str, truth AbortOnEOF, truth skipIt) {
       continue;
     }
     if (str == "{") {
-      mIfStack.push(prc>=0 ? 666 : -666);
-      if (prc >= 0) return;
+      mIfStack.push(prc >= 0 ? 666 : -666);
+      if (prc >= 0) return true;
       continue;
     }
     if (str == "}") {
       if (abs(prc) != 666) die("unexpected '}'");
       mIfStack.pop();
-      if (prc >= 0) return;
+      if (prc >= 0) return true;
       continue;
     }
-    if (prc >= 0) return;
+    if (prc >= 0) return true;
   }
 }
 
 
-festring TextInput::ReadWord (truth AbortOnEOF) {
+festring TextInput::ReadWord (truth abortOnEOF) {
   festring ToReturn;
-  ReadWord(ToReturn, AbortOnEOF);
+  ReadWord(ToReturn, abortOnEOF);
   return ToReturn;
 }
 
 
-#define MODE_WORD    (1)
-#define MODE_NUMBER  (2)
-
-#define PUNCT_RETURN    (0)
-#define PUNCT_CONTINUE  (1)
-
-
-int TextInput::HandlePunct (festring &String, int Char, int Mode) {
-  mTokenLine = mCurrentLine;
-  // comment?
-  if (Char == '/') {
-    if (!Eof()) {
-      Char = GetChar();
-      // multiline comment? (possibly nested)
-      if (Char == '*') {
-        int OldChar = 0, CommentLevel = 1;
-        for (;;) {
-          if (Eof()) ABORT("Unterminated comment in file %s, beginning at line %d!", GetFileName().CStr(), mTokenLine);
-          Char = GetChar();
-          if (OldChar != '*' || Char != '/') {
-            if (OldChar != '/' || Char != '*') {
-              OldChar = Char;
-            } else {
-              ++CommentLevel;
-              OldChar = 0;
-            }
-          } else {
-            if (!--CommentLevel) break;
-            OldChar = 0;
-          }
-        }
-        return PUNCT_CONTINUE;
-      }
-      // one-line comment?
-      if (Char == '/') {
-        while (!Eof()) {
-          int ch = GetChar();
-          if (ch == '\n') break;
-        }
-        return PUNCT_CONTINUE;
-      }
-      UngetChar(Char);
-      realClearFlags();
-    }
-    if (Mode) UngetChar('/'); else String << '/';
-    return PUNCT_RETURN;
-  }
-  //
-  if (Mode) {
-    UngetChar(Char);
-    return PUNCT_RETURN;
-  }
-  // string?
-  if (Char == '"') {
-    lastWordWasString = true;
-    for (;;) {
-      if (Eof()) ABORT("Unterminated string in file %s, beginning at line %d!", GetFileName().CStr(), mTokenLine);
-      Char = GetChar();
-      if (Char == '\\') {
-        Char = GetChar();
-        if (Char == EOF) ABORT("Unterminated string in file %s, beginning at line %d!", GetFileName().CStr(), mTokenLine);
-        switch (Char) {
-          case 't': String << '\t'; break;
-          case 'n': String << '\n'; break;
-          case 'r': String << '\r'; break;
-          case '1': String << '\x01'; break;
-          case '2': String << '\x02'; break;
-          case '"': String << '"'; break;
-          default:
-            ABORT("Invalid escape in string in file %s at line %d!", GetFileName().CStr(), mTokenLine);
-        }
-      } else if (Char == '"') {
-        return PUNCT_RETURN;
-      } else {
-        String << char(Char);
-      }
-      /*
-      if (Char != '"') {
-        String << char(Char);
-        OldChar = Char;
-      } else if (OldChar == '\\') {
-        String[String.GetSize()-1] = '"';
-        OldChar = 0;
-      } else return PUNCT_RETURN;
-      */
-    }
-    ABORT("The thing that should not be");
-  }
-  // delimiter
-  String << char(Char);
-  // two-char delimiters?
-  if (!Eof()) {
-    if (Char == '=' || Char == '<' || Char == '>' || Char == '!') {
-      Char = GetChar();
-      if (Char == '=') String << char(Char); else UngetChar(Char);
-    } else if (Char == '&' || Char == '|') {
-      int ch = GetChar();
-      if (Char == ch) String << char(ch); else UngetChar(ch);
-    } else if (Char == ':') {
-      Char = GetChar();
-      if (Char == '=') String << char(Char); else UngetChar(Char);
-    }
-  }
-  return PUNCT_RETURN;
-}
-
-
-void TextInput::readWordIntr (festring &String, truth AbortOnEOF) {
-  int Mode = 0;
+truth TextInput::readWordIntr (festring &String, truth abortOnEOF) {
   String.Empty();
   lastWordWasString = false;
+  skipBlanks();
   mTokenLine = mCurrentLine;
-  for (int Char = GetChar(); !Eof(); Char = GetChar()) {
-    if (isalpha(Char) || Char == '_') {
-      if (!Mode) {
-        mTokenLine = mCurrentLine;
-        Mode = MODE_WORD;
-      } else if (Mode == MODE_NUMBER) {
-        if (Char == '_') continue;
-        UngetChar(Char);
-        return;
-      }
-      String << char(Char);
-      continue;
+  for (;;) {
+    int ch = GetChar();
+    if (ch == EOF) {
+      if (abortOnEOF) ABORT("Unexpected end of file %s!", GetFileName().CStr());
+      return false;
     }
-    if (isdigit(Char)) {
-      if (!Mode) {
-        mTokenLine = mCurrentLine;
-        Mode = MODE_NUMBER;
-      } else if (Mode == MODE_WORD) {
-        UngetChar(Char);
-        return;
+    // identifier?
+    if (isalpha(ch) || ch == '_') {
+      String << (char)(ch);
+      for (;;) {
+        ch = GetChar();
+        if (ch == EOF) break;
+        /*
+        if (isdigit(ch)) {
+          if (String == "rgb") { UngetChar(ch); break; } // temporary hack
+          die("identifiers cannot contain digits (yet)");
+        }
+        if (ch != '_' && !isalpha(ch)) { UngetChar(ch); break; }
+        */
+        if (ch != '_' && !isalpha(ch) && !isdigit(ch)) { UngetChar(ch); break; }
+        String << (char)(ch);
       }
-      String << char(Char);
-      continue;
+      return true;
     }
-    if ((Char == ' ' || Char == '\n' || Char == '\r' || Char == '\t') && Mode) return;
-    if (ispunct(Char) && HandlePunct(String, Char, Mode) == PUNCT_RETURN) return;
+    // number?
+    if (isdigit(ch)) {
+      String << (char)(ch);
+      for (;;) {
+        ch = GetChar();
+        if (ch == EOF) break;
+        if (ch == '_') continue;
+        if (isalpha(ch)) die("invalid number");
+        if (!isdigit(ch)) { UngetChar(ch); break; }
+        String << (char)(ch);
+      }
+      return true;
+    }
+    // string?
+    if (ch == '"') {
+      lastWordWasString = true;
+      for (;;) {
+        ch = GetChar();
+        if (ch == EOF) ABORT("Unterminated string in file %s, beginning at line %d!", GetFileName().CStr(), mTokenLine);
+        if (ch == '"') return true;
+        if (ch == '\\') {
+          ch = GetChar();
+          if (ch == EOF) ABORT("Unterminated string in file %s, beginning at line %d!", GetFileName().CStr(), mTokenLine);
+          switch (ch) {
+            case 't': String << '\t'; break;
+            case 'n': String << '\n'; break;
+            case 'r': String << '\r'; break;
+            case '1': String << '\x01'; break;
+            case '2': String << '\x02'; break;
+            case '"': String << '"'; break;
+            default: ABORT("Invalid escape in string in file %s at line %d!", GetFileName().CStr(), mTokenLine);
+          }
+          continue;
+        }
+        String << (char)ch;
+      }
+    }
+    // punctuation
+    ch = gotCharSkipComment(ch);
+    if (ch < 0) continue;
+    // delimiter
+    String << (char)ch;
+    // two-char delimiters?
+    if (ch == '=' || ch == '<' || ch == '>' || ch == '!') {
+      ch = GetChar();
+      if (ch == '=') String << (char)ch; else UngetChar(ch);
+    } else if (ch == '&' || ch == '|') {
+      int c1 = GetChar();
+      if (c1 == ch) String << (char)c1; else UngetChar(c1);
+    } else if (ch == ':') {
+      ch = GetChar();
+      if (ch == '=') String << (char)ch; else UngetChar(ch);
+    }
+    return true;
   }
-  if (AbortOnEOF) ABORT("Unexpected end of file %s!", GetFileName().CStr());
-  if (Mode) realClearFlags();
 }
 
 
-char TextInput::ReadLetter (truth AbortOnEOF) {
+char TextInput::ReadLetter (truth abortOnEOF) {
   mTokenLine = mCurrentLine;
-  for (int Char = GetChar(); !Eof(); mTokenLine = mCurrentLine, Char = GetChar()) {
-    if (isalpha(Char) || isdigit(Char)) return Char;
-    if (ispunct(Char)) {
-      // comment?
-      if (Char == '/') {
-        if (!Eof()) {
-          Char = GetChar();
-          // multiline comment? (possibly nested)
-          if (Char == '*') {
-            int OldChar = 0, CommentLevel = 1;
-            for (;;) {
-              if (Eof()) ABORT("Unterminated comment in file %s, beginning at line %d!", GetFileName().CStr(), mTokenLine);
-              Char = GetChar();
-              if (OldChar != '*' || Char != '/') {
-                if (OldChar != '/' || Char != '*') OldChar = Char;
-                else {
-                  ++CommentLevel;
-                  OldChar = 0;
-                }
-              } else {
-                if (!--CommentLevel) break;
-                OldChar = 0;
-              }
-            }
-            continue;
-          } else {
-            UngetChar(Char);
-          }
-        }
-        return '/';
-      }
-      return Char;
+  for (;;) {
+    int ch = GetChar();
+    if (ch == EOF) {
+      if (abortOnEOF) ABORT("Unexpected end of file %s!", GetFileName().CStr());
+      return 0;
     }
+    if (ch <= ' ') continue;
+    //ch = gotCharSkipComment(ch);
+    //if (ch >= 0) return ch;
+    return ch;
   }
-  if (AbortOnEOF) ABORT("Unexpected end of file %s!", GetFileName().CStr());
-  return 0;
 }
 
 
@@ -844,22 +765,16 @@ festring TextInput::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
     }
     */
     // rgbX?
-    if (Word == "rgb") {
+    if (Word == "rgb16" || Word == "rgb24") {
+      truth is16 = (Word == "rgb16");
       if (mCollectingNumStr) mNumStr << Word;
-      int Bits = ReadNumber();
-      if (Bits == 16) {
-        int Red = ReadNumber();
-        int Green = ReadNumber();
-        int Blue = ReadNumber();
-        Value = MakeRGB16(Red, Green, Blue);
-      } else if (Bits == 24) {
-        int Red = ReadNumber();
-        int Green = ReadNumber();
-        int Blue = ReadNumber();
-        Value = MakeRGB24(Red, Green, Blue);
-      } else {
-        ABORT("Illegal RGB bit size %d in file %s, line %d!", Bits, GetFileName().CStr(), mTokenLine);
-      }
+      int Red = ReadNumber();
+      if (Red < 0 || Red > 255) ABORT("Illegal Red value (%d) file %s, line %d!", Red, GetFileName().CStr(), mTokenLine);
+      int Green = ReadNumber();
+      if (Green < 0 || Green > 255) ABORT("Illegal Green value (%d) file %s, line %d!", Green, GetFileName().CStr(), mTokenLine);
+      int Blue = ReadNumber();
+      if (Blue < 0 || Blue > 255) ABORT("Illegal Blue value (%d) file %s, line %d!", Blue, GetFileName().CStr(), mTokenLine);
+      Value = (is16 ? MakeRGB16(Red, Green, Blue) : MakeRGB24(Red, Green, Blue));
       NumberCorrect = true;
       continue;
     }
@@ -893,32 +808,32 @@ festring TextInput::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
 }
 
 
-festring TextInput::ReadCode (truth AbortOnEOF) {
+festring TextInput::ReadCode (truth abortOnEOF) {
   int sqLevel = 1;
   char inString = 0;
   festring res;
   mTokenLine = mCurrentLine;
-  for (int Char = GetChar(); !Eof(); Char = GetChar()) {
+  for (int ch = GetChar(); !Eof(); ch = GetChar()) {
     //fprintf(stderr, "char: [%c]; inString: %d; sqLevel: %d\n", (Char < 32 || Char > 126 ? '?' : Char), inString, sqLevel);
     if (inString) {
-      res << ((char)Char);
-      if (Char == inString) {
+      res << ((char)ch);
+      if (ch == inString) {
         inString = 0;
-      } else if (Char == '\\') {
+      } else if (ch == '\\') {
         if (Eof()) break;
-        Char = GetChar();
-        res << ((char)Char);
+        ch = GetChar();
+        res << ((char)ch);
       }
     } else {
-      if (Char == '[') {
+      if (ch == '[') {
         ++sqLevel;
-        res << ((char)Char);
-      } else if (Char == ']') {
+        res << ((char)ch);
+      } else if (ch == ']') {
         if (--sqLevel == 0) break;
-        res << ((char)Char);
-      } else if (Char == '/') {
-        if (Eof()) { res << ((char)Char); break; }
-        switch ((Char = GetChar())) {
+        res << ((char)ch);
+      } else if (ch == '/') {
+        if (Eof()) { res << ((char)ch); break; }
+        switch ((ch = GetChar())) {
           case '/': // eol comment
             while (!Eof()) if (GetChar() == '\n') break;
             break;
@@ -932,18 +847,18 @@ festring TextInput::ReadCode (truth AbortOnEOF) {
             break;
           default:
             res << '/';
-            res << ((char)Char);
+            res << ((char)ch);
             break;
         }
-      } else if (Char == '"' || Char == '\'') {
-        res << ((char)Char);
-        inString = ((char)Char);
+      } else if (ch == '"' || ch == '\'') {
+        res << ((char)ch);
+        inString = ((char)ch);
       } else {
-        res << ((char)Char);
+        res << ((char)ch);
       }
     }
   }
-  if (AbortOnEOF && Eof()) ABORT("Unexpected end of file %s!", GetFileName().CStr());
+  if (abortOnEOF && Eof()) ABORT("Unexpected end of file %s!", GetFileName().CStr());
   return res;
 }
 
@@ -1138,7 +1053,6 @@ int TextInputFile::realGetChar () { return ifile.Get(); }
 truth TextInputFile::isRealEof () { return ifile.Eof(); }
 truth TextInputFile::IsOpen () { return ifile.IsOpen(); }
 void TextInputFile::Close () { /*fprintf(stderr, "TIF:Close();\n");*/ ifile.Close(); TextInput::Close(); }
-void TextInputFile::realClearFlags () { ifile.ClearFlags(); }
 
 sLong TextInputFile::realGetPos () { return (ifile.IsOpen() ? ifile.TellPos() : 0); }
 void TextInputFile::realSetPos (sLong apos) { if (ifile.IsOpen()) ifile.SeekPosBegin(apos); }
@@ -1188,9 +1102,6 @@ void MemTextFile::Close () {
   }
   TextInput::Close();
 }
-
-void MemTextFile::realClearFlags () {}
-
 
 sLong MemTextFile::realGetPos () { return bufPos; }
 void MemTextFile::realSetPos (sLong apos) { if (buf != nullptr) bufPos = apos; }

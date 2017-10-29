@@ -1524,7 +1524,7 @@ truth game::AnimationController () {
 void game::LoadGlobalValueMap (TextInput &fl) {
   festring word;
   fl.setGetVarCB(game::ldrGetVar);
-  for (fl.ReadWord(word, false); !fl.Eof(); fl.ReadWord(word, false)) {
+  while (fl.ReadWord(word, false)) {
     if (word == "Include") {
       word = fl.ReadWord();
       if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());

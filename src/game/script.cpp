@@ -671,16 +671,20 @@ template <class type, class contenttype> void contentmap<type, contenttype>::Rea
   for (int y = 0; y < Size.Y; ++y) {
     for (int x = 0; x < Size.X; ++x) {
       int Char = SaveFile.ReadLetter();
-      typename std::map<int, contenttype>::iterator i = SymbolMap.find(Char);
-      //
+      //typename std::map<int, contenttype>::iterator i = SymbolMap.find(Char);
+      auto i = SymbolMap.find(Char);
       if (i != SymbolMap.end()) {
         ContentMap[x][y] = std::make_pair(Char, &i->second);
       } else {
-        ABORT("Illegal content %c in %s content map line %d!", Char, protocontainer<type>::GetMainClassID(), SaveFile.TokenLine());
+        if (Char <= ' ') {
+          ABORT("Illegal content '\\x%02x' in %s content map in file '%s' line %d!", (unsigned)Char, protocontainer<type>::GetMainClassID(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+        } else {
+          ABORT("Illegal content '%c' in %s content map in file '%s' line %d!", Char, protocontainer<type>::GetMainClassID(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
+        }
       }
     }
   }
-  if (SaveFile.ReadWord() != "}") ABORT("Missing bracket in %s content map script line %d!", protocontainer<type>::GetMainClassID(), SaveFile.TokenLine());
+  if (SaveFile.ReadWord() != "}") ABORT("Missing bracket in %s content map script in file '%s' line %d!", protocontainer<type>::GetMainClassID(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
 }
 
 

@@ -33,6 +33,3 @@
 #enum #MeeleeConfig {
   CLAW,
 }
-
-
-; /* this line must be here */

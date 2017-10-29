@@ -124,7 +124,7 @@ public:
   static sizetype IgnoreCaseFind (cfestring &, cfestring &, sizetype=0);
   static void SearchAndReplace (festring &, cfestring &, cfestring &, sizetype=0);
   static bool IgnoreCaseCompare (cfestring &, cfestring &);
-  truth IsEmpty() const { return !Size; }
+  truth IsEmpty () const { return (Size == 0); }
   /* HORRIBLE ERROR!!!! */
   char &operator [] (sizetype Index) const { return Data[Index]; }
   void SwapData (festring &);

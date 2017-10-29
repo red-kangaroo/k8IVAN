@@ -45,10 +45,10 @@ public:
   int GetChar ();
   void UngetChar (int ch);
 
-  festring ReadCode (truth AbortOnEOF=true);
-  festring ReadWord (truth AbortOnEOF=true);
-  void ReadWord (festring &str, truth AbortOnEOF=true, truth skipIt=false);
-  char ReadLetter (truth AbortOnEOF=true);
+  festring ReadCode (truth abortOnEOF=true);
+  festring ReadWord (truth abortOnEOF=true);
+  truth ReadWord (festring &str, truth abortOnEOF=true); // returns `false` on EOF
+  char ReadLetter (truth abortOnEOF=true);
   sLong ReadNumber (int CallLevel=HIGHEST, truth PreserveTerminator=false, truth *wasCloseBrc=0);
   festring ReadStringOrNumber (sLong *num, truth *isString, truth PreserveTerminator=false, truth *wasCloseBrc=0);
   sLong ReadNumberKeepStr (int CallLevel=HIGHEST, truth PreserveTerminator=false, truth *wasCloseBrc=0);
@@ -75,18 +75,18 @@ public:
   inline cfestring& numStr () const { return mNumStr; }
 
 protected:
+  int gotCharSkipComment (int ch, truth allowSingleLineComments=true); // just read `ch`, skip possible comment; returns `ch` or -1
+
   festring ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc);
-  int HandlePunct (festring &String, int Char, int Mode);
 
   festring findVar (cfestring &name, truth *found) const;
-  void readWordIntr (festring &String, truth AbortOnEOF);
+  truth readWordIntr (festring &String, truth abortOnEOF); // returns `false` on EOF
 
   festring readCondition (festring &token, int prio, truth skipIt);
 
 protected:
   virtual int realGetChar () = 0;
   virtual truth isRealEof () = 0;
-  virtual void realClearFlags () = 0;
 
   // used to save/restore parsing positions
   virtual sLong realGetPos () = 0;
@@ -127,7 +127,6 @@ public:
 protected:
   virtual int realGetChar () override;
   virtual truth isRealEof () override;
-  virtual void realClearFlags () override;
 
   virtual sLong realGetPos () override;
   virtual void realSetPos (sLong apos) override;
@@ -150,7 +149,6 @@ public:
 protected:
   virtual int realGetChar () override;
   virtual truth isRealEof () override;
-  virtual void realClearFlags () override;
 
   virtual sLong realGetPos () override;
   virtual void realSetPos (sLong apos) override;

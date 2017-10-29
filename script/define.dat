@@ -1497,6 +1497,3 @@
   DID_NO_DAMAGE,
   HAS_FAILED,
 }
-
-
-; /* this line must be here */
