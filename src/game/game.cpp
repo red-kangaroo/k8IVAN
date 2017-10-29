@@ -1535,12 +1535,27 @@ void game::LoadGlobalValueMap (TextInput &fl) {
     if (word == "enum" || word == "bitenum") {
       truth isBit = (word == "bitenum");
       sLong idx = 0;
-      if (fl.ReadWord() != "{") ABORT("'{' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
+      fl.ReadWord(word, true);
+      // check for named enum
+      festring enumName = "";
+      if (enumName.GetSize()) ABORT("The thing that should not be");
+      if (word == "#") {
+        // get enum name
+        fl.ReadWord(word, true);
+        enumName = (isBit ? "# bitenum # " : "# enum # ");
+        enumName << word;
+        // get starting index
+        idx = game::FindGlobalValue(enumName, 0);
+        // get bracket
+        fl.ReadWord(word, true);
+        //fprintf(stderr, "named enum '%s'; idx=%d\n", enumName.CStr(), idx);
+      }
+      if (word != "{") ABORT("'{' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
       festring idName;
       truth done = false;
       while (!done) {
         truth forcedIndex = false;
-        sLong forceIdx = 0;
+        sLong idxnew = 0;
         truth doAdvance = true;
         // read name
         fl.ReadWord(word, true);
@@ -1554,34 +1569,37 @@ void game::LoadGlobalValueMap (TextInput &fl) {
         }
         if (word == "=") {
           // set current index
-          forceIdx = fl.ReadNumber();
+          idxnew = fl.ReadNumber();
           forcedIndex = true;
-          //fprintf(stderr, "force index for `%s`(%s): %d (idx=%d)\n", idName.CStr(), (idName.GetSize() == 0 ? "empty" : "non-empty"), forceIdx, idx);
+          doAdvance = true; // just in case
+          //fprintf(stderr, "force index for `%s`(%s): %d (idx=%d)\n", idName.CStr(), (idName.GetSize() == 0 ? "empty" : "non-empty"), idxnew, idx);
         } else if (word == ":=") {
-          forceIdx = fl.ReadNumber();
+          idxnew = fl.ReadNumber();
           forcedIndex = true;
           doAdvance = false;
+          //fprintf(stderr, "enum; %s := %d!\n", idName.CStr(), idxnew);
         } else {
           if (word != "," && word != ";" && word != "}") ABORT("',' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
           if (word == "}") done = true;
           forcedIndex = false;
+          doAdvance = true; // just in case
         }
+        if (idName.GetSize() && HasGlobalValue(idName)) ABORT("duplicate global '%s' in file %s at line %d!", idName.CStr(), fl.GetFileName().CStr(), fl.TokenLine());
         if (forcedIndex) {
           if (isBit) {
             // for bitsets, nameless "=" forces new bit index, otherwise index isn't changed, and taken as is (without shifts)
             if (idName.GetSize()) {
-              GlobalValueMap.insert(std::make_pair(idName, forceIdx));
-            } else {
-              idx = forceIdx;
+              GlobalValueMap.insert(std::make_pair(idName, idxnew));
+              doAdvance = false;
             }
           } else {
             // for enums, index is always forced, but not increased for nameless "="
             if (idName.GetSize()) {
-              GlobalValueMap.insert(std::make_pair(idName, forceIdx));
-              if (doAdvance) ++forceIdx;
+              GlobalValueMap.insert(std::make_pair(idName, idxnew));
+              if (doAdvance) ++idxnew;
             }
-            idx = forceIdx;
           }
+          if (doAdvance) idx = idxnew;
         } else {
           // no forced index
           if (idName.GetSize() == 0) ABORT("The thing that should not be");
@@ -1589,17 +1607,24 @@ void game::LoadGlobalValueMap (TextInput &fl) {
           sLong i = idx;
           if (isBit) i = 1<<i;
           GlobalValueMap.insert(std::make_pair(idName, i));
-          ++idx; // advance index
+          if (doAdvance) ++idx; // advance index
         }
       }
       fl.skipBlanks();
       int ch = fl.GetChar();
       if (ch != EOF && ch != ';') fl.UngetChar(ch);
       //if (fl.ReadWord() != ";") ABORT("';' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
+      // save current enum index, so we can continue later
+      if (enumName.GetSize()) {
+        //fprintf(stderr, "named enum '%s' ends with idx=%d\n", enumName.CStr(), idx);
+        GlobalValueMap.insert(std::make_pair(enumName, idx));
+      }
       continue;
     }
     if (word == "define") {
       fl.ReadWord(word);
+      if (word.GetSize() == 0) ABORT("The thing that should not be");
+      if (HasGlobalValue(word)) ABORT("duplicate global '%s' in file %s at line %d!", word.CStr(), fl.GetFileName().CStr(), fl.TokenLine());
       sLong v = fl.ReadNumber();
       GlobalValueMap.insert(std::make_pair(word, v));
       continue;
@@ -1650,11 +1675,12 @@ void game::InitGlobalValueMap () {
       sprintf(bnum, "script/define_%02d.dat", f);
       festring fn = game::GetGameDir();
       fn << bnum;
-      if (inputfile::fileExists(fn)) return;
-      TextInputFile ifl(fn, &game::GetGlobalValueMap(), false);
-      if (ifl.IsOpen()) {
-        LoadGlobalValueMap(ifl);
-        ifl.Close();
+      if (inputfile::fileExists(fn)) {
+        TextInputFile ifl(fn, &game::GetGlobalValueMap(), false);
+        if (ifl.IsOpen()) {
+          LoadGlobalValueMap(ifl);
+          ifl.Close();
+        }
       }
     }
   }

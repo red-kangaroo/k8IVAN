@@ -200,6 +200,17 @@ int Main (int argc, char *argv[]) {
   if (game::GetGlobalConst("NEUTRAL") != 2) ABORT("`NEUTRAL` is not 2");
   if (game::GetGlobalConst("EVIL") != 3) ABORT("`EVIL` is not 3");
 
+  if (game::GetGlobalConst("RUNED_WHIP") != 1) ABORT("`RUNED_WHIP` is not 1");
+  if (game::GetGlobalConst("CHAIN_WHIP") != 2) ABORT("`CHAIN_WHIP` is not 2");
+
+  if (game::GetGlobalConst("WAND_OF_POLYMORPH") != 1) ABORT("`WAND_OF_POLYMORPH` is not 1");
+  if (game::GetGlobalConst("WAND_OF_STRIKING") != 2) ABORT("`WAND_OF_STRIKING` is not 2");
+
+  if (game::GetGlobalConst("KHARAZ_ARAD_SHOP") != 127) ABORT("`KHARAZ_ARAD_SHOP` is not 127");
+  if (game::GetGlobalConst("UNDER_WATER_TUNNEL_EXIT") != 128) ABORT("`UNDER_WATER_TUNNEL_EXIT` is not 128");
+
+  //if (game::GetGlobalConst("ALIEN_VESSEL") != 10) ABORT("`ALIEN_VESSEL` is not 10");
+
   scriptsystem::Initialize();
   databasesystem::Initialize();
   game::InitLuxTable();
