@@ -498,6 +498,7 @@ void worldmap::Generate () {
       // get random position for this poi
       v2 poipos;
       game::BusyAnimation();
+      //fprintf(stderr, "POI config #%d(%s): anyterra=%d; nativeg=%d\n", terra->GetConfig(), terra->GetNameSingular().CStr(), (terra->CanBeOnAnyTerrain() ? 1 : 0), terra->GetNativeGTerrainType());
       auto possiblePlaces = cont->GetShuffledMembers(terra->CanBeOnAnyTerrain() ? -1 : terra->GetNativeGTerrainType());
       success = false;
       for (auto &ppos : possiblePlaces) {
