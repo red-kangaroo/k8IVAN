@@ -47,8 +47,8 @@
 #include "wmapset.h"
 #include "wterra.h"
 
-#define SAVE_FILE_VERSION 134 // Increment this if changes make savefiles incompatible
-#define BONE_FILE_VERSION 119 // Increment this if changes make bonefiles incompatible
+#define SAVE_FILE_VERSION 135 // Increment this if changes make savefiles incompatible
+#define BONE_FILE_VERSION 120 // Increment this if changes make bonefiles incompatible
 
 #define LOADED    0
 #define NEW_GAME  1
@@ -862,6 +862,7 @@ truth game::Save (cfestring &SaveName) {
 #endif
   outputfile SaveFile(SaveName+".sav", ivanconfig::GetUseMaximumCompression());
   SaveFile << int(SAVE_FILE_VERSION);
+  SaveModuleList(SaveFile);
   SaveFile << GameScript << CurrentDungeonIndex << CurrentLevelIndex << Camera;
   SaveFile << WizardMode << SeeWholeMapCheatMode << GoThroughWallsCheat;
   SaveFile << Tick << Turn << InWilderness << NextCharacterID << NextItemID << NextTrapID << NecroCounter;
@@ -913,6 +914,13 @@ int game::Load (cfestring &SaveName) {
   SaveFile >> Version;
   if (Version != SAVE_FILE_VERSION) {
     if (!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is incompatible with the new version.\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY)) {
+      return NEW_GAME;
+    } else {
+      return BACK;
+    }
+  }
+  if (!LoadAndCheckModuleList(SaveFile)) {
+    if (!iosystem::Menu(0, v2(RES.X >> 1, RES.Y >> 1), CONST_S("Sorry, this save is incompatible with the current module list.\rStart new game?\r"), CONST_S("Yes\rNo\r"), LIGHT_GRAY)) {
       return NEW_GAME;
     } else {
       return BACK;
@@ -1670,10 +1678,30 @@ sLong game::GetGlobalConst (cfestring &name) {
 const std::vector<festring> &game::GetModuleList () { return mModuleList; }
 
 
+void game::SaveModuleList (outputfile &ofile) {
+  ofile << (sLong)mModuleList.size();
+  for (auto &modname : mModuleList) ofile << modname;
+}
+
+
+// false: incomaptible
+truth game::LoadAndCheckModuleList (inputfile &ifile) {
+  sLong modcount;
+  ifile >> modcount;
+  if (modcount != (sLong)mModuleList.size()) return false;
+  for (auto &modname : mModuleList) {
+    festring svname;
+    ifile >> svname;
+    if (svname != modname) return false;
+  }
+  return true;
+}
+
+
 void game::LoadModuleList () {
   mModuleList.push_back("_default"); // always loaded
-  TextInputFile ifl(GetGameDir()+"script/module.dat");
-  LoadModuleListFile(ifl);
+  TextInputFile ifl(GetGameDir()+"script/module.dat", nullptr, false); // don't fail if no file
+  if (ifl.IsOpen()) LoadModuleListFile(ifl);
 }
 
 
@@ -2500,7 +2528,10 @@ void game::CreateBone () {
       //festring BoneName = GetBonePath()+"bon"+CurrentDungeonIndex+CurrentLevelIndex+BoneIndex;
       fprintf(stderr, "creating bone file: [%s]\n", BoneName.CStr());
       outputfile BoneFile(BoneName, true);
-      BoneFile << int(BONE_FILE_VERSION) << PlayerName << CurrentLevel;
+      BoneFile << int(BONE_FILE_VERSION);
+      SaveModuleList(BoneFile);
+      BoneFile << PlayerName;
+      BoneFile << CurrentLevel;
     }
   }
 }
@@ -2513,8 +2544,13 @@ truth game::PrepareRandomBone (int LevelIndex) {
   for (BoneIndex = 0; BoneIndex < 1000; ++BoneIndex) {
     BoneName = GetBonePath()+"bon_"+CurrentDungeonIndex+"_"+LevelIndex+"_"+BoneIndex;
     inputfile BoneFile(BoneName, false);
-    if (BoneFile.IsOpen() && !(RAND() & 7)) {
+    if (BoneFile.IsOpen() && !(RAND()&7)) {
       if (ReadType(int, BoneFile) != BONE_FILE_VERSION) {
+        BoneFile.Close();
+        remove(BoneName.CStr());
+        continue;
+      }
+      if (!LoadAndCheckModuleList(BoneFile)) {
         BoneFile.Close();
         remove(BoneName.CStr());
         continue;

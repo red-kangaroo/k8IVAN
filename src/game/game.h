@@ -306,6 +306,9 @@ public:
   static void LoadModuleList ();
   static const std::vector<festring> &GetModuleList ();
 
+  static void SaveModuleList (outputfile &ofile);
+  static truth LoadAndCheckModuleList (inputfile &ifile); // false: incomaptible, ifile left in undefined state
+
   static void InitGlobalValueMap ();
   static void LoadGlobalValueMap (TextInput &SaveFile);
 
