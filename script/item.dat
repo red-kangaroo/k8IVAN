@@ -63,7 +63,7 @@ item
   GearStates = 0;
   IsTwoHanded = false;
   CreateDivineConfigurations = false;
-  ForcedVisualEffects = 0;
+  ForcedVisualEffects = NONE;
   CanBeCloned = true;
   CanBeBroken = false;
   MinCharges = 0;
