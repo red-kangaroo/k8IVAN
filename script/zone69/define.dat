@@ -29,4 +29,10 @@
 #define ALIENQUEEN_LEVEL 4
 
 
+// new weapon
+#enum #MeeleeConfig {
+  CLAW,
+}
+
+
 ; /* this line must be here */

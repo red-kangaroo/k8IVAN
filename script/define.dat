@@ -652,7 +652,7 @@
 #define BROKEN   128
 #define WINDOW  1024
 
-#enum {
+#enum #MeeleeConfig {
   LONG_SWORD = 1,
   TWO_HANDED_SWORD,
   TWO_HANDED_SCIMITAR,
@@ -677,7 +677,6 @@
   RAPIER,
   GREAT_AXE,
   GRAND_STOLLEN_KNIFE,
-  CLAW,
   LOST_RUBY_FLAMING_SWORD,
 };
 
