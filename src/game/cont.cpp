@@ -70,15 +70,46 @@ void continent::GenerateInfo () {
 }
 
 
-v2 continent::GetRandomMember (int Type, truth *success) {
-  if (Type < 0 || Type >= TerrainTypeLimit) ABORT("continent::GetRandomMember: invalid terrain type requiested (%d)!", Type);
+std::vector<v2> continent::GetShuffledMembers (int Type) {
+  std::vector<v2> res;
 
+  if (Type == -1) {
+    for (auto &pos : Member) res.push_back(pos);
+  } else {
+    if (Type < 0 || Type >= TerrainTypeLimit) ABORT("continent::GetRandomMember: invalid terrain type requiested (%d)!", Type);
+    for (feuLong c = 0; c < Member.size(); ++c) {
+      v2 pos = Member[c];
+      if (TypeBuffer[pos.X][pos.Y] == Type) res.push_back(pos);
+    }
+  }
+
+  // shuffle
+  for (uInt f = 0; f < res.size(); ++f) {
+    uInt swp = (uInt)RAND()%res.size();
+    if (swp != f) {
+      auto tmp = res[f];
+      res[f] = res[swp];
+      res[swp] = tmp;
+    }
+  }
+
+  // done
+  return res;
+}
+
+
+v2 continent::GetRandomMember (int Type, truth *success) {
   if (success) *success = false;
 
-  if (!ttypeCount[Type]) {
-    //ABORT("Shortage of terrain!");
-    return v2(0, 0);
+  if (Type == -1) {
+    if (Member.size() == 0) return v2(0, 0);
+    if (success) *success = true;
+    return Member[RAND()%(int)Member.size()];
   }
+
+  if (Type < 0 || Type >= TerrainTypeLimit) ABORT("continent::GetRandomMember: invalid terrain type requiested (%d)!", Type);
+
+  if (!ttypeCount[Type]) return v2(0, 0);
 
   sLong cnt = RAND()%ttypeCount[Type];
   for (feuLong c = 0; c < Member.size(); ++c) {

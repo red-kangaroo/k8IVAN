@@ -41,7 +41,8 @@ public:
   void GenerateInfo ();
   festring GetName () const { return Name; }
   int GetGTerrainAmount (int) const;
-  v2 GetRandomMember (int, truth* success);
+  v2 GetRandomMember (int Type, truth* success); // Type == -1: any terrain type
+  std::vector<v2> GetShuffledMembers (int Type); // Type == -1: any terrain type
   v2 GetMember (int) const;
 
 private:

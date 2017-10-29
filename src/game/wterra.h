@@ -234,13 +234,10 @@ protected:
   truth mGenerated;
 
 public:
+  truth MustBeSkipped; // only set and used in `worldmap::Generate()`; prolly should be moved out of here
+
+public:
   virtual truth IsSuitableContinent (continent *);
-  /*
-  virtual truth WantPetrusContinent () const { return true; } // for now they all should want it
-  virtual truth IsAttnam () const { return false; }
-  virtual truth IsHidden () const { return false; }
-  virtual truth IsRevealed () const { return false; }
-  */
 
 public:
   festring mOnEvents;

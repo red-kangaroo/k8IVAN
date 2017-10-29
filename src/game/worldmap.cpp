@@ -127,14 +127,14 @@ void worldmap::Load (inputfile &SaveFile) {
   continent::TypeBuffer = TypeBuffer;
   continent::AltitudeBuffer = AltitudeBuffer;
   continent::ContinentBuffer = ContinentBuffer;
-  int x, y;
-  for (x = 0; x < XSize; ++x) {
-    for (y = 0; y < YSize; ++y) {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
+      delete Map[x][y];
       Map[x][y] = new wsquare(this, v2(x, y));
     }
   }
-  for (x = 0; x < XSize; ++x) {
-    for (y = 0; y < YSize; ++y) {
+  for (int x = 0; x < XSize; ++x) {
+    for (int y = 0; y < YSize; ++y) {
       game::SetSquareInLoad(Map[x][y]);
       Map[x][y]->Load(SaveFile);
     }
@@ -150,6 +150,15 @@ void worldmap::poiReset () {
     terra->SetRevealed(false);
     terra->SetPlaced(false);
     terra->SetGenerated(false);
+    auto cfg = terra->GetConfig();
+    // fix obvious scripting bugs
+    if (cfg == NEW_ATTNAM || cfg == UNDER_WATER_TUNNEL || cfg == UNDER_WATER_TUNNEL_EXIT || cfg == ELPURI_CAVE) {
+      terra->MustBeSkipped = false;
+    } else {
+      //fprintf(stderr, "terra #%d prob is %d\n", terra->GetConfig(), terra->GetProbability());
+      terra->MustBeSkipped = (terra->GetProbability() < RAND()%100+1);
+      //if (terra->MustBeSkipped) fprintf(stderr, "worldmap::poiReset: skipped POI with config #%d\n", terra->GetConfig());
+    }
   }
 }
 
@@ -157,12 +166,11 @@ void worldmap::poiReset () {
 void worldmap::poiPlaceAtMap (owterrain *terra, truth forceReveal) {
   if (!terra) ABORT("cannot place nothing on worldmap!");
   if (!terra->IsGenerated()) ABORT("cannot place ungenerated something on worldmap!");
+  if (terra->MustBeSkipped) ABORT("cannot place skipped something on worldmap!");
   // place it, if it is not placed yet
   if (!terra->IsPlaced()) {
     terra->SetPlaced(true);
     GetWSquare(terra->GetPosition())->ChangeOWTerrain(terra->Clone());
-    //SetEntryPos(terra->GetAttachedDungeon(), terra->GetPosition());
-    //if (terra->GetAttachedDungeon() != terra->GetConfig()) SetEntryPos(terra->GetConfig(), terra->GetPosition());
     SetEntryPos(terra->GetConfig(), terra->GetPosition());
     //fprintf(stderr, "POI #%d placed at (%d,%d); attached dungeon is %d\n", terra->GetConfig(), terra->GetPosition().X, terra->GetPosition().Y, terra->GetAttachedDungeon());
   } else {
@@ -177,10 +185,11 @@ void worldmap::poiPlaceAtMap (owterrain *terra, truth forceReveal) {
 }
 
 
-std::vector<continent *> worldmap::poiFindPlacesFor (owterrain *terra, truth shuffle) {
-  std::vector<continent *> list;
+ContinentVector worldmap::poiFindPlacesFor (owterrain *terra, truth shuffle) {
+  ContinentVector list;
   if (terra) {
     for (uInt c = 1; c < Continent.size(); ++c) {
+      if (terra->MustBeSkipped) continue;
       //fprintf(stderr, " trying continent %u for %d...\n", c, terra->GetConfig());
       if (terra->IsSuitableContinent(Continent[c])) {
         //fprintf(stderr, "  FOUND!\n");
@@ -189,7 +198,7 @@ std::vector<continent *> worldmap::poiFindPlacesFor (owterrain *terra, truth shu
     }
     if (shuffle && list.size() > 1) {
       for (uInt f = 0; f < list.size(); ++f) {
-        uInt swp = ((uInt)RAND())%list.size();
+        uInt swp = (uInt)RAND()%list.size();
         if (swp != f) {
           continent *tmp = list[f];
           list[f] = list[swp];
@@ -203,13 +212,29 @@ std::vector<continent *> worldmap::poiFindPlacesFor (owterrain *terra, truth shu
 }
 
 
+static ContinentVector createShuffledContinentList (const ContinentVector &list) {
+  ContinentVector res;
+  for (auto &cont : list) res.push_back(cont);
+  if (res.size() > 1) {
+    for (uInt f = 0; f < res.size(); ++f) {
+      uInt swp = (uInt)RAND()%res.size();
+      if (swp != f) {
+        continent *tmp = res[f];
+        res[f] = res[swp];
+        res[swp] = tmp;
+      }
+    }
+  }
+  return res;
+}
+
+
 truth worldmap::poiIsOccupied (v2 pos) {
   //fprintf(stderr, "checking...\n");
   for (int f = 0; f < game::poiCount(); ++f) {
     auto terra = game::poiByIndex(f);
     if (!terra) ABORT("Somone stole our terrain!");
     if (!terra->IsGenerated()) continue;
-    //if (terra->GetContinent() != cont) continue;
     //fprintf(stderr, " checking #%d...\n", f);
     if (terra->GetPosition() == pos) {
       //fprintf(stderr, "  CONFLICT!\n");
@@ -230,16 +255,16 @@ truth worldmap::poiPlaceAttnamsAndUT (continent *PetrusLikes) {
   if (!underwatertunnel) ABORT("Who stole my UC Entry?!");
   if (!underwatertunnelexit) ABORT("Who stole my UC Exit?!");
 
-  v2 newattnamPos, tunnelEntryPos, tunnelExitPos;
+  v2 newattnamPos = ERROR_V2, tunnelEntryPos = ERROR_V2, tunnelExitPos = ERROR_V2;
 
   // place tunnel exit
-  game::BusyAnimation();
-
   truth Correct = false;
   for (int c1 = 0; c1 < 25; ++c1) {
     game::BusyAnimation();
     for (int c2 = 1; c2 < 50; ++c2) {
-      tunnelExitPos = PetrusLikes->GetMember(RAND()%PetrusLikes->GetSize());
+      tunnelExitPos = PetrusLikes->GetRandomMember(-1, &Correct);
+      if (!Correct) return false; // no room, oops
+      Correct = false;
       for (int d1 = 0; d1 < 8; ++d1) {
         v2 Pos = tunnelExitPos+game::GetMoveVector(d1);
         if (IsValidPos(Pos) && AltitudeBuffer[Pos.X][Pos.Y] <= 0) {
@@ -321,6 +346,7 @@ truth worldmap::poiPlaceAttnamsAndUT (continent *PetrusLikes) {
     if (Correct) break;
   }
   if (!Correct) return false;
+  if (newattnamPos == ERROR_V2 || tunnelEntryPos == ERROR_V2 || tunnelExitPos == ERROR_V2) return false;
 
   //fprintf(stderr, "UC and New Attnam were successfully placed...\n");
   // tunnel entry, tunnel exit and New Attnam are ok, find a place for Attnam
@@ -343,6 +369,8 @@ void worldmap::Generate () {
   Alloc2D(OldAltitudeBuffer, XSize, YSize);
   Alloc2D(OldTypeBuffer, XSize, YSize);
 
+  //continent* poiContinents[CONFIG_TABLE_SIZE]; // max number of configs
+
   for (;;) {
     //fprintf(stderr, "generating new planet...\n");
     resetItAll(true); // recreate
@@ -357,7 +385,8 @@ void worldmap::Generate () {
     //fprintf(stderr, "%u continents generated...\n", Continent.size());
 
     //fprintf(stderr, "resetting POI info...\n");
-    poiReset();
+    poiReset(); // this also sets `owterrain::MustBeSkipped`, using spawn probabilities
+    //memset(poiContinents, 0, sizeof(poiContinents));
 
     // find place for attnam
     if (!attnam) ABORT("Who stole my Attnam?!");
@@ -370,76 +399,117 @@ void worldmap::Generate () {
     }
 
     //fprintf(stderr, "trying to find room for other POIs...\n");
-    // try to place all 'near petrus' places
+    // try to place all initial places, and check if other places are (roughly) ok
     continent *PetrusLikes = nullptr;
+    truth success = false;
     for (auto &cont : PerfectForAttnam) {
-      truth success = true;
+      //fprintf(stderr, "trying to place special pois...\n");
+      if (!poiPlaceAttnamsAndUT(cont)) continue; // alas
+      // WARNING! from here, we cannot continue checking continents on failure!
+      //fprintf(stderr, "checking other pois...\n");
+      success = true;
       for (int f = 0; f < game::poiCount(); ++f) {
         auto terra = game::poiByIndex(f);
-        if (terra == attnam) continue;
-        //if (!terra->GetCanBeGenerated()) continue;
-        if (terra->GetWantContinentWith() == attnam->GetConfig()) {
-          //fprintf(stderr, " f=%d; cidx=%d (%d)\n", f, terra->GetWantContinentWith(), attnam->GetConfig());
-          if (!terra->IsSuitableContinent(cont)) {
-            //fprintf(stderr, "  OOPS!(0)\n");
-            if (!terra->CanBeSkipped()) {
-              //fprintf(stderr, "   OOPS!(1)\n");
-              success = false;
-              break;
-            }
+        if (terra->MustBeSkipped) continue;
+        if (terra->IsGenerated()) continue;
+        if (terra->GetWantContinentWith() != attnam->GetConfig()) continue;
+        //fprintf(stderr, " f=%d; cidx=%d (%d)\n", f, terra->GetWantContinentWith(), attnam->GetConfig());
+        if (!terra->IsSuitableContinent(cont)) {
+          //fprintf(stderr, "  OOPS!(0)\n");
+          if (!terra->CanBeSkipped()) {
+            //fprintf(stderr, "   OOPS!(1)\n");
+            success = false;
+            break;
           }
+          terra->MustBeSkipped = true;
+        } else {
+          //poiContinents[f] = cont;
         }
       }
-      if (success) {
-        //fprintf(stderr, " CHECKED; success=%s\n", (success ? "tan" : "ona"));
-        PetrusLikes = cont;
-        break;
-      }
+      // we can't continue looping here
+      if (success) PetrusLikes = cont; // ok, this continent can be used for Petrus' needs
+      break;
     }
     if (!PetrusLikes) continue; // alas
-    //TODO: try non-petrus-wants
 
-    //fprintf(stderr, "trying to place special pois...\n");
-    if (!poiPlaceAttnamsAndUT(PetrusLikes)) continue; // alas
+    //TODO: check and assign other continents
+    // here, we should sort POI list in order of placement, pick continents, and so on
+    // but i'll leave that for some indefinite future
+    /*
+    for (;;) {
+      success = false;
+      for (int f = 0; f < game::poiCount(); ++f) {
+        auto terra = game::poiByIndex(f);
+        if (terra->MustBeSkipped) continue;
+        if (terra->IsGenerated()) continue;
+        auto wantc = terra->GetWantContinentWith();
+        // Attnam continent?
+        if (wantc == attnam->GetConfig()) {
+          // yep, already checked
+          poiContinents[f] = PetrusLikes;
+          continue;
+        }
+        // New Attnam or UC Entry island is too small to place anything
+        if (wantc == newattnam->GetConfig() || wantc == underwatertunnel->GetConfig()) {
+          ABORT("Cannot place anything near New Attnam!");
+        }
+        // list of suitable continents
+        ContinentVector clist;
+        // 0: pick random continent
+        if (wantc == 0) {
+          clist = createShuffledContinentList(Continent);
+        } else {
+          // check if we
+        }
+      }
+    }
+    */
 
     //fprintf(stderr, "spawining other pois...\n");
     // spawn others
-    truth success = true;
     for (int f = 0; f < game::poiCount(); ++f) {
       auto terra = game::poiByIndex(f);
-      if (terra->IsPlaced()) continue;
-      //if (!terra->GetCanBeGenerated()) continue;
+      if (terra->MustBeSkipped) continue;
+      if (terra->IsGenerated()) continue;
       //fprintf(stderr, "trying poicfg #%d...\n", terra->GetConfig());
       //FIXME: find continent for this place
-      continent *cont = 0;
-      if (terra->GetWantContinentWith() == attnam->GetConfig() || terra->GetWantContinentWith() == 0) {
+      continent *cont = nullptr;
+      auto wantc = terra->GetWantContinentWith();
+      // Attnam continent?
+      if (wantc == attnam->GetConfig() || wantc == underwatertunnel->GetConfig()) {
+        // yep, already checked
         cont = PetrusLikes;
-      } else {
-        ABORT("Oops! non-Attnam `WantContinentWith` is not implemented yet!");
+      } else if (wantc == 0) {
+        // pick random continent
+        auto clist = createShuffledContinentList(Continent);
+        for (auto &cc : clist) if (terra->IsSuitableContinent(cc)) { cont = cc; break; }
+      } else if (wantc == newattnam->GetConfig() || wantc == underwatertunnel->GetConfig()) {
+        // New Attnam or UC Entry island is too small to place anything
+        ABORT("Cannot place anything near New Attnam!");
       }
-      if (!terra->IsSuitableContinent(cont) && !terra->CanBeSkipped()) { success = false; break; }
+      // found something?
+      if (!cont) {
+        // if we can skip this dungeon, then skip it, otherwise signal failure
+        if (!terra->CanBeSkipped()) { success = false; break; }
+        terra->MustBeSkipped = true;
+        success = true; // in case this is last POI
+        continue;
+      }
       // get random position for this poi
       v2 poipos;
       game::BusyAnimation();
+      auto possiblePlaces = cont->GetShuffledMembers(terra->CanBeOnAnyTerrain() ? -1 : terra->GetNativeGTerrainType());
       success = false;
-      //FIXME: use position shuffling or something?
-      //fprintf(stderr, "continent size: %d\n", cont->GetSize());
-      for (int tries = cont->GetSize(); tries > 0; --tries) {
-        if (terra->CanBeOnAnyTerrain()) {
-          //fprintf(stderr, " it can be on any terrain type...\n");
-          poipos = cont->GetMember(RAND()%cont->GetSize());
-          success = true;
-        } else {
-          success = false;
-          poipos = cont->GetRandomMember(terra->GetNativeGTerrainType(), &success);
-          //fprintf(stderr, " requesting terrain #%d: %s\n", terra->GetNativeGTerrainType(), (success ? "tan" : "ona"));
-        }
-        if (!success) break; // alas
-        if (!poiIsOccupied(poipos)) break; // ok
-        //fprintf(stderr, "  OCCUPIED!\n");
-        success = false; // oops
+      for (auto &ppos : possiblePlaces) {
+        if (!poiIsOccupied(ppos)) { poipos = ppos; success = true; break; } // ok
       }
-      if (!success) break; // alas
+      if (!success) {
+        // if we can skip this dungeon, then skip it, otherwise signal failure
+        if (!terra->CanBeSkipped()) break;
+        terra->MustBeSkipped = true;
+        success = true; // in case this is last POI
+        continue;
+      }
       // ok, we can place it
       //fprintf(stderr, "place poicfg #%d at (%d,%d)...\n", terra->GetConfig(), poipos.X, poipos.Y);
       terra->SetGenerated(true);

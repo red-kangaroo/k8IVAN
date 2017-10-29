@@ -24,6 +24,7 @@ class continent;
 class owterrain;
 
 typedef std::vector<character *> charactervector;
+using ContinentVector = std::vector<continent *>;
 
 
 typedef owterrain *(*PlaceSpawner) ();
@@ -66,7 +67,7 @@ public:
 protected:
   // POI placement
   void poiReset ();
-  std::vector<continent *> poiFindPlacesFor (owterrain *terra, truth shuffle);
+  ContinentVector poiFindPlacesFor (owterrain *terra, truth shuffle);
   truth poiPlaceAttnamsAndUT (continent *PetrusLikes);
   truth poiIsOccupied (v2 pos);
 
@@ -77,20 +78,13 @@ public:
 
 protected:
   wsquare ***Map;
-  std::vector<continent *> Continent;
+  ContinentVector Continent;
   uChar **TypeBuffer;
   uChar **OldTypeBuffer;
   short **AltitudeBuffer;
   short **OldAltitudeBuffer;
   uChar **ContinentBuffer;
   charactervector PlayerGroup;
-
-  /*
-  std::vector<v2> PlacePosition;
-  std::vector<truth> PlaceRevealed;
-  std::vector<continent *> PlaceContinent;
-  static std::vector<WorldMapPlace> Places;
-  */
 };
 
 outputfile &operator << (outputfile &, const worldmap *);
