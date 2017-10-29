@@ -58,12 +58,3 @@ material
   DisablesPanicWhenConsumed = false;
   BlockESP = false;
 }
-
-
-Include "materials/solid.dat";
-Include "materials/organic.dat";
-Include "materials/gas.dat";
-Include "materials/liquid.dat";
-Include "materials/flesh.dat";
-Include "materials/powder.dat";
-Include "materials/ironalloy.dat";

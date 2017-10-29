@@ -62,24 +62,3 @@ olterrain
   ShowThingsUnder = true;
   IsWall = false;
 }
-
-
-Include "olterras/wall.dat";
-Include "olterras/decoration.dat";
-Include "olterras/door.dat";
-Include "olterras/stairs.dat";
-Include "olterras/portal.dat";
-Include "olterras/altar.dat";
-Include "olterras/throne.dat";
-Include "olterras/olterraincontainer.dat";
-Include "olterras/fountain.dat";
-Include "olterras/brokendoor.dat";
-Include "olterras/boulder.dat";
-Include "olterras/sign.dat";
-Include "olterras/ward.dat";
-Include "olterras/earth.dat";
-Include "olterras/monsterportal.dat";
-Include "olterras/coffin.dat";
-Include "olterras/barwall.dat";
-Include "olterras/ironmaiden.dat";
-Include "olterras/christmastree.dat";

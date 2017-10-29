@@ -18,3 +18,19 @@
  * OBSCURE BUGS if you don't know what you're doing. So from here on,
  * proceed at your own risk!
  */
+
+/* Team and dungeon data for the game */
+Include "team.dat";
+
+
+//don't need this anymore
+//Dungeons = 9;
+Include "dungeons/new_attnam.dat";
+Include "dungeons/attnam.dat";
+Include "dungeons/UT.dat";
+Include "dungeons/GC.dat";
+Include "dungeons/mondedr.dat";
+Include "dungeons/muntuo.dat";
+Include "dungeons/dragontower.dat";
+Include "dungeons/darkforest.dat";
+Include "dungeons/xinrochtomb.dat";

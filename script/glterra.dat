@@ -47,7 +47,3 @@ glterrain
   UseBorderTiles = false;
   BorderTilePriority = 0;
 }
-
-
-Include "glterras/solidterrain.dat";
-Include "glterras/liquidterrain.dat";

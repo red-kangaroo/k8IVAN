@@ -18,3 +18,11 @@
  * OBSCURE BUGS if you don't know what you're doing. So from here on,
  * proceed at your own risk!
  */
+
+Include "materials/solid.dat";
+Include "materials/organic.dat";
+Include "materials/gas.dat";
+Include "materials/liquid.dat";
+Include "materials/flesh.dat";
+Include "materials/powder.dat";
+Include "materials/ironalloy.dat";

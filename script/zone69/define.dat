@@ -1,0 +1,32 @@
+/* CEM = Consume End Message */
+#enum #CEM {
+  CEM_ALIEN_FLESH,
+};
+
+
+/* HM = Hit Message */
+#enum #HM {
+  HM_ALIEN_FLESH,
+};
+
+
+#enum #Liquid {
+  ALIEN_BLOOD,
+  ALIEN_DROOL,
+};
+
+
+#enum #Flesh {
+  ALIEN_FLESH,
+};
+
+
+#enum #Dungeons {
+  ALIEN_VESSEL,
+};
+
+
+#define ALIENQUEEN_LEVEL 4
+
+
+; /* this line must be here */

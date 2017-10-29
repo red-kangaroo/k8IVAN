@@ -18,3 +18,8 @@
  * OBSCURE BUGS if you don't know what you're doing. So from here on,
  * proceed at your own risk!
  */
+
+
+Module "zone69";
+
+Module "k8debug";

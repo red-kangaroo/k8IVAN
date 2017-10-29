@@ -306,7 +306,7 @@
 
 
 /* CEM = Consume End Message */
-#enum {
+#enum #CEM {
   CEM_NOTHING,
   CEM_SCHOOL_FOOD,
   CEM_BONE,
@@ -325,12 +325,11 @@
   CEM_OMMEL_BONE,
   CEM_LIQUID_HORROR,
   CEM_HOLY_MANGO,
-  CEM_ALIEN_FLESH,
 };
 
 
 /* HM = Hit Message */
-#enum {
+#enum #HM {
   HM_NOTHING,
   HM_SCHOOL_FOOD,
   HM_FROG_FLESH,
@@ -342,7 +341,6 @@
   HM_CONFUSE,
   HM_HOLY_BANANA,
   HM_HOLY_MANGO,
-  HM_ALIEN_FLESH,
 };
 
 
@@ -431,8 +429,6 @@
   SIDGURE_WOOD,
   NEPHRITE,
   HESSIAN_CLOTH,
-
-  SUN_CRYSTAL,
 };
 
 
@@ -480,7 +476,7 @@
 
 
 /*#define LIQUID_ID (4096 * 4)*/
-#enum {
+#enum #Liquid {
   LIQUID_ID = (4 << 12),
   OMMEL_URINE,
   PEPSI,
@@ -515,13 +511,11 @@
   VINEGAR,
   OMMEL_BLOOD,
   CURDLED_OMMEL_BLOOD,
-  ALIEN_BLOOD,
-  ALIEN_DROOL,
 };
 
 
 /*#define FLESH_ID (4096 * 5)*/
-#enum {
+#enum #Flesh {
   FLESH_ID = (5 << 12),
   GOBLINOID_FLESH,
   PORK,
@@ -578,7 +572,6 @@
   FOX_FLESH,
   THUNDER_BIRD_FLESH,
   ELF_FLESH,
-  ALIEN_FLESH,
 };
 
 
@@ -599,7 +592,6 @@
   STEEL,
   METEORIC_STEEL,
   ADAMANT,
-
   DAMASCUS_STEEL,
 };
 
@@ -730,8 +722,11 @@
 };
 
 
-#define RUNED_WHIP 1
-#define CHAIN_WHIP 2
+#enum {
+  RUNED_WHIP = 1,
+  CHAIN_WHIP,
+};
+
 
 #define BIG_MINE 1
 
@@ -1195,7 +1190,7 @@
 
 /* Hard-coded teams */
 // just add your own to enum
-#enum {
+#enum #Teams {
   PLAYER_TEAM,
   MONSTER_TEAM,
   ATTNAM_TEAM,
@@ -1218,7 +1213,7 @@
   XINROCH_TOMB_KAMIKAZE_DWARF_TEAM,
   PRISONER_TEAM,
   //
-  NO_TEAM = 65535,
+  NO_TEAM := 65535,
 };
 
 
@@ -1231,7 +1226,7 @@
 
 // dungeon indicies; just add your own to enum
 // also, world points of interest
-#enum {
+#enum #Dungeons {
   RANDOM,
   ELPURI_CAVE,
   ATTNAM,
@@ -1242,14 +1237,11 @@
   DRAGON_TOWER,
   DARK_FOREST,
   XINROCH_TOMB,
-  ALIEN_VESSEL,
+  // POIs without special dungeons
+  KHARAZ_ARAD_SHOP := 127,
+  UNDER_WATER_TUNNEL_EXIT := 128,
 };
 
-// POIs without special dungeons {
-#enum {
-  KHARAZ_ARAD_SHOP = 127,
-  UNDER_WATER_TUNNEL_EXIT, // 128
-};
 
 /* dungeon tags */
 #define ALL_DUNGEONS  32767
@@ -1270,8 +1262,6 @@
 /* Tomb Of Xinroch */
 #define DUAL_ENNER_BEAST_LEVEL 5
 #define NECRO_CHAMBER_LEVEL 6
-
-#define ALIENQUEEN_LEVEL 4
 
 /* old:
 #define IVAN_LEVEL 7

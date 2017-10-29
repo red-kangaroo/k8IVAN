@@ -1,0 +1,17 @@
+// worldmap points of interest
+Extend owterrain
+{
+  Config ALIEN_VESSEL;
+  {
+    Probability = 60;
+    CanBeSkipped = true; // don't restart generation if we can't put it on the map
+    NameSingular = "Alien Vessel";
+    BitmapPos = 32, 48;
+    NameStem = "strange vessel of unknow nature";
+    UsesLongArticle = false;
+    AttachedDungeon = ALIEN_VESSEL;
+    CanBeGenerated = true;
+    NativeGTerrainType = /*JUNGLE*/EVERGREEN_FOREST;
+    WantContinentWith = ATTNAM;
+  }
+}

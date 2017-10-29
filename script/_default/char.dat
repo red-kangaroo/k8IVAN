@@ -1,0 +1,156 @@
+/*
+ *
+ *  Iter Vehemens ad Necem (IVAN)
+ *  Copyright (C) Timo Kiviluoto
+ *  Released under the GNU General
+ *  Public License
+ *
+ *  See LICENSING which should be included
+ *  along with this file for more details
+ *
+ */
+
+/*
+ * NOTICE!!!
+ *
+ * This file contains SPOILERS, which might ruin your IVAN experience
+ * totally. Also, editing anything can DESTROY GAME BALANCE or CAUSE
+ * OBSCURE BUGS if you don't know what you're doing. So from here on,
+ * proceed at your own risk!
+ */
+
+Include "chars/humanoid.dat";
+Include "chars/nonhumanoid.dat";
+Include "chars/playerkind.dat";
+Include "chars/petrus.dat";
+Include "chars/denim.dat";
+Include "chars/raven.dat";
+Include "chars/vulcan.dat";
+Include "chars/rogue.dat";
+Include "chars/assassin.dat";
+Include "chars/farmer.dat";
+Include "chars/wisefarmer.dat";
+Include "chars/bum.dat";
+Include "chars/child.dat";
+Include "chars/guard.dat";
+Include "chars/shopkeeper.dat";
+Include "chars/priest.dat";
+Include "chars/morbe.dat";
+Include "chars/oree.dat";
+Include "chars/darkknight.dat";
+Include "chars/ennerbeast.dat";
+Include "chars/ennerchild.dat";
+Include "chars/frog.dat";
+Include "chars/billswill.dat";
+Include "chars/skeleton.dat";
+Include "chars/goblin.dat";
+Include "chars/mommo.dat";
+Include "chars/golem.dat";
+Include "chars/canine.dat";
+Include "chars/wolf.dat";
+Include "chars/dog.dat";
+Include "chars/spider.dat";
+Include "chars/jackal.dat";
+Include "chars/ass.dat";
+Include "chars/communist.dat";
+Include "chars/hunter.dat";
+Include "chars/bear.dat";
+Include "chars/dolphin.dat";
+Include "chars/slave.dat";
+Include "chars/petrusswife.dat";
+Include "chars/housewife.dat";
+Include "chars/femaleslave.dat";
+Include "chars/librarian.dat";
+Include "chars/zombie.dat";
+Include "chars/imp.dat";
+Include "chars/bat.dat";
+Include "chars/fruitbat.dat";
+Include "chars/mistress.dat";
+Include "chars/werewolfhuman.dat";
+Include "chars/werewolfwolf.dat";
+Include "chars/kobold.dat";
+Include "chars/kabouter.dat";
+Include "chars/uldra.dat";
+Include "chars/gibberling.dat";
+Include "chars/largecat.dat";
+Include "chars/largerat.dat";
+Include "chars/angel.dat";
+Include "chars/kamikazedwarf.dat";
+Include "chars/axethrowerdwarf.dat";
+Include "chars/mammoth.dat";
+Include "chars/unicorn.dat";
+Include "chars/genie.dat";
+Include "chars/lion.dat";
+Include "chars/carnivorousplant.dat";
+Include "chars/buffalo.dat";
+Include "chars/snake.dat";
+Include "chars/orc.dat";
+Include "chars/cossack.dat";
+Include "chars/bananagrower.dat";
+Include "chars/mangogrower.dat";
+Include "chars/imperialist.dat";
+Include "chars/smith.dat";
+Include "chars/ostrich.dat";
+Include "chars/elder.dat";
+Include "chars/encourager.dat";
+Include "chars/chameleon.dat";
+Include "chars/floatingeye.dat";
+Include "chars/eddy.dat";
+Include "chars/mushroom.dat";
+Include "chars/magicmushroom.dat";
+Include "chars/darkmage.dat";
+Include "chars/ghost.dat";
+/*k8:not yet:Include "chars/bonesghost.dat";*/
+Include "chars/xinrochghost.dat";
+Include "chars/twoheadedmoose.dat";
+Include "chars/magpie.dat";
+Include "chars/skunk.dat";
+Include "chars/invisiblestalker.dat";
+Include "chars/largecreature.dat";
+Include "chars/elpuri.dat";
+Include "chars/genetrixvesana.dat";
+Include "chars/genefourxvesana.dat";
+Include "chars/menatrixfusanga.dat";
+Include "chars/solicitus.dat";
+Include "chars/hedgehog.dat";
+Include "chars/anvitas.dat";
+Include "chars/bunny.dat";
+Include "chars/vladimir.dat";
+Include "chars/haastseagle.dat";
+Include "chars/hattifattener.dat";
+Include "chars/necromancer.dat";
+Include "chars/sumowrestler.dat";
+Include "chars/tourist.dat";
+Include "chars/blinkdog.dat";
+Include "chars/veterankamikazedwarf.dat";
+Include "chars/rookiekamikazedwarf.dat";
+Include "chars/grenadierdwarf.dat";
+Include "chars/archangel.dat";
+Include "chars/insudo.dat";
+Include "chars/tailor.dat";
+Include "chars/mysticfrog.dat";
+Include "chars/lobhse.dat";
+Include "chars/siren.dat";
+Include "chars/mindworm.dat";
+Include "chars/punisher.dat";
+Include "chars/mysteryman.dat";
+Include "chars/reaper.dat";
+Include "chars/bluedragon.dat";
+Include "chars/reddragon.dat";
+Include "chars/forestman.dat";
+Include "chars/okapi.dat";
+Include "chars/vampire.dat";
+Include "chars/mouse.dat";
+Include "chars/pig.dat";
+Include "chars/ox.dat";
+Include "chars/firefox.dat";
+Include "chars/thunderbird.dat";
+Include "chars/noxiousorchid.dat";
+Include "chars/shaman.dat";
+Include "chars/warlock.dat";
+Include "chars/alchemist.dat";
+Include "chars/doctor.dat";
+Include "chars/regii.dat";
+Include "chars/UTFAOfficial.dat";
+Include "chars/exiledpriest.dat";
+Include "chars/vampirebat.dat";

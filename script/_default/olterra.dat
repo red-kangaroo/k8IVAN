@@ -1,0 +1,40 @@
+/*
+ *
+ *  Iter Vehemens ad Necem (IVAN)
+ *  Copyright (C) Timo Kiviluoto
+ *  Released under the GNU General
+ *  Public License
+ *
+ *  See LICENSING which should be included
+ *  along with this file for more details
+ *
+ */
+
+/*
+ * NOTICE!!!
+ *
+ * This file contains SPOILERS, which might ruin your IVAN experience
+ * totally. Also, editing anything can DESTROY GAME BALANCE or CAUSE
+ * OBSCURE BUGS if you don't know what you're doing. So from here on,
+ * proceed at your own risk!
+ */
+
+Include "olterras/wall.dat";
+Include "olterras/decoration.dat";
+Include "olterras/door.dat";
+Include "olterras/stairs.dat";
+Include "olterras/portal.dat";
+Include "olterras/altar.dat";
+Include "olterras/throne.dat";
+Include "olterras/olterraincontainer.dat";
+Include "olterras/fountain.dat";
+Include "olterras/brokendoor.dat";
+Include "olterras/boulder.dat";
+Include "olterras/sign.dat";
+Include "olterras/ward.dat";
+Include "olterras/earth.dat";
+Include "olterras/monsterportal.dat";
+Include "olterras/coffin.dat";
+Include "olterras/barwall.dat";
+Include "olterras/ironmaiden.dat";
+Include "olterras/christmastree.dat";

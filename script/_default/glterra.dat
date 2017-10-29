@@ -18,3 +18,6 @@
  * OBSCURE BUGS if you don't know what you're doing. So from here on,
  * proceed at your own risk!
  */
+
+Include "glterras/solidterrain.dat";
+Include "glterras/liquidterrain.dat";
