@@ -212,7 +212,7 @@ class lsquare : public square
   void PostProcessForBone(double&, int&);
   void DisplayEngravedInfo(festring&) const;
   truth EngravingsCanBeReadByPlayer();
-  truth HasEngravings() const { return truth(Engraved); }
+  truth HasEngravings() const { return !!Engraved; }
   void FinalProcessForBone();
   truth IsFreezed() const { return Flags & FREEZED; }
   truth IsDangerousToBreathe(ccharacter*) const;

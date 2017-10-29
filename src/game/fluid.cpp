@@ -477,7 +477,7 @@ void fluid::imagedata::AddLiquidToPicture (const rawbitmap *Shadow, sLong Pixels
 /* Remakes all images. Usually decreases, and never increases, the liquid's volume */
 void fluid::Redistribute () {
   if (!UseImage()) return;
-  truth InitRandMap = truth(MotherItem);
+  truth InitRandMap = !!MotherItem;
   Image.Clear(InitRandMap);
   if (GearImage) {
     if (Flags & HAS_BODY_ARMOR_PICTURES) {

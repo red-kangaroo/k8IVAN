@@ -15,5 +15,5 @@ COMMAND(Go) {
   Char->SetAction(Go);
   Char->EditAP(Char->GetStateAPGain(100)); // gum solution
   Char->GoOn(Go, true);
-  return truth(Char->GetAction());
+  return !!Char->GetAction();
 };

@@ -58,7 +58,7 @@ public:
   stackiterator (stackslot *Slot) : Slot(Slot) {}
   stackiterator &operator ++ () { Slot = Slot->Next; return *this; }
   stackiterator &operator -- () { Slot = Slot->Last; return *this; }
-  truth HasItem () const { return truth(Slot); }
+  truth HasItem () const { return !!Slot; }
   item *operator -> () const { return Slot->Item; }
   item *operator * () const { return Slot->Item; }
   const stackslot &GetSlot () const { return *Slot; }

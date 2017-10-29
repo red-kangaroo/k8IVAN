@@ -292,7 +292,7 @@ truth fountain::IsDipDestination () const {
 
 
 truth fountain::IsFountainWithWater () const {
-  return truth(GetSecondaryMaterial());
+  return !!GetSecondaryMaterial();
 }
 
 

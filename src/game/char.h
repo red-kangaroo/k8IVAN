@@ -1120,7 +1120,7 @@ public:
   truth IsUsingWeaponOfCategory (int) const;
   virtual truth IsKamikazeDwarf () const { return false; }
   void AddRandomScienceName (festring &) const;
-  truth IsStuck () const { return truth(TrapData); }
+  truth IsStuck () const { return !!TrapData; }
   festring GetTrapDescription () const;
   truth TryToUnStickTraps (v2);
   void RemoveTrap (feuLong);

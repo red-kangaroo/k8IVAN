@@ -118,7 +118,7 @@ public:
   virtual truth CheckIfEquipmentIsNotUsable (int) const;
   virtual void AddSpecialStethoscopeInfo (felist &) const;
   virtual item *GetPairEquipment (int) const;
-  virtual truth HasHead () const { return truth(GetHead()); }
+  virtual truth HasHead () const { return !!GetHead(); }
   virtual cfestring &GetStandVerb () const;
   virtual head *Behead ();
   virtual void AddAttributeInfo (festring &) const;
