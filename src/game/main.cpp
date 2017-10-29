@@ -188,6 +188,9 @@ int Main (int argc, char *argv[]) {
   //
   //femath::SetSeed(time(0));
   femath::RandSeed();
+
+  game::LoadModuleList();
+
   game::InitGlobalValueMap();
 
   // some sanity checks
@@ -209,7 +212,7 @@ int Main (int argc, char *argv[]) {
   if (game::GetGlobalConst("KHARAZ_ARAD_SHOP") != 127) ABORT("`KHARAZ_ARAD_SHOP` is not 127");
   if (game::GetGlobalConst("UNDER_WATER_TUNNEL_EXIT") != 128) ABORT("`UNDER_WATER_TUNNEL_EXIT` is not 128");
 
-  //if (game::GetGlobalConst("ALIEN_VESSEL") != 10) ABORT("`ALIEN_VESSEL` is not 10");
+  if (game::GetGlobalConst("ALIEN_VESSEL") != 10) ABORT("`ALIEN_VESSEL` is not 10");
 
   scriptsystem::Initialize();
   databasesystem::Initialize();

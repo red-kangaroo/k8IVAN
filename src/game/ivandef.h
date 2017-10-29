@@ -433,7 +433,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define CEM_LIQUID_HORROR  (game::GetGlobalConst("CEM_LIQUID_HORROR"))
 #define CEM_HOLY_MANGO  (game::GetGlobalConst("CEM_HOLY_MANGO"))
 // alien mod
-#define CEM_ALIEN_FLESH  (game::GetGlobalConst("CEM_ALIEN_FLESH"))
+#define CEM_ALIEN_FLESH  (game::FindGlobalValue("CEM_ALIEN_FLESH", -666))
 
 /* HM = Hit Message */
 
@@ -449,7 +449,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define HM_HOLY_BANANA  (game::GetGlobalConst("HM_HOLY_BANANA"))
 #define HM_HOLY_MANGO  (game::GetGlobalConst("HM_HOLY_MANGO"))
 // alien mod
-#define HM_ALIEN_FLESH  (game::GetGlobalConst("HM_ALIEN_FLESH"))
+#define HM_ALIEN_FLESH  (game::FindGlobalValue("HM_ALIEN_FLESH", -666))
 
 #define UNARMED_ATTACK  (game::GetGlobalConst("UNARMED_ATTACK"))
 #define WEAPON_ATTACK  (game::GetGlobalConst("WEAPON_ATTACK"))
@@ -560,21 +560,6 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define NO_ENTRY 0
 
 #define RANDOM  (game::GetGlobalConst("RANDOM"))
-/*
-#define ELPURI_CAVE  (game::GetGlobalConst("ELPURI_CAVE"))
-#define ATTNAM  (game::GetGlobalConst("ATTNAM"))
-#define NEW_ATTNAM  (game::GetGlobalConst("NEW_ATTNAM"))
-#define UNDER_WATER_TUNNEL  (game::GetGlobalConst("UNDER_WATER_TUNNEL"))
-#define MONDEDR  (game::GetGlobalConst("MONDEDR"))
-#define MUNTUO  (game::GetGlobalConst("MUNTUO"))
-#define DRAGON_TOWER  (game::GetGlobalConst("DRAGON_TOWER"))
-#define DARK_FOREST  (game::GetGlobalConst("DARK_FOREST"))
-#define XINROCH_TOMB  (game::GetGlobalConst("XINROCH_TOMB"))
-// alien mod
-#define ALIEN_VESSEL  (game::GetGlobalConst("ALIEN_VESSEL"))
-
-#define UNDER_WATER_TUNNEL_EXIT  (game::GetGlobalConst("UNDER_WATER_TUNNEL_EXIT"))
-*/
 #define NEW_ATTNAM  (game::GetGlobalConst("NEW_ATTNAM"))
 #define UNDER_WATER_TUNNEL  (game::GetGlobalConst("UNDER_WATER_TUNNEL"))
 #define UNDER_WATER_TUNNEL_EXIT  (game::GetGlobalConst("UNDER_WATER_TUNNEL_EXIT"))
@@ -585,12 +570,11 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define DARK_FOREST  (game::GetGlobalConst("DARK_FOREST"))
 #define XINROCH_TOMB  (game::GetGlobalConst("XINROCH_TOMB"))
 #define DRAGON_TOWER  (game::GetGlobalConst("DRAGON_TOWER"))
-#define ALIEN_VESSEL  (game::GetGlobalConst("ALIEN_VESSEL"))
+#define ALIEN_VESSEL  (game::FindGlobalValue("ALIEN_VESSEL", -666))
+#define KHARAZ_ARAD_SHOP  (game::GetGlobalConst("KHARAZ_ARAD_SHOP"))
 
-#define alienvessel           (game::alienvesselPOI())
 #define attnam                (game::attnamPOI())
 #define darkforest            (game::darkforestPOI())
-#define dragontower           (game::dragontowerPOI())
 #define elpuricave            (game::elpuricavePOI())
 #define mondedr               (game::mondedrPOI())
 #define muntuo                (game::muntuoPOI())
@@ -600,8 +584,6 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define xinrochtomb           (game::xinrochtombPOI())
 
 
-#define KHARAZ_ARAD_SHOP  (game::GetGlobalConst("KHARAZ_ARAD_SHOP"))
-
 //#define VESANA_LEVEL  (game::GetGlobalConst("VESANA_LEVEL"))
 //#define CRYSTAL_LEVEL  (game::GetGlobalConst("CRYSTAL_LEVEL"))
 //#define SPIDER_LEVEL  (game::GetGlobalConst("SPIDER_LEVEL"))
@@ -610,9 +592,6 @@ cv2 SILHOUETTE_SIZE(48, 64);
 //#define IVAN_LEVEL  (game::GetGlobalConst("IVAN_LEVEL"))
 #define DARK_LEVEL  (game::GetGlobalConst("DARK_LEVEL"))
 #define OREE_LAIR  (game::GetGlobalConst("OREE_LAIR"))
-
-// alien mod
-//#define ALIENQUEEN_LEVEL  (game::GetGlobalConst("ALIENQUEEN_LEVEL"))
 
 //#define DUAL_ENNER_BEAST_LEVEL  (game::GetGlobalConst("DUAL_ENNER_BEAST_LEVEL"))
 //#define NECRO_CHAMBER_LEVEL  (game::GetGlobalConst("NECRO_CHAMBER_LEVEL"))

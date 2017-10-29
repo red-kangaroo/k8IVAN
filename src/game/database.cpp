@@ -84,25 +84,26 @@ static void collectHandler (festring &dest, std::stack<TextInput *> &infStack, T
 
 template <class type> void databasecreator<type>::ReadFrom (const festring &baseFileName) {
   std::stack<TextInput *> infStack;
-  // scan directory
-  for (int fno = 99; fno >= -1; --fno) {
-    festring cfname;
-    cfname << game::GetGameDir() << "script/" << baseFileName;
-    if (fno >= 0) {
-      char bnum[8];
-      sprintf(bnum, "_%02d", fno);
-      cfname << bnum;
+
+  // add module files
+  auto modlist = game::GetModuleList();
+  for (unsigned idx = modlist.size(); idx > 0; --idx) {
+    festring infname = game::GetGameDir()+"script/"+modlist[idx-1]+"/"+baseFileName+".dat";
+    if (inputfile::fileExists(infname)) {
+      TextInput *ifl = new TextInputFile(infname, &game::GetGlobalValueMap());
+      ifl->setGetVarCB(game::ldrGetVar);
+      infStack.push(ifl);
     }
-    cfname << ".dat";
-    if (!inputfile::fileExists(cfname)) continue;
-    TextInput *ifl = new TextInputFile(cfname, &game::GetGlobalValueMap(), false);
-    if (!ifl->IsOpen()) {
-      delete ifl;
-      continue;
-    }
-    //fprintf(stderr, "found: %s\n", ifl->GetFileName().CStr());
+  }
+
+  // add main file
+  {
+    festring infname = game::GetGameDir()+"script/"+baseFileName+".dat";
+    TextInput *ifl = new TextInputFile(infname, &game::GetGlobalValueMap());
+    ifl->setGetVarCB(game::ldrGetVar);
     infStack.push(ifl);
   }
+
   if (infStack.size() == 0) ABORT("Cannot find '%s' scripts!", baseFileName.CStr());
 
   // load files
@@ -126,7 +127,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
         Word = inFile->ReadWord();
         if (inFile->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", inFile->GetFileName().CStr(), inFile->TokenLine());
         //fprintf(stderr, "loading: %s\n", Word.CStr());
-        TextInput *incf = new TextInputFile(game::GetGameDir()+"script/"+Word, &game::GetGlobalValueMap());
+        TextInput *incf = new TextInputFile(inputfile::buildIncludeName(inFile->GetFileName(), Word), &game::GetGlobalValueMap());
         infStack.push(inFile);
         inFile = incf;
         inFile->setGetVarCB(game::ldrGetVar);
@@ -196,7 +197,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
           Word = inFile->ReadWord();
           if (inFile->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", inFile->GetFileName().CStr(), inFile->TokenLine());
           //fprintf(stderr, "loading: %s\n", Word.CStr());
-          TextInput *incf = new TextInputFile(game::GetGameDir()+"script/"+Word, &game::GetGlobalValueMap());
+          TextInput *incf = new TextInputFile(inputfile::buildIncludeName(inFile->GetFileName(), Word), &game::GetGlobalValueMap());
           infStack.push(inFile);
           inFile = incf;
           inFile->setGetVarCB(game::ldrGetVar);

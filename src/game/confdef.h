@@ -173,8 +173,8 @@
 #define OMMEL_BLOOD  (game::GetGlobalConst("OMMEL_BLOOD"))
 #define CURDLED_OMMEL_BLOOD  (game::GetGlobalConst("CURDLED_OMMEL_BLOOD"))
   // alien mod
-#define ALIEN_BLOOD  (game::GetGlobalConst("ALIEN_BLOOD"))
-#define ALIEN_DROOL  (game::GetGlobalConst("ALIEN_DROOL"))
+#define ALIEN_BLOOD  (game::FindGlobalValue("ALIEN_BLOOD", -666))
+#define ALIEN_DROOL  (game::FindGlobalValue("ALIEN_DROOL", -666))
 
 
 //#define FLESH_ID (5 << 12)
@@ -235,7 +235,7 @@
 #define THUNDER_BIRD_FLESH  (game::GetGlobalConst("THUNDER_BIRD_FLESH"))
 #define ELF_FLESH  (game::GetGlobalConst("ELF_FLESH"))
   // alien mod
-#define ALIEN_FLESH  (game::GetGlobalConst("ALIEN_FLESH"))
+#define ALIEN_FLESH  (game::FindGlobalValue("ALIEN_FLESH", -666))
 
 
 #define POWDER_ID  (game::GetGlobalConst("POWDER_ID"))

@@ -134,6 +134,19 @@ festring inputfile::GetMyDir () {
 }
 
 
+festring inputfile::buildIncludeName (cfestring &basename, cfestring incname) {
+  festring xname = incname;
+  while (xname.GetSize() > 0 && xname[0] == '/') xname.Erase(0, 1);
+  if (xname.GetSize() == 0) ABORT("Cannot include file with empty name");
+  festring res = basename;
+  // remove name
+  while (res.GetSize() && res[res.GetSize()-1] != '/') res.Erase(res.GetSize()-1, 1);
+  res += xname;
+  //fprintf(stderr, "buildIncludeName(\"%s\", \"%s\") -> \"%s\"\n", basename.CStr(), incname.CStr(), res.CStr());
+  return res;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 inputfile::inputfile () :
   Buffer(0),

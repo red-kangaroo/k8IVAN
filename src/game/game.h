@@ -303,7 +303,10 @@ public:
   //TODO: cache values
   static sLong GetGlobalConst (cfestring &name);
 
-  static void InitGlobalValueMap();
+  static void LoadModuleList ();
+  static const std::vector<festring> &GetModuleList ();
+
+  static void InitGlobalValueMap ();
   static void LoadGlobalValueMap (TextInput &SaveFile);
 
   static void TextScreen(cfestring&, v2 = ZERO_V2, col16 = 0xFFFF, truth = true, truth = true, bitmapeditor = 0);
@@ -638,7 +641,11 @@ private:
   static v2 EnterTextDisplacement;
 
   static std::stack<TextInput *> mFEStack;
+  static std::vector<festring> mModuleList;
   static truth mImmediateSave;
+
+private:
+  static void LoadModuleListFile (TextInput &fl);
 
   // worldmap "places of interest"
 private:
@@ -656,10 +663,10 @@ public:
 
 public:
   // convenient accessors
-  static owterrain *alienvesselPOI ();
+  //static owterrain *alienvesselPOI ();
   static owterrain *attnamPOI ();
   static owterrain *darkforestPOI ();
-  static owterrain *dragontowerPOI ();
+  //static owterrain *dragontowerPOI ();
   static owterrain *elpuricavePOI ();
   static owterrain *mondedrPOI ();
   static owterrain *muntuoPOI ();

@@ -187,6 +187,7 @@ std::vector<int> game::SpecialCursorData;
 cbitmap *game::EnterImage;
 v2 game::EnterTextDisplacement;
 
+std::vector<festring> game::mModuleList;
 truth game::mImmediateSave = false;
 
 
@@ -221,10 +222,10 @@ owterrain *game::poi (cfestring &name, truth abortOnNotFound) {
 }
 
 
-owterrain *game::alienvesselPOI () { return poi("ALIEN_VESSEL", true); }
+//owterrain *game::alienvesselPOI () { return poi("ALIEN_VESSEL", true); }
 owterrain *game::attnamPOI () { return poi("ATTNAM", true); }
 owterrain *game::darkforestPOI () { return poi("DARK_FOREST", true); }
-owterrain *game::dragontowerPOI () { return poi("DRAGON_TOWER", true); }
+//owterrain *game::dragontowerPOI () { return poi("DRAGON_TOWER", true); }
 owterrain *game::elpuricavePOI () { return poi("ELPURI_CAVE", true); }
 owterrain *game::mondedrPOI () { return poi("MONDEDR", true); }
 owterrain *game::muntuoPOI () { return poi("MUNTUO", true); }
@@ -318,16 +319,12 @@ void game::InitScript () {
   TextInputFile ScriptFile(GetGameDir()+"script/dungeon.dat", &GlobalValueMap);
   GameScript = new gamescript;
   GameScript->ReadFrom(ScriptFile);
-  { /* additional dungeon files */
-    for (int f = 0; f <= 99; f++) {
-      char bnum[32];
-      sprintf(bnum, "script/dungeon_%02d.dat", f);
-      TextInputFile ifl(game::GetGameDir()+bnum, &game::GetGlobalValueMap(), false);
-      if (ifl.IsOpen()) {
-        //fprintf(stderr, "loading: %s\n", bnum+7);
-        GameScript->ReadFrom(ifl);
-        ifl.Close();
-      }
+  // load dungeons from modules
+  for (auto &modname : mModuleList) {
+    festring infname = game::GetGameDir()+"script/"+modname+"/dungeon.dat";
+    if (inputfile::fileExists(infname)) {
+      TextInputFile ifl(infname, &game::GetGlobalValueMap());
+      GameScript->ReadFrom(ifl);
     }
   }
   GameScript->RandomizeLevels();
@@ -1520,7 +1517,7 @@ void game::LoadGlobalValueMap (TextInput &fl) {
       word = fl.ReadWord();
       if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
       //fprintf(stderr, "loading: %s\n", word.CStr());
-      TextInputFile incf(game::GetGameDir()+"script/"+word, &game::GetGlobalValueMap());
+      TextInputFile incf(inputfile::buildIncludeName(fl.GetFileName(), word), &game::GetGlobalValueMap());
       LoadGlobalValueMap(incf);
       continue;
     }
@@ -1666,22 +1663,62 @@ sLong game::GetGlobalConst (cfestring &name) {
 }
 
 
+const std::vector<festring> &game::GetModuleList () { return mModuleList; }
+
+
+void game::LoadModuleList () {
+  mModuleList.push_back("_default"); // always loaded
+  TextInputFile ifl(GetGameDir()+"script/module.dat");
+  LoadModuleListFile(ifl);
+}
+
+
+void game::LoadModuleListFile (TextInput &fl) {
+  festring word;
+  fl.setGetVarCB(game::ldrGetVar);
+  for (;;) {
+    fl.ReadWord(word, false);
+    if (fl.Eof()) break; // no more modules
+    // messages
+    if (word == "Message") {
+      word = fl.ReadWord();
+      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
+      fprintf(stderr, "MESSAGE: %s\n", word.CStr());
+      continue;
+    }
+    // includes
+    if (word == "Include") {
+      word = fl.ReadWord();
+      if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
+      //fprintf(stderr, "loading: %s\n", word.CStr());
+      TextInputFile ifl(inputfile::buildIncludeName(fl.GetFileName(), word));
+      LoadModuleListFile(ifl);
+      continue;
+    }
+    // module
+    if (word != "Module") ABORT("`Module` expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
+    word = fl.ReadWord();
+    if (word.GetSize() == 0) ABORT("Cannot register empty module (file %s at line %d)!", fl.GetFileName().CStr(), fl.TokenLine());
+    if (fl.ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
+    // check for duplicates
+    for (auto &modname : mModuleList) {
+      if (modname == word) ABORT("Duplicate module '%s' in file %s at line %d!", word.CStr(), fl.GetFileName().CStr(), fl.TokenLine());
+    }
+    // looks like valid moudle, remember it
+    mModuleList.push_back(word);
+  }
+}
+
+
 void game::InitGlobalValueMap () {
   TextInputFile SaveFile(GetGameDir()+"script/define.dat", &GlobalValueMap);
   LoadGlobalValueMap(SaveFile);
-  { /* additional files */
-    for (int f = 0; f <= 99; f++) {
-      char bnum[32];
-      sprintf(bnum, "script/define_%02d.dat", f);
-      festring fn = game::GetGameDir();
-      fn << bnum;
-      if (inputfile::fileExists(fn)) {
-        TextInputFile ifl(fn, &game::GetGlobalValueMap(), false);
-        if (ifl.IsOpen()) {
-          LoadGlobalValueMap(ifl);
-          ifl.Close();
-        }
-      }
+  // load defines from modules
+  for (auto &modname : mModuleList) {
+    festring infname = game::GetGameDir()+"script/"+modname+"/define.dat";
+    if (inputfile::fileExists(infname)) {
+      TextInputFile ifl(infname, &game::GetGlobalValueMap());
+      LoadGlobalValueMap(ifl);
     }
   }
 }
@@ -3428,8 +3465,7 @@ truth game::GetWord (festring &w) {
     if (w == "Include") {
       fl->ReadWord(w, true);
       if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TokenLine());
-      w = game::GetGameDir()+"script/"+w;
-      TextInput *fl = new TextInputFile(w, &game::GetGlobalValueMap(), true);
+      TextInput *fl = new TextInputFile(inputfile::buildIncludeName(fl->GetFileName(), w), &game::GetGlobalValueMap(), true);
       fl->setGetVarCB(game::ldrGetVar);
       mFEStack.push(fl);
       continue;
@@ -3561,48 +3597,30 @@ truth game::RunOnEvent (cfestring &ename) {
   static std::vector<festring> scriptFiles;
   static truth cached = false;
   truth res = false;
-  //
+
   character *old = mChar;
   mChar = PLAYER;
   if (!cached) {
     cached = true;
-    for (int fno = 99; fno >= -1; fno--) {
-      festring cfname;
-      cfname << game::GetGameDir() << "script/onevent";
-      if (fno >= 0) {
-        char bnum[8];
-        sprintf(bnum, "_%02d", fno);
-        cfname << bnum;
-      }
-      cfname << ".dat";
-      if (!inputfile::fileExists(cfname)) continue;
-      TextInput *ifl = new TextInputFile(cfname, &game::GetGlobalValueMap(), false);
-      if (!ifl->IsOpen()) {
-        delete ifl;
-        continue;
-      }
-      scriptFiles.push_back(cfname);
-      ifl->setGetVarCB(game::ldrGetVar);
-      mFEStack.push(ifl);
-    }
-  } else {
-    for (unsigned int f = 0; f < scriptFiles.size(); ++f) {
-      festring cfname = scriptFiles[f];
-      TextInput *ifl = new TextInputFile(cfname, &game::GetGlobalValueMap(), false);
-      if (!ifl->IsOpen()) {
-        delete ifl;
-        continue;
-      }
-      ifl->setGetVarCB(game::ldrGetVar);
-      mFEStack.push(ifl);
+    // add module files
+    auto modlist = game::GetModuleList();
+    for (unsigned idx = modlist.size(); idx > 0; --idx) {
+      festring infname = game::GetGameDir()+"script/"+modlist[idx-1]+"/onevent.dat";
+      if (inputfile::fileExists(infname)) scriptFiles.push_back(infname);
     }
   }
-  //
+
+  for (auto &cfname : scriptFiles) {
+    TextInput *ifl = new TextInputFile(cfname, &game::GetGlobalValueMap());
+    ifl->setGetVarCB(game::ldrGetVar);
+    mFEStack.push(ifl);
+  }
+
   festring w;
   while (GetWord(w)) {
     if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
     mFEStack.top()->ReadWord(w, true);
-    truth doIt = (w==ename);
+    truth doIt = (w == ename);
     if (doIt && !res) {
       res = DoOnEvent(false);
     } else {
@@ -3610,6 +3628,7 @@ truth game::RunOnEvent (cfestring &ename) {
       SkipBlock(false);
     }
   }
+
   mChar = old;
   return res;
 }

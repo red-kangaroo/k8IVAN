@@ -98,6 +98,7 @@ public:
 
   static truth fileExists (const festring &fname);
   static festring GetMyDir ();
+  static festring buildIncludeName (cfestring &basename, cfestring incname);
 
 protected:
 #ifdef USE_ZLIB
