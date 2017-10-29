@@ -25,14 +25,26 @@ static const int DirX[8] = { -1, -1, -1, 0, 0, 1, 1, 1 };
 static const int DirY[8] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
 
-#define OceanType     ocean::ProtoType.GetIndex()
-#define SnowType      snow::ProtoType.GetIndex()
-#define GlacierType   glacier::ProtoType.GetIndex()
-#define EGForestType  evergreenforest::ProtoType.GetIndex()
-#define LForestType   leafyforest::ProtoType.GetIndex()
-#define SteppeType    steppe::ProtoType.GetIndex()
 #define DesertType    desert::ProtoType.GetIndex()
 #define JungleType    jungle::ProtoType.GetIndex()
+#define SteppeType    steppe::ProtoType.GetIndex()
+#define LForestType   leafyforest::ProtoType.GetIndex()
+#define EGForestType  evergreenforest::ProtoType.GetIndex()
+#define SnowType      snow::ProtoType.GetIndex()
+#define GlacierType   glacier::ProtoType.GetIndex()
+#define OceanType     ocean::ProtoType.GetIndex()
+
+
+static void doSanityChecks () {
+  if (game::GetGlobalConst("DESERT") != DesertType) ABORT("`DESERT` is not %d", DesertType);
+  if (game::GetGlobalConst("JUNGLE") != JungleType) ABORT("`JUNGLE` is not %d", JungleType);
+  if (game::GetGlobalConst("STEPPE") != SteppeType) ABORT("`STEPPE` is not %d", SteppeType);
+  if (game::GetGlobalConst("LEAFY_FOREST") != LForestType) ABORT("`LEAFY_FOREST` is not %d", LForestType);
+  if (game::GetGlobalConst("EVERGREEN_FOREST") != EGForestType) ABORT("`EVERGREEN_FOREST` is not %d", EGForestType);
+  if (game::GetGlobalConst("TUNDRA") != SnowType) ABORT("`TUNDRA` is not %d", SnowType);
+  if (game::GetGlobalConst("GLACIER") != GlacierType) ABORT("`GLACIER` is not %d", GlacierType);
+  if (game::GetGlobalConst("OCEAN") != OceanType) ABORT("`OCEAN` is not %d", OceanType);
+}
 
 
 worldmap::worldmap () {}
@@ -366,6 +378,8 @@ truth worldmap::poiPlaceAttnamsAndUT (continent *PetrusLikes) {
 
 
 void worldmap::Generate () {
+  doSanityChecks();
+
   Alloc2D(OldAltitudeBuffer, XSize, YSize);
   Alloc2D(OldTypeBuffer, XSize, YSize);
 
