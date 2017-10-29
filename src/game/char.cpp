@@ -2838,10 +2838,16 @@ int character::CheckCorridorMove (v2 &moveVector, cv2 pos, int moveDir, truth *m
 
 
 truth character::IsDangerousSquare (v2 pos) const {
+  if (!IsPassableSquare(pos)) return false;
   lsquare *MoveToSquare[MAX_SQUARES_UNDER];
   auto Squares = CalculateNewSquaresUnder(MoveToSquare, pos);
   for (decltype(Squares) c = 0; c < Squares; ++c) {
     lsquare *Square = MoveToSquare[c];
+    if (IsPlayer()) {
+      if (!Square->HasBeenSeen()) continue;
+    } else {
+      if (!Square->CanBeSeenBy(this)) continue;
+    }
     // check if someone is standing at the square
     if (Square->GetCharacter() && GetTeam() != Square->GetCharacter()->GetTeam() && Square->GetCharacter()->CanBeSeenBy(this)) return true;
     if (Square->IsDangerous(this)) {
