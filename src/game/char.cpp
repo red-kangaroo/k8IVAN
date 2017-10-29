@@ -5068,9 +5068,10 @@ int characterprototype::CreateSpecialConfigurations (characterdatabase **TempCon
   if (Level == 1 && TempConfig[0]->CreateUndeadConfigurations) {
     for (int c = 1; c < protocontainer<character>::GetSize(); ++c) {
       const character::prototype *Proto = protocontainer<character>::GetProto(c);
+      if (!Proto) continue; // missing character
       const character::database *const *CharacterConfigData = Proto->GetConfigData();
       if (!CharacterConfigData) ABORT("No database entry for character <%s>!", Proto->GetClassID());
-      const character::database*const* End = CharacterConfigData + Proto->GetConfigSize();
+      const character::database*const* End = CharacterConfigData+Proto->GetConfigSize();
       for (++CharacterConfigData; CharacterConfigData != End; ++CharacterConfigData) {
         const character::database *CharacterDataBase = *CharacterConfigData;
         if (CharacterDataBase->UndeadVersions) {
@@ -5122,6 +5123,7 @@ int characterprototype::CreateSpecialConfigurations (characterdatabase **TempCon
   if (Level == 0 && TempConfig[0]->CreateGolemMaterialConfigurations) {
     for (int c = 1; c < protocontainer<material>::GetSize(); ++c) {
       const material::prototype* Proto = protocontainer<material>::GetProto(c);
+      if (!Proto) continue; // missing matherial
       const material::database*const* MaterialConfigData = Proto->GetConfigData();
       const material::database*const* End = MaterialConfigData + Proto->GetConfigSize();
       for (++MaterialConfigData; MaterialConfigData != End; ++MaterialConfigData) {

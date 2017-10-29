@@ -641,7 +641,9 @@ void worldmap::SmoothClimate () {
   game::BusyAnimation();
   for (int x = 0; x < XSize; ++x) {
     for (int y = 0; y < YSize; ++y) {
-      Map[x][y]->ChangeGWTerrain(protocontainer<gwterrain>::GetProto(TypeBuffer[x][y])->Spawn());
+      auto terraProto = protocontainer<gwterrain>::GetProto(TypeBuffer[x][y]);
+      if (!terraProto) ABORT("Oops! No gwterrain prototype for type #%d!\n", TypeBuffer[x][y]);
+      Map[x][y]->ChangeGWTerrain(terraProto->Spawn());
     }
   }
 }

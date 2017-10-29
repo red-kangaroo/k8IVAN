@@ -256,11 +256,14 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
     }
     delete inFile;
   }
-  //
-  int c1;
-  for (c1 = 0; c1 < SPECIAL_CONFIGURATION_GENERATION_LEVELS; ++c1) {
+
+  // remove undefined items
+  protocontainer<type>::Cleanup();
+
+  for (int c1 = 0; c1 < SPECIAL_CONFIGURATION_GENERATION_LEVELS; ++c1) {
     for (int c2 = 1; c2 < protocontainer<type>::GetSize(); ++c2) {
       prototype *Proto = protocontainer<type>::GetProtoData()[c2];
+      if (!Proto) continue; // missing something
       int Configs = Proto->ConfigSize;
       memmove(TempConfig, Proto->ConfigData, Configs*sizeof(database *));
       Configs = Proto->CreateSpecialConfigurations(TempConfig, Configs, c1);
@@ -272,15 +275,19 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
       }
     }
   }
-  for (c1 = 1; c1 < protocontainer<type>::GetSize(); ++c1) {
+
+  for (int c1 = 1; c1 < protocontainer<type>::GetSize(); ++c1) {
     prototype *Proto = protocontainer<type>::GetProtoData()[c1];
+    if (!Proto) continue; // missing something
     TempTables =
       CreateConfigTable(reinterpret_cast<databasebase ***>(Proto->ConfigTable),
       TempTable,
       reinterpret_cast<databasebase **>(Proto->ConfigData),
       TempTableInfo, c1, Proto->ConfigSize, TempTables);
   }
-  for (c1 = 1; c1 < TempTables; ++c1) delete [] TempTable[c1];
+
+  for (int c1 = 1; c1 < TempTables; ++c1) delete [] TempTable[c1];
+
   GetDataBaseMemberMap().clear();
 }
 

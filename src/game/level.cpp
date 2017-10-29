@@ -307,8 +307,10 @@ truth level::MakeRoom (const roomscript *RoomScript) {
     }
   }
 
-  room *RoomClass = protocontainer<room>::GetProto(*RoomScript->GetType())->Spawn();
-  //
+  auto roomProto = protocontainer<room>::GetProto(*RoomScript->GetType());
+  if (!roomProto) ABORT("No prototype #%d for room!", *RoomScript->GetType());
+  room *RoomClass = roomProto->Spawn();
+
   RoomClass->SetScript(RoomScript);
   RoomClass->SetPos(Pos);
   RoomClass->SetSize(Size);

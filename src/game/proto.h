@@ -24,6 +24,7 @@
 #include "game.h"
 
 
+// ////////////////////////////////////////////////////////////////////////// //
 class character;
 class item;
 class material;
@@ -34,6 +35,7 @@ template <class type> class databasecreator;
 struct itemdatabase;
 
 
+// ////////////////////////////////////////////////////////////////////////// //
 typedef std::map<festring, sLong> valuemap;
 typedef std::vector<item*> itemvector;
 typedef std::vector<itemvector> itemvectorvector;
@@ -41,28 +43,53 @@ typedef std::vector<character*> charactervector;
 typedef std::vector<material*> materialvector;
 
 
+// ////////////////////////////////////////////////////////////////////////// //
 template <class type> class protocontainer {
- public:
+public:
   friend class protosystem;
   friend class databasecreator<type>;
+
+public:
   typedef typename type::prototype prototype;
-  static int Add(prototype*);
-  static const prototype* GetProto(int I) { return GetProtoData()[I]; }
-  static int SearchCodeName(cfestring&);
-  static cchar* GetMainClassID() { return GetProtoData()[1]->GetClassID(); }
-  static int GetSize() { return GetSizeRef(); }
- private:
-  static prototype**& GetProtoData();
-  static valuemap& GetCodeNameMap();
-  static int& GetSizeRef();
+
+public:
+  static int Add (prototype *);
+  static const prototype *GetProto (int I) { return GetProtoData()[I]; }
+  static int SearchCodeName (cfestring &);
+  static cchar *GetMainClassID () { return GetProtoData()[1]->GetClassID(); }
+  static int GetSize () { return GetSizeRef(); }
+
+  static void Cleanup ();
+
+private:
+  static int &GetSizeRef ();
+  static prototype**& GetProtoData ();
+  static valuemap& GetCodeNameMap ();
 };
 
 
-template <class type> inline int protocontainer<type>::Add (prototype *Proto) {
+template <class type> inline void protocontainer<type>::Cleanup () {
+  // nullify undefined prototypes
+  for (int idx = 1; idx < GetSize(); ++idx) {
+    auto proto = GetProtoData()[idx];
+    if (!proto) continue;
+    if (!proto->GetConfigData()) {
+      // this entity has no script prototype...
+      //ABORT("Seems that database is missing <%s>!", proto->GetClassID());
+      fprintf(stderr, "Removing undefined entity <%s>..\n", proto->GetClassID());
+      GetProtoData()[idx] = nullptr;
+      auto it = GetCodeNameMap().find(proto->GetClassID());
+      if (it != GetCodeNameMap().end()) GetCodeNameMap().erase(it);
+    }
+  }
+}
+
+
+template <class type> int protocontainer<type>::Add (prototype *proto) {
   if (!GetSize()) (GetProtoData() = new prototype*[1024])[GetSizeRef()++] = 0;
   int Index = GetSizeRef()++;
-  GetProtoData()[Index] = Proto;
-  std::pair<festring, sLong> Pair(Proto->GetClassID(), Index);
+  GetProtoData()[Index] = proto;
+  std::pair<festring, sLong> Pair(proto->GetClassID(), Index);
   GetCodeNameMap().insert(Pair);
   return Index;
 }
@@ -74,6 +101,7 @@ template <class type> inline int protocontainer<type>::SearchCodeName (cfestring
 }
 
 
+// ////////////////////////////////////////////////////////////////////////// //
 class protosystem {
 public:
   static character* BalancedCreateMonster(level * = 0);
@@ -113,7 +141,7 @@ template <class type> inline outputfile &operator << (outputfile &SaveFile, cons
 template <class type> inline inputfile &operator >> (inputfile &SaveFile, type *&Class) {
   uShort Type = 0;
   SaveFile >> Type;
-  Class = Type ? protocontainer<type>::GetProto(Type)->SpawnAndLoad(SaveFile) : 0;
+  Class = (Type ? protocontainer<type>::GetProto(Type)->SpawnAndLoad(SaveFile) : 0);
   return SaveFile;
 }
 

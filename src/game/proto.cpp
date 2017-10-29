@@ -23,6 +23,7 @@ sLong protosystem::TotalItemPossibility;
 #include "level.h"
 
 
+// ////////////////////////////////////////////////////////////////////////// //
 character *protosystem::BalancedCreateMonster (level *lvl) {
   if (!lvl) lvl = game::GetCurrentLevel();
   for (int c = 0; ; ++c) {
@@ -30,6 +31,7 @@ character *protosystem::BalancedCreateMonster (level *lvl) {
     std::vector<configid> Possible;
     for (int Type = 1; Type < protocontainer<character>::GetSize(); ++Type) {
       const character::prototype *Proto = protocontainer<character>::GetProto(Type);
+      if (!Proto) continue; // missing character
       const character::database *const *ConfigData = Proto->GetConfigData();
       int ConfigSize = Proto->GetConfigSize();
       for (int c = 0; c < ConfigSize; ++c) {
@@ -106,6 +108,7 @@ character *protosystem::BalancedCreateMonster (level *lvl) {
     for (int i = 0; i < 25; ++i) {
       configid Chosen = Possible[RAND_GOOD(Possible.size())];
       const character::prototype *Proto = protocontainer<character>::GetProto(Chosen.Type);
+      if (!Proto) continue; // missing character
       character *Monster = Proto->Spawn(Chosen.Config);
       if (c >= 100 ||
           ((Monster->GetFrequency() == 10000 || Monster->GetFrequency() > RAND_GOOD(10000)) &&
@@ -250,7 +253,8 @@ character *protosystem::CreateMonster (int MinDanger, int MaxDanger, int Special
 
   for (int c = 0; !Monster; ++c) {
     for (int Type = 1; Type < protocontainer<character>::GetSize(); ++Type) {
-      const character::prototype* Proto = protocontainer<character>::GetProto(Type);
+      const character::prototype *Proto = protocontainer<character>::GetProto(Type);
+      if (!Proto) continue; // missing character
       const character::database*const* ConfigData = Proto->GetConfigData();
       int ConfigSize = Proto->GetConfigSize();
 
@@ -281,7 +285,9 @@ character *protosystem::CreateMonster (int MinDanger, int MaxDanger, int Special
     }
 
     configid Chosen = Possible[RAND_GOOD(Possible.size())];
-    Monster = protocontainer<character>::GetProto(Chosen.Type)->Spawn(Chosen.Config, SpecialFlags);
+    auto monsProto = protocontainer<character>::GetProto(Chosen.Type);
+    if (!monsProto) ABORT("Cannot create monster of type %d without prototype!", Chosen.Type);
+    Monster = monsProto->Spawn(Chosen.Config, SpecialFlags);
     Monster->SignalGeneration();
     Monster->SetTeam(game::GetTeam(MONSTER_TEAM));
   }
@@ -321,6 +327,7 @@ template <class type> std::pair<const typename type::prototype *, int> SearchFor
   //
   for (int c = 1; c < protocontainer<type>::GetSize(); ++c) {
     const prototype *Proto = protocontainer<type>::GetProto(c);
+    if (!Proto) continue; // missing something
     const database *const *ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
     //
@@ -398,9 +405,9 @@ item* protosystem::CreateItem (cfestring &What, truth Output) {
 material* protosystem::CreateMaterial (cfestring& What, sLong Volume, truth Output) {
   for (int c1 = 1; c1 < protocontainer<material>::GetSize(); ++c1) {
     const material::prototype* Proto = protocontainer<material>::GetProto(c1);
+    if (!Proto) continue; // missing material
     const material::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
-
     for (int c2 = 1; c2 < ConfigSize; ++c2) {
       if (ConfigData[c2]->NameStem == What) {
         if (ConfigData[c2]->CommonFlags & CAN_BE_WISHED || game::WizardModeIsActive()) {
@@ -413,9 +420,7 @@ material* protosystem::CreateMaterial (cfestring& What, sLong Volume, truth Outp
       }
     }
   }
-
   if (Output) ADD_MESSAGE("There is no such material.");
-
   return 0;
 }
 
@@ -425,6 +430,7 @@ material* protosystem::CreateMaterial (cfestring& What, sLong Volume, truth Outp
 void protosystem::CreateEveryCharacter (charactervector &Character) {
   for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c1);
+    if (!Proto) continue; // missing character
     const character::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 0; c2 < ConfigSize; ++c2) {
@@ -437,6 +443,7 @@ void protosystem::CreateEveryCharacter (charactervector &Character) {
 void protosystem::CreateEveryItem (itemvectorvector &Item) {
   for (int c = 1; c < protocontainer<item>::GetSize(); ++c) {
     const item::prototype* Proto = protocontainer<item>::GetProto(c);
+    if (!Proto) continue; // missing item
     const item::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 0; c2 < ConfigSize; ++c2) {
@@ -451,6 +458,7 @@ void protosystem::CreateEveryItem (itemvectorvector &Item) {
 void protosystem::CreateEveryMaterial (std::vector<material*> &Material) {
   for (int c1 = 1; c1 < protocontainer<material>::GetSize(); ++c1) {
     const material::prototype* Proto = protocontainer<material>::GetProto(c1);
+    if (!Proto) continue; // missing material
     const material::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 1; c2 < ConfigSize; ++c2) {
@@ -465,6 +473,7 @@ void protosystem::CreateEveryMaterial (std::vector<material*> &Material) {
 void protosystem::CreateEveryNormalEnemy (charactervector& EnemyVector) {
   for (int c = 1; c < protocontainer<character>::GetSize(); ++c) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c);
+    if (!Proto) continue; // missing character
     const character::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 0; c2 < ConfigSize; ++c2) {
@@ -479,13 +488,13 @@ void protosystem::CreateEveryNormalEnemy (charactervector& EnemyVector) {
 void protosystem::Initialize () {
   typedef item::prototype prototype;
   typedef item::database database;
-  int c;
 
-  for (c = 1; c < protocontainer<item>::GetSize(); ++c) {
+  protocontainer<item>::Cleanup();
+
+  for (int c = 1; c < protocontainer<item>::GetSize(); ++c) {
     const prototype *Proto = protocontainer<item>::GetProtoData()[c];
-    if (!Proto->GetConfigData()) {
-      ABORT("Seems that database is missing <%s>!", Proto->GetClassID());
-    }
+    if (!Proto) continue; // missing something
+    if (!Proto->GetConfigData()) ABORT("Seems that database is missing <%s>!", Proto->GetClassID());
     ItemConfigDataSize += Proto->GetConfigSize();
     if (Proto->GetConfigData()[0]->IsAbstract) --ItemConfigDataSize;
   }
@@ -493,8 +502,9 @@ void protosystem::Initialize () {
   ItemConfigData = new database*[ItemConfigDataSize];
   int Index = 0;
 
-  for (c = 1; c < protocontainer<item>::GetSize(); ++c) {
+  for (int c = 1; c < protocontainer<item>::GetSize(); ++c) {
     const prototype* Proto = protocontainer<item>::GetProtoData()[c];
+    if (!Proto) continue; // missing something
     const database*const* ProtoConfigData = Proto->GetConfigData();
     const database* MainDataBase = *ProtoConfigData;
 
@@ -529,8 +539,8 @@ void protosystem::Initialize () {
 
   delete [] DataBaseBuffer;
 
-  for (c = 0; c < ItemConfigDataSize; ++c) {
-    database* DataBase = ItemConfigData[c];
+  for (int c = 0; c < ItemConfigDataSize; ++c) {
+    database *DataBase = ItemConfigData[c];
     TotalItemPossibility += DataBase->Possibility;
     DataBase->PartialPossibilitySum = TotalItemPossibility;
   }
@@ -540,6 +550,7 @@ void protosystem::Initialize () {
 void protosystem::InitCharacterDataBaseFlags () {
   for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c1);
+    if (!Proto) continue; // missing character
     character::database** ConfigData = Proto->ConfigData;
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 0; c2 < ConfigSize; ++c2) {
@@ -552,6 +563,7 @@ void protosystem::InitCharacterDataBaseFlags () {
 void protosystem::SaveCharacterDataBaseFlags (outputfile &SaveFile) {
   for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c1);
+    if (!Proto) continue; // missing character
     const character::database*const* ConfigData = Proto->ConfigData;
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 0; c2 < ConfigSize; ++c2) SaveFile << ConfigData[c2]->Flags;
@@ -562,6 +574,7 @@ void protosystem::SaveCharacterDataBaseFlags (outputfile &SaveFile) {
 void protosystem::LoadCharacterDataBaseFlags (inputfile &SaveFile) {
   for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c1);
+    if (!Proto) continue; // missing character
     character::database** ConfigData = Proto->ConfigData;
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 0; c2 < ConfigSize; ++c2) SaveFile >> ConfigData[c2]->Flags;
@@ -572,6 +585,7 @@ void protosystem::LoadCharacterDataBaseFlags (inputfile &SaveFile) {
 void protosystem::CreateEverySeenCharacter (charactervector &Character) {
   for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     const character::prototype* Proto = protocontainer<character>::GetProto(c1);
+    if (!Proto) continue; // missing character
     const character::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 0; c2 < ConfigSize; ++c2) {
@@ -588,6 +602,7 @@ void protosystem::CreateEverySeenCharacter (charactervector &Character) {
 void protosystem::CreateEveryMaterial (std::vector<material*> &Material, const god *God, ccharacter *Char) {
   for (int c1 = 1; c1 < protocontainer<material>::GetSize(); ++c1) {
     const material::prototype* Proto = protocontainer<material>::GetProto(c1);
+    if (!Proto) continue; // missing material
     const material::database*const* ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 1; c2 < ConfigSize; ++c2) {

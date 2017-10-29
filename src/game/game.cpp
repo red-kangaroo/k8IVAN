@@ -1293,7 +1293,11 @@ cchar *game::GetVerbalPlayerAlignment () {
 void game::CreateGods () {
   God = new god*[GODS+1];
   God[0] = 0;
-  for (int c = 1; c < protocontainer<god>::GetSize(); ++c) God[c] = protocontainer<god>::GetProto(c)->Spawn();
+  for (int c = 1; c < protocontainer<god>::GetSize(); ++c) {
+    auto proto = protocontainer<god>::GetProto(c);
+    if (!proto) ABORT("God #%d is not defined!", c);
+    God[c] = proto->Spawn();
+  }
 }
 
 
@@ -1855,6 +1859,7 @@ void game::InitDangerMap () {
   for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     BusyAnimation();
     const character::prototype *Proto = protocontainer<character>::GetProto(c1);
+    if (!Proto) continue; // missing character
     const character::database *const *ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 0; c2 < ConfigSize; ++c2) {
@@ -1887,6 +1892,7 @@ void game::InitDangerMap () {
 void game::CalculateNextDanger () {
   if (IsInWilderness() || !*CurrentLevel->GetLevelScript()->GenerateMonsters()) return;
   const character::prototype *Proto = protocontainer<character>::GetProto(NextDangerIDType);
+  if (!Proto) ABORT("Oops! game::CalculateNextDanger() failed!"); // missing character
   const character::database *const *ConfigData = Proto->GetConfigData();
   const character::database *DataBase = ConfigData[NextDangerIDConfigIndex];
   dangermap::iterator DangerIterator = DangerMap.find(configid(NextDangerIDType, DataBase->Config));
@@ -1922,9 +1928,14 @@ void game::CalculateNextDanger () {
       //fprintf(stderr, "game::CalculateNextDanger(): EXIT0\n");
       return;
     }
+    int loopCount = 0;
     for (;;) {
-      if (++NextDangerIDType >= protocontainer<character>::GetSize()) NextDangerIDType = 1;
+      if (++NextDangerIDType >= protocontainer<character>::GetSize()) {
+        NextDangerIDType = 1;
+        if (++loopCount > 2) ABORT("Oops! Cannot calculate next danger!");
+      }
       Proto = protocontainer<character>::GetProto(NextDangerIDType);
+      if (!Proto) continue; // missing character
       ConfigData = Proto->GetConfigData();
       int ConfigSize = Proto->GetConfigSize();
       for (int c = 0; c < ConfigSize; ++c) {
@@ -2386,7 +2397,9 @@ void game::DisplayMassacreList (const massacremap &MassacreMap, cchar *Reason, s
   charactervector GraveYard;
   //
   for (massacremap::const_iterator i1 = MassacreMap.begin(); i1 != MassacreMap.end(); ++i1) {
-    character *Victim = protocontainer<character>::GetProto(i1->first.Type)->Spawn(i1->first.Config);
+    auto monsProto = protocontainer<character>::GetProto(i1->first.Type);
+    if (!monsProto) continue; // missing character
+    character *Victim = monsProto->Spawn(i1->first.Config);
     Victim->SetAssignedName(i1->first.Name);
     massacresetentry Entry;
     GraveYard.push_back(Victim);
@@ -2553,6 +2566,7 @@ double game::CalculateAverageDangerOfAllNormalEnemies () {
   int Enemies = 0;
   for (int c1 = 1; c1 < protocontainer<character>::GetSize(); ++c1) {
     const character::prototype *Proto = protocontainer<character>::GetProto(c1);
+    if (!Proto) continue; // missing character
     const character::database*const *ConfigData = Proto->GetConfigData();
     int ConfigSize = Proto->GetConfigSize();
     for (int c2 = 0; c2 < ConfigSize; ++c2) {
@@ -2599,7 +2613,9 @@ sLong game::GetScore () {
     KillData.DangerSum += i->second.DangerSum;
   }
   for (i = SumMap.begin(); i != SumMap.end(); ++i) {
-    character *Char = protocontainer<character>::GetProto(i->first.Type)->Spawn(i->first.Config);
+    auto monsProto = protocontainer<character>::GetProto(i->first.Type);
+    if (!monsProto) continue; // missing character
+    character *Char = monsProto->Spawn(i->first.Config);
     int SumOfAttributes = Char->GetSumOfAttributes();
     Counter += sqrt(i->second.DangerSum / DEFAULT_GENERATION_DANGER) * SumOfAttributes * SumOfAttributes;
     delete Char;
