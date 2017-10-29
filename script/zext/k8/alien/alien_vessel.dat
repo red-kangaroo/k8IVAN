@@ -168,7 +168,7 @@ Dungeon ALIEN_VESSEL;
     Square, Random;
     {
       Character = aliendog();
-      Times = 10;
+      Times = 9;
     }
 
     Square, Random;
@@ -213,7 +213,7 @@ Dungeon ALIEN_VESSEL;
     Square, Random;
     {
       Character = aliendog();
-      Times = 12;
+      Times = 10;
     }
 
     Square, Random;
@@ -253,13 +253,13 @@ Dungeon ALIEN_VESSEL;
     Square, Random;
     {
       Character = aliendog();
-      Times = 15;
+      Times = 12;
     }
 
     Square, Random;
     {
       Character = adultalien();
-      Times = 15;
+      Times = 10; // queen will spawn enough of these
     }
 
     Square, Random;

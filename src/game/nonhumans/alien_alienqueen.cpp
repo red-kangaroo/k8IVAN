@@ -1,19 +1,19 @@
 #ifdef HEADER_PHASE
 CHARACTER(alienqueen, largecreature)
 {
- protected:
-  virtual void GetAICommand();
-  //virtual void CreateCorpse(lsquare*);
-  //virtual truth MustBeRemovedFromBone() const;
+protected:
+  virtual void GetAICommand () override;
+  //virtual void CreateCorpse (lsquare *) override;
+  //virtual truth MustBeRemovedFromBone () const override;
 };
 
 
 #else
 
 
+// she moves randomly, and spawn aliens
 void alienqueen::GetAICommand () {
   SeekLeader(GetLeader());
-
   if (FollowLeader(GetLeader())) return;
 
   if (!(RAND()%60)) {
