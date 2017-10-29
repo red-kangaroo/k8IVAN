@@ -70,7 +70,6 @@ void continent::GenerateInfo () {
 }
 
 
-//FIXME: REWRITE THIS SHIT!
 v2 continent::GetRandomMember (int Type, truth *success) {
   if (Type < 0 || Type >= TerrainTypeLimit) ABORT("continent::GetRandomMember: invalid terrain type requiested (%d)!", Type);
 
@@ -81,21 +80,20 @@ v2 continent::GetRandomMember (int Type, truth *success) {
     return v2(0, 0);
   }
 
-  v2 *TypeContainer = new v2[Member.size()];
-  sLong cnt = 0;
+  sLong cnt = RAND()%ttypeCount[Type];
   for (feuLong c = 0; c < Member.size(); ++c) {
-    if (TypeBuffer[Member[c].X][Member[c].Y] == Type) {
-      TypeContainer[cnt++] = Member[c];
-      if (cnt == ttypeCount[Type]) break;
+    v2 pos = Member[c];
+    if (TypeBuffer[pos.X][pos.Y] == Type) {
+      if (cnt-- == 0) {
+        if (success) *success = true;
+        return pos;
+      }
     }
   }
-  if (cnt == 0) ABORT("Something is very wrong with our planet!");
-
-  v2 Return = TypeContainer[RAND()%cnt];
-  delete [] TypeContainer;
+  ABORT("Something is very wrong with our planet!");
 
   if (success) *success = true;
-  return Return;
+  return v2(0, 0);
 }
 
 
