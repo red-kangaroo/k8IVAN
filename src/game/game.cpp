@@ -1541,10 +1541,11 @@ void game::LoadGlobalValueMap (TextInput &fl) {
       while (!done) {
         truth forcedIndex = false;
         sLong forceIdx = 0;
+        truth doAdvance = true;
         // read name
         fl.ReadWord(word, true);
         if (word == "}") break;
-        if (word == "=") {
+        if (word == "=" || word == ":=") {
           // nameless
           idName.Empty();
         } else {
@@ -1556,6 +1557,10 @@ void game::LoadGlobalValueMap (TextInput &fl) {
           forceIdx = fl.ReadNumber();
           forcedIndex = true;
           //fprintf(stderr, "force index for `%s`(%s): %d (idx=%d)\n", idName.CStr(), (idName.GetSize() == 0 ? "empty" : "non-empty"), forceIdx, idx);
+        } else if (word == ":=") {
+          forceIdx = fl.ReadNumber();
+          forcedIndex = true;
+          doAdvance = false;
         } else {
           if (word != "," && word != ";" && word != "}") ABORT("',' expected in file %s at line %d!", fl.GetFileName().CStr(), fl.TokenLine());
           if (word == "}") done = true;
@@ -1571,12 +1576,16 @@ void game::LoadGlobalValueMap (TextInput &fl) {
             }
           } else {
             // for enums, index is always forced, but not increased for nameless "="
-            if (idName.GetSize()) GlobalValueMap.insert(std::make_pair(idName, forceIdx++));
+            if (idName.GetSize()) {
+              GlobalValueMap.insert(std::make_pair(idName, forceIdx));
+              if (doAdvance) ++forceIdx;
+            }
             idx = forceIdx;
           }
         } else {
           // no forced index
           if (idName.GetSize() == 0) ABORT("The thing that should not be");
+          if (!doAdvance) ABORT("The thing that should not be");
           sLong i = idx;
           if (isBit) i = 1<<i;
           GlobalValueMap.insert(std::make_pair(idName, i));
