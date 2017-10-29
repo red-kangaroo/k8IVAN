@@ -1,6 +1,6 @@
 Dungeon ALIEN_VESSEL;
 {
-  Levels = 7;
+  Levels = 5;
   Description = "alien vessel";
   ShortDescription = "AV";
 
@@ -84,7 +84,7 @@ Dungeon ALIEN_VESSEL;
 
     Square, Random;
     {
-      Character = adultalien();
+      Character = jackal();
       Times = 5;
     }
     Square, Random;
@@ -129,7 +129,7 @@ Dungeon ALIEN_VESSEL;
     Square, Random;
     {
       Character = aliendog();
-      Times = 5;
+      Times = 8;
     }
 
     Square, Random NOT_WALKABLE|ATTACHABLE;
@@ -162,12 +162,18 @@ Dungeon ALIEN_VESSEL;
     Square, Random;
     {
       Character = jackal();
-      Times = 5;
+      Times = 6;
     }
 
     Square, Random;
     {
       Character = aliendog();
+      Times = 10;
+    }
+
+    Square, Random;
+    {
+      Character = adultalien();
       Times = 5;
     }
 
@@ -207,97 +213,13 @@ Dungeon ALIEN_VESSEL;
     Square, Random;
     {
       Character = aliendog();
-      Times = 5;
+      Times = 12;
     }
 
     Square, Random;
     {
       Character = adultalien();
-      Times = 5;
-    }
-
-    Square, Random NOT_WALKABLE|ATTACHABLE;
-    {
-      OTerrain = stairs(STAIRS_UP);
-      EntryIndex = STAIRS_UP;
-      AttachRequired = true;
-    }
-
-    Square, Random NOT_WALKABLE|ATTACHABLE;
-    {
-      OTerrain = stairs(STAIRS_DOWN);
-      EntryIndex = STAIRS_DOWN;
-      AttachRequired = true;
-    }
-  }
-
-  Level 4;
-  {
-    FillSquare = solidterrain(GROUND), MORAINE earth;
-
-    RoomDefault
-    {
-      Pos = 2:XSize-5,2:YSize-5;
-      WallSquare = solidterrain(GROUND), FIR_WOOD wall(BRICK_OLD);
-      FloorSquare = solidterrain(PARQUET), 0;
-      DoorSquare = solidterrain(PARQUET), FIR_WOOD door;
-    }
-
-    Square, Random;
-    {
-      Character = jackal();
-      Times = 5;
-    }
-
-    Square, Random;
-    {
-      Character = aliendog();
-      Times = 7;
-    }
-
-    Square, Random;
-    {
-      Character = adultalien();
-      Times = 6;
-    }
-
-    Square, Random NOT_WALKABLE|ATTACHABLE;
-    {
-      OTerrain = stairs(STAIRS_UP);
-      EntryIndex = STAIRS_UP;
-      AttachRequired = true;
-    }
-
-    Square, Random NOT_WALKABLE|ATTACHABLE;
-    {
-      OTerrain = stairs(STAIRS_DOWN);
-      EntryIndex = STAIRS_DOWN;
-      AttachRequired = true;
-    }
-  }
-
-  Level 5;
-  {
-    FillSquare = solidterrain(GROUND), MORAINE earth;
-
-    RoomDefault
-    {
-      Pos = 2:XSize-5,2:YSize-5;
-      WallSquare = solidterrain(GROUND), FIR_WOOD wall(BRICK_OLD);
-      FloorSquare = solidterrain(PARQUET), 0;
-      DoorSquare = solidterrain(PARQUET), FIR_WOOD door;
-    }
-
-    Square, Random;
-    {
-      Character = jackal();
-      Times = 5;
-    }
-
-    Square, Random;
-    {
-      Character = adultalien();
-      Times = 9;
+      Times = 10;
     }
 
     Square, Random NOT_WALKABLE|ATTACHABLE;
@@ -330,14 +252,14 @@ Dungeon ALIEN_VESSEL;
 
     Square, Random;
     {
-      Character = jackal();
-      Times = 5;
+      Character = aliendog();
+      Times = 15;
     }
 
     Square, Random;
     {
-      Character = aliendog();
-      Times = 5;
+      Character = adultalien();
+      Times = 15;
     }
 
     Square, Random;
