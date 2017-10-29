@@ -1133,9 +1133,10 @@ TextInputFile::~TextInputFile () {
 }
 
 
+cfestring &TextInputFile::GetFileName () const { return ifile.GetFileName(); }
 int TextInputFile::realGetChar () { return ifile.Get(); }
-bool TextInputFile::isRealEof () { return ifile.Eof(); }
-bool TextInputFile::isRealOpen () { return ifile.IsOpen(); }
+truth TextInputFile::isRealEof () { return ifile.Eof(); }
+truth TextInputFile::IsOpen () { return ifile.IsOpen(); }
 void TextInputFile::Close () { /*fprintf(stderr, "TIF:Close();\n");*/ ifile.Close(); TextInput::Close(); }
 void TextInputFile::realClearFlags () { ifile.ClearFlags(); }
 
@@ -1171,8 +1172,9 @@ int MemTextFile::realGetChar () {
 }
 
 
-bool MemTextFile::isRealEof () { return (bufPos >= bufSize); }
-bool MemTextFile::isRealOpen () { return (buf != nullptr); }
+cfestring &MemTextFile::GetFileName () const { return tfname; }
+truth MemTextFile::isRealEof () { return (bufPos >= bufSize); }
+truth MemTextFile::IsOpen () { return (buf != nullptr); }
 
 
 void MemTextFile::Close () {
