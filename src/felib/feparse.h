@@ -55,6 +55,7 @@ public:
   festring ReadStringOrNumberKeepStr (sLong *num, truth *isString, truth PreserveTerminator=false, truth *wasCloseBrc=0);
   v2 ReadVector2d ();
   rect ReadRect ();
+  float ReadFloat ();
 
   festring getVar (cfestring &name);
   void setVar (cfestring &name, cfestring &value);
@@ -77,7 +78,7 @@ public:
 protected:
   int gotCharSkipComment (int ch, truth allowSingleLineComments=true); // just read `ch`, skip possible comment; returns `ch` or -1
 
-  festring ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc);
+  template<typename numtype> festring ReadNumberIntr (int CallLevel, numtype *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc, truth allowFloats);
 
   festring findVar (cfestring &name, truth *found) const;
   truth readWordIntr (festring &String, truth abortOnEOF); // returns `false` on EOF
@@ -109,6 +110,7 @@ protected:
   int mTokenLine;
   festring mNumStr; // when reading a number, and `mCollectingNumStr` flag is set, this will be filled
   truth mCollectingNumStr;
+  truth mAllowFloatNums;
 
   friend InputFileSaved;
 };
@@ -172,6 +174,7 @@ inline void ReadData (int &Type, TextInput &infile) { Type = infile.ReadNumber()
 inline void ReadData (packv2 &Type, TextInput &infile) { Type = infile.ReadVector2d(); }
 inline void ReadData (v2 &Type, TextInput &infile) { Type = infile.ReadVector2d(); }
 inline void ReadData (rect &Type, TextInput &infile) { Type = infile.ReadRect(); }
+inline void ReadData (float &Type, TextInput &infile) { Type = infile.ReadFloat(); }
 
 void ReadData (festring &, TextInput &);
 void ReadData (fearray<sLong> &, TextInput &);

@@ -84,6 +84,7 @@ void TextInput::setup (const valuemap *aValueMap) {
   mTokenLine = 1;
   mNumStr = "";
   mCollectingNumStr = false;
+  mAllowFloatNums = false;
 }
 
 
@@ -96,6 +97,7 @@ void TextInput::Close () {
   mTokenLine = 0;
   mNumStr = "";
   mCollectingNumStr = false;
+  mAllowFloatNums = false;
   //fprintf(stderr, "TI:Close(); -- exit\n");
 }
 
@@ -502,13 +504,6 @@ truth TextInput::readWordIntr (festring &String, truth abortOnEOF) {
       for (;;) {
         ch = GetChar();
         if (ch == EOF) break;
-        /*
-        if (isdigit(ch)) {
-          if (String == "rgb") { UngetChar(ch); break; } // temporary hack
-          die("identifiers cannot contain digits (yet)");
-        }
-        if (ch != '_' && !isalpha(ch)) { UngetChar(ch); break; }
-        */
         if (ch != '_' && !isalpha(ch) && !isdigit(ch)) { UngetChar(ch); break; }
         String << (char)(ch);
       }
@@ -517,11 +512,18 @@ truth TextInput::readWordIntr (festring &String, truth abortOnEOF) {
     // number?
     if (isdigit(ch)) {
       String << (char)(ch);
+      bool wasdot = !mAllowFloatNums;
       for (;;) {
         ch = GetChar();
         if (ch == EOF) break;
         if (ch == '_') continue;
         if (isalpha(ch)) die("invalid number");
+        if (ch == '.') {
+          if (wasdot) die("invalid number");
+          wasdot = true;
+          String << '.';
+          continue;
+        }
         if (!isdigit(ch)) { UngetChar(ch); break; }
         String << (char)(ch);
       }
@@ -591,8 +593,14 @@ char TextInput::ReadLetter (truth abortOnEOF) {
 /* Reads a number or a formula from inputfile. Valid values could be for
    instance "3", "5 * 4+5", "2+Variable%4" etc. */
 //sLong inputfile::ReadNumber (int CallLevel, truth PreserveTerminator) {
-festring TextInput::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc) {
-  sLong Value = 0;
+template<typename numtype> festring TextInput::ReadNumberIntr (int CallLevel, numtype *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc, truth allowFloats) {
+  struct AllowFloatSaver {
+    truth oldallowfloat;
+    truth *var;
+    AllowFloatSaver (truth *avar, truth newval) { oldallowfloat = *avar; var = avar; *avar = newval; }
+    ~AllowFloatSaver () { *var = oldallowfloat; }
+  };
+  numtype Value = 0;
   festring Word, res;
   truth NumberCorrect = false;
   truth firstWord = true;
@@ -600,6 +608,7 @@ festring TextInput::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
   if (num) *num = 0;
   if (wasCloseBrc) *wasCloseBrc = false;
   mTokenLine = mCurrentLine;
+  auto oldflt = AllowFloatSaver(&mAllowFloatNums, allowFloats);
   //fprintf(stderr, ">>> ReadNumberIntr()\n");
   for (;;) {
     ReadWord(Word);
@@ -618,7 +627,7 @@ festring TextInput::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       sLong l = strtoll(s, &e, 10);
       if (*e == '\0') {
         //fprintf(stderr, " number: [%d]\n", l);
-        Value = l;
+        Value = (numtype)l;
         NumberCorrect = true;
         continue;
       }
@@ -651,7 +660,12 @@ festring TextInput::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
     // number?
     if (isdigit(First)) {
       if (mCollectingNumStr) mNumStr << Word;
-      Value = atoi(Word.CStr());
+      //Value = atoi(Word.CStr());
+      if (allowFloats) {
+        Value = (numtype)atoi(Word.CStr());
+      } else {
+        Value = (numtype)atof(Word.CStr());
+      }
       NumberCorrect = true;
       // HACK: autoinsert terminator
       skipBlanks();
@@ -683,11 +697,15 @@ festring TextInput::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
         continue;
       }
 /* Convert this into an inline function! */
-#define CHECK_OP(op, cl) \
+#define CHECK_OP(op, cl, opertype) \
   if (First == #op[0]) { \
     if (cl < CallLevel) {\
       if (mCollectingNumStr) mNumStr << Word; \
-      Value op##= ReadNumber(cl);\
+      /*Value op##= ReadNumber(cl);*/\
+      numtype rhs = 0;\
+      ReadNumberIntr<numtype>(cl, &rhs, nullptr, false, false, nullptr, allowFloats);\
+      /*Value op##= rhs;*/\
+      Value = (numtype)((opertype)Value op (opertype)rhs);\
       NumberCorrect = true;\
       continue;\
     } else {\
@@ -696,16 +714,22 @@ festring TextInput::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
       return res;\
     } \
   }
-      CHECK_OP(&, 1); CHECK_OP(|, 1); CHECK_OP(^, 1);
-      CHECK_OP(*, 2); CHECK_OP(/, 2); CHECK_OP(%, 2);
-      CHECK_OP(+, 3); CHECK_OP(-, 3);
+      CHECK_OP(&, 1, int);
+      CHECK_OP(|, 1, int);
+      CHECK_OP(^, 1, int);
+      CHECK_OP(*, 2, numtype);
+      CHECK_OP(/, 2, numtype);
+      CHECK_OP(%, 2, int);
+      CHECK_OP(+, 3, numtype);
+      CHECK_OP(-, 3, numtype);
 #undef CHECK_OP
       if (First == '<') {
         char Next = GetChar();
         if (Next == '<') {
           if (1 < CallLevel) {
             if (mCollectingNumStr) mNumStr << "<<";
-            Value <<= ReadNumber(1);
+            //Value <<= ReadNumber(1);
+            Value = (numtype)((int)Value<<(int)ReadNumber(1));
             NumberCorrect = true;
             continue;
           } else {
@@ -723,7 +747,8 @@ festring TextInput::ReadNumberIntr (int CallLevel, sLong *num, truth *isString, 
         if (Next == '>') {
           if (1 < CallLevel) {
             if (mCollectingNumStr) mNumStr << ">>";
-            Value >>= ReadNumber(1);
+            //Value >>= ReadNumber(1);
+            Value = (numtype)((int)Value>>(int)ReadNumber(1));
             NumberCorrect = true;
             continue;
           } else {
@@ -865,14 +890,20 @@ festring TextInput::ReadCode (truth abortOnEOF) {
 
 sLong TextInput::ReadNumber (int CallLevel, truth PreserveTerminator, truth *wasCloseBrc) {
   sLong num = 0;
-  truth isString = false;
-  ReadNumberIntr(CallLevel, &num, &isString, false, PreserveTerminator, wasCloseBrc);
+  ReadNumberIntr<sLong>(CallLevel, &num, nullptr, false, PreserveTerminator, wasCloseBrc, false);
   return num;
 }
 
 
 festring TextInput::ReadStringOrNumber (sLong *num, truth *isString, truth PreserveTerminator, truth *wasCloseBrc) {
-  return ReadNumberIntr(HIGHEST, num, isString, true, PreserveTerminator, wasCloseBrc);
+  return ReadNumberIntr<sLong>(HIGHEST, num, isString, true, PreserveTerminator, wasCloseBrc, false);
+}
+
+
+float TextInput::ReadFloat () {
+  float num = 0;
+  ReadNumberIntr<float>(HIGHEST, &num, nullptr, false, false, nullptr, true);
+  return num;
 }
 
 
