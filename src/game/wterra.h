@@ -195,6 +195,8 @@ public:
   DATA_BASE_VALUE(int, TemperatureWarm);
   DATA_BASE_VALUE(int, TemperatureHot);
 
+  virtual const prototype* FindProtoType () const { return &ProtoType; }
+
 private:
   int GetType () const { return GetProtoType()->GetIndex(); }
 
@@ -205,7 +207,6 @@ protected:
     return v2(DataBase->BitmapPos.X+((Frame<<3)&~8), DataBase->BitmapPos.Y);
   }
   virtual void InstallDataBase (int);
-  virtual const prototype* FindProtoType () const { return &ProtoType; }
 
 protected:
   static const prototype ProtoType;
@@ -335,6 +336,8 @@ public:
   DATA_BASE_TRUTH(CanBeSkipped);
   DATA_BASE_TRUTH(PlaceInitially);
 
+  virtual const prototype* FindProtoType () const { return &ProtoType; }
+
 private:
   int GetType () const { return GetProtoType()->GetIndex(); }
 
@@ -342,7 +345,6 @@ protected:
   virtual v2 GetBitmapPos (int) const { return DataBase->BitmapPos; }
   //virtual cfestring& GetNameStem () const;
   virtual void InstallDataBase (int);
-  virtual const prototype* FindProtoType () const { return &ProtoType; }
 
 protected:
   static const prototype ProtoType;

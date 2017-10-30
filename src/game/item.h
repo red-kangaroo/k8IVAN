@@ -243,6 +243,7 @@ public:
   EventHandlerMap mOnEvents;
 };
 
+
 class item : public object
 {
  public:
@@ -643,6 +644,8 @@ class item : public object
 
   virtual truth IsBoneNameSingular () const override { return (GetNameSingular() == "bone"); }
 
+  virtual const prototype* FindProtoType () const { return &ProtoType; }
+
 protected:
   virtual cchar* GetBreakVerb() const;
   virtual sLong GetMaterialPrice() const;
@@ -653,7 +656,6 @@ protected:
   virtual truth ShowMaterial() const;
   virtual truth AllowSparkling() const { return !Fluid; }
   virtual truth WeightIsIrrelevant() const { return false; }
-  virtual const prototype* FindProtoType() const { return &ProtoType; }
   virtual truth AddStateDescription(festring&, truth) const;
   static const prototype ProtoType;
   slot** Slot;

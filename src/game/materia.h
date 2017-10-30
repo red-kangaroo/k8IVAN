@@ -221,10 +221,12 @@ class material
   truth IsStuckTo(ccharacter*) const;
   DATA_BASE_TRUTH(DisablesPanicWhenConsumed);
   DATA_BASE_TRUTH(BlockESP);
+
+  virtual const prototype* FindProtoType() const { return &ProtoType; }
+
  protected:
   virtual void PostConstruct() { }
   void Initialize(int, sLong, truth);
-  virtual const prototype* FindProtoType() const { return &ProtoType; }
   static const prototype ProtoType;
   const database* DataBase;
   entity* MotherEntity;

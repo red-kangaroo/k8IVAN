@@ -532,7 +532,7 @@ Dungeon NEW_ATTNAM;
     Square, Pos 3,35;
     {
       Character on spawn {
-        if @has_item "light";
+        if @has_item "solstone" && @player_name == "_k8_";
           AddMessage "Nya!";
         else
           Disallow;

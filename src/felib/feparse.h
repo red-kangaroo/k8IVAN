@@ -47,7 +47,6 @@ public:
   int GetChar ();
   void UngetChar (int ch);
 
-  //festring ReadCode (truth abortOnEOF=true);
   festring ReadWord (truth abortOnEOF=true);
   truth ReadWord (festring &str, truth abortOnEOF=true); // returns `false` on EOF
   char ReadLetter (truth abortOnEOF=true);

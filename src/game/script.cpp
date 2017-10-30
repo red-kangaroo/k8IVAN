@@ -464,13 +464,6 @@ character *contentscript<character>::Instantiate (int SpecialFlags) const {
   character *Instance = contentscripttemplate<character>::BasicInstantiate(SpecialFlags);
   //fprintf(stderr, "instantiating character '%s'\n", Instance->GetNameSingular().CStr());
 
-  game::ClearEventData();
-  if (!game::RunCharAllowScript(Instance, mCode, "spawn")) {
-    //fprintf(stderr, "dropping character '%s'\n", Instance->GetNameSingular().CStr());
-    delete Instance;
-    return 0;
-  }
-
   if (GetTeam() != DEFAULT_TEAM) Instance->SetTeam(game::GetTeam(GetTeam()));
   const fearray<contentscript<item> > *Inventory = GetInventory();
   if (Inventory) Instance->AddToInventory(*Inventory, SpecialFlags);
@@ -478,6 +471,13 @@ character *contentscript<character>::Instantiate (int SpecialFlags) const {
   if (WayPoint) Instance->SetWayPoints(*WayPoint);
   Instance->RestoreHP();
   Instance->RestoreStamina();
+
+  if (!game::RunCharAllowScript(Instance, mCode, "spawn")) {
+    //fprintf(stderr, "dropping character '%s'\n", Instance->GetNameSingular().CStr());
+    delete Instance;
+    Instance = 0;
+  }
+
   return Instance;
 }
 
@@ -536,7 +536,6 @@ item *contentscript<item>::Instantiate (int SpecialFlags) const {
     Instance = contentscripttemplate<item>::BasicInstantiate(SpecialFlags);
   }
 
-  game::ClearEventData();
   if (!game::RunItemAllowScript(Instance, mCode, "spawn")) {
     //fprintf(stderr, "dropping character '%s'\n", Instance->GetNameSingular().CStr());
     delete Instance;

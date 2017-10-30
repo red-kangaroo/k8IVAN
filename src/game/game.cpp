@@ -56,11 +56,7 @@
 
 
 std::stack<TextInput *> game::mFEStack;
-character *game::mChar = 0;
-ccharacter *game::mActor = 0;
-ccharacter *game::mSecondActor = 0;
-item *game::mItem = 0;
-int game::mResult = 0;
+EventContext game::curevctx;
 
 
 int game::CurrentLevelIndex;
@@ -556,8 +552,10 @@ truth game::Init (cfestring &Name) {
       /*k8: damn! seems that this is field, not local! bool PlayerHasReceivedAllGodsKnownBonus = false; */
       PlayerHasReceivedAllGodsKnownBonus = false;
       ADD_MESSAGE("You commence your journey to Attnam. Use direction keys to move, '>' to enter an area and '?' to view other commands.");
-      game::ClearEventData();
-      RunOnEvent("game_start");
+      if (!RunGlobalEvent("game_start")) {
+        iosystem::TextScreen(CONST_S("Something went very wrong."));
+        return false;
+      }
       if (IsXMas()) {
         item *Present = banana::Spawn();
         Player->GetStack()->AddItem(Present);
@@ -3362,6 +3360,14 @@ void game::RemoveSpecialCursors () {
 }
 
 
+truth game::CheckDropLeftover (item *i) {
+  if (i->IsBottle() && !ivanconfig::GetAutoDropBottles()) return false;
+  if (i->IsCan() && !ivanconfig::GetAutoDropCans()) return false;
+  if (!ivanconfig::GetAutoDropLeftOvers()) return false;
+  return true;
+}
+
+
 void game::LearnAbout (god *Who) {
   Who->SetIsKnown(true);
   /* slightly slow, but doesn't matter since this is run so rarely */
@@ -3450,14 +3456,81 @@ int game::ListSelectorArray (int defsel, cfestring &title, const char *items[]) 
 }
 
 
-void game::ClearEventData () {
-  mChar = 0;
-  mActor = 0;
-  mSecondActor = 0;
-  mItem = 0;
+truth game::GetWord (festring &w) {
+  for (;;) {
+    TextInput *fl = mFEStack.top();
+    fl->ReadWord(w, false);
+    if (w == "" && fl->Eof()) {
+      delete fl;
+      mFEStack.pop();
+      if (mFEStack.empty()) return false;
+      continue;
+    }
+    if (w == "Include") {
+      fl->ReadWord(w, true);
+      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TokenLine());
+      TextInput *fl = new TextInputFile(inputfile::buildIncludeName(fl->GetFileName(), w), &game::GetGlobalValueMap(), true);
+      fl->setGetVarCB(game::ldrGetVar);
+      mFEStack.push(fl);
+      continue;
+    }
+    if (w == "Message") {
+      fl->ReadWord(w, true);
+      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TokenLine());
+      fprintf(stderr, "MESSAGE: %s\n", w.CStr());
+      continue;
+    }
+    return true;
+  }
 }
 
 
+struct CleanuperTextInput {
+  TextInput *fl;
+  CleanuperTextInput (TextInput *afl) { fl = afl; }
+  ~CleanuperTextInput () { delete fl; }
+};
+
+
+template<typename cltp> struct Cleanuper {
+  cltp *var;
+  cltp oval;
+  Cleanuper (cltp *avar) { var = avar; oval = *avar; }
+  Cleanuper (cltp *avar, cltp vnew) { var = avar; oval = *avar; *avar = vnew; }
+  ~Cleanuper () { *var = oval; }
+};
+
+
+using ContextSaver = Cleanuper<EventContext>;
+
+
+EventHandlerMap game::mGlobalEvents;
+
+
+void game::LoadGlobalEvents () {
+  mGlobalEvents.clear();
+
+  if (mFEStack.size() != 0) ABORT("Ooops...");
+
+  // add module files
+  for (auto &modname : mModuleList) {
+    festring infname = game::GetGameDir()+"script/"+modname+"/onevent.dat";
+    if (!inputfile::fileExists(infname)) continue;
+    TextInput *ifl = new TextInputFile(infname, &game::GetGlobalValueMap());
+    ifl->setGetVarCB(game::ldrGetVar);
+    mFEStack.push(ifl);
+  }
+
+  festring w;
+  while (GetWord(w)) {
+    if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
+    TextInput *ti = mFEStack.top();
+    mGlobalEvents.collectSource(mFEStack, &ti);
+  }
+}
+
+
+// ////////////////////////////////////////////////////////////////////////// //
 // '.': string or number
 // 'n': number
 // 's': string
@@ -3507,57 +3580,19 @@ int game::ParseFuncArgs (TextInput *ifl, cfestring &types, std::vector<FuncArg> 
 }
 
 
-truth game::GetWord (festring &w) {
-  for (;;) {
-    TextInput *fl = mFEStack.top();
-    fl->ReadWord(w, false);
-    if (w == "" && fl->Eof()) {
-      delete fl;
-      mFEStack.pop();
-      if (mFEStack.empty()) return false;
-      continue;
-    }
-    if (w == "Include") {
-      fl->ReadWord(w, true);
-      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TokenLine());
-      TextInput *fl = new TextInputFile(inputfile::buildIncludeName(fl->GetFileName(), w), &game::GetGlobalValueMap(), true);
-      fl->setGetVarCB(game::ldrGetVar);
-      mFEStack.push(fl);
-      continue;
-    }
-    if (w == "Message") {
-      fl->ReadWord(w, true);
-      if (fl->ReadWord() != ";") ABORT("Invalid terminator in file %s at line %d!", fl->GetFileName().CStr(), fl->TokenLine());
-      fprintf(stderr, "MESSAGE: %s\n", w.CStr());
-      continue;
-    }
-    return true;
-  }
-}
+void game::DoOnEvent (const EventHandlerMap &emap, cfestring &ename) {
+  if (!curevctx.allowed()) return;
+  curevctx.allow(); // just in case
 
-
-struct CleanuperTextInput {
-  TextInput *fl;
-  CleanuperTextInput (TextInput *afl) { fl = afl; }
-  ~CleanuperTextInput () { delete fl; }
-};
-
-
-template<typename cltp> struct Cleanuper {
-  cltp **var;
-  cltp *oval;
-  Cleanuper (cltp **avar, cltp *vnew) { var = avar; oval = *avar; *avar = vnew; }
-  ~Cleanuper () { *var = oval; }
-};
-
-
-game::EventRes game::DoOnEvent (const EventHandlerMap &emap, cfestring &ename) {
   auto ifl = emap.openHandler(ename, &game::GetGlobalValueMap());
-  if (!ifl) return ERNext;
+  if (!ifl) return;
+
   auto clnp = CleanuperTextInput(ifl);
   ifl->setGetVarCB(game::ldrGetVar);
+
   int brclevel = 0;
   festring w;
+
   for (;;) {
     if (!ifl->ReadWord(w, false)) break;
     if (w == "{") { ++brclevel; continue; }
@@ -3566,46 +3601,30 @@ game::EventRes game::DoOnEvent (const EventHandlerMap &emap, cfestring &ename) {
     if (w == "@") {
       w = ifl->ReadWord();
       if (ifl->ReadWord() != "=") ABORT("'=' expected in file %s at line %d!", ifl->GetFileName().CStr(), ifl->TokenLine());
-      //fprintf(stderr, "setvar: %s\n", w.CStr());
       if (w == "money") {
         sLong n = ifl->ReadNumber(true);
         if (n < 0) n = 0;
-        if (mChar) mChar->SetMoney(n);
+        if (curevctx.actor) curevctx.actor->SetMoney(n);
         continue;
       }
       if (w == "result") {
-        mResult = ifl->ReadNumber(true);
+        curevctx.result = ifl->ReadNumber(true);
         continue;
       }
       ABORT("Unknown var [%s] in file %s at line %d!", w.CStr(), ifl->GetFileName().CStr(), ifl->TokenLine());
     } else {
-      //mFEStack.top()->ReadWord(w, true);
       std::vector<FuncArg> args;
-      //fprintf(stderr, "funcall: %s\n", w.CStr());
-      /*
-      if (w == "AddItem") {
-        ParseFuncArgs(ifl, "s", args);
-        item *it = protosystem::CreateItem(args[0].sval, false); // no output
-        if (it) {
-          mChar->GetStack()->AddItem(it);
-          it->SpecialGenerationHandler();
-        } else {
-          ADD_MESSAGE("ERROR: no item with id \"%s\"", args[0].sval.CStr());
-        }
-        continue;
-      }
-      */
       if (w == "SetMoney") {
         ParseFuncArgs(ifl, "n", args);
         sLong n = args[0].ival;
         if (n < 0) n = 0;
-        if (mChar) mChar->SetMoney(n);
+        if (curevctx.actor) curevctx.actor->SetMoney(n);
         continue;
       }
       if (w == "EditMoney") {
         ParseFuncArgs(ifl, "n", args);
         sLong n = args[0].ival;
-        if (mChar) mChar->EditMoney(n);
+        if (curevctx.actor) curevctx.actor->EditMoney(n);
         continue;
       }
       if (w == "AddMessage") {
@@ -3618,86 +3637,70 @@ game::EventRes game::DoOnEvent (const EventHandlerMap &emap, cfestring &ename) {
         ADD_MESSAGE("%s", s.CStr());
         continue;
       }
-      if (w == "Disallow") return ERDisallow;
-      if (w == "Allow") return ERNext;
-      if (w == "AllowStop") return ERAllowStop;
+      if (w == "Disallow") { curevctx.disallow(); return; }
+      if (w == "Allow") { curevctx.allow(); return; }
+      if (w == "AllowStop") { curevctx.allowStop(); return; }
       ABORT("Unknown function [%s] in file %s at line %d!", w.CStr(), ifl->GetFileName().CStr(), ifl->TokenLine());
-      //if (mFEStack.top()->ReadWord() != ";") ABORT("';' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
     }
-    //ABORT("Invalid term in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
-  }
-  //fprintf(stderr, "------------\n");
-  return ERNext;
-}
-
-
-EventHandlerMap game::mGlobalEvents;
-
-
-void game::LoadGlobalEvents () {
-  mGlobalEvents.clear();
-
-  if (mFEStack.size() != 0) ABORT("Ooops...");
-
-  // add module files
-  for (auto &modname : mModuleList) {
-    festring infname = game::GetGameDir()+"script/"+modname+"/onevent.dat";
-    if (!inputfile::fileExists(infname)) continue;
-    TextInput *ifl = new TextInputFile(infname, &game::GetGlobalValueMap());
-    ifl->setGetVarCB(game::ldrGetVar);
-    mFEStack.push(ifl);
-  }
-
-  festring w;
-  while (GetWord(w)) {
-    if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
-    TextInput *ti = mFEStack.top();
-    mGlobalEvents.collectSource(mFEStack, &ti);
   }
 }
 
 
-truth game::RunOnEvent (cfestring &ename) {
-  auto clnp = Cleanuper<character>(&mChar, PLAYER);
-  return (DoOnEvent(mGlobalEvents, ename) != ERDisallow);
+// ////////////////////////////////////////////////////////////////////////// //
+truth game::RunEventWithCtx (EventContext &ctx, const EventHandlerMap &evmap, cfestring &ename) {
+  auto ctsv = ContextSaver(&curevctx, ctx);
+  DoOnEvent(evmap, ename);
+  ctx = curevctx;
+  return curevctx.allowed();
 }
 
 
-truth game::RunOnCharEvent (character *who, cfestring &ename) {
-  if (who) {
-    auto clnp = Cleanuper<character>(&mChar, who);
-    auto res = DoOnEvent(who->mOnEvents, ename);
-    if (res == ERDisallow) return false;
-    if (res == ERAllowStop) return true;
-    res = DoOnEvent(who->GetProtoType()->mOnEvents, ename);
-    return (res != ERDisallow);
-  }
-  return true;
+truth game::RunGlobalEvent (cfestring &ename) {
+  EventContext ctx;
+  ctx.actor = PLAYER;
+  return RunEventWithCtx(ctx, mGlobalEvents, ename);
 }
 
 
-truth game::RunOnItemEvent (item *what, cfestring &ename) {
-  if (what) {
-    auto clnp = Cleanuper<item>(&mItem, what);
-    auto res = DoOnEvent(what->mOnEvents, ename);
-    if (res == ERDisallow) return false;
-    if (res == ERAllowStop) return true;
-    res = DoOnEvent(what->GetProtoType()->mOnEvents, ename);
-    return (res != ERDisallow);
-  }
-  return true;
+truth game::RunCharEvent (cfestring &ename, character *who, character *second, item *it) {
+  if (!who) return true;
+  EventContext ctx;
+  ctx.actor = who;
+  ctx.secondActor = second;
+  ctx.thing = it;
+  if (!RunEventWithCtx(ctx, who->mOnEvents, ename)) return false;
+  if (!ctx.wantnext()) return true;
+  return RunEventWithCtx(ctx, who->GetProtoType()->mOnEvents, ename);
 }
 
 
-truth game::RunCharAllowScript (character *tospawn, const EventHandlerMap &emap, cfestring &ename) {
-  auto clnp = Cleanuper<character>(&mChar, tospawn);
-  return (DoOnEvent(emap, ename) != ERDisallow);
+truth game::RunItemEvent (cfestring &ename, item *what, character *holder, character *second) {
+  if (!what) return true;
+  EventContext ctx;
+  ctx.actor = holder;
+  ctx.secondActor = second;
+  ctx.thing = what;
+  if (!RunEventWithCtx(ctx, what->mOnEvents, ename)) return false;
+  if (!ctx.wantnext()) return true;
+  return RunEventWithCtx(ctx, what->GetProtoType()->mOnEvents, ename);
 }
 
 
-truth game::RunItemAllowScript (item *tospawn, const EventHandlerMap &emap, cfestring &ename) {
-  auto clnp = Cleanuper<item>(&mItem, tospawn);
-  return (DoOnEvent(emap, ename) != ERDisallow);
+truth game::RunCharAllowScript (character *tospawn, const EventHandlerMap &evmap, cfestring &ename) {
+  EventContext ctx;
+  ctx.actor = tospawn;
+  auto ctsv = ContextSaver(&curevctx, ctx);
+  DoOnEvent(evmap, ename);
+  return curevctx.allowed();
+}
+
+
+truth game::RunItemAllowScript (item *tospawn, const EventHandlerMap &evmap, cfestring &ename) {
+  EventContext ctx;
+  ctx.thing = tospawn;
+  auto ctsv = ContextSaver(&curevctx, ctx);
+  DoOnEvent(evmap, ename);
+  return curevctx.allowed();
 }
 
 
@@ -3708,107 +3711,42 @@ festring game::ldrGetVar (TextInput *fl, cfestring &name) {
   }
   if (name == "money") {
     festring res;
-    if (!mChar) return "0";
-    res << mChar->GetMoney();
+    if (!curevctx.actor) return "0";
+    res << curevctx.actor->GetMoney();
     return res;
   }
   if (name == "name") {
-    if (!mChar) return "";
-    return mChar->GetAssignedName();
+    if (!curevctx.actor) return "";
+    return curevctx.actor->GetAssignedName();
   }
   if (name == "team") {
     festring res;
-    if (!mChar) return "";
-    res << mChar->GetTeam()->GetID();
+    if (!curevctx.actor) return "";
+    res << curevctx.actor->GetTeam()->GetID();
     return res;
   }
   if (name == "friendly") {
     festring res;
-    if (!mChar || !PLAYER || mChar->GetRelation(PLAYER) != HOSTILE) return "tan";
+    if (!curevctx.actor || !PLAYER || curevctx.actor->GetRelation(PLAYER) != HOSTILE) return "tan";
     return "";
   }
   if (name == "hostile") {
     festring res;
-    if (!mChar || !PLAYER) return "";
-    if (mChar->GetRelation(PLAYER) == HOSTILE) return "tan";
+    if (!curevctx.actor || !PLAYER) return "";
+    if (curevctx.actor->GetRelation(PLAYER) == HOSTILE) return "tan";
     return "";
   }
   if (name == "has_item") {
     std::vector<FuncArg> args;
     ParseFuncArgs(fl, "s", args, true);
-    if (mChar) {
-      itemvector items;
-      festring s = args[0].sval;
-      //fprintf(stderr, "looking for [%s]\n", s.CStr());
-      mChar->GetStack()->FillItemVector(items);
-      for (unsigned int f = 0; f < items.size(); ++f) {
-        for (uInt c = 0; c < items[f]->GetDataBase()->Alias.Size; ++c) {
-          //fprintf(stderr, "%u:%u: [%s]\n", f, c, items[f]->GetDataBase()->Alias[c].CStr());
-          if (s.CompareIgnoreCase(items[f]->GetDataBase()->Alias[c]) == 0) {
-            //fprintf(stderr, " FOUND!\n");
-            return "tan";
-          }
-        }
-      }
-      //fprintf(stderr, "checking equipment...\n");
-      for (int f = 0; f < mChar->GetEquipments(); ++f) {
-        item *it = mChar->GetEquipment(f);
-        if (it) {
-          for (uInt c = 0; c < it->GetDataBase()->Alias.Size; ++c) {
-            //fprintf(stderr, "%u:%u: [%s]\n", f, c, it->GetDataBase()->Alias[c].CStr());
-            if (s.CompareIgnoreCase(it->GetDataBase()->Alias[c]) == 0) {
-              //fprintf(stderr, " FOUND!\n");
-              return "tan";
-            }
-          }
-        }
-      }
-    }
-    return "";
+    return (curevctx.actor && curevctx.actor->findFirstItem(args[0].sval) ? "tan" : "");
   }
   if (name == "player_has_item") {
     std::vector<FuncArg> args;
     ParseFuncArgs(fl, "s", args, true);
-    if (PLAYER) {
-      itemvector items;
-      festring s = args[0].sval;
-      //fprintf(stderr, "looking for [%s]\n", s.CStr());
-      PLAYER->GetStack()->FillItemVector(items);
-      for (unsigned int f = 0; f < items.size(); ++f) {
-        for (uInt c = 0; c < items[f]->GetDataBase()->Alias.Size; ++c) {
-          //fprintf(stderr, "%u:%u: [%s]\n", f, c, items[f]->GetDataBase()->Alias[c].CStr());
-          if (s.CompareIgnoreCase(items[f]->GetDataBase()->Alias[c]) == 0) {
-            //fprintf(stderr, " FOUND!\n");
-            return "tan";
-          }
-        }
-      }
-      //fprintf(stderr, "checking equipment...\n");
-      for (int f = 0; f < PLAYER->GetEquipments(); ++f) {
-        item *it = PLAYER->GetEquipment(f);
-        //
-        if (it) {
-          for (uInt c = 0; c < it->GetDataBase()->Alias.Size; ++c) {
-            //fprintf(stderr, "%u:%u: [%s]\n", f, c, it->GetDataBase()->Alias[c].CStr());
-            if (s.CompareIgnoreCase(it->GetDataBase()->Alias[c]) == 0) {
-              //fprintf(stderr, " FOUND!\n");
-              return "tan";
-            }
-          }
-        }
-      }
-    }
-    return "";
+    return (PLAYER && PLAYER->findFirstItem(args[0].sval) ? "tan" : "");
   }
   //if (name == "type") return mVarType;
   ABORT("unknown variable: %s", name.CStr());
   return "";
-}
-
-
-truth game::CheckDropLeftover (item *i) {
-  if (i->IsBottle() && !ivanconfig::GetAutoDropBottles()) return false;
-  if (i->IsCan() && !ivanconfig::GetAutoDropCans()) return false;
-  if (!ivanconfig::GetAutoDropLeftOvers()) return false;
-  return true;
 }

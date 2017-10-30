@@ -350,7 +350,7 @@ festring TextInput::readCondition (festring &token, int prio, truth skipIt) {
       //fprintf(stderr, " RET: [%s]\n", res.CStr());
       break;
     }
-    if (token == "less") token = "<";
+         if (token == "less") token = "<";
     else if (token == "great") token = ">";
     else if (token == "equ") token = "==";
     else if (token == "neq") token = "!=";
@@ -848,63 +848,6 @@ template<typename numtype> festring TextInput::ReadNumberIntr (int CallLevel, nu
     ABORT("Odd numeric value \"%s\" encountered in file %s, line %d!", Word.CStr(), GetFileName().CStr(), mTokenLine);
   }
 }
-
-
-/*
-festring TextInput::ReadCode (truth abortOnEOF) {
-  int sqLevel = 1;
-  char inString = 0;
-  festring res;
-  mTokenLine = mCurrentLine;
-  for (int ch = GetChar(); !Eof(); ch = GetChar()) {
-    //fprintf(stderr, "char: [%c]; inString: %d; sqLevel: %d\n", (Char < 32 || Char > 126 ? '?' : Char), inString, sqLevel);
-    if (inString) {
-      res << ((char)ch);
-      if (ch == inString) {
-        inString = 0;
-      } else if (ch == '\\') {
-        if (Eof()) break;
-        ch = GetChar();
-        res << ((char)ch);
-      }
-    } else {
-      if (ch == '[') {
-        ++sqLevel;
-        res << ((char)ch);
-      } else if (ch == ']') {
-        if (--sqLevel == 0) break;
-        res << ((char)ch);
-      } else if (ch == '/') {
-        if (Eof()) { res << ((char)ch); break; }
-        switch ((ch = GetChar())) {
-          case '/': // eol comment
-            while (!Eof()) if (GetChar() == '\n') break;
-            break;
-          case '*': // c-like comment
-            while (!Eof()) {
-              if (GetChar() == '*') {
-                if (Eof()) break;
-                if (GetChar() == '/') break;
-              }
-            }
-            break;
-          default:
-            res << '/';
-            res << ((char)ch);
-            break;
-        }
-      } else if (ch == '"' || ch == '\'') {
-        res << ((char)ch);
-        inString = ((char)ch);
-      } else {
-        res << ((char)ch);
-      }
-    }
-  }
-  if (abortOnEOF && Eof()) ABORT("Unexpected end of file %s!", GetFileName().CStr());
-  return res;
-}
-*/
 
 
 sLong TextInput::ReadNumber (int CallLevel, truth PreserveTerminator, truth *wasCloseBrc) {

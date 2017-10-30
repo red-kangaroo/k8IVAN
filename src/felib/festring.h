@@ -86,6 +86,8 @@ public:
   truth operator != (cchar*) const;
   int Compare (cfestring &) const;
   int CompareIgnoreCase (cfestring &) const;
+  int Compare (cchar *) const;
+  int CompareIgnoreCase (cchar *) const;
   cchar *CStr () const;
   sizetype GetSize () const { return Size; }
   void Empty ();
@@ -280,7 +282,7 @@ inline int festring::Compare (cfestring &Str) const {
   sizetype ThisSize = Size;
   sizetype StrSize = Str.Size;
   if (ThisSize && StrSize) {
-    int Comp = memcmp(Data, Str.Data, StrSize > ThisSize ? ThisSize : StrSize);
+    int Comp = memcmp(Data, Str.Data, (StrSize > ThisSize ? ThisSize : StrSize));
     if (Comp) return Comp;
   }
   return (ThisSize < StrSize ? -1 : ThisSize != StrSize);
@@ -294,7 +296,33 @@ inline int festring::CompareIgnoreCase (cfestring &Str) const {
     for (sizetype Pos = 0; Pos < GetSize(); ++Pos) {
       char Char1 = toupper(Data[Pos]);
       char Char2 = toupper(Str[Pos]);
-      if (Char1 != Char2) return Char1-Char2;
+      if (Char1 != Char2) return (Char1 < Char2 ? -1 : 1);
+    }
+    return 0;
+  }
+  return (ThisSize < StrSize ? -1 : ThisSize != StrSize);
+}
+
+
+inline int festring::Compare (cchar *str) const {
+  sizetype ThisSize = Size;
+  sizetype StrSize = (sizetype)(str ? strlen(str) : 0);
+  if (ThisSize && StrSize) {
+    int Comp = memcmp(Data, str, (StrSize > ThisSize ? ThisSize : StrSize));
+    if (Comp) return Comp;
+  }
+  return (ThisSize < StrSize ? -1 : ThisSize != StrSize);
+}
+
+
+inline int festring::CompareIgnoreCase (cchar *str) const {
+  sizetype ThisSize = Size;
+  sizetype StrSize = (sizetype)(str ? strlen(str) : 0);
+  if (ThisSize && StrSize) {
+    for (sizetype Pos = 0; Pos < GetSize(); ++Pos) {
+      char Char1 = toupper(Data[Pos]);
+      char Char2 = toupper(str[Pos]);
+      if (Char1 != Char2) return (Char1 < Char2 ? -1 : 1);
     }
     return 0;
   }

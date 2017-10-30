@@ -617,11 +617,7 @@ int character::TakeHit (character *Enemy, item *Weapon, bodypart *EnemyBodyPart,
   double ToHitValue, int Success, int Type, int GivenDir, truth Critical, truth ForceHit)
 {
   //FIXME: args
-  game::ClearEventData();
-  game::mActor = Enemy;
-  game::mResult = DID_NO_DAMAGE;
-  if (!game::RunOnCharEvent(this, CONST_S("before_take_hit"))) { game::ClearEventData(); return DID_NO_DAMAGE; }
-  game::ClearEventData();
+  if (!game::RunCharEvent("before_take_hit", this, Enemy, Weapon)) return DID_NO_DAMAGE;
 
   int Dir = (Type == BITE_ATTACK ? YOURSELF : GivenDir);
   double DodgeValue = GetDodgeValue();
@@ -1171,15 +1167,12 @@ void character::CreateCorpse (lsquare *Square) {
 }
 
 
-void character::Die (ccharacter *Killer, cfestring &Msg, feuLong DeathFlags) {
+void character::Die (character *Killer, cfestring &Msg, feuLong DeathFlags) {
   /* Note: This function musn't delete any objects, since one of these may be
      the one currently processed by pool::Be()! */
   if (!IsEnabled()) return;
 
-  game::ClearEventData();
-  game::mActor = Killer;
-  if (!game::RunOnCharEvent(this, CONST_S("before_die"))) { game::ClearEventData(); RemoveTraps(); return; }
-  game::ClearEventData();
+  if (!game::RunCharEvent("before_die", this, Killer)) return;
 
   RemoveTraps();
   if (IsPlayer()) {
@@ -1787,7 +1780,7 @@ void character::AddScoreEntry (cfestring &Description, double Multiplier, truth 
 }
 
 
-truth character::CheckDeath (cfestring &Msg, ccharacter *Murderer, feuLong DeathFlags) {
+truth character::CheckDeath (cfestring &Msg, character *Murderer, feuLong DeathFlags) {
   if (!IsEnabled()) return true;
   if (game::IsSumoWrestling() && IsDead()) {
     game::EndSumoWrestling(!!IsPlayer());
@@ -2018,11 +2011,7 @@ void character::BeKicked (character *Kicker, item *Boot, bodypart *Leg, v2 HitPo
   double ToHitValue, int Success, int Direction, truth Critical, truth ForceHit)
 {
   //FIXME: other args
-  game::ClearEventData();
-  game::mActor = Kicker;
-  if (!game::RunOnCharEvent(this, CONST_S("before_kicked_by"))) { game::ClearEventData(); return; }
-  game::ClearEventData();
-  game::mActor = 0;
+  if (!game::RunCharEvent("before_kicked_by", this, Kicker, Boot)) return;
 
   auto hitres = (TakeHit(Kicker, Boot, Leg, HitPos, KickDamage, ToHitValue, Success, KICK_ATTACK, Direction, Critical, ForceHit));
   if (hitres == HAS_HIT || hitres == HAS_BLOCKED || hitres == DID_NO_DAMAGE) {
@@ -8375,6 +8364,40 @@ void character::ReceiveSirenSong (character *Siren) {
     }
     return;
   }
+}
+
+
+item *character::findFirstEquippedItem (cfestring &aclassname) const {
+  for (int f = 0; f < GetEquipments(); ++f) {
+    item *it = GetEquipment(f);
+    if (!it) continue;
+    if (aclassname.CompareIgnoreCase(it->FindProtoType()->GetClassID()) == 0) return it;
+    /*
+    for (uInt c = 0; c < it->GetDataBase()->Alias.Size; ++c) {
+      if (s.CompareIgnoreCase(it->GetDataBase()->Alias[c]) == 0) return it;
+    }
+    */
+  }
+  return nullptr;
+}
+
+
+item *character::findFirstInventoryItem (cfestring &aclassname) const {
+  itemvector items;
+  GetStack()->FillItemVector(items);
+  for (int f = 0; f < (int)items.size(); ++f) {
+    item *it = items[f];
+    if (!it) continue;
+    if (aclassname.CompareIgnoreCase(it->FindProtoType()->GetClassID()) == 0) return it;
+  }
+  return nullptr;
+}
+
+
+item *character::findFirstItem (cfestring &aclassname) const {
+  item *it = findFirstInventoryItem(aclassname);
+  if (!it) it = findFirstEquippedItem(aclassname);
+  return it;
 }
 
 

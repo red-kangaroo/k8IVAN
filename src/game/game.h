@@ -64,12 +64,42 @@ typedef void (*positionhandler)(v2);
 typedef void (*bitmapeditor)(bitmap*, truth);
 
 
+struct EventContext {
+  enum ExecState {
+    ESAllow,
+    ESAllowStop,
+    ESDisallow,
+  };
+  character *actor = nullptr; // "acting" actor, or item holder
+  character *secondActor = nullptr; // actor that takes hit, or attacks, or...
+  item *thing = nullptr; // used in `RunItemEvent()`
+  int result = 0;
+  ExecState state = ESAllow;
+
+  inline void clear () {
+    actor = nullptr;
+    secondActor = nullptr; // actor that takes hit, or attacks, or...
+    thing = nullptr; // used in `RunItemEvent()`
+    result = 0;
+    state = ESAllow;
+  }
+
+  inline truth allowed () const { return (state != ESDisallow); }
+  inline truth wantnext () const { return (state == ESAllow); }
+
+  inline void allow () { state = ESAllow; }
+  inline void allowStop () { state = ESAllowStop; }
+  inline void disallow () { state = ESDisallow; }
+};
+
+
 struct homedata {
   v2 Pos;
   int Dungeon;
   int Level;
   int Room;
 };
+
 
 outputfile& operator<<(outputfile&, const homedata*);
 inputfile& operator>>(inputfile&, homedata*&);
@@ -508,25 +538,29 @@ public:
   static team *FindTeam (cfestring &name);
   //static team *FindTeam (const char *name);
 
-  static void ClearEventData ();
-  // return 'true' if event is 'eaten'
-  static truth RunOnEvent (cfestring &ename);
-  static truth RunOnCharEvent (character *who, cfestring &ename);
-  static truth RunOnItemEvent (item *what, cfestring &ename);
+  // return 'true' if `Disallow` was called
+  static truth RunGlobalEvent (cfestring &ename); // global game event
 
-  static truth RunCharAllowScript (character *tospawn, const EventHandlerMap &emap, cfestring &ename);
-  static truth RunItemAllowScript (item *tospawn, const EventHandlerMap &emap, cfestring &ename);
+  static truth RunEventWithCtx (EventContext &ctx, const EventHandlerMap &evmap, cfestring &ename);
+
+  static truth RunCharEvent (cfestring &ename, character *who, character *second=0, item *it=0);
+  static truth RunItemEvent (cfestring &ename, item *what, character *holder, character *second=0);
+
+  static truth RunCharAllowScript (character *tospawn, const EventHandlerMap &evmap, cfestring &ename);
+  static truth RunItemAllowScript (item *tospawn, const EventHandlerMap &evmap, cfestring &ename);
 
   static festring ldrGetVar (TextInput *fl, cfestring &name);
 
 private:
-  enum EventRes { ERNext, ERAllowStop, ERDisallow };
   static truth GetWord (festring &w);
   static void UpdateCameraCoordinate (int &, int, int, int);
-  static EventRes DoOnEvent (const EventHandlerMap &emap, cfestring &ename);
+
+  static void DoOnEvent (const EventHandlerMap &emap, cfestring &ename);
   static int ParseFuncArgs (TextInput *ifl, cfestring &types, std::vector<FuncArg> &args, truth noterm=false);
 
   static void LoadGlobalEvents ();
+
+  static EventContext curevctx;
 
 private:
   static cchar* const Alignment[];
@@ -681,14 +715,8 @@ public:
   static owterrain *underwatertunnelPOI ();
   static owterrain *underwatertunnelexitPOI ();
   static owterrain *xinrochtombPOI ();
-
-public:
-  static character *mChar;
-  static ccharacter *mActor;
-  static ccharacter *mSecondActor;
-  static item *mItem;
-  static int mResult;
 };
+
 
 
 //K8 WARNING! ABSOLUTELY NON-PORTABLE AND CAUSES UB!

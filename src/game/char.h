@@ -309,7 +309,7 @@ public:
   virtual void Load (inputfile &);
   virtual truth CanWield () const { return false; }
   virtual truth Catches(item *) { return false; }
-  truth CheckDeath (cfestring &, ccharacter * =0, feuLong =0);
+  truth CheckDeath (cfestring &, character * =0, feuLong =0);
   truth DodgesFlyingItem (item *, double);
   virtual truth Hit (character *, v2, int, int=0)=0;
   truth ReadItem (item *);
@@ -351,7 +351,7 @@ public:
   void AddWeaponHitMessage (ccharacter *, citem *, int, truth = false) const;
   virtual void BeTalkedTo ();
   void ReceiveDarkness (sLong);
-  void Die (ccharacter *Killer=0, cfestring &Msg=CONST_S(""), feuLong DeathFlags=0);
+  void Die (character *Killer=0, cfestring &Msg=CONST_S(""), feuLong DeathFlags=0);
   void HasBeenHitByItem (character *, item *, int, double, int);
   void Hunger ();
   void Move (v2, truth, truth = false);
@@ -1188,6 +1188,12 @@ public:
   virtual void SurgicallyDetachBodyPart ();
   truth IsAllowedInDungeon (int dunIndex);
 
+  virtual const prototype *FindProtoType () const { return &ProtoType; }
+
+  virtual item *findFirstEquippedItem (cfestring &aclassname) const;
+  virtual item *findFirstInventoryItem (cfestring &aclassname) const;
+  virtual item *findFirstItem (cfestring &aclassname) const;
+
  protected:
   static truth DamageTypeDestroysBodyPart (int);
   virtual void LoadSquaresUnder ();
@@ -1246,7 +1252,6 @@ public:
   double RandomizeBabyExperience (double);
   static truth IsLimbIndex (int);
   virtual truth AllowExperience () const { return true; }
-  virtual const prototype *FindProtoType () const { return &ProtoType; }
 
   item *GeneralFindItem (ItemCheckerCB chk) const;
   int GeneralRemoveItem (ItemCheckerCB chk, truth allItems=false); // return count
