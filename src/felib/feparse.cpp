@@ -513,19 +513,35 @@ truth TextInput::readWordIntr (festring &String, truth abortOnEOF) {
     if (isdigit(ch)) {
       String << (char)(ch);
       bool wasdot = !mAllowFloatNums;
+      bool ishex = false;
+      // allow hex literals
+      if (!mAllowFloatNums && ch == '0') {
+        ch = GetChar();
+        if (ch == 'X' || ch == 'x') {
+          ishex = true;
+          String << 'x';
+        } else {
+          UngetChar(ch);
+        }
+      }
       for (;;) {
         ch = GetChar();
         if (ch == EOF) break;
         if (ch == '_') continue;
-        if (isalpha(ch)) die("invalid number");
         if (ch == '.') {
           if (wasdot) die("invalid number");
           wasdot = true;
           String << '.';
           continue;
         }
-        if (!isdigit(ch)) { UngetChar(ch); break; }
-        String << (char)(ch);
+        if (ishex) {
+          if (isxdigit(ch)) { String << (char)(ch); continue; }
+        } else {
+          if (isdigit(ch)) { String << (char)(ch); continue; }
+        }
+        if (isalpha(ch)) die("invalid number");
+        UngetChar(ch);
+        break;
       }
       return true;
     }
@@ -660,12 +676,13 @@ template<typename numtype> festring TextInput::ReadNumberIntr (int CallLevel, nu
     // number?
     if (isdigit(First)) {
       if (mCollectingNumStr) mNumStr << Word;
-      //Value = atoi(Word.CStr());
+      char *e;
       if (allowFloats) {
-        Value = (numtype)atoi(Word.CStr());
+        Value = (numtype)strtod(Word.CStr(), &e);
       } else {
-        Value = (numtype)atof(Word.CStr());
+        Value = (numtype)strtol(Word.CStr(), &e, 0);
       }
+      if (*e != '\0') ABORT("Invalid number '%s' in file %s, line %d!", Word.CStr(), GetFileName().CStr(), mTokenLine);
       NumberCorrect = true;
       // HACK: autoinsert terminator
       skipBlanks();
