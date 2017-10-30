@@ -620,9 +620,10 @@ int character::TakeHit (character *Enemy, item *Weapon, bodypart *EnemyBodyPart,
   game::ClearEventData();
   game::mActor = Enemy;
   game::mResult = DID_NO_DAMAGE;
-  if (game::RunOnCharEvent(this, CONST_S("take_hit"))) { game::ClearEventData(); return game::mResult; }
+  if (game::RunOnCharEvent(this, CONST_S("before_take_hit"))) { game::ClearEventData(); return DID_NO_DAMAGE; }
   game::ClearEventData();
-  int Dir = Type == BITE_ATTACK ? YOURSELF : GivenDir;
+
+  int Dir = (Type == BITE_ATTACK ? YOURSELF : GivenDir);
   double DodgeValue = GetDodgeValue();
   if (!Enemy->IsPlayer() && GetAttackWisdomLimit() != NO_LIMIT) Enemy->EditExperience(WISDOM, 75, 1 << 13);
   if (!Enemy->CanBeSeenBy(this)) ToHitValue *= 2;
@@ -1174,10 +1175,12 @@ void character::Die (ccharacter *Killer, cfestring &Msg, feuLong DeathFlags) {
   /* Note: This function musn't delete any objects, since one of these may be
      the one currently processed by pool::Be()! */
   if (!IsEnabled()) return;
+
   game::ClearEventData();
   game::mActor = Killer;
-  if (game::RunOnCharEvent(this, CONST_S("die"))) { game::ClearEventData(); RemoveTraps(); return; }
+  if (!game::RunOnCharEvent(this, CONST_S("before_die"))) { game::ClearEventData(); RemoveTraps(); return; }
   game::ClearEventData();
+
   RemoveTraps();
   if (IsPlayer()) {
     ADD_MESSAGE("You die.");
@@ -2017,9 +2020,10 @@ void character::BeKicked (character *Kicker, item *Boot, bodypart *Leg, v2 HitPo
   //FIXME: other args
   game::ClearEventData();
   game::mActor = Kicker;
-  if (game::RunOnCharEvent(this, CONST_S("before_be_kicked"))) { game::ClearEventData(); return; }
+  if (!game::RunOnCharEvent(this, CONST_S("before_kicked_by"))) { game::ClearEventData(); return; }
   game::ClearEventData();
   game::mActor = 0;
+
   auto hitres = (TakeHit(Kicker, Boot, Leg, HitPos, KickDamage, ToHitValue, Success, KICK_ATTACK, Direction, Critical, ForceHit));
   if (hitres == HAS_HIT || hitres == HAS_BLOCKED || hitres == DID_NO_DAMAGE) {
     if (IsEnabled() && !CheckBalance(KickDamage)) {

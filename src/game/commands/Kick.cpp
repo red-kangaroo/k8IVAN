@@ -14,15 +14,13 @@ COMMAND(Kick) {
   if (Enemy && !(Enemy->IsMasochist() && Char->GetRelation(Enemy) == FRIEND) && Char->GetRelation(Enemy) != HOSTILE) {
     if (!game::TruthQuestion(CONST_S("This might cause a hostile reaction. Are you sure?"))) return false;
   }
-  game::ClearEventData();
-  game::mActor = Square->GetCharacter();
-  game::mSecondActor = Char;
-  if (game::RunOnCharEvent(Char, CONST_S("before_kick"))) { game::ClearEventData(); return game::mResult != 0; }
+
   game::ClearEventData();
   game::mActor = Char;
   game::mSecondActor = Square->GetCharacter();
-  if (game::RunOnCharEvent(Square->GetCharacter(), CONST_S("before_kicked_by"))) { game::ClearEventData(); return game::mResult != 0; }
+  if (!game::RunOnCharEvent(Square->GetCharacter(), CONST_S("before_kicked_by"))) { game::ClearEventData(); return false; }
   game::ClearEventData();
+
   Char->Hostility(Square->GetCharacter());
   Char->Kick(Square, Dir);
   return true;

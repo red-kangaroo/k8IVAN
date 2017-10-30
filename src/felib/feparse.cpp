@@ -1127,7 +1127,10 @@ void EventHandlerMap::collectSource (std::stack<TextInput *> &infStack, TextInpu
   auto ehs = collectEventHandlerSource(infStack, iff);
   if (ehs.type.IsEmpty()) ABORT("Empty handler type in file '%s' at line %d", ehs.fname.CStr(), ehs.startline);
   auto it = mMap.find(ehs.type);
-  if (it != mMap.end()) ABORT("Duplicate handler type '%s' in file '%s' at line %d", ehs.type.CStr(), ehs.fname.CStr(), ehs.startline);
+  if (it != mMap.end()) {
+    //ABORT("Duplicate handler type '%s' in file '%s' at line %d", ehs.type.CStr(), ehs.fname.CStr(), ehs.startline);
+    mMap.erase(it);
+  }
   mMap.insert(std::make_pair(ehs.type, ehs));
 }
 

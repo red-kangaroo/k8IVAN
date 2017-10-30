@@ -1,6 +1,6 @@
 Extend dog
 {
-  on die {
+  on before_die {
     if @team == PLAYER_TEAM;
       if @name;
         AddMessage "Your doggie ", @name, " is dead";
