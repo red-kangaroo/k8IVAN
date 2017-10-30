@@ -1,7 +1,7 @@
 Extend dog
 {
   on die {
-    if @team == 0;
+    if @team == PLAYER_TEAM;
       if @name;
         AddMessage "Your doggie ", @name, " is dead";
       else
@@ -10,7 +10,7 @@ Extend dog
     endif
   }
   on before_kicked_by {
-    if @team == 0;
+    if @team == PLAYER_TEAM;
       if @name;
         AddMessage "You want to kick your doggie ", @name;
       else
