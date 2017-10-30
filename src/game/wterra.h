@@ -195,6 +195,7 @@ public:
   DATA_BASE_VALUE(int, TemperatureWarm);
   DATA_BASE_VALUE(int, TemperatureHot);
 
+  inline cchar *GetClassID () const { return (FindProtoType() ? FindProtoType()->GetClassID() : ""); }
   virtual const prototype* FindProtoType () const { return &ProtoType; }
 
 private:
@@ -336,6 +337,7 @@ public:
   DATA_BASE_TRUTH(CanBeSkipped);
   DATA_BASE_TRUTH(PlaceInitially);
 
+  inline cchar *GetClassID () const { return (FindProtoType() ? FindProtoType()->GetClassID() : ""); }
   virtual const prototype* FindProtoType () const { return &ProtoType; }
 
 private:

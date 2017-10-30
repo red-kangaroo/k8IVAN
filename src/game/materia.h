@@ -222,6 +222,7 @@ class material
   DATA_BASE_TRUTH(DisablesPanicWhenConsumed);
   DATA_BASE_TRUTH(BlockESP);
 
+  inline cchar *GetClassID () const { return (FindProtoType() ? FindProtoType()->GetClassID() : ""); }
   virtual const prototype* FindProtoType() const { return &ProtoType; }
 
  protected:
@@ -248,6 +249,7 @@ class materialsysbase : public base
 
   virtual ~materialsysbase () {}
 
+  inline cchar *GetClassID () const { return (FindProtoType() ? FindProtoType()->GetClassID() : ""); }
   virtual const materialprototype* FindProtoType() const { return &ProtoType; }
   static const materialprototype ProtoType;
 };

@@ -1188,11 +1188,13 @@ public:
   virtual void SurgicallyDetachBodyPart ();
   truth IsAllowedInDungeon (int dunIndex);
 
+  inline cchar *GetClassID () const { return (FindProtoType() ? FindProtoType()->GetClassID() : ""); }
   virtual const prototype *FindProtoType () const { return &ProtoType; }
 
-  virtual item *findFirstEquippedItem (cfestring &aclassname) const;
-  virtual item *findFirstInventoryItem (cfestring &aclassname) const;
-  virtual item *findFirstItem (cfestring &aclassname) const;
+  // aconfig == -1: any
+  virtual item *findFirstEquippedItem (cfestring &aclassname, int aconfig=-1) const;
+  virtual item *findFirstInventoryItem (cfestring &aclassname, int aconfig=-1) const;
+  virtual item *findFirstItem (cfestring &aclassname, int aconfig=-1) const;
 
  protected:
   static truth DamageTypeDestroysBodyPart (int);

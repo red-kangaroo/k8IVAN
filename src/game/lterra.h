@@ -199,6 +199,7 @@ class glterrain : public lterrain, public gterrain
   void Draw(blitdata&) const;
   virtual truth IsAnimated() const;
 
+  inline cchar *GetClassID () const { return (FindProtoType() ? FindProtoType()->GetClassID() : ""); }
   virtual const prototype* FindProtoType() const { return &ProtoType; }
 
  protected:
@@ -362,6 +363,7 @@ class olterrain : public lterrain, public oterrain
   virtual void AddSpecialCursors() { }
   virtual truth IsWard() const { return false; }
 
+  inline cchar *GetClassID () const { return (FindProtoType() ? FindProtoType()->GetClassID() : ""); }
   virtual const prototype* FindProtoType() const { return &ProtoType; }
 
  protected:

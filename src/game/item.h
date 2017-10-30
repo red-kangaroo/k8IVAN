@@ -644,6 +644,7 @@ class item : public object
 
   virtual truth IsBoneNameSingular () const override { return (GetNameSingular() == "bone"); }
 
+  inline cchar *GetClassID () const { return (FindProtoType() ? FindProtoType()->GetClassID() : ""); }
   virtual const prototype* FindProtoType () const { return &ProtoType; }
 
 protected:

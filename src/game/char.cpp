@@ -8367,11 +8367,13 @@ void character::ReceiveSirenSong (character *Siren) {
 }
 
 
-item *character::findFirstEquippedItem (cfestring &aclassname) const {
+item *character::findFirstEquippedItem (cfestring &aclassname, int aconfig) const {
   for (int f = 0; f < GetEquipments(); ++f) {
     item *it = GetEquipment(f);
     if (!it) continue;
-    if (aclassname.CompareIgnoreCase(it->FindProtoType()->GetClassID()) == 0) return it;
+    if (aclassname.CompareIgnoreCase(it->GetClassID()) == 0) {
+      if (aconfig == -1 || it->GetConfig() == aconfig) return it;
+    }
     /*
     for (uInt c = 0; c < it->GetDataBase()->Alias.Size; ++c) {
       if (s.CompareIgnoreCase(it->GetDataBase()->Alias[c]) == 0) return it;
@@ -8382,21 +8384,23 @@ item *character::findFirstEquippedItem (cfestring &aclassname) const {
 }
 
 
-item *character::findFirstInventoryItem (cfestring &aclassname) const {
+item *character::findFirstInventoryItem (cfestring &aclassname, int aconfig) const {
   itemvector items;
   GetStack()->FillItemVector(items);
   for (int f = 0; f < (int)items.size(); ++f) {
     item *it = items[f];
     if (!it) continue;
-    if (aclassname.CompareIgnoreCase(it->FindProtoType()->GetClassID()) == 0) return it;
+    if (aclassname.CompareIgnoreCase(it->GetClassID()) == 0) {
+      if (aconfig == -1 || it->GetConfig() == aconfig) return it;
+    }
   }
   return nullptr;
 }
 
 
-item *character::findFirstItem (cfestring &aclassname) const {
-  item *it = findFirstInventoryItem(aclassname);
-  if (!it) it = findFirstEquippedItem(aclassname);
+item *character::findFirstItem (cfestring &aclassname, int aconfig) const {
+  item *it = findFirstInventoryItem(aclassname, aconfig);
+  if (!it) it = findFirstEquippedItem(aclassname, aconfig);
   return it;
 }
 
