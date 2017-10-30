@@ -383,6 +383,7 @@ INST_ADD_MEMBER(gwterrain, int);
 //INST_ADD_MEMBER(gwterrain, sLong); //k8:64
 INST_ADD_MEMBER(gwterrain, v2);
 INST_ADD_MEMBER(gwterrain, festring);
+INST_ADD_MEMBER(gwterrain, float);
 
 INST_ADD_MEMBER(material, int);
 //INST_ADD_MEMBER(material, sLong); //k8:64
@@ -766,6 +767,14 @@ template<> void databasecreator<gwterrain>::CreateDataBaseMemberMap () {
   ADD_MEMBER(MonsterDeathVerb);
   ADD_MEMBER(ScoreEntry);
   ADD_MEMBER(Walkability);
+  //HACK: worldmap generation constants
+  ADD_MEMBER(MaxTemperature);
+  ADD_MEMBER(LatitudeEffect);
+  ADD_MEMBER(AltitudeEffect);
+  ADD_MEMBER(TemperatureCold);
+  ADD_MEMBER(TemperatureMedium);
+  ADD_MEMBER(TemperatureWarm);
+  ADD_MEMBER(TemperatureHot);
 }
 
 

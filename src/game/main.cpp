@@ -214,6 +214,8 @@ int Main (int argc, char *argv[]) {
 
   //if (game::GetGlobalConst("ALIEN_VESSEL") != 10) ABORT("`ALIEN_VESSEL` is not 10");
 
+  //if (game::GetGlobalConst("_HEXNUM_X_") != 0x29a) ABORT("`_HEXNUM_X_` is not 0x29a");
+
   scriptsystem::Initialize();
   databasesystem::Initialize();
   game::InitLuxTable();

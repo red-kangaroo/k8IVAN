@@ -91,8 +91,17 @@ public:
   festring MonsterDeathVerb;
   festring ScoreEntry;
   int Walkability;
-};
 
+  //HACK: worldmap generation constants
+  int MaxTemperature;
+  int LatitudeEffect;
+  float AltitudeEffect;
+
+  int TemperatureCold;
+  int TemperatureMedium;
+  int TemperatureWarm;
+  int TemperatureHot;
+};
 
 
 class gwterrainprototype {
@@ -168,6 +177,16 @@ public:
   DATA_BASE_VALUE(festring, MonsterDeathVerb);
   DATA_BASE_VALUE(festring, ScoreEntry);
   DATA_BASE_VALUE(int, Walkability);
+
+  //HACK: worldmap generation constants
+  DATA_BASE_VALUE(int, MaxTemperature);
+  DATA_BASE_VALUE(int, LatitudeEffect);
+  DATA_BASE_VALUE(float, AltitudeEffect);
+
+  DATA_BASE_VALUE(int, TemperatureCold);
+  DATA_BASE_VALUE(int, TemperatureMedium);
+  DATA_BASE_VALUE(int, TemperatureWarm);
+  DATA_BASE_VALUE(int, TemperatureHot);
 
 private:
   int GetType () const { return GetProtoType()->GetIndex(); }

@@ -13,6 +13,7 @@
 /* Compiled through wmapset.cpp */
 
 // ////////////////////////////////////////////////////////////////////////// //
+/*
 #define MAX_TEMPERATURE   27    //increase for a warmer world
 #define LATITUDE_EFFECT   40    //increase for more effect
 #define ALTITUDE_EFFECT   0.02
@@ -21,6 +22,15 @@
 #define MEDIUM  12
 #define WARM    17
 #define HOT     19
+*/
+
+static int MAX_TEMPERATURE = 27;
+static int LATITUDE_EFFECT = 40;
+static float ALTITUDE_EFFECT = 0.02;
+static int COLD = 10;
+static int MEDIUM = 12;
+static int WARM = 17;
+static int HOT = 19;
 
 
 // ////////////////////////////////////////////////////////////////////////// //
@@ -359,9 +369,55 @@ truth worldmap::poiPlaceAttnamsAndUT (continent *PetrusLikes) {
 }
 
 
+static const gwterraindatabase *findWorldMapOptionsConfig () {
+  auto xtype = protocontainer<gwterrain>::SearchCodeName("gwterrain");
+  if (!xtype) ABORT("Your worldmap is dull and empty.");
+  auto proto = protocontainer<gwterrain>::GetProto(xtype);
+  if (!proto) ABORT("wtf?!");
+  auto configs = proto->GetConfigData();
+  if (!configs) ABORT("wtf?!");
+  int cfgcount = proto->GetConfigSize();
+  // search for overriden config
+  for (int f = 0; f < cfgcount; ++f) {
+    auto cfg = configs[f];
+    //if (cfg->Config == 0) continue;
+    //fprintf(stderr, "<%s>\n", getTypeName<decltype(cfg->Config)>().c_str());
+    if (cfg->Config == WorldMapOptionsCfg()) return cfg;
+  }
+  // search for base config
+  for (int f = 0; f < cfgcount; ++f) {
+    auto cfg = configs[f];
+    if (cfg->Config == 0) return cfg;
+  }
+  ABORT("Worldmap is without options!");
+  return nullptr;
+}
+
+
 void worldmap::Generate () {
   Alloc2D(OldAltitudeBuffer, XSize, YSize);
   Alloc2D(OldTypeBuffer, XSize, YSize);
+
+  {
+    auto cfg = findWorldMapOptionsConfig();
+    /*
+    fprintf(stderr, "=== FOUND! ===\n");
+    fprintf(stderr, "  max temperature: %d\n", cfg->MaxTemperature);
+    fprintf(stderr, "  latitude effect: %d\n", cfg->LatitudeEffect);
+    fprintf(stderr, "  altitude effect: %f\n", (double)cfg->AltitudeEffect);
+    fprintf(stderr, "  cold  : %d\n", cfg->TemperatureCold);
+    fprintf(stderr, "  medium: %d\n", cfg->TemperatureMedium);
+    fprintf(stderr, "  warm  : %d\n", cfg->TemperatureWarm);
+    fprintf(stderr, "  hot   : %d\n", cfg->TemperatureHot);
+    */
+    MAX_TEMPERATURE = cfg->MaxTemperature;
+    LATITUDE_EFFECT = cfg->LatitudeEffect;
+    ALTITUDE_EFFECT = cfg->AltitudeEffect;
+    COLD = cfg->TemperatureCold;
+    MEDIUM = cfg->TemperatureMedium;
+    WARM = cfg->TemperatureWarm;
+    HOT = cfg->TemperatureHot;
+  }
 
   //continent* poiContinents[CONFIG_TABLE_SIZE]; // max number of configs
 

@@ -39,6 +39,31 @@ gwterrain
   ScoreEntry = "";
   Walkability = ANY_MOVE&~SWIM;
 
+  //HACK: worldmap generation constants
+  MaxTemperature = 27; // increase for a warmer world
+  LatitudeEffect = 40; // increase for more effect
+  AltitudeEffect = 0.02;
+
+  TemperatureCold = 10;
+  TemperatureMedium = 12;
+  TemperatureWarm = 17;
+  TemperatureHot = 19;
+
+  /* you can extend gwterrain and redefine this config in modules
+  //HACK: worldmap generation constants
+  Config WORLDMAP_OPTIONS;
+  {
+    MaxTemperature = 27; // increase for a warmer world
+    LatitudeEffect = 40; // increase for more effect
+    AltitudeEffect = 0.02;
+
+    TemperatureCold = 10;
+    TemperatureMedium = 12;
+    TemperatureWarm = 17;
+    TemperatureHot = 19;
+  }
+  */
+
   Config DESERT;
   {
     BitmapPos = 64, 16;
