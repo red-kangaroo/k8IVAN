@@ -620,7 +620,7 @@ int character::TakeHit (character *Enemy, item *Weapon, bodypart *EnemyBodyPart,
   game::ClearEventData();
   game::mActor = Enemy;
   game::mResult = DID_NO_DAMAGE;
-  if (game::RunOnCharEvent(this, CONST_S("before_take_hit"))) { game::ClearEventData(); return DID_NO_DAMAGE; }
+  if (!game::RunOnCharEvent(this, CONST_S("before_take_hit"))) { game::ClearEventData(); return DID_NO_DAMAGE; }
   game::ClearEventData();
 
   int Dir = (Type == BITE_ATTACK ? YOURSELF : GivenDir);
