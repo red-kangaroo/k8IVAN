@@ -1,1 +1,4 @@
+Include "items/kawai.dat";
+Include "items/superkawai.dat";
+Include "items/moneybag.dat";
 Include "items/hellsdevice.dat";
