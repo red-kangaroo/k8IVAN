@@ -164,6 +164,13 @@ public:
 
   const database *GetDataBase () const { return DataBase; }
 
+  virtual cchar *SurviveMessage () const override { return GetSurviveMessage().CStr(); }
+  virtual cchar *MonsterSurviveMessage () const override { return GetMonsterSurviveMessage().CStr(); }
+  virtual cchar *DeathMessage () const override { return GetDeathMessage().CStr(); }
+  virtual cchar *MonsterDeathVerb () const override { return GetMonsterDeathVerb().CStr(); }
+  virtual cchar *ScoreEntry () const override { return GetScoreEntry().CStr(); }
+  //virtual truth IsFatalToStay () const override { return GetIsFatalToStay(); }
+
   DATA_BASE_VALUE(const prototype *, ProtoType);
   DATA_BASE_VALUE(int, Config);
   DATA_BASE_VALUE(festring, NameStem);

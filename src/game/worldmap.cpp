@@ -419,6 +419,12 @@ void worldmap::Generate () {
     HOT = cfg->TemperatureHot;
   }
 
+  /*
+  fprintf(stderr, "ocean survive: <%s>\n", GWSpawn(OceanType())->GetSurviveMessage().CStr());
+  fprintf(stderr, "ocean survive: <%s>\n", GWSpawn(OceanType())->SurviveMessage());
+  fprintf(stderr, "ocean walkability: 0x%04x (0x%08x)\n", GWSpawn(OceanType())->GetWalkability(), ANY_MOVE&~WALK);
+  */
+
   //continent* poiContinents[CONFIG_TABLE_SIZE]; // max number of configs
 
   for (;;) {
