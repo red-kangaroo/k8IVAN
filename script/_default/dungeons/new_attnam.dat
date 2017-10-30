@@ -531,13 +531,13 @@ Dungeon NEW_ATTNAM;
 
     Square, Pos 3,35;
     {
-      Character [
+      Character on spawn {
         if @has_item "light";
           AddMessage "Nya!";
         else
           Disallow;
         endif
-      ] = vampire { Inventory = { 3, scrollofenchantweapon, scrollofenchantarmor, solstone; } }
+      } = vampire { Inventory = { 3, scrollofenchantweapon, scrollofenchantarmor, solstone; } }
     }
   }
 

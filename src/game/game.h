@@ -22,6 +22,7 @@
 
 #include "femath.h"
 #include "festring.h"
+#include "feparse.h"
 #include "ivandef.h"
 
 
@@ -513,17 +514,19 @@ public:
   static truth RunOnCharEvent (character *who, cfestring &ename);
   static truth RunOnItemEvent (item *what, cfestring &ename);
 
-  static truth RunAllowScriptStr (cfestring &str);
+  static truth RunCharAllowScript (character *tospawn, const EventHandlerMap &emap, cfestring &ename);
+  static truth RunItemAllowScript (item *tospawn, const EventHandlerMap &emap, cfestring &ename);
 
   static festring ldrGetVar (TextInput *fl, cfestring &name);
 
 private:
-  static truth RunOnEventStr (cfestring &name, cfestring &str);
+  enum EventRes { ERNext, ERAllowStop, ERDisallow };
   static truth GetWord (festring &w);
-  static void SkipBlock (truth brcEaten);
   static void UpdateCameraCoordinate (int &, int, int, int);
-  static truth DoOnEvent (truth brcEaten, truth AllowScript=false);
-  static int ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args, TextInput *fl=0, truth noterm=false);
+  static EventRes DoOnEvent (const EventHandlerMap &emap, cfestring &ename);
+  static int ParseFuncArgs (TextInput *ifl, cfestring &types, std::vector<FuncArg> &args, truth noterm=false);
+
+  static void LoadGlobalEvents ();
 
 private:
   static cchar* const Alignment[];
@@ -646,6 +649,7 @@ private:
   static std::stack<TextInput *> mFEStack;
   static std::vector<festring> mModuleList;
   static truth mImmediateSave;
+  static EventHandlerMap mGlobalEvents;
 
 private:
   static void LoadModuleListFile (TextInput &fl);

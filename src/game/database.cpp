@@ -44,44 +44,6 @@ int CreateConfigTable (databasebase ***ConfigTable, databasebase ***TempTable,
 }
 
 
-static void collectHandler (festring &dest, std::stack<TextInput *> &infStack, TextInput **iff) {
-  TextInput *inFile = *iff;
-  festring Word = inFile->ReadWord(true);
-  dest << "on " << Word << "\n{\n";
-  if (inFile->ReadWord() != "{") ABORT("'{' missing in datafile %s line %d!", inFile->GetFileName().CStr(), inFile->TokenLine());
-  int cnt = 1;
-  truth inStr = false;
-  for (;;) {
-    int ch = inFile->GetChar();
-    if (ch == EOF) {
-      if (infStack.empty()) ABORT("'}' missing in datafile %s line %d!", inFile->GetFileName().CStr(), inFile->TokenLine());
-      delete inFile;
-      *iff = inFile = infStack.top();
-      infStack.pop();
-      continue;
-    }
-    dest << (char)ch;
-    if (inStr) {
-      if (ch == '"') inStr = false;
-      else if (ch == '\\') {
-        ch = inFile->GetChar();
-        if (ch == EOF) ABORT("Unexpected end of file %s!", inFile->GetFileName().CStr());
-        dest << (char)ch;
-      }
-      continue;
-    }
-    if (ch == '}') {
-      if (--cnt < 1) break;
-    } else if (ch == '{') {
-      cnt++;
-    } else if (ch == '"') {
-      inStr = true;
-    }
-  }
-  dest << "\n";
-}
-
-
 template <class type> void databasecreator<type>::ReadFrom (const festring &baseFileName) {
   std::stack<TextInput *> infStack;
 
@@ -233,7 +195,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
             if (inFile->ReadWord() != "{") ABORT("'{' missing in %s datafile %s line %d!", protocontainer<type>::GetMainClassID(), inFile->GetFileName().CStr(), inFile->TokenLine());
             for (inFile->ReadWord(Word); Word != "}"; inFile->ReadWord(Word)) {
               if (Word == "on") {
-                collectHandler(Proto->mOnEvents, infStack, &inFile);
+                Proto->mOnEvents.collectSource(infStack, &inFile);
                 continue;
               }
               if (!AnalyzeData(*inFile, Word, *ConfigDataBase)) ABORT("Illegal datavalue %s found while building up %s config #%d (%s), file %s, line %d!", Word.CStr(), Proto->GetClassID(), ConfigNumber, cfgname.CStr(), infname.CStr(), inFile->TokenLine());
@@ -243,7 +205,7 @@ template <class type> void databasecreator<type>::ReadFrom (const festring &base
           continue;
         }
         if (Word == "on") {
-          collectHandler(Proto->mOnEvents, infStack, &inFile);
+          Proto->mOnEvents.collectSource(infStack, &inFile);
           continue;
         }
         if (!AnalyzeData(*inFile, Word, *DataBase)) ABORT("Illegal datavalue %s found while building up %s, file %s, line %d!", Word.CStr(), Proto->GetClassID(), inFile->GetFileName().CStr(), inFile->TokenLine());

@@ -240,7 +240,7 @@ class itemprototype
   cchar* ClassID;
 
 public:
-  festring mOnEvents;
+  EventHandlerMap mOnEvents;
 };
 
 class item : public object

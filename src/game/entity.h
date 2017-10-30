@@ -18,6 +18,7 @@
 
 #include "ivandef.h"
 #include "festring.h"
+#include "feparse.h"
 
 
 #define EXISTS        1
@@ -88,7 +89,7 @@ private:
   entity (); // no such constructor
 
 public:
-  festring mOnEvents;
+  EventHandlerMap mOnEvents;
 };
 
 

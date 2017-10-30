@@ -201,13 +201,13 @@ Dungeon UNDER_WATER_TUNNEL;
       /*
       Square, Pos 2,1;
       {
-        Items == holyhandgrenade [
+        Items == holyhandgrenade on spawn {
           if @has_item "superkawai";
             AddMessage "Nya!";
           else
             Disallow;
           endif
-        ];
+        };
         //Items == meleeweapon(CLAW);
         //Items == wristblades;
       }

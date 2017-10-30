@@ -328,6 +328,8 @@ void game::InitScript () {
     }
   }
   GameScript->RandomizeLevels();
+
+  LoadGlobalEvents();
 }
 
 
@@ -3460,45 +3462,45 @@ void game::ClearEventData () {
 // 'n': number
 // 's': string
 // '*': collect all args
-int game::ParseFuncArgs (cfestring &types, std::vector<FuncArg> &args, TextInput *fl, truth noterm) {
+int game::ParseFuncArgs (TextInput *ifl, cfestring &types, std::vector<FuncArg> &args, truth noterm) {
   festring s;
   sLong n;
   truth isStr;
-  if (!fl) fl = mFEStack.top();
+  if (!ifl) ABORT("The thing that should not be");
   args.clear();
   for (unsigned int f = 0; f < types.GetSize(); f++) {
     switch (types[f]) {
       case '.':
-        s = fl->ReadStringOrNumber(&n, &isStr, true);
+        s = ifl->ReadStringOrNumber(&n, &isStr, true);
         if (isStr) args.push_back(FuncArg(s)); else args.push_back(FuncArg(n));
         break;
       case 'n':
-        n = fl->ReadNumber(0xFF, true);
+        n = ifl->ReadNumber(0xFF, true);
         args.push_back(FuncArg(n));
         break;
       case '*':
         for (;;) {
-          s = fl->ReadStringOrNumber(&n, &isStr, true);
+          s = ifl->ReadStringOrNumber(&n, &isStr, true);
           if (isStr) args.push_back(FuncArg(s)); else args.push_back(FuncArg(n));
-          fl->ReadWord(s, true);
+          s = ifl->ReadWord();
           if (s == ";") return args.size();
-          if (s != ",") ABORT("',' expected in file %s line %d!", fl->GetFileName().CStr(), fl->TokenLine());
+          if (s != ",") ABORT("',' expected in file %s line %d!", ifl->GetFileName().CStr(), ifl->TokenLine());
         }
         // never reached
       case 's':
       default:
-        s = fl->ReadWord(true);
+        s = ifl->ReadWord();
         args.push_back(FuncArg(s));
         break;
     }
     if (f == types.GetSize()-1) {
       if (noterm) break;
-      fl->ReadWord(s, true);
-      if (s != ";") ABORT("';' expected in file %s line %d!", fl->GetFileName().CStr(), fl->TokenLine());
+      s = ifl->ReadWord();
+      if (s != ";") ABORT("';' expected in file %s line %d!", ifl->GetFileName().CStr(), ifl->TokenLine());
       break;
     } else {
-      fl->ReadWord(s, true);
-      if (s != ",") ABORT("',' expected in file %s line %d!", fl->GetFileName().CStr(), fl->TokenLine());
+      s = ifl->ReadWord();
+      if (s != ",") ABORT("',' expected in file %s line %d!", ifl->GetFileName().CStr(), ifl->TokenLine());
     }
   }
   return args.size();
@@ -3534,64 +3536,55 @@ truth game::GetWord (festring &w) {
 }
 
 
-void game::SkipBlock (truth brcEaten) {
-  festring w;
-  if (!brcEaten) {
-    mFEStack.top()->ReadWord(w, true);
-    if (w != "{") ABORT("'{' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
-  }
-  int cnt = 1;
-  for (;;) {
-    mFEStack.top()->ReadWord(w, true);
-    if (w == "{") cnt++;
-    else if (w == "}") {
-      if (--cnt < 1) break;
-    }
-  }
-}
+struct CleanuperTextInput {
+  TextInput *fl;
+  CleanuperTextInput (TextInput *afl) { fl = afl; }
+  ~CleanuperTextInput () { delete fl; }
+};
 
 
-truth game::DoOnEvent (truth brcEaten, truth AllowScript) {
-  // do; only funcalls for now
-  truth eaten = AllowScript ? true : false;
+template<typename cltp> struct Cleanuper {
+  cltp **var;
+  cltp *oval;
+  Cleanuper (cltp **avar, cltp *vnew) { var = avar; oval = *avar; *avar = vnew; }
+  ~Cleanuper () { *var = oval; }
+};
+
+
+game::EventRes game::DoOnEvent (const EventHandlerMap &emap, cfestring &ename) {
+  auto ifl = emap.openHandler(ename, &game::GetGlobalValueMap());
+  if (!ifl) return ERNext;
+  auto clnp = CleanuperTextInput(ifl);
+  ifl->setGetVarCB(game::ldrGetVar);
+  int brclevel = 0;
   festring w;
-  if (!brcEaten) {
-    mFEStack.top()->ReadWord(w, true);
-    if (w != "{") ABORT("'{' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
-  }
   for (;;) {
-    if (!GetWord(w)) {
-      if (AllowScript) break;
-      ABORT("Unexpected end of file %s!", mFEStack.top()->GetFileName().CStr());
-    }
-    //fprintf(stderr, "  :[%s]\n", w.CStr());
-    if (w == "}") {
-      if (AllowScript) ABORT("Unexpected '}' in AllowScript file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
-      break;
-    }
+    if (!ifl->ReadWord(w, false)) break;
+    if (w == "{") { ++brclevel; continue; }
+    if (w == "}") { if (--brclevel <= 0) break; continue; }
     if (w == ";") continue;
     if (w == "@") {
-      mFEStack.top()->ReadWord(w, true);
-      if (mFEStack.top()->ReadWord(true) != "=") ABORT("'=' expected in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
+      w = ifl->ReadWord();
+      if (ifl->ReadWord() != "=") ABORT("'=' expected in file %s at line %d!", ifl->GetFileName().CStr(), ifl->TokenLine());
       //fprintf(stderr, "setvar: %s\n", w.CStr());
       if (w == "money") {
-        sLong n = mFEStack.top()->ReadNumber(true);
+        sLong n = ifl->ReadNumber(true);
         if (n < 0) n = 0;
         if (mChar) mChar->SetMoney(n);
         continue;
       }
       if (w == "result") {
-        mResult = mFEStack.top()->ReadNumber(true);
+        mResult = ifl->ReadNumber(true);
         continue;
       }
-      ABORT("Unknown var [%s] in file %s at line %d!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
+      ABORT("Unknown var [%s] in file %s at line %d!", w.CStr(), ifl->GetFileName().CStr(), ifl->TokenLine());
     } else {
       //mFEStack.top()->ReadWord(w, true);
       std::vector<FuncArg> args;
       //fprintf(stderr, "funcall: %s\n", w.CStr());
       /*
       if (w == "AddItem") {
-        ParseFuncArgs("s", args);
+        ParseFuncArgs(ifl, "s", args);
         item *it = protosystem::CreateItem(args[0].sval, false); // no output
         if (it) {
           mChar->GetStack()->AddItem(it);
@@ -3603,20 +3596,20 @@ truth game::DoOnEvent (truth brcEaten, truth AllowScript) {
       }
       */
       if (w == "SetMoney") {
-        ParseFuncArgs("n", args);
+        ParseFuncArgs(ifl, "n", args);
         sLong n = args[0].ival;
         if (n < 0) n = 0;
         if (mChar) mChar->SetMoney(n);
         continue;
       }
       if (w == "EditMoney") {
-        ParseFuncArgs("n", args);
+        ParseFuncArgs(ifl, "n", args);
         sLong n = args[0].ival;
         if (mChar) mChar->EditMoney(n);
         continue;
       }
       if (w == "AddMessage") {
-        ParseFuncArgs("*", args);
+        ParseFuncArgs(ifl, "*", args);
         festring s;
         for (uInt f = 0; f < args.size(); f++) {
           const FuncArg &a = args[f];
@@ -3625,46 +3618,32 @@ truth game::DoOnEvent (truth brcEaten, truth AllowScript) {
         ADD_MESSAGE("%s", s.CStr());
         continue;
       }
-      if (w == "EatThisEvent") {
-        if (AllowScript) ABORT("'EatThisEvent' forbidden in AllowScripts in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
-        eaten = true;
-        continue;
-      }
-      if (w == "Disallow") {
-        if (!AllowScript) ABORT("'Disallow' forbidden in not-AllowScripts in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
-        eaten = false;
-        continue;
-      }
-      ABORT("Unknown function [%s] in file %s at line %d!", w.CStr(), mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
+      if (w == "Disallow") return ERDisallow;
+      if (w == "Allow") return ERNext;
+      if (w == "AllowStop") return ERAllowStop;
+      ABORT("Unknown function [%s] in file %s at line %d!", w.CStr(), ifl->GetFileName().CStr(), ifl->TokenLine());
       //if (mFEStack.top()->ReadWord() != ";") ABORT("';' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
     }
     //ABORT("Invalid term in file %s at line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
   }
   //fprintf(stderr, "------------\n");
-  return eaten;
+  return ERNext;
 }
 
 
-//TODO: cache event scripts
-truth game::RunOnEvent (cfestring &ename) {
-  static std::vector<festring> scriptFiles;
-  static truth cached = false;
-  truth res = false;
+EventHandlerMap game::mGlobalEvents;
 
-  character *old = mChar;
-  mChar = PLAYER;
-  if (!cached) {
-    cached = true;
-    // add module files
-    auto modlist = game::GetModuleList();
-    for (unsigned idx = modlist.size(); idx > 0; --idx) {
-      festring infname = game::GetGameDir()+"script/"+modlist[idx-1]+"/onevent.dat";
-      if (inputfile::fileExists(infname)) scriptFiles.push_back(infname);
-    }
-  }
 
-  for (auto &cfname : scriptFiles) {
-    TextInput *ifl = new TextInputFile(cfname, &game::GetGlobalValueMap());
+void game::LoadGlobalEvents () {
+  mGlobalEvents.clear();
+
+  if (mFEStack.size() != 0) ABORT("Ooops...");
+
+  // add module files
+  for (auto &modname : mModuleList) {
+    festring infname = game::GetGameDir()+"script/"+modname+"/onevent.dat";
+    if (!inputfile::fileExists(infname)) continue;
+    TextInput *ifl = new TextInputFile(infname, &game::GetGlobalValueMap());
     ifl->setGetVarCB(game::ldrGetVar);
     mFEStack.push(ifl);
   }
@@ -3672,71 +3651,53 @@ truth game::RunOnEvent (cfestring &ename) {
   festring w;
   while (GetWord(w)) {
     if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
-    mFEStack.top()->ReadWord(w, true);
-    truth doIt = (w == ename);
-    if (doIt && !res) {
-      res = DoOnEvent(false);
-    } else {
-      // skip
-      SkipBlock(false);
-    }
+    TextInput *ti = mFEStack.top();
+    mGlobalEvents.collectSource(mFEStack, &ti);
   }
-
-  mChar = old;
-  return res;
 }
 
 
-truth game::RunOnEventStr (cfestring &ename, cfestring &str) {
-  truth res = false;
-  if (str.GetSize() < 1) return false;
-  //fprintf(stderr, "=============\n%s=============\n", str.CStr());
-  TextInput *ifl = new MemTextFile("<memory>", str, &game::GetGlobalValueMap());
-  ifl->setGetVarCB(game::ldrGetVar);
-  mFEStack.push(ifl);
-  festring w;
-  //fprintf(stderr, "=============\n", str.CStr());
-  //fprintf(stderr, "event: [%s]\n", ename.CStr());
-  //fprintf(stderr, "---\n%s---\n", str.CStr());
-  while (GetWord(w)) {
-    if (w != "on") ABORT("'on' expected in file %s line %d!", mFEStack.top()->GetFileName().CStr(), mFEStack.top()->TokenLine());
-    mFEStack.top()->ReadWord(w, true);
-    //fprintf(stderr, "on: [%s]\n", w.CStr());
-    truth doIt = (w==ename);
-    if (doIt && !res) {
-      //fprintf(stderr, "  do it\n");
-      res = DoOnEvent(false);
-    } else {
-      // skip
-      //fprintf(stderr, "  skip it\n");
-      SkipBlock(false);
-    }
-  }
-  return res;
+truth game::RunOnEvent (cfestring &ename) {
+  auto clnp = Cleanuper<character>(&mChar, PLAYER);
+  return (DoOnEvent(mGlobalEvents, ename) != ERDisallow);
 }
 
 
 truth game::RunOnCharEvent (character *who, cfestring &ename) {
-  truth res = false;
-  if (!who) return false;
-  character *old = mChar;
-  mChar = who;
-  res = RunOnEventStr(ename, who->mOnEvents);
-  if (!res) res = RunOnEventStr(ename, who->GetProtoType()->mOnEvents);
-  mChar = old;
-  return res;
+  if (who) {
+    auto clnp = Cleanuper<character>(&mChar, who);
+    auto res = DoOnEvent(who->mOnEvents, ename);
+    if (res == ERDisallow) return false;
+    if (res == ERAllowStop) return true;
+    res = DoOnEvent(who->GetProtoType()->mOnEvents, ename);
+    return (res != ERDisallow);
+  }
+  return true;
 }
 
 
 truth game::RunOnItemEvent (item *what, cfestring &ename) {
-  truth res = false;
-  if (!what) return false;
-  item *old = mItem;
-  mItem = what;
-  res = RunOnEventStr(ename, what->mOnEvents);
-  if (!res) res = RunOnEventStr(ename, what->GetProtoType()->mOnEvents);
-  mItem = old;
-  return res;
+  if (what) {
+    auto clnp = Cleanuper<item>(&mItem, what);
+    auto res = DoOnEvent(what->mOnEvents, ename);
+    if (res == ERDisallow) return false;
+    if (res == ERAllowStop) return true;
+    res = DoOnEvent(what->GetProtoType()->mOnEvents, ename);
+    return (res != ERDisallow);
+  }
+  return true;
+}
+
+
+truth game::RunCharAllowScript (character *tospawn, const EventHandlerMap &emap, cfestring &ename) {
+  auto clnp = Cleanuper<character>(&mChar, tospawn);
+  return (DoOnEvent(emap, ename) != ERDisallow);
+}
+
+
+truth game::RunItemAllowScript (item *tospawn, const EventHandlerMap &emap, cfestring &ename) {
+  auto clnp = Cleanuper<item>(&mItem, tospawn);
+  return (DoOnEvent(emap, ename) != ERDisallow);
 }
 
 
@@ -3774,12 +3735,43 @@ festring game::ldrGetVar (TextInput *fl, cfestring &name) {
   }
   if (name == "has_item") {
     std::vector<FuncArg> args;
-    ParseFuncArgs("s", args, fl, true);
-    //
+    ParseFuncArgs(fl, "s", args, true);
+    if (mChar) {
+      itemvector items;
+      festring s = args[0].sval;
+      //fprintf(stderr, "looking for [%s]\n", s.CStr());
+      mChar->GetStack()->FillItemVector(items);
+      for (unsigned int f = 0; f < items.size(); ++f) {
+        for (uInt c = 0; c < items[f]->GetDataBase()->Alias.Size; ++c) {
+          //fprintf(stderr, "%u:%u: [%s]\n", f, c, items[f]->GetDataBase()->Alias[c].CStr());
+          if (s.CompareIgnoreCase(items[f]->GetDataBase()->Alias[c]) == 0) {
+            //fprintf(stderr, " FOUND!\n");
+            return "tan";
+          }
+        }
+      }
+      //fprintf(stderr, "checking equipment...\n");
+      for (int f = 0; f < mChar->GetEquipments(); ++f) {
+        item *it = mChar->GetEquipment(f);
+        if (it) {
+          for (uInt c = 0; c < it->GetDataBase()->Alias.Size; ++c) {
+            //fprintf(stderr, "%u:%u: [%s]\n", f, c, it->GetDataBase()->Alias[c].CStr());
+            if (s.CompareIgnoreCase(it->GetDataBase()->Alias[c]) == 0) {
+              //fprintf(stderr, " FOUND!\n");
+              return "tan";
+            }
+          }
+        }
+      }
+    }
+    return "";
+  }
+  if (name == "player_has_item") {
+    std::vector<FuncArg> args;
+    ParseFuncArgs(fl, "s", args, true);
     if (PLAYER) {
       itemvector items;
       festring s = args[0].sval;
-      //
       //fprintf(stderr, "looking for [%s]\n", s.CStr());
       PLAYER->GetStack()->FillItemVector(items);
       for (unsigned int f = 0; f < items.size(); ++f) {
@@ -3819,17 +3811,4 @@ truth game::CheckDropLeftover (item *i) {
   if (i->IsCan() && !ivanconfig::GetAutoDropCans()) return false;
   if (!ivanconfig::GetAutoDropLeftOvers()) return false;
   return true;
-}
-
-
-truth game::RunAllowScriptStr (cfestring &str) {
-  truth res = true;
-  if (str.GetSize() < 1) return true;
-  //fprintf(stderr, "====\n%s\n====\n", str.CStr());
-  TextInput *ifl = new MemTextFile("<memory>", str, &game::GetGlobalValueMap());
-  ifl->setGetVarCB(game::ldrGetVar);
-  mFEStack.push(ifl);
-  res = DoOnEvent(true, true);
-  //fprintf(stderr, "mFEStack: %u\n", mFEStack.size());
-  return res;
 }

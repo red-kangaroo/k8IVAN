@@ -69,7 +69,7 @@ public:
   virtual void SignalMaterialChange () {}
 
 public:
-  festring mOnEvents;
+  EventHandlerMap mOnEvents;
 
 protected:
   void CopyMaterial (material *const &, material *&);

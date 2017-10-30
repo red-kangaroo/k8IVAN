@@ -135,7 +135,7 @@ private:
   cchar *ClassID;
 
 public:
-  festring mOnEvents;
+  EventHandlerMap mOnEvents;
 };
 
 
@@ -280,7 +280,7 @@ private:
   cchar *ClassID;
 
 public:
-  festring mOnEvents;
+  EventHandlerMap mOnEvents;
 };
 
 

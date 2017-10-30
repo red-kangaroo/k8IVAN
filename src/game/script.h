@@ -20,6 +20,7 @@
 #include "rect.h"
 #include "femath.h"
 #include "festring.h"
+#include "feparse.h"
 
 
 #define SCRIPT_MEMBER(type, name)\
@@ -262,7 +263,7 @@ protected:
   truth Random;
   uShort Config;
   FAST_SCRIPT_MEMBER(uChar, Parameters);
-  festring mCode;
+  EventHandlerMap mCode;
 };
 
 

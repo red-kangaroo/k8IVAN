@@ -287,7 +287,7 @@ private:
   cchar *ClassID;
 
 public:
-  festring mOnEvents;
+  EventHandlerMap mOnEvents;
 };
 
 

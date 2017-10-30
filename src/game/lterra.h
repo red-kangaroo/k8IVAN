@@ -155,7 +155,7 @@ class glterrainprototype
   cchar* ClassID;
 
 public:
-  festring mOnEvents;
+  EventHandlerMap mOnEvents;
 };
 
 class glterrain : public lterrain, public gterrain
@@ -261,7 +261,7 @@ class olterrainprototype
   cchar* ClassID;
 
 public:
-  festring mOnEvents;
+  EventHandlerMap mOnEvents;
 };
 
 class olterrain : public lterrain, public oterrain

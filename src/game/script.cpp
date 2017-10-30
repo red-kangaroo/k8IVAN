@@ -299,13 +299,19 @@ basecontentscript::basecontentscript () : script(), ContentType(0), Random(false
 
 void basecontentscript::ReadFrom (TextInput &SaveFile) {
   static festring Word;
-  //
   SrcFile = SaveFile.GetFileName();
   SrcLine = SaveFile.CurrentLine();
-  SaveFile.ReadWord(Word);
-  if (Word == "[") {
-    mCode = SaveFile.ReadCode();
+  for (;;) {
     SaveFile.ReadWord(Word);
+    if (Word == "on") {
+      //mCode = SaveFile.ReadCode();
+      mCode.collectSource(SaveFile);
+      SaveFile.skipBlanks();
+      int ch = SaveFile.GetChar();
+      if (ch != ';') SaveFile.UngetChar(ch);
+      continue;
+    }
+    break;
   }
   if (Word == "=" || Word == ",") SaveFile.ReadWord(Word);
   valuemap::const_iterator i = game::GetGlobalValueMap().find(Word);
@@ -344,10 +350,12 @@ void basecontentscript::ReadFrom (TextInput &SaveFile) {
       if (!ReadMember(SaveFile, Word)) ABORT("Odd script term %s encountered in %s content script, file %s line %d!", Word.CStr(), GetClassID(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
     }
   } else {
+    /*
     if (Word == "[") {
       mCode = SaveFile.ReadCode();
       SaveFile.ReadWord(Word);
     }
+    */
     if (Word != ";" && Word != ",") ABORT("Odd terminator %s encountered in %s content script, file %s line %d!", Word.CStr(), GetClassID(), SaveFile.GetFileName().CStr(), SaveFile.TokenLine());
   }
 }
@@ -455,14 +463,14 @@ contentscript<character>::contentscript () : INIT(Team, DEFAULT_TEAM), INIT(Flag
 character *contentscript<character>::Instantiate (int SpecialFlags) const {
   character *Instance = contentscripttemplate<character>::BasicInstantiate(SpecialFlags);
   //fprintf(stderr, "instantiating character '%s'\n", Instance->GetNameSingular().CStr());
-  if (!mCode.IsEmpty()) {
-    game::ClearEventData();
-    if (!game::RunAllowScriptStr(mCode)) {
-      //fprintf(stderr, "dropping character '%s'\n", Instance->GetNameSingular().CStr());
-      delete Instance;
-      return 0;
-    }
+
+  game::ClearEventData();
+  if (!game::RunCharAllowScript(Instance, mCode, "spawn")) {
+    //fprintf(stderr, "dropping character '%s'\n", Instance->GetNameSingular().CStr());
+    delete Instance;
+    return 0;
   }
+
   if (GetTeam() != DEFAULT_TEAM) Instance->SetTeam(game::GetTeam(GetTeam()));
   const fearray<contentscript<item> > *Inventory = GetInventory();
   if (Inventory) Instance->AddToInventory(*Inventory, SpecialFlags);
@@ -518,19 +526,23 @@ item *contentscript<item>::InstantiateBasedOnMaterial (int MaterialConfig, int S
 
 item *contentscript<item>::Instantiate (int SpecialFlags) const {
   int Chance = GetChance();
-  item *Instance;
-  //
-  if (!mCode.IsEmpty()) {
-    game::ClearEventData();
-    if (!game::RunAllowScriptStr(mCode)) return 0;
-  }
-  //
+  item *Instance = 0;
+
   if (Chance != 100 && Chance <= RAND_N(100)) return 0;
+
   if (Random) {
     Instance = protosystem::BalancedCreateItem(0, GetMinPrice(), GetMaxPrice(), GetCategory(), SpecialFlags, GetConfigFlags());
   } else {
     Instance = contentscripttemplate<item>::BasicInstantiate(SpecialFlags);
   }
+
+  game::ClearEventData();
+  if (!game::RunItemAllowScript(Instance, mCode, "spawn")) {
+    //fprintf(stderr, "dropping character '%s'\n", Instance->GetNameSingular().CStr());
+    delete Instance;
+    return 0;
+  }
+
   if (GetLifeExpectancy()) Instance->SetLifeExpectancy(GetLifeExpectancy()->Min, (GetLifeExpectancy()->Max - GetLifeExpectancy()->Min) + 1);
   if (GetTeam() != DEFAULT_TEAM) Instance->SetTeam(GetTeam());
   if (IsActive()) Instance->SetIsActive(true);

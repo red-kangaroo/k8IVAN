@@ -100,7 +100,7 @@ class materialprototype
   cchar* ClassID;
 
 public:
-  festring mOnEvents;
+  EventHandlerMap mOnEvents;
 };
 
 class material

@@ -20,6 +20,8 @@
 
 // ////////////////////////////////////////////////////////////////////////// //
 class TextInput;
+class TextInputFile;
+class MemTextFile;
 struct InputFileSaved;
 
 
@@ -45,7 +47,7 @@ public:
   int GetChar ();
   void UngetChar (int ch);
 
-  festring ReadCode (truth abortOnEOF=true);
+  //festring ReadCode (truth abortOnEOF=true);
   festring ReadWord (truth abortOnEOF=true);
   truth ReadWord (festring &str, truth abortOnEOF=true); // returns `false` on EOF
   char ReadLetter (truth abortOnEOF=true);
@@ -75,9 +77,9 @@ public:
   // when reading a number, and `mCollectingNumStr` flag is set, this will be filled
   inline cfestring& numStr () const { return mNumStr; }
 
-protected:
   int gotCharSkipComment (int ch, truth allowSingleLineComments=true); // just read `ch`, skip possible comment; returns `ch` or -1
 
+protected:
   template<typename numtype> festring ReadNumberIntr (int CallLevel, numtype *num, truth *isString, truth allowStr, truth PreserveTerminator, truth *wasCloseBrc, truth allowFloats);
 
   festring findVar (cfestring &name, truth *found) const;
@@ -142,6 +144,7 @@ protected:
 class MemTextFile : public TextInput {
 public:
   MemTextFile (cfestring &afname, cfestring &str, const valuemap *aValueMap=0);
+  MemTextFile (cfestring &afname, int stline, cfestring &str, const valuemap *aValueMap=0);
   virtual ~MemTextFile ();
 
   virtual cfestring &GetFileName () const override;
@@ -218,6 +221,43 @@ template <class type> inline void ReadData (fearray<type> &Array, TextInput &inf
   for (sizetype c = 0; c < Size; ++c) ReadData(Array.Data[c], infile);
   if (infile.ReadWord() != "}") ABORT("Illegal array terminator \"%s\" encountered in file %s, line %u!", Word.CStr(), infile.GetFileName().CStr(), infile.TokenLine());
 }
+
+
+// ////////////////////////////////////////////////////////////////////////// //
+struct EventHandlerSource {
+  festring type;
+  int startline;
+  festring text;
+  festring fname;
+};
+
+
+struct EventHandlerMap {
+private:
+  //EventHandlerMap (const EventHandlerMap &); // disable copying
+
+public:
+  EventHandlerMap ();
+  virtual ~EventHandlerMap ();
+
+  void clear ();
+
+  // "on" skipped, expecting type
+  void collectSource (std::stack<TextInput *> &infStack, TextInput **iff);
+
+  // "on" skipped, expecting type
+  void collectSource (TextInput &iff);
+
+  // can return `nullptr`
+  TextInput *openHandler (cfestring &atype, const valuemap *aValueMap=0) const;
+
+private:
+  std::map<festring, EventHandlerSource> mMap;
+};
+
+
+festring collectSourceCode (std::stack<TextInput *> &infStack, TextInput **iff);
+EventHandlerSource collectEventHandlerSource (std::stack<TextInput *> &infStack, TextInput **iff);
 
 
 #endif

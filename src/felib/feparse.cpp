@@ -850,6 +850,7 @@ template<typename numtype> festring TextInput::ReadNumberIntr (int CallLevel, nu
 }
 
 
+/*
 festring TextInput::ReadCode (truth abortOnEOF) {
   int sqLevel = 1;
   char inString = 0;
@@ -903,6 +904,7 @@ festring TextInput::ReadCode (truth abortOnEOF) {
   if (abortOnEOF && Eof()) ABORT("Unexpected end of file %s!", GetFileName().CStr());
   return res;
 }
+*/
 
 
 sLong TextInput::ReadNumber (int CallLevel, truth PreserveTerminator, truth *wasCloseBrc) {
@@ -998,6 +1000,152 @@ rect TextInput::ReadRect () {
   }
 
   return Rect;
+}
+
+
+// ////////////////////////////////////////////////////////////////////////// //
+#define GETC(var)  do { \
+    var = inFile->GetChar(); \
+    if (var == EOF) { \
+      if (infStack.empty()) ABORT("'}' missing in datafile %s line %d!", inFile->GetFileName().CStr(), inFile->TokenLine()); \
+      delete inFile; \
+      *iff = inFile = infStack.top(); \
+      infStack.pop(); \
+      continue; \
+    } \
+    break; \
+  } while (1) \
+
+
+festring collectSourceCode (std::stack<TextInput *> &infStack, TextInput **iff) {
+  if (!iff || !*iff) ABORT("Wut?!");
+  TextInput *inFile = *iff;
+  int brclevel = 0;
+  int ch;
+  festring res;
+
+  for (;;) {
+    GETC(ch);
+    res << (char)ch;
+    // brackets?
+    if (ch == '{') { ++brclevel; continue; }
+    if (ch == '}') { if (--brclevel == 0) break; continue; }
+    // string?
+    if (ch == '"') {
+      // waiting for bracket?
+      if (brclevel == 0) ABORT("'{' expected in datafile %s line %d!", inFile->GetFileName().CStr(), inFile->TokenLine()); \
+      for (;;) {
+        GETC(ch);
+        res << (char)ch;
+        if (ch == '"') break;
+        if (ch == '\\') {
+          GETC(ch);
+          res << (char)ch;
+        }
+      }
+      continue;
+    }
+    // comment
+    if (ch == '/') {
+      GETC(ch);
+      res << (char)ch;
+      // single-line?
+      if (ch == '/') {
+        for (;;) {
+          GETC(ch);
+          res << (char)ch;
+          if (ch == '\n') break;
+        }
+        continue;
+      }
+      // multiline?
+      if (ch == '*') {
+        int prevch = 0;
+        int level = 1;
+        for (;;) {
+          GETC(ch);
+          res << (char)ch;
+          // comment start (nested)
+          if (prevch == '/' && ch == '*') {
+            ++level;
+            prevch = 0;
+            continue;
+          }
+          // comment end
+          if (prevch == '*' && ch == '/') {
+            if (--level == 0) break;
+            prevch = 0;
+            continue;
+          }
+          prevch = ch;
+        }
+        continue;
+      }
+      // waiting for bracket?
+      if (brclevel == 0) ABORT("'{' expected in datafile %s line %d!", inFile->GetFileName().CStr(), inFile->TokenLine()); \
+      continue;
+    }
+    if (brclevel == 0 && ch > ' ') ABORT("'{' expected in datafile %s line %d!", inFile->GetFileName().CStr(), inFile->TokenLine()); \
+  }
+
+  return res;
+}
+
+#undef GETC
+
+
+EventHandlerSource collectEventHandlerSource (std::stack<TextInput *> &infStack, TextInput **iff) {
+  if (!iff || !*iff) ABORT("Wut?!");
+  TextInput *inFile = *iff;
+  EventHandlerSource res;
+  // read type
+  res.fname = inFile->GetFileName();
+  res.type = inFile->ReadWord();
+  res.startline = inFile->CurrentLine();
+  res.text = collectSourceCode(infStack, iff);
+  return res;
+}
+
+
+// ////////////////////////////////////////////////////////////////////////// //
+EventHandlerMap::EventHandlerMap () {
+}
+
+
+EventHandlerMap::~EventHandlerMap () {
+  clear();
+}
+
+
+void EventHandlerMap::clear () {
+  mMap.clear();
+}
+
+
+// "on" skipped, expecting type
+void EventHandlerMap::collectSource (std::stack<TextInput *> &infStack, TextInput **iff) {
+  auto ehs = collectEventHandlerSource(infStack, iff);
+  if (ehs.type.IsEmpty()) ABORT("Empty handler type in file '%s' at line %d", ehs.fname.CStr(), ehs.startline);
+  auto it = mMap.find(ehs.type);
+  if (it != mMap.end()) ABORT("Duplicate handler type '%s' in file '%s' at line %d", ehs.type.CStr(), ehs.fname.CStr(), ehs.startline);
+  mMap.insert(std::make_pair(ehs.type, ehs));
+}
+
+
+// "on" skipped, expecting type
+void EventHandlerMap::collectSource (TextInput &iff) {
+  std::stack<TextInput *> infStack;
+  TextInput *ifp = &iff;
+  infStack.push(ifp);
+  collectSource(infStack, &ifp);
+}
+
+
+// can return `nullptr`
+TextInput *EventHandlerMap::openHandler (cfestring &atype, const valuemap *aValueMap) const {
+  auto it = mMap.find(atype);
+  if (it == mMap.end()) return nullptr;
+  return new MemTextFile((*it).second.fname, (*it).second.startline, (*it).second.text, aValueMap);
 }
 
 
@@ -1118,6 +1266,20 @@ MemTextFile::MemTextFile (cfestring &afname, cfestring &str, const valuemap *aVa
   buf = (unsigned char *)calloc(1, bufSize+1);
   memmove(buf, str.CStr(), bufSize);
   setup(aValueMap);
+}
+
+
+MemTextFile::MemTextFile (cfestring &afname, int stline, cfestring &str, const valuemap *aValueMap) :
+  buf(nullptr),
+  bufSize(0),
+  bufPos(0),
+  tfname(afname)
+{
+  bufSize = str.GetSize();
+  buf = (unsigned char *)calloc(1, bufSize+1);
+  memmove(buf, str.CStr(), bufSize);
+  setup(aValueMap);
+  mCurrentLine = mTokenLine = stline;
 }
 
 
