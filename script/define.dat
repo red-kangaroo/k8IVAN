@@ -1370,19 +1370,26 @@
   TUNDRA, // this is actually snow, wtf?!
   GLACIER,
   OCEAN,
-}
+};
 
-#define NO_MOVE 0
-#define WALK 1
-#define SWIM 2
-#define FLY  4
-#define ETHEREAL 8
-#define ANY_MOVE 15
 
-#define NOT_RUSTED 0
-#define SLIGHTLY_RUSTED 1
-#define RUSTED 2
-#define VERY_RUSTED 3
+#bitenum {
+  NO_MOVE = 0;
+  WALK,
+  SWIM,
+  FLY,
+  ETHEREAL,
+  ANY_MOVE = 15,
+};
+
+
+#enum {
+  NOT_RUSTED,
+  SLIGHTLY_RUSTED,
+  RUSTED,
+  VERY_RUSTED,
+};
+
 
 #define SKIN_COLOR 1
 #define CAP_COLOR 2

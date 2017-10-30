@@ -12,7 +12,7 @@
 #include "stack.h"
 #include "message.h"
 #include "actions.h"
-#include "wterras.h"
+//#include "wterras.h"
 #include "rawbit.h"
 #include "team.h"
 #include "iconf.h"

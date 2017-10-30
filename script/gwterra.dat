@@ -26,65 +26,82 @@
 gwterrain
 {
   /* Obligatory: BitmapPos */
-  NameStem = "";
   IsAbstract = true; /* This is false by default and does not inherit! */
+  NameStem = "";
   UsesLongArticle = false;
   Priority = 50;
-}
+  AnimationFrames = 1;
+  IsFatalToStay = false;
+  SurviveMessage = "";
+  MonsterSurviveMessage = "";
+  DeathMessage = "";
+  MonsterDeathVerb = "";
+  ScoreEntry = "";
+  Walkability = ANY_MOVE&~SWIM;
 
-ocean
-{
-  /* BitmapPos overridden in wterras.cpp = 0, 48; */
-  NameStem = "ocean";
-  UsesLongArticle = true;
-  Priority = 10;
-}
+  Config DESERT;
+  {
+    BitmapPos = 64, 16;
+    NameStem = "desert";
+    Priority = 20;
+  }
 
-glacier
-{
-  BitmapPos = 16, 16;
-  NameStem = "glacier";
-  Priority = 90;
-}
+  Config JUNGLE;
+  {
+    BitmapPos = 208, 16;
+    NameStem = "jungle";
+    Priority = 50;
+  }
 
-desert
-{
-  BitmapPos = 64, 16;
-  NameStem = "desert";
-  Priority = 20;
-}
+  Config STEPPE;
+  {
+    BitmapPos = 160, 16;
+    NameStem = "steppe";
+    Priority = 30;
+  }
 
-snow
-{
-  BitmapPos = 112, 16;
-  NameStem = "tundra";
-  Priority = 80;
-}
+  Config LEAFY_FOREST;
+  {
+    BitmapPos = 304, 16;
+    NameStem = "leafy forest";
+    Priority = 60;
+  }
 
-jungle
-{
-  BitmapPos = 208, 16;
-  NameStem = "jungle";
-  Priority = 50;
-}
+  Config EVERGREEN_FOREST;
+  {
+    BitmapPos = 352, 16;
+    NameStem = "evergreen forest";
+    Priority = 70;
+  }
 
-leafyforest
-{
-  BitmapPos = 304, 16;
-  NameStem = "leafy forest";
-  Priority = 60;
-}
+  Config TUNDRA; // this is actually snow, wtf?!
+  {
+    BitmapPos = 112, 16;
+    NameStem = "tundra";
+    Priority = 80;
+  }
 
-evergreenforest
-{
-  BitmapPos = 352, 16;
-  NameStem = "evergreen forest";
-  Priority = 70;
-}
+  Config GLACIER;
+  {
+    BitmapPos = 16, 16;
+    NameStem = "glacier";
+    Priority = 90;
+  }
 
-steppe
-{
-  BitmapPos = 160, 16;
-  NameStem = "steppe";
-  Priority = 30;
+  Config OCEAN;
+  {
+    BitmapPos = 48, 48;
+    /* BitmapPos overridden in wterras.cpp = 0, 48; */
+    NameStem = "ocean";
+    UsesLongArticle = true;
+    Priority = 10;
+    AnimationFrames = 32;
+    IsFatalToStay = true;
+    SurviveMessage = "you manage to reach the shore";
+    MonsterSurviveMessage = "manages to reach the shore";
+    DeathMessage = "you drown";
+    MonsterDeathVerb = "drowns";
+    ScoreEntry = "drowned";
+    Walkability = ANY_MOVE&~WALK;
+  }
 }

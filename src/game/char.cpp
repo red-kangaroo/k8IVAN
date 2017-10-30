@@ -418,7 +418,7 @@ cchar *character::GetEquipmentName (int) const { return ""; }
 const std::list<feuLong> &character::GetOriginalBodyPartID (int I) const { return OriginalBodyPartID[I]; }
 square *character::GetNeighbourSquare (int I) const { return GetSquareUnder()->GetNeighbourSquare(I); }
 lsquare *character::GetNeighbourLSquare (int I) const { return static_cast<lsquare *>(GetSquareUnder())->GetNeighbourLSquare(I); }
-wsquare *character::GetNeighbourWSquare (int I) const { return static_cast<wsquare *>(GetSquareUnder())->GetNeighbourWSquare(I); }
+//wsquare *character::GetNeighbourWSquare (int I) const { return static_cast<wsquare *>(GetSquareUnder())->GetNeighbourWSquare(I); }
 god *character::GetMasterGod () const { return game::GetGod(GetConfig()); }
 col16 character::GetBodyPartColorA (int, truth) const { return GetSkinColor(); }
 col16 character::GetBodyPartColorB (int, truth) const { return GetTorsoMainColor(); }

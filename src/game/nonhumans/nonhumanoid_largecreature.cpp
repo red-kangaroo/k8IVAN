@@ -8,7 +8,7 @@ public:
   virtual int GetExtendedNeighbourSquares () const override { return 16; }
   virtual square *GetNeighbourSquare (int) const override;
   virtual lsquare *GetNeighbourLSquare (int) const override;
-  virtual wsquare *GetNeighbourWSquare (int) const override;
+  //virtual wsquare *GetNeighbourWSquare (int) const override;
   virtual int CalculateNewSquaresUnder (lsquare **, v2) const override;
   virtual truth IsFreeForMe (square *) const override;
   virtual truth CanMoveOn (const lsquare *) const override;
@@ -34,7 +34,7 @@ protected:
 
 bodypart *largecreature::MakeBodyPart (int) const { return largetorso::Spawn(0, NO_MATERIALS); }
 lsquare *largecreature::GetNeighbourLSquare (int I) const { return static_cast<lsquare *>(GetNeighbourSquare(I)); }
-wsquare *largecreature::GetNeighbourWSquare (int I) const { return static_cast<wsquare *>(GetNeighbourSquare(I)); }
+//wsquare *largecreature::GetNeighbourWSquare (int I) const { return static_cast<wsquare *>(GetNeighbourSquare(I)); }
 
 
 int largecreature::GetSquareIndex (v2 Pos) const {

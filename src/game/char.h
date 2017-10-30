@@ -781,7 +781,7 @@ public:
   area *GetArea () const { return GetSquareUnder()->GetArea(); }
   virtual square *GetNeighbourSquare (int) const;
   virtual lsquare *GetNeighbourLSquare (int) const;
-  virtual wsquare *GetNeighbourWSquare (int) const;
+  //virtual wsquare *GetNeighbourWSquare (int) const;
   stack *GetStackUnder (int I = 0) const { return static_cast<lsquare *>(GetSquareUnder(I))->GetStack(); }
   square *GetNearSquare (v2 Pos) const { return GetSquareUnder()->GetArea()->GetSquare(Pos); }
   square *GetNearSquare (int x, int y) const { return GetSquareUnder()->GetArea()->GetSquare(x, y); }

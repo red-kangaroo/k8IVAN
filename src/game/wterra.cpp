@@ -51,7 +51,17 @@ void wterrain::Load (inputfile &) {
 
 
 // ////////////////////////////////////////////////////////////////////////// //
-gwterrainprototype::gwterrainprototype (gwterrainspawner Spawner, cchar *ClassID) :
+void gwterraindatabase::InitDefaults (const gwterrainprototype *NewProtoType, int NewConfig, cfestring &acfgstrname)
+{
+  IsAbstract = false;
+  ProtoType = NewProtoType;
+  Config = NewConfig;
+  CfgStrName = acfgstrname;
+}
+
+
+gwterrainprototype::gwterrainprototype (const gwterrainprototype *Base, gwterrainspawner Spawner, cchar *ClassID) :
+  Base(Base),
   Spawner(Spawner),
   ClassID(ClassID)
 {
@@ -59,14 +69,32 @@ gwterrainprototype::gwterrainprototype (gwterrainspawner Spawner, cchar *ClassID
 }
 
 
-gwterrain *gwterrainprototype::SpawnAndLoad (inputfile &SaveFile) const {
-  gwterrain *Terrain = Spawner();
-  Terrain->Load(SaveFile);
-  return Terrain;
+gwterrain *gwterrainprototype::Spawn (int Config, int SpecialFlags) const {
+  gwterrain *res = Spawner(Config, SpecialFlags);
+  return res;
 }
 
 
-int gwterrain::GetWalkability () const { return ANY_MOVE&~SWIM; }
+gwterrain *gwterrainprototype::SpawnAndLoad (inputfile &SaveFile) const {
+  gwterrain *terra = Spawner(0, LOAD);
+  terra->Load(SaveFile);
+  terra->SetAnimationFrames(terra->GetAnimationFrames());
+  return terra;
+}
+
+
+void gwterrain::InstallDataBase (int NewConfig) { databasecreator<gwterrain>::InstallDataBase(this, NewConfig); }
+
+
+void gwterrain::Initialize (int NewConfig, int SpecialFlags) {
+  if (!(SpecialFlags&LOAD)) {
+    databasecreator<gwterrain>::InstallDataBase(this, NewConfig);
+    SetAnimationFrames(GetAnimationFrames());
+  }
+}
+
+
+//int gwterrain::GetWalkability () const { return ANY_MOVE&~SWIM; }
 
 
 void gwterrain::Draw (blitdata &BlitData) const {
@@ -84,6 +112,15 @@ void gwterrain::Draw (blitdata &BlitData) const {
 
 void gwterrain::Save (outputfile &SaveFile) const {
   SaveFile << (uShort)GetType();
+  wterrain::Save(SaveFile);
+  SaveFile << (uShort)(GetConfig());
+}
+
+
+void gwterrain::Load (inputfile &SaveFile) {
+  //fprintf(stderr, "gwterrain::Load: pos0=0x%08x\n", (unsigned)SaveFile.TellPos());
+  wterrain::Load(SaveFile);
+  databasecreator<gwterrain>::InstallDataBase(this, ReadType(uShort, SaveFile));
 }
 
 
@@ -106,6 +143,18 @@ void gwterrain::CalculateNeighbourBitmapPoses () {
   }
   std::sort(Neighbour, Neighbour+Index, DrawOrderer);
   if (Index < 8) Neighbour[Index].second = 0;
+}
+
+
+gwterrain *GWSpawn (int type) {
+  if (type < 1) ABORT("Invalid gwterrain requested");
+  auto xtype = protocontainer<gwterrain>::SearchCodeName("gwterrain");
+  if (!xtype) ABORT("Your worldmap is dull and empty.");
+  const gwterrain::prototype* proto = protocontainer<gwterrain>::GetProto(xtype);
+  if (!proto) ABORT("wtf?!");
+  const gwterrain::database *const *configs = proto->GetConfigData();
+  if (!configs) ABORT("wtf?!");
+  return proto->Spawn(type);
 }
 
 
@@ -140,9 +189,9 @@ owterrain *owterrainprototype::Spawn (int Config, int SpecialFlags) const {
 
 
 owterrain* owterrainprototype::SpawnAndLoad (inputfile &SaveFile) const {
-  owterrain *Terrain = Spawner(0, LOAD);
-  Terrain->Load(SaveFile);
-  return Terrain;
+  owterrain *terra = Spawner(0, LOAD);
+  terra->Load(SaveFile);
+  return terra;
 }
 
 
@@ -224,7 +273,7 @@ truth owterrain::IsSuitableContinent (continent *Continent) {
   if (!Continent) return false;
   if (Continent->GetSize() < 25 || Continent->GetSize() > 700) return false; // 1000 is the previous value. It was lowered to make continents smaller.
   return
-     Continent->GetGTerrainAmount(EGForestType) &&
-     Continent->GetGTerrainAmount(SnowType) &&
-     Continent->GetGTerrainAmount(SteppeType);
+     Continent->GetGTerrainAmount(EGForestType()) &&
+     Continent->GetGTerrainAmount(SnowType()) &&
+     Continent->GetGTerrainAmount(SteppeType());
 }

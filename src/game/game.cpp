@@ -347,6 +347,7 @@ void game::InitPlaces () {
   const owterrain::prototype* proto = protocontainer<owterrain>::GetProto(xtype);
   if (!proto) ABORT("wtf?!");
   const owterrain::database *const *configs = proto->GetConfigData();
+  if (!configs) ABORT("wtf?!");
   int cfgcount = proto->GetConfigSize();
   //fprintf(stderr, "owterrain configs: %d\n", cfgcount);
   // count "good" pois

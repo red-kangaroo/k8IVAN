@@ -756,6 +756,7 @@ cv2 SILHOUETTE_SIZE(48, 64);
 #define EVERGREEN_FOREST  (game::GetGlobalConst("EVERGREEN_FOREST"))
 #define TUNDRA  (game::GetGlobalConst("TUNDRA"))
 #define GLACIER  (game::GetGlobalConst("GLACIER"))
+#define OCEAN  (game::GetGlobalConst("OCEAN"))
 
 #define NO_MOVE  (game::GetGlobalConst("NO_MOVE"))
 #define WALK  (game::GetGlobalConst("WALK"))

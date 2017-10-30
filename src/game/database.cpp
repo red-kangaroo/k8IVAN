@@ -379,6 +379,11 @@ INST_ADD_MEMBER(owterrain, int);
 INST_ADD_MEMBER(owterrain, v2);
 INST_ADD_MEMBER(owterrain, festring);
 
+INST_ADD_MEMBER(gwterrain, int);
+//INST_ADD_MEMBER(gwterrain, sLong); //k8:64
+INST_ADD_MEMBER(gwterrain, v2);
+INST_ADD_MEMBER(gwterrain, festring);
+
 INST_ADD_MEMBER(material, int);
 //INST_ADD_MEMBER(material, sLong); //k8:64
 INST_ADD_MEMBER(material, col24);
@@ -746,8 +751,25 @@ template<> void databasecreator<olterrain>::CreateDataBaseMemberMap () {
 }
 
 
+template<> void databasecreator<gwterrain>::CreateDataBaseMemberMap () {
+  databasemembermap &Map = GetDataBaseMemberMap();
+  ADD_MEMBER(BitmapPos);
+  ADD_MEMBER(IsAbstract);
+  ADD_MEMBER(NameStem);
+  ADD_MEMBER(UsesLongArticle);
+  ADD_MEMBER(Priority);
+  ADD_MEMBER(AnimationFrames);
+  ADD_MEMBER(IsFatalToStay);
+  ADD_MEMBER(SurviveMessage);
+  ADD_MEMBER(MonsterSurviveMessage);
+  ADD_MEMBER(DeathMessage);
+  ADD_MEMBER(MonsterDeathVerb);
+  ADD_MEMBER(ScoreEntry);
+  ADD_MEMBER(Walkability);
+}
+
+
 template<> void databasecreator<owterrain>::CreateDataBaseMemberMap () {
-  //CreateWTerrainDataBaseMemberMap();
   databasemembermap &Map = GetDataBaseMemberMap();
   ADD_MEMBER(BitmapPos);
   ADD_MEMBER(IsAbstract);
@@ -896,6 +918,10 @@ template<> void databasecreator<owterrain>::CheckDefaults (cfestring& Word, owte
 }
 
 
+template<> void databasecreator<gwterrain>::CheckDefaults (cfestring& Word, gwterrain::database& DataBase) {
+}
+
+
 
 void databasesystem::Initialize () {
   /* Must be before character */
@@ -905,6 +931,7 @@ void databasesystem::Initialize () {
   databasecreator<item>::ReadFrom("item");
   databasecreator<glterrain>::ReadFrom("glterra");
   databasecreator<olterrain>::ReadFrom("olterra");
+  databasecreator<gwterrain>::ReadFrom("gwterra");
   /* Must be last */
   databasecreator<owterrain>::ReadFrom("owterra");
 }
@@ -947,4 +974,5 @@ INST_INSTALL_DATABASE(character);
 INST_INSTALL_DATABASE(item);
 INST_INSTALL_DATABASE(glterrain);
 INST_INSTALL_DATABASE(olterrain);
+INST_INSTALL_DATABASE(gwterrain);
 INST_INSTALL_DATABASE(owterrain);

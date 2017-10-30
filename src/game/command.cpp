@@ -27,7 +27,7 @@
 #include "miscitem.h"
 #include "worldmap.h"
 #include "wsquare.h"
-#include "wterras.h"
+//#include "wterras.h"
 #include "materia.h"
 #include "database.h"
 #include "team.h"

@@ -12,6 +12,7 @@
 
 /* Compiled through wmapset.cpp */
 
+// ////////////////////////////////////////////////////////////////////////// //
 #define MAX_TEMPERATURE   27    //increase for a warmer world
 #define LATITUDE_EFFECT   40    //increase for more effect
 #define ALTITUDE_EFFECT   0.02
@@ -21,32 +22,13 @@
 #define WARM    17
 #define HOT     19
 
+
+// ////////////////////////////////////////////////////////////////////////// //
 static const int DirX[8] = { -1, -1, -1, 0, 0, 1, 1, 1 };
 static const int DirY[8] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
 
-#define DesertType    desert::ProtoType.GetIndex()
-#define JungleType    jungle::ProtoType.GetIndex()
-#define SteppeType    steppe::ProtoType.GetIndex()
-#define LForestType   leafyforest::ProtoType.GetIndex()
-#define EGForestType  evergreenforest::ProtoType.GetIndex()
-#define SnowType      snow::ProtoType.GetIndex()
-#define GlacierType   glacier::ProtoType.GetIndex()
-#define OceanType     ocean::ProtoType.GetIndex()
-
-
-static void doSanityChecks () {
-  if (game::GetGlobalConst("DESERT") != DesertType) ABORT("`DESERT` is not %d", DesertType);
-  if (game::GetGlobalConst("JUNGLE") != JungleType) ABORT("`JUNGLE` is not %d", JungleType);
-  if (game::GetGlobalConst("STEPPE") != SteppeType) ABORT("`STEPPE` is not %d", SteppeType);
-  if (game::GetGlobalConst("LEAFY_FOREST") != LForestType) ABORT("`LEAFY_FOREST` is not %d", LForestType);
-  if (game::GetGlobalConst("EVERGREEN_FOREST") != EGForestType) ABORT("`EVERGREEN_FOREST` is not %d", EGForestType);
-  if (game::GetGlobalConst("TUNDRA") != SnowType) ABORT("`TUNDRA` is not %d", SnowType);
-  if (game::GetGlobalConst("GLACIER") != GlacierType) ABORT("`GLACIER` is not %d", GlacierType);
-  if (game::GetGlobalConst("OCEAN") != OceanType) ABORT("`OCEAN` is not %d", OceanType);
-}
-
-
+// ////////////////////////////////////////////////////////////////////////// //
 worldmap::worldmap () {}
 continent *worldmap::GetContinentUnder (v2 Pos) const { return Continent[ContinentBuffer[Pos.X][Pos.Y]]; }
 v2 worldmap::GetEntryPos (ccharacter *, int I) const { return EntryMap.find(I)->second; }
@@ -96,7 +78,7 @@ void worldmap::resetItAll (truth recreate) {
       if (Map[x][y]) delete Map[x][y];
       if (recreate) {
         Map[x][y] = new wsquare(this, v2(x, y));
-        Map[x][y]->SetGWTerrain(ocean::Spawn());
+        Map[x][y]->SetGWTerrain(GWSpawn(OCEAN));
       } else {
         Map[x][y] = nullptr;
       }
@@ -305,7 +287,7 @@ truth worldmap::poiPlaceAttnamsAndUT (continent *PetrusLikes) {
           if (Error) continue;
 
           Error = true;
-          for (x = 0; x < XSize; ++x) if (TypeBuffer[x][tunnelEntryPos.Y] == JungleType) { Error = false; break; }
+          for (x = 0; x < XSize; ++x) if (TypeBuffer[x][tunnelEntryPos.Y] == JungleType()) { Error = false; break; }
           if (Error) continue;
 
           Counter = 0;
@@ -316,8 +298,8 @@ truth worldmap::poiPlaceAttnamsAndUT (continent *PetrusLikes) {
           }
 
           AltitudeBuffer[tunnelEntryPos.X][tunnelEntryPos.Y] = 1+RAND()%50;
-          TypeBuffer[tunnelEntryPos.X][tunnelEntryPos.Y] = JungleType;
-          GetWSquare(tunnelEntryPos)->ChangeGWTerrain(jungle::Spawn());
+          TypeBuffer[tunnelEntryPos.X][tunnelEntryPos.Y] = JungleType();
+          GetWSquare(tunnelEntryPos)->ChangeGWTerrain(GWSpawn(JUNGLE));
 
           int NewAttnamIndex;
           for (NewAttnamIndex = RAND()&7; NewAttnamIndex == 7-d1; NewAttnamIndex = RAND()&7) {}
@@ -332,8 +314,8 @@ truth worldmap::poiPlaceAttnamsAndUT (continent *PetrusLikes) {
             if (NotDiagonalDir[d2] != 7-d1 && (NotDiagonalDir[d2] == NewAttnamIndex || !(RAND()&2))) {
               v2 Pos = tunnelEntryPos+game::GetMoveVector(NotDiagonalDir[d2]);
               AltitudeBuffer[Pos.X][Pos.Y] = 1+RAND()%50;
-              TypeBuffer[Pos.X][Pos.Y] = JungleType;
-              GetWSquare(Pos)->ChangeGWTerrain(jungle::Spawn());
+              TypeBuffer[Pos.X][Pos.Y] = JungleType();
+              GetWSquare(Pos)->ChangeGWTerrain(GWSpawn(JUNGLE));
               Raised[d2] = true;
             }
           }
@@ -345,8 +327,8 @@ truth worldmap::poiPlaceAttnamsAndUT (continent *PetrusLikes) {
               v2 Pos = tunnelEntryPos+game::GetMoveVector(DiagonalDir[d2]);
 
               AltitudeBuffer[Pos.X][Pos.Y] = 1+RAND()%50;
-              TypeBuffer[Pos.X][Pos.Y] = JungleType;
-              GetWSquare(Pos)->ChangeGWTerrain(jungle::Spawn());
+              TypeBuffer[Pos.X][Pos.Y] = JungleType();
+              GetWSquare(Pos)->ChangeGWTerrain(GWSpawn(JUNGLE));
             }
           }
           Correct = true;
@@ -378,8 +360,6 @@ truth worldmap::poiPlaceAttnamsAndUT (continent *PetrusLikes) {
 
 
 void worldmap::Generate () {
-  doSanityChecks();
-
   Alloc2D(OldAltitudeBuffer, XSize, YSize);
   Alloc2D(OldTypeBuffer, XSize, YSize);
 
@@ -616,7 +596,7 @@ void worldmap::GenerateClimate () {
     truth LatitudeRainy = DistanceFromEquator <= 0.05 || (DistanceFromEquator > 0.25 && DistanceFromEquator <= 0.45);
     for (int x = 0; x < XSize; ++x) {
       if (AltitudeBuffer[x][y] <= 0) {
-        TypeBuffer[x][y] = OceanType;
+        TypeBuffer[x][y] = OceanType();
         continue;
       }
       truth Rainy = LatitudeRainy;
@@ -631,11 +611,11 @@ void worldmap::GenerateClimate () {
       }
       int Temperature = int(MAX_TEMPERATURE-DistanceFromEquator*LATITUDE_EFFECT-AltitudeBuffer[x][y]*ALTITUDE_EFFECT);
       int Type = 0;
-      if (Temperature <= COLD) Type = Rainy ? SnowType : GlacierType;
-      else if (Temperature <= MEDIUM) Type = Rainy ? EGForestType : SnowType;
-      else if (Temperature <= WARM) Type = Rainy ? LForestType : SteppeType;
-      else if (Temperature <= HOT) Type = Rainy ? LForestType : DesertType;
-      else Type = Rainy ? JungleType : DesertType;
+           if (Temperature <= COLD) Type = (Rainy ? SnowType() : GlacierType());
+      else if (Temperature <= MEDIUM) Type = (Rainy ? EGForestType() : SnowType());
+      else if (Temperature <= WARM) Type = (Rainy ? LForestType() : SteppeType());
+      else if (Temperature <= HOT) Type = (Rainy ? LForestType() : DesertType());
+      else Type = (Rainy ? JungleType() : DesertType());
       TypeBuffer[x][y] = Type;
     }
   }
@@ -647,7 +627,7 @@ void worldmap::SmoothClimate () {
     game::BusyAnimation();
     for (int x = 0; x < XSize; ++x) {
       for (int y = 0; y < YSize; ++y) {
-        if ((OldTypeBuffer[x][y] = TypeBuffer[x][y]) != OceanType) {
+        if ((OldTypeBuffer[x][y] = TypeBuffer[x][y]) != OceanType()) {
           TypeBuffer[x][y] = WhatTerrainIsMostCommonAroundCurrentTerritorySquareIncludingTheSquareItself(x, y);
         }
       }
@@ -656,9 +636,10 @@ void worldmap::SmoothClimate () {
   game::BusyAnimation();
   for (int x = 0; x < XSize; ++x) {
     for (int y = 0; y < YSize; ++y) {
-      auto terraProto = protocontainer<gwterrain>::GetProto(TypeBuffer[x][y]);
-      if (!terraProto) ABORT("Oops! No gwterrain prototype for type #%d!\n", TypeBuffer[x][y]);
-      Map[x][y]->ChangeGWTerrain(terraProto->Spawn());
+      //auto terraProto = protocontainer<gwterrain>::GetProto(TypeBuffer[x][y]);
+      //if (!terraProto) ABORT("Oops! No gwterrain prototype for type #%d!\n", TypeBuffer[x][y]);
+      //Map[x][y]->ChangeGWTerrain(terraProto->Spawn());
+      Map[x][y]->ChangeGWTerrain(GWSpawn(TypeBuffer[x][y]));
     }
   }
 }
@@ -690,7 +671,7 @@ int worldmap::WhatTerrainIsMostCommonAroundCurrentTerritorySquareIncludingTheSqu
     if (IsValidPos(X, Y)) ANALYZE_TYPE(TypeBuffer[X][Y]);
   }
   int MostCommon = 0;
-  for (c = 1; c < u; ++c) if (TypeAmount[c] > TypeAmount[MostCommon] && UsedType[c] != OceanType) MostCommon = c;
+  for (c = 1; c < u; ++c) if (TypeAmount[c] > TypeAmount[MostCommon] && UsedType[c] != OceanType()) MostCommon = c;
   return UsedType[MostCommon];
 }
 
