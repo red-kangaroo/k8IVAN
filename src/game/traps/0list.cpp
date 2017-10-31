@@ -1,1 +1,1 @@
-#include "traps/trap_web.cpp"
+#include "web.cpp"

@@ -1,0 +1,5 @@
+#include "base_canine.cpp"
+#include "wolf.cpp"
+#include "dog.cpp"
+#include "blinkdog.cpp"
+#include "firefox.cpp"

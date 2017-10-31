@@ -12,7 +12,11 @@
 
 #define __FILE_OF_STATIC_ITEM_PROTOTYPE_DEFINITIONS__
 
+#include <algorithm>
+#include <ctime>
+
 #include "feloops.h"
+#include "fesave.h"
 
 #include "proto.h"
 #include "item.h"
@@ -20,14 +24,9 @@
 
 EXTENDED_SYSTEM_SPECIALIZATIONS(item)(0, 0, 0, "item");
 
-#include "bodypart.h"
-#include "gear.h"
-#include "miscitem.h"
+#include "itemset.h"
 
 #undef __FILE_OF_STATIC_ITEM_PROTOTYPE_DEFINITIONS__
-
-#include <algorithm>
-#include <ctime>
 
 #include "char.h"
 #include "message.h"
@@ -37,7 +36,7 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(item)(0, 0, 0, "item");
 #include "room.h"
 #include "game.h"
 #include "materias.h"
-#include "human.h"
+#include "characters.h"
 #include "team.h"
 #include "god.h"
 #include "team.h"
@@ -52,6 +51,16 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(item)(0, 0, 0, "item");
 #include "lterras.h"
 
 #include "item.cpp"
-#include "bodypart.cpp"
-#include "gear.cpp"
-#include "miscitem.cpp"
+#include "items/0list.cpp"
+
+
+outputfile &operator << (outputfile &SaveFile, const scar &Scar) {
+  SaveFile << Scar.Severity << Scar.PanelBitmap;
+  return SaveFile;
+}
+
+
+inputfile &operator >> (inputfile &SaveFile, scar &Scar) {
+  SaveFile >> Scar.Severity >> Scar.PanelBitmap;
+  return SaveFile;
+}

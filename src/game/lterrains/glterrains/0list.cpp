@@ -1,2 +1,2 @@
-#include "lterrains/glterrains/glterrain_solidterrain.cpp"
-#include "lterrains/glterrains/glterrain_liquidterrain.cpp"
+#include "solidterrain.cpp"
+#include "liquidterrain.cpp"

@@ -23,14 +23,12 @@ SYSTEM_SPECIALIZATIONS(god)
 
 #include <algorithm>
 
-#include "human.h"
+#include "characters.h"
 #include "message.h"
 #include "game.h"
-#include "nonhuman.h"
 #include "stack.h"
 #include "lterras.h"
-#include "gear.h"
-#include "miscitem.h"
+#include "itemset.h"
 #include "confdef.h"
 #include "materias.h"
 #include "fesave.h"

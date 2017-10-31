@@ -52,8 +52,6 @@ MAKE_TYPE_CACHER(WorldMapOptionsCfg, "WORLDMAP_OPTIONS")
 #undef MAKE_TYPE_CACHER
 
 
-//#include "wterras.h"
-
 #undef __FILE_OF_STATIC_WTERRAIN_PROTOTYPE_DEFINITIONS__
 
 #include <algorithm>
@@ -78,4 +76,3 @@ MAKE_TYPE_CACHER(WorldMapOptionsCfg, "WORLDMAP_OPTIONS")
 #include "worldmap.cpp"
 #include "wsquare.cpp"
 #include "wterra.cpp"
-//#include "wterras.cpp"

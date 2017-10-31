@@ -11,7 +11,7 @@
 #ifndef __CHAR_H__
 #define __CHAR_H__
 
-#include "bodypart.h"
+#include "itemset.h"
 #include "script.h"
 #include "wskill.h"
 #include "fesave.h"

@@ -17,8 +17,7 @@
 
 EXTENDED_SYSTEM_SPECIALIZATIONS(character)(0, 0, 0, "character");
 
-#include "human.h"
-#include "nonhuman.h"
+#include "characters.h"
 
 #undef __FILE_OF_STATIC_CHARACTER_PROTOTYPE_DEFINITIONS__
 
@@ -46,7 +45,7 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(character)(0, 0, 0, "character");
 #include "graphics.h"
 #include "bitmap.h"
 #include "rawbit.h"
-#include "miscitem.h"
+#include "itemset.h"
 #include "confdef.h"
 #include "traps.h"
 #include "iloops.h"
