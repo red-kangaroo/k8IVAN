@@ -23,6 +23,8 @@ slowaxe  /* meleeweapon-> */
   MagicEffect = SLOW;
   MagicEffectChance == 3; // this is !(RAND()%3)
   MagicEffectDuration = { add: 400; rand: 200; }
+  MagicMessageCanSee == "@Hsp axe chills @Edd.";
+  MagicMessageCannotSee == "The axe chills @Edd.";
 
   Config BROKEN;
   {

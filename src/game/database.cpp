@@ -657,6 +657,8 @@ template<> void databasecreator<item>::CreateDataBaseMemberMap () {
   ADD_MEMBER(MagicEffect);
   ADD_MEMBER(MagicEffectDuration);
   ADD_MEMBER(MagicEffectChance);
+  ADD_MEMBER(MagicMessageCanSee);
+  ADD_MEMBER(MagicMessageCannotSee);
   ADD_MEMBER(AllowedDungeons);
   ADD_MEMBER(LevelTags);
 }

@@ -1693,3 +1693,50 @@ truth item::Burn (character *who, v2 where, int dir) {
   }
   return false;
 }
+
+
+festring item::ProcessMessage (cfestring &xmsg, ccharacter *hitter, ccharacter *enemy) const {
+  festring msg = xmsg;
+  SEARCH_N_REPLACE(msg, "@nu", GetName(UNARTICLED));
+  SEARCH_N_REPLACE(msg, "@ni", GetName(INDEFINITE));
+  SEARCH_N_REPLACE(msg, "@nd", GetName(DEFINITE));
+  SEARCH_N_REPLACE(msg, "@du", GetDescription(UNARTICLED));
+  SEARCH_N_REPLACE(msg, "@di", GetDescription(INDEFINITE));
+  SEARCH_N_REPLACE(msg, "@dd", GetDescription(DEFINITE));
+  //SEARCH_N_REPLACE(msg, "@pp", GetPersonalPronoun());
+  //SEARCH_N_REPLACE(msg, "@sp", GetPossessivePronoun());
+  //SEARCH_N_REPLACE(msg, "@op", GetObjectPronoun());
+  SEARCH_N_REPLACE(msg, "@Nu", GetName(UNARTICLED).CapitalizeCopy());
+  SEARCH_N_REPLACE(msg, "@Ni", GetName(INDEFINITE).CapitalizeCopy());
+  SEARCH_N_REPLACE(msg, "@Nd", GetName(DEFINITE).CapitalizeCopy());
+  SEARCH_N_REPLACE(msg, "@Du", GetDescription(UNARTICLED).CapitalizeCopy());
+  SEARCH_N_REPLACE(msg, "@Di", GetDescription(INDEFINITE).CapitalizeCopy());
+  SEARCH_N_REPLACE(msg, "@Dd", GetDescription(DEFINITE).CapitalizeCopy());
+  //SEARCH_N_REPLACE(msg, "@Pp", GetPersonalPronoun().CapitalizeCopy());
+  //SEARCH_N_REPLACE(msg, "@Sp", GetPossessivePronoun().CapitalizeCopy());
+  //SEARCH_N_REPLACE(msg, "@Op", GetObjectPronoun().CapitalizeCopy());
+  SEARCH_N_REPLACE(msg, "@Gd", GetMasterGod()->GetName());
+  if (hitter) {
+    SEARCH_N_REPLACE(msg, "@H", "@");
+    msg = hitter->ProcessMessage(msg);
+  }
+  if (enemy) {
+    SEARCH_N_REPLACE(msg, "@E", "@");
+    msg = enemy->ProcessMessage(msg);
+  }
+  return msg;
+}
+
+
+void item::ProcessAndAddMessage (cfestring &xmsg, ccharacter *hitter, ccharacter *enemy) const {
+  festring msg = ProcessMessage(xmsg, hitter, enemy);
+  if (msg.IsEmpty()) return;
+  ADD_MESSAGE("%s", ProcessMessage(msg, hitter, enemy).CStr());
+}
+
+
+void item::ProcessAndAddRandomMessage (const fearray<festring> &list, ccharacter *hitter, ccharacter *enemy) const {
+  if (list.Size == 0) return;
+  cfestring msg = list.Data[list.Size > 1 ? RAND()%list.Size : 0];
+  ProcessAndAddMessage(msg, hitter, enemy);
+}

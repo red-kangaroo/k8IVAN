@@ -127,6 +127,8 @@ item
   MagicEffect = 0;
   MagicEffectChance == 0;
   MagicEffectDuration == 0;
+  MagicMessageCanSee == "Magic!";
+  MagicMessageCannotSee == "Magic!";
   AllowedDungeons == ALL_DUNGEONS; // example: AllowedDungeons := { UNDER_WATER_TUNNEL, MONDEDR; }
   LevelTags := {} // {"*"}
 }

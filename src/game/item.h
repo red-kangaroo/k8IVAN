@@ -210,6 +210,8 @@ struct itemdatabase : public databasebase
   int MagicEffect;
   RandomChance MagicEffectDuration;
   RandomChance MagicEffectChance;
+  fearray<festring> MagicMessageCanSee;
+  fearray<festring> MagicMessageCannotSee;
   fearray<int> AllowedDungeons;
   fearray<festring> LevelTags;
 };
@@ -445,6 +447,8 @@ class item : public object
   DATA_BASE_VALUE(int, MagicEffect);
   DATA_BASE_VALUE(RandomChance, MagicEffectDuration);
   DATA_BASE_VALUE(RandomChance, MagicEffectChance);
+  DATA_BASE_VALUE(fearray<festring>, MagicMessageCanSee);
+  DATA_BASE_VALUE(fearray<festring>, MagicMessageCannotSee);
   DATA_BASE_VALUE(const fearray<int> &, AllowedDungeons);
   DATA_BASE_VALUE(const fearray<festring> &, LevelTags);
   truth CanBeSoldInLibrary(character* Librarian) const { return CanBeRead(Librarian); }
@@ -613,6 +617,10 @@ class item : public object
   void Haste();
   void Slow();
   void SendMemorizedUpdateRequest() const;
+
+  festring ProcessMessage (cfestring &xmsg, ccharacter *hitter=0, ccharacter *enemy=0) const;
+  void ProcessAndAddMessage (cfestring &xmsg, ccharacter *hitter=0, ccharacter *enemy=0) const;
+  void ProcessAndAddRandomMessage (const fearray<festring> &list, ccharacter *hitter=0, ccharacter *enemy=0) const;
 
   virtual truth IsHeadOfElpuri() const { return false; }
   virtual truth IsPetrussNut() const { return false; }

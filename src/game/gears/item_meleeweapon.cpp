@@ -120,20 +120,32 @@ void meleeweapon::Load (inputfile &SaveFile) {
 }
 
 
-truth meleeweapon::HitEffect (character *Enemy, character *, v2, int BodyPartIndex, int, truth BlockedByArmour) {
+truth meleeweapon::HitEffect (character *Enemy, character *Hitter, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
+  truth Success = false;
   if (!BlockedByArmour && Fluid) {
-    truth Success = false;
     fluidvector FluidVector;
-    //
     FillFluidVector(FluidVector);
     for (uInt c = 0; c < FluidVector.size(); ++c) {
       if (FluidVector[c]->Exists() && FluidVector[c]->GetLiquid()->HitEffect(Enemy, Enemy->GetBodyPart(BodyPartIndex))) {
         Success = true;
       }
     }
-    return Success;
   }
-  return false;
+  // magic effects
+  if (Enemy && GetMagicEffect() > 0 && Enemy->IsEnabled() && GetMagicEffectChance().inRange()) {
+    if (Hitter) {
+      if (Enemy->IsPlayer() || Hitter->IsPlayer() || Enemy->CanBeSeenByPlayer() || Hitter->CanBeSeenByPlayer()) {
+        ProcessAndAddRandomMessage(GetMagicMessageCanSee(), Hitter, Enemy);
+      }
+    } else {
+      if (Enemy->IsPlayer() || Enemy->CanBeSeenByPlayer()) {
+        ProcessAndAddRandomMessage(GetMagicMessageCannotSee(), Hitter, Enemy);
+      }
+    }
+    Enemy->BeginTemporaryState(GetMagicEffect(), GetMagicEffectDuration().rand()); //400+RAND_N(200)
+  }
+  // done
+  return Success;
 }
 
 
