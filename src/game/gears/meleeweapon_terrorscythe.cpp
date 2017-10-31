@@ -1,14 +1,15 @@
 #ifdef HEADER_PHASE
 ITEM(terrorscythe, meleeweapon)
 {
- public:
-  virtual truth HitEffect(character*, character*, v2, int, int, truth);
+//public:
+  //virtual truth HitEffect(character*, character*, v2, int, int, truth);
 };
 
 
 #else
 
 
+/*
 truth terrorscythe::HitEffect (character *Enemy, character* Hitter, v2 HitPos, int BodyPartIndex, int Direction, truth BlockedByArmour) {
   truth BaseSuccess = meleeweapon::HitEffect(Enemy, Hitter, HitPos, BodyPartIndex, Direction, BlockedByArmour);
   if (!IsBroken() && Enemy->IsEnabled() && !(RAND() % 3)) {
@@ -26,6 +27,7 @@ truth terrorscythe::HitEffect (character *Enemy, character* Hitter, v2 HitPos, i
   }
   return BaseSuccess;
 }
+*/
 
 
 #endif

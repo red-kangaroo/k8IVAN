@@ -21,6 +21,11 @@ terrorscythe  /* meleeweapon-> */
   WieldedBitmapPos = 176, 48;
   EnchantmentPlusChance = 2;
   DamageFlags = SLASH;
+  MagicEffect = PANIC;
+  MagicEffectChance == 3; // this is !(RAND()%3)
+  MagicEffectDuration = { add: 200; rand: 100; }
+  MagicMessageCanSee == "@Hsp scythe terrifies @Edd.";
+  MagicMessageCannotSee == "The scythe terrifies @Edd.";
 
   Config BROKEN;
   {
@@ -28,5 +33,7 @@ terrorscythe  /* meleeweapon-> */
     BitmapPos = 64, 128;
     WieldedBitmapPos = 160, 48;
     EnchantmentPlusChance = 4;
+    MagicEffectChance == 0; // broken items aren't magic
+    MagicEffect = 0; // just in case
   }
 }
