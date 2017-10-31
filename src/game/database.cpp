@@ -654,6 +654,7 @@ template<> void databasecreator<item>::CreateDataBaseMemberMap () {
   ADD_MEMBER(IsThrowingWeapon);
   ADD_MEMBER(ThrowItemTypes);
   ADD_MEMBER(CanFlame);
+  ADD_MEMBER(MagicEffect);
   ADD_MEMBER(MagicEffectDuration);
   ADD_MEMBER(MagicEffectChance);
   ADD_MEMBER(AllowedDungeons);

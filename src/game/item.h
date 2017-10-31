@@ -207,6 +207,7 @@ struct itemdatabase : public databasebase
   truth IsThrowingWeapon;
   sLong ThrowItemTypes;
   truth CanFlame;
+  int MagicEffect;
   RandomChance MagicEffectDuration;
   RandomChance MagicEffectChance;
   fearray<int> AllowedDungeons;
@@ -441,6 +442,7 @@ class item : public object
   DATA_BASE_TRUTH(IsThrowingWeapon);
   DATA_BASE_VALUE(sLong, ThrowItemTypes);
   DATA_BASE_TRUTH(CanFlame);
+  DATA_BASE_VALUE(int, MagicEffect);
   DATA_BASE_VALUE(RandomChance, MagicEffectDuration);
   DATA_BASE_VALUE(RandomChance, MagicEffectChance);
   DATA_BASE_VALUE(const fearray<int> &, AllowedDungeons);

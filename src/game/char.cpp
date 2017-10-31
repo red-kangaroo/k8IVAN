@@ -4235,21 +4235,24 @@ void character::CalculateEquipmentState () {
 /* Counter = duration in ticks */
 void character::BeginTemporaryState (sLong State, int Counter) {
   if (!Counter) return;
-  int Index;
-  if (State == POLYMORPHED) ABORT("No Polymorphing with BeginTemporaryState!");
-  for (Index = 0; Index < STATES; ++Index) if (1 << Index == State) break;
-  if (Index == STATES) ABORT("BeginTemporaryState works only when State == 2^n!");
-  if (TemporaryStateIsActivated(State)) {
-    int OldCounter = GetTemporaryStateCounter(State);
-    if (OldCounter != PERMANENT) EditTemporaryStateCounter(State, Max(Counter, 50-OldCounter));
-  } else if (StateData[Index].IsAllowed == 0 || (this->*StateData[Index].IsAllowed)()) {
-    SetTemporaryStateCounter(State, Max(Counter, 50));
-    if (!EquipmentStateIsActivated(State)) {
-      if (!IsInNoMsgMode()) (this->*StateData[Index].PrintBeginMessage)();
-      ActivateTemporaryState(State);
-      if (StateData[Index].BeginHandler) (this->*StateData[Index].BeginHandler)();
-    } else {
-      ActivateTemporaryState(State);
+  if (State&POLYMORPHED) ABORT("No Polymorphing with BeginTemporaryState!");
+  while (State != 0) {
+    sLong st = 0, sidx;
+    for (sidx = 0; sidx < STATES; ++sidx) if (State&(1<<sidx)) { st = (1<<sidx); break; }
+    if (!st) { break; /*ABORT("BeginTemporaryState works only when State == 2^n!");*/ }
+    State &= ~st;
+    if (TemporaryStateIsActivated(st)) {
+      int OldCounter = GetTemporaryStateCounter(st);
+      if (OldCounter != PERMANENT) EditTemporaryStateCounter(st, Max(Counter, 50-OldCounter));
+    } else if (StateData[sidx].IsAllowed == 0 || (this->*StateData[sidx].IsAllowed)()) {
+      SetTemporaryStateCounter(st, Max(Counter, 50));
+      if (!EquipmentStateIsActivated(st)) {
+        if (!IsInNoMsgMode()) (this->*StateData[sidx].PrintBeginMessage)();
+        ActivateTemporaryState(st);
+        if (StateData[sidx].BeginHandler) (this->*StateData[sidx].BeginHandler)();
+      } else {
+        ActivateTemporaryState(st);
+      }
     }
   }
 }
@@ -7036,18 +7039,21 @@ void character::ReceiveWhiteUnicorn (sLong Amount) {
 
 /* Counter should be negative. Removes intrinsics. */
 void character::DecreaseStateCounter (sLong State, int Counter) {
-  int Index;
-  for (Index = 0; Index < STATES; ++Index) if (1 << Index == State) break;
-  if (Index == STATES) ABORT("DecreaseTemporaryStateCounter works only when State == 2^n!");
-  if (TemporaryState & State) {
-    if (TemporaryStateCounter[Index] == PERMANENT || (TemporaryStateCounter[Index] += Counter) <= 0) {
-      TemporaryState &= ~State;
-      if (!(EquipmentState & State)) {
-        if (StateData[Index].EndHandler) {
-          (this->*StateData[Index].EndHandler)();
-          if (!IsEnabled()) return;
+  while (State != 0) {
+    sLong st = 0, sidx;
+    for (sidx = 0; sidx < STATES; ++sidx) if (State&(1<<sidx)) { st = (1<<sidx); break; }
+    if (!st) { break; /*ABORT("BeginTemporaryState works only when State == 2^n!");*/ }
+    State &= ~st;
+    if (TemporaryState&st) {
+      if (TemporaryStateCounter[sidx] == PERMANENT || (TemporaryStateCounter[sidx] += Counter) <= 0) {
+        TemporaryState &= ~st;
+        if (!(EquipmentState & st)) {
+          if (StateData[sidx].EndHandler) {
+            (this->*StateData[sidx].EndHandler)();
+            if (!IsEnabled()) return;
+          }
+          (this->*StateData[sidx].PrintEndMessage)();
         }
-        (this->*StateData[Index].PrintEndMessage)();
       }
     }
   }

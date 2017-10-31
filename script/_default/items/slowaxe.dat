@@ -20,6 +20,7 @@ slowaxe  /* meleeweapon-> */
   WieldedBitmapPos = 160, 176;
   EnchantmentPlusChance = 2;
   DamageFlags = SLASH;
+  MagicEffect = SLOW;
   MagicEffectChance == 3; // this is !(RAND()%3)
   MagicEffectDuration = { add: 400; rand: 200; }
 
@@ -30,5 +31,6 @@ slowaxe  /* meleeweapon-> */
     WieldedBitmapPos = 176, 176;
     EnchantmentPlusChance = 4;
     MagicEffectChance == 0; // broken items aren't magic
+    MagicEffect = 0; // just in case
   }
 }
