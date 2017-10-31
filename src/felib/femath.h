@@ -54,14 +54,14 @@ public:
   PCG32 (uint64_t astate, uint64_t ainc=1) { setSeed(astate, ainc); }
   PCG32 (const PRNGSeed aseed) { seed = aseed; }
 
-  void setSeed (uint64_t astate, uint64_t ainc=1) { seed.state = astate; seed.inc = ainc; }
-  void setSeed (const PRNGSeed aseed) { seed = aseed; }
+  inline void setSeed (uint64_t astate, uint64_t ainc=1) { seed.state = astate; seed.inc = ainc; }
+  inline void setSeed (const PRNGSeed aseed) { seed = aseed; }
 
-  PRNGSeed getSeed () const { return seed; }
+  inline PRNGSeed getSeed () const { return seed; }
 
   void rndseed ();
 
-  uint32_t rand32 () {
+  inline uint32_t rand32 () {
     uint64_t oldstate = this->seed.state;
     // advance internal state
     this->seed.state = oldstate*6364136223846793005ULL+(this->seed.inc|1);
@@ -85,8 +85,8 @@ public:
   static void SetSeed (const PRNGSeed aseed);
   static void SetSeed (feuLong);
   static void RandSeed ();
-  static sLong RandN (sLong N) { return sLong(double(N)*Rand()/0x80000000); }
-  static sLong RandGood (sLong N) { return sLong(double(N)*Rand()/0x80000000); }
+  static sLong RandN (sLong N) { return (sLong)((double)N*Rand()/0x80000000); }
+  static sLong RandGood (sLong N) { return (sLong)((double)N*Rand()/0x80000000); }
   static int WeightedRand (sLong *Possibility, sLong TotalPossibility);
   static int WeightedRand (const std::vector<sLong> &Possibility, sLong TotalPossibility);
   static double CalculateAngle (v2 Direction);

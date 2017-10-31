@@ -322,6 +322,7 @@ INST_ADD_MEMBER(item, v2);
 INST_ADD_MEMBER(item, festring);
 INST_ADD_MEMBER(item, fearray<sLong>);
 INST_ADD_MEMBER(item, fearray<festring>);
+INST_ADD_MEMBER(item, RandomChance);
 
 INST_ADD_MEMBER(glterrain, int);
 //INST_ADD_MEMBER(glterrain, sLong); //k8:64
@@ -653,6 +654,8 @@ template<> void databasecreator<item>::CreateDataBaseMemberMap () {
   ADD_MEMBER(IsThrowingWeapon);
   ADD_MEMBER(ThrowItemTypes);
   ADD_MEMBER(CanFlame);
+  ADD_MEMBER(MagicEffectDuration);
+  ADD_MEMBER(MagicEffectChance);
   ADD_MEMBER(AllowedDungeons);
   ADD_MEMBER(LevelTags);
 }

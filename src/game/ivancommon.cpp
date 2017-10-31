@@ -20,9 +20,17 @@
 
 
 void *operator new (std::size_t size) throw (std::bad_alloc) {
-  if (size > 0x1fffffff) throw std::bad_alloc(); // ANSI/ISO compliant behavior
+  if (size > 0x1fffffff) {
+    //throw std::bad_alloc(); // ANSI/ISO compliant behavior
+    fprintf(stderr, "`new`: size > 0x1fffffff! (%u)\n", size);
+    *(int *)0 = 666;
+  }
   void *p = calloc(1, size+64);
-  if (!p) throw std::bad_alloc(); // ANSI/ISO compliant behavior
+  if (!p) {
+    fprintf(stderr, "`new`: out of memory for size=%u!\n", size);
+    *(int *)0 = 666;
+    //throw std::bad_alloc(); // ANSI/ISO compliant behavior
+  }
   //fprintf(stderr, "GLOBAL NEW!\n");
   return p;
 }

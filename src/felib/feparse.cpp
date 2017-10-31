@@ -1176,6 +1176,36 @@ void ReadData (fearray<festring> &Array, TextInput &SaveFile) {
 }
 
 
+void ReadData (RandomChance &rc, TextInput &fl) {
+  festring w;
+  rc.clear();
+  w = fl.ReadWord();
+  auto tkline = fl.TokenLine();
+  if (w == "==") {
+    rc.rnd = fl.ReadNumber();
+  } else if (w == "=" || w == ":=") {
+    if (fl.ReadWord() != "{") ABORT("RandomChance syntax error: '{' expected in file %s, line %d!", fl.GetFileName().CStr(), fl.TokenLine());
+    for (;;) {
+      w = fl.ReadWord();
+      if (w == "}") break;
+      sLong *fptr = nullptr;
+           if (w.CompareIgnoreCase("add") == 0) fptr = &rc.add;
+      else if (w.CompareIgnoreCase("rnd") == 0) fptr = &rc.rnd;
+      else if (w.CompareIgnoreCase("rand") == 0) fptr = &rc.rnd;
+      else if (w.CompareIgnoreCase("rmin") == 0) fptr = &rc.rmin;
+      else if (w.CompareIgnoreCase("rmax") == 0) fptr = &rc.rmax;
+      if (!fptr) ABORT("RandomChance syntax error: unknown field '%s' in file %s, line %d!", w.CStr(), fl.GetFileName().CStr(), fl.TokenLine());
+      w = fl.ReadWord();
+      if (w != ":" && w != "=") ABORT("RandomChance syntax error: ':' expected in file %s, line %d!", fl.GetFileName().CStr(), fl.TokenLine());
+      *fptr = fl.ReadNumber();
+    }
+  } else {
+    ABORT("RandomChance syntax error: '=' or '==' expected in file %s, line %d!", fl.GetFileName().CStr(), tkline);
+  }
+  if (rc.rnd < 0) ABORT("Invalid random chance in file %s, line %d!", fl.GetFileName().CStr(), tkline);
+}
+
+
 // ////////////////////////////////////////////////////////////////////////// //
 TextInputFile::TextInputFile (cfestring &FileName, const valuemap *aValueMap, truth AbortOnErr) {
   ifile.Open(FileName, AbortOnErr);

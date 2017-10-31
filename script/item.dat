@@ -124,6 +124,8 @@ item
   IsThrowingWeapon = false;
   ThrowItemTypes = NONE; /*Possibilities: THROW_BONE|THROW_POTION|THROW_AXE|THROW_GAS_GRENADE|THROW_WAND;*/
   CanFlame = false;
+  MagicEffectChance == 0;
+  MagicEffectDuration == 0;
   AllowedDungeons == ALL_DUNGEONS; // example: AllowedDungeons := { UNDER_WATER_TUNNEL, MONDEDR; }
   LevelTags := {} // {"*"}
 }

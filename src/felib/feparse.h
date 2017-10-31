@@ -16,6 +16,7 @@
 #include "festring.h"
 #include "fearray.h"
 #include "fesave.h"
+#include "femath.h"
 
 
 // ////////////////////////////////////////////////////////////////////////// //
@@ -166,6 +167,25 @@ protected:
 
 
 // ////////////////////////////////////////////////////////////////////////// //
+// `rand()` returns `add+RAND_N(rnd)`
+// `inRange()` returns `true` if `rand()` is in [rmin..rmax] (inclusive!)
+// script syntax:
+//   RCField = { add: num; rnd: num; rmin: num; rmax: num; }
+//   any field may absent
+//   or simplified:
+//   RCField == rnd;
+struct RandomChance {
+  sLong add = 0;
+  sLong rnd = 0;
+  sLong rmin = 0, rmax = 0;
+
+  inline void clear () { add = rnd = rmin = rmax = 0; }
+  inline sLong rand () const { return add+RAND_N(rnd); }
+  // if `rnd` is zero, assume "no chances"
+  inline truth inRange () const { if (rnd > 0) { auto v = rand(); return (v >= rmin && v <= rmax); } return false; }
+};
+
+
 inline void ReadData (char &Type, TextInput &infile) { Type = infile.ReadNumber(); }
 inline void ReadData (uChar &Type, TextInput &infile) { Type = infile.ReadNumber(); }
 inline void ReadData (short &Type, TextInput &infile) { Type = infile.ReadNumber(); }
@@ -181,8 +201,9 @@ inline void ReadData (float &Type, TextInput &infile) { Type = infile.ReadFloat(
 void ReadData (festring &, TextInput &);
 void ReadData (fearray<sLong> &, TextInput &);
 void ReadData (fearray<festring> &, TextInput &);
+void ReadData (RandomChance &rc, TextInput &fl);
 
-template <class type> inline void ReadData (fearray<type> &Array, TextInput &infile) {
+template <class type> void ReadData (fearray<type> &Array, TextInput &infile) {
   Array.Clear();
   festring Word;
   infile.ReadWord(Word);

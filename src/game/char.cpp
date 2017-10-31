@@ -7467,6 +7467,8 @@ truth character::EquipmentScreen (stack *MainStack, stack *SecStack) {
       else if (firstEmpty >= 0) selected = firstEmpty;
       else if (firstNonEmpty >= 0) selected = firstNonEmpty;
     }
+    // 7: right ring; switch to left ring if that slot has nothing in it
+    if (selected == 7 && GetBodyPartOfEquipment(8) && !GetEquipment(8)) selected = 8;
     if (selected >= 0) List.SetSelected(selected);
 
     List.SetFlags(SELECTABLE|DRAW_BACKGROUND_AFTERWARDS);

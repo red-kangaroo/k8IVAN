@@ -20,6 +20,8 @@ slowaxe  /* meleeweapon-> */
   WieldedBitmapPos = 160, 176;
   EnchantmentPlusChance = 2;
   DamageFlags = SLASH;
+  MagicEffectChance == 3; // this is !(RAND()%3)
+  MagicEffectDuration = { add: 400; rand: 200; }
 
   Config BROKEN;
   {
@@ -27,5 +29,6 @@ slowaxe  /* meleeweapon-> */
     BitmapPos = 32, 176;
     WieldedBitmapPos = 176, 176;
     EnchantmentPlusChance = 4;
+    MagicEffectChance == 0; // broken items aren't magic
   }
 }
