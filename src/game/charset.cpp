@@ -17,7 +17,7 @@
 
 EXTENDED_SYSTEM_SPECIALIZATIONS(character)(0, 0, 0, "character");
 
-#include "characters.h"
+#include "charset.h"
 
 #undef __FILE_OF_STATIC_CHARACTER_PROTOTYPE_DEFINITIONS__
 
@@ -53,3 +53,4 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(character)(0, 0, 0, "character");
 
 #include "team.cpp"
 #include "char.cpp"
+#include "characters/0list.cpp"

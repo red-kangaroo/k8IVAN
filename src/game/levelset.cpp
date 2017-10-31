@@ -44,7 +44,7 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(olterrain)(0, 0, "olterrain");
 #include "materias.h"
 #include "confdef.h"
 #include "fluid.h"
-#include "characters.h"
+#include "charset.h"
 #include "smoke.h"
 #include "fesave.h"
 #include "feparse.h"

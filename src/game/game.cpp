@@ -28,7 +28,7 @@
 #include "proto.h"
 #include "stack.h"
 #include "felist.h"
-#include "characters.h"
+#include "charset.h"
 #include "wsquare.h"
 #include "game.h"
 #include "graphics.h"

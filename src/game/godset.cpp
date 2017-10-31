@@ -23,7 +23,7 @@ SYSTEM_SPECIALIZATIONS(god)
 
 #include <algorithm>
 
-#include "characters.h"
+#include "charset.h"
 #include "message.h"
 #include "game.h"
 #include "stack.h"

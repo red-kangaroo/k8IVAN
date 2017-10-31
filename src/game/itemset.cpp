@@ -36,7 +36,7 @@ EXTENDED_SYSTEM_SPECIALIZATIONS(item)(0, 0, 0, "item");
 #include "room.h"
 #include "game.h"
 #include "materias.h"
-#include "characters.h"
+#include "charset.h"
 #include "team.h"
 #include "god.h"
 #include "team.h"

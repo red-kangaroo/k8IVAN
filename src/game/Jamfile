@@ -6,7 +6,6 @@ C++SDLMain ivan :
   actset.cpp
   areaset.cpp
   charset.cpp
-  charsset.cpp
   command.cpp
   coreset.cpp
   dataset.cpp

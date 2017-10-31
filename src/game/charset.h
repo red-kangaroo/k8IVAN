@@ -9,6 +9,16 @@
  *  along with this file for more details
  *
  */
-/* Compiled through charsset.cpp */
+#ifndef __HEADER_CHARSET_H__
+#define __HEADER_CHARSET_H__
 
+#include "char.h"
+#include "lterras.h"
+
+
+#define HEADER_PHASE
 #include "characters/0list.cpp"
+#undef HEADER_PHASE
+
+
+#endif
