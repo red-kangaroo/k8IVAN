@@ -291,7 +291,8 @@ const statedata StateData[STATES] =
     SECRET,
     &character::PrintBeginSwimmingMessage,
     &character::PrintEndSwimmingMessage,
-    &character::BeginSwimming, &character::EndSwimming,
+    &character::BeginSwimming,
+    &character::EndSwimming,
     0,
     0,
     0
@@ -310,7 +311,8 @@ const statedata StateData[STATES] =
     NO_FLAGS,
     &character::PrintBeginEtherealityMessage,
     &character::PrintEndEtherealityMessage,
-    &character::BeginEthereality, &character::EndEthereality,
+    &character::BeginEthereality,
+    &character::EndEthereality,
     0,
     0,
     0
@@ -8015,12 +8017,12 @@ void character::PrintAttribute (cchar *Desc, int I, int PanelPosX, int PanelPosY
 
 
 truth character::AllowUnconsciousness () const {
-  return DataBase->AllowUnconsciousness && TorsoIsAlive();
+  return (DataBase->AllowUnconsciousness && TorsoIsAlive());
 }
 
 
 truth character::CanPanic () const {
-  return !Action || !Action->IsUnconsciousness() || !StateIsActivated(FEARLESS);
+  return (!Action || !Action->IsUnconsciousness() || !StateIsActivated(FEARLESS));
 }
 
 
@@ -8602,18 +8604,16 @@ truth character::IsESPBlockedByEquipment () const {
 
 
 truth character::TemporaryStateIsActivated (sLong What) const {
-  if ((What&ESP) && (TemporaryState&ESP) && IsESPBlockedByEquipment()) {
-    return ((TemporaryState&What)&(~ESP));
-  }
-  return (TemporaryState & What);
+  if ((What&PANIC) && StateIsActivated(FEARLESS)) What &= ~PANIC;
+  if ((What&ESP) && (TemporaryState&ESP) && IsESPBlockedByEquipment()) What &= ~ESP;
+  return ((TemporaryState&What) != 0);
 }
 
 
 truth character::StateIsActivated (sLong What) const {
-  if ((What&ESP) && ((TemporaryState|EquipmentState)&ESP) && IsESPBlockedByEquipment()) {
-    return ((TemporaryState&What)&(~ESP)) || ((EquipmentState&What)&(~ESP));
-  }
-  return (TemporaryState & What) || (EquipmentState & What);
+  if ((What&PANIC) && ((TemporaryState|EquipmentState)&FEARLESS)) What &= ~PANIC;
+  if ((What&ESP) && ((TemporaryState|EquipmentState)&ESP) && IsESPBlockedByEquipment()) What &= ~ESP;
+  return (TemporaryState&What) || (EquipmentState&What);
 }
 
 
