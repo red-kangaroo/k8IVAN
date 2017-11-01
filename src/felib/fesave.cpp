@@ -291,46 +291,80 @@ void inputfile::ClearFlags () {
 
 // ////////////////////////////////////////////////////////////////////////// //
 outputfile &operator << (outputfile &SaveFile, cfestring &String) {
-  uShort Length = String.GetSize();
-  SaveFile << Length;
-  if (Length) SaveFile.Write(String.CStr(), Length);
+  feuLong Length = String.GetSize();
+  if (Length < 255) {
+    SaveFile << (uint8_t)Length;
+  } else {
+    SaveFile << (uint8_t)255;
+    SaveFile << Length;
+  }
+  if (Length) SaveFile.Write(String.getConstDataBuffer(), Length);
   return SaveFile;
 }
 
 
 inputfile &operator >> (inputfile &SaveFile, festring &String) {
-  char *RealBuffer, StackBuffer[1024];
-  uShort Length;
-  SaveFile >> Length;
-  RealBuffer = (Length < 1024 ? StackBuffer : new char[Length+1]);
-  String.Empty();
-  if (Length) {
-    SaveFile.Read(RealBuffer, Length);
-    RealBuffer[Length] = 0;
-    String << RealBuffer;
+  uint8_t lbyte;
+  feuLong Length;
+  SaveFile >> lbyte;
+  if (lbyte < 255) {
+    Length = lbyte;
+  } else {
+    SaveFile >> Length;
+    if (Length == 0) ABORT("The thing that should not be!");
   }
-  if (RealBuffer != StackBuffer) delete [] RealBuffer;
+  String.ResetToLength(Length);
+  if (Length) SaveFile.Read(String.getDataBuffer(), Length);
   return SaveFile;
 }
 
 
 outputfile &operator << (outputfile &SaveFile, cchar *String) {
-  uShort Length = (String ? strlen(String) : 0);
-  SaveFile << Length;
+  if (!String) {
+    SaveFile << (uint8_t)0;
+    SaveFile << (uint8_t)0;
+    return SaveFile;
+  }
+  feuLong Length = strlen(String);
+  if (Length == 0) {
+    SaveFile << (uint8_t)0;
+    SaveFile << (uint8_t)1;
+    return SaveFile;
+  }
+  if (Length < 255) {
+    SaveFile << (uint8_t)Length;
+  } else {
+    SaveFile << (uint8_t)255;
+    SaveFile << Length;
+  }
   if (Length) SaveFile.Write(String, Length);
   return SaveFile;
 }
 
 
 inputfile &operator >> (inputfile &SaveFile, char *&String) {
-  uShort Length;
-  SaveFile >> Length;
-  if (Length) {
-    String = new char[Length+1];
-    SaveFile.Read(String, Length);
-    String[Length] = 0;
-  } else {
-    String = 0;
+  uint8_t lbyte;
+  feuLong Length;
+  SaveFile >> lbyte;
+  // zero-length strings are special
+  if (lbyte == 0) {
+    SaveFile >> lbyte;
+    if (lbyte == 0) {
+      String = 0;
+    } else {
+      String = new char[1];
+      String[0] = 0;
+    }
+    return SaveFile;
   }
+  if (lbyte < 255) {
+    Length = lbyte;
+  } else {
+    SaveFile >> Length;
+    if (Length == 0) ABORT("The thing that should not be!");
+  }
+  String = new char[Length+1];
+  SaveFile.Read(String, Length);
+  String[Length] = 0;
   return SaveFile;
 }

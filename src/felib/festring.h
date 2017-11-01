@@ -59,6 +59,18 @@ public:
   }
   festring (cfestring &);
   ~festring ();
+  void ResetToLength (sizetype N) {
+    Empty(); // everything is zero after this
+    if (N != 0) {
+      Size = N;
+      Reserved = N|FESTRING_PAGE;
+      char *Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
+      REFS(Ptr) = 0;
+      Data = Ptr;
+      memset(Data, 0, N);
+      OwnsData = true;
+    }
+  }
   festring &Capitalize ();
   festring CapitalizeCopy () const { return festring(*this).Capitalize(); }
   festring &operator = (cchar *);
@@ -135,6 +147,9 @@ public:
 
   truth hasCtlCodes () const;
   sizetype rawLength () const; // without color codes
+
+  char *getDataBuffer () { return Data; } // DON'T USE!
+  cchar *getConstDataBuffer () const { return Data; } // DON'T USE!
 
 private:
   static void InstallIntegerMap ();
@@ -430,6 +445,25 @@ struct ignorecaseorderer {
  */
 #define SEARCH_N_REPLACE(where, what, with) \
   if (where.Find(what) != festring::NPos) festring::SearchAndReplace(where, what, with);
+
+
+// ////////////////////////////////////////////////////////////////////////// //
+#include <string>
+#include <cstdlib>
+#include <cxxabi.h>
+
+template<typename T> festring getCPPTypeName () {
+  int status;
+  std::string name = typeid(T).name();
+  char *demangled = abi::__cxa_demangle(name.c_str(), 0/*NULL*/, 0/*NULL*/, &status);
+  if (status == 0) {
+    name = demangled;
+    std::free(demangled);
+  }
+  festring res;
+  res << name.c_str();
+  return res;
+}
 
 
 #endif

@@ -381,7 +381,7 @@ static const gwterraindatabase *findWorldMapOptionsConfig () {
   for (int f = 0; f < cfgcount; ++f) {
     auto cfg = configs[f];
     //if (cfg->Config == 0) continue;
-    //fprintf(stderr, "<%s>\n", getTypeName<decltype(cfg->Config)>().c_str());
+    //fprintf(stderr, "<%s>\n", getCPPTypeName<decltype(cfg->Config)>().c_str());
     if (cfg->Config == WorldMapOptionsCfg()) return cfg;
   }
   // search for base config

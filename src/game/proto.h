@@ -133,6 +133,8 @@ public:
 
 
 template <class type> inline outputfile &operator << (outputfile &SaveFile, const type *Class) {
+  //auto cppname = getCPPTypeName<type>();
+  //SaveFile << cppname;
   festring tname;
   if (Class) {
     tname = festring(Class->GetTypeID());
@@ -148,6 +150,9 @@ template <class type> inline outputfile &operator << (outputfile &SaveFile, cons
 
 
 template <class type> inline inputfile &operator >> (inputfile &SaveFile, type *&Class) {
+  //festring cppname;
+  //SaveFile >> cppname;
+  //if (cppname != getCPPTypeName<type>()) ABORT("Loader expected '%s' c++ class, but got '%s' instead!", getCPPTypeName<type>().CStr(), cppname.CStr());
   festring tname;
   SaveFile >> tname;
   if (tname.IsEmpty()) {

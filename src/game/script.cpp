@@ -390,7 +390,7 @@ void basecontentscript::Load (inputfile &SaveFile) {
 template <class type> type *contentscripttemplate<type>::BasicInstantiate (int SpecialFlags) const {
   type *Instance = 0;
   const typename type::prototype *Proto = protocontainer<type>::GetProto(ContentType);
-  if (!Proto) ABORT("BasicInstantiate error for type '%s'!", getTypeName<type>().c_str());
+  if (!Proto) ABORT("BasicInstantiate error for type '%s'!", getCPPTypeName<type>().CStr());
   const typename type::database *const *ConfigData = Proto->GetConfigData();
   const materialscript *MainMaterial = GetMainMaterial();
   const materialscript *SecondaryMaterial = GetSecondaryMaterial();

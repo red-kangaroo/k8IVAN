@@ -184,21 +184,4 @@ using rcint = int;
 #define SPARKLING_D  8
 
 
-// ////////////////////////////////////////////////////////////////////////// //
-#include <string>
-#include <cstdlib>
-#include <cxxabi.h>
-
-template<typename T> std::string getTypeName () {
-  int status;
-  std::string name = typeid(T).name();
-  char *demangled = abi::__cxa_demangle(name.c_str(), 0/*NULL*/, 0/*NULL*/, &status);
-  if (status == 0) {
-    name = demangled;
-    std::free(demangled);
-  }
-  return name;
-}
-
-
 #endif
