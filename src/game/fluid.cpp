@@ -66,7 +66,8 @@ fluid::fluid(liquid *Liquid, item *MotherItem, cfestring &LocationName, truth Is
 
 fluid::~fluid () {
   game::RemoveTrapID(TrapData.TrapID);
-  delete Liquid;
+  //delete Liquid;
+  if (Liquid) Liquid->SendToHell(); //k8:???
   delete [] GearImage;
 }
 
@@ -228,7 +229,7 @@ void fluid::AddFluidInfo (const fluid *Fluid, festring &String) {
   truth Blood = false, OneBlood = true;
   for (; Fluid; Fluid = Fluid->Next) {
     liquid *Liquid = Fluid->GetLiquid();
-    truth LiquidBlood = Liquid->GetCategoryFlags() & IS_BLOOD;
+    truth LiquidBlood = ((Liquid->GetCategoryFlags()&IS_BLOOD) != 0);
     if (!LiquidBlood || !Blood) {
       if (Index < 3) {
         if (LiquidBlood) {
@@ -248,9 +249,8 @@ void fluid::AddFluidInfo (const fluid *Fluid, festring &String) {
     }
   }
   if (Index <= 3) {
-    if (!Blood || OneBlood) String << Show[0]->GetName(false, false);
-    else String << "different types of blood";
-    if (Index == 2) String << " and " << Show[1]->GetName(false, false);
+    if (!Blood || OneBlood) String << Show[0]->GetName(false, false); else String << "different types of blood";
+         if (Index == 2) String << " and " << Show[1]->GetName(false, false);
     else if (Index == 3) String << ", " << Show[1]->GetName(false, false) << " and " << Show[2]->GetName(false, false);
   } else {
     String << "a lot of liquids";

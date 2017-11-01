@@ -670,24 +670,33 @@ truth bodypart::IsRepairable(ccharacter*) const
 }
 
 
-void bodypart::SpillFluid(character* Spiller, liquid* Liquid, int SquareIndex)
-{
-  if(Master)
-  {
-    item* Armor = GetArmorToReceiveFluid(false);
-
-    if(Armor)
-      Armor->SpillFluid(Spiller, Liquid);
-    else if(GetMaster())
-    {
-      if(Liquid->GetVolume())
-        AddFluid(Liquid, "", SquareIndex, false);
-      else
-        delete Liquid;
-    }
+void bodypart::SpillFluid(character* Spiller, liquid *Liquid, int SquareIndex) {
+  if (!Liquid || Liquid->GetVolume() < 1) {
+    //fprintf(stderr, "!!!!!!!!!!! (00)\n");
+    //delete Liquid; //k8: this is BUG!
+    if (Liquid) Liquid->SendToHell();
+    return;
   }
-  else
+  if (Master) {
+    item *Armor = GetArmorToReceiveFluid(false);
+    if (Armor) {
+      //fprintf(stderr, "bodypart::SpillFluid: Liquid->GetName(0):<%s>\n", Liquid->GetName(false, false).CStr());
+      Armor->SpillFluid(Spiller, Liquid);
+      //fprintf(stderr, "bodypart::SpillFluid: Liquid->GetName(1):<%s>\n", Liquid->GetName(false, false).CStr());
+    } else if (GetMaster()) {
+      if (Liquid->GetVolume()) {
+        //fprintf(stderr, "bodypart::SpillFluid: Liquid->GetName(2):<%s>\n", Liquid->GetName(false, false).CStr());
+        AddFluid(Liquid, "", SquareIndex, false);
+        //fprintf(stderr, "bodypart::SpillFluid: Liquid->GetName(3):<%s>\n", Liquid->GetName(false, false).CStr());
+      } else {
+        //fprintf(stderr, "!!!!!!!!!!! (01)\n");
+        //delete Liquid; //k8: this is BUG!
+        Liquid->SendToHell();
+      }
+    }
+  } else {
     item::SpillFluid(Spiller, Liquid, SquareIndex);
+  }
 }
 
 

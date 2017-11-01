@@ -14,6 +14,7 @@
 #include <set>
 
 #include "game.h"
+#include "materia.h"
 
 
 //#define xlogf(...)  do { fprintf(stderr, __VA_ARGS__); fflush(stderr); } while (0)
@@ -21,7 +22,28 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+typedef std::set<material *> MaterialSet;
+
+static MaterialSet matersToKill;
+
+
+void pool::MaterToHell (material *mb) {
+  if (mb) {
+    auto it = matersToKill.find(mb);
+    if (it == matersToKill.end()) matersToKill.insert(mb);
+  }
+}
+
+
+void pool::BurnMaterHell () {
+  for (auto &mb : matersToKill) delete mb;
+  matersToKill.clear();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 typedef std::set<entity *> EntitySet;
+
 
 typedef struct EntityListItem {
   struct EntityListItem *next;
@@ -240,6 +262,8 @@ void pool::BurnHell () {
   }
   elRemoveIterator(&it);
   //
+  BurnMaterHell();
+  //
   burningHell = false;
   xlogf("BurnHell: DONE\n");
 }
@@ -301,6 +325,7 @@ void pool::RemoveFromHell (entity *e) {
 void pool::RemoveEverything () {
   elClear(&beList);
   elClear(&hellList);
+  BurnMaterHell();
 }
 
 

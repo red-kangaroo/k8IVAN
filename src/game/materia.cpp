@@ -160,21 +160,18 @@ material* material::EatEffect(character* Eater, sLong Amount)
 
     if(Head && Amount >= 8)
     {
-      Head->AddFluid(static_cast<liquid*>(SpawnMore(Amount >> 3)),
-         CONST_S("throat"), 0, true);
+      Head->AddFluid(static_cast<liquid*>(SpawnMore(Amount >> 3)), CONST_S("throat"), 0, true);
       NewAmount -= Amount >> 3;
     }
 
-    Eater->GetTorso()->AddFluid(static_cast<liquid*>(SpawnMore(NewAmount)),
-        CONST_S("stomach"), 0, true);
+    Eater->GetTorso()->AddFluid(static_cast<liquid*>(SpawnMore(NewAmount)), CONST_S("stomach"), 0, true);
   }
   else
   {
     Effect(Eater, TORSO_INDEX, Amount);
 
     if(IsLiquid())
-      Eater->EditStamina(int(50. * Amount * Eater->GetMaxStamina()
-           / Eater->GetBodyVolume()),
+      Eater->EditStamina(int(50. * Amount * Eater->GetMaxStamina() / Eater->GetBodyVolume()),
        false);
   }
 

@@ -21,9 +21,7 @@ rain::rain(liquid* Liquid, lsquare* LSquareUnder, v2 Speed, int Team, truth OwnL
 rain::~rain()
 {
   delete [] Drop;
-
-  if(OwnLiquid)
-    delete Liquid;
+  if (OwnLiquid) delete Liquid;
 }
 
 void rain::Draw(blitdata& BlitData) const

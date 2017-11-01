@@ -79,8 +79,10 @@ truth materialcontainer::DumpTo (character *dumper, v2 dest) {
 
   if (GetSecondaryMaterial()->IsLiquid()) {
     liquid *Liquid = static_cast<liquid *>(RemoveSecondaryMaterial());
-    if (dumper->IsPlayer()) ADD_MESSAGE("Dumping %s.", Liquid->GetName(false, false).CStr());
-    sqr->SpillFluid(dumper, Liquid, false, true); // ForceHit, ShowMsg
+    if (Liquid->GetVolume() > 0) {
+      if (dumper->IsPlayer()) ADD_MESSAGE("Dumping %s.", Liquid->GetName(false, false).CStr());
+      sqr->SpillFluid(dumper, Liquid, false, true); // ForceHit, ShowMsg
+    }
   } else {
     item *Lump = lump::Spawn(0, NO_MATERIALS);
     Lump->InitMaterials(RemoveSecondaryMaterial());

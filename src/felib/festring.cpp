@@ -63,27 +63,27 @@ festring &festring::Append (cchar *CStr, sizetype N) {
 
 
 festring &festring::operator = (cchar *CStr) {
+  Empty();
   sizetype NewSize = (CStr ? strlen(CStr) : 0);
-  if (NewSize > 0x7ffff000) ABORT("String too big (or invalid)");
-  if (NewSize == 0) { Empty(); return *this; }
-  Size = NewSize;
-  char *Ptr = Data;
-  if (Ptr && OwnsData) {
-    if (!REFS(Ptr) && NewSize <= Reserved) {
-      if (NewSize > 0) memmove(Ptr, CStr, NewSize);
-      return *this;
-    }
-    if (!REFS(Ptr)--) delete [] REFSA(Ptr);
-  }
-  Data = const_cast<char *>(CStr);
+  Data = (NewSize > 0 ? const_cast<char *>(CStr) : nullptr);
   OwnsData = false;
   return *this;
 }
 
 
 festring &festring::operator = (cfestring &Str) {
+  if (&Str == this) return *this;
   sizetype NewSize = Str.Size;
   if (NewSize == 0) { Empty(); return *this; }
+  // is `Str` static?
+  if (!Str.OwnsData) {
+    Empty();
+    Size = NewSize;
+    Data = Str.Data;
+    Reserved = 0;
+    OwnsData = false;
+    return *this;
+  }
   Size = NewSize;
   char *Ptr = Data;
   char *StrPtr = Str.Data;
@@ -94,10 +94,11 @@ festring &festring::operator = (cfestring &Str) {
     }
     if (!REFS(Ptr)--) delete [] REFSA(Ptr);
   }
-  if ((Data = StrPtr) && (OwnsData = Str.OwnsData)) {
-    ++REFS(StrPtr);
-    Reserved = Str.Reserved;
-  }
+  if (!StrPtr) ABORT("festring wtf(00)!");
+  Data = StrPtr;
+  ++REFS(StrPtr);
+  Reserved = Str.Reserved;
+  OwnsData = true;
   return *this;
 }
 
@@ -113,47 +114,43 @@ festring &festring::Capitalize () {
 
 
 void festring::SlowAppend (char Char) {
-  char *OldPtr = Data;
-  if (OldPtr) {
-    sizetype OldSize = Size++;
-    int *DeletePtr = 0;
-    if (OwnsData && !REFS(OldPtr)--) DeletePtr = REFSA(OldPtr);
-    Reserved = (OldSize+1)|FESTRING_PAGE;
-    char *NewPtr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
-    REFS(NewPtr) = 0;
-    Data = NewPtr;
-    if (OldSize > 0) memmove(NewPtr, OldPtr, OldSize);
-    NewPtr[OldSize] = Char;
-    if (DeletePtr) delete [] DeletePtr;
-  } else {
-    Size = 1;
-    Reserved = FESTRING_PAGE;
-    char *Ptr = sizeof(rcint)+new char[FESTRING_PAGE+sizeof(rcint)+1];
-    REFS(Ptr) = 0;
-    Ptr[0] = Char;
-    Data = Ptr;
-  }
-  OwnsData = true;
+  SlowAppend(&Char, 1);
 }
 
 
 void festring::SlowAppend (cchar *CStr, sizetype N) {
   if (N == 0) return;
+  if (!CStr) ABORT("festring::SlowAppend() with null string and non-zero size (%u)!", (unsigned)N);
   char *OldPtr = Data;
-  if (OldPtr) {
+  if (OldPtr && OwnsData) {
     sizetype OldSize = Size;
     sizetype NewSize = OldSize+N;
     Size = NewSize;
-    int *DeletePtr = 0;
+    if (REFS(OldPtr) == 0 && NewSize <= Reserved) {
+      memmove(OldPtr+OldSize, CStr, N);
+      return;
+    }
+    rcint *DeletePtr = nullptr;
     if (OwnsData && !REFS(OldPtr)--) DeletePtr = REFSA(OldPtr);
     Reserved = NewSize|FESTRING_PAGE;
     char *NewPtr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
     REFS(NewPtr) = 0;
     Data = NewPtr;
     if (OldSize > 0) memmove(NewPtr, OldPtr, OldSize);
-    if (N > 0) memmove(NewPtr+OldSize, CStr, N);
+    memmove(NewPtr+OldSize, CStr, N);
     OwnsData = true;
     if (DeletePtr) delete [] DeletePtr;
+  } else if (OldPtr && !OwnsData && Size) {
+    sizetype OldSize = Size;
+    sizetype NewSize = OldSize+N;
+    Size = NewSize;
+    Reserved = NewSize|FESTRING_PAGE;
+    char *NewPtr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
+    REFS(NewPtr) = 0;
+    Data = NewPtr;
+    if (OldSize > 0) memmove(NewPtr, OldPtr, OldSize);
+    memmove(NewPtr+OldSize, CStr, N);
+    OwnsData = true;
   } else {
     CreateOwnData(CStr, N);
   }
@@ -168,10 +165,7 @@ void festring::Assign (sizetype N, char C) {
     if (REFS(Ptr)) {
       --REFS(Ptr);
     } else {
-      if (N <= Reserved) {
-        memset(Ptr, C, N);
-        return;
-      }
+      if (N <= Reserved) { memset(Ptr, C, N); return; }
       delete [] REFSA(Ptr);
     }
   }
@@ -179,7 +173,7 @@ void festring::Assign (sizetype N, char C) {
   Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
   REFS(Ptr) = 0;
   Data = Ptr;
-  if (N > 0) memset(Ptr, C, N);
+  memset(Ptr, C, N);
   OwnsData = true;
 }
 
@@ -194,10 +188,7 @@ void festring::Resize (sizetype N, char C) {
     int *DeletePtr = 0;
     if (OwnsData && OldPtr) {
       if (!REFS(OldPtr)) {
-        if (N <= Reserved) {
-          memset(OldPtr+OldSize, C, N-OldSize);
-          return;
-        }
+        if (N <= Reserved) { memset(OldPtr+OldSize, C, N-OldSize); return; }
         DeletePtr = REFSA(OldPtr);
       } else {
         --REFS(OldPtr);

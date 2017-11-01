@@ -1224,7 +1224,7 @@ void character::Die (character *Killer, cfestring &Msg, feuLong DeathFlags) {
         }
       }
       fname << ext;
-      fprintf(stderr, "deathshot: %s\n", fname.CStr());
+      //fprintf(stderr, "deathshot: %s\n", fname.CStr());
 #if defined(HAVE_IMLIB2) || defined(HAVE_LIBPNG)
       DOUBLE_BUFFER->SavePNG(fname);
 #else
@@ -6557,13 +6557,16 @@ liquid *character::CreateBlood (sLong Volume) const {
 
 
 void character::SpillFluid (character *Spiller, liquid *Liquid, int SquareIndex) {
+  //fprintf(stderr, "character(%s:%d)::SpillFluid: Liquid->GetName(0):<%s>\n", GetTypeID(), GetConfig(), Liquid->GetName(false, false).CStr());
   sLong ReserveVolume = Liquid->GetVolume() >> 1;
   Liquid->EditVolume(-ReserveVolume);
+  //fprintf(stderr, "character::SpillFluid: Liquid->GetName(1):<%s>\n", Liquid->GetName(false, false).CStr());
   GetStack()->SpillFluid(Spiller, Liquid, sLong(Liquid->GetVolume() * sqrt(double(GetStack()->GetVolume()) / GetVolume())));
+  //fprintf(stderr, "character::SpillFluid: Liquid->GetName(2):<%s>\n", Liquid->GetName(false, false).CStr());
   Liquid->EditVolume(ReserveVolume);
-  int c;
+  //fprintf(stderr, "character::SpillFluid: Liquid->GetName(3):<%s>\n", Liquid->GetName(false, false).CStr());
   sLong Modifier[MAX_BODYPARTS], ModifierSum = 0;
-  for (c = 0; c < BodyParts; ++c) {
+  for (int c = 0; c < BodyParts; ++c) {
     if (GetBodyPart(c)) {
       Modifier[c] = sLong(sqrt(GetBodyPart(c)->GetVolume()));
       if (Modifier[c]) Modifier[c] *= 1 + (RAND() & 3);
@@ -6572,14 +6575,20 @@ void character::SpillFluid (character *Spiller, liquid *Liquid, int SquareIndex)
       Modifier[c] = 0;
     }
   }
-  for (c = 1; c < GetBodyParts(); ++c) {
-    if (GetBodyPart(c) && IsEnabled())
+  for (int c = 1; c < GetBodyParts(); ++c) {
+    if (GetBodyPart(c) && IsEnabled()) {
+      //fprintf(stderr, "character::SpillFluid: Liquid->GetName(4:%d):<%s>\n", c, Liquid->GetName(false, false).CStr());
       GetBodyPart(c)->SpillFluid(Spiller, Liquid->SpawnMoreLiquid(Liquid->GetVolume() * Modifier[c] / ModifierSum), SquareIndex);
+      //fprintf(stderr, "character::SpillFluid: Liquid->GetName(5:%d):<%s>\n", c, Liquid->GetName(false, false).CStr());
+    }
   }
   if (IsEnabled()) {
     Liquid->SetVolume(Liquid->GetVolume() * Modifier[TORSO_INDEX] / ModifierSum);
+    //fprintf(stderr, "character::SpillFluid: Liquid->GetName(6):<%s>\n", Liquid->GetName(false, false).CStr());
     GetTorso()->SpillFluid(Spiller, Liquid, SquareIndex);
+    //fprintf(stderr, "character::SpillFluid: Liquid->GetName(7):<%s>\n", Liquid->GetName(false, false).CStr());
   }
+  //fprintf(stderr, "character::SpillFluid: Liquid->GetName(8):<%s>\n", Liquid->GetName(false, false).CStr());
 }
 
 
@@ -8595,11 +8604,11 @@ truth character::IsAllowedInDungeon (int dunIndex) {
   //
   for (uInt f = 0; f < dlist.Size; ++f) {
     if (dlist[f] == ALL_DUNGEONS || dlist[f] == dunIndex) {
-      fprintf(stderr, "OK!\n");
+      //fprintf(stderr, "OK!\n");
       return true;
     }
   }
-  fprintf(stderr, "NO!\n");
+  //fprintf(stderr, "NO!\n");
   return false;
 }
 

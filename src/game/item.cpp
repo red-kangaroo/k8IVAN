@@ -1141,12 +1141,11 @@ void item::RemoveAllFluids () {
 
 void item::AddFluid (liquid *ToBeAdded, festring LocationName, int SquareIndex, truth IsInside) {
   truth WasAnimated = IsAnimated();
-  //
+
   if (SquareIndex < 0) ABORT("item::AddFluid(): invalid SquareIndex: %d", SquareIndex);
-  //
+
   if (Fluid) {
     fluid *F = Fluid[SquareIndex];
-    //
     if (SquareIndex >= FluidCount) ABORT("item::AddFluid(): invalid SquareIndex: %d", SquareIndex);
     if (!F) {
       Fluid[SquareIndex] = new fluid(ToBeAdded, this, LocationName, IsInside);
@@ -1156,7 +1155,8 @@ void item::AddFluid (liquid *ToBeAdded, festring LocationName, int SquareIndex, 
       do {
         if (ToBeAdded->IsSameAs(F->GetLiquid())) {
           F->AddLiquidAndVolume(ToBeAdded->GetVolume());
-          delete ToBeAdded;
+          //delete ToBeAdded; //k8: this is BUG!
+          ToBeAdded->SendToHell();
           return;
         }
         LF = F;
@@ -1217,10 +1217,13 @@ void item::FillFluidVector (fluidvector &Vector, int SquareIndex) const {
 
 void item::SpillFluid(character*, liquid* Liquid, int SquareIndex)
 {
-  if(AllowFluids() && Liquid->GetVolume())
+  if (AllowFluids() && Liquid->GetVolume()) {
     AddFluid(Liquid, "", SquareIndex, false);
-  else
-    delete Liquid;
+  } else {
+    //fprintf(stderr, "!!!!!!!!!!! (04)\n");
+    //delete Liquid; //k8: this is BUG!
+    Liquid->SendToHell();
+  }
 }
 
 void item::TryToRust (sLong LiquidModifier) {

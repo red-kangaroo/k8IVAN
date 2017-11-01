@@ -112,10 +112,9 @@ void *entity::operator new (size_t size) {
     fprintf(stderr, "FATAL: ALLOCATING ENTITY OF ZERO SIZE!\n");
     abort();
   }
-  p = calloc(1, size+sizeof(int));
+  p = calloc(1, size+sizeof(int)+64);
   {
     int *mp = (int *)p;
-    //
     *mp = ++mark;
     p = mp+1;
   }
@@ -126,7 +125,6 @@ void *entity::operator new (size_t size) {
 void entity::operator delete (void *p) {
   if (p) {
     int *mp = (int *)p;
-    //
     xlogf("delete(%d): %p\n", mp[-1], p);
     --mp;
     *mp = -1;

@@ -23,26 +23,43 @@
 class festring {
 private:
   enum { FESTRING_PAGE = 0x7F };
+
 public:
   typedef unsigned int sizetype;
   typedef const unsigned int csizetype;
-  /* It can be proven that the code works even if OwnsData is left
-     uninitialized. However, Valgrind reports this as a possible error
-     which is annoying */
-  festring () : Data(0), Size(0), Reserved(0), OwnsData(false) {}
-  explicit festring (sizetype);
-  festring (sizetype, char);
-  festring (cchar *CStr) : Data(const_cast<char *>(CStr)), Size(CStr ? strlen(CStr) : 0), Reserved(0), OwnsData(false) {}
-  /*
-    if (Size > 0x7ffff000) ABORT("String too big (or invalid)");
-    Reserved = Size|FESTRING_PAGE;
-    char *Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
-    REFS(Ptr) = 0;
-    Data = Ptr;
-    if (Size > 0) memmove(Data, CStr, N);
+
+public:
+  inline festring () : Data(0), Size(0), Reserved(0), OwnsData(false) {}
+
+  explicit inline festring (sizetype N) : Size(N), Reserved(N|FESTRING_PAGE), OwnsData(true) {
+    if (N != 0) {
+      char *Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
+      REFS(Ptr) = 0;
+      Data = Ptr;
+      memset(Data, 0, N);
+    } else {
+      Data = nullptr;
+      Reserved = 0;
+      OwnsData = false;
+    }
   }
-  */
-  festring (cchar *CStr, sizetype N) : Data(const_cast<char *>(CStr)), Size(N), Reserved(0), OwnsData(false) {
+
+  inline festring (sizetype N, char C) : Size(N), Reserved(N|FESTRING_PAGE), OwnsData(true) {
+    if (N != 0) {
+      char *Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
+      REFS(Ptr) = 0;
+      Data = Ptr;
+      memset(Data, C, N);
+    } else {
+      Data = nullptr;
+      Reserved = 0;
+      OwnsData = false;
+    }
+  }
+
+  inline festring (cchar *CStr) : Data(const_cast<char *>(CStr)), Size(CStr ? strlen(CStr) : 0), Reserved(0), OwnsData(false) {}
+
+  inline festring (cchar *CStr, sizetype N) : Data(const_cast<char *>(CStr)), Size(N), Reserved(0), OwnsData(false) {
     //if (N > 0x7ffff000) ABORT("String too big (or invalid)");
     if (N == 0) { Data = 0; return; }
     sizetype slen = (CStr ? (sizetype)strlen(CStr) : 0);
@@ -52,13 +69,34 @@ public:
       char *Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
       REFS(Ptr) = 0;
       Data = Ptr;
-      memset(Data, 0, N);
+      memset(Data, 0, N+1);
       if (slen) memcpy(Data, CStr, slen);
       OwnsData = true;
     }
   }
-  festring (cfestring &);
-  ~festring ();
+
+  inline festring (cfestring &Str) : Data(Str.Data), Size(Str.Size), Reserved(Str.Reserved), OwnsData(Str.OwnsData) {
+    if (Data && OwnsData) {
+      ++REFS(Data);
+    } else if (!Data) {
+      // just in case
+      Size = 0;
+      Reserved = 0;
+      OwnsData = false;
+    }
+  }
+
+  inline ~festring () {
+    if (OwnsData && Data) {
+      char *Ptr = Data;
+      if (!REFS(Ptr)--) delete [] REFSA(Ptr);
+    }
+    Data = 0;
+    Size = 0;
+    Reserved = 0;
+    OwnsData = false;
+  }
+
   void ResetToLength (sizetype N) {
     Empty(); // everything is zero after this
     if (N != 0) {
@@ -188,41 +226,6 @@ inline festringpile operator + (cfestring &S, cfestring &What) { return festring
 inline festringpile operator + (cfestring &S, const festringpile &What) { return festringpile(S)+What; }
 
 
-inline festring::festring (cfestring &Str) :
-  Data(Str.Data), Size(Str.Size), Reserved(Str.Reserved), OwnsData(Str.OwnsData)
-{
-  if (Data && OwnsData) ++REFS(Data);
-}
-
-inline festring::festring (sizetype N) : Size(N), Reserved(N|FESTRING_PAGE), OwnsData(true) {
-  //if (N > 0x7ffff000) ABORT("String too big (or invalid)");
-  char *Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
-  REFS(Ptr) = 0;
-  Data = Ptr;
-}
-
-
-inline festring::festring (sizetype N, char C) : Size(N), Reserved(N|FESTRING_PAGE), OwnsData(true) {
-  //if (N > 0x7ffff000) ABORT("String too big (or invalid)");
-  char* Ptr = sizeof(rcint)+new char[Reserved+sizeof(rcint)+1];
-  REFS(Ptr) = 0;
-  Data = Ptr;
-  if (N > 0) memset(Ptr, C, N);
-}
-
-
-inline festring::~festring () {
-  if (OwnsData && Data) {
-    char *Ptr = Data;
-    if (!REFS(Ptr)--) delete [] REFSA(Ptr);
-  }
-  Data = 0;
-  Size = 0;
-  Reserved = 0;
-  OwnsData = false;
-}
-
-
 inline bool festring::operator < (cfestring &Str) const {
   sizetype ThisSize = Size;
   sizetype StrSize = Str.Size;
@@ -346,14 +349,10 @@ inline int festring::CompareIgnoreCase (cchar *str) const {
 
 
 inline cchar *festring::CStr () const {
-  char *Ptr = Data;
-  if (Ptr) {
-    if (OwnsData) {
-      // need to copy?
-      //if (REFS(Ptr) && Ptr[Size]) { ensureUniqueOwned(); Ptr = Data; }
-      Ptr[Size] = 0;
-    }
-    return Ptr;
+  if (Data) {
+    // it is always safe to write zero into owned data
+    if (OwnsData) Data[Size] = 0;
+    return Data;
   }
   return EmptyString;
 }
@@ -374,11 +373,8 @@ inline void festring::Empty () {
 
 
 inline festring &festring::operator << (char Char) {
-  char *OldPtr = Data;
-  sizetype OldSize = Size;
-  if (OwnsData && OldPtr && !REFS(OldPtr) && OldSize < Reserved) {
-    OldPtr[OldSize] = Char;
-    ++Size;
+  if (OwnsData && Data && !REFS(Data) && Size < Reserved) {
+    Data[Size++] = Char;
   } else {
     SlowAppend(Char);
   }
@@ -389,12 +385,9 @@ inline festring &festring::operator << (char Char) {
 inline festring &festring::operator << (cchar *CStr) {
   sizetype N = (CStr ? strlen(CStr) : 0);
   if (N == 0) return *this;
-  sizetype OldSize = Size;
-  sizetype NewSize = OldSize+N;
-  //if (N > 0x7ffff000) ABORT("String too big (or invalid)");
-  char *OldPtr = Data;
-  if (OwnsData && OldPtr && !REFS(OldPtr) && NewSize <= Reserved) {
-    if (N > 0) memmove(OldPtr+OldSize, CStr, N);
+  sizetype NewSize = Size+N;
+  if (OwnsData && Data && !REFS(Data) && NewSize <= Reserved) {
+    if (N > 0) memmove(Data+Size, CStr, N);
     Size = NewSize;
   } else {
     SlowAppend(CStr, N);
@@ -406,12 +399,10 @@ inline festring &festring::operator << (cchar *CStr) {
 inline festring &festring::operator << (cfestring &Str) {
   sizetype N = Str.Size;
   if (N == 0) return *this;
-  sizetype OldSize = Size;
-  sizetype NewSize = OldSize+N;
-  char *OldPtr = Data;
+  sizetype NewSize = Size+N;
   char *OtherPtr = Str.Data;
-  if (OwnsData && OldPtr && !REFS(OldPtr) && NewSize <= Reserved) {
-    if (N > 0) memmove(OldPtr+OldSize, OtherPtr, N);
+  if (OwnsData && Data && !REFS(Data) && NewSize <= Reserved) {
+    if (N > 0) memmove(Data+Size, OtherPtr, N);
     Size = NewSize;
   } else {
     SlowAppend(OtherPtr, N);

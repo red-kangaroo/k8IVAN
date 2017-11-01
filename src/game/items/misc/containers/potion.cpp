@@ -71,10 +71,22 @@ void potion::Break (character *Breaker, int Dir) {
       if (Remains->GetLevel()->IsValidPos(Pos)) {
         sLong HalfVolume = GetSecondaryMaterial()->GetVolume() >> 1;
         Liquid->EditVolume(-HalfVolume);
-        Remains->GetNearLSquare(Pos)->SpillFluid(Breaker, Liquid->SpawnMoreLiquid(HalfVolume));
+        liquid *lq = Liquid->SpawnMoreLiquid(Liquid->GetVolume());
+        if (lq->GetVolume() > 0) {
+          Remains->GetNearLSquare(Pos)->SpillFluid(Breaker, lq);
+        } else {
+          delete lq;
+        }
       }
     }
-    if (Remains->Exists()) Remains->GetLSquareUnder()->SpillFluid(Breaker, Liquid->SpawnMoreLiquid(Liquid->GetVolume()));
+    if (Remains->Exists() && Liquid->GetVolume() > 0) {
+      liquid *lq = Liquid->SpawnMoreLiquid(Liquid->GetVolume());
+      if (lq->GetVolume() > 0) {
+        Remains->GetLSquareUnder()->SpillFluid(Breaker, lq);
+      } else {
+        delete lq;
+      }
+    }
   }
 
   if (PLAYER->Equips(Remains)) game::AskForEscPress(CONST_S("Equipment broken!"));

@@ -925,6 +925,7 @@ void stack::FinalProcessForBone () {
    but its volume is decreased (possibly to zero). */
 void stack::SpillFluid (character *Spiller, liquid *Liquid, sLong VolumeModifier) {
   if (!Items) return;
+  if (!Liquid->GetVolume()) return;
   double ChanceMultiplier = 1.0/(300+sqrt(Volume));
   itemvector ItemVector;
   FillItemVector(ItemVector);

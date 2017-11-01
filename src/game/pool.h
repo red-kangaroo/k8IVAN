@@ -17,6 +17,7 @@
 
 
 class entity;
+class material;
 
 
 class pool {
@@ -36,6 +37,9 @@ public:
   static void RegisterState (truth doreg);
   //
   static void RemoveEverything (); // don't delete!
+
+  static void MaterToHell (material *mb);
+  static void BurnMaterHell ();
 };
 
 

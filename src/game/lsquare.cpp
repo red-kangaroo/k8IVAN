@@ -883,7 +883,7 @@ void lsquare::ApplyScript (const squarescript *SquareScript, room *Room) {
           //if (Terrain->GetConfig() != RoomClass->GetDivineMaster()) ABORT("Random altar in room with DivineMaster!");
           if (terra->GetConfig() != Room->GetDivineMaster()) {
             // force altar type
-            fprintf(stderr, "forced altar!\n");
+            //fprintf(stderr, "forced altar!\n");
             delete terra;
             terra = altar::Spawn(Room->GetDivineMaster());
           }
@@ -903,14 +903,14 @@ void lsquare::ApplyScript (const squarescript *SquareScript, room *Room) {
             if (Owner < 1 || Owner > GODS) ABORT("Your god is a bad god!");
             //
             if (terra->GetConfig() != Owner) {
-              fprintf(stderr, "recreating altar %d --> %d\n", terra->GetConfig(), Owner);
+              //fprintf(stderr, "recreating altar %d --> %d\n", terra->GetConfig(), Owner);
               delete terra;
               terra = altar::Spawn(Owner);
             } else {
-              fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", terra->GetConfig());
+              //fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", terra->GetConfig());
             }
           } else {
-            fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", terra->GetConfig());
+            //fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", terra->GetConfig());
           }
           Room->SetDivineMaster(terra->GetConfig());
         }
@@ -2101,7 +2101,8 @@ fluid* lsquare::AddFluid(liquid* ToBeAdded)
   if(F)
   {
     F->AddLiquidAndVolume(ToBeAdded->GetVolume());
-    delete ToBeAdded;
+    //delete ToBeAdded; //k8: this is BUG!
+    ToBeAdded->SendToHell();
   }
   else
   {
@@ -2128,7 +2129,9 @@ void lsquare::SpillFluid(character* Spiller, liquid* Liquid, truth ForceHit, tru
 {
   if(!Liquid->GetVolume())
   {
-    delete Liquid;
+    // delete Liquid; //k8: this is BUG!
+    //fprintf(stderr, "!!!!!!!!!!! (02)\n");
+    Liquid->SendToHell();
     return;
   }
 
@@ -2167,9 +2170,11 @@ void lsquare::SpillFluid(character* Spiller, liquid* Liquid, truth ForceHit, tru
 
     if(GetCharacter())
       F->StepOnEffect(GetCharacter());
+  } else {
+    //fprintf(stderr, "!!!!!!!!!!! (03)\n");
+    //delete Liquid; //k8: this is BUG!
+    Liquid->SendToHell();
   }
-  else
-    delete Liquid;
 }
 
 void lsquare::DrawStacks(blitdata& BlitData) const

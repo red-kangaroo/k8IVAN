@@ -75,16 +75,13 @@ truth backpack::ReceiveDamage(character* Damager, int Damage, int Type, int)
 
 
 
-void backpack::SpillFluid(character* Spiller, liquid* Liquid, int SquareIndex)
-{
-  if(!Liquid->IsExplosive())
-  {
+void backpack::SpillFluid (character *Spiller, liquid *Liquid, int SquareIndex) {
+  if (!Liquid->IsExplosive()) {
     GetSecondaryMaterial()->AddWetness(Liquid->GetVolume() * 25);
-
-    if(CanBeSeenByPlayer())
-      ADD_MESSAGE("%s gets wet.", CHAR_NAME(DEFINITE));
+    if (CanBeSeenByPlayer()) ADD_MESSAGE("%s gets wet.", CHAR_NAME(DEFINITE));
   }
-
   item::SpillFluid(Spiller, Liquid, SquareIndex);
 }
+
+
 #endif

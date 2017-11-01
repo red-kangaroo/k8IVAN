@@ -44,39 +44,54 @@ truth noxiousorchid::Hit (character *Enemy, v2 HitPos, int Direction, int Flags)
       ADD_MESSAGE("%s hits %s.", CHAR_DESCRIPTION(DEFINITE), Enemy->CHAR_DESCRIPTION(DEFINITE));
     }
     //
+    int lqConfig = -1;
     auto cfg = GetConfig();
     if (cfg == 0) {
-      switch (RAND() % 48) {
-        case 0: Fluid = liquid::Spawn(ANTIDOTE_LIQUID, 15+RAND()%25); break;
-        case 1: case 2: case 3: case 4: Fluid = liquid::Spawn(POISON_LIQUID, 15+RAND()%25); break;
-        case 5: Fluid = liquid::Spawn(LIQUID_HORROR, 15+RAND()%25); break;
-        case 6: case 7: case 8: Fluid = liquid::Spawn(SULPHURIC_ACID, 15+RAND()%25); break;
+      switch (RAND()%48) {
+        case 0: lqConfig = ANTIDOTE_LIQUID; break;
+        case 1: case 2: case 3: case 4: lqConfig = POISON_LIQUID; break;
+        case 5: lqConfig = LIQUID_HORROR; break;
+        case 6: case 7: case 8: lqConfig = SULPHURIC_ACID; break;
         default: break;
       }
     } else if (cfg == GREATER) {
       switch (RAND()%24) {
-        case 0: Fluid = liquid::Spawn(ANTIDOTE_LIQUID, 25+RAND()%25); break;
-        case 1: case 2: case 3: case 4: Fluid = liquid::Spawn(POISON_LIQUID, 25+RAND()%25); break;
-        case 5: Fluid = liquid::Spawn(LIQUID_HORROR, 25+RAND()%25); break;
-        case 6: case 7: case 8: Fluid = liquid::Spawn(SULPHURIC_ACID, 25+RAND()%25); break;
+        case 0: lqConfig = ANTIDOTE_LIQUID; break;
+        case 1: case 2: case 3: case 4: lqConfig = POISON_LIQUID; break;
+        case 5: lqConfig = LIQUID_HORROR; break;
+        case 6: case 7: case 8: lqConfig = SULPHURIC_ACID; break;
         default: break;
       }
     } else if (cfg == GIANTIC) {
       switch (RAND()%24) {
-        case 0: Fluid = liquid::Spawn(ANTIDOTE_LIQUID, 50+RAND()%50); break;
-        case 1: Fluid = liquid::Spawn(YELLOW_SLIME, 50+RAND()%50); break;
-        case 2: case 3: case 4: Fluid = liquid::Spawn(POISON_LIQUID, 50+RAND()%50); break;
-        case 5: Fluid = liquid::Spawn(LIQUID_HORROR, 50+RAND()%50); break;
-        case 6: case 7: case 8: Fluid = liquid::Spawn(SULPHURIC_ACID, 50+RAND()%50); break;
-        case 9: Fluid = liquid::Spawn(MUSTARD_GAS_LIQUID, 50+RAND()%50); break;
+        case 0: lqConfig = ANTIDOTE_LIQUID; break;
+        case 1: lqConfig = YELLOW_SLIME; break;
+        case 2: case 3: case 4: lqConfig = POISON_LIQUID; break;
+        case 5: lqConfig = LIQUID_HORROR; break;
+        case 6: case 7: case 8: lqConfig = SULPHURIC_ACID; break;
+        case 9: lqConfig = MUSTARD_GAS_LIQUID; break;
         default: break;
       }
     } else {
       //Fluid = liquid::Spawn(WATER, 25+RAND()%25); break;
     }
     //
+    if (lqConfig > 0) {
+      int lqVolume = 0;
+           if (cfg == 0) lqVolume = 15+RAND()%25;
+      else if (cfg == GREATER) lqVolume = 25+RAND()%25;
+      else if (cfg == GIANTIC) lqVolume = 50+RAND()%50;
+      if (lqVolume > 0) {
+        //fprintf(stderr, "SPILL: cfg=%d; volume=%d\n", lqConfig, lqVolume);
+        Fluid = liquid::Spawn(lqConfig, lqVolume);
+        //fprintf(stderr, "SPILL: <%s:%d>\n", Fluid->GetTypeID(), Fluid->GetConfig());
+        //fprintf(stderr, "  0: GetName:<%s>\n", Fluid->GetName(false, false).CStr());
+      }
+    }
+    //
     if (Fluid) {
       Enemy->SpillFluid(Enemy, Fluid);
+      //fprintf(stderr, "  1: GetName:<%s>\n", Fluid->GetName(false, false).CStr());
       if (IsPlayer()) {
         ADD_MESSAGE("You spill %s on %s.", Fluid->GetName(false, false).CStr(), Enemy->CHAR_DESCRIPTION(DEFINITE));
       } else if (Enemy->IsPlayer() || CanBeSeenByPlayer() || Enemy->CanBeSeenByPlayer()) {

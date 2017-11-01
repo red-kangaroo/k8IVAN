@@ -574,7 +574,7 @@ void game::ScheduleImmediateSave () {
 void game::Run () {
   for (;;) {
     if (mImmediateSave) {
-      fprintf(stderr, "force saving!\n");
+      //fprintf(stderr, "force saving!\n");
       mImmediateSave = false;
       game::Save();
       game::Save(game::GetAutoSaveFileName());
@@ -2517,7 +2517,7 @@ void game::CreateBone () {
     }
     if (BoneIndex != 1000) {
       //festring BoneName = GetBonePath()+"bon"+CurrentDungeonIndex+CurrentLevelIndex+BoneIndex;
-      fprintf(stderr, "creating bone file: [%s]\n", BoneName.CStr());
+      //fprintf(stderr, "creating bone file: [%s]\n", BoneName.CStr());
       outputfile BoneFile(BoneName, true);
       BoneFile << int(BONE_FILE_VERSION);
       SaveModuleList(BoneFile);

@@ -17,6 +17,7 @@
 #include "script.h"
 #include "ivandef.h"
 #include "festring.h"
+#include "pool.h"
 
 #define MAKE_MATERIAL material::MakeMaterial
 
@@ -231,6 +232,8 @@ class material
   inline cchar *GetClassID () const { return (FindProtoType() ? FindProtoType()->GetClassID() : ""); }
   virtual const prototype* FindProtoType() const { return &ProtoType; }
 
+  void SendToHell () { pool::MaterToHell(this); }
+
  protected:
   virtual void PostConstruct() { }
   void Initialize(int, sLong, truth);
@@ -239,6 +242,7 @@ class material
   entity* MotherEntity;
   sLong Volume;
 };
+
 
 template <class type, class base>
 class materialsysbase : public base

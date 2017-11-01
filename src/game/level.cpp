@@ -513,13 +513,13 @@ truth level::MakeRoom (const roomscript *RoomScript) {
               //if (Terrain->GetConfig() != RoomClass->GetDivineMaster()) ABORT("Random altar in room with DivineMaster!");
               if (Terrain->GetConfig() != RoomClass->GetDivineMaster()) {
                 // force altar type
-                fprintf(stderr, "forced altar!\n");
+                //fprintf(stderr, "forced altar!\n");
                 delete Terrain;
                 Terrain = altar::Spawn(RoomClass->GetDivineMaster());
               }
             } else {
               // no DivineMaster yet, assign it
-              fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", Terrain->GetConfig());
+              //fprintf(stderr, "spawned altar in room w/o divine master, assigning %d\n", Terrain->GetConfig());
               RoomClass->SetDivineMaster(Terrain->GetConfig());
             }
           }
