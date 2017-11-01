@@ -38,6 +38,9 @@ public:
   god *SpawnAndLoad (inputfile &) const;
   cchar *GetClassID() const { return ClassID; }
   int GetIndex() const { return Index; }
+  inline cchar *GetTypeID () const { return ClassID; }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, ClassID) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(ClassID) == 0); }
 
 private:
   int Index;
@@ -93,6 +96,9 @@ public:
   virtual col16 GetEliteColor () const = 0;
   virtual const prototype *GetProtoType () const = 0;
   int GetType () const { return GetProtoType()->GetIndex(); }
+  inline cchar *GetTypeID () const { return GetProtoType()->GetClassID(); }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, GetProtoType()->GetClassID()) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(GetProtoType()->GetClassID()) == 0); }
   virtual truth ForceGiveBodyPart () const { return false; }
   virtual truth HealRegeneratingBodyParts () const { return false; }
   virtual truth LikesMaterial (const materialdatabase *, ccharacter *) const;

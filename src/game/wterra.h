@@ -115,7 +115,9 @@ public:
   gwterrain *Spawn (int Config, int SpecialFlags=0) const;
   gwterrain *SpawnAndLoad (inputfile &) const;
   cchar *GetClassID () const { return ClassID; }
-
+  inline cchar *GetTypeID () const { return ClassID; }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, ClassID) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(ClassID) == 0); }
   const gwterrainprototype *GetBase () const { return Base; }
   int CreateSpecialConfigurations (gwterraindatabase **, int Configs, int) { return Configs; }
   const gwterraindatabase *ChooseBaseForConfig (gwterraindatabase **TempConfig, int, int) { return *TempConfig; }
@@ -195,7 +197,10 @@ public:
   DATA_BASE_VALUE(int, TemperatureWarm);
   DATA_BASE_VALUE(int, TemperatureHot);
 
-  inline cchar *GetClassID () const { return (FindProtoType() ? FindProtoType()->GetClassID() : ""); }
+  inline cchar *GetTypeID () const { return GetProtoType()->GetClassID(); }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, GetProtoType()->GetClassID()) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(GetProtoType()->GetClassID()) == 0); }
+
   virtual const prototype* FindProtoType () const { return &ProtoType; }
 
 private:
@@ -262,7 +267,9 @@ public:
   owterrain *Spawn (int Config, int SpecialFlags=0) const;
   owterrain *SpawnAndLoad (inputfile &) const;
   cchar *GetClassID () const { return ClassID; }
-
+  inline cchar *GetTypeID () const { return ClassID; }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, ClassID) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(ClassID) == 0); }
   const owterrainprototype *GetBase () const { return Base; }
   int CreateSpecialConfigurations (owterraindatabase **, int Configs, int) { return Configs; }
   const owterraindatabase *ChooseBaseForConfig (owterraindatabase **TempConfig, int, int) { return *TempConfig; }
@@ -337,7 +344,10 @@ public:
   DATA_BASE_TRUTH(CanBeSkipped);
   DATA_BASE_TRUTH(PlaceInitially);
 
-  inline cchar *GetClassID () const { return (FindProtoType() ? FindProtoType()->GetClassID() : ""); }
+  inline cchar *GetTypeID () const { return GetProtoType()->GetClassID(); }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, GetProtoType()->GetClassID()) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(GetProtoType()->GetClassID()) == 0); }
+
   virtual const prototype* FindProtoType () const { return &ProtoType; }
 
 private:

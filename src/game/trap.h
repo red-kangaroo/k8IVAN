@@ -131,6 +131,9 @@ public:
   trap *SpawnAndLoad (inputfile &) const;
   cchar *GetClassID () const { return ClassID; }
   int GetIndex () const { return Index; }
+  inline cchar *GetTypeID () const { return ClassID; }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, ClassID) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(ClassID) == 0); }
 
 private:
   int Index;
@@ -156,6 +159,9 @@ public:
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
   int GetType () const { return GetProtoType()->GetIndex(); }
+  inline cchar *GetTypeID () const { return GetProtoType()->GetClassID(); }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, GetProtoType()->GetClassID()) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(GetProtoType()->GetClassID()) == 0); }
   virtual void AddDescription (festring &) const = 0;
   virtual const prototype *GetProtoType () const = 0;
   virtual void StepOnEffect (character *) = 0;

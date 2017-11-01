@@ -83,6 +83,9 @@ class materialprototype
   material* SpawnAndLoad(inputfile&) const;
   material* Clone(cmaterial* Material) const { return Cloner(Material); }
   cchar* GetClassID() const { return ClassID; }
+  inline cchar *GetTypeID () const { return ClassID; }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, ClassID) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(ClassID) == 0); }
   int GetIndex() const { return Index; }
   const materialprototype* GetBase() const { return Base; }
   int CreateSpecialConfigurations(materialdatabase**, int Configs, int) { return Configs; }
@@ -131,6 +134,9 @@ class material
   virtual truth HasBe() const { return false; }
   virtual void Be(feuLong) { }
   int GetType() const { return GetProtoType()->GetIndex(); }
+  inline cchar *GetTypeID () const { return GetProtoType()->GetClassID(); }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, GetProtoType()->GetClassID()) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(GetProtoType()->GetClassID()) == 0); }
   virtual void AddConsumeEndMessage(character*) const;
   DATA_BASE_VALUE(const prototype*, ProtoType);
   DATA_BASE_VALUE(int, Config);

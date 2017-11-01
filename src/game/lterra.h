@@ -140,6 +140,9 @@ class glterrainprototype
   glterrain* SpawnAndLoad(inputfile&) const;
   cchar* GetClassID() const { return ClassID; }
   int GetIndex() const { return Index; }
+  inline cchar *GetTypeID () const { return ClassID; }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, ClassID) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(ClassID) == 0); }
   const glterrainprototype* GetBase() const { return Base; }
   int CreateSpecialConfigurations(glterraindatabase**, int Configs, int) { return Configs; }
   const glterraindatabase* ChooseBaseForConfig(glterraindatabase** TempConfig, int, int) { return *TempConfig; }
@@ -171,6 +174,9 @@ class glterrain : public lterrain, public gterrain
   virtual void Load(inputfile&);
   virtual int GetEntryDifficulty() const { return 1; }
   int GetType() const { return GetProtoType()->GetIndex(); }
+  inline cchar *GetTypeID () const { return GetProtoType()->GetClassID(); }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, GetProtoType()->GetClassID()) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(GetProtoType()->GetClassID()) == 0); }
   const database* GetDataBase() const { return DataBase; }
   DATA_BASE_VALUE(const prototype*, ProtoType);
   DATA_BASE_VALUE(int, Config);
@@ -249,6 +255,9 @@ class olterrainprototype
   olterrain* SpawnAndLoad(inputfile&) const;
   cchar* GetClassID() const { return ClassID; }
   int GetIndex() const { return Index; }
+  inline cchar *GetTypeID () const { return ClassID; }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, ClassID) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(ClassID) == 0); }
   const olterrainprototype* GetBase() const { return Base; }
   int CreateSpecialConfigurations(olterraindatabase**, int, int);
   const olterraindatabase* ChooseBaseForConfig(olterraindatabase** TempConfig, int, int) { return *TempConfig; }
@@ -294,6 +303,9 @@ class olterrain : public lterrain, public oterrain
   void EditHP(int What) { HP += What; }
   virtual void ReceiveDamage(character*, int, int);
   int GetType() const { return GetProtoType()->GetIndex(); }
+  inline cchar *GetTypeID () const { return GetProtoType()->GetClassID(); }
+  inline truth IsOfType (cchar *tname) const { return (tname ? (strcmp(tname, GetProtoType()->GetClassID()) == 0) : false); }
+  inline truth IsOfType (cfestring &tname) const { return (tname.Compare(GetProtoType()->GetClassID()) == 0); }
   const database* GetDataBase() const { return DataBase; }
   void ShowRestMessage(character*) const;
   DATA_BASE_VALUE(const prototype*, ProtoType);
