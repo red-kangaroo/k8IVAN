@@ -253,7 +253,7 @@ commandsystem::commandsystem () {
   RegisterCommand(new command("WalkThroughWalls", &WalkThroughWalls, "toggle walk through walls mode", '4', true, true));
   RegisterCommand(new command("RaiseGodRelations", &RaiseGodRelations, "raise your relations to the gods", '5', true, true));
   RegisterCommand(new command("LowerGodRelations", &LowerGodRelations, "lower your relations to the gods", '6', true, true));
-  RegisterCommand(new command("WizardWish", &WizardWish, "wish something", '=', true, true));
+  RegisterCommand(new command("WizardWish", &WizardWish, "wish something", '`', true, true));
   RegisterCommand(new command("GainDivineKnowledge", &GainDivineKnowledge, "gain knowledge of all gods", '\"', true, true));
   RegisterCommand(new command("GainAllItems", &GainAllItems, "gain all items", '$', true, true));
   RegisterCommand(new command("SecretKnowledge", &SecretKnowledge, "reveal secret knowledge", '*', true, true));
