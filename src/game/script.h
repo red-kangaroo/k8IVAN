@@ -79,13 +79,13 @@ struct scriptmemberbase {
   virtual void Load (inputfile &) = 0;
   virtual void Replace (scriptmemberbase &) = 0;
 
-  festring SrcFile;
-  int SrcLine;
+  //festring SrcFile;
+  //int SrcLine;
 };
 
 
 template <class type> struct scriptmember : public scriptmemberbase {
-  scriptmember () : SrcFile(""), SrcLine(0), Member(0) {}
+  scriptmember () : /*SrcFile(""), SrcLine(0),*/ Member(0) {}
   scriptmember (const scriptmember& Data) : scriptmemberbase (Data), Member (Data.Member ? new type (*Data.Member) : 0) {}
   virtual ~scriptmember () { delete Member; }
 
@@ -95,8 +95,8 @@ template <class type> struct scriptmember : public scriptmemberbase {
   virtual void Save (outputfile &) const;
   virtual void Load (inputfile &);
 
-  festring SrcFile;
-  int SrcLine;
+  //festring SrcFile;
+  //int SrcLine;
   type *Member;
 };
 
@@ -116,12 +116,12 @@ template <class type> inline scriptmember<type> &scriptmember<type>::operator = 
       delete Member;
       Member = 0;
     }
-    SrcFile = Data.SrcFile;
-    SrcLine = Data.SrcLine;
+    //SrcFile = Data.SrcFile;
+    //SrcLine = Data.SrcLine;
   } else if (Data.Member) {
     Member = new type (*Data.Member);
-    SrcFile = "";
-    SrcLine = 0;
+    //SrcFile = "";
+    //SrcLine = 0;
   }
   return *this;
 }
@@ -149,8 +149,8 @@ public:
   virtual void Save (outputfile &SaveFile) const;
   virtual void Load (inputfile &SaveFile);
 
-  inline cfestring &GetSrcFile () const { return SrcFile; }
-  inline int GetSrcLine () const { return SrcLine; }
+  //inline cfestring &GetSrcFile () const { return SrcFile; }
+  //inline int GetSrcLine () const { return SrcLine; }
 
 protected:
   truth ReadMember (TextInput&, cfestring &);
@@ -161,8 +161,8 @@ protected:
   virtual void LoadDataMap (const datamap &, inputfile &);
 
 protected:
-  festring SrcFile;
-  int SrcLine;
+  //festring SrcFile;
+  //int SrcLine;
 };
 
 

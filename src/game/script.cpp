@@ -36,8 +36,8 @@ template <class type, class contenttype> script::datamap contentmap<type, conten
 
 
 template <class type> void scriptmember<type>::ReadFrom (TextInput &SaveFile) {
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   if (!Member) Member = new type;
   ReadData(*Member, SaveFile);
 }
@@ -51,15 +51,15 @@ template <class type> void scriptmember<type>::Replace (scriptmemberbase &Base) 
     Member = Data.Member;
     Data.Member = 0;
   }
-  SrcFile = Base.SrcFile;
-  SrcLine = Base.SrcLine;
+  //SrcFile = Base.SrcFile;
+  //SrcLine = Base.SrcLine;
 }
 
 
 template <class type> void scriptmember<type>::Save (outputfile &SaveFile) const {
   if (Member) {
     SaveFile.Put(1);
-    SaveFile << SrcFile << SrcLine;
+    //SaveFile << SrcFile << SrcLine;
     SaveFile << *Member;
   } else {
     SaveFile.Put(0);
@@ -69,7 +69,7 @@ template <class type> void scriptmember<type>::Save (outputfile &SaveFile) const
 template <class type> void scriptmember<type>::Load (inputfile &SaveFile) {
   if (SaveFile.Get()) {
     Member = new type;
-    SaveFile >> SrcFile >> SrcLine;
+    //SaveFile >> SrcFile >> SrcLine;
     SaveFile >> *Member;
   }
 }
@@ -108,8 +108,8 @@ INST_SCRIPT_MEMBER(fearray<packv2>);
 
 
 template <class type> void fastscriptmember<type>::ReadFrom (TextInput &SaveFile) {
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   ReadData(*&Member, SaveFile); // gcc 3.4.1 sucks
 }
 
@@ -118,19 +118,19 @@ template <class type> void fastscriptmember<type>::Replace (scriptmemberbase &Ba
   fastscriptmember<type> &Data = static_cast<fastscriptmember<type> &>(Base);
   //
   Member = Data.Member;
-  SrcFile = Base.SrcFile;
-  SrcLine = Base.SrcLine;
+  //SrcFile = Base.SrcFile;
+  //SrcLine = Base.SrcLine;
 }
 
 
 template <class type> void fastscriptmember<type>::Save(outputfile &SaveFile) const {
-  SaveFile << SrcFile << SrcLine;
+  //SaveFile << SrcFile << SrcLine;
   SaveFile << Member;
 }
 
 
 template <class type> void fastscriptmember<type>::Load (inputfile &SaveFile) {
-  SaveFile >> SrcFile >> SrcLine;
+  //SaveFile >> SrcFile >> SrcLine;
   SaveFile >> *&Member; // gcc 3.4.1 sucks
 }
 
@@ -150,13 +150,13 @@ INST_FAST_SCRIPT_MEMBER(packv2);
 
 
 void script::Save (outputfile &SaveFile) const {
-  SaveFile << SrcFile << SrcLine;
+  //SaveFile << SrcFile << SrcLine;
   SaveDataMap(GetDataMap(), SaveFile);
 }
 
 
 void script::Load (inputfile &SaveFile) {
-  SaveFile >> SrcFile >> SrcLine;
+  //SaveFile >> SrcFile >> SrcLine;
   LoadDataMap(GetDataMap(), SaveFile);
 }
 
@@ -208,8 +208,8 @@ void posscript::InitDataMap () {
 void posscript::ReadFrom (TextInput &SaveFile) {
   static festring Word;
   //
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   SaveFile.ReadWord(Word);
   if (Word == "Pos") {
     Random = false;
@@ -245,8 +245,8 @@ void materialscript::InitDataMap () {
 void materialscript::ReadFrom (TextInput &SaveFile) {
   static festring Word;
   //
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   SaveFile.ReadWord(Word);
   if (Word == "=") SaveFile.ReadWord(Word);
   if (Word == "0") {
@@ -299,8 +299,8 @@ basecontentscript::basecontentscript () : script(), ContentType(0), Random(false
 
 void basecontentscript::ReadFrom (TextInput &SaveFile) {
   static festring Word;
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   for (;;) {
     SaveFile.ReadWord(Word);
     if (Word == "on") {
@@ -368,7 +368,7 @@ scriptmemberbase *basecontentscript::GetData (cchar *String) {
 
 
 void basecontentscript::Save (outputfile &SaveFile) const {
-  SaveFile << SrcFile << SrcLine;
+  //SaveFile << SrcFile << SrcLine;
   SaveDataMap(GetDataMap(), SaveFile);
   SaveDataMap(DataMap, SaveFile);
   SaveFile << ContentType;
@@ -378,7 +378,7 @@ void basecontentscript::Save (outputfile &SaveFile) const {
 
 
 void basecontentscript::Load (inputfile &SaveFile) {
-  SaveFile >> SrcFile >> SrcLine;
+  //SaveFile >> SrcFile >> SrcLine;
   LoadDataMap(GetDataMap(), SaveFile);
   LoadDataMap(DataMap, SaveFile);
   ContentType = ReadType(uShort, SaveFile);
@@ -617,8 +617,8 @@ void squarescript::InitDataMap () {
 void squarescript::ReadFrom (TextInput &SaveFile) {
   static festring Word;
   //
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   SaveFile.ReadWord(Word);
   if (Word != "=") {
     PositionHolder.ReadFrom(SaveFile);
@@ -653,8 +653,8 @@ template <class type, class contenttype> void contentmap<type, contenttype>::Rea
   typedef typename maptype::iterator mapiterator;
   festring Word1, Word2;
   //
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   if (ContentMap) ABORT("Illegal %s content map redefinition on line %d!", protocontainer<type>::GetMainClassID(), SaveFile.TokenLine());
   if (SaveFile.ReadWord() != "{") ABORT("Bracket missing in %s content map script line %d!", protocontainer<type>::GetMainClassID(), SaveFile.TokenLine());
   SymbolMap.insert(std::pair<int, contenttype>('.', contenttype()));
@@ -762,8 +762,8 @@ void roomscript::InitDataMap () {
 void roomscript::ReadFrom (TextInput &SaveFile) {
   festring Word;
   //
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   if (SaveFile.ReadWord() != "{") ABORT("Bracket missing in room script line %d!", SaveFile.TokenLine());
   for (SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word)) {
     if (Word == "Square") {
@@ -834,8 +834,8 @@ void levelscript::InitDataMap () {
 void levelscript::ReadFrom (TextInput &SaveFile) {
   festring Word;
   //
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   if (SaveFile.ReadWord() != "{") ABORT("Bracket missing in level script line %d!", SaveFile.TokenLine());
   if (Base) {
     cv2 *Size = static_cast<const levelscript *>(Base)->GetSize();
@@ -937,8 +937,8 @@ void dungeonscript::InitDataMap () {
 void dungeonscript::ReadFrom (TextInput &SaveFile) {
   festring Word;
   //
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   if (SaveFile.ReadWord() != "{") ABORT("Bracket missing in dungeon script line %d!", SaveFile.TokenLine());
   for (SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word)) {
     if (Word == "Level") {
@@ -1009,8 +1009,8 @@ void teamscript::InitDataMap () {
 void teamscript::ReadFrom (TextInput &SaveFile) {
   festring Word;
   //
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   if (SaveFile.ReadWord() != "{") ABORT("Bracket missing in team script line %d!", SaveFile.TokenLine());
   for (SaveFile.ReadWord(Word); Word != "}"; SaveFile.ReadWord(Word)) {
     if (Word == "Relation") {
@@ -1051,8 +1051,8 @@ void gamescript::InitDataMap () {
 void gamescript::ReadFrom (TextInput &SaveFile) {
   festring Word;
   //
-  SrcFile = SaveFile.GetFileName();
-  SrcLine = SaveFile.CurrentLine();
+  //SrcFile = SaveFile.GetFileName();
+  //SrcLine = SaveFile.CurrentLine();
   SaveFile.setGetVarCB(game::ldrGetVar);
   for (SaveFile.ReadWord(Word, false); !SaveFile.Eof(); SaveFile.ReadWord(Word, false)) {
     if (Word == "Dungeon") {
