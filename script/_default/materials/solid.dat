@@ -952,7 +952,8 @@ solid
     AdjectiveStem = "crystal";
     Alpha = 150;
     AttachedGod = TERRA;
-    Emitation = rgb24(160, 160, 160);
+    //Emitation = rgb24(160, 160, 160);
+    Emitation = rgb24(150, 150, 150);
     NaturalForm = stone;
     PriceModifier = 8000;
     IntelligenceRequirement = 20;
