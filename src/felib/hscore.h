@@ -21,7 +21,7 @@
 #define HIGH_SCORE_FILENAME  ".ivan.scores"
 
 /* Increment this if changes make highscores incompatible */
-#define HIGH_SCORE_VERSION 121
+#define HIGH_SCORE_VERSION 122
 
 
 class highscore {
