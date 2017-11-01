@@ -133,15 +133,31 @@ public:
 
 
 template <class type> inline outputfile &operator << (outputfile &SaveFile, const type *Class) {
-  if (Class) Class->Save(SaveFile); else SaveFile << uShort(0);
+  festring tname;
+  if (Class) {
+    tname = festring(Class->GetTypeID());
+    if (tname.IsEmpty()) ABORT("Cannot save class without type name!");
+    SaveFile << tname;
+    Class->Save(SaveFile);
+  } else {
+    if (!tname.IsEmpty()) ABORT("The thing that should not be!");
+    SaveFile << tname;
+  }
   return SaveFile;
 }
 
 
 template <class type> inline inputfile &operator >> (inputfile &SaveFile, type *&Class) {
-  uShort Type = 0;
-  SaveFile >> Type;
-  Class = (Type ? protocontainer<type>::GetProto(Type)->SpawnAndLoad(SaveFile) : 0);
+  festring tname;
+  SaveFile >> tname;
+  if (tname.IsEmpty()) {
+    Class = nullptr;
+  } else {
+    auto typeidx = protocontainer<type>::SearchCodeName(tname);
+    if (typeidx < 1) ABORT("Cannod load class with type name '%s'!", tname.CStr());
+    //fprintf(stderr, "LOADING: '%s'\n", tname.CStr());
+    Class = protocontainer<type>::GetProto(typeidx)->SpawnAndLoad(SaveFile);
+  }
   return SaveFile;
 }
 

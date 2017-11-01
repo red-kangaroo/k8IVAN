@@ -61,7 +61,6 @@ material *material::TakeAllVolumeAway () {
 
 void material::Save(outputfile& SaveFile) const
 {
-  SaveFile << (uShort)GetType();
   SaveFile << Volume;
   SaveFile << (uShort)GetConfig();
 }

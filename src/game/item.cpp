@@ -258,7 +258,6 @@ truth item::CanBeEatenByAI (ccharacter *Eater) const {
 
 
 void item::Save (outputfile &SaveFile) const {
-  SaveFile << (uShort)GetType();
   object::Save(SaveFile);
   SaveFile << (uShort)0;
   SaveFile << mIsStepedOn;

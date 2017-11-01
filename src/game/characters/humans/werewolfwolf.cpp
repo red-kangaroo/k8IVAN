@@ -12,9 +12,7 @@ CHARACTER(werewolfwolf, humanoid)
 
 festring werewolfwolf::GetKillName() const
 {
-  if(GetPolymorphBackup() && GetPolymorphBackup()->GetType() == werewolfhuman::ProtoType.GetIndex())
-    return GetName(INDEFINITE);
-
+  if (GetPolymorphBackup() && GetPolymorphBackup()->IsOfType("werewolfhuman")) return GetName(INDEFINITE);
   return humanoid::GetKillName();
 }
 

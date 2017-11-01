@@ -111,7 +111,6 @@ void gwterrain::Draw (blitdata &BlitData) const {
 
 
 void gwterrain::Save (outputfile &SaveFile) const {
-  SaveFile << (uShort)GetType();
   wterrain::Save(SaveFile);
   SaveFile << (uShort)(GetConfig());
 }
@@ -230,8 +229,6 @@ void owterrain::Draw (blitdata &BlitData) const {
 
 
 void owterrain::Save (outputfile &SaveFile) const {
-  //fprintf(stderr, "owterrain::Save: pos0=0x%08x\n", (unsigned)SaveFile.TellPos());
-  SaveFile << (uShort)(GetType());
   wterrain::Save(SaveFile);
   SaveFile << (uShort)(GetConfig());
   SaveFile << mRevealed;

@@ -1648,7 +1648,6 @@ void character::CalculateBurdenState () {
 
 
 void character::Save (outputfile &SaveFile) const {
-  SaveFile << (uShort)GetType();
   Stack->Save(SaveFile);
   SaveFile << ID;
   for (int c = 0; c < BASE_ATTRIBUTES; ++c) SaveFile << BaseExperience[c];
@@ -4447,7 +4446,7 @@ character *character::ForceEndPolymorph () {
 
 void character::LycanthropyHandler () {
   if (StateIsActivated(POLYMORPH_LOCK)) return;
-  if (GetType() == werewolfwolf::ProtoType.GetIndex()) return;
+  if (IsOfType("werewolfwolf")) return;
   if (!(RAND() % 2000)) {
     if (StateIsActivated(POLYMORPH_CONTROL) && (IsPlayer() ? !game::TruthQuestion(CONST_S("Do you wish to change into a werewolf?")) : false)) return;
     Polymorph(werewolfwolf::Spawn(), 1000 + RAND() % 2000);

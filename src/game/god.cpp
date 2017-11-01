@@ -410,7 +410,6 @@ void god::SignalRandomAltarGeneration (const std::vector<v2> &RoomSquare) {
 
 
 void god::Save (outputfile &SaveFile) const {
-  SaveFile << (uShort)GetType();
   SaveFile << Relation << Timer << Known << LastPray;
 }
 

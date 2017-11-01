@@ -27,7 +27,7 @@ void action::Terminate (truth) {
 
 
 void action::Save (outputfile &SaveFile) const {
-  SaveFile << (uShort)GetType() << Flags;
+  SaveFile << Flags;
 }
 
 

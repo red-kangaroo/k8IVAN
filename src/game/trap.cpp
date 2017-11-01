@@ -28,7 +28,7 @@ trap::~trap () {
 
 
 square *trap::GetSquareUnderEntity (int) const { return LSquareUnder; }
-void trap::Save (outputfile &SaveFile) const { SaveFile << (uShort)GetType(); }
+void trap::Save (outputfile &SaveFile) const {}
 void trap::Load (inputfile &) { LSquareUnder = static_cast<lsquare *>(game::GetSquareInLoad()); }
 
 

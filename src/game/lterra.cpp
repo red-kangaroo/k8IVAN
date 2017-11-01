@@ -41,7 +41,6 @@ void lterrain::Load(inputfile& SaveFile)
 
 void glterrain::Save(outputfile& SaveFile) const
 {
-  SaveFile << (uShort)GetType();
   lterrain::Save(SaveFile);
   SaveFile << (uShort)GetConfig();
 }
@@ -54,7 +53,6 @@ void glterrain::Load(inputfile& SaveFile)
 
 void olterrain::Save(outputfile& SaveFile) const
 {
-  SaveFile << (uShort)GetType();
   lterrain::Save(SaveFile);
   SaveFile << (uShort)GetConfig();
   SaveFile << HP;

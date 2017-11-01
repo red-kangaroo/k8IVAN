@@ -75,7 +75,7 @@ truth altar::Polymorph (character *) {
 truth altar::SitOn (character *Sitter) {
   ADD_MESSAGE("You kneel down and worship %s for a moment.", GetMasterGod()->GetName());
 
-  if ((GetMasterGod()->GetType() == INFUSCOR) && (game::GetCurrentDungeonIndex() == XINROCH_TOMB) && (game::GetCurrentLevelIndex() == 0)) {
+  if (GetMasterGod()->IsOfType("infuscor") && game::GetCurrentDungeonIndex() == XINROCH_TOMB && game::GetCurrentLevelIndex() == 0) {
     if (Sitter->HasLostRubyFlamingSword() && game::GetGod(INFUSCOR)->GetRelation() != 1000) {
       ADD_MESSAGE("You have a horrid vision of yourself becoming a master dark knight. The nightmare fades in a whisper: "
                   "\"Thou shalt be My Champion first!\"");
