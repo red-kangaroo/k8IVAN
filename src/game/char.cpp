@@ -4568,7 +4568,7 @@ truth character::SquareUnderCanBeSeenByPlayer (truth IgnoreDarkness) const {
       int LOSRangeSquare = PLAYER->GetLOSRangeSquare();
       if ((GetPos() - PLAYER->GetPos()).GetLengthSquare() <= LOSRangeSquare) {
         eyecontroller::Map = GetLevel()->GetMap();
-        return mapmath<eyecontroller>::DoLine(PLAYER->GetPos().X, PLAYER->GetPos().Y, GetPos().X, GetPos().Y, SKIP_FIRST);
+        return mapmath<eyecontroller>::DoLine(PLAYER->GetPos().X, PLAYER->GetPos().Y, GetPos().X, GetPos().Y, SKIP_FIRST|LINE_BOTH_DIRS);
       }
     }
     return false;
@@ -4583,7 +4583,7 @@ truth character::SquareUnderCanBeSeenByPlayer (truth IgnoreDarkness) const {
           v2 PlayerPos = PLAYER->GetPos(c2);
           if ((Pos-PlayerPos).GetLengthSquare() <= LOSRangeSquare) {
             eyecontroller::Map = GetLevel()->GetMap();
-            if (mapmath<eyecontroller>::DoLine(PlayerPos.X, PlayerPos.Y, Pos.X, Pos.Y, SKIP_FIRST)) return true;
+            if (mapmath<eyecontroller>::DoLine(PlayerPos.X, PlayerPos.Y, Pos.X, Pos.Y, SKIP_FIRST|LINE_BOTH_DIRS)) return true;
           }
         }
       }
@@ -6416,8 +6416,8 @@ truth character::CreateRoute () {
         v2 CharGoingTo = Char->Route[0];
         v2 iPos = Char->Route.back();
         if ((GoingTo-CharGoingTo).GetLengthSquare() <= 100 && (Pos - iPos).GetLengthSquare() <= 100 &&
-            mapmath<walkabilitycontroller>::DoLine(CharGoingTo.X, CharGoingTo.Y, GoingTo.X, GoingTo.Y, SKIP_FIRST) &&
-            mapmath<walkabilitycontroller>::DoLine(Pos.X, Pos.Y, iPos.X, iPos.Y, SKIP_FIRST)) {
+            mapmath<walkabilitycontroller>::DoLine(CharGoingTo.X, CharGoingTo.Y, GoingTo.X, GoingTo.Y, SKIP_FIRST|LINE_BOTH_DIRS) &&
+            mapmath<walkabilitycontroller>::DoLine(Pos.X, Pos.Y, iPos.X, iPos.Y, SKIP_FIRST|LINE_BOTH_DIRS)) {
           if (!Illegal.empty() && Illegal.find(Char->Route.back()) != Illegal.end()) continue;
           Node = GetLevel()->FindRoute(CharGoingTo, GoingTo, Illegal, GetMoveType());
           if (Node) { while(Node->Last) { Route.push_back(Node->Pos); Node = Node->Last; } }
@@ -7628,7 +7628,7 @@ truth character::HasClearRouteTo (v2 Pos) const {
   pathcontroller::Map = GetLevel()->GetMap();
   pathcontroller::Character = this;
   v2 ThisPos = GetPos();
-  return mapmath<pathcontroller>::DoLine(ThisPos.X, ThisPos.Y, Pos.X, Pos.Y, SKIP_FIRST);
+  return mapmath<pathcontroller>::DoLine(ThisPos.X, ThisPos.Y, Pos.X, Pos.Y, SKIP_FIRST|LINE_BOTH_DIRS);
 }
 
 

@@ -135,12 +135,22 @@ inputfile &operator >> (inputfile &SaveFile, PRNGSeed &R);
 template <class controller> class mapmath {
 public:
   static truth DoLine (int X1, int Y1, int X2, int Y2, int Flags=0);
+  static truth DoLineOneDir (int X1, int Y1, int X2, int Y2, int Flags=0);
   static void DoArea ();
   static void DoQuadriArea (int, int, int, int, int);
 };
 
 
 template <class controller> inline truth mapmath<controller>::DoLine (int X1, int Y1, int X2, int Y2, int Flags) {
+  truth res = DoLineOneDir(X1, Y1, X2, Y2, Flags);
+  if (!res && (Flags&LINE_BOTH_DIRS) != 0) {
+    if (Flags&SKIP_FIRST) Flags = (Flags&~SKIP_FIRST)|SKIP_LAST;
+    res = DoLineOneDir(X2, Y2, X1, Y1, Flags);
+  }
+  return res;
+}
+
+template <class controller> inline truth mapmath<controller>::DoLineOneDir (int X1, int Y1, int X2, int Y2, int Flags) {
   if (!(Flags & SKIP_FIRST)) controller::Handler(X1, Y1);
   cint DeltaX = abs(X2 - X1);
   cint DeltaY = abs(Y2 - Y1);
@@ -159,7 +169,8 @@ template <class controller> inline truth mapmath<controller>::DoLine (int X1, in
         c -= DoubleDeltaX;
         y += YChange;
       }
-      if (!controller::Handler(x, y)) return x == End && !(Flags & ALLOW_END_FAILURE);
+      if ((Flags&SKIP_LAST) && x == X2 && y == Y2) break;
+      if (!controller::Handler(x, y)) return (x == End && !(Flags & ALLOW_END_FAILURE));
     }
   } else {
     int c = DeltaY;
@@ -171,7 +182,8 @@ template <class controller> inline truth mapmath<controller>::DoLine (int X1, in
         c -= DoubleDeltaY;
         x += XChange;
       }
-      if (!controller::Handler(x, y)) return y == End && !(Flags & ALLOW_END_FAILURE);
+      if ((Flags&SKIP_LAST) && x == X2 && y == Y2) break;
+      if (!controller::Handler(x, y)) return (y == End && !(Flags & ALLOW_END_FAILURE));
     }
   }
   return true;
@@ -215,7 +227,7 @@ template <class controller> truth quadricontroller<controller>::Handler (int x, 
           if (controller::Handler(x, y)) return true;
           SectorCompletelyClear = false;
         } else {
-          return mapmath<controller>::DoLine(StartX, StartY, x, y, SKIP_FIRST|ALLOW_END_FAILURE);
+          return mapmath<controller>::DoLine(StartX, StartY, x, y, SKIP_FIRST|ALLOW_END_FAILURE|LINE_BOTH_DIRS);
         }
       }
     }

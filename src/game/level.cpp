@@ -2248,19 +2248,19 @@ void level::EmitSunBeam (v2 S, feuLong ID, int SourceFlags) const {
   sunbeamcontroller::ID = ID;
   if (SourceFlags&SP_TOP_LEFT) {
     sunbeamcontroller::SunLightBlockHeight = 0;
-    mapmath<sunbeamcontroller>::DoLine(S.X, S.Y, D.X, D.Y, SKIP_FIRST);
+    mapmath<sunbeamcontroller>::DoLine(S.X, S.Y, D.X, D.Y, SKIP_FIRST|LINE_BOTH_DIRS);
   }
   if (SourceFlags&SP_TOP_RIGHT) {
     sunbeamcontroller::SunLightBlockHeight = 0;
-    mapmath<sunbeamcontroller>::DoLine(S.X+1, S.Y, D.X+1, D.Y, SKIP_FIRST);
+    mapmath<sunbeamcontroller>::DoLine(S.X+1, S.Y, D.X+1, D.Y, SKIP_FIRST|LINE_BOTH_DIRS);
   }
   if (SourceFlags&SP_BOTTOM_LEFT) {
     sunbeamcontroller::SunLightBlockHeight = 0;
-    mapmath<sunbeamcontroller>::DoLine(S.X, S.Y+1, D.X, D.Y+1, SKIP_FIRST);
+    mapmath<sunbeamcontroller>::DoLine(S.X, S.Y+1, D.X, D.Y+1, SKIP_FIRST|LINE_BOTH_DIRS);
   }
   if (SourceFlags&SP_BOTTOM_RIGHT) {
     sunbeamcontroller::SunLightBlockHeight = 0;
-    mapmath<sunbeamcontroller>::DoLine(S.X+1, S.Y+1, D.X+1, D.Y+1, SKIP_FIRST);
+    mapmath<sunbeamcontroller>::DoLine(S.X+1, S.Y+1, D.X+1, D.Y+1, SKIP_FIRST|LINE_BOTH_DIRS);
   }
 }
 

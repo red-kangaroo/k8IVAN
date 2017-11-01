@@ -936,7 +936,7 @@ truth lsquare::CanBeSeenFrom (v2 FromPos, sLong MaxDistance, truth IgnoreDarknes
       return true;
     }
     eyecontroller::Map = GetLevel()->GetMap();
-    return mapmath<eyecontroller>::DoLine(FromPos.X, FromPos.Y, GetPos().X, GetPos().Y, SKIP_FIRST);
+    return mapmath<eyecontroller>::DoLine(FromPos.X, FromPos.Y, GetPos().X, GetPos().Y, SKIP_FIRST|LINE_BOTH_DIRS);
   }
   return false;
 }

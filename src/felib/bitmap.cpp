@@ -1568,7 +1568,7 @@ truth bitmap::CreateLightning (v2 StartPos, v2 Direction, int MaxLength, col16 C
       continue;
     }
     Counter = 0;
-    if (!mapmath<pixelvectorcontroller>::DoLine(StartPos.X, StartPos.Y, StartPos.X + Move.X, StartPos.Y + Move.Y) || feuLong(MaxLength) <= PixelVector.size()) {
+    if (!mapmath<pixelvectorcontroller>::DoLine(StartPos.X, StartPos.Y, StartPos.X + Move.X, StartPos.Y + Move.Y, LINE_BOTH_DIRS) || feuLong(MaxLength) <= PixelVector.size()) {
       int Limit = Min<int>(PixelVector.size(), MaxLength);
       for (int c = 0; c < Limit; ++c) {
         PutPixel(PixelVector[c], Color);

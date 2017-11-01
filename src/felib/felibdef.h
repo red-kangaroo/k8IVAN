@@ -169,6 +169,8 @@ using rcint = int;
 
 #define SKIP_FIRST         1
 #define ALLOW_END_FAILURE  2
+#define SKIP_LAST          4
+#define LINE_BOTH_DIRS     8
 
 #define MAX_RAND  0x7FFFFFFF
 
