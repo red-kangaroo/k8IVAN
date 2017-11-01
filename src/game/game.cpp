@@ -135,7 +135,6 @@ cchar *const game::Alignment[] = { "L++", "L+", "L", "L-", "N+", "N=", "N-", "C+
 god **game::God;
 
 cint game::MoveNormalCommandKey[] = { KEY_HOME, KEY_UP, KEY_PAGE_UP, KEY_LEFT, KEY_RIGHT, KEY_END, KEY_DOWN, KEY_PAGE_DOWN, '.' };
-int game::MoveAbnormalCommandKey[] = { '7','8','9','u','o','j','k','l','.' };
 
 cv2 game::MoveVector[] = { v2(-1, -1), v2(0, -1), v2(1, -1), v2(-1, 0), v2(1, 0), v2(-1, 1), v2(0, 1), v2(1, 1), v2(0, 0) };
 cv2 game::RelativeMoveVector[] = { v2(-1, -1), v2(1, 0), v2(1, 0), v2(-2, 1), v2(2, 0), v2(-2, 1), v2(1, 0), v2(1, 0), v2(-1, -1) };
@@ -237,69 +236,42 @@ int game::MoveVectorToDirection (cv2 &mv) {
 }
 
 
-char game::GetAbnormalMoveKey (int idx) {
-  if (idx < 0 || idx > 8) return 0;
-  return MoveAbnormalCommandKey[idx];
-}
-
-
-void game::SetAbnormalMoveKey (int idx, char ch) {
-  if (idx >= 0 && idx <= 8) MoveAbnormalCommandKey[idx] = ch;
-}
-
-
 void game::AddCharacterID (character *Char, feuLong ID) {
-/*k8:???  if (CharacterIDMap.find(ID) != CharacterIDMap.end())
-    int esko = esko = 2;*/
   CharacterIDMap.insert(std::make_pair(ID, Char));
 }
 
 
 void game::RemoveCharacterID (feuLong ID) {
-/*k8:???  if (CharacterIDMap.find(ID) == CharacterIDMap.end())
-    int esko = esko = 2;*/
   CharacterIDMap.erase(CharacterIDMap.find(ID));
 }
 
 
 void game::AddItemID (item *Item, feuLong ID) {
-/*k8:???  if (ItemIDMap.find(ID) != ItemIDMap.end())
-    int esko = esko = 2;*/
   ItemIDMap.insert(std::make_pair(ID, Item));
 }
 
 
 void game::RemoveItemID (feuLong ID) {
-/*k8:???  if(ID && ItemIDMap.find(ID) == ItemIDMap.end())
-    int esko = esko = 2;*/
   if (ID) ItemIDMap.erase(ItemIDMap.find(ID));
 }
 
 
 void game::UpdateItemID (item *Item, feuLong ID) {
-/*k8:???  if(ItemIDMap.find(ID) == ItemIDMap.end())
-    int esko = esko = 2;*/
   ItemIDMap.find(ID)->second = Item;
 }
 
 
 void game::AddTrapID (entity *Trap, feuLong ID) {
-/*k8:???  if(TrapIDMap.find(ID) != TrapIDMap.end())
-    int esko = esko = 2;*/
   if (ID) TrapIDMap.insert(std::make_pair(ID, Trap));
 }
 
 
 void game::RemoveTrapID (feuLong ID) {
-/*k8:???  if(ID && TrapIDMap.find(ID) == TrapIDMap.end())
-    int esko = esko = 2;*/
   if (ID) TrapIDMap.erase(TrapIDMap.find(ID));
 }
 
 
 void game::UpdateTrapID (entity *Trap, feuLong ID) {
-/*k8:???  if(TrapIDMap.find(ID) == TrapIDMap.end())
-    int esko = esko = 2;*/
   TrapIDMap.find(ID)->second = Trap;
 }
 
@@ -2652,10 +2624,9 @@ character *game::CreateGhost () {
 }
 
 
-int game::GetMoveCommandKey (int I) {
-  if (!ivanconfig::GetUseAlternativeKeys()) return MoveNormalCommandKey[I];
-  return MoveAbnormalCommandKey[I];
-}
+int game::GetMoveCommandKey (int I) { return MoveNormalCommandKey[I]; }
+//char game::GetNormalMoveKey (int idx) { return MoveNormalCommandKey[idx]; }
+//void game::SetNormalMoveKey (int idx, char ch) { MoveNormalCommandKey[idx] = ch; }
 
 
 sLong game::GetScore () {

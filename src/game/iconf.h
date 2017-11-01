@@ -29,7 +29,6 @@ public:
   static truth GetAutoDropBottles () { return AutoDropBottles.Value; }
   static truth GetAutoDropCans () { return AutoDropCans.Value; }
   static truth GetLookZoom () { return LookZoom.Value; }
-  static truth GetUseAlternativeKeys () { return UseAlternativeKeys.Value; }
   static truth GetBeNice () { return BeNice.Value; }
   static truth GetFullScreenMode () { return FullScreenMode.Value; }
   static sLong GetDoubleResModifier () { return DoubleResModifier.Value; }
@@ -96,7 +95,6 @@ private:
   static truthoption AutoDropBottles;
   static truthoption AutoDropCans;
   static truthoption LookZoom;
-  static truthoption UseAlternativeKeys;
   static truthoption BeNice;
   static truthoption FullScreenMode;
   /*k8*/

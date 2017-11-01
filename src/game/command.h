@@ -24,16 +24,14 @@ typedef truth (item::*sorter) (ccharacter *) const;
 class command {
 public:
   command (cchar *name, truth (*LinkedFunction)(character *), cchar *Description,
-    char Key1, char Key2, truth UsableInWilderness, truth WizardModeFunction=false);
+    char Key1, truth UsableInWilderness=false, truth WizardModeFunction=false);
 
   truth (*GetLinkedFunction() const) (character *) { return LinkedFunction; }
 
   cchar *GetDescription () const { return Description; }
   const festring &GetName () const { return mName; }
-  char GetKey () const;
-  char GetKey1 () const { return Key1; }
-  char GetKey2 () const { return Key2; }
-  void SetKeys (char k1, char k2) { Key1 = k1; Key2 = k2; }
+  inline char GetKey () const { return Key1; }
+  inline void SetKey (char k1) { Key1 = k1; }
   truth IsUsableInWilderness () const { return UsableInWilderness; }
   truth IsWizardModeFunction () const { return WizardModeFunction; }
 
@@ -42,7 +40,6 @@ private:
   truth (*LinkedFunction) (character *);
   cchar *Description;
   char Key1;
-  char Key2;
   truth UsableInWilderness;
   truth WizardModeFunction;
 };

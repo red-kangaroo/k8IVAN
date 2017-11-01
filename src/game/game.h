@@ -530,8 +530,8 @@ public:
   static int ListSelector (int defsel, const cfestring title, ...); // defsel<0: first
   static int ListSelectorArray (int defsel, cfestring &title, const char *items[]); // defsel<0: first
 
-  static char GetAbnormalMoveKey (int idx);
-  static void SetAbnormalMoveKey (int idx, char ch);
+  //static char GetNormalMoveKey (int idx);
+  //static void SetNormalMoveKey (int idx, char ch);
 
   static truth CheckDropLeftover (item *i);
 
@@ -568,7 +568,6 @@ private:
   static int CurrentLevelIndex;
   static int CurrentDungeonIndex;
   static cint MoveNormalCommandKey[];
-  static int MoveAbnormalCommandKey[];
   static cv2 MoveVector[];
   static cv2 RelativeMoveVector[];
   static cv2 BasicMoveVector[];

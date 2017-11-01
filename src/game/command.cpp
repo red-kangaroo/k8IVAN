@@ -55,21 +55,19 @@ static void cstrTrim (char *buf) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-command::command(cchar *name, truth (*LinkedFunction)(character *), cchar *Description, char Key1, char Key2, truth UsableInWilderness, truth WizardModeFunction) :
+command::command(cchar *name, truth (*LinkedFunction)(character *), cchar *Description, char Key1, truth UsableInWilderness, truth WizardModeFunction) :
   mName(name),
   LinkedFunction(LinkedFunction),
   Description(Description),
-  Key1(Key1), Key2(Key2),
+  Key1(Key1),
   UsableInWilderness(UsableInWilderness),
   WizardModeFunction(WizardModeFunction)
 {
 }
 
 
-char command::GetKey () const { return !ivanconfig::GetUseAlternativeKeys() ? Key1 : Key2; }
-
-
 ////////////////////////////////////////////////////////////////////////////////
+/*
 static const char *adirNames[9] = {
   "dir-left-up",
   "dir-up",
@@ -81,6 +79,7 @@ static const char *adirNames[9] = {
   "dir-right-down",
   "dir-none"
 };
+*/
 
 
 /* k8 */
@@ -98,22 +97,20 @@ void commandsystem::ConfigureKeys () {
   if (!fl) return;
   while (fgets(buf, 510, fl)) {
     cstrTrim(buf);
-    char k1 = 0, k2 = 0, i1;
-    if (buf[0] == '=') {
+    char k1, i1;
+    if (buf[0] == '=' && buf[1] != '=') {
       i1 = 1;
-    } else if (buf[2] != '=') {
-      if (buf[1] != '=') continue;
+      k1 = 0;
+    } else if (buf[1] != '=') {
+      continue;
+    } else {
       i1 = 2;
       k1 = buf[0];
-    } else {
-      i1 = 3;
-      k1 = buf[0];
-      k2 = buf[1];
     }
     for (int f = 0; (cmd = commandsystem::GetCommand(f)) != 0; ++f) {
-      if (!strcmp(buf+i1, cmd->GetName().CStr())) cmd->SetKeys(k1, k2);
+      if (!strcmp(buf+i1, cmd->GetName().CStr())) cmd->SetKey(k1);
     }
-    for (int f = 0; f <= 8; f++) if (!strcmp(buf+i1, adirNames[f])) game::SetAbnormalMoveKey(f, k1);
+    //for (int f = 0; f <= 8; f++) if (!strcmp(buf+i1, adirNames[f])) game::SetNormalMoveKey(f, k1);
   }
   fclose(fl);
 }
@@ -143,20 +140,20 @@ void commandsystem::SaveKeys (truth forced) {
         if (isWizard) continue;
       }
       cchar *dsc = cmd->GetName().CStr();
-      char k1 = cmd->GetKey1(), k2 = cmd->GetKey2();
+      char k1 = cmd->GetKey();
       if (!dsc || !dsc[0]) continue;
-      if (k1 && k2 && k1 != k2) fprintf(fl, "%c%c", k1, k2);
-      else if (k1) fprintf(fl, "%c", k1);
-      else if (k2) fprintf(fl, "%c", k2);
+      fprintf(fl, "%c", (k1 ? k1 : '\x7f'));
       fprintf(fl, "=%s\n", dsc);
     }
   }
+  /*
   fputs("\n# alternate movement\n", fl);
   for (int f = 0; f <= 8; f++) {
     char ch = game::GetAbnormalMoveKey(f);
     if (ch) fputc(ch, fl);
     fprintf(fl, "=%s\n", adirNames[f]);
   }
+  */
   fclose(fl);
 }
 /* k8 */
@@ -203,75 +200,75 @@ static truth Consume (character* Char, cchar *ConsumeVerb, sorter Sorter) {
 
 
 commandsystem::commandsystem () {
-  RegisterCommand(new command("Apply", &Apply, "apply", 'a', 'a', false));
-  RegisterCommand(new command("Talk", &Talk, "chat", 'C', 'C', false));
-  RegisterCommand(new command("Close", &Close, "close", 'c', 'c', false));
-  RegisterCommand(new command("Dip", &Dip, "dip", '!', '!', false));
-  RegisterCommand(new command("Dump", &Dump, "dump potion/can contents", 'U', 'U', false));
-  RegisterCommand(new command("Drink", &Drink, "drink", 'D', 'D', true));
-  RegisterCommand(new command("Drop", &Drop, "drop", 'd', 'd', true));
-  RegisterCommand(new command("Eat", &Eat, "eat", 'e', 'e', true));
-  RegisterCommand(new command("WhatToEngrave", &WhatToEngrave, "engrave", 'G', 'G', false));
-  RegisterCommand(new command("EquipmentScreen", &EquipmentScreen, "equipment menu", 'E', 'E', true));
-  RegisterCommand(new command("Go", &Go, "go", 'g', 'g', false));
-  RegisterCommand(new command("GoDown", &GoDown, "go down/enter area", '>', '>', true));
-  RegisterCommand(new command("GoUp", &GoUp, "go up", '<', '<', true));
-  RegisterCommand(new command("IssueCommand", &IssueCommand, "issue command(s) to team member(s)", 'I', 'I', false));
-  RegisterCommand(new command("Kick", &Kick, "kick", 'k', 'K', false));
-  RegisterCommand(new command("Look", &Look, "look", 'l', 'L', true));
-  RegisterCommand(new command("AssignName", &AssignName, "name", 'n', 'n', false));
-  RegisterCommand(new command("Offer", &Offer, "offer", 'O', 'f', false));
-  RegisterCommand(new command("Open", &Open, "open", 'o', 'O', false));
-  RegisterCommand(new command("PickUp", &PickUp, "pick up", ',', ',', false));
-  RegisterCommand(new command("Pray", &Pray, "pray", 'p', 'p', false));
-  RegisterCommand(new command("Quit", &Quit, "quit", 'Q', 'Q', true));
-  RegisterCommand(new command("Read", &Read, "read", 'r', 'r', false));
-  RegisterCommand(new command("Rest", &Rest, "rest/heal", 'h', 'h', true));
-  RegisterCommand(new command("Save", &Save, "save game", 'S', 'S', true));
-  RegisterCommand(new command("ScrollMessagesDown", &ScrollMessagesDown, "scroll messages down", '+', '+', true));
-  RegisterCommand(new command("ScrollMessagesUp", &ScrollMessagesUp, "scroll messages up", '-', '-', true));
-  RegisterCommand(new command("ShowConfigScreen", &ShowConfigScreen, "show config screen", '\\', '\\', true));
-  RegisterCommand(new command("ShowInventory", &ShowInventory, "show inventory", 'i', 'i', true));
-  RegisterCommand(new command("ShowKeyLayout", &ShowKeyLayout, "show key layout", '?', '?', true));
-  RegisterCommand(new command("DrawMessageHistory", &DrawMessageHistory, "show message history", 'M', 'M', true));
-  RegisterCommand(new command("ShowWeaponSkills", &ShowWeaponSkills, "show weapon skills", '@', '@', true));
-  RegisterCommand(new command("Search", &Search, "search", 's', 's', false));
-  RegisterCommand(new command("Sit", &Sit, "sit", '_', '_', false));
-  RegisterCommand(new command("Throw", &Throw, "throw", 't', 't', false));
-  RegisterCommand(new command("ToggleRunning", &ToggleRunning, "toggle running", 'u', 'U', true));
-  RegisterCommand(new command("ForceVomit", &ForceVomit, "vomit", 'V', 'V', false));
-  RegisterCommand(new command("NOP", &NOP, "wait", '.', '.', true));
-  RegisterCommand(new command("WieldInRightArm", &WieldInRightArm, "wield in right arm", 'w', 'w', true));
-  RegisterCommand(new command("WieldInLeftArm", &WieldInLeftArm, "wield in left arm", 'W', 'W', true));
-  RegisterCommand(new command("Burn", &Burn, "burn", 'B', 'B', false));
+  RegisterCommand(new command("Apply", &Apply, "apply", 'a'));
+  RegisterCommand(new command("Talk", &Talk, "chat", 'C'));
+  RegisterCommand(new command("Close", &Close, "close", 'c'));
+  RegisterCommand(new command("Dip", &Dip, "dip", '!'));
+  RegisterCommand(new command("Dump", &Dump, "dump potion/can contents", 'U'));
+  RegisterCommand(new command("Drink", &Drink, "drink", 'D', true));
+  RegisterCommand(new command("Drop", &Drop, "drop", 'd', true));
+  RegisterCommand(new command("Eat", &Eat, "eat", 'e', true));
+  RegisterCommand(new command("WhatToEngrave", &WhatToEngrave, "engrave", 'G'));
+  RegisterCommand(new command("EquipmentScreen", &EquipmentScreen, "equipment menu", 'E', true));
+  RegisterCommand(new command("Go", &Go, "go", 'g'));
+  RegisterCommand(new command("GoDown", &GoDown, "go down/enter area", '>', true));
+  RegisterCommand(new command("GoUp", &GoUp, "go up", '<', true));
+  RegisterCommand(new command("IssueCommand", &IssueCommand, "issue command(s) to team member(s)", 'I'));
+  RegisterCommand(new command("Kick", &Kick, "kick", 'k'));
+  RegisterCommand(new command("Look", &Look, "look", 'l', true));
+  RegisterCommand(new command("AssignName", &AssignName, "name", 'n'));
+  RegisterCommand(new command("Offer", &Offer, "offer", 'O'));
+  RegisterCommand(new command("Open", &Open, "open", 'o'));
+  RegisterCommand(new command("PickUp", &PickUp, "pick up", ','));
+  RegisterCommand(new command("Pray", &Pray, "pray", 'p'));
+  RegisterCommand(new command("Quit", &Quit, "quit", 'Q', true));
+  RegisterCommand(new command("Read", &Read, "read", 'r'));
+  RegisterCommand(new command("Rest", &Rest, "rest/heal", 'h', true));
+  RegisterCommand(new command("Save", &Save, "save game", 'S', true));
+  RegisterCommand(new command("ScrollMessagesDown", &ScrollMessagesDown, "scroll messages down", '=', true));
+  RegisterCommand(new command("ScrollMessagesUp", &ScrollMessagesUp, "scroll messages up", '-', true));
+  RegisterCommand(new command("ShowConfigScreen", &ShowConfigScreen, "show config screen", '\\', true));
+  RegisterCommand(new command("ShowInventory", &ShowInventory, "show inventory", 'i', true));
+  RegisterCommand(new command("ShowKeyLayout", &ShowKeyLayout, "show key layout", '?', true));
+  RegisterCommand(new command("DrawMessageHistory", &DrawMessageHistory, "show message history", 'M', true));
+  RegisterCommand(new command("ShowWeaponSkills", &ShowWeaponSkills, "show weapon skills", '@', true));
+  RegisterCommand(new command("Search", &Search, "search", 's'));
+  RegisterCommand(new command("Sit", &Sit, "sit", '_'));
+  RegisterCommand(new command("Throw", &Throw, "throw", 't'));
+  RegisterCommand(new command("ToggleRunning", &ToggleRunning, "toggle running", 'u', true));
+  RegisterCommand(new command("ForceVomit", &ForceVomit, "vomit", 'V'));
+  RegisterCommand(new command("NOP", &NOP, "wait", '.', true));
+  RegisterCommand(new command("WieldInRightArm", &WieldInRightArm, "wield in right arm", 'w', true));
+  RegisterCommand(new command("WieldInLeftArm", &WieldInLeftArm, "wield in left arm", 'W', true));
+  RegisterCommand(new command("Burn", &Burn, "burn", 'B'));
 #ifdef WIZARD
-  RegisterCommand(new command("WizardMode", &WizardMode, "wizard mode activation", 'X', 'X', true));
+  RegisterCommand(new command("WizardMode", &WizardMode, "wizard mode activation", 'X', true));
 #endif
-  RegisterCommand(new command("Zap", &Zap, "zap", 'z', 'z', false));
+  RegisterCommand(new command("Zap", &Zap, "zap", 'z'));
 #ifdef WIZARD
   /* Sort according to key */
-  RegisterCommand(new command("RaiseStats", &RaiseStats, "raise stats", '1', '1', true, true));
-  RegisterCommand(new command("LowerStats", &LowerStats, "lower stats", '2', '2', true, true));
-  RegisterCommand(new command("SeeWholeMap", &SeeWholeMap, "see whole map", '3', '3', true, true));
-  RegisterCommand(new command("WalkThroughWalls", &WalkThroughWalls, "toggle walk through walls mode", '4', '4', true, true));
-  RegisterCommand(new command("RaiseGodRelations", &RaiseGodRelations, "raise your relations to the gods", '5', '5', true, true));
-  RegisterCommand(new command("LowerGodRelations", &LowerGodRelations, "lower your relations to the gods", '6', '6', true, true));
-  RegisterCommand(new command("WizardWish", &WizardWish, "wish something", '=', '=', true, true));
-  RegisterCommand(new command("GainDivineKnowledge", &GainDivineKnowledge, "gain knowledge of all gods", '\"', '\"', true, true));
-  RegisterCommand(new command("GainAllItems", &GainAllItems, "gain all items", '$', '$', true, true));
-  RegisterCommand(new command("SecretKnowledge", &SecretKnowledge, "reveal secret knowledge", '*', '*', true, true));
-  RegisterCommand(new command("DetachBodyPart", &DetachBodyPart, "detach a limb", '0', '0', true, true));
-  RegisterCommand(new command("SummonMonster", &SummonMonster, "summon monster", '&', '&', false, true));
-  RegisterCommand(new command("LevelTeleport", &LevelTeleport, "level teleport", '|', '|', false, true));
-  RegisterCommand(new command("Possess", &Possess, "possess creature", '{', '{', false, true));
-  RegisterCommand(new command("Polymorph", &Polymorph, "polymorph", '[', '[', true, true));
-  RegisterCommand(new command("GetScroll", &GetScroll, "get scroll", 'R', 'R', true, true));
-  RegisterCommand(new command("OpenMondedr", &OpenMondedr, "open Mondedr", 'N', 'N', true, true));
-  RegisterCommand(new command("OpenXinTomb", &OpenXinTomb, "open Xinroch Tomb", 'T', 'T', true, true));
-  RegisterCommand(new command("ShowCoords", &ShowCoords, "show current coordinates", '(', '(', true, true));
-  RegisterCommand(new command("WizardHeal", &WizardHeal, "wizard healing", 'H', 'H', true, true));
-  RegisterCommand(new command("WizardBlow", &WizardBlow, "wizard blowing", '%', '%', false, true));
-  RegisterCommand(new command("WizardTeam", &WizardTeam, "wizard teaming", '/', '/', false, true));
+  RegisterCommand(new command("RaiseStats", &RaiseStats, "raise stats", '1', true, true));
+  RegisterCommand(new command("LowerStats", &LowerStats, "lower stats", '2', true, true));
+  RegisterCommand(new command("SeeWholeMap", &SeeWholeMap, "see whole map", '3', true, true));
+  RegisterCommand(new command("WalkThroughWalls", &WalkThroughWalls, "toggle walk through walls mode", '4', true, true));
+  RegisterCommand(new command("RaiseGodRelations", &RaiseGodRelations, "raise your relations to the gods", '5', true, true));
+  RegisterCommand(new command("LowerGodRelations", &LowerGodRelations, "lower your relations to the gods", '6', true, true));
+  RegisterCommand(new command("WizardWish", &WizardWish, "wish something", '=', true, true));
+  RegisterCommand(new command("GainDivineKnowledge", &GainDivineKnowledge, "gain knowledge of all gods", '\"', true, true));
+  RegisterCommand(new command("GainAllItems", &GainAllItems, "gain all items", '$', true, true));
+  RegisterCommand(new command("SecretKnowledge", &SecretKnowledge, "reveal secret knowledge", '*', true, true));
+  RegisterCommand(new command("DetachBodyPart", &DetachBodyPart, "detach a limb", '0', true, true));
+  RegisterCommand(new command("SummonMonster", &SummonMonster, "summon monster", '&', false, true));
+  RegisterCommand(new command("LevelTeleport", &LevelTeleport, "level teleport", '|', false, true));
+  RegisterCommand(new command("Possess", &Possess, "possess creature", '{', false, true));
+  RegisterCommand(new command("Polymorph", &Polymorph, "polymorph", '[', true, true));
+  RegisterCommand(new command("GetScroll", &GetScroll, "get scroll", 'R', true, true));
+  RegisterCommand(new command("OpenMondedr", &OpenMondedr, "open Mondedr", 'N', true, true));
+  RegisterCommand(new command("OpenXinTomb", &OpenXinTomb, "open Xinroch Tomb", 'T', true, true));
+  RegisterCommand(new command("ShowCoords", &ShowCoords, "show current coordinates", '(', true, true));
+  RegisterCommand(new command("WizardHeal", &WizardHeal, "wizard healing", 'H', true, true));
+  RegisterCommand(new command("WizardBlow", &WizardBlow, "wizard blowing", '%', false, true));
+  RegisterCommand(new command("WizardTeam", &WizardTeam, "wizard teaming", '/', false, true));
 #endif
 }
 
