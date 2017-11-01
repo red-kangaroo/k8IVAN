@@ -29,6 +29,10 @@ feuLong globalwindowhandler::Tick;
 truth globalwindowhandler::ControlLoopsEnabled = true;
 Uint32 globalwindowhandler::nextGameTick = 0;
 
+truth globalwindowhandler::lastShift = false;
+truth globalwindowhandler::lastCtrl = false;
+truth globalwindowhandler::lastAlt = false;
+
 std::vector<int> globalwindowhandler::KeyBuffer;
 truth (*globalwindowhandler::QuitMessageHandler)() = 0;
 
@@ -193,6 +197,9 @@ void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
       if (!QuitMessageHandler || QuitMessageHandler()) exit(0);
       return;
     case SDL_KEYDOWN:
+      lastAlt = ((Event->key.keysym.mod&KMOD_ALT) != 0);
+      lastCtrl = ((Event->key.keysym.mod&KMOD_CTRL) != 0);
+      lastShift = ((Event->key.keysym.mod&KMOD_SHIFT) != 0);
       switch (Event->key.keysym.sym) {
         case SDLK_RETURN: case SDLK_KP_ENTER:
           if (Event->key.keysym.mod & KMOD_ALT) {
@@ -270,12 +277,14 @@ void globalwindowhandler::ProcessMessage (SDL_Event *Event) {
             break;
           }
           return; }
+        /*
         case SDLK_e:
           if ((Event->key.keysym.mod & KMOD_ALT) &&
               ((Event->key.keysym.mod & KMOD_LCTRL) || (Event->key.keysym.mod & KMOD_RCTRL))) {
-            KeyPressed = '\177';
+            KeyPressed = 127;
             break;
           }
+        */
         default:
           KeyPressed = Event->key.keysym.unicode;
           if (!KeyPressed) return;

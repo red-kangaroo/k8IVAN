@@ -36,7 +36,7 @@ enum {
   MDIR_DOWN_LEFT,
   MDIR_DOWN,
   MDIR_DOWN_RIGHT,
-  MDIR_STAND
+  MDIR_STAND,
 };
 
 
@@ -1895,8 +1895,21 @@ void character::GetPlayerCommand () {
     //
     for (int c = 0; c < DIRECTION_COMMAND_KEYS; ++c) {
       if (Key == game::GetMoveCommandKey(c)) {
-        HasActed = TryMove(ApplyStateModification(game::GetMoveVector(c)), true, game::PlayerIsRunning());
+        if (c != MDIR_STAND && globalwindowhandler::lastCtrl && !globalwindowhandler::lastAlt && !globalwindowhandler::lastShift) {
+          // C-dir: Go
+          int Dir = c;
+          go *Go = go::Spawn(this);
+          Go->SetDirection(Dir);
+          Go->SetPrevWasTurn(false);
+          SetAction(Go);
+          EditAP(GetStateAPGain(100)); // gum solution
+          GoOn(Go, true);
+          HasActed = true;
+        } else {
+          HasActed = TryMove(ApplyStateModification(game::GetMoveVector(c)), true, game::PlayerIsRunning());
+        }
         ValidKeyPressed = true;
+        if (HasActed) break;
       }
     }
     //

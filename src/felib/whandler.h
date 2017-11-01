@@ -43,6 +43,8 @@ public:
 
   static void Delay (int ms);
 
+  static truth lastShift, lastCtrl, lastAlt;
+
 private:
   static void ProcessMessage (SDL_Event *Event);
 
