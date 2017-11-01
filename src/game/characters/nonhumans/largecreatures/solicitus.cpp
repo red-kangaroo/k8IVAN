@@ -69,15 +69,6 @@ void solicitus::CreateCorpse (lsquare *Square) {
 
 
 
-/*
-truth solicitus::MustBeRemovedFromBone () const {
-  //return !IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != UNDER_WATER_TUNNEL || GetLevel()->GetIndex() != VESANA_LEVEL;
-  return (!IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetLevel()->IsSolicitusLevel());
-}
-*/
-
-
-
 void solicitus::Save (outputfile &SaveFile) const {
   nonhumanoid::Save(SaveFile);
 }

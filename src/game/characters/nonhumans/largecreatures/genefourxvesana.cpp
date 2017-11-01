@@ -38,14 +38,6 @@ void genefourxvesana::Load (inputfile &SaveFile) {
 }
 
 
-/*
-truth genefourxvesana::MustBeRemovedFromBone () const {
-  //return (!IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != UNDER_WATER_TUNNEL || GetLevel()->GetIndex() != VESANA_LEVEL);
-  return (!IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetLevel()->IsUTVesanaLevel());
-}
-*/
-
-
 void genefourxvesana::FinalProcessForBone () {
   largecreature::FinalProcessForBone();
   TurnsExisted = 0;

@@ -138,12 +138,4 @@ truth elpuri::TryToRiseFromTheDead()
 }
 
 
-/*
-truth elpuri::MustBeRemovedFromBone() const
-{
-  //return !IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != ELPURI_CAVE || GetLevel()->GetIndex() != DARK_LEVEL;
-  return (!IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetLevel()->IsGCElpuriLevel());
-}
-*/
-
 #endif

@@ -20,15 +20,6 @@ bodypart* lobhse::MakeBodyPart(int) const { return lobhsetorso::Spawn(0, NO_MATE
 
 
 
-/*
-truth lobhse::MustBeRemovedFromBone() const
-{
-  return !IsEnabled() || GetTeam()->GetID() != MONSTER_TEAM || GetDungeon()->GetIndex() != UNDER_WATER_TUNNEL || GetLevel()->GetIndex() != SPIDER_LEVEL;
-}
-*/
-
-
-
 truth lobhse::SpecialBiteEffect(character* Char, v2, int, int, truth BlockedByArmour, truth Critical, int DoneDamage)
 {
   if(!BlockedByArmour)

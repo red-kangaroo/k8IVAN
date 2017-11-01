@@ -79,17 +79,6 @@ void ennerchild::GetAICommand () {
 }
 
 
-/*
-truth ennerchild::MustBeRemovedFromBone () const {
-  return
-    !IsEnabled() ||
-    GetTeam()->GetID() != MONSTER_TEAM ||
-    GetDungeon()->GetIndex() != XINROCH_TOMB ||
-    GetLevel()->GetIndex() != DUAL_ENNER_BEAST_LEVEL;
-}
-*/
-
-
 bodypart *ennerchild::MakeBodyPart (int I) const {
   if (I == HEAD_INDEX)
     return ennerhead::Spawn(0, NO_MATERIALS);
