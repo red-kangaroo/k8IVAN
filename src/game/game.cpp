@@ -561,6 +561,7 @@ void game::DeInit () {
   GameScript = 0;
   msgsystem::Format();
   DangerMap.clear();
+  pool::BurnAllMaterials();
 }
 
 

@@ -38,8 +38,11 @@ public:
   //
   static void RemoveEverything (); // don't delete!
 
+  static void RegisterMaterial (material *mb);
+  static void UnregisterMaterial (material *mb);
   static void MaterToHell (material *mb);
   static void BurnMaterHell ();
+  static void BurnAllMaterials ();
 };
 
 

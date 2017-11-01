@@ -24,20 +24,57 @@
 ////////////////////////////////////////////////////////////////////////////////
 typedef std::set<material *> MaterialSet;
 
+static MaterialSet matersAlive;
 static MaterialSet matersToKill;
+
+
+void pool::RegisterMaterial (material *mb) {
+  if (!mb) return;
+  if (matersAlive.find(mb) != matersAlive.end()) return;
+  if (matersToKill.find(mb) != matersToKill.end()) ABORT("Cannot resurrect dead material");
+  matersAlive.insert(mb);
+}
+
+
+void pool::UnregisterMaterial (material *mb) {
+  if (!mb) return;
+  auto it = matersAlive.find(mb);
+  if (it != matersAlive.end()) matersAlive.erase(it);
+  it = matersToKill.find(mb);
+  if (it != matersToKill.end()) matersToKill.erase(it);
+}
 
 
 void pool::MaterToHell (material *mb) {
   if (mb) {
-    auto it = matersToKill.find(mb);
+    auto it = matersAlive.find(mb);
+    if (it == matersAlive.end()) {
+      it = matersToKill.find(mb);
+      if (it == matersToKill.end()) ABORT("Cannot send to hell unregistered material");
+      // already sent
+      return;
+    }
+    matersAlive.erase(it);
+    it = matersToKill.find(mb);
     if (it == matersToKill.end()) matersToKill.insert(mb);
   }
 }
 
 
 void pool::BurnMaterHell () {
-  for (auto &mb : matersToKill) delete mb;
+  MaterialSet list;
+  for (auto &mb : matersToKill) list.insert(mb);
   matersToKill.clear();
+  for (auto &mb : list) delete mb;
+}
+
+
+void pool::BurnAllMaterials () {
+  BurnMaterHell();
+  MaterialSet list = matersAlive;
+  for (auto &mb : matersAlive) list.insert(mb);
+  matersAlive.clear();
+  for (auto &mb : list) delete mb;
 }
 
 

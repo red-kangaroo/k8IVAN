@@ -115,9 +115,9 @@ class material
   typedef materialdatabase database;
 
  public:
-  material(int NewConfig, sLong InitVolume = 0, truth Load = false) : MotherEntity(0) { Initialize(NewConfig, InitVolume, Load); }
-  material() : MotherEntity(0) { }
-  virtual ~material() { }
+  material(int NewConfig, sLong InitVolume = 0, truth Load = false) : MotherEntity(0) { pool::RegisterMaterial(this); Initialize(NewConfig, InitVolume, Load); }
+  material() : MotherEntity(0) { pool::RegisterMaterial(this); }
+  virtual ~material () { pool::UnregisterMaterial(this); }
 
   void AddName(festring&, truth = false, truth = true) const;
   festring GetName(truth = false, truth = true) const;
