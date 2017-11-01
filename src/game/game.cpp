@@ -1298,12 +1298,32 @@ cchar *game::GetVerbalPlayerAlignment () {
 
 
 void game::CreateGods () {
+  static const char * godconsts[16] = {
+    "", // unused
+    "VALPURUS",
+    "LEGIFER",
+    "ATAVUS",
+    "DULCIS",
+    "SEGES",
+    "SOPHOS",
+    "SILVA",
+    "LORICATUS",
+    "MELLIS",
+    "CLEPTIA",
+    "NEFAS",
+    "SCABIES",
+    "INFUSCOR",
+    "CRUENTUS",
+    "MORTIFER",
+  };
   God = new god*[GODS+1];
   God[0] = 0;
   for (int c = 1; c < protocontainer<god>::GetSize(); ++c) {
     auto proto = protocontainer<god>::GetProto(c);
     if (!proto) ABORT("God #%d is not defined!", c);
+    if (c > GODS) ABORT("Too many gods!");
     God[c] = proto->Spawn();
+    if (game::GetGlobalConst(godconsts[c]) != God[c]->GetType()) ABORT("God number %d must be '%s', but it is '%s'!", c, godconsts[c], God[c]->GetTypeID());
   }
 }
 
