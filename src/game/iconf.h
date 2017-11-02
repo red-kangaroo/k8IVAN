@@ -66,6 +66,7 @@ private:
   static truth ContrastChangeInterface (numberoption *);
   static void AutoSaveIntervalChanger (numberoption *, sLong);
   static void ContrastChanger (numberoption *, sLong);
+  static void SoundChanger (numberoption *, sLong);
   static void FullScreenModeChanger (truthoption *, truth);
   static void FastListChanger (truthoption *, truth);
   static void ContrastHandler (sLong);

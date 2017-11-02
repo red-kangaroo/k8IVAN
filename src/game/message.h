@@ -64,8 +64,9 @@ public:
   static void playSound (const festring &Buffer);
   static void setVolume (sLong vol); // 0..128
 
-private:
   static void initSound ();
+
+private:
   static int addFile (const festring &filename);
   //static truth matches (const festring &Pattern, const festring &Buffer);
   static struct SoundFile *findMatchingSound (const festring &Buffer);

@@ -42,8 +42,8 @@ truthoption ivanconfig::KickDownDoors("KickDownDoors", "kick closed doors", fals
 truthoption ivanconfig::AutoCenterMap("AutoCenterMap", "automatically center map when player moves", true);
 truthoption ivanconfig::AutoCenterMapOnLook("AutoCenterMapOnLook", "automatically center map when player looks", true);
 truthoption ivanconfig::FastListMode("FastLists", "instantly select list items with alpha keys", true, &configsystem::NormalTruthDisplayer, &configsystem::NormalTruthChangeInterface, &FastListChanger);
-truthoption ivanconfig::PlaySounds("PlaySounds", "use sounds", false);
-scrollbaroption ivanconfig::SoundVolume("SoundVolume", "sound volume", 128, &SoundVolumeDisplayer, &SoundVolumeChangeInterface, &ContrastChanger, &SoundVolumeHandler);
+truthoption ivanconfig::PlaySounds("PlaySounds", "use sounds", true);
+scrollbaroption ivanconfig::SoundVolume("SoundVolume", "sound volume", 128, &SoundVolumeDisplayer, &SoundVolumeChangeInterface, &SoundChanger, &SoundVolumeHandler);
 truthoption ivanconfig::ConfirmCorpses("ConfirmCorpses", "confirm corpse pickup", true);
 truthoption ivanconfig::StopOnCorpses("StopOnCorpses", "abort going on corpses", false);
 truthoption ivanconfig::StopOnSeenItems("StopOnSeenItems", "abort going on seen items", false);
@@ -170,6 +170,13 @@ void ivanconfig::ContrastChanger (numberoption *O, sLong What) {
   if (What > 200) What = 200;
   O->Value = What;
   CalculateContrastLuminance();
+}
+
+
+void ivanconfig::SoundChanger (numberoption *O, sLong What) {
+  if (What < 0) What = 0;
+  if (What > 128) What = 128;
+  O->Value = What;
 }
 
 

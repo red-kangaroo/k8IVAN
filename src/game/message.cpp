@@ -250,6 +250,7 @@ std::vector<SoundInfo> soundsystem::patterns;
 
 int soundsystem::addFile (const festring &filename) {
   for (int i = 0; i < int(files.size()); i++) if (files[i].filename == filename) return i;
+  //fprintf(stderr, "sound file: <%s>\n", filename.CStr());
   SoundFile p;
   p.filename = filename;
   p.chunk = NULL;
