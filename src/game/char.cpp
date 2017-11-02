@@ -1184,13 +1184,13 @@ void character::Die (character *Killer, cfestring &Msg, feuLong DeathFlags) {
       festring dir;
 #ifdef LOCAL_SAVES
       dir << ivanconfig::GetMyDir() << "/save";
-      mkdir(dir.CStr(), 0755);
+      outputfile::makeDir(dir.CStr());
 #else
       dir << getenv("HOME") << "/.ivan-save";
-      mkdir(dir.CStr(), 0755);
+      outputfile::makeDir(dir.CStr());
 #endif
       dir << "/deathshots";
-      mkdir(dir.CStr(), 0755);
+      outputfile::makeDir(dir.CStr());
       festring timestr;
       time_t t = time(NULL);
       struct tm *ts = localtime(&t);

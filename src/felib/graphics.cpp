@@ -13,6 +13,7 @@
 
 #ifndef DISABLE_OPENGL
 # include <GL/gl.h>
+# include <GL/glext.h>
 #endif
 
 #include "SDL.h"

@@ -26,7 +26,7 @@ truth bone::Necromancy (character *Necromancer) {
   LSquareUnder->GetStack()->FillItemVector(ItemVector);
 
   // First count the number of bones, and find a skull
-  for (uint c = 0; c < ItemVector.size(); ++c) {
+  for (uInt c = 0; c < ItemVector.size(); ++c) {
          if (ItemVector[c]->IsABone()) ++NumberOfBones;
     else if (ItemVector[c]->IsASkull() && !HasSkull) HasSkull = true;
   }
@@ -45,7 +45,7 @@ truth bone::Necromancy (character *Necromancer) {
     Skeleton->PutToOrNear(GetPos());
 
     // then remove the bones, and the skull from the floor
-    for (uint c = 0; c < ItemVector.size(); ++c) {
+    for (uInt c = 0; c < ItemVector.size(); ++c) {
       if (ItemVector[c]->IsABone() && NumberOfBones > 0) {
         ItemVector[c]->RemoveFromSlot();
         ItemVector[c]->SendToHell();

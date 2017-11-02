@@ -150,8 +150,8 @@ struct maze {
   std::vector<truth> MazeKernel; // returns only the mazey bit in the middle (the kernel), without the exterior walls. The kernel size is the input size of maze - 2 for each dimension.
   void CarveMaze (int, int); // Carves the maze
   void StripMazeHusk (); // Removes the husk (skin and shell), and populates MazeKernel with the kernel.
-  const uint MazeXSize; // XSize of the MazeVector
-  const uint MazeYSize; // YSize of the MazeVector
+  /*const*/ uInt MazeXSize; // XSize of the MazeVector
+  /*const*/ uInt MazeYSize; // YSize of the MazeVector
  private:
   std::vector<truth> MazeVector; // Consists of the outer buffer (empty, called the skin) and the shell wall (next layer in, all full). Together they comprise the husk.
 };

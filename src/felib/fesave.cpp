@@ -105,6 +105,16 @@ sLong outputfile::TellPos () {
 
 
 // ////////////////////////////////////////////////////////////////////////// //
+void outputfile::makeDir (cfestring &name) {
+#ifndef SHITDOZE
+  mkdir(name.CStr(), 0755);
+#else
+  mkdir(name.CStr());
+#endif
+}
+
+
+// ////////////////////////////////////////////////////////////////////////// //
 truth inputfile::fileExists (const festring &fname) {
   struct stat st;
   if (stat(fname.CStr(), &st)) return false;
@@ -117,6 +127,7 @@ festring inputfile::GetMyDir () {
 #ifdef IVAN_DATA_DIR
   return IVAN_DATA_DIR;
 #else
+# ifndef SHITDOZE
   char myDir[8192];
   char buf[128];
   pid_t mypid = getpid();
@@ -130,6 +141,9 @@ festring inputfile::GetMyDir () {
   }
   if (myDir[strlen(myDir)-1] == '/') myDir[strlen(myDir)-1] = '\0';
   return myDir;
+# else
+  return festring(".");
+# endif
 #endif
 }
 

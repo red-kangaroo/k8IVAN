@@ -65,6 +65,8 @@ public:
   void Flush ();
   sLong TellPos ();
 
+  static void makeDir (cfestring &name);
+
 private:
 #ifdef USE_ZLIB
   gzFile Buffer;

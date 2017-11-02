@@ -30,13 +30,13 @@ struct InputFileSaved {
   friend TextInput;
 
 private:
-  TextInput *ifile;
-  void *svbuf;
-  int mCharBuf[4];
-  int mCharBufPos;
-  int mCurrentLine;
-  int mTokenLine;
-  sLong mRealPos;
+  TextInput *ifile = nullptr;
+  void *svbuf = nullptr;
+  int mCharBuf[4] = {0};
+  int mCharBufPos = 0;
+  int mCurrentLine = 0;
+  int mTokenLine = 0;
+  sLong mRealPos = 0;
 
 private:
   InputFileSaved (TextInput *aifile) : ifile(aifile), svbuf(nullptr) {

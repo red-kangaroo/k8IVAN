@@ -2,22 +2,55 @@
 # WARNING! SHITTY CODE!
 
 
-defines="-DSGAME_SHOTS_IPU -DWIZARD -DLOCAL_SAVES"
+defines="-DWIZARD -DLOCAL_SAVES"
 cflags="-Wno-narrowing -Isrc/felib -m32"
 lflags="-lm"
 objects=""
 have_package=""
+BUILD_DIR="_build"
+shitdoze="ona"
+FORCE="ona"
+linkflags=""
+
+while [ $# -gt 0 ]; do
+  if [ "z$1" = "zshitdoze" ]; then
+    shitdoze="tan"
+  elif [ "z$1" = "zforce" ]; then
+    FORCE="tan"
+  else
+    echo "FATAL: unknown arg: $1"
+    exit 1
+  fi
+  shift
+done
+
+
+if [ $shitdoze = tan ]; then
+  ARCH="i686-w64-mingw32.static-"
+  BINSUFF=".exe"
+  defines="${defines} -DSHITDOZE"
+  BUILD_DIR="${BUILD_DIR}_shitdoze"
+  linkflags="-Wl,-subsystem,windows"
+else
+  ARCH=""
+  BINSUFF=""
+  cflags="${cflags} -Wno-misleading-indentation"
+fi
+
+GCC="${ARCH}gcc"
+GPP="${ARCH}g++"
+PKGCONFIG="${ARCH}pkg-config"
 
 
 find_package() {
   if [ "z$2" != "z" ]; then
-    pkg-config --silence-errors $1 --atleast-version=$2
+    $PKGCONFIG --silence-errors $1 --atleast-version=$2
   else
-    pkg-config --silence-errors $1
+    $PKGCONFIG --silence-errors $1
   fi
   if [ "$?" = "0" ]; then
-    cflags="${cflags} `pkg-config $1 --cflags`"
-    lflags="${lflags} `pkg-config $1 --libs`"
+    cflags="${cflags} `$PKGCONFIG $1 --cflags`"
+    lflags="${lflags} `$PKGCONFIG $1 --libs`"
     #echo "MSG: package '$1' found"
     have_package="tan"
   else
@@ -34,11 +67,13 @@ compile() {
   local obj
   local xname
   local gppopt
+  local fstime
+  local fotime
   #
   obj=`basename $2 .cpp`
   obj=`basename $obj .c`
   obj="${obj}.o"
-  obj="_build/${obj}"
+  obj="${BUILD_DIR}/${obj}"
   objects="${objects} ${obj}"
   xname=`basename -s .c "$2"`
   if [ "z$xname" = "z$2" ]; then
@@ -48,7 +83,16 @@ compile() {
     echo "CC      $2"
     gppopt=""
   fi
-  gcc -pipe -c -O2 -Wall -Wno-misleading-indentation -Isrc/game ${gppopt} ${defines} ${cflags} -o ${obj} "$1/$2"
+  if [ $FORCE != tan ]; then
+    if [ -e ${obj} ]; then
+      fstime=`stat '--format=%Y' "$1/$2"`
+      fotime=`stat '--format=%Y' ${obj}`
+      if [ $fotime -ge $fstime ]; then
+        return
+      fi
+    fi
+  fi
+  $GCC -pipe -c -O2 -Wall -Isrc/game ${gppopt} ${defines} ${cflags} -o ${obj} "$1/$2"
   if [ "$?" != "0" ]; then
     echo "FATAL: compilation failed!"
     exit 1
@@ -57,12 +101,18 @@ compile() {
 
 
 link() {
-  echo "LINK    ivan"
-  g++ -pipe -s -o ivan ${objects} ${lflags}
+  echo "LINK    ivan${BINSUFF}"
+  #echo "============="
+  #echo "${objects}"
+  #echo "============="
+  #echo "${lflags}"
+  #echo "============="
+  $GPP -pipe -s -o ivan${BINSUFF} ${objects} ${lflags} ${linkflags}
   if [ "$?" != "0" ]; then
     echo "FATAL: linking failed!"
     exit 1
   fi
+  ${ARCH}strip -s ivan${BINSUFF}
 }
 
 
@@ -120,14 +170,10 @@ if [ "$have_package" = "tan" ]; then
   defines="${defines} -DENABLE_ALSA"
 fi
 
+#echo "CFLAGS: ${cflags}"
+#echo "DEFINES: ${defines}"
 
-#find_package libpng 1.5
-#if [ "$have_package" = "tan" ]; then
-#  defines="${defines} -DHAVE_LIBPNG"
-#fi
-
-
-mkdir _build 2>/dev/null
+mkdir ${BUILD_DIR} 2>/dev/null
 
 compile src/felib bitmap.cpp
 compile src/felib config.cpp

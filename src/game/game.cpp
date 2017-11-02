@@ -381,8 +381,8 @@ truth game::Init (cfestring &Name) {
     PlayerName = Name;
   }
 
-  mkdir(GetSavePath().CStr(), S_IRWXU|S_IRWXG);
-  mkdir(GetBonePath().CStr(), S_IRWXU|S_IRWXG);
+  outputfile::makeDir(GetSavePath());
+  outputfile::makeDir(GetBonePath());
 
   LOSTick = 2;
   DangerFound = 0;
@@ -2306,9 +2306,13 @@ inputfile &operator >> (inputfile &SaveFile, dangerid &Value) {
 
 /* The program can only create directories to the deepness of one, no more... */
 festring game::GetHomeDir () {
+#ifndef SHITDOZE
   festring Dir;
   Dir << getenv("HOME") << '/';
   return Dir;
+#else
+  return festring(".");
+#endif
 }
 
 

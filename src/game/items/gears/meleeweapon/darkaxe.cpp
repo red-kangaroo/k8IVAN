@@ -17,7 +17,7 @@ void darkaxe::Be () {
   if (Exists() && !IsBroken() && (*Slot)->IsGearSlot() && !RAND_N(10)) {
     fluidvector FluidVector;
     FillFluidVector(FluidVector);
-    uint Volume = 0;
+    uInt Volume = 0;
 
     for (uInt c = 0; c < FluidVector.size(); ++c) {
       liquid *L = FluidVector[c]->GetLiquid();
