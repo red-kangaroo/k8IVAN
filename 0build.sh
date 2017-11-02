@@ -3,7 +3,7 @@
 
 
 defines="-DSGAME_SHOTS_IPU -DWIZARD -DLOCAL_SAVES"
-cflags="-Wno-narrowing -Isrc/felib"
+cflags="-Wno-narrowing -Isrc/felib -m32"
 lflags="-lm"
 objects=""
 have_package=""
@@ -32,14 +32,23 @@ find_package() {
 # $3: use gcc if not empty
 compile() {
   local obj
+  local xname
+  local gppopt
   #
   obj=`basename $2 .cpp`
   obj=`basename $obj .c`
   obj="${obj}.o"
-  echo "CC      $2"
   obj="_build/${obj}"
   objects="${objects} ${obj}"
-  gcc -pipe -c -O2 -Wall -Wno-misleading-indentation -Isrc/game -std=gnu++14 ${defines} ${cflags} -o ${obj} "$1/$2"
+  xname=`basename -s .c "$2"`
+  if [ "z$xname" = "z$2" ]; then
+    echo "C++     $2"
+    gppopt="-std=gnu++14"
+  else
+    echo "CC      $2"
+    gppopt=""
+  fi
+  gcc -pipe -c -O2 -Wall -Wno-misleading-indentation -Isrc/game ${gppopt} ${defines} ${cflags} -o ${obj} "$1/$2"
   if [ "$?" != "0" ]; then
     echo "FATAL: compilation failed!"
     exit 1
@@ -133,6 +142,7 @@ compile src/felib graphics.cpp
 compile src/felib hscore.cpp
 compile src/felib rawbit.cpp
 compile src/felib fesave.cpp
+compile src/felib feparse.cpp
 compile src/felib whandler.cpp
 compile src/felib regex.c
 
@@ -140,7 +150,6 @@ compile src/game ivancommon.cpp
 compile src/game actset.cpp
 compile src/game areaset.cpp
 compile src/game charset.cpp
-compile src/game charsset.cpp
 compile src/game command.cpp
 compile src/game coreset.cpp
 compile src/game dataset.cpp
@@ -162,5 +171,6 @@ compile src/game slotset.cpp
 compile src/game trapset.cpp
 compile src/game wmapset.cpp
 compile src/game wskill.cpp
+
 
 link
